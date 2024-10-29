@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@he-tree/vue": "^2.8.7",
     "@quasar/extras": "^1.16.12",
     "pinia": "^2.2.4",
     "quasar": "^2.17.1",
