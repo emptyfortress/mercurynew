@@ -1,20 +1,38 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+
+const leftDrawer = ref(false)
+const toggleLeftDrawer = (() => {
+	leftDrawer.value = !leftDrawer.value
+})
+const rightDrawer = ref(false)
+const toggleRightDrawer = (() => {
+	rightDrawer.value = !rightDrawer.value
+})
 </script>
 
 <template lang="pug">
-header
-	img(alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125")
+q-layout(view='hHh LpR fFf')
+	q-header.bg-primary.text-white(elevated)
+		q-toolbar
+			q-btn(dense flat round icon='menu' @click='toggleLeftDrawer')
+			q-space
+			// q-toolbar-title
+				q-avatar
+					img(src='https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg')
+				| Title
+			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
 
-	.wrapper
-		HelloWorld(msg="You did it!")
+	q-drawer(v-model='leftDrawer' side='left' overlay bordered behavior="desktop")
+		// drawer content
 
-		nav
-			RouterLink(to="/") Home
-			RouterLink(to="/about") About
+	q-drawer(v-model='rightDrawer' side='right' overlay bordered behavior="desktop")
+	// drawer content
 
-RouterView
+	q-page-container
+		router-view
+
 </template>
 
 <style scoped lang="scss">
