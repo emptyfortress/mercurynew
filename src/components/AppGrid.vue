@@ -37,10 +37,10 @@ onMounted(() => {
 })
 
 
-const expand = async () => {
-	const state = Flip.getState(".item")
+const expand = async (item: any) => {
+	const state = Flip.getState('.item')
 
-	expanded.value = !expanded.value
+	item.expand = true
 
 	await nextTick(() => {
 		Flip.from(state, {
@@ -60,7 +60,7 @@ const reset = (() => {
 
 <template lang="pug">
 .grid
-	.item(@click='expand' :class="{ active: expanded }" ) fuck
+	.item(v-for="item in apps" :key="item.id" @click='expand(item)' :class="{ active: item.expand }" ) {{ item.id }}
 
 </template>
 
@@ -88,20 +88,6 @@ const reset = (() => {
 	}
 }
 
-.item,
-.item.flipping {
-	visibility: visible;
-}
-
-.grid {
-	--width: 200px;
-	margin: 1rem;
-	display: grid;
-	grid-auto-flow: row;
-	grid-template-columns: repeat(auto-fill, var(--width));
-	gap: 1rem;
-}
-
 .itembig {
 	position: relative;
 	flex-shrink: 0;
@@ -118,5 +104,20 @@ const reset = (() => {
 		display: block;
 		z-index: 2;
 	}
+}
+
+.item,
+.item.flipping {
+	visibility: visible;
+}
+
+.grid {
+	--width: 200px;
+	margin: 1rem;
+	display: grid;
+	// grid-auto-flow: row;
+	// grid-template-columns: repeat(auto-fill, var(--width));
+	grid-template-columns: repeat(5, var(--width));
+	gap: 1rem;
 }
 </style>
