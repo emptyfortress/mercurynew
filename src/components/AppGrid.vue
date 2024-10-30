@@ -5,18 +5,18 @@ import { Flip } from 'gsap/Flip'
 
 gsap.registerPlugin(Flip)
 
-onMounted(() => {
-	squares.value = gsap.utils.toArray('.item')
-})
+// onMounted(() => {
+// 	squares.value = gsap.utils.toArray('.item')
+// })
 
-onMounted(() => {
-	gsap.from('.item', {
-		y: 100,
-		opacity: 0,
-		stagger: 0.2,
-		delay: .2
-	})
-})
+// onMounted(() => {
+// 	gsap.from('.item', {
+// 		y: 100,
+// 		opacity: 0,
+// 		stagger: 0.2,
+// 		delay: .5
+// 	})
+// })
 
 const apps = reactive([
 	{ id: 0, label: '', expand: false, },
@@ -29,18 +29,7 @@ const apps = reactive([
 
 const items = ref()
 const big = ref()
-const expanded = ref<null | number>(null)
-
-// const expand = ((ind: number) => {
-// 	let item = items.value[ind]
-// 	const state = Flip.getState(item, big.value)
-// 	console.log(state)
-// 	expanded.value = ind
-// 	console.log(state)
-// 	nextTick(() => {
-// 		Flip.from(state, { duration: 0.5, ease: 'power3.in' })
-// 	})
-// })
+const expanded = ref<boolean>(false)
 
 const squares = ref([])
 onMounted(() => {
@@ -48,27 +37,31 @@ onMounted(() => {
 })
 
 
-const expand = ((n: number) => {
-	const state = Flip.getState(squares.value[n])
-	// apps.map((item) => item.expand = false)
-	// apps[n].expand = true
+const expand = async () => {
+	const state = Flip.getState(".item")
 
-	expanded.value = n
+	expanded.value = !expanded.value
 
-	nextTick(() => {
-		Flip.from(state, { absolute: true, duration: 0.5, ease: 'power3.in' })
+	await nextTick(() => {
+		Flip.from(state, {
+			duration: 0.4,
+			fade: true,
+			absolute: true,
+			toggleClass: "flipping",
+			ease: "power1.inOut"
+		})
 	})
-})
+}
 
 const reset = (() => {
-	expanded.value = null
+	expanded.value = false
 })
 </script>
 
 <template lang="pug">
-.grid()
-	.item.square(ref='items' v-for="e in apps" :key="e.id" @click='expand(e.id)') {{ e.id }}
-.itembig.square(ref='big' v-if='expanded !== null' @click='reset') {{ expanded }}
+.grid
+	.item(@click='expand' :class="{ active: expanded }" ) fuck
+
 </template>
 
 <style scoped lang="scss">
@@ -84,17 +77,20 @@ const reset = (() => {
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	}
 
-	// &.expand {
-	// 	width: 600px;
-	// 	height: 600px;
-	// 	position: fixed;
-	// 	top: 1rem;
-	// 	left: 50%;
-	// 	transform: translateX(-300px);
-	// 	border: 1px solid #ccc;
-	// 	box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
-	// 	z-index: 10;
-	// }
+	&.active {
+		position: fixed;
+		// left: 50%;
+		height: 70vh;
+		width: 600px;
+		margin: 0 auto;
+		left: 0;
+		right: 0;
+	}
+}
+
+.item,
+.item.flipping {
+	visibility: visible;
 }
 
 .grid {
@@ -107,15 +103,20 @@ const reset = (() => {
 }
 
 .itembig {
-	width: 600px;
-	height: 600px;
-	background: #fff;
-	position: fixed;
-	top: 1rem;
-	left: 50%;
-	transform: translateX(-50%);
+	position: relative;
+	flex-shrink: 0;
+	flex-grow: 0;
+	height: 90%;
+	aspect-ratio: 1/1;
 	border: 1px solid #ccc;
+	background: #fff;
 	box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	border-radius: .5rem;
+	display: none;
+
+	&.active {
+		display: block;
+		z-index: 2;
+	}
 }
 </style>
