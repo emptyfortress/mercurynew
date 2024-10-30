@@ -6,13 +6,14 @@ import { myApps } from '@/stores/tree'
 
 const splitterModel = ref(20)
 const el = ref(null)
+
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.container
 		h5.text-center Мои приложения
-		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei" )
+		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]")
 			template(v-slot:before)
 				.blo(ref="el")
 					q-scroll-area.list
@@ -32,9 +33,11 @@ q-page(padding)
 	position: relative;
 	// background: pink;
 }
+
 .list {
 	height: 100%;
 }
+
 .container {
 	max-width: 1400px;
 	margin: 0 auto;

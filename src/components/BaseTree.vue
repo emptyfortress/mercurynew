@@ -164,7 +164,6 @@ const isDrop = (e: any) => {
 	q-form.quick
 		q-input(dense
 			v-model="query"
-			autofocus
 			clearable
 			@clear="clearFilter"
 			placeholder="фильтр"
@@ -184,7 +183,8 @@ const isDrop = (e: any) => {
 			.node(@click="" :class="{ 'selected': stat.data.selected }")
 				q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
 				q-icon(name="mdi-folder-outline" v-if="stat.data.type === 0").fold
-				WordHighlighter(:query="query") {{ node.text }}
+				span {{ node.text }}
+				// WordHighlighter(:query="query") {{ node.text }}
 
 				// DirMenu(
 					:stat="stat"
