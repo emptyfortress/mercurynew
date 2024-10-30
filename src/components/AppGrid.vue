@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, reactive } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 
 gsap.registerPlugin(Flip)
-
-const squares = ref([])
 
 onMounted(() => {
 	squares.value = gsap.utils.toArray('.item')
@@ -20,7 +18,7 @@ onMounted(() => {
 	})
 })
 
-const apps = ref([
+const apps = reactive([
 	{ id: 0, label: '', expand: false, },
 	{ id: 1, label: '', expand: false, },
 	{ id: 2, label: '', expand: false, },
@@ -33,14 +31,32 @@ const items = ref()
 const big = ref()
 const expanded = ref<null | number>(null)
 
-const expand = ((ind: number) => {
-	let item = items.value[ind]
-	const state = Flip.getState(item, big.value)
-	console.log(state)
-	expanded.value = ind
-	console.log(state)
+// const expand = ((ind: number) => {
+// 	let item = items.value[ind]
+// 	const state = Flip.getState(item, big.value)
+// 	console.log(state)
+// 	expanded.value = ind
+// 	console.log(state)
+// 	nextTick(() => {
+// 		Flip.from(state, { duration: 0.5, ease: 'power3.in' })
+// 	})
+// })
+
+const squares = ref([])
+onMounted(() => {
+	squares.value = gsap.utils.toArray('.square')
+})
+
+
+const expand = ((n: number) => {
+	const state = Flip.getState(squares.value[n])
+	// apps.map((item) => item.expand = false)
+	// apps[n].expand = true
+
+	expanded.value = n
+
 	nextTick(() => {
-		Flip.from(state, { duration: 0.5, ease: 'power3.in' })
+		Flip.from(state, { absolute: true, duration: 0.5, ease: 'power3.in' })
 	})
 })
 
@@ -51,8 +67,8 @@ const reset = (() => {
 
 <template lang="pug">
 .grid()
-	.item(ref='items' v-if='expanded == null' v-for="e in apps" :key="e.id" @click='expand(e.id)') {{ e.id }}
-.itembig(ref='big' v-if='expanded !== null' @click='reset') {{ expanded }}
+	.item.square(ref='items' v-for="e in apps" :key="e.id" @click='expand(e.id)') {{ e.id }}
+.itembig.square(ref='big' v-if='expanded !== null' @click='reset') {{ expanded }}
 </template>
 
 <style scoped lang="scss">
@@ -60,7 +76,6 @@ const reset = (() => {
 	width: 200px;
 	height: 200px;
 	background: #fff;
-	height: var(--width);
 	border-radius: .5rem;
 	cursor: pointer;
 
@@ -68,6 +83,18 @@ const reset = (() => {
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	}
+
+	// &.expand {
+	// 	width: 600px;
+	// 	height: 600px;
+	// 	position: fixed;
+	// 	top: 1rem;
+	// 	left: 50%;
+	// 	transform: translateX(-300px);
+	// 	border: 1px solid #ccc;
+	// 	box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+	// 	z-index: 10;
+	// }
 }
 
 .grid {
