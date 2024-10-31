@@ -9,8 +9,6 @@ onMounted(() => {
 	gsap.fromTo('.item', {
 		y: 100,
 		opacity: 0,
-		stagger: 0.2,
-		delay: .5
 	}, {
 		y: 0,
 		opacity: 1,
@@ -20,12 +18,12 @@ onMounted(() => {
 })
 
 const apps = reactive([
-	{ id: 0, label: '', expand: false, },
-	{ id: 1, label: '', expand: false, },
-	{ id: 2, label: '', expand: false, },
-	{ id: 3, label: '', expand: false, },
-	{ id: 4, label: '', expand: false, },
-	{ id: 5, label: '', expand: false, },
+	{ id: 0, label: 'Приложение 1', expand: false, },
+	{ id: 1, label: 'Приложение 2', expand: false, },
+	{ id: 2, label: 'Приложение 3', expand: false, },
+	{ id: 3, label: 'Приложение 4', expand: false, },
+	{ id: 4, label: 'Приложение 5', expand: false, },
+	{ id: 5, label: 'Приложение 6', expand: false, },
 ])
 
 const expanded = ref<boolean>(false)
@@ -36,39 +34,73 @@ const calcClass = ((item: any) => {
 	else return ''
 })
 
-const expand = async (item: any) => {
+const expand = (item: any) => {
 	const state = Flip.getState('.item')
 
 	expanded.value = !expanded.value
 	item.expand = !item.expand
 
-	await nextTick(() => {
+	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
-			ease: "power1.inOut",
+			ease: 'power3.inOut',
 			absolute: true,
 			onEnter: (elements) => gsap.fromTo(elements, { opacity: 0, }, { opacity: 1, duration: 0.6, ease: "linear", delay: .2 }),
 			onLeave: (elements) => gsap.fromTo(elements, { opacity: 1, }, { opacity: 0, duration: 0.2, ease: "linear", }),
 		})
 	})
+	if (expanded.value) {
+		nextTick(() => {
+			gsap.from('.desc', {
+				y: 100,
+				opacity: 0,
+				duration: 0.3,
+				delay: .3,
+			})
+		})
+	}
 }
 
 </script>
 
 <template lang="pug">
 .grid
-	.item(v-for="item in apps" :key="item.id" @click='expand(item)' :class="calcClass(item)") {{ item.id }}
+	.item(v-for="item in apps" :key="item.id" @click='expand(item)' :class="calcClass(item)")
+		.hd {{ item.label }}
+		.bl
+			div
+				.desc(v-if='expanded') Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
+				.desc(v-if='expanded') Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
+			q-card-actions.desc(v-if='expanded' align="right")
+				q-btn(unelevated color="primary" label="Ассистент" @click.stop="") 
+				q-space
+				q-btn(flat color="primary" label="Отмена" @click="") 
+				q-btn(unelevated color="primary" label="Настройки" @click.stop="") 
 
 </template>
 
 <style scoped lang="scss">
+.bl {
+	height: calc(100% - 1rem);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+	overflow: hidden;
+}
+
+.desc {
+	margin-top: 1rem;
+	font-size: .9rem;
+}
+
 .item {
 	width: 200px;
 	height: 200px;
 	background: #fff;
 	border-radius: .5rem;
 	cursor: pointer;
-	transition: opacity .2s;
+	padding: 1rem;
 
 	&:hover {
 		border: 1px solid #ccc;
@@ -78,7 +110,7 @@ const expand = async (item: any) => {
 	&.active {
 		position: fixed;
 		height: 70vh;
-		width: 800px;
+		width: 80%;
 		margin: 0 auto;
 		left: 0;
 		right: 0;
@@ -115,8 +147,6 @@ const expand = async (item: any) => {
 	--width: 200px;
 	margin: 1rem;
 	display: grid;
-	// grid-auto-flow: row;
-	// grid-template-columns: repeat(auto-fill, var(--width));
 	grid-template-columns: repeat(5, var(--width));
 	gap: 1rem;
 }
