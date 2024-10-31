@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick, reactive } from 'vue'
+import { ref, onMounted, nextTick, reactive, computed } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 
@@ -36,12 +36,16 @@ onMounted(() => {
 	squares.value = gsap.utils.toArray('.square')
 })
 
+const calcVis = ((item: any) => {
+	if (expanded.value == false) return true
+	if (expanded.value == true && item.expand == true) return true
+	return false
+})
 
 const expand = async (item: any) => {
 	const state = Flip.getState('.item')
-
+	expanded.value = true
 	item.expand = true
-
 	await nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
@@ -60,7 +64,8 @@ const reset = (() => {
 
 <template lang="pug">
 .grid
-	.item(v-for="item in apps" :key="item.id" @click='expand(item)' :class="{ active: item.expand }" ) {{ item.id }}
+	template(v-for="item in apps" :key="item.id")
+		.item(v-if='calcVis(item)'  @click='expand(item)' :class="{ active: item.expand }" ) {{ item.id }}
 
 </template>
 
