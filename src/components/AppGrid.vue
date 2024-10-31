@@ -2,6 +2,9 @@
 import { ref, onMounted, nextTick, reactive, } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
+import { useRouter, } from 'vue-router'
+
+const router = useRouter()
 
 gsap.registerPlugin(Flip)
 
@@ -61,6 +64,9 @@ const expand = (item: any) => {
 	}
 }
 
+const assis = (() => {
+	router.push('/assistent')
+})
 </script>
 
 <template lang="pug">
@@ -72,7 +78,7 @@ const expand = (item: any) => {
 				.desc(v-if='expanded') Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
 				.desc(v-if='expanded') Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
 			q-card-actions.desc(v-if='expanded' align="right")
-				q-btn(unelevated color="primary" label="Ассистент" @click.stop="") 
+				q-btn(unelevated color="primary" label="Ассистент" @click.stop="assis") 
 				q-space
 				q-btn(flat color="primary" label="Отмена" @click="") 
 				q-btn(unelevated color="primary" label="Настройки" @click.stop="") 
