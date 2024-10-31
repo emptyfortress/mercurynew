@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick, reactive, computed } from 'vue'
+import { ref, onMounted, nextTick, reactive, } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 
 gsap.registerPlugin(Flip)
 
-// onMounted(() => {
-// 	squares.value = gsap.utils.toArray('.item')
-// })
-
-// onMounted(() => {
-// 	gsap.from('.item', {
-// 		y: 100,
-// 		opacity: 0,
-// 		stagger: 0.2,
-// 		delay: .5
-// 	})
-// })
+onMounted(() => {
+	gsap.fromTo('.item', {
+		y: 100,
+		opacity: 0,
+		stagger: 0.2,
+		delay: .5
+	}, {
+		y: 0,
+		opacity: 1,
+		stagger: 0.2,
+		delay: .5
+	})
+})
 
 const apps = reactive([
 	{ id: 0, label: '', expand: false, },
@@ -27,45 +28,33 @@ const apps = reactive([
 	{ id: 5, label: '', expand: false, },
 ])
 
-const items = ref()
-const big = ref()
 const expanded = ref<boolean>(false)
 
-const squares = ref([])
-onMounted(() => {
-	squares.value = gsap.utils.toArray('.square')
-})
-
-const calcVis = ((item: any) => {
-	if (expanded.value == false) return true
-	if (expanded.value == true && item.expand == true) return true
-	return false
+const calcClass = ((item: any) => {
+	if (expanded.value == true && item.expand == true) return 'active'
+	if (expanded.value == true && item.expand == false) return 'inactive'
+	else return ''
 })
 
 const expand = async (item: any) => {
 	const state = Flip.getState('.item')
-	expanded.value = true
-	item.expand = true
+
+	expanded.value = !expanded.value
+	item.expand = !item.expand
+
 	await nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
-			fade: true,
-			absolute: true,
-			toggleClass: "flipping",
 			ease: "power1.inOut"
 		})
 	})
 }
 
-const reset = (() => {
-	expanded.value = false
-})
 </script>
 
 <template lang="pug">
 .grid
-	template(v-for="item in apps" :key="item.id")
-		.item(v-if='calcVis(item)'  @click='expand(item)' :class="{ active: item.expand }" ) {{ item.id }}
+	.item(v-for="item in apps" :key="item.id" @click='expand(item)' :class="calcClass(item)") {{ item.id }}
 
 </template>
 
@@ -76,6 +65,7 @@ const reset = (() => {
 	background: #fff;
 	border-radius: .5rem;
 	cursor: pointer;
+	transition: opacity .2s;
 
 	&:hover {
 		border: 1px solid #ccc;
@@ -84,12 +74,17 @@ const reset = (() => {
 
 	&.active {
 		position: fixed;
-		// left: 50%;
 		height: 70vh;
 		width: 600px;
 		margin: 0 auto;
 		left: 0;
 		right: 0;
+	}
+
+	&.inactive {
+		opacity: 0;
+		user-select: none;
+		display: none;
 	}
 }
 
@@ -111,10 +106,11 @@ const reset = (() => {
 	}
 }
 
-.item,
-.item.flipping {
-	visibility: visible;
-}
+// .item,
+// .item.flipping {
+// 	visibility: visible;
+// 	z-index: 7;
+// }
 
 .grid {
 	--width: 200px;
