@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick, reactive, } from 'vue'
+import { ref, onMounted, nextTick, reactive, onBeforeUnmount, } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useRouter, } from 'vue-router'
+import { useFlip } from '@/stores/flip'
 
 const router = useRouter()
 
@@ -67,6 +68,36 @@ const expand = (item: any) => {
 const assis = (() => {
 	router.push('/assistent')
 })
+
+// page flip *****************************
+const flip = useFlip()
+
+onBeforeUnmount(() => {
+	console.log('unmount')
+
+	const elemToFlip = document.querySelector('[data-flip-id]');
+	console.log(elemToFlip)
+	if (elemToFlip) {
+		let tmp = Flip.getState(elemToFlip);
+		flip.setLastState(tmp)
+	}
+})
+
+onMounted(() => {
+	console.log('mounted')
+
+	const elemToFlip = document.querySelector('[data-flip-id]');
+	if (!!elemToFlip && !!flip.lastState) {
+		Flip.from(flip.lastState, {
+			targets: elemToFlip,
+			duration: 3
+			// other Flip properties
+		});
+	}
+
+	// lastState.value = null;
+	flip.setLastState(null)
+})
 </script>
 
 <template lang="pug">
@@ -78,7 +109,7 @@ const assis = (() => {
 				.desc(v-if='expanded') Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
 				.desc(v-if='expanded') Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
 			q-card-actions.desc(v-if='expanded' align="right")
-				q-btn(unelevated color="primary" label="Ассистент" @click.stop="assis") 
+				q-btn(unelevated color="primary" label="Ассистент" @click.stop="assis" data-flip-id='page') 
 				q-space
 				q-btn(flat color="primary" label="Отмена" @click="") 
 				q-btn(unelevated color="primary" label="Настройки" @click.stop="") 

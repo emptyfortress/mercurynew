@@ -5,7 +5,6 @@ import AppGrid from '@/components/AppGrid.vue'
 import { myApps } from '@/stores/tree'
 
 const splitterModel = ref(20)
-const el = ref(null)
 
 </script>
 
@@ -15,7 +14,7 @@ q-page(padding)
 		h5.text-center Мои приложения
 		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]")
 			template(v-slot:before)
-				.blo(ref="el")
+				.blo
 					q-scroll-area.list
 						BaseTree(:treeData="myApps")
 
@@ -31,7 +30,6 @@ q-page(padding)
 	margin-right: 1rem;
 	height: calc(100vh - 150px);
 	position: relative;
-	// background: pink;
 }
 
 .list {
@@ -39,8 +37,7 @@ q-page(padding)
 }
 
 .container {
-	max-width: 1400px;
+	// max-width: 1400px;
 	margin: 0 auto;
-	// background: #ccc;
 }
 </style>
