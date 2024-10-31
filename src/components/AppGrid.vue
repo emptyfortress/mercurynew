@@ -45,7 +45,10 @@ const expand = async (item: any) => {
 	await nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
-			ease: "power1.inOut"
+			ease: "power1.inOut",
+			absolute: true,
+			onEnter: (elements) => gsap.fromTo(elements, { opacity: 0, }, { opacity: 1, duration: 0.6, ease: "linear", delay: .2 }),
+			onLeave: (elements) => gsap.fromTo(elements, { opacity: 1, }, { opacity: 0, duration: 0.2, ease: "linear", }),
 		})
 	})
 }
@@ -75,10 +78,12 @@ const expand = async (item: any) => {
 	&.active {
 		position: fixed;
 		height: 70vh;
-		width: 600px;
+		width: 800px;
 		margin: 0 auto;
 		left: 0;
 		right: 0;
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	}
 
 	&.inactive {
@@ -105,12 +110,6 @@ const expand = async (item: any) => {
 		z-index: 2;
 	}
 }
-
-// .item,
-// .item.flipping {
-// 	visibility: visible;
-// 	z-index: 7;
-// }
 
 .grid {
 	--width: 200px;
