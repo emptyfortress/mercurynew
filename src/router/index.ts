@@ -7,8 +7,22 @@ const router = createRouter({
 		{
 			path: '/',
 			name: 'home',
-			component: HomeView
+			component: HomeView,
+			// children: [
+			// 	{
+			// 		path: '',
+			// 		name: 'emp',
+			// 		component: () => import('@/components/Empt.vue'),
+			// 	},
+			// 	{
+			// 		path: ':id',
+			// 		name: 'start',
+			// 		component: () => import('@/components/Start.vue'),
+			// 		props: true,
+			// 	},
+			// ],
 		},
+
 		{
 			path: '/assistent',
 			name: 'assistent',

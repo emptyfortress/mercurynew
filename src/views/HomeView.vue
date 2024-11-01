@@ -21,6 +21,7 @@ q-page(padding)
 			template(v-slot:after)
 				.blo
 					q-scroll-area.list
+						// router-view
 						AppGrid
 
 </template>
