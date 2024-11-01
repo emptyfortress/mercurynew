@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, reactive, onBeforeUnmount, } from 'vue'
+import { onBeforeRouteLeave, useRouter, } from 'vue-router'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { useRouter, } from 'vue-router'
 import { useFlip } from '@/stores/flip'
 
 const router = useRouter()
@@ -53,6 +53,7 @@ const expand = (item: any) => {
 			onLeave: (elements) => gsap.fromTo(elements, { opacity: 1, }, { opacity: 0, duration: 0.2, ease: "linear", }),
 		})
 	})
+
 	if (expanded.value) {
 		nextTick(() => {
 			gsap.from('.desc', {
@@ -66,27 +67,25 @@ const expand = (item: any) => {
 }
 
 const assis = (() => {
-	router.push('/assistent')
+	nextTick(() => {
+		router.push('/assistent')
+	})
 })
 
 // page flip *****************************
 const flip = useFlip()
 
-onBeforeUnmount(() => {
-	console.log('unmount')
-
-	const elemToFlip = document.querySelector('[data-flip-id]');
-	console.log(elemToFlip)
+onBeforeRouteLeave(() => {
+	const elemToFlip = document.querySelector('[data-flip-id]')
 	if (elemToFlip) {
-		let tmp = Flip.getState(elemToFlip);
+		let tmp = Flip.getState(elemToFlip)
 		flip.setLastState(tmp)
 	}
 })
 
-onMounted(() => {
-	console.log('mounted')
 
-	const elemToFlip = document.querySelector('[data-flip-id]');
+onMounted(() => {
+	const elemToFlip = document.querySelector('[data-flip-id]')
 	if (!!elemToFlip && !!flip.lastState) {
 		Flip.from(flip.lastState, {
 			targets: elemToFlip,
@@ -105,11 +104,12 @@ onMounted(() => {
 	.item(v-for="item in apps" :key="item.id" @click='expand(item)' :class="calcClass(item)")
 		.hd {{ item.label }}
 		.bl
-			div
-				.desc(v-if='expanded') Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
-				.desc(v-if='expanded') Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
-			q-card-actions.desc(v-if='expanded' align="right")
-				q-btn(unelevated color="primary" label="Ассистент" @click.stop="assis" data-flip-id='page') 
+			div(v-if='expanded')
+				.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
+				.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
+			q-card-actions(v-if='expanded')
+				RouterLink.link(@click.stop='' to='/assistent') lkajslk
+				// q-btn(unelevated color="primary" label="Ассистент" @click.stop="assis") 
 				q-space
 				q-btn(flat color="primary" label="Отмена" @click="") 
 				q-btn(unelevated color="primary" label="Настройки" @click.stop="") 
@@ -117,6 +117,23 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+.btn {
+	display: block;
+	padding: 3px 15px;
+	background: pink;
+}
+
+.link {
+	// position: absolute;
+	// bottom: 2rem;
+	// right: 2rem;
+	// background: #fff;
+	display: block;
+	background: pink;
+	width: 124px;
+	height: 124px;
+}
+
 .bl {
 	height: calc(100% - 1rem);
 	display: flex;
@@ -145,9 +162,10 @@ onMounted(() => {
 	}
 
 	&.active {
-		position: fixed;
+		// position: fixed;
 		height: 70vh;
-		width: 80%;
+		// width: 80%;
+		width: 900px;
 		margin: 0 auto;
 		left: 0;
 		right: 0;

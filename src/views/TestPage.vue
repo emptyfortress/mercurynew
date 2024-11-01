@@ -9,15 +9,15 @@ gsap.registerPlugin(Flip)
 const flip = useFlip()
 
 onBeforeUnmount(() => {
-	const elemToFlip = document.querySelector('[data-flip-id]');
+	const elemToFlip = document.querySelector('[data-flip-id]')
 	if (elemToFlip) {
-		let tmp = Flip.getState(elemToFlip);
+		let tmp = Flip.getState(elemToFlip)
 		flip.setLastState(tmp)
 	}
 })
 
 onMounted(() => {
-	const elemToFlip = document.querySelector('[data-flip-id]');
+	const elemToFlip = document.querySelector('[data-flip-id]')
 	if (!!elemToFlip && !!flip.lastState) {
 		Flip.from(flip.lastState, {
 			targets: elemToFlip,

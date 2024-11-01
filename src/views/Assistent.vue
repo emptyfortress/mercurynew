@@ -9,8 +9,6 @@ gsap.registerPlugin(Flip)
 const flip = useFlip()
 
 onBeforeUnmount(() => {
-	console.log('unmount assistent')
-
 	const elemToFlip = document.querySelector('[data-flip-id]')
 	if (elemToFlip) {
 		let tmp = Flip.getState(elemToFlip)
@@ -19,24 +17,29 @@ onBeforeUnmount(() => {
 })
 
 onMounted(() => {
-	console.log('assistent mounted')
-
 	const elemToFlip = document.querySelector('[data-flip-id]')
 	if (elemToFlip && flip.lastState) {
 		Flip.from(flip.lastState, {
 			targets: elemToFlip,
+			duration: .3,
+			toggleClass: 'test'
 			// other Flip properties
 		});
 	}
-
-	// lastState.value = null;
 	flip.setLastState(null)
+	setTimeout(() => {
+		gsap.to('.q-page', {
+			backgroundColor: 'transparent',
+			duration: 2,
+		})
+	}, 500)
 })
 </script>
 
 <template lang="pug">
-q-page(padding data-flip-id='page')
+q-page(data-flip-id="img" padding)
 	h2 Assistent
+	router-link(to='/') back
 </template>
 
 <style scoped lang="scss">

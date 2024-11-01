@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useFlip } from '@/stores/flip'
@@ -34,8 +34,6 @@ onMounted(() => {
 		})
 	}, 500)
 })
-
-const color = ref('pink')
 
 </script>
 
