@@ -44,6 +44,7 @@ q-page(data-flip-id="img" padding)
 	router-link(to='/') back
 
 	div {{ app.type }}
+	div {{ app.text }}
 	pre(v-if="app.type == 0") {{ app.children }}
 </template>
 
