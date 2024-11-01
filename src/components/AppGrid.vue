@@ -108,11 +108,12 @@ onMounted(() => {
 				.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
 				.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
 			q-card-actions(v-if='expanded')
-				RouterLink.link(@click.stop='' to='/assistent') lkajslk
+				RouterLink.link(@click.stop='' to='/assistent' data-flip-id='img') lkajslk
 				// q-btn(unelevated color="primary" label="Ассистент" @click.stop="assis") 
 				q-space
 				q-btn(flat color="primary" label="Отмена" @click="") 
 				q-btn(unelevated color="primary" label="Настройки" @click.stop="") 
+		// RouterLink.link(@click.stop='' to='/assistent' data-flip-id='img') lkajslk
 
 </template>
 
