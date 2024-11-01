@@ -3,10 +3,12 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useFlip } from '@/stores/flip'
+import { useStorage } from '@vueuse/core'
 
 gsap.registerPlugin(Flip)
 
 const flip = useFlip()
+const app = useStorage('app', localStorage)
 
 onBeforeUnmount(() => {
 	const elemToFlip = document.querySelector('[data-flip-id]')
@@ -40,6 +42,9 @@ onMounted(() => {
 q-page(data-flip-id="img" padding)
 	h2 Assistent
 	router-link(to='/') back
+
+	div {{ app.type }}
+	pre(v-if="app.type == 0") {{ app.children }}
 </template>
 
 <style scoped lang="scss">

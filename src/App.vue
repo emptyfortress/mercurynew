@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 
 const leftDrawer = ref(false)
 const toggleLeftDrawer = (() => {
@@ -10,13 +10,14 @@ const rightDrawer = ref(false)
 const toggleRightDrawer = (() => {
 	rightDrawer.value = !rightDrawer.value
 })
+
 </script>
 
 <template lang="pug">
 q-layout(view='hHh LpR fFf')
 	q-header.bg-primary.text-white(elevated)
 		q-toolbar
-			q-btn(dense flat round icon='menu' @click='toggleLeftDrawer')
+			q-btn(dense flat round icon='mdi-menu' @click='toggleLeftDrawer')
 			q-space
 			// q-toolbar-title
 				q-avatar

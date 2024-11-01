@@ -8,6 +8,8 @@ import '@he-tree/vue/style/default.css'
 import { useRouter } from 'vue-router'
 // import CreateDialog from '@/components/CreateDialog.vue'
 // import { useForms } from '@/stores/forms'
+import { useStorage } from '@vueuse/core'
+import { getNodeFromTree } from '@/utils/utils'
 
 const props = defineProps<{
 	treeData: NodeData[]
@@ -70,22 +72,14 @@ watchEffect(() => {
 
 const tree = ref()
 
+const app = useStorage('app', props.treeData[0])
+
 const select = (n: Stat) => {
 	tree.value.statsFlat.map((item: Stat) => (item.data.selected = false))
 	n.data.selected = true
-	// store.setCurrentNode(n)
-
-	// console.log(n.data)
-	localStorage.setItem('app', JSON.stringify(n.data))
-	// localStorage.setItem('appname', n.data.text)
-	// myform.setCurrentBO(null)
-
+	app.value = { ...n.data }
 	router.push(n.data.text)
 }
-
-onMounted(() => {
-	tree.value.statsFlat.map((item: Stat) => (item.data.selected = false))
-})
 
 const toggle = (stat: any) => {
 	stat.open = !stat.open
@@ -149,14 +143,13 @@ const isDrop = (e: any) => {
 	else return false
 }
 
-// const initial = (stat: any) => {
-// 	if (props.reset == false) {
-// 		return stat
-// 	} else {
-// 		stat.data.selected = false
-// 		return stat
-// 	}
-// }
+const initial = (stat: any) => {
+	stat.data.selected = false
+	if (stat.data.text === app.value.text) {
+		stat.data.selected = true
+	}
+	return stat
+}
 </script>
 
 <template lang="pug">
@@ -177,10 +170,11 @@ const isDrop = (e: any) => {
 		:treeLineOffset="18"
 		:indent="30"
 		:eachDroppable="isDrop"
+		:statHandler='initial'
 		:watermark="false")
 		template(#default="{ node, stat }")
-			// .node(@click="select(stat)" :class="{ 'selected': stat.data.selected }")
-			.node(@click="" :class="{ 'selected': stat.data.selected }")
+			// .node(@click="" :class="{ 'selected': stat.data.selected }")
+			.node(@click="select(stat)" :class="{ 'selected': stat.data.selected }")
 				q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
 				q-icon(name="mdi-folder-outline" v-if="stat.data.type === 0").fold
 				span {{ node.text }}

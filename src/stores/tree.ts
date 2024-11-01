@@ -5,7 +5,7 @@ const myApps = [
 		descr: '',
 		hidden: false,
 		type: 0,
-		selected: false,
+		selected: true,
 		children: [
 			{
 				id: 3,

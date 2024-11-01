@@ -7,20 +7,16 @@ const router = createRouter({
 		{
 			path: '/',
 			name: 'home',
+			redirect: '/Мои приложения',
 			component: HomeView,
-			// children: [
-			// 	{
-			// 		path: '',
-			// 		name: 'emp',
-			// 		component: () => import('@/components/Empt.vue'),
-			// 	},
-			// 	{
-			// 		path: ':id',
-			// 		name: 'start',
-			// 		component: () => import('@/components/Start.vue'),
-			// 		props: true,
-			// 	},
-			// ],
+			children: [
+				{
+					path: ':id',
+					name: 'start',
+					component: () => import('@/components/Start.vue'),
+					props: true,
+				},
+			],
 		},
 
 		{
