@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterView } from 'vue-router'
+import { useStorage } from '@vueuse/core'
 
 const leftDrawer = ref(false)
 const toggleLeftDrawer = (() => {
@@ -11,6 +12,7 @@ const toggleRightDrawer = (() => {
 	rightDrawer.value = !rightDrawer.value
 })
 
+const app = useStorage('app', localStorage)
 </script>
 
 <template lang="pug">
@@ -18,11 +20,8 @@ q-layout(view='hHh LpR fFf')
 	q-header.bg-primary.text-white(elevated)
 		q-toolbar
 			q-btn(dense flat round icon='mdi-menu' @click='toggleLeftDrawer')
-			q-space
-			// q-toolbar-title
-				q-avatar
-					img(src='https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg')
-				| Title
+			q-toolbar-title
+				|{{ app.text }}
 			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
 
 	q-drawer(v-model='leftDrawer' side='left' overlay bordered behavior="desktop")

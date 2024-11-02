@@ -11,7 +11,6 @@ const app = useStorage('app', localStorage)
 
 <template lang="pug">
 div
-	h2 Start
 	div {{ route.params.id }}
 
 	div {{ app.type }}

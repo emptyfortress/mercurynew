@@ -2,14 +2,12 @@
 import { ref, reactive, computed, watch, watchEffect, onMounted, nextTick } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
-// import { useStore } from '@/stores/store'
 // import WordHighlighter from 'vue-word-highlighter'
 // import DirMenu from '@/components/DirMenu.vue'
 import { useRouter } from 'vue-router'
 // import CreateDialog from '@/components/CreateDialog.vue'
 // import { useForms } from '@/stores/forms'
 import { useStorage } from '@vueuse/core'
-import { getNodeFromTree } from '@/utils/utils'
 
 const props = defineProps<{
 	treeData: NodeData[]
@@ -49,26 +47,26 @@ watch(query, (newValue) => {
 	} else clearFilter()
 })
 
-watchEffect(() => {
-	// if (store.del === true) {
-	// 	tree.value.remove(store.currentNode)
-	// 	store.setCurrentNode(null)
-	// 	store.del = false
-	// }
-	// if (store.dub === true) {
-	// 	let temp = {
-	// 		text: store.currentNode!.data.text + '-copy',
-	// 		descr: store.currentNode!.data.descr,
-	// 		hidden: false,
-	// 		type: 1,
-	// 		selected: true,
-	// 	}
-	// 	tree.value.add(temp, store.currentNode!.parent)
-	// 	let one = tree.value.getStat(temp)
-	// 	select(one)
-	// 	store.dub = false
-	// }
-})
+// watchEffect(() => {
+// 	if (store.del === true) {
+// 		tree.value.remove(store.currentNode)
+// 		store.setCurrentNode(null)
+// 		store.del = false
+// 	}
+// 	if (store.dub === true) {
+// 		let temp = {
+// 			text: store.currentNode!.data.text + '-copy',
+// 			descr: store.currentNode!.data.descr,
+// 			hidden: false,
+// 			type: 1,
+// 			selected: true,
+// 		}
+// 		tree.value.add(temp, store.currentNode!.parent)
+// 		let one = tree.value.getStat(temp)
+// 		select(one)
+// 		store.dub = false
+// 	}
+// })
 
 const tree = ref()
 
@@ -85,58 +83,58 @@ const toggle = (stat: any) => {
 	stat.open = !stat.open
 }
 
-const add = (e: NodeData) => {
-	// if (store.currentNode == null) {
-	// 	tree.value.add(e, tree.value.rootChildren[0], tree.value.rootChildren[0].children.length)
-	// } else {
-	// 	const tmp = tree.value.getStat(store.currentNode?.data)
-	// 	if (store.currentNode?.data.type == 0) {
-	// 		tree.value.add(e, tmp)
-	// 	} else tree.value.add(e, tmp.parent)
-	// 	select(tree.value.getStat(e))
-	// }
-}
+// const add = (e: NodeData) => {
+// 	if (store.currentNode == null) {
+// 		tree.value.add(e, tree.value.rootChildren[0], tree.value.rootChildren[0].children.length)
+// 	} else {
+// 		const tmp = tree.value.getStat(store.currentNode?.data)
+// 		if (store.currentNode?.data.type == 0) {
+// 			tree.value.add(e, tmp)
+// 		} else tree.value.add(e, tmp.parent)
+// 		select(tree.value.getStat(e))
+// 	}
+// }
 
-const addFromMenu = (e: Stat) => {
-	// store.setCurrentNode(e)
-	dialog.value = true
-}
+// const addFromMenu = (e: Stat) => {
+// 	store.setCurrentNode(e)
+// 	dialog.value = true
+// }
 
-const addFolder = (e: Stat) => {
-	if (e.data.type === 0) {
-		tree.value.add({ text: 'New folder', hidden: false, type: 0 }, e)
-	} else {
-		tree.value.add({ text: 'New folder', hidden: false, type: 0 }, e.parent)
-	}
-}
+// const addFolder = (e: Stat) => {
+// 	if (e.data.type === 0) {
+// 		tree.value.add({ text: 'New folder', hidden: false, type: 0 }, e)
+// 	} else {
+// 		tree.value.add({ text: 'New folder', hidden: false, type: 0 }, e.parent)
+// 	}
+// }
 
-const remove = (e: Stat) => {
-	// tree.value.remove(e)
-	// if (e === store.currentNode) {
-	// 	store.setCurrentNode(null)
-	// }
-}
+// const remove = (e: Stat) => {
+// 	tree.value.remove(e)
+// 	if (e === store.currentNode) {
+// 		store.setCurrentNode(null)
+// 	}
+// }
 
-const duble = (e: Stat) => {
-	let temp = {
-		text: e.data.text + '-copy',
-		descr: e.data.descr,
-		hidden: false,
-		type: 1,
-		version: '0.0.0',
-	}
-	tree.value.add(temp, e.parent)
-	select(tree.value.getStat(temp))
-}
+// const duble = (e: Stat) => {
+// 	let temp = {
+// 		text: e.data.text + '-copy',
+// 		descr: e.data.descr,
+// 		hidden: false,
+// 		type: 1,
+// 		version: '0.0.0',
+// 	}
+// 	tree.value.add(temp, e.parent)
+// 	select(tree.value.getStat(temp))
+// }
 
-const edit = (e: Stat) => {
-	e.data.edit = true
-}
+// const edit = (e: Stat) => {
+// 	e.data.edit = true
+// }
 
-const setText = (e: Stat, ev: any) => {
-	e.data.text = ev.target.value
-	e.data.edit = false
-}
+// const setText = (e: Stat, ev: any) => {
+// 	e.data.text = ev.target.value
+// 	e.data.edit = false
+// }
 
 const isDrop = (e: any) => {
 	if (e.data.type == 0) return true
@@ -173,7 +171,6 @@ const initial = (stat: any) => {
 		:statHandler='initial'
 		:watermark="false")
 		template(#default="{ node, stat }")
-			// .node(@click="" :class="{ 'selected': stat.data.selected }")
 			.node(@click="select(stat)" :class="{ 'selected': stat.data.selected }")
 				q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
 				q-icon(name="mdi-folder-outline" v-if="stat.data.type === 0").fold
@@ -200,14 +197,14 @@ const initial = (stat: any) => {
 
 <style scoped lang="scss">
 .tr {
-	height: calc(100vh - 180px);
+	height: calc(100vh - 100px);
 	position: relative;
 }
 
 .fab {
 	position: absolute;
-	bottom: 1rem;
-	right: 1rem;
+	bottom: .5rem;
+	right: 0;
 }
 
 .node {

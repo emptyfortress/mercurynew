@@ -13,8 +13,7 @@ const app = useStorage('app', localStorage)
 <template lang="pug">
 q-page(padding)
 	.container
-		h5.text-center {{ app.text }}
-		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]")
+		q-splitter(v-model="splitterModel" :limits="[0, 100]")
 			template(v-slot:before)
 				.blo
 					q-scroll-area.list
@@ -31,7 +30,7 @@ q-page(padding)
 <style scoped lang='scss'>
 .blo {
 	margin-right: 1rem;
-	height: calc(100vh - 150px);
+	height: calc(100vh - 100px);
 	position: relative;
 }
 
