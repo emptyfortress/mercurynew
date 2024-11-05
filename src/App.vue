@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterView } from 'vue-router'
+import { useRouter, RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
+import { myApps } from '@/stores/tree'
 
 const leftDrawer = ref(false)
 const toggleLeftDrawer = (() => {
@@ -13,6 +14,16 @@ const toggleRightDrawer = (() => {
 })
 
 const app = useStorage('app', localStorage)
+
+const router = useRouter()
+const refresh = (() => {
+	router.push('/')
+	app.value.id = myApps[0].id
+	app.value.text = myApps[0].text
+	app.value.descr = myApps[0].descr
+	app.value.type = myApps[0].type
+	app.value.selected = myApps[0].selected
+})
 </script>
 
 <template lang="pug">
@@ -20,8 +31,10 @@ q-layout(view='hHh LpR fFf')
 	q-header.bg-primary.text-white(elevated)
 		q-toolbar
 			q-btn(dense flat round icon='mdi-menu' @click='toggleLeftDrawer')
+			q-btn(dense flat round icon='mdi-home-roof' @click='refresh')
 			q-toolbar-title
-				|{{ app.text }}
+				|Конструктор приложений
+				// |{{ app.text }}
 			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
 
 	q-drawer(v-model='leftDrawer' side='left' overlay bordered behavior="desktop")

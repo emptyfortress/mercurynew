@@ -75,8 +75,8 @@ const app = useStorage('app', props.treeData[0])
 const select = (n: Stat) => {
 	tree.value.statsFlat.map((item: Stat) => (item.data.selected = false))
 	n.data.selected = true
-	app.value = { ...n.data }
-	router.push(n.data.text)
+	// app.value = { ...n.data }
+	// router.push(n.data.text)
 }
 
 const toggle = (stat: any) => {
@@ -191,13 +191,14 @@ const initial = (stat: any) => {
 					autofocus counter
 					@keyup.enter="setText(stat, $event)"
 					)
-	q-btn.fab(round icon="mdi-plus" color="primary" @click="dialog = !dialog")
+	// q-btn.fab(round icon="mdi-plus" color="primary" @click="dialog = !dialog")
 	// CreateDialog(v-model="dialog" @create="add")
 </template>
 
 <style scoped lang="scss">
 .tr {
-	height: calc(100vh - 100px);
+	// height: calc(100vh - 100px);
+	min-height: 400px;
 	position: relative;
 }
 
