@@ -13,7 +13,7 @@ const app = useStorage('app', localStorage)
 <template lang="pug">
 .start
 	AppGrid(v-if='app.id == 0')
-	.fuck(v-else) fuck
+	.fuck(v-else) {{ route.params.id }}
 </template>
 
 <style scoped lang="scss">
