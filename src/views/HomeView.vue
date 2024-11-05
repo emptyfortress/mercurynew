@@ -1,59 +1,48 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import BaseTree from '@/components/BaseTree.vue'
 // import AppGrid from '@/components/AppGrid.vue'
 import { myApps } from '@/stores/tree'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
-import { gsap } from 'gsap'
-// import { Flip } from 'gsap/Flip'
+import { useMotions } from '@vueuse/motion'
+// import { directive as motion } from '@vueuse/motion'
 
-// gsap.registerPlugin(Flip)
+
 
 const router = useRouter()
 const route = useRoute()
 
-const splitterModel = ref(20)
 const app = useStorage('app', localStorage)
 
 const showAdd = ref(false)
 
 const add = (() => {
-	showAdd.value = true
-	gsap.to('.card', {
-		x: -200,
-		width: 300,
-		ease: 'power3.out',
-		duration: 0.4,
-	})
-	gsap.to('.fab', {
-		width: 400,
-		height: 300,
-		x: 350,
-		borderRadius: '8px',
-		ease: 'power3.out',
-		duration: 0.3,
-		delay: .4,
-	})
-	gsap.fromTo('.del', {
-		y: 50,
-		opacity: 0,
-	}, {
-		y: 0,
-		opacity: 1,
-		ease: 'power3.out',
-		duration: 0.2,
-		delay: .8,
-	})
+	showAdd.value = !showAdd.value
 })
+
+const target = ref()
+
+const motions = computed(() => {
+	return useMotions()
+})
+
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.card
 		.fab(@click="add")
-			q-card-section.del(v-if='showAdd')
-				.hd Новое приложение
+			transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
+				q-card-section(ref="target"
+					v-if='showAdd'
+					v-motion='"cube"'
+					:initial="{ opacity: 0, y: 100 }"
+					:enter="{ opacity: 1, y: 0, scale: 1, }"
+					:leave="{ opacity: 0, y: 100 }"
+					)
+					.hd Новое приложение
+
 		q-card-section
 			.hd Приложения
 		q-card-section

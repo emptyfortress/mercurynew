@@ -8,6 +8,7 @@ import '@quasar/extras/mdi-v7/mdi-v7.css'
 import 'quasar/src/css/index.sass'
 
 import '@/assets/style/main.scss'
+import { MotionPlugin } from '@vueuse/motion'
 
 import App from './App.vue'
 import router from './router'
@@ -28,5 +29,6 @@ app.use(Quasar, {
 		loadingBar: {}, // settings for LoadingBar Quasar plugin
 	},
 })
+app.use(MotionPlugin)
 
 app.mount('#app')
