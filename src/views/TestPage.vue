@@ -37,9 +37,61 @@ const cube = ref<HTMLElement>()
 const box = ref<HTMLElement>()
 
 
-const { apply: cardAnim } = useMotion(cube, {
-	initial: { scale: 1, x: 0, y: 100, opacity: 0, marginLeft: 0 },
-	enter: { y: 0, opacity: 1, transition: { delay: 1000, } },
+// const cubeVar = {
+// 	initial: { scale: 1, x: 0, y: 100, opacity: 0, marginLeft: 0 },
+// 	enter: {
+// 		opacity: 1,
+// 		y: 0,
+// 		transition: {
+// 			onComplete: () => (fuck.value = 'levitate'),
+// 		},
+// 	},
+// 	moved: { marginLeft: 500 },
+// 	levitate: {
+// 		y: 5,
+// 		transition: {
+// 			duration: 1000,
+// 			repeat: Infinity,
+// 			ease: "easeInOut",
+// 			repeatType: "mirror",
+// 		},
+// 	},
+// 	custom: {
+// 		scale: 1.5,
+// 	},
+// }
+
+// const { variant: fuck, stop } = useMotion(cube, {
+// 	initial: { scale: 1, x: 0, y: 100, opacity: 0, marginLeft: 0 },
+// 	enter: {
+// 		opacity: 1,
+// 		y: 0,
+// 		marginLeft: 0,
+// 		transition: {
+// 			onComplete: () => (fuck.value = 'levitate'),
+// 		},
+// 	},
+// 	levitate: {
+// 		y: 5,
+// 		transition: {
+// 			duration: 1000,
+// 			repeat: Infinity,
+// 			ease: "easeInOut",
+// 			repeatType: "mirror",
+// 		},
+// 	},
+// })
+
+
+const { apply: cardAnim, stop } = useMotion(cube, {
+	enter: {
+		opacity: 1,
+		y: 0,
+		marginLeft: 0,
+		transition: {
+			onComplete: () => cardAnim('levitate'),
+		},
+	},
 	levitate: {
 		y: 5,
 		transition: {
@@ -49,16 +101,16 @@ const { apply: cardAnim } = useMotion(cube, {
 			repeatType: "mirror",
 		},
 	},
-	moved: { marginLeft: 500 },
+	moved: { marginLeft: 500, opacity: 1 },
 	custom: { marginLeft: 0, transition: { delay: 2000, stiffness: 150, damping: 20, mass: .5 } },
 })
 
 const action = async () => {
 	await cardAnim('moved')
 	await cardAnim('custom')
-	await cardAnim('initial')
-	await cardAnim('enter')
+	stop()
 }
+
 </script>
 
 <template lang="pug">
