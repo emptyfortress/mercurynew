@@ -105,9 +105,12 @@ const { apply: cardAnim, stop } = useMotion(cube, {
 	custom: { marginLeft: 0, transition: { delay: 2000, stiffness: 150, damping: 20, mass: .5 } },
 })
 
+const ready = useTimeout(2000)
+
 const action = async () => {
 	await cardAnim('moved')
 	await cardAnim('custom')
+	await promiseTimeout(3000)
 	stop()
 }
 
