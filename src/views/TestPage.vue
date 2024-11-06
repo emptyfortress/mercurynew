@@ -4,6 +4,7 @@ import { ref, onBeforeUnmount, onMounted } from 'vue';
 // import { Flip } from 'gsap/Flip'
 // import { useFlip } from '@/stores/flip'
 import { useMotions, useMotion } from '@vueuse/motion'
+import { promiseTimeout, useTimeout } from '@vueuse/core'
 
 // gsap.registerPlugin(Flip)
 
@@ -35,17 +36,28 @@ import { useMotions, useMotion } from '@vueuse/motion'
 const cube = ref<HTMLElement>()
 const box = ref<HTMLElement>()
 
-const cubeVariants = {
-	initial: { scale: 1 },
-	enter: { scale: 0.5, transition: { delay: 1000, onComplete: () => (variant.value = 'custom') } },
-	custom: { scale: 2, transition: { delay: 1000, onComplete: () => (variant.value = 'initial') } }
-}
 
-const { variant } = useMotion(cube, cubeVariants)
+const { apply: cardAnim } = useMotion(cube, {
+	initial: { scale: 1, x: 0, y: 100, opacity: 0, marginLeft: 0 },
+	enter: { y: 0, opacity: 1, transition: { delay: 1000, } },
+	levitate: {
+		y: 5,
+		transition: {
+			duration: 1000,
+			repeat: Infinity,
+			ease: "easeInOut",
+			repeatType: "mirror",
+		},
+	},
+	moved: { marginLeft: 500 },
+	custom: { marginLeft: 0, transition: { delay: 2000, stiffness: 150, damping: 20, mass: .5 } },
+})
 
 const action = async () => {
-	// await cubeAnim('set1')
-	// await cubeAnim('enter')
+	await cardAnim('moved')
+	await cardAnim('custom')
+	await cardAnim('initial')
+	await cardAnim('enter')
 }
 </script>
 
