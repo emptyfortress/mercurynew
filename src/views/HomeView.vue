@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, } from 'vue'
 import BaseTree from '@/components/BaseTree.vue'
 // import AppGrid from '@/components/AppGrid.vue'
 import { myApps } from '@/stores/tree'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
-import { useMotions } from '@vueuse/motion'
-// import { directive as motion } from '@vueuse/motion'
+import { useMotions, useMotion } from '@vueuse/motion'
 
 
 
@@ -17,29 +16,54 @@ const app = useStorage('app', localStorage)
 
 const showAdd = ref(false)
 
-const add = (() => {
+const motions = useMotions()
+
+const add = async () => {
 	showAdd.value = !showAdd.value
+	await cardAnim('set1')
+	await cardAnim('set2')
+	await cardAnim('initial')
+	// } else await cardAnim({ width: 600 })
+}
+
+
+const card = ref<HTMLElement>()
+
+const { apply: cardAnim } = useMotion(card, {
+	initial: {
+		width: 600,
+		opacity: 1,
+		x: 0,
+	},
+	set1: {
+		width: 300,
+		x: -200,
+		opacity: 1
+	},
+	set2: {
+		width: 300,
+		x: -300,
+		opacity: 0.5,
+		transition: {
+			delay: 1,
+		},
+	}
+
 })
-
-const target = ref()
-
-const motions = computed(() => {
-	return useMotions()
-})
-
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.card
+	.card(ref='card')
+
 		.fab(@click="add")
 			transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-				q-card-section(ref="target"
+				q-card-section(
 					v-if='showAdd'
 					v-motion='"cube"'
 					:initial="{ opacity: 0, y: 100 }"
 					:enter="{ opacity: 1, y: 0, scale: 1, }"
-					:leave="{ opacity: 0, y: 100 }"
+					:leave="{ opacity: 0, y: -100 }"
 					)
 					.hd Новое приложение
 
