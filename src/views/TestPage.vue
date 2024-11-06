@@ -1,87 +1,37 @@
 <script setup lang="ts">
 import { ref, onBeforeUnmount, onMounted } from 'vue';
-// import { gsap } from 'gsap'
-// import { Flip } from 'gsap/Flip'
-// import { useFlip } from '@/stores/flip'
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
+import { useFlip } from '@/stores/flip'
 import { useMotions, useMotion } from '@vueuse/motion'
 import { promiseTimeout, useTimeout } from '@vueuse/core'
 
-// gsap.registerPlugin(Flip)
+gsap.registerPlugin(Flip)
 
-// const flip = useFlip()
+const flip = useFlip()
 
-// onBeforeUnmount(() => {
-// 	const elemToFlip = document.querySelector('[data-flip-id]')
-// 	if (elemToFlip) {
-// 		let tmp = Flip.getState(elemToFlip)
-// 		flip.setLastState(tmp)
-// 	}
-// })
-//
-// onMounted(() => {
-// 	const elemToFlip = document.querySelector('[data-flip-id]')
-// 	if (!!elemToFlip && !!flip.lastState) {
-// 		Flip.from(flip.lastState, {
-// 			targets: elemToFlip,
-// 			duration: .3,
-// 			toggleClass: 'test'
-// 			// other Flip properties
-// 		});
-// 	}
-// 	flip.setLastState(null)
-// })
-//
-//
+onBeforeUnmount(() => {
+	const elemToFlip = document.querySelector('[data-flip-id]')
+	if (elemToFlip) {
+		let tmp = Flip.getState(elemToFlip)
+		flip.setLastState(tmp)
+	}
+})
+
+onMounted(() => {
+	const elemToFlip = document.querySelector('[data-flip-id]')
+	if (!!elemToFlip && !!flip.lastState) {
+		Flip.from(flip.lastState, {
+			targets: elemToFlip,
+			duration: .3,
+			toggleClass: 'test'
+		});
+	}
+	flip.setLastState(null)
+})
 
 const cube = ref<HTMLElement>()
 const box = ref<HTMLElement>()
-
-
-// const cubeVar = {
-// 	initial: { scale: 1, x: 0, y: 100, opacity: 0, marginLeft: 0 },
-// 	enter: {
-// 		opacity: 1,
-// 		y: 0,
-// 		transition: {
-// 			onComplete: () => (fuck.value = 'levitate'),
-// 		},
-// 	},
-// 	moved: { marginLeft: 500 },
-// 	levitate: {
-// 		y: 5,
-// 		transition: {
-// 			duration: 1000,
-// 			repeat: Infinity,
-// 			ease: "easeInOut",
-// 			repeatType: "mirror",
-// 		},
-// 	},
-// 	custom: {
-// 		scale: 1.5,
-// 	},
-// }
-
-// const { variant: fuck, stop } = useMotion(cube, {
-// 	initial: { scale: 1, x: 0, y: 100, opacity: 0, marginLeft: 0 },
-// 	enter: {
-// 		opacity: 1,
-// 		y: 0,
-// 		marginLeft: 0,
-// 		transition: {
-// 			onComplete: () => (fuck.value = 'levitate'),
-// 		},
-// 	},
-// 	levitate: {
-// 		y: 5,
-// 		transition: {
-// 			duration: 1000,
-// 			repeat: Infinity,
-// 			ease: "easeInOut",
-// 			repeatType: "mirror",
-// 		},
-// 	},
-// })
-
 
 const { apply: cardAnim, stop } = useMotion(cube, {
 	enter: {
@@ -104,8 +54,6 @@ const { apply: cardAnim, stop } = useMotion(cube, {
 	moved: { marginLeft: 500, opacity: 1 },
 	custom: { marginLeft: 0, transition: { delay: 2000, stiffness: 150, damping: 20, mass: .5 } },
 })
-
-const ready = useTimeout(2000)
 
 const action = async () => {
 	await cardAnim('moved')
