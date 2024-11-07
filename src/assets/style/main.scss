@@ -17,3 +17,12 @@
 .rel {
   position: relative;
 }
+.cover {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: #c7d8f4;
+	top: 50px;
+	left: -100%;
+	z-index: 2;
+}

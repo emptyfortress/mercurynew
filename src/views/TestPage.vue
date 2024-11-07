@@ -1,34 +1,34 @@
 <script setup lang="ts">
 import { ref, onBeforeUnmount, onMounted } from 'vue';
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
-import { useFlip } from '@/stores/flip'
-import { useMotions, useMotion } from '@vueuse/motion'
-import { promiseTimeout, useTimeout } from '@vueuse/core'
+// import { gsap } from 'gsap'
+// import { Flip } from 'gsap/Flip'
+// import { useFlip } from '@/stores/flip'
+import { useMotion } from '@vueuse/motion'
+import { promiseTimeout } from '@vueuse/core'
 
-gsap.registerPlugin(Flip)
+// gsap.registerPlugin(Flip)
 
-const flip = useFlip()
+// const flip = useFlip()
 
-onBeforeUnmount(() => {
-	const elemToFlip = document.querySelector('[data-flip-id]')
-	if (elemToFlip) {
-		let tmp = Flip.getState(elemToFlip)
-		flip.setLastState(tmp)
-	}
-})
-
-onMounted(() => {
-	const elemToFlip = document.querySelector('[data-flip-id]')
-	if (!!elemToFlip && !!flip.lastState) {
-		Flip.from(flip.lastState, {
-			targets: elemToFlip,
-			duration: .3,
-			toggleClass: 'test'
-		});
-	}
-	flip.setLastState(null)
-})
+// onBeforeUnmount(() => {
+// 	const elemToFlip = document.querySelector('[data-flip-id]')
+// 	if (elemToFlip) {
+// 		let tmp = Flip.getState(elemToFlip)
+// 		flip.setLastState(tmp)
+// 	}
+// })
+//
+// onMounted(() => {
+// 	const elemToFlip = document.querySelector('[data-flip-id]')
+// 	if (!!elemToFlip && !!flip.lastState) {
+// 		Flip.from(flip.lastState, {
+// 			targets: elemToFlip,
+// 			duration: .3,
+// 			toggleClass: 'test'
+// 		});
+// 	}
+// 	flip.setLastState(null)
+// })
 
 const cube = ref<HTMLElement>()
 const box = ref<HTMLElement>()
