@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter, RouterView } from 'vue-router'
-import { useStorage } from '@vueuse/core'
-import { myApps } from '@/stores/tree'
+import { RouterView } from 'vue-router'
+// import { useStorage } from '@vueuse/core'
 import { gsap } from 'gsap'
 
 const leftDrawer = ref(false)
@@ -14,18 +13,7 @@ const toggleRightDrawer = (() => {
 	rightDrawer.value = !rightDrawer.value
 })
 
-const app = useStorage('app', localStorage)
-
-const router = useRouter()
-
-// const refresh = (() => {
-// 	router.push('/')
-// 	app.value.id = myApps[0].id
-// 	app.value.text = myApps[0].text
-// 	app.value.descr = myApps[0].descr
-// 	app.value.type = myApps[0].type
-// 	app.value.selected = myApps[0].
-// })
+// const app = useStorage('app', localStorage)
 
 const leave = async (el: any, done: any) => {
 	let div = document.createElement('div')

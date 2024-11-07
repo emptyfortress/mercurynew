@@ -56,7 +56,8 @@ const { apply: cardAnim } = useMotion(card, {
 q-page(padding)
 	.card(ref='card')
 		.fab(@click="add")
-			transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
+
+			// transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 				q-card-section(
 					v-if='showAdd'
 					v-motion='"cube"'
@@ -67,11 +68,11 @@ q-page(padding)
 					.hd Новое приложение
 
 		q-card-section
-			.hd Приложения
-		q-card-section
 			.row.q-gutter-x-md
 				RouterLink(to='/assistent') Assistent
 				RouterLink(to='/test') Test
+		q-card-section
+			.hd Приложения
 		q-card-section
 			BaseTree(:treeData="myApps")
 
