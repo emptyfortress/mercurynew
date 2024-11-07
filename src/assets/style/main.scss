@@ -26,3 +26,14 @@
 	left: -100%;
 	z-index: 2;
 }
+// close button style
+.q-dialog .q-card {
+	overflow: visible;
+	position: relative;
+	.close {
+		z-index: 100;
+		position: absolute;
+		top: -1.2rem;
+		right: -1.2rem;
+	}
+}

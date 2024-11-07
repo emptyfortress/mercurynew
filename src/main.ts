@@ -13,10 +13,14 @@ import { MotionPlugin } from '@vueuse/motion'
 import App from './App.vue'
 import router from './router'
 
+import { plugin, defaultConfig } from '@formkit/vue'
+import '@formkit/themes/genesis'
+
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+app.use(plugin, defaultConfig)
 
 app.use(Quasar, {
 	plugins: {}, // import Quasar plugins and add here

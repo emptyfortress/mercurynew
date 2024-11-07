@@ -204,6 +204,8 @@ onMounted(() => {
 	margin: 1rem;
 	display: flex;
 	flex-wrap: wrap;
+	// display: grid;
+	// grid-template-columns: repeat(5, var(--width));
 	gap: 1rem;
 }
 </style>
