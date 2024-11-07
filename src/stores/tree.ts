@@ -38,6 +38,75 @@ const myApps = [
 	},
 ]
 
+const flatApp = [
+	{
+		id: '0',
+		label: 'Приложение 0',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		type: 0,
+		group: null
+	},
+	{
+		id: '1',
+		label: 'Приложение 1',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		type: 0,
+		group: null
+	},
+	{
+		id: '2',
+		label: 'Приложение 2',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		type: 0,
+		group: null
+	},
+	{
+		id: '3',
+		label: 'Приложение 3',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		type: 0,
+		group: null
+	},
+	{
+		id: '4',
+		label: 'Приложение 4',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		type: 0,
+		group: null
+	},
+	{
+		id: '5',
+		label: 'Приложение 5',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		type: 0,
+		group: null
+	},
+]
+
 const etaps = [
 	{ id: 0, label: 'Создал заявку', selected: false },
 	{ id: 1, label: 'Согласовать заявку', selected: false },
@@ -69,4 +138,4 @@ const requests = [
 	{ id: 4, label: 'Реестр 4', descr: 'Описание 4', long: '', selected: false },
 ]
 
-export { myApps, etaps, forms, requests }
+export { myApps, etaps, forms, requests, flatApp }

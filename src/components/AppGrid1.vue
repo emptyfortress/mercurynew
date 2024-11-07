@@ -4,6 +4,9 @@ import { onBeforeRouteLeave, useRouter, } from 'vue-router'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useFlip } from '@/stores/flip'
+import { useApps } from '@/stores/apps'
+
+const myapps = useApps()
 
 const router = useRouter()
 
@@ -43,6 +46,8 @@ const expand = (item: any) => {
 
 	expanded.value = !expanded.value
 	item.expand = !item.expand
+	console.log(item)
+
 
 	nextTick(() => {
 		Flip.from(state, {
@@ -101,7 +106,7 @@ onMounted(() => {
 
 <template lang="pug">
 .grid
-	.item(v-for="item in apps" :key="item.id" @click='expand(item)' :class="calcClass(item)")
+	.item(v-for="item in myapps.apps" :key="item.id" @click='expand(item)' :class="calcClass(item)")
 		.hd {{ item.label }}
 		.bl
 			div(v-if='expanded')
@@ -113,7 +118,6 @@ onMounted(() => {
 				q-space
 				q-btn(flat color="primary" label="Отмена" @click="") 
 				q-btn(unelevated color="primary" label="Настройки" @click.stop="") 
-		// RouterLink.link(@click.stop='' to='/assistent' data-flip-id='img') lkajslk
 
 </template>
 

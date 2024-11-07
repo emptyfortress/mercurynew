@@ -5,7 +5,10 @@ import AddDialog from '@/components/AddDialog.vue'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import { useMotions, useMotion } from '@vueuse/motion'
+import { useApps } from '@/stores/apps'
+import { flatApp } from '@/stores/tree'
 
+const myapps = useApps()
 
 const router = useRouter()
 const route = useRoute()
@@ -24,6 +27,7 @@ const add = (() => {
 	// // } else await cardAnim({ width: 600 })
 })
 
+myapps.loadApp(flatApp)
 
 
 </script>
