@@ -5,6 +5,7 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useFlip } from '@/stores/flip'
 import { useApps } from '@/stores/apps'
+import { useMotion } from '@vueuse/motion'
 
 const myapps = useApps()
 
@@ -12,26 +13,17 @@ const router = useRouter()
 
 gsap.registerPlugin(Flip)
 
-onMounted(() => {
-	gsap.fromTo('.item', {
-		y: 100,
-		opacity: 0,
-	}, {
-		y: 0,
-		opacity: 1,
-		stagger: 0.2,
-		delay: .5
-	})
-})
-
-const apps = reactive([
-	{ id: 0, label: 'Приложение 1', expand: false, },
-	{ id: 1, label: 'Приложение 2', expand: false, },
-	{ id: 2, label: 'Приложение 3', expand: false, },
-	{ id: 3, label: 'Приложение 4', expand: false, },
-	{ id: 4, label: 'Приложение 5', expand: false, },
-	{ id: 5, label: 'Приложение 6', expand: false, },
-])
+// onMounted(() => {
+// 	gsap.fromTo('.item', {
+// 		y: 100,
+// 		opacity: 0,
+// 	}, {
+// 		y: 0,
+// 		opacity: 1,
+// 		stagger: 0.2,
+// 		delay: .5
+// 	})
+// })
 
 const expanded = ref<boolean>(false)
 
@@ -43,12 +35,8 @@ const calcClass = ((item: any) => {
 
 const expand = (item: any) => {
 	const state = Flip.getState('.item')
-
 	expanded.value = !expanded.value
 	item.expand = !item.expand
-	console.log(item)
-
-
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
@@ -58,7 +46,6 @@ const expand = (item: any) => {
 			onLeave: (elements) => gsap.fromTo(elements, { opacity: 1, }, { opacity: 0, duration: 0.2, ease: "linear", }),
 		})
 	})
-
 	if (expanded.value) {
 		nextTick(() => {
 			gsap.from('.desc', {
@@ -71,42 +58,30 @@ const expand = (item: any) => {
 	}
 }
 
-const assis = (() => {
-	nextTick(() => {
-		router.push('/assistent')
-	})
+const onBeforeEnter = (() => {
+	console.log('beforeEnter')
+})
+const onEnter = (() => {
+	console.log('enter')
+})
+const onLeave = (() => {
+	console.log('leave')
 })
 
-// page flip *****************************
-const flip = useFlip()
-
-onBeforeRouteLeave(() => {
-	const elemToFlip = document.querySelector('[data-flip-id]')
-	if (elemToFlip) {
-		let tmp = Flip.getState(elemToFlip)
-		flip.setLastState(tmp)
-	}
-})
-
-
-onMounted(() => {
-	const elemToFlip = document.querySelector('[data-flip-id]')
-	if (!!elemToFlip && !!flip.lastState) {
-		Flip.from(flip.lastState, {
-			targets: elemToFlip,
-			duration: 3
-			// other Flip properties
-		});
-	}
-
-	// lastState.value = null;
-	flip.setLastState(null)
-})
 </script>
 
 <template lang="pug">
-.grid
-	.item(v-for="item in myapps.apps" :key="item.id" @click='expand(item)' :class="calcClass(item)")
+TransitionGroup.grid(tag="div" :css="false"
+	@before-enter="onBeforeEnter"
+	@enter="onEnter"
+	@leave="onLeave"
+	)
+	.item(
+		v-for="item in myapps.apps"
+		:key="item.id"
+		@click='expand(item)'
+		:class="calcClass(item)")
+
 		.hd {{ item.label }}
 		.bl
 			div(v-if='expanded')
@@ -114,7 +89,6 @@ onMounted(() => {
 				.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
 			q-card-actions(v-if='expanded')
 				RouterLink.link(@click.stop='' to='/assistent' data-flip-id='img') lkajslk
-				// q-btn(unelevated color="primary" label="Ассистент" @click.stop="assis") 
 				q-space
 				q-btn(flat color="primary" label="Отмена" @click="") 
 				q-btn(unelevated color="primary" label="Настройки" @click.stop="") 
