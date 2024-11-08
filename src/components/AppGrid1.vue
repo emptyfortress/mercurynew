@@ -5,9 +5,10 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useFlip } from '@/stores/flip'
 import { useApps } from '@/stores/apps'
-import { useMotion } from '@vueuse/motion'
+// import { useMotions } from '@vueuse/motion'
 
 const myapps = useApps()
+// const motions = useMotions()
 
 const router = useRouter()
 
@@ -58,31 +59,33 @@ const expand = (item: any) => {
 	}
 }
 
-const onBeforeEnter = (() => {
-	console.log('beforeEnter')
-})
-const onEnter = (() => {
-	console.log('enter')
-})
-const onLeave = (() => {
-	console.log('leave')
-})
+// const onBeforeEnter = (() => {
+// 	console.log('beforeEnter')
+// })
+// const onEnter = (() => {
+// 	console.log('enter')
+// })
+// const onLeave = (() => {
+// 	console.log('leave')
+// })
 
+const remove = ((n: number) => {
+	console.log(111)
+})
 </script>
 
 <template lang="pug">
-TransitionGroup.grid(tag="div" :css="false"
-	@before-enter="onBeforeEnter"
-	@enter="onEnter"
-	@leave="onLeave"
-	)
+TransitionGroup.grid(tag="div" name="list")
 	.item(
-		v-for="item in myapps.apps"
+		v-for="(item, index) in myapps.apps"
 		:key="item.id"
+		v-motion
+		:initial="{ y: 100, opacity: 0 }"
+		:enter='{ y: 0, opacity: 1, transition: { delay: 100 + (100 * index) } }'
 		@click='expand(item)'
 		:class="calcClass(item)")
 
-		.hd {{ item.label }}
+		.hd(@click="remove(index)") {{ item.label }}
 		.bl
 			div(v-if='expanded')
 				.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
@@ -103,10 +106,6 @@ TransitionGroup.grid(tag="div" :css="false"
 }
 
 .link {
-	// position: absolute;
-	// bottom: 2rem;
-	// right: 2rem;
-	// background: #fff;
 	display: block;
 	background: pink;
 	width: 124px;
@@ -182,8 +181,6 @@ TransitionGroup.grid(tag="div" :css="false"
 	margin: 1rem;
 	display: flex;
 	flex-wrap: wrap;
-	// display: grid;
-	// grid-template-columns: repeat(5, var(--width));
 	gap: 1rem;
 }
 </style>

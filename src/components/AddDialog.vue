@@ -6,6 +6,7 @@ const modelValue = defineModel<boolean>()
 const myapps = useApps()
 
 const create = ((data: any) => {
+	myapps.toggleNew()
 	let tmp = {
 		id: uid(),
 		label: data.label,
@@ -19,6 +20,7 @@ const create = ((data: any) => {
 	}
 	myapps.createApp(tmp)
 	modelValue.value = false
+	myapps.toggleNew()
 })
 </script>
 

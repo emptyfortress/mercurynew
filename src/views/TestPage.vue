@@ -1,34 +1,12 @@
 <script setup lang="ts">
 import { ref, onBeforeUnmount, onMounted } from 'vue';
-// import { gsap } from 'gsap'
-// import { Flip } from 'gsap/Flip'
-// import { useFlip } from '@/stores/flip'
-import { useMotion } from '@vueuse/motion'
+import { useMotions, useMotion } from '@vueuse/motion'
 import { promiseTimeout } from '@vueuse/core'
+import { useApps } from '@/stores/apps'
+import AddDialog from '@/components/AddDialog.vue'
 
-// gsap.registerPlugin(Flip)
+const myapps = useApps()
 
-// const flip = useFlip()
-
-// onBeforeUnmount(() => {
-// 	const elemToFlip = document.querySelector('[data-flip-id]')
-// 	if (elemToFlip) {
-// 		let tmp = Flip.getState(elemToFlip)
-// 		flip.setLastState(tmp)
-// 	}
-// })
-//
-// onMounted(() => {
-// 	const elemToFlip = document.querySelector('[data-flip-id]')
-// 	if (!!elemToFlip && !!flip.lastState) {
-// 		Flip.from(flip.lastState, {
-// 			targets: elemToFlip,
-// 			duration: .3,
-// 			toggleClass: 'test'
-// 		});
-// 	}
-// 	flip.setLastState(null)
-// })
 
 const cube = ref<HTMLElement>()
 const box = ref<HTMLElement>()
@@ -62,6 +40,29 @@ const action = async () => {
 	stop()
 }
 
+const items = ref([
+	{ id: 0 },
+	{ id: 1 },
+	{ id: 2 },
+	{ id: 3 },
+	{ id: 4 },
+	{ id: 5 },
+])
+
+// const motions = useMotions()
+
+const remove = ((index: number) => {
+	items.value.splice(index, 1);
+})
+
+
+
+const action1 = (() => {
+	items.value.push({ id: 8 })
+})
+const calcDelay = ((index: number) => {
+	return myapps.newItem ? 200 : 500 + (100 * index)
+})
 </script>
 
 <template lang="pug">
@@ -71,10 +72,29 @@ q-page(padding)
 		.cube(ref='cube')
 		.box(ref="box")
 
+		// transition-group(name="list" mode='out-in')
+			.fuck(v-for="(item, index) in items" :key="item.id" @click="remove(index)") {{ item.id }}
+
+		transition-group(name="list")
+			.fuck(v-for="(item, index) in items" :key="item.id"
+				v-motion
+				:initial="{ y: 100, opacity: 0 }"
+				:enter='{ y: 0, opacity: 1, transition: { delay: calcDelay(index) } }'
+				@click="remove(index)"
+				) {{ item.id }}
+
+
+	q-btn(unelevated color="primary" label="add" @click="action1") 
 	RouterLink.link(data-flip-id="img" to="/project")
 </template>
 
 <style scoped lang="scss">
+.fuck {
+	width: 100px;
+	height: 100px;
+	background: #fff;
+}
+
 .link {
 	position: absolute;
 	bottom: 2rem;

@@ -5,6 +5,11 @@ export const useApps = defineStore('apps', () => {
 
 	const apps = ref<App[]>([])
 
+	const newItem = ref(true)
+	const toggleNew = (() => {
+		newItem.value = !newItem.value
+	})
+
 	const loadApp = ((e: App[]) => {
 		apps.value = [...e]
 	})
@@ -18,5 +23,7 @@ export const useApps = defineStore('apps', () => {
 		apps,
 		loadApp,
 		createApp,
+		newItem,
+		toggleNew,
 	}
 })
