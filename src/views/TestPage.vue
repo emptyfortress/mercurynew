@@ -4,6 +4,7 @@ import { useMotions, useMotion } from '@vueuse/motion'
 import { promiseTimeout } from '@vueuse/core'
 import { useApps } from '@/stores/apps'
 import AddDialog from '@/components/AddDialog.vue'
+import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 
 const myapps = useApps()
 
@@ -40,29 +41,32 @@ const action = async () => {
 	stop()
 }
 
-const items = ref([
+const items = [
 	{ id: 0 },
 	{ id: 1 },
 	{ id: 2 },
 	{ id: 3 },
 	{ id: 4 },
 	{ id: 5 },
-])
+]
 
 // const motions = useMotions()
 
 const remove = ((index: number) => {
-	items.value.splice(index, 1);
+	tapes.value.splice(index, 1);
 })
 
 
 
 const action1 = (() => {
-	items.value.push({ id: 8 })
+	tapes.value.push({ id: 8 })
+	// items.push({ id: 8 })
 })
 const calcDelay = ((index: number) => {
 	return myapps.newItem ? 200 : 500 + (100 * index)
 })
+
+const [parent, tapes] = useDragAndDrop(items)
 </script>
 
 <template lang="pug">
@@ -72,11 +76,8 @@ q-page(padding)
 		.cube(ref='cube')
 		.box(ref="box")
 
-		// transition-group(name="list" mode='out-in')
-			.fuck(v-for="(item, index) in items" :key="item.id" @click="remove(index)") {{ item.id }}
-
-		transition-group(name="list")
-			.fuck(v-for="(item, index) in items" :key="item.id"
+		transition-group(name="list" tag='ul' ref="parent")
+			.fuck(v-for="(item, index) in tapes" :key="item.id"
 				v-motion
 				:initial="{ y: 100, opacity: 0 }"
 				:enter='{ y: 0, opacity: 1, transition: { delay: calcDelay(index) } }'
@@ -89,10 +90,16 @@ q-page(padding)
 </template>
 
 <style scoped lang="scss">
+ul {
+	display: flex;
+	gap: .5rem;
+}
+
 .fuck {
 	width: 100px;
 	height: 100px;
 	background: #fff;
+
 }
 
 .link {

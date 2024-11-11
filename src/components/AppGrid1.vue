@@ -6,6 +6,7 @@ import { Flip } from 'gsap/Flip'
 import { useFlip } from '@/stores/flip'
 import { useApps } from '@/stores/apps'
 // import { useMotions } from '@vueuse/motion'
+// import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 
 const myapps = useApps()
 // const motions = useMotions()
@@ -47,16 +48,16 @@ const expand = (item: any) => {
 			onLeave: (elements) => gsap.fromTo(elements, { opacity: 1, }, { opacity: 0, duration: 0.2, ease: "linear", }),
 		})
 	})
-	if (expanded.value) {
-		nextTick(() => {
-			gsap.from('.desc', {
-				y: 100,
-				opacity: 0,
-				duration: 0.3,
-				delay: .3,
-			})
-		})
-	}
+	// if (expanded.value) {
+	// 	nextTick(() => {
+	// 		gsap.from('.desc', {
+	// 			y: 100,
+	// 			opacity: 0,
+	// 			duration: 0.3,
+	// 			delay: .3,
+	// 		})
+	// 	})
+	// }
 }
 
 // const onBeforeEnter = (() => {
@@ -68,6 +69,7 @@ const expand = (item: any) => {
 // const onLeave = (() => {
 // 	console.log('leave')
 // })
+const list = ref(myapps.apps)
 
 const remove = ((n: number) => {
 	console.log(111)
@@ -75,26 +77,39 @@ const remove = ((n: number) => {
 </script>
 
 <template lang="pug">
-TransitionGroup.grid(tag="div" name="list")
-	.item(
-		v-for="(item, index) in myapps.apps"
+// TransitionGroup.grid(tag="div" name="list")
+.list
+	.item(v-for="(item, index) in myapps.apps"
 		:key="item.id"
 		v-motion
 		:initial="{ y: 100, opacity: 0 }"
 		:enter='{ y: 0, opacity: 1, transition: { delay: 100 + (100 * index) } }'
 		@click='expand(item)'
-		:class="calcClass(item)")
+		:class="calcClass(item)"
+		) {{ item.label }}
 
-		.hd(@click="remove(index)") {{ item.label }}
-		.bl
-			div(v-if='expanded')
-				.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
-				.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
-			q-card-actions(v-if='expanded')
-				RouterLink.link(@click.stop='' to='/assistent' data-flip-id='img') lkajslk
-				q-space
-				q-btn(flat color="primary" label="Отмена" @click="") 
-				q-btn(unelevated color="primary" label="Настройки" @click.stop="") 
+	// template(#item="{ element }")
+		.item {{ element.label }}
+
+// .item(
+	v-for="(item, index) in myapps.apps"
+	:key="item.id"
+	v-motion
+	:initial="{ y: 100, opacity: 0 }"
+	:enter='{ y: 0, opacity: 1, transition: { delay: 100 + (100 * index) } }'
+	@click='expand(item)'
+	:class="calcClass(item)")
+
+	.hd(@click="remove(index)") {{ item.label }}
+	.bl
+		div(v-if='expanded')
+			.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
+			.desc Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, libero. Impedit, distinctio sed at optio exercitationem quos culpa? Atque vitae aspernatur possimus praesentium culpa id eum! Velit dolores eos aliquam?
+		q-card-actions(v-if='expanded')
+			RouterLink.link(@click.stop='' to='/assistent' data-flip-id='img') lkajslk
+			q-space
+			q-btn(flat color="primary" label="Отмена" @click="") 
+			q-btn(unelevated color="primary" label="Настройки" @click.stop="") 
 
 </template>
 
@@ -182,5 +197,10 @@ TransitionGroup.grid(tag="div" name="list")
 	display: flex;
 	flex-wrap: wrap;
 	gap: 1rem;
+}
+
+.list {
+	display: flex;
+	gap: .5rem;
 }
 </style>

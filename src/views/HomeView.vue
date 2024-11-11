@@ -42,10 +42,11 @@ q-page(padding)
 
 <style scoped lang='scss'>
 .q-page {
-	display: flex;
-	justify-content: start;
-	align-items: center;
-	flex-direction: column;
+	// display: flex;
+	// justify-content: center;
+	// gap: .5rem;
+	// align-items: center;
+	// flex-direction: column;
 	position: relative;
 }
 
@@ -53,14 +54,6 @@ q-page(padding)
 	background: #fff;
 	width: 600px;
 }
-
-// .card {
-// 	width: 600px;
-// 	border-radius: var(--rad);
-// 	box-shadow: var(--shad);
-// 	background: #fff;
-// 	position: relative;
-// }
 
 .fab {
 	position: absolute;
