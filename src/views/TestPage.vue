@@ -4,6 +4,7 @@ import { useMotions, useMotion } from '@vueuse/motion'
 import { promiseTimeout } from '@vueuse/core'
 import { useApps } from '@/stores/apps'
 import AddDialog from '@/components/AddDialog.vue'
+import { state } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 
 const myapps = useApps()
@@ -49,10 +50,14 @@ const items = [
 	{ id: 4 },
 	{ id: 5 },
 ]
+const doneItems = [
+	{ id: 6 },
+]
 
 // const motions = useMotions()
 
 const remove = ((index: number) => {
+	// items.value.splice(index, 1);
 	tapes.value.splice(index, 1);
 })
 
@@ -66,7 +71,30 @@ const calcDelay = ((index: number) => {
 	return myapps.newItem ? 200 : 500 + (100 * index)
 })
 
-const [parent, tapes] = useDragAndDrop(items)
+const [parent, tapes] = useDragAndDrop([
+	{ id: 0 },
+	{ id: 1 },
+	{ id: 2 },
+	{ id: 3 },
+	{ id: 4 },
+	{ id: 5 },
+], { group: "todoList" })
+
+const [parent1, tapes1] = useDragAndDrop([
+	{ id: 6 },
+], { group: "todoList" })
+
+const dragging = ref(false)
+
+state.on("dragStarted", () => {
+	dragging.value = true
+})
+state.on("dragEnded", () => {
+	dragging.value = false
+})
+const test = (() => {
+	console.log(111)
+})
 </script>
 
 <template lang="pug">
@@ -76,23 +104,36 @@ q-page(padding)
 		.cube(ref='cube')
 		.box(ref="box")
 
-		transition-group(name="list" tag='ul' ref="parent")
+		transition-group(name="list" ref='parent' tag='ul')
 			.fuck(v-for="(item, index) in tapes" :key="item.id"
 				v-motion
 				:initial="{ y: 100, opacity: 0 }"
 				:enter='{ y: 0, opacity: 1, transition: { delay: calcDelay(index) } }'
-				@click="remove(index)"
 				) {{ item.id }}
 
 
 	q-btn(unelevated color="primary" label="add" @click="action1") 
 	RouterLink.link(data-flip-id="img" to="/project")
+	.target(v-if='dragging' @drop="test")
 </template>
 
 <style scoped lang="scss">
+q-page {
+	position: relative;
+}
+
 ul {
 	display: flex;
 	gap: .5rem;
+}
+
+.target {
+	position: fixed;
+	left: 50%;
+	bottom: 1rem;
+	width: 200px;
+	height: 100px;
+	background: red;
 }
 
 .fuck {
