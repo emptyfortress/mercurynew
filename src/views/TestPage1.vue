@@ -61,6 +61,7 @@ const onDragStart = ((n: number) => {
 const onDrp = (() => {
 	console.log('drop')
 	onDragLeave()
+	tapes.value.splice(draggingItem.value, 1)
 	draggingItem.value = null
 })
 </script>
@@ -69,7 +70,7 @@ const onDrp = (() => {
 q-page(padding)
 	q-checkbox(v-model="drop")
 	ul
-		.cube(ref='cube' @dragover.prevent="onDragEnter" @dragenter.prevent @dragleave="onDragLeave" :class="{ red: over }" @drop='onDrp' )
+		// .cube(ref='cube' @dragover.prevent="onDragEnter" @dragenter.prevent @dragleave="onDragLeave" :class="{ red: over }" @drop='onDrp' )
 
 		.fuck(v-for="(item, index) in tapes"
 			:key="item.id"
@@ -124,13 +125,10 @@ ul {
 	height: 100px;
 	background: #fff;
 	margin: .25rem;
+
 	&.red {
 		background: pink;
-		&.yellow {
-			background: yellow;
-		}
 	}
-
 }
 
 .link {
@@ -147,6 +145,7 @@ ul {
 	width: 300px;
 	height: 200px;
 	background: yellow;
+
 	&.red {
 		background: pink;
 	}
