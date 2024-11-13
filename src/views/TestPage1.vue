@@ -21,10 +21,10 @@ const onDrop = ((dropResult: number) => {
 	tapes.value = applyDrag(tapes.value, dropResult)
 })
 
-const onDrop1 = (() => {
-	console.log(111)
-	tap.value = applyDrag(tap.value, dropResult)
-})
+// const onDrop1 = (() => {
+// 	console.log(111)
+// 	tap.value = applyDrag(tap.value, dropResult)
+// })
 
 const shift = useKeyModifier('Shift')
 
@@ -72,7 +72,22 @@ q-page(padding)
 	ul
 		// .cube(ref='cube' @dragover.prevent="onDragEnter" @dragenter.prevent @dragleave="onDragLeave" :class="{ red: over }" @drop='onDrp' )
 
-		.fuck(v-for="(item, index) in tapes"
+		// .fuck(v-for="(item, index) in tapes"
+		// 	:key="item.id"
+		// 	:draggable='true'
+		// 	@dragstart='onDragStart(index)'
+		// 	@dragover.prevent="onDragEnter(index)"
+		// 	@dragenter.prevent
+		// 	@dragleave="onDragLeave"
+		// 	@drop='onDrp'
+		// 	:class='calcOver(index)'
+		// 	) {{ item.id }}
+
+	ul
+		Container(v-if='typ == 0' @drop="onDrop" orientation='horizontal' :should-accept-drop='drp' group-name='column')
+			Draggable(v-for="(item, index) in tapes" :key="item.id")
+				.fuck() {{ item.id }}
+		.fuck(v-if='typ == 1' v-for="(item, index) in tapes"
 			:key="item.id"
 			:draggable='true'
 			@dragstart='onDragStart(index)'
@@ -82,11 +97,6 @@ q-page(padding)
 			@drop='onDrp'
 			:class='calcOver(index)'
 			) {{ item.id }}
-
-		// Container(@drop="onDrop" orientation='horizontal' :should-accept-drop='drp' group-name='column')
-		// 	Draggable(v-for="(item, index) in tapes" :key="item.id")
-		// 		.fuck(v-if='typ == 0') {{ item.id }}
-		// 		.fuck.red(v-if='typ == 1' :key="item.id" :draggable='shift' @dragover="onDragEnter" @dragleave="onDragLeave" :class="{ yellow: over }") {{ item.id }}
 
 	// q-btn.q-mt-sm(unelevated color="primary" label="add" @click="action1") 
 
@@ -106,7 +116,6 @@ q-page {
 
 ul {
 	display: flex;
-	gap: .5rem;
 	flex-wrap: wrap;
 }
 
