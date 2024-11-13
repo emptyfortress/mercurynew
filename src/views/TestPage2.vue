@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Container, Draggable } from "vue3-smooth-dnd"
-import { applyDrag } from '@/utils/utils'
 import { useKeyModifier } from '@vueuse/core'
+import { VueDraggable } from 'vue-draggable-plus'
 
 
 const cube = ref<HTMLElement>()
@@ -14,16 +13,15 @@ const tapes = ref([
 	{ id: 3 },
 ])
 const tap = ref([
+	{ id: 4 },
 ])
 
 const onDrop = ((dropResult: number) => {
-	console.log('fuck')
-	tapes.value = applyDrag(tapes.value, dropResult)
+	// tapes.value = applyDrag(tapes.value, dropResult)
 })
 
 const onDrop1 = (() => {
 	console.log(111)
-	tap.value = applyDrag(tap.value, dropResult)
 })
 
 const shift = useKeyModifier('Shift')
@@ -35,17 +33,9 @@ const typ = computed(() => {
 const drop = ref(false)
 
 const drp = (() => {
-	return !shift.value
+	return drop.value
 })
 
-const over = ref(false)
-
-const onDragEnter = (() => {
-	over.value = true
-})
-const onDragLeave = (() => {
-	over.value = false
-})
 
 </script>
 
@@ -53,14 +43,9 @@ const onDragLeave = (() => {
 q-page(padding)
 	q-checkbox(v-model="drop")
 	ul
-		.cube(ref='cube' @dragover="onDragEnter" @dragleave="onDragLeave" :class="{ red: over }")
-		.fuck(:draggable='true') fuck
-		Container(@drop="onDrop" orientation='horizontal' :should-accept-drop='drp' group-name='column')
-			Draggable(v-for="(item, index) in tapes" :key="item.id")
-				.fuck(v-if='typ == 0') {{ item.id }}
-				.fuck.red(v-if='typ == 1') {{ item.id }}
-					// Container(@drop="onDrop1" group-name='column')
-					// 	div(v-for="item in tap")
+		.cube(ref='cube')
+		VueDraggable(v-model="tapes" :animation="150" :disabled="shift")
+			.fuck(v-for="(item, index) in tapes" :key="item.id") {{ item.id }}
 
 	// q-btn.q-mt-sm(unelevated color="primary" label="add" @click="action1") 
 
@@ -99,9 +84,6 @@ ul {
 	height: 100px;
 	background: #fff;
 	margin: .25rem;
-	&.red {
-		background: pink;
-	}
 
 }
 
@@ -118,9 +100,6 @@ ul {
 .cube {
 	width: 300px;
 	height: 200px;
-	background: yellow;
-	&.red {
-		background: pink;
-	}
+	background: #fff;
 }
 </style>
