@@ -40,27 +40,52 @@ const drp = (() => {
 
 const over = ref(false)
 
-const onDragEnter = (() => {
-	over.value = true
+const hoverItem = ref()
+const draggingItem = ref()
+
+const onDragEnter = ((ind: number) => {
+	hoverItem.value = ind
 })
 const onDragLeave = (() => {
-	over.value = false
+	hoverItem.value = null
 })
 
+const calcOver = ((ind: number) => {
+	if (hoverItem.value == ind && ind !== draggingItem.value) return 'red'
+	return ''
+})
+
+const onDragStart = ((n: number) => {
+	draggingItem.value = n
+})
+const onDrp = (() => {
+	console.log('drop')
+	onDragLeave()
+	draggingItem.value = null
+})
 </script>
 
 <template lang="pug">
 q-page(padding)
 	q-checkbox(v-model="drop")
 	ul
-		.cube(ref='cube' @dragover="onDragEnter" @dragleave="onDragLeave" :class="{ red: over }")
-		.fuck(:draggable='true') fuck
-		Container(@drop="onDrop" orientation='horizontal' :should-accept-drop='drp' group-name='column')
-			Draggable(v-for="(item, index) in tapes" :key="item.id")
-				.fuck(v-if='typ == 0') {{ item.id }}
-				.fuck.red(v-if='typ == 1') {{ item.id }}
-					// Container(@drop="onDrop1" group-name='column')
-					// 	div(v-for="item in tap")
+		.cube(ref='cube' @dragover.prevent="onDragEnter" @dragenter.prevent @dragleave="onDragLeave" :class="{ red: over }" @drop='onDrp' )
+
+		.fuck(v-for="(item, index) in tapes"
+			:key="item.id"
+			:draggable='true'
+			@dragstart='onDragStart(index)'
+			@dragover.prevent="onDragEnter(index)"
+			@dragenter.prevent
+			@dragleave="onDragLeave"
+			@drop='onDrp'
+			:class='calcOver(index)'
+			) {{ item.id }}
+
+		// Container(@drop="onDrop" orientation='horizontal' :should-accept-drop='drp' group-name='column')
+		// 	Draggable(v-for="(item, index) in tapes" :key="item.id")
+		// 		.fuck(v-if='typ == 0') {{ item.id }}
+		// 		.fuck.red(v-if='typ == 1' :key="item.id" :draggable='shift' @dragover="onDragEnter" @dragleave="onDragLeave" :class="{ yellow: over }") {{ item.id }}
 
 	// q-btn.q-mt-sm(unelevated color="primary" label="add" @click="action1") 
 
@@ -101,6 +126,9 @@ ul {
 	margin: .25rem;
 	&.red {
 		background: pink;
+		&.yellow {
+			background: yellow;
+		}
 	}
 
 }
