@@ -11,7 +11,6 @@ const myapps = useApps()
 
 
 const cube = ref<HTMLElement>()
-const box = ref<HTMLElement>()
 
 const { apply: cardAnim, stop } = useMotion(cube, {
 	enter: {
@@ -31,7 +30,7 @@ const { apply: cardAnim, stop } = useMotion(cube, {
 			repeatType: "mirror",
 		},
 	},
-	moved: { marginLeft: 500, opacity: 1 },
+	moved: { marginLeft: 300, opacity: 1 },
 	custom: { marginLeft: 0, transition: { delay: 2000, stiffness: 150, damping: 20, mass: .5 } },
 })
 
@@ -92,27 +91,28 @@ state.on("dragStarted", () => {
 state.on("dragEnded", () => {
 	dragging.value = false
 })
-const test = (() => {
-	console.log(111)
+const test = ((evt: DragEvent, id: number) => {
+	console.log(evt)
 })
 </script>
 
 <template lang="pug">
 q-page(padding)
 	q-btn(flat icon="mdi-close" color="primary" label="Отмена" @click="action") 
-	.row.q-gutter-x-sm
+	ul
 		.cube(ref='cube')
-		.box(ref="box")
 
 		transition-group(name="list" ref='parent' tag='ul')
 			.fuck(v-for="(item, index) in tapes" :key="item.id"
 				v-motion
 				:initial="{ y: 100, opacity: 0 }"
 				:enter='{ y: 0, opacity: 1, transition: { delay: calcDelay(index) } }'
+				@drop="test(evt, item.id)"
 				) {{ item.id }}
 
 
-	q-btn(unelevated color="primary" label="add" @click="action1") 
+	q-btn.q-mt-sm(unelevated color="primary" label="add" @click="action1") 
+
 	RouterLink.link(data-flip-id="img" to="/project")
 	.target(v-if='dragging' @drop="test")
 </template>
@@ -125,6 +125,7 @@ q-page {
 ul {
 	display: flex;
 	gap: .5rem;
+	flex-wrap: wrap;
 }
 
 .target {
@@ -133,7 +134,8 @@ ul {
 	bottom: 1rem;
 	width: 200px;
 	height: 100px;
-	background: red;
+	background: #ccc;
+	border: 2px dashed black;
 }
 
 .fuck {
@@ -157,11 +159,5 @@ ul {
 	width: 300px;
 	height: 200px;
 	background: #fff;
-}
-
-.box {
-	width: 100px;
-	height: 100px;
-	background: red;
 }
 </style>
