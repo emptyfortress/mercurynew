@@ -60,14 +60,14 @@ export const useApps = defineStore('apps', () => {
 		},
 	])
 
-	const newItem = ref(true)
-	const toggleNew = () => {
-		newItem.value = !newItem.value
-	}
+	// const newItem = ref(true)
+	// const toggleNew = () => {
+	// 	newItem.value = !newItem.value
+	// }
 
-	const loadApp = (e: App[]) => {
-		apps.value = [...e]
-	}
+	// const loadApp = (e: App[]) => {
+	// 	apps.value = [...e]
+	// }
 
 	const createApp = (e: App) => {
 		apps.value.push(e)
@@ -75,9 +75,9 @@ export const useApps = defineStore('apps', () => {
 
 	return {
 		apps,
-		loadApp,
+		// loadApp,
 		createApp,
-		newItem,
-		toggleNew,
+		// newItem,
+		// toggleNew,
 	}
 })

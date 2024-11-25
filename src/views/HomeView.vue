@@ -1,19 +1,37 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import Start from '@/components/Start.vue'
+import { ref, computed } from 'vue'
+import { useKeyModifier } from '@vueuse/core'
+import { useApps } from '@/stores/apps'
+import ItemForGroup from '@/components/ItemForGroup.vue'
+import ItemSingle from '@/components/ItemSingle.vue'
 import AddDialog from '@/components/AddDialog.vue'
+
+const myapps = useApps()
+const tapes = ref([...myapps.apps])
+
+const shift = useKeyModifier('Shift')
 
 const dialog = ref(false)
 
 const add = () => {
 	dialog.value = !dialog.value
 }
+
+const type = computed(() => {
+	return shift.value ? 1 : 0
+})
+const create = (e: App) => {
+	tapes.value.push(e)
+	myapps.createApp(e)
+}
 </script>
 
 <template lang="pug">
 q-page(padding)
-	Start
-	AddDialog(v-model="dialog")
+	ItemSingle(v-show='type == 0' v-model:tapes="tapes")
+	ItemForGroup(v-if='type == 1' v-model:tapes="tapes")
+
+	AddDialog(v-model="dialog" @create='create')
 	q-btn.fab(round color="primary" icon="mdi-plus" @click="add")
 
 </template>
@@ -21,11 +39,6 @@ q-page(padding)
 <style scoped lang="scss">
 .q-page {
 	position: relative;
-}
-
-.adddialog {
-	background: #fff;
-	width: 600px;
 }
 
 .fab {

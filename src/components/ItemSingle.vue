@@ -43,7 +43,7 @@ const calcClass = (item: App) => {
 </script>
 
 <template lang="pug">
-Container(@drop="onDrop" orientation='horizontal' group-name='column')
+Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{value: 'div', props: {class: 'list'}}")
 	Draggable(v-for="(item, index) in tapes"
 		:key="item.id")
 		.item(
@@ -57,4 +57,9 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column')
 			div(v-else) {{ item.label }}
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.smooth-dnd-container.horizontal.list {
+	display: flex;
+	flex-wrap: wrap;
+}
+</style>

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { useApps } from '@/stores/apps'
 import { uid } from 'quasar'
 
 const modelValue = defineModel<boolean>()
-const myapps = useApps()
 
-const create = (data: any) => {
-	myapps.toggleNew()
+const emit = defineEmits(['create'])
+
+const create = (data: App) => {
 	let tmp = {
 		id: uid(),
 		label: data.label,
@@ -18,9 +17,8 @@ const create = (data: any) => {
 		type: 0,
 		group: false,
 	}
-	myapps.createApp(tmp)
+	emit('create', tmp)
 	modelValue.value = false
-	myapps.toggleNew()
 }
 </script>
 

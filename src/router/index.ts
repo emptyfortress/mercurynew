@@ -8,16 +8,7 @@ const router = createRouter({
 			path: '/',
 			name: 'home',
 			component: HomeView,
-			// children: [
-			// 	{
-			// 		path: ':id',
-			// 		name: 'start',
-			// 		component: () => import('@/components/Start.vue'),
-			// 		props: true,
-			// 	},
-			// ],
 		},
-
 		{
 			path: '/assistent',
 			name: 'assistent',
