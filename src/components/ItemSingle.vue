@@ -1,60 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
-import { useKeyModifier } from '@vueuse/core'
-import { useApps } from '@/stores/apps'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import ItemForGroup from '@/components/ItemForGroup.vue'
-import ItemSingle from '@/components/ItemSingle.vue'
 
+const tapes = defineModel<App[]>('tapes')
 gsap.registerPlugin(Flip)
-
-const myapps = useApps()
-const tapes = ref([...myapps.apps])
 
 const onDrop = (dropResult: number) => {
 	tapes.value = applyDrag(tapes.value, dropResult)
-}
-
-const shift = useKeyModifier('Shift')
-
-const type = computed(() => {
-	return shift.value ? 1 : 0
-})
-
-// const acceptDrop = () => {
-// 	return !shift.value
-// }
-
-const hoverItem = ref()
-const draggingItem = ref()
-
-const onDragEnter = (index: number) => {
-	hoverItem.value = index
-}
-const onDragLeave = () => {
-	hoverItem.value = null
-}
-
-const calcOver = (index: number) => {
-	if (hoverItem.value == index && index !== draggingItem.value) return 'green'
-	return ''
-}
-
-const onDragStart = (n: number) => {
-	draggingItem.value = n
-}
-
-const onDrop1 = () => {
-	let item = tapes.value[hoverItem.value]
-	item.group = true
-	// console.log(item)
-
-	onDragLeave()
-	tapes.value.splice(draggingItem.value, 1)
-	draggingItem.value = null
 }
 
 const expanded = ref<boolean>(false)
@@ -88,42 +43,21 @@ const calcClass = (item: App) => {
 </script>
 
 <template lang="pug">
-ul
-	ItemSingle(v-show='type == 0' v-model:tapes="tapes")
-
-	// Container(v-show='type == 0' @drop="onDrop" orientation='horizontal' group-name='column')
-	// 	Draggable(v-for="(item, index) in tapes"
-	// 		:key="item.id")
-	// 		.item(
-	// 			v-motion
-	// 			:initial="{ y: 100, opacity: 0 }"
-	// 			:enter='{ y: 0, opacity: 1, transition: { delay: 100 + (100 * index) } }'
-	// 			@click='expand(item)'
-	// 			:class="calcClass(item)"
-	// 			)
-	// 			div(v-if='item.group') Группа
-	// 			div(v-else) {{ item.label }}
-
-	ItemForGroup(v-if='type == 1' v-model:tapes="tapes" :type='type')
-
+Container(@drop="onDrop" orientation='horizontal' group-name='column')
+	Draggable(v-for="(item, index) in tapes"
+		:key="item.id")
+		.item(
+			v-motion
+			:initial="{ y: 100, opacity: 0 }"
+			:enter='{ y: 0, opacity: 1, transition: { delay: 100 + (100 * index) } }'
+			@click='expand(item)'
+			:class="calcClass(item)"
+			)
+			div(v-if='item.group') Группа
+			div(v-else) {{ item.label }}
 </template>
 
 <style scoped lang="scss">
-ul {
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.target {
-	position: fixed;
-	left: 50%;
-	bottom: 1rem;
-	width: 200px;
-	height: 100px;
-	background: #ccc;
-	border: 2px dashed black;
-}
-
 .item {
 	width: 200px;
 	height: 200px;
