@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useStorage } from '@vueuse/core'
-import AppGrid from '@/components/AppGrid.vue'
+import { ref, computed } from 'vue'
+import { useKeyModifier } from '@vueuse/core'
+import { useApps } from '@/stores/apps'
+import ItemForGroup from '@/components/ItemForGroup.vue'
+import ItemSingle from '@/components/ItemSingle.vue'
 
-const router = useRouter()
-const route = useRoute()
+const myapps = useApps()
+const tapes = ref([...myapps.apps])
 
-const app = useStorage('app', localStorage)
+const shift = useKeyModifier('Shift')
+
+const type = computed(() => {
+	return shift.value ? 1 : 0
+})
 </script>
 
 <template lang="pug">
-.start
-	AppGrid(v-if='app.id == 0')
-	.fuck(v-else) {{ route.params.id }}
+ul
+	ItemSingle(v-show='type == 0' v-model:tapes="tapes")
+	ItemForGroup(v-if='type == 1' v-model:tapes="tapes")
+
 </template>
 
 <style scoped lang="scss">
-.start {
-	margin-left: 1rem;
-}
-
-.fuck {
-	width: 100%;
-	height: 100%;
-	background: #fff;
-	padding: 1rem;
+ul {
+	display: flex;
+	flex-wrap: wrap;
 }
 </style>

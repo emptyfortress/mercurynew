@@ -1,39 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import TestPage1 from '@/views/TestPage1.vue'
+import Start from '@/components/Start.vue'
 import AddDialog from '@/components/AddDialog.vue'
-import { useStorage } from '@vueuse/core'
-import { useRouter, useRoute } from 'vue-router'
-import { useMotions, useMotion } from '@vueuse/motion'
-// import { useApps } from '@/stores/apps'
-// import { flatApp } from '@/stores/tree'
 
-// const myapps = useApps()
-
-const router = useRouter()
-const route = useRoute()
-
-const app = useStorage('app', localStorage)
-
-const showAdd = ref(false)
-
-const motions = useMotions()
+const dialog = ref(false)
 
 const add = () => {
-	showAdd.value = !showAdd.value
-	// await cardAnim('set1')
-	// await cardAnim('set2')
-	// await cardAnim('initial')
-	// // } else await cardAnim({ width: 600 })
+	dialog.value = !dialog.value
 }
-
-// myapps.loadApp(flatApp)
 </script>
 
 <template lang="pug">
 q-page(padding)
-	TestPage1
-	AddDialog(v-model="showAdd")
+	Start
+	AddDialog(v-model="dialog")
 	q-btn.fab(round color="primary" icon="mdi-plus" @click="add")
 
 </template>
