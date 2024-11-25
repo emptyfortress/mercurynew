@@ -22,29 +22,29 @@ const router = createRouter({
 		{
 			path: '/assistent',
 			name: 'assistent',
-			component: () => import('@/views/Assistent.vue')
+			component: () => import('@/views/Assistent.vue'),
 		},
 		{
 			path: '/test',
 			name: 'test',
-			component: () => import('@/views/TestPage.vue')
+			component: () => import('@/views/TestPage.vue'),
 		},
 		{
 			path: '/test1',
 			name: 'test1',
-			component: () => import('@/views/TestPage1.vue')
+			component: () => import('@/views/TestPage1.vue'),
 		},
-		{
-			path: '/test2',
-			name: 'test2',
-			component: () => import('@/views/TestPage2.vue')
-		},
+		// {
+		// 	path: '/test2',
+		// 	name: 'test2',
+		// 	component: () => import('@/views/TestPage2.vue')
+		// },
 		{
 			path: '/project',
 			name: 'project',
-			component: () => import('@/views/Project.vue')
-		}
-	]
+			component: () => import('@/views/Project.vue'),
+		},
+	],
 })
 
 export default router
