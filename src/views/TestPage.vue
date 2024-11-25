@@ -55,7 +55,7 @@ const action1 = () => {
 	// items.push({ id: 8 })
 }
 const calcDelay = (index: number) => {
-	return myapps.newItem ? 200 : 500 + 100 * index
+	return 500 + 100 * index
 }
 
 const [parent, tapes] = useDragAndDrop(
