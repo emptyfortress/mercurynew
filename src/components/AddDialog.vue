@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useApps } from '@/stores/apps'
-import { uid } from 'quasar';
+import { uid } from 'quasar'
 
 const modelValue = defineModel<boolean>()
 const myapps = useApps()
 
-const create = ((data: any) => {
+const create = (data: any) => {
 	myapps.toggleNew()
 	let tmp = {
 		id: uid(),
@@ -16,12 +16,12 @@ const create = ((data: any) => {
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
 		type: 0,
-		group: null
+		group: false,
 	}
 	myapps.createApp(tmp)
 	modelValue.value = false
 	myapps.toggleNew()
-})
+}
 </script>
 
 <template lang="pug">

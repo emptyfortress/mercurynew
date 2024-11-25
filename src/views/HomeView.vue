@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import AppGrid1 from '@/components/AppGrid1.vue'
+import TestPage1 from '@/views/TestPage1.vue'
 import AddDialog from '@/components/AddDialog.vue'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
@@ -32,7 +32,7 @@ const add = () => {
 
 <template lang="pug">
 q-page(padding)
-	AppGrid1
+	TestPage1
 	AddDialog(v-model="showAdd")
 	q-btn.fab(round color="primary" icon="mdi-plus" @click="add")
 
@@ -40,11 +40,6 @@ q-page(padding)
 
 <style scoped lang="scss">
 .q-page {
-	// display: flex;
-	// justify-content: center;
-	// gap: .5rem;
-	// align-items: center;
-	// flex-direction: column;
 	position: relative;
 }
 
@@ -65,9 +60,5 @@ q-page(padding)
 	cursor: pointer;
 	transform-origin: top left;
 	z-index: 3;
-}
-
-.hd {
-	font-size: 1.2rem;
 }
 </style>

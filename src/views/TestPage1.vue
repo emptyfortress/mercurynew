@@ -47,12 +47,12 @@ const onDragStart = (n: number) => {
 }
 
 const onDrop1 = () => {
-	let item = tapes.value[hoverItem.value]
+	let item = myapps.apps[hoverItem.value]
 	item.group = true
 	// console.log(item)
 
 	onDragLeave()
-	tapes.value.splice(draggingItem.value, 1)
+	myapps.apps.splice(draggingItem.value, 1)
 	draggingItem.value = null
 }
 
@@ -81,35 +81,31 @@ const expand = (item: any) => {
 const calcClass = (item: any) => {
 	if (expanded.value == true && item.expand == true) return 'active'
 	if (expanded.value == true && item.expand == false) return 'inactive'
+	if (item.group == true) return 'group'
 	else return ''
 }
 </script>
 
 <template lang="pug">
-q-page(padding)
+ul
+	Container(v-if='type == 0' @drop="onDrop" orientation='horizontal' :should-accept-drop='acceptDrop' group-name='column')
+		Draggable(v-for="(item, index) in myapps.apps"
+			:key="item.id")
+			.item(
+				@click='expand(item)'
+				:class="calcClass(item)"
+				) {{ item.label }}
 
-	ul
-		Container(v-if='type == 0' @drop="onDrop" orientation='horizontal' :should-accept-drop='acceptDrop' group-name='column')
-			Draggable(v-for="(item, index) in tapes"
-				:key="item.id")
-				.item.group(
-					v-motion
-					:initial="{ y: 100, opacity: 0 }"
-					:enter='{ y: 0, opacity: 1, transition: { delay: 100 + (100 * index) } }'
-					@click='expand(item)'
-					:class="calcClass(item)"
-					) {{ item.id }}
-
-		.item(v-if='type == 1' v-for="(item, index) in tapes"
-			:key="item.id"
-			:draggable='true'
-			@dragstart='onDragStart(index)'
-			@dragover.prevent="onDragEnter(index)"
-			@dragenter.prevent
-			@dragleave="onDragLeave"
-			@drop='onDrop1'
-			:class='calcOver(index)'
-			) {{ item.id }} jj
+	.item(v-if='type == 1' v-for="(item, index) in myapps.apps"
+		:key="item.id"
+		:draggable='true'
+		@dragstart='onDragStart(index)'
+		@dragover.prevent="onDragEnter(index)"
+		@dragenter.prevent
+		@dragleave="onDragLeave"
+		@drop='onDrop1'
+		:class='calcOver(index)'
+		) {{ item.label }} jj
 
 </template>
 
@@ -183,6 +179,7 @@ ul {
 	cursor: pointer;
 	padding: 1rem;
 	margin: 0.5rem;
+	position: relative;
 
 	&:hover {
 		border: 1px solid #ccc;
@@ -206,9 +203,9 @@ ul {
 		display: none;
 	}
 	&.group {
-		// box-shadow:
-		// 2px 2px 3px rgba($color: #000000, $alpha: 0.2),
-		// -1px -1px 2px rgba($color: #000000, $alpha: 0.2);
+		box-shadow:
+			2px 2px 3px rgba($color: #000000, $alpha: 0.2),
+			-1px -1px 2px rgba($color: #000000, $alpha: 0.2);
 
 		&:before {
 			content: '';
