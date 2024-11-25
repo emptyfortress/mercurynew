@@ -42,16 +42,6 @@ const expand = (item: any) => {
 				gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
 		})
 	})
-	// if (expanded.value) {
-	// 	nextTick(() => {
-	// 		gsap.from('.desc', {
-	// 			y: 100,
-	// 			opacity: 0,
-	// 			duration: 0.3,
-	// 			delay: .3,
-	// 		})
-	// 	})
-	// }
 }
 
 // const onBeforeEnter = (() => {
