@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, } from 'vue'
+import { ref } from 'vue'
 import AppGrid1 from '@/components/AppGrid1.vue'
 import AddDialog from '@/components/AddDialog.vue'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import { useMotions, useMotion } from '@vueuse/motion'
-import { useApps } from '@/stores/apps'
-import { flatApp } from '@/stores/tree'
+// import { useApps } from '@/stores/apps'
+// import { flatApp } from '@/stores/tree'
 
-const myapps = useApps()
+// const myapps = useApps()
 
 const router = useRouter()
 const route = useRoute()
@@ -19,17 +19,15 @@ const showAdd = ref(false)
 
 const motions = useMotions()
 
-const add = (() => {
+const add = () => {
 	showAdd.value = !showAdd.value
 	// await cardAnim('set1')
 	// await cardAnim('set2')
 	// await cardAnim('initial')
 	// // } else await cardAnim({ width: 600 })
-})
+}
 
-myapps.loadApp(flatApp)
-
-
+// myapps.loadApp(flatApp)
 </script>
 
 <template lang="pug">
@@ -40,7 +38,7 @@ q-page(padding)
 
 </template>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .q-page {
 	// display: flex;
 	// justify-content: center;

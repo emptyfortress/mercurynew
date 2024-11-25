@@ -48,7 +48,7 @@ const flatApp = [
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		type: 0,
-		group: null
+		group: false,
 	},
 	{
 		id: '1',
@@ -59,7 +59,7 @@ const flatApp = [
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		type: 0,
-		group: null
+		group: false,
 	},
 	{
 		id: '2',
@@ -70,7 +70,7 @@ const flatApp = [
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		type: 0,
-		group: null
+		group: false,
 	},
 	{
 		id: '3',
@@ -81,7 +81,7 @@ const flatApp = [
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		type: 0,
-		group: null
+		group: false,
 	},
 	{
 		id: '4',
@@ -92,7 +92,7 @@ const flatApp = [
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		type: 0,
-		group: null
+		group: false,
 	},
 	{
 		id: '5',
@@ -103,7 +103,7 @@ const flatApp = [
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		type: 0,
-		group: null
+		group: false,
 	},
 ]
 

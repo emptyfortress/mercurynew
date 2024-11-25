@@ -7,8 +7,7 @@ interface App {
 	author: string
 	created: string
 	type: number
-	group: string | null
-
+	group?: boolean
 }
 // interface Version {
 // 	id: number

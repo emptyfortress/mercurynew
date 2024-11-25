@@ -34,11 +34,6 @@ const router = createRouter({
 			name: 'test1',
 			component: () => import('@/views/TestPage1.vue'),
 		},
-		// {
-		// 	path: '/test2',
-		// 	name: 'test2',
-		// 	component: () => import('@/views/TestPage2.vue')
-		// },
 		{
 			path: '/project',
 			name: 'project',
