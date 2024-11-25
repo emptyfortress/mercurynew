@@ -33,17 +33,23 @@ const calcOver = (index: number) => {
 </script>
 
 <template lang="pug">
-.item(
-	v-for="(item, index) in tapes"
-	:key="item.id"
-	:draggable='true'
-	@dragstart='onDragStart(index)'
-	@dragover.prevent="onDragEnter(index)"
-	@dragenter.prevent
-	@dragleave="onDragLeave"
-	@drop='onDrop1'
-	:class='calcOver(index)'
-	) {{ item.label }}
+.list
+	.item(
+		v-for="(item, index) in tapes"
+		:key="item.id"
+		:draggable='true'
+		@dragstart='onDragStart(index)'
+		@dragover.prevent="onDragEnter(index)"
+		@dragenter.prevent
+		@dragleave="onDragLeave"
+		@drop='onDrop1'
+		:class='calcOver(index)'
+		) {{ item.label }}
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.list {
+	display: flex;
+	flex-wrap: wrap;
+}
+</style>

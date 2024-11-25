@@ -4,6 +4,7 @@ import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
+import { useRouter, useRoute } from 'vue-router'
 
 const tapes = defineModel<App[]>('tapes')
 gsap.registerPlugin(Flip)
@@ -40,6 +41,13 @@ const calcClass = (item: App) => {
 	if (item.group == true) return 'group'
 	else return ''
 }
+
+const router = useRouter()
+const route = useRoute()
+
+const navigate = () => {
+	router.push('/assistent')
+}
 </script>
 
 <template lang="pug">
@@ -55,11 +63,31 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{val
 			)
 			div(v-if='item.group') Группа
 			div(v-else) {{ item.label }}
+
+			.content(v-if='item.expand'
+				v-motion
+				:initial="{ x: 100, opacity: 0 }"
+				:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30,  delay: 300 } }")
+
+				div() {{ item.id }}
+				div() {{ item.descr }}
+				div() Автор: {{ item.author }}
+				div() Версия: {{ item.version }}
+
+			q-card-actions(align="center"
+				v-if='item.expand'
+				v-motion
+				:initial="{ y: -20, opacity: 0 }"
+				:enter="{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30,  delay: 550 } }")
+				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Настройки" @click.stop="navigate") 
 </template>
 
 <style scoped lang="scss">
 .smooth-dnd-container.horizontal.list {
 	display: flex;
 	flex-wrap: wrap;
+}
+.content {
+	margin-top: 3rem;
 }
 </style>
