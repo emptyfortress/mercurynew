@@ -13,7 +13,6 @@ const myapps = useApps()
 const tapes = ref([...myapps.apps])
 
 const onDrop = (dropResult: number) => {
-	console.log('fuck')
 	tapes.value = applyDrag(tapes.value, dropResult)
 }
 
@@ -47,12 +46,12 @@ const onDragStart = (n: number) => {
 }
 
 const onDrop1 = () => {
-	let item = myapps.apps[hoverItem.value]
+	let item = tapes.value[hoverItem.value]
 	item.group = true
 	// console.log(item)
 
 	onDragLeave()
-	myapps.apps.splice(draggingItem.value, 1)
+	tapes.value.splice(draggingItem.value, 1)
 	draggingItem.value = null
 }
 
@@ -88,15 +87,18 @@ const calcClass = (item: any) => {
 
 <template lang="pug">
 ul
-	Container(v-if='type == 0' @drop="onDrop" orientation='horizontal' :should-accept-drop='acceptDrop' group-name='column')
-		Draggable(v-for="(item, index) in myapps.apps"
+	Container(v-show='type == 0' @drop="onDrop" orientation='horizontal' :should-accept-drop='acceptDrop' group-name='column')
+		Draggable(v-for="(item, index) in tapes"
 			:key="item.id")
 			.item(
+				v-motion
+				:initial="{ y: 100, opacity: 0 }"
+				:enter='{ y: 0, opacity: 1, transition: { delay: 100 + (100 * index) } }'
 				@click='expand(item)'
 				:class="calcClass(item)"
 				) {{ item.label }}
 
-	.item(v-if='type == 1' v-for="(item, index) in myapps.apps"
+	.item(v-show='type == 1' v-for="(item, index) in tapes"
 		:key="item.id"
 		:draggable='true'
 		@dragstart='onDragStart(index)'
@@ -110,10 +112,6 @@ ul
 </template>
 
 <style scoped lang="scss">
-q-page {
-	// position: relative;
-}
-
 ul {
 	display: flex;
 	flex-wrap: wrap;
@@ -127,38 +125,6 @@ ul {
 	height: 100px;
 	background: #ccc;
 	border: 2px dashed black;
-}
-
-.fuck {
-	width: 200px;
-	height: 200px;
-	background: #fff;
-	margin: 0.5rem;
-	position: relative;
-
-	&.group {
-		box-shadow:
-			2px 2px 3px rgba($color: #000000, $alpha: 0.2),
-			-1px -1px 2px rgba($color: #000000, $alpha: 0.2);
-
-		&:before {
-			content: '';
-			display: block;
-			width: 200px;
-			height: 200px;
-			background: #fff;
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			z-index: -2;
-			transform: rotate(5deg);
-			box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.2);
-		}
-	}
-
-	&.green {
-		background: #a8d7a8;
-	}
 }
 
 .link {
@@ -203,9 +169,7 @@ ul {
 		display: none;
 	}
 	&.group {
-		box-shadow:
-			2px 2px 3px rgba($color: #000000, $alpha: 0.2),
-			-1px -1px 2px rgba($color: #000000, $alpha: 0.2);
+		box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.2);
 
 		&:before {
 			content: '';
@@ -217,9 +181,11 @@ ul {
 			position: absolute;
 			top: 0px;
 			left: 0px;
-			z-index: -2;
 			transform: rotate(5deg);
-			box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.2);
+			z-index: -2;
+			box-shadow:
+				2px 2px 3px rgba($color: #000000, $alpha: 0.2),
+				-1px -1px 2px rgba($color: #000000, $alpha: 0.2);
 		}
 	}
 
