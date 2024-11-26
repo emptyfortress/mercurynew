@@ -91,7 +91,7 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{val
 				:initial="{ y: -20, opacity: 0 }"
 				:enter="{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30,  delay: 550 } }")
 				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Первичные настройки" @click.stop="navigate(item)") 
-				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="К приложению" @click.stop="navigate1(item)") 
+				q-btn(unelevated color="primary" icon="mdi-code-block-braces" label="К приложению" @click.stop="navigate1(item)") 
 </template>
 
 <style scoped lang="scss">

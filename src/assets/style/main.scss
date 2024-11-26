@@ -1,4 +1,4 @@
-@import './base.css';
+@import './base.scss';
 @import './anim.scss';
 
 :root {
@@ -22,6 +22,7 @@
 	position: fixed;
 	width: 100%;
 	height: 100%;
+	// background: #c7d8f4;
 	background: #c7d8f4;
 	top: 50px;
 	left: -100%;
