@@ -1,50 +1,56 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
-import { useFlip } from '@/stores/flip'
+import VueDraggableResizable from 'vue-draggable-resizable'
 
-gsap.registerPlugin(Flip)
+// import { onBeforeUnmount, onMounted, ref } from 'vue'
+// import { gsap } from 'gsap'
+// import { Flip } from 'gsap/Flip'
+// import { useFlip } from '@/stores/flip'
 
-const flip = useFlip()
+// gsap.registerPlugin(Flip)
 
-onBeforeUnmount(() => {
-	const elemToFlip = document.querySelector('[data-flip-id]')
-	if (elemToFlip) {
-		let tmp = Flip.getState(elemToFlip)
-		flip.setLastState(tmp)
-	}
-})
+// const flip = useFlip()
 
-onMounted(() => {
-	const elemToFlip = document.querySelector('[data-flip-id]')
-	if (elemToFlip && flip.lastState) {
-		Flip.from(flip.lastState, {
-			targets: elemToFlip,
-			duration: .3,
-			toggleClass: 'test'
-			// other Flip properties
-		});
-	}
-	flip.setLastState(null)
-	setTimeout(() => {
-		gsap.to('.q-page', {
-			backgroundColor: 'transparent',
-			duration: 2,
-		})
-	}, 500)
-})
+// onBeforeUnmount(() => {
+// 	const elemToFlip = document.querySelector('[data-flip-id]')
+// 	if (elemToFlip) {
+// 		let tmp = Flip.getState(elemToFlip)
+// 		flip.setLastState(tmp)
+// 	}
+// })
 
+// onMounted(() => {
+// 	const elemToFlip = document.querySelector('[data-flip-id]')
+// 	if (elemToFlip && flip.lastState) {
+// 		Flip.from(flip.lastState, {
+// 			targets: elemToFlip,
+// 			duration: .3,
+// 			toggleClass: 'test'
+// 			// other Flip properties
+// 		});
+// 	}
+// 	flip.setLastState(null)
+// 	setTimeout(() => {
+// 		gsap.to('.q-page', {
+// 			backgroundColor: 'transparent',
+// 			duration: 2,
+// 		})
+// 	}, 500)
+// })
 </script>
 
 <template lang="pug">
-q-page(data-flip-id="img" padding)
-	.flex
-		router-link(to='/test') Back
+q-page()
+
+	div(:style="{ position: 'relative', height: '800px', border: '1px solid blue', margin: '1em', }")
+		vue-draggable-resizable(
+			:parent='true'
+			:resizable='true'
+			)
+			div laдофыдво
 </template>
 
 <style scoped lang="scss">
 .q-page {
-	background: pink;
+	// background: pink;
 }
 </style>

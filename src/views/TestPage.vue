@@ -5,7 +5,7 @@ import { promiseTimeout } from '@vueuse/core'
 import { useApps } from '@/stores/apps'
 import AddDialog from '@/components/AddDialog.vue'
 import { state } from '@formkit/drag-and-drop'
-import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+// import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 
 const myapps = useApps()
 
