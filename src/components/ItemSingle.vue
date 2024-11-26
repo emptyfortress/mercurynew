@@ -56,14 +56,7 @@ const navigate = (e: App) => {
 const navigate1 = (e: App) => {
 	e.expand = false
 	myapps.setCurrentApp(e)
-	app.value.id = e.id
-	app.value.label = e.label
-	app.value.descr = e.descr
-	app.value.version = e.version
-	app.value.author = e.author
-	app.value.created = e.created
-	app.value.type = e.type
-	app.value.group = e.group
+	app.value = { ...e }
 	router.push('/process')
 }
 </script>
