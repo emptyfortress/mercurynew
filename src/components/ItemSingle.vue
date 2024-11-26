@@ -4,7 +4,9 @@ import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
+import { useApps } from '@/stores/apps'
+import { useStorage } from '@vueuse/core'
 
 const tapes = defineModel<App[]>('tapes')
 gsap.registerPlugin(Flip)
@@ -43,10 +45,26 @@ const calcClass = (item: App) => {
 }
 
 const router = useRouter()
-const route = useRoute()
+const myapps = useApps()
+const app = useStorage('app', localStorage)
 
-const navigate = () => {
+const navigate = (e: App) => {
+	e.expand = false
+	myapps.setCurrentApp(e)
 	router.push('/assistent')
+}
+const navigate1 = (e: App) => {
+	e.expand = false
+	myapps.setCurrentApp(e)
+	app.value.id = e.id
+	app.value.label = e.label
+	app.value.descr = e.descr
+	app.value.version = e.version
+	app.value.author = e.author
+	app.value.created = e.created
+	app.value.type = e.type
+	app.value.group = e.group
+	router.push('/process')
 }
 </script>
 
@@ -79,7 +97,8 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{val
 				v-motion
 				:initial="{ y: -20, opacity: 0 }"
 				:enter="{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30,  delay: 550 } }")
-				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Настройки" @click.stop="navigate") 
+				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Первичные настройки" @click.stop="navigate(item)") 
+				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="К приложению" @click.stop="navigate1(item)") 
 </template>
 
 <style scoped lang="scss">

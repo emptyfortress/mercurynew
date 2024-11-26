@@ -15,20 +15,25 @@ const router = createRouter({
 			component: () => import('@/views/Assistent.vue'),
 		},
 		{
-			path: '/test',
-			name: 'test',
-			component: () => import('@/views/TestPage.vue'),
+			path: '/process',
+			name: 'process',
+			component: () => import('@/views/Process.vue'),
 		},
-		{
-			path: '/test1',
-			name: 'test1',
-			component: () => import('@/views/TestPage1.vue'),
-		},
-		{
-			path: '/project',
-			name: 'project',
-			component: () => import('@/views/Project.vue'),
-		},
+		// {
+		// 	path: '/test',
+		// 	name: 'test',
+		// 	component: () => import('@/views/TestPage.vue'),
+		// },
+		// {
+		// 	path: '/test1',
+		// 	name: 'test1',
+		// 	component: () => import('@/views/TestPage1.vue'),
+		// },
+		// {
+		// 	path: '/project',
+		// 	name: 'project',
+		// 	component: () => import('@/views/Project.vue'),
+		// },
 	],
 })
 

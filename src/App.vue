@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterView } from 'vue-router'
-// import { useStorage } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
 import { gsap } from 'gsap'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const leftDrawer = ref(false)
-const toggleLeftDrawer = (() => {
+const toggleLeftDrawer = () => {
 	leftDrawer.value = !leftDrawer.value
-})
+}
 const rightDrawer = ref(false)
-const toggleRightDrawer = (() => {
+const toggleRightDrawer = () => {
 	rightDrawer.value = !rightDrawer.value
-})
+}
 
-// const app = useStorage('app', localStorage)
+const app = useStorage('app', localStorage)
 
 const leave = async (el: any, done: any) => {
 	let div = document.createElement('div')
@@ -61,8 +64,8 @@ q-layout(view='hHh LpR fFf')
 			q-btn(dense flat round icon='mdi-menu' @click='toggleLeftDrawer')
 			q-btn(dense flat round icon='mdi-home-roof' to="/")
 			q-toolbar-title
-				|Конструктор приложений
-				// |{{ app.text }}
+				span(v-if='route.name == "home"') Конструктор приложений
+				span(v-if='route.name == "process"') {{ app.label }}
 			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
 
 	q-drawer(v-model='leftDrawer' side='left' overlay bordered behavior="desktop")

@@ -60,24 +60,20 @@ export const useApps = defineStore('apps', () => {
 		},
 	])
 
-	// const newItem = ref(true)
-	// const toggleNew = () => {
-	// 	newItem.value = !newItem.value
-	// }
-
-	// const loadApp = (e: App[]) => {
-	// 	apps.value = [...e]
-	// }
-
 	const createApp = (e: App) => {
 		apps.value.push(e)
 	}
 
+	const currentApp = ref<App | null>(null)
+	const setCurrentApp = (e: App) => {
+		currentApp.value = e
+	}
+
 	return {
 		apps,
-		// loadApp,
 		createApp,
-		// newItem,
-		// toggleNew,
+
+		currentApp,
+		setCurrentApp,
 	}
 })
