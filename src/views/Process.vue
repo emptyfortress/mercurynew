@@ -29,29 +29,8 @@ const { apply: editorAnim, stop } = useMotion(editor, {
 	},
 	start: { width: '90%', x: '0%', transition: { stiffness: 200, damping: 20 } },
 	shrink: { width: '75%', x: '-12%', transition: { stiffness: 200, damping: 20 } },
+	shrink1: { width: '75%', x: '12%', transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
-})
-
-const { apply: propAnim, stop: stop1 } = useMotion(prop, {
-	initial: {
-		opacity: 0,
-		scaleX: '0%',
-	},
-	enter: {
-		opacity: 1,
-		scaleX: '100%',
-		transition: { stiffness: 200, damping: 20 },
-	},
-	start: {
-		opacity: 1,
-		scaleX: '100%',
-		transition: { stiffness: 200, damping: 20 },
-	},
-	exit: {
-		opacity: 0,
-		scaleX: '0%',
-		transition: { stiffness: 200, damping: 20 },
-	},
 })
 
 const selection = ref<number | null>(null)
@@ -69,6 +48,12 @@ const shrink = async () => {
 	await editorAnim('shrink')
 	stop()
 }
+
+const shrink1 = async () => {
+	await editorAnim('shrink1')
+	stop()
+}
+
 const start = async () => {
 	setTimeout(() => {
 		editorAnim('start')
@@ -90,7 +75,7 @@ q-page(padding)
 		.footer footer {{ selection }}
 
 		PlusButton(@activate='shrink' @stop='start')
-		LibButton
+		LibButton(@activate='shrink1' @stop='start')
 
 </template>
 

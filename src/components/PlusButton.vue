@@ -13,28 +13,6 @@ const calcH = computed(() => {
 	return 'calc(100vh - 120px)'
 })
 
-// const { apply: btAnim, stop } = useMotion(button, {
-// 	initial: {
-// 		right: -58,
-// 		height: '48px',
-// 		width: '48px',
-// 		borderRadius: '50%',
-// 	},
-// 	active: {
-// 		right: -360,
-// 		width: '348px',
-// 		height: '800px',
-// 		borderRadius: '8px',
-// 		transition: { delay: 600 },
-// 	},
-// })
-
-const setActive = async () => {
-	emit('activate')
-	await btAnim('active')
-	stop()
-}
-
 const expanded = ref<boolean>(false)
 
 const expand = (item: any) => {
