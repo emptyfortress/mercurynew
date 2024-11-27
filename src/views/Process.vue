@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
 import VueDraggableResizable from 'vue-draggable-resizable'
@@ -34,20 +34,34 @@ const { apply: editorAnim, stop } = useMotion(editor, {
 			repeatType: 'mirror',
 		},
 	},
+	start: { width: '90%', x: '0%', transition: { stiffness: 200, damping: 20 } },
 	shrink: { width: '60%', x: '-30%', transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
 })
 
-const select = (e: any) => {
-	blocks.value.map((item) => (item.selected = false))
-	e.selected = true
-	action()
+const selection = ref<number | null>(null)
+const select = (n: number) => {
+	if (selection.value == n) {
+		selection.value = null
+	} else selection.value = n
 }
 
-const action = async () => {
+const calcClass = (n: number) => {
+	return selection.value == n ? 'selected' : ''
+}
+
+watch(selection, (val) => {
+	if (val !== null) {
+		shrink()
+	} else start()
+})
+
+const shrink = async () => {
 	await editorAnim('shrink')
-	// await editorAnim('move')
-	// await promiseTimeout(3000)
+	stop()
+}
+const start = async () => {
+	await editorAnim('start')
 	stop()
 }
 </script>
@@ -59,10 +73,10 @@ q-page(padding)
 		.text Диаграмма
 		.center
 			.block(v-for="item in blocks" :key='item.id'
-				:class='{selected: item.selected}'
-				@click='select(item)'
-				)
-		.footer footer
+				:class='calcClass(item.id)'
+				@click='select(item.id)'
+				) {{ item.id }}
+		.footer footer {{ selection }}
 
 	// .test()
 	vue-draggable-resizable()
