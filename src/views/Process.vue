@@ -27,19 +27,11 @@ const { apply: editorAnim, stop } = useMotion(editor, {
 			// onComplete: () => editorAnim('levitate'),
 		},
 	},
-	levitate: {
-		y: 5,
-		transition: {
-			duration: 1000,
-			repeat: Infinity,
-			ease: 'easeInOut',
-			repeatType: 'mirror',
-		},
-	},
 	start: { width: '90%', x: '0%', transition: { stiffness: 200, damping: 20 } },
-	shrink: { width: '70%', x: '-18%', transition: { stiffness: 200, damping: 20 } },
+	shrink: { width: '75%', x: '-12%', transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
 })
+
 const { apply: propAnim, stop: stop1 } = useMotion(prop, {
 	initial: {
 		opacity: 0,
@@ -73,18 +65,14 @@ const calcClass = (n: number) => {
 	return selection.value == n ? 'selected' : ''
 }
 
-// watch(selection, (val) => {
-// 	if (val !== null) {
-// 		shrink()
-// 	} else start()
-// })
-
 const shrink = async () => {
 	await editorAnim('shrink')
 	stop()
 }
 const start = async () => {
-	await editorAnim('start')
+	setTimeout(() => {
+		editorAnim('start')
+	}, 400)
 	stop()
 }
 </script>
@@ -101,7 +89,7 @@ q-page(padding)
 				) {{ item.id }}
 		.footer footer {{ selection }}
 
-		PlusButton(@activate='shrink')
+		PlusButton(@activate='shrink' @stop='start')
 		LibButton
 
 </template>
