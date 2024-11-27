@@ -53,7 +53,7 @@ const navigate = (e: App) => {
 	myapps.setCurrentApp(e)
 	router.push('/assistent')
 }
-const navigate1 = (e: App) => {
+const navigate1 = (e: any) => {
 	e.expand = false
 	myapps.setCurrentApp(e)
 	app.value = { ...e }

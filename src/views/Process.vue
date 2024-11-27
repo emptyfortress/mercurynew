@@ -39,7 +39,7 @@ const { apply: editorAnim, stop } = useMotion(editor, {
 	shrink: { width: '70%', x: '-20%', transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
 })
-const { apply: propAnim, stop1 } = useMotion(prop, {
+const { apply: propAnim, stop: stop1 } = useMotion(prop, {
 	initial: {
 		opacity: 0,
 		scaleX: '0%',
