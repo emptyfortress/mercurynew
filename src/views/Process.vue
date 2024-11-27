@@ -2,7 +2,8 @@
 import { ref, watch } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
-import VueDraggableResizable from 'vue-draggable-resizable'
+import PlusButton from '@/components/PlusButton.vue'
+import LibButton from '@/components/LibButton.vue'
 
 const app = useStorage('app', localStorage)
 
@@ -36,7 +37,7 @@ const { apply: editorAnim, stop } = useMotion(editor, {
 		},
 	},
 	start: { width: '90%', x: '0%', transition: { stiffness: 200, damping: 20 } },
-	shrink: { width: '70%', x: '-20%', transition: { stiffness: 200, damping: 20 } },
+	shrink: { width: '70%', x: '-18%', transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
 })
 const { apply: propAnim, stop: stop1 } = useMotion(prop, {
@@ -72,11 +73,11 @@ const calcClass = (n: number) => {
 	return selection.value == n ? 'selected' : ''
 }
 
-watch(selection, (val) => {
-	if (val !== null) {
-		shrink()
-	} else start()
-})
+// watch(selection, (val) => {
+// 	if (val !== null) {
+// 		shrink()
+// 	} else start()
+// })
 
 const shrink = async () => {
 	await editorAnim('shrink')
@@ -99,12 +100,9 @@ q-page(padding)
 				@click='select(item.id)'
 				) {{ item.id }}
 		.footer footer {{ selection }}
-		.prop(ref='prop' v-if='selection')
-			.text Свойства
-			.text Этап {{ selection }}
 
-	vue-draggable-resizable()
-		div laдофыдво
+		PlusButton(@activate='shrink')
+		LibButton
 
 </template>
 
@@ -125,24 +123,22 @@ q-page(padding)
 	justify-content: space-between;
 	flex-direction: column;
 	align-items: center;
-	box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: var(--shad);
 	// overflow: hidden;
 	transform-origin: bottom right;
 	position: relative;
 }
 .prop {
-	width: 40%;
-	height: calc(100vh - 120px);
+	width: 48px;
+	height: 48px;
+	// height: calc(100vh - 120px);
 	background: #fff;
 	box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.2);
-	border-radius: 0.4rem;
-	padding: 0.5rem;
+	border-radius: 50%;
 	border: 1px solid #ccc;
-	// overflow: hidden;
 	position: absolute;
 	top: 0;
-	right: -41%;
-	z-index: -3;
+	right: -50px;
 }
 .text {
 	font-size: 1.2rem;
