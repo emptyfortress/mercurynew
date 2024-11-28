@@ -32,8 +32,4 @@ const router = createRouter({
 	],
 })
 
-// router.afterEach((to, from) => {
-// 	if (to.name == 'form' && from.name == 'process') console.log('form')
-// })
-
 export default router
