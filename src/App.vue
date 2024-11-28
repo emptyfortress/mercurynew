@@ -64,7 +64,8 @@ router.afterEach((to, from) => {
 
 <template lang="pug">
 q-layout(view='hHh LpR fFf')
-	q-header.bg-primary.text-secondary(elevated)
+	// q-header.bg-primary.text-info(elevated)
+	q-header(elevated)
 		q-toolbar
 			q-btn(dense flat round icon='mdi-menu' @click='toggleLeftDrawer')
 			q-btn(dense flat round icon='mdi-home-roof' to="/")

@@ -34,9 +34,6 @@ q-page(padding)
 	AddDialog(v-model="dialog" @create='create')
 	q-btn.fab(round color="primary" icon="mdi-plus" @click="add")
 
-	.colors
-		q-img(src='colors.png')
-
 </template>
 
 <style scoped lang="scss">
