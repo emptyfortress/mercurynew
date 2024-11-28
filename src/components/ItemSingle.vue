@@ -10,7 +10,7 @@ import { useStorage } from '@vueuse/core'
 
 const tapes = defineModel<App[]>('tapes')
 
-tapes.value.map((item) => (item.expand = false))
+tapes.value?.map((item) => (item.expand = false))
 
 gsap.registerPlugin(Flip)
 
