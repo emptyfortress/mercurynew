@@ -2,8 +2,17 @@
 import { ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
-import { gsap } from 'gsap'
+// import { gsap } from 'gsap'
 import { useRouter, useRoute } from 'vue-router'
+import {
+	coverBeforeEnter,
+	coverEnter,
+	coverLeave,
+	slideLeave,
+	slideEnter,
+	slideBeforeEnter,
+} from '@/utils/utils'
+// import { useMotion } from '@vueuse/motion'
 
 const route = useRoute()
 const router = useRouter()
@@ -19,47 +28,30 @@ const toggleRightDrawer = () => {
 
 const app = useStorage('app', localStorage)
 
+const cover = ref(true)
+const mode = ref<any>('out-in')
+
+router.afterEach((to, from) => {
+	if (to.name == 'form' && from.name == 'process') {
+		cover.value = false
+		// mode.value = undefined
+	} else {
+		cover.value = true
+		// mode.value = 'out-in'
+	}
+})
+
 const leave = async (el: any, done: any) => {
-	let div = document.createElement('div')
-	let cont = document.querySelector('#cont')
-	await cont?.appendChild(div)
-	await div.classList.add('cover')
-	await gsap.to(div, {
-		duration: 0.5,
-		left: 0,
-		ease: 'power3.out',
-	})
-	done()
-	div.remove()
+	cover.value ? coverLeave(el, done) : slideLeave(el, done)
 }
+
 const beforeEnter = (el: any) => {
-	let div = document.createElement('div')
-	let cont = document.querySelector('#cont')
-	cont?.appendChild(div)
-	div.classList.add('cover')
+	cover.value ? coverBeforeEnter() : slideBeforeEnter(el)
 }
 
 const enter = async (el: any, done: any) => {
-	let div = document.querySelector('.cover')
-	await gsap.fromTo(
-		'.cover',
-		{
-			left: 0,
-		},
-		{
-			delay: 0.3,
-			left: '100%',
-			duration: 0.5,
-			ease: 'power3.out',
-		}
-	)
-	div?.remove()
-	done()
+	cover.value ? coverEnter(el, done) : slideEnter(el, done)
 }
-
-router.afterEach((to, from) => {
-	if (to.name == 'form' && from.name == 'process') console.log('form')
-})
 </script>
 
 <template lang="pug">
@@ -83,7 +75,7 @@ q-layout(view='hHh LpR fFf')
 	q-page-container
 		#cont
 			router-view(v-slot="{ Component, route }")
-				transition(@before-enter="beforeEnter" @enter="enter" @leave="leave" :css="false" mode="out-in")
+				transition(@before-enter="beforeEnter" @enter="enter" @leave="leave" :css="false" :mode="mode")
 					component(:is="Component")
 </template>
 

@@ -9,6 +9,9 @@ import { useApps } from '@/stores/apps'
 import { useStorage } from '@vueuse/core'
 
 const tapes = defineModel<App[]>('tapes')
+
+tapes.value.map((item) => (item.expand = false))
+
 gsap.registerPlugin(Flip)
 
 const onDrop = (dropResult: number) => {
@@ -16,6 +19,7 @@ const onDrop = (dropResult: number) => {
 }
 
 const expanded = ref<boolean>(false)
+
 const expand = (item: any) => {
 	const state = Flip.getState('.item')
 	expanded.value = !expanded.value
@@ -54,7 +58,6 @@ const navigate = (e: App) => {
 	router.push('/assistent')
 }
 const navigate1 = (e: any) => {
-	e.expand = false
 	myapps.setCurrentApp(e)
 	app.value = { ...e }
 	router.push('/process')
