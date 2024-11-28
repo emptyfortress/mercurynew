@@ -20,11 +20,20 @@ const router = createRouter({
 			component: () => import('@/views/Process.vue'),
 		},
 		{
+			path: '/form',
+			name: 'form',
+			component: () => import('@/views/Form.vue'),
+		},
+		{
 			path: '/project',
 			name: 'project',
 			component: () => import('@/views/Project.vue'),
 		},
 	],
 })
+
+// router.afterEach((to, from) => {
+// 	if (to.name == 'form' && from.name == 'process') console.log('form')
+// })
 
 export default router

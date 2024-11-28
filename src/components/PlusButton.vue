@@ -2,6 +2,9 @@
 import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 gsap.registerPlugin(Flip)
 
@@ -38,7 +41,7 @@ const close = () => {
 }
 
 const next = () => {
-	console.log(111)
+	router.push('/form')
 }
 </script>
 
@@ -50,8 +53,8 @@ const next = () => {
 	q-icon(v-if='!expanded'
 		v-motion
 		:initial='{opacity: 0, rotate: "0deg"}'
-		:enter='{opacity: 1, rotate: "0deg", transition: { delay: 500}}'
-		:hovered='{rotate: "90deg", transition: {delay: 0}}'
+		:enter='{opacity: 1, rotate: "0deg",}'
+		:hovered='{rotate: "90deg", }'
 		name="mdi-tune-vertical-variant"
 		color="primary"
 		size='24px')

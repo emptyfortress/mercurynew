@@ -3,9 +3,10 @@ import { ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { gsap } from 'gsap'
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 
 const leftDrawer = ref(false)
 const toggleLeftDrawer = () => {
@@ -55,6 +56,10 @@ const enter = async (el: any, done: any) => {
 	div?.remove()
 	done()
 }
+
+router.afterEach((to, from) => {
+	if (to.name == 'form' && from.name == 'process') console.log('form')
+})
 </script>
 
 <template lang="pug">
