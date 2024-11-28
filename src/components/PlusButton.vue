@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
-// import { useMotion } from '@vueuse/motion'
+import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 
@@ -9,14 +8,11 @@ gsap.registerPlugin(Flip)
 const button = ref<HTMLElement>()
 const emit = defineEmits(['activate', 'stop'])
 
-const calcH = computed(() => {
-	return 'calc(100vh - 120px)'
-})
-
 const expanded = ref<boolean>(false)
 
-const expand = (item: any) => {
-	expanded.value ? emit('stop') : emit('activate')
+const expand = () => {
+	if (expanded.value) return
+	emit('activate')
 	const state = Flip.getState('.button')
 	expanded.value = !expanded.value
 	nextTick(() => {
@@ -27,6 +23,23 @@ const expand = (item: any) => {
 		})
 	})
 }
+
+const close = () => {
+	emit('stop')
+	const state = Flip.getState('.button')
+	expanded.value = !expanded.value
+	nextTick(() => {
+		Flip.from(state, {
+			duration: 0.4,
+			ease: 'power3.inOut',
+			delay: 0.2,
+		})
+	})
+}
+
+const next = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
@@ -36,11 +49,28 @@ const expand = (item: any) => {
 	)
 	q-icon(v-if='!expanded'
 		v-motion
-		:initial='{rotate: "0deg"}'
-		:hovered='{rotate: "90deg"}'
+		:initial='{opacity: 0, rotate: "0deg"}'
+		:enter='{opacity: 1, rotate: "0deg", transition: { delay: 500}}'
+		:hovered='{rotate: "90deg", transition: {delay: 0}}'
 		name="mdi-tune-vertical-variant"
 		color="primary"
 		size='24px')
+
+	q-btn.close(flat round v-if='expanded' size="sm"
+		v-motion
+		:initial='{opacity: 0}'
+		:enter='{opacity: 1}'
+		:delay='500'
+		icon='mdi-close' @click.stop='close')
+
+	q-btn.next(v-if='expanded'
+		v-motion
+		:initial='{opacity: 0, y: 100}'
+		:enter='{opacity: 1, y: 0}'
+		:delay='1000'
+		round color="primary"
+		icon='mdi-arrow-right'
+		@click.stop="next") 
 </template>
 
 <style scoped lang="scss">
@@ -62,5 +92,14 @@ const expand = (item: any) => {
 		right: -395px;
 		border-radius: 6px;
 	}
+}
+.next {
+	position: absolute;
+	top: 20rem;
+}
+.close {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
 }
 </style>
