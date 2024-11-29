@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
-// import { gsap } from 'gsap'
 import { useRouter, useRoute } from 'vue-router'
 import {
 	coverBeforeEnter,
@@ -12,12 +11,12 @@ import {
 	slideEnter,
 	slideBeforeEnter,
 } from '@/utils/utils'
-// import { useMotion } from '@vueuse/motion'
+import Drawer from '@/components/Drawer.vue'
 
 const route = useRoute()
 const router = useRouter()
 
-const leftDrawer = ref(false)
+const leftDrawer = ref(true)
 const toggleLeftDrawer = () => {
 	leftDrawer.value = !leftDrawer.value
 }
@@ -66,8 +65,7 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "process"') {{ app.label }}
 			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
 
-	q-drawer(v-model='leftDrawer' side='left' overlay bordered behavior="desktop")
-		// drawer content
+	Drawer(v-model="leftDrawer")
 
 	q-drawer(v-model='rightDrawer' side='right' overlay bordered behavior="desktop")
 	// drawer content
