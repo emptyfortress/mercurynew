@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useStorage } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
 import PlusButton from '@/components/PlusButton.vue'
-import LibButton from '@/components/LibButton.vue'
-
-const app = useStorage('app', localStorage)
 
 const blocks = ref([
 	{ id: 1, selected: false },
@@ -28,7 +24,7 @@ const { apply: editorAnim, stop } = useMotion(editor, {
 		},
 	},
 	start: { width: '90%', x: '0%', transition: { stiffness: 200, damping: 20 } },
-	shrink: { width: '75%', x: '-12%', transition: { stiffness: 200, damping: 20 } },
+	shrink: { width: '78%', x: '-14%', transition: { stiffness: 200, damping: 20 } },
 	shrink1: { width: '75%', x: '12%', transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
 })
@@ -75,7 +71,6 @@ q-page(padding)
 		.footer footer {{ selection }}
 
 		PlusButton(@activate='shrink' @stop='start')
-		LibButton(@activate='shrink1' @stop='start')
 
 </template>
 
@@ -97,14 +92,12 @@ q-page(padding)
 	flex-direction: column;
 	align-items: center;
 	box-shadow: var(--shad);
-	// overflow: hidden;
 	transform-origin: bottom right;
 	position: relative;
 }
 .prop {
 	width: 48px;
 	height: 48px;
-	// height: calc(100vh - 120px);
 	background: #fff;
 	box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.2);
 	border-radius: 50%;

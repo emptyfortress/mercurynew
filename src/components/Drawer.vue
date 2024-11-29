@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
 
 const modelValue = defineModel<boolean>()
 
@@ -45,6 +49,12 @@ const pages = [
 
 <template lang="pug">
 q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
+	q-btn.back(v-if='route.name == "form"'
+		v-motion
+		:initial='{x: -200, opacity: 0}'
+		:enter='{x: 0, opacity: 1}'
+		:delay='1200'
+		icon="mdi-arrow-left" @click="router.back()" size="md") 
 	.toolbar
 		q-list()
 			RouterLink(v-for="page in pages" :key="page.id" :to="page.url")
@@ -63,16 +73,24 @@ q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
 	flex-direction: column;
 	justify-content: start;
 	align-items: center;
+	position: relative;
 }
 .toolbar {
 	background: #fff;
 	box-shadow: var(--shad0);
-	margin-top: 200px;
+	margin-top: 150px;
 }
 a {
 	text-decoration: none;
 }
 a.router-link-active .q-item {
 	background: $accent;
+}
+.back {
+	position: absolute;
+	top: 1.8rem;
+	background: #fff;
+	color: $primary;
+	min-height: 48px;
 }
 </style>

@@ -3,6 +3,7 @@ import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useRouter } from 'vue-router'
+import LibContent from '@/components/LibContent.vue'
 
 const router = useRouter()
 
@@ -66,15 +67,8 @@ const next = () => {
 		:delay='500'
 		icon='mdi-close' @click.stop='close')
 
-	q-btn.next(v-if='expanded'
-		v-motion
-		:initial='{opacity: 0, y: 100}'
-		:enter='{opacity: 1, y: 0}'
-		:delay='1000'
-		label='Настроить форму'
-		color="primary"
-		icon='mdi-arrow-right'
-		@click.stop="next") 
+	LibContent(v-if='expanded')
+
 </template>
 
 <style scoped lang="scss">

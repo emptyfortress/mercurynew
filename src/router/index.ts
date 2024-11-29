@@ -25,6 +25,26 @@ const router = createRouter({
 			component: () => import('@/views/Form.vue'),
 		},
 		{
+			path: '/forms',
+			name: 'forms',
+			component: () => import('@/views/Forms.vue'),
+		},
+		{
+			path: '/statuses',
+			name: 'statuses',
+			component: () => import('@/views/Statuses.vue'),
+		},
+		{
+			path: '/roles',
+			name: 'roles',
+			component: () => import('@/views/Roles.vue'),
+		},
+		{
+			path: '/lists',
+			name: 'lists',
+			component: () => import('@/views/Lists.vue'),
+		},
+		{
 			path: '/project',
 			name: 'project',
 			component: () => import('@/views/Project.vue'),

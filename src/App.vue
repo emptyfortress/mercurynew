@@ -55,14 +55,12 @@ const enter = async (el: any, done: any) => {
 
 <template lang="pug">
 q-layout(view='hHh LpR fFf')
-	// q-header.bg-primary.text-info(elevated)
 	q-header(elevated)
 		q-toolbar
 			q-btn(dense flat round icon='mdi-menu' @click='toggleLeftDrawer')
-			q-btn(dense flat round icon='mdi-home-roof' to="/")
 			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
-				span(v-if='route.name == "process"') {{ app.label }}
+				span(v-else) {{ app.label }}
 			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
 
 	Drawer(v-model="leftDrawer")
