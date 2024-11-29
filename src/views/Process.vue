@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useMotion } from '@vueuse/motion'
 import PlusButton from '@/components/PlusButton.vue'
+import { useElementSize } from '@vueuse/core'
 
 const blocks = ref([
 	{ id: 1, selected: false },
@@ -10,22 +11,27 @@ const blocks = ref([
 ])
 
 const editor = ref<HTMLElement>()
-const prop = ref<HTMLElement>()
+const { width, height } = useElementSize(editor)
 
+const calcWidth = computed(() => {
+	return width.value - 400 + 'px'
+})
+const startWidth = computed(() => {
+	return window.innerWidth
+})
 const { apply: editorAnim, stop } = useMotion(editor, {
 	enter: {
 		opacity: 1,
 		y: 0,
-		x: '0%',
+		x: 0,
 		marginLeft: 0,
-		width: '90%',
+		width: 1400,
 		transition: {
 			// onComplete: () => editorAnim('levitate'),
 		},
 	},
-	start: { width: '90%', x: '0%', transition: { stiffness: 200, damping: 20 } },
-	shrink: { width: '78%', x: '-14%', transition: { stiffness: 200, damping: 20 } },
-	shrink1: { width: '75%', x: '12%', transition: { stiffness: 200, damping: 20 } },
+	start: { width: 1400, x: 0, transition: { stiffness: 200, damping: 20 } },
+	shrink: { width: 1000, x: -190, transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
 })
 
@@ -45,11 +51,6 @@ const shrink = async () => {
 	stop()
 }
 
-const shrink1 = async () => {
-	await editorAnim('shrink1')
-	stop()
-}
-
 const start = async () => {
 	setTimeout(() => {
 		editorAnim('start')
@@ -62,7 +63,8 @@ const start = async () => {
 q-page(padding)
 
 	.editor(ref='editor')
-		.text Диаграмма
+		.text Диаграмма {{ width }}
+		.text Диаграмма {{ startWidth }}
 		.center
 			.block(v-for="item in blocks" :key='item.id'
 				:class='calcClass(item.id)'
@@ -81,12 +83,11 @@ q-page(padding)
 	position: relative;
 }
 .editor {
-	width: 90%;
+	// width: 90%;
 	height: calc(100vh - 120px);
 	background: #fff;
-	padding: 0.5rem;
+	// padding: 0.5rem;
 	border-radius: 0.4rem;
-	border: 1px solid #ccc;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
@@ -94,17 +95,6 @@ q-page(padding)
 	box-shadow: var(--shad);
 	transform-origin: bottom right;
 	position: relative;
-}
-.prop {
-	width: 48px;
-	height: 48px;
-	background: #fff;
-	box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.2);
-	border-radius: 50%;
-	border: 1px solid #ccc;
-	position: absolute;
-	top: 0;
-	right: -50px;
 }
 .text {
 	font-size: 1.2rem;
