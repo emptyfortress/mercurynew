@@ -17,24 +17,43 @@ const { apply: editorAnim, stop } = useMotion(editor, {
 		},
 	},
 	start: { width: '90%', x: '0%', transition: { stiffness: 200, damping: 20 } },
-	shrink: { width: '75%', x: '-13%', transition: { stiffness: 200, damping: 20 } },
-	shrink1: { width: '75%', x: '12%', transition: { stiffness: 200, damping: 20 } },
+	shrinkRight: { width: '75%', x: '-13%', transition: { stiffness: 200, damping: 20 } },
+	shrinkLeft: { width: '75%', x: '12%', transition: { stiffness: 200, damping: 20 } },
+	shrinkAll: { width: '55%', x: '0%', transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
 })
 
-const shrink = async () => {
-	await editorAnim('shrink')
+const left = ref(false)
+const right = ref(false)
+
+const startRight = async () => {
+	right.value = true
+	if (left.value && right.value) {
+		await editorAnim('shrinkAll')
+	} else await editorAnim('shrinkRight')
 	stop()
 }
 
-const shrink1 = async () => {
-	await editorAnim('shrink1')
+const startLeft = async () => {
+	left.value = true
+	if (left.value && right.value) {
+		await editorAnim('shrinkAll')
+	} else await editorAnim('shrinkLeft')
 	stop()
 }
 
-const start = async () => {
+const stopRight = async () => {
+	right.value = false
 	setTimeout(() => {
-		editorAnim('start')
+		left.value ? editorAnim('shrinkLeft') : editorAnim('start')
+	}, 400)
+	stop()
+}
+
+const stopLeft = async () => {
+	left.value = false
+	setTimeout(() => {
+		right.value ? editorAnim('shrinkRight') : editorAnim('start')
 	}, 400)
 	stop()
 }
@@ -45,8 +64,8 @@ q-page(padding)
 	.editor(ref='editor')
 		.text Form
 
-		PlusButton1(@activate='shrink' @stop='start')
-		LibButton(@activate='shrink1' @stop='start')
+		PlusButton1(@activate='startRight' @stop='stopRight')
+		LibButton(@activate='startLeft' @stop='stopLeft')
 
 </template>
 
