@@ -1,53 +1,59 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useMotion } from '@vueuse/motion'
+import { usePanels } from '@/stores/panels'
 
 const editor = ref<HTMLElement>()
+const panels = usePanels()
+
+const full = { width: 1500, x: 0 }
+const leftStart = { width: 1150, x: 175 }
+const rightStart = { width: 1150, x: -175 }
+const allStart = { width: 800, x: 0 }
+
+const calcStart = computed(() => {
+	if (panels.left && panels.right) return allStart
+	if (!panels.left && !panels.right) return full
+	if (panels.left) return leftStart
+	if (panels.right) return rightStart
+})
 
 const { apply: editorAnim, stop } = useMotion(editor, {
-	enter: {
-		opacity: 1,
-		y: 0,
-		x: 0,
-		marginLeft: 0,
-		width: 1500,
-	},
+	enter: calcStart.value,
 	start: { width: 1500, x: 0, transition: { stiffness: 200, damping: 20 } },
 	shrinkRight: { width: 1150, x: -175, transition: { stiffness: 200, damping: 20 } },
 	shrinkLeft: { width: 1150, x: 175, transition: { stiffness: 200, damping: 20 } },
 	shrinkAll: { width: 800, x: 0, transition: { stiffness: 200, damping: 20 } },
 })
 
-const left = ref(false)
-const right = ref(false)
-
 const startRight = async () => {
-	right.value = true
-	if (left.value && right.value) {
+	panels.setRight(true)
+	if (panels.left && panels.right) {
 		await editorAnim('shrinkAll')
 	} else await editorAnim('shrinkRight')
 	stop()
 }
 
 const startLeft = async () => {
-	left.value = true
-	if (left.value && right.value) {
+	panels.setLeft(true)
+	if (panels.left && panels.right) {
 		await editorAnim('shrinkAll')
 	} else await editorAnim('shrinkLeft')
 	stop()
 }
 
 const stopRight = async () => {
-	right.value = false
+	panels.setRight(false)
 	setTimeout(() => {
-		left.value ? editorAnim('shrinkLeft') : editorAnim('start')
+		panels.left ? editorAnim('shrinkLeft') : editorAnim('start')
 	}, 400)
 	stop()
 }
 
 const stopLeft = async () => {
-	left.value = false
+	// left.value = false
+	panels.setLeft(false)
 	setTimeout(() => {
-		right.value ? editorAnim('shrinkRight') : editorAnim('start')
+		panels.right ? editorAnim('shrinkRight') : editorAnim('start')
 	}, 400)
 	stop()
 }

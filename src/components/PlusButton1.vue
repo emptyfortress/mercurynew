@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { useRouter } from 'vue-router'
 import LibContent from '@/components/LibContent.vue'
+import { usePanels } from '@/stores/panels'
 
-const router = useRouter()
+const panels = usePanels()
 
 gsap.registerPlugin(Flip)
 
@@ -41,14 +41,15 @@ const close = () => {
 	})
 }
 
-const next = () => {
-	router.push('/form')
-}
+const calcClass = computed(() => {
+	if (expanded.value) return 'expand'
+	if (panels.right) return 'expand'
+})
 </script>
 
 <template lang="pug">
 .button(ref='button'
-	:class='{expand: expanded}'
+	:class='calcClass'
 	@click='expand'
 	)
 	q-icon(v-if='!expanded'
