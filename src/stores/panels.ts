@@ -7,7 +7,7 @@ export const usePanels = defineStore('panels', () => {
 		diag.value = state
 	}
 
-	const right = ref(true)
+	const right = ref(false)
 	const left = ref(false)
 
 	const setLeft = (state: boolean) => {
