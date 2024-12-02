@@ -9,14 +9,11 @@ const { apply: editorAnim, stop } = useMotion(editor, {
 	enter: {
 		opacity: 1,
 		y: 0,
-		x: '0%',
+		x: 0,
 		marginLeft: 0,
-		width: '90%',
-		transition: {
-			// onComplete: () => editorAnim('levitate'),
-		},
+		width: 1500,
 	},
-	start: { width: '90%', x: '0%', transition: { stiffness: 200, damping: 20 } },
+	start: { width: 1500, x: 0, transition: { stiffness: 200, damping: 20 } },
 	shrinkRight: { width: '75%', x: '-13%', transition: { stiffness: 200, damping: 20 } },
 	shrinkLeft: { width: '75%', x: '12%', transition: { stiffness: 200, damping: 20 } },
 	shrinkAll: { width: '55%', x: '0%', transition: { stiffness: 200, damping: 20 } },
@@ -73,20 +70,6 @@ q-page(padding)
 .q-page {
 	display: flex;
 	justify-content: center;
-	position: relative;
-}
-.editor {
-	width: 90%;
-	height: calc(100vh - 120px);
-	background: #fff;
-	padding: 0.5rem;
-	border-radius: 0.4rem;
-	border: 1px solid #ccc;
-	display: flex;
-	justify-content: space-between;
-	flex-direction: column;
-	align-items: center;
-	box-shadow: var(--shad);
 	position: relative;
 }
 </style>
