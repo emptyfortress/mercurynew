@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { useMotion } from '@vueuse/motion'
 import PlusButton from '@/components/PlusButton.vue'
-import { useElementSize } from '@vueuse/core'
 
 const blocks = ref([
 	{ id: 1, selected: false },
@@ -11,27 +10,17 @@ const blocks = ref([
 ])
 
 const editor = ref<HTMLElement>()
-const { width, height } = useElementSize(editor)
 
-const calcWidth = computed(() => {
-	return width.value - 400 + 'px'
-})
-const startWidth = computed(() => {
-	return window.innerWidth
-})
 const { apply: editorAnim, stop } = useMotion(editor, {
-	enter: {
+	initial: {
 		opacity: 1,
 		y: 0,
 		x: 0,
 		marginLeft: 0,
-		width: 1400,
-		transition: {
-			// onComplete: () => editorAnim('levitate'),
-		},
+		width: 1500,
 	},
-	start: { width: 1400, x: 0, transition: { stiffness: 200, damping: 20 } },
-	shrink: { width: 1000, x: -190, transition: { stiffness: 200, damping: 20 } },
+	start: { width: 1500, x: 0, transition: { stiffness: 200, damping: 20 } },
+	shrink: { width: 1150, x: -175, transition: { stiffness: 200, damping: 20 } },
 	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
 })
 
@@ -63,8 +52,7 @@ const start = async () => {
 q-page(padding)
 
 	.editor(ref='editor')
-		.text Диаграмма {{ width }}
-		.text Диаграмма {{ startWidth }}
+		.text Диаграмма
 		.center
 			.block(v-for="item in blocks" :key='item.id'
 				:class='calcClass(item.id)'
@@ -80,20 +68,6 @@ q-page(padding)
 .q-page {
 	display: flex;
 	justify-content: center;
-	position: relative;
-}
-.editor {
-	// width: 90%;
-	height: calc(100vh - 120px);
-	background: #fff;
-	// padding: 0.5rem;
-	border-radius: 0.4rem;
-	display: flex;
-	justify-content: space-between;
-	flex-direction: column;
-	align-items: center;
-	box-shadow: var(--shad);
-	transform-origin: bottom right;
 	position: relative;
 }
 .text {

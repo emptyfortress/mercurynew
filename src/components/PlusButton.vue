@@ -91,9 +91,9 @@ const next = () => {
 	padding: 0.6rem;
 	cursor: pointer;
 	&.expand {
-		width: 385px;
+		width: 350px;
 		height: calc(100vh - 120px);
-		right: -395px;
+		right: -358px;
 		border-radius: 6px;
 	}
 }
