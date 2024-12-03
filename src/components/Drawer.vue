@@ -8,12 +8,6 @@ const route = useRoute()
 const modelValue = defineModel<boolean>()
 
 const pages = [
-	// {
-	// 	id: 0,
-	// 	title: 'Главная',
-	// 	icon: 'mdi-home-roof',
-	// 	url: '/',
-	// },
 	{
 		id: 1,
 		title: 'Процесс',
@@ -52,8 +46,7 @@ q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
 	q-btn.back(v-if='route.name == "form"'
 		v-motion
 		:initial='{x: -200, opacity: 0}'
-		:enter='{x: 0, opacity: 1}'
-		:delay='1200'
+		:enter='{x: 0, opacity: 1, transition: {stiffness: 190, damping: 23, delay: 1500}}'
 		icon="mdi-arrow-left" @click="router.back()" size="md") 
 	.toolbar
 		q-list()
