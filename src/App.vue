@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
@@ -12,14 +12,20 @@ import {
 	slideBeforeEnter,
 } from '@/utils/utils'
 import Drawer from '@/components/Drawer.vue'
+import IconHome from '@/components/icons/IconHome.vue'
 
 const route = useRoute()
 const router = useRouter()
 
-const leftDrawer = ref(true)
-const toggleLeftDrawer = () => {
-	leftDrawer.value = !leftDrawer.value
-}
+// const leftDrawer = ref(true)
+const leftDrawer = computed(() => {
+	return route.name == 'home' ? false : true
+})
+
+// const toggleLeftDrawer = () => {
+// 	leftDrawer.value = !leftDrawer.value
+// }
+
 const rightDrawer = ref(false)
 const toggleRightDrawer = () => {
 	rightDrawer.value = !rightDrawer.value
@@ -57,7 +63,8 @@ const enter = async (el: any, done: any) => {
 q-layout(view='hHh LpR fFf')
 	q-header(elevated)
 		q-toolbar
-			q-btn(dense flat round icon='mdi-menu' @click='toggleLeftDrawer')
+			q-btn(dense flat round @click='$router.push("/")')
+				IconHome.home
 			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) {{ app.label }}
@@ -79,6 +86,9 @@ q-layout(view='hHh LpR fFf')
 header {
 	line-height: 1.5;
 	max-height: 100vh;
+}
+.home {
+	font-size: 1.5rem;
 }
 
 .logo {

@@ -8,12 +8,12 @@ const route = useRoute()
 const modelValue = defineModel<boolean>()
 
 const pages = [
-	{
-		id: 0,
-		title: 'Главная',
-		icon: 'mdi-home-roof',
-		url: '/',
-	},
+	// {
+	// 	id: 0,
+	// 	title: 'Главная',
+	// 	icon: 'mdi-home-roof',
+	// 	url: '/',
+	// },
 	{
 		id: 1,
 		title: 'Процесс',
