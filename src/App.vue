@@ -22,10 +22,6 @@ const leftDrawer = computed(() => {
 	return route.name == 'home' ? false : true
 })
 
-// const toggleLeftDrawer = () => {
-// 	leftDrawer.value = !leftDrawer.value
-// }
-
 const rightDrawer = ref(false)
 const toggleRightDrawer = () => {
 	rightDrawer.value = !rightDrawer.value
@@ -39,10 +35,8 @@ const mode = ref<any>('out-in')
 router.afterEach((to, from) => {
 	if (to.name == 'form' && from.name == 'process') {
 		cover.value = false
-		// mode.value = undefined
 	} else {
 		cover.value = true
-		// mode.value = 'out-in'
 	}
 })
 
