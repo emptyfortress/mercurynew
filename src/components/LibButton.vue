@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import LibContent from '@/components/LibContent.vue'
+import { usePanels } from '@/stores/panels'
+
+const panels = usePanels()
 
 gsap.registerPlugin(Flip)
 
 const button = ref<HTMLElement>()
 const emit = defineEmits(['activate', 'stop'])
 
-const calcH = computed(() => {
-	return 'calc(100vh - 120px)'
-})
-
-const expanded = ref<boolean>(false)
-
-const expand = (item: any) => {
-	expanded.value ? emit('stop') : emit('activate')
+const expand = () => {
 	const state = Flip.getState('.button')
-	expanded.value = !expanded.value
+	emit('activate')
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
@@ -31,7 +27,7 @@ const expand = (item: any) => {
 const close = () => {
 	emit('stop')
 	const state = Flip.getState('.button')
-	expanded.value = !expanded.value
+	panels.setLeft(false)
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
@@ -44,10 +40,10 @@ const close = () => {
 
 <template lang="pug">
 .button(ref='button'
-	:class='{expand: expanded}'
+	:class='{expand: panels.left}'
 	@click='expand'
 	)
-	q-icon(v-if='!expanded'
+	q-icon(v-if='!panels.left'
 		v-motion
 		:initial='{rotate: "0deg"}'
 		:hovered='{rotate: "90deg"}'
@@ -55,14 +51,14 @@ const close = () => {
 		color="primary"
 		size='28px')
 
-	q-btn.close(flat round v-if='expanded' size="sm"
+	q-btn.close(flat round v-if='panels.left' size="sm"
 		v-motion
 		:initial='{opacity: 0}'
 		:enter='{opacity: 1}'
 		:delay='500'
 		icon='mdi-close' @click.stop='close')
 
-	LibContent(v-if='expanded')
+	LibContent(v-if='panels.left')
 
 </template>
 

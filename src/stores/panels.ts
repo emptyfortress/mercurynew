@@ -1,14 +1,11 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+// import { ref, nextTick } from 'vue'
+import { useStorage } from '@vueuse/core'
 
 export const usePanels = defineStore('panels', () => {
-	const diag = ref(false)
-	const setDiag = (state: boolean) => {
-		diag.value = state
-	}
-
-	const right = ref(false)
-	const left = ref(false)
+	const left = useStorage('left', false)
+	const right = useStorage('right', false)
+	const right0 = useStorage('right0', false)
 
 	const setLeft = (state: boolean) => {
 		left.value = state
@@ -16,12 +13,17 @@ export const usePanels = defineStore('panels', () => {
 	const setRight = (state: boolean) => {
 		right.value = state
 	}
+
+	const setRight0 = (state: boolean) => {
+		right0.value = state
+	}
+
 	return {
-		diag,
+		right0,
 		left,
 		right,
 		setLeft,
 		setRight,
-		setDiag,
+		setRight0,
 	}
 })

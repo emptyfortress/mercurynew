@@ -12,13 +12,9 @@ gsap.registerPlugin(Flip)
 const button = ref<HTMLElement>()
 const emit = defineEmits(['activate', 'stop'])
 
-const expanded = ref<boolean>(false)
-
 const expand = () => {
-	if (expanded.value) return
-	emit('activate')
 	const state = Flip.getState('.button')
-	expanded.value = !expanded.value
+	emit('activate')
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
@@ -31,7 +27,7 @@ const expand = () => {
 const close = () => {
 	emit('stop')
 	const state = Flip.getState('.button')
-	expanded.value = !expanded.value
+	panels.setRight(false)
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
@@ -40,19 +36,14 @@ const close = () => {
 		})
 	})
 }
-
-const calcClass = computed(() => {
-	if (expanded.value) return 'expand'
-	if (panels.right) return 'expand'
-})
 </script>
 
 <template lang="pug">
 .button(ref='button'
-	:class='calcClass'
+	:class='{expand : panels.right }'
 	@click='expand'
 	)
-	q-icon(v-if='!expanded'
+	q-icon(v-if='!panels.right'
 		v-motion
 		:initial='{opacity: 0, rotate: "0deg"}'
 		:enter='{opacity: 1, rotate: "0deg",}'
@@ -61,14 +52,14 @@ const calcClass = computed(() => {
 		color="primary"
 		size='24px')
 
-	q-btn.close(flat round v-if='expanded' size="sm"
+	q-btn.close(flat round v-if='panels.right' size="sm"
 		v-motion
 		:initial='{opacity: 0}'
 		:enter='{opacity: 1}'
 		:delay='500'
 		icon='mdi-close' @click.stop='close')
 
-	LibContent(v-if='expanded')
+	LibContent(v-if='panels.right')
 
 </template>
 

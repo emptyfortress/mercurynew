@@ -3,6 +3,7 @@ import { useMotion } from '@vueuse/motion'
 import { usePanels } from '@/stores/panels'
 
 const editor = ref<HTMLElement>()
+
 const panels = usePanels()
 
 const full = { width: 1500, x: 0 }
@@ -42,7 +43,6 @@ const startLeft = async () => {
 }
 
 const stopRight = async () => {
-	panels.setRight(false)
 	setTimeout(() => {
 		panels.left ? editorAnim('shrinkLeft') : editorAnim('start')
 	}, 400)
@@ -50,8 +50,6 @@ const stopRight = async () => {
 }
 
 const stopLeft = async () => {
-	// left.value = false
-	panels.setLeft(false)
 	setTimeout(() => {
 		panels.right ? editorAnim('shrinkRight') : editorAnim('start')
 	}, 400)

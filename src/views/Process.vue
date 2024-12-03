@@ -1,28 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useMotion } from '@vueuse/motion'
 import PlusButton from '@/components/PlusButton.vue'
+import { editor1, startRight0, stopRight0 } from '@/composable/panel0'
 
 const blocks = ref([
 	{ id: 1, selected: false },
 	{ id: 2, selected: false },
 	{ id: 3, selected: false },
 ])
-
-const editor = ref<HTMLElement>()
-
-const { apply: editorAnim, stop } = useMotion(editor, {
-	initial: {
-		opacity: 1,
-		y: 0,
-		x: 0,
-		marginLeft: 0,
-		width: 1500,
-	},
-	start: { width: 1500, x: 0, transition: { stiffness: 200, damping: 20 } },
-	shrink: { width: 1150, x: -175, transition: { stiffness: 200, damping: 20 } },
-	move: { x: -300, transition: { stiffness: 200, damping: 20 } },
-})
 
 const selection = ref<number | null>(null)
 const select = (n: number) => {
@@ -34,24 +19,12 @@ const select = (n: number) => {
 const calcClass = (n: number) => {
 	return selection.value == n ? 'selected' : ''
 }
-
-const shrink = async () => {
-	await editorAnim('shrink')
-	stop()
-}
-
-const start = async () => {
-	setTimeout(() => {
-		editorAnim('start')
-	}, 400)
-	stop()
-}
 </script>
 
 <template lang="pug">
 q-page(padding)
 
-	.editor(ref='editor')
+	.editor(ref='editor1')
 		.text Диаграмма
 		.center
 			.block(v-for="item in blocks" :key='item.id'
@@ -60,7 +33,7 @@ q-page(padding)
 				) {{ item.id }}
 		.footer footer {{ selection }}
 
-		PlusButton(@activate='shrink' @stop='start')
+		PlusButton(@activate='startRight0' @stop='stopRight0')
 
 </template>
 
