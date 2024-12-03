@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { RouterView } from 'vue-router'
-import { useStorage } from '@vueuse/core'
-import { useRouter, useRoute } from 'vue-router'
 import {
 	coverBeforeEnter,
 	coverEnter,
 	coverLeave,
-	slideLeave,
-	slideEnter,
+	slideLeaveLeft,
+	slideLeaveRight,
+	slideEnterFromLeft,
+	slideEnterFromRight,
 	slideBeforeEnter,
 } from '@/utils/utils'
+import { RouterView } from 'vue-router'
+import { useStorage } from '@vueuse/core'
+import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import IconHome from '@/components/icons/IconHome.vue'
 
 const route = useRoute()
 const router = useRouter()
 
-// const leftDrawer = ref(true)
 const leftDrawer = computed(() => {
 	return route.name == 'home' ? false : true
 })
@@ -29,27 +30,36 @@ const toggleRightDrawer = () => {
 
 const app = useStorage('app', localStorage)
 
-const cover = ref(true)
+const cover = ref(0)
+
 const mode = ref<any>('out-in')
 
 router.afterEach((to, from) => {
 	if (to.name == 'form' && from.name == 'process') {
-		cover.value = false
+		cover.value = 1
+	} else if (to.name == 'process' && from.name == 'form') {
+		cover.value = 2
 	} else {
-		cover.value = true
+		cover.value = 0
 	}
 })
 
-const leave = async (el: any, done: any) => {
-	cover.value ? coverLeave(el, done) : slideLeave(el, done)
+const leave = (el: any, done: any) => {
+	if (cover.value == 2) return slideLeaveRight(el, done)
+	if (cover.value == 1) return slideLeaveLeft(el, done)
+	if (cover.value == 0) return coverLeave(el, done)
 }
 
 const beforeEnter = (el: any) => {
-	cover.value ? coverBeforeEnter() : slideBeforeEnter(el)
+	if (cover.value == 2) return slideBeforeEnter()
+	if (cover.value == 1) return slideBeforeEnter()
+	if (cover.value == 0) return coverBeforeEnter()
 }
 
-const enter = async (el: any, done: any) => {
-	cover.value ? coverEnter(el, done) : slideEnter(el, done)
+const enter = (el: any, done: any) => {
+	if (cover.value == 2) return slideEnterFromLeft(el, done)
+	if (cover.value == 1) return slideEnterFromRight(el, done)
+	if (cover.value == 0) return coverEnter(el, done)
 }
 </script>
 

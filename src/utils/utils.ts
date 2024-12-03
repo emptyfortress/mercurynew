@@ -25,10 +25,6 @@ const coverBeforeEnter = () => {
 	div.classList.add('cover')
 }
 
-const slideBeforeEnter = (el: any) => {
-	// el.style.transform = 'translateX("-100%")'
-}
-
 const coverEnter = async (el: any, done: any) => {
 	let div = document.querySelector('.cover')
 	await gsap.fromTo(
@@ -61,7 +57,11 @@ const coverLeave = async (el: any, done: any) => {
 	done()
 }
 
-const slideLeave = async (el: any, done: any) => {
+// slide anim *************************************************
+
+const slideBeforeEnter = () => {}
+
+const slideLeaveLeft = async (el: any, done: any) => {
 	await gsap.to(el, {
 		duration: 0.5,
 		xPercent: -100,
@@ -70,10 +70,32 @@ const slideLeave = async (el: any, done: any) => {
 	done()
 }
 
-const slideEnter = async (el: any, done: any) => {
+const slideLeaveRight = async (el: any, done: any) => {
+	await gsap.to(el, {
+		duration: 0.5,
+		xPercent: 100,
+		ease: 'power3.out',
+	})
+	done()
+}
+
+const slideEnterFromRight = async (el: any, done: any) => {
 	await gsap.fromTo(
 		el,
 		{ xPercent: 100 },
+		{
+			duration: 0.5,
+			xPercent: 0,
+			ease: 'power3.out',
+		}
+	)
+	done()
+}
+
+const slideEnterFromLeft = async (el: any, done: any) => {
+	await gsap.fromTo(
+		el,
+		{ xPercent: -100 },
 		{
 			duration: 0.5,
 			xPercent: 0,
@@ -88,7 +110,9 @@ export {
 	coverBeforeEnter,
 	coverEnter,
 	coverLeave,
-	slideLeave,
-	slideEnter,
+	slideLeaveLeft,
+	slideLeaveRight,
+	slideEnterFromRight,
+	slideEnterFromLeft,
 	slideBeforeEnter,
 }
