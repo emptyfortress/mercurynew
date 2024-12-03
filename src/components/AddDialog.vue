@@ -23,7 +23,7 @@ const create = (data: App) => {
 </script>
 
 <template lang="pug">
-q-dialog(v-model="modelValue" transition-show="slide-up" transition-hide="slide-down")
+q-dialog(v-model="modelValue" transition-show="slide-up" transition-hide="slide-down" backdrop-filter="blur(4px)")
 	q-card(style="min-width: 400px;")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section

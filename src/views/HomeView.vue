@@ -31,15 +31,14 @@ q-page(padding)
 	ItemSingle(v-show='type == 0' v-model:tapes="tapes")
 	ItemForGroup(v-if='type == 1' v-model:tapes="tapes")
 
-	AddDialog(v-model="dialog" @create='create')
+
 	q-btn.fab(round color="primary" icon="mdi-plus" @click="add")
+
+	AddDialog(v-model="dialog" @create='create')
 
 </template>
 
 <style scoped lang="scss">
-.q-page {
-	position: relative;
-}
 .colors {
 	position: absolute;
 	left: 0.5rem;
@@ -49,7 +48,7 @@ q-page(padding)
 }
 
 .fab {
-	position: absolute;
+	position: fixed;
 	bottom: 1rem;
 	right: 1rem;
 	width: 48px;
