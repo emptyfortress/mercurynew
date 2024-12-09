@@ -25,10 +25,6 @@ const select = (n: string) => {
 const calcClass = (s: string) => {
 	return selection.value == s ? 'selected' : ''
 }
-
-const calcClass1 = (s: string) => {
-	return selection.value == s ? 'selected' : ''
-}
 </script>
 
 <template lang="pug">
@@ -39,6 +35,7 @@ const calcClass1 = (s: string) => {
 	)
 	.user
 		q-avatar(color="info" icon="mdi-account" size="sm")
+		div {{ item.role }}
 	.block(v-for="etap in item.etaps" :key='etap'
 		:class='calcClass(etap)'
 		@click.stop='select(etap)'
@@ -49,29 +46,30 @@ const calcClass1 = (s: string) => {
 .role {
 	display: flex;
 	padding: 1rem;
-	padding-left: 7rem;
-	gap: 4rem;
+	padding-left: 9rem;
+	gap: 3rem;
 	border: 2px solid #999;
 	cursor: pointer;
 	position: relative;
+
 	.user {
 		position: absolute;
 		top: 0.5rem;
 		left: 0.5rem;
-	}
-	&.selected {
-		border: 3px solid $primary;
-		background: $accent;
+		font-size: .8rem;
 	}
 }
+
 .block {
 	width: 150px;
 	height: 80px;
-	background: #ccc;
+	background: #fff;
 	cursor: pointer;
-	&.selected {
-		border: 3px solid black;
-		background: $accent;
-	}
+	border: 3px solid #ccc;
+}
+
+.selected {
+	border: 3px solid $primary;
+	background: var(--selection);
 }
 </style>

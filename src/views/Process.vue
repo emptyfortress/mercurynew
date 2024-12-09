@@ -4,6 +4,7 @@ import PlusButton from '@/components/PlusButton.vue'
 import { useMotion } from '@vueuse/motion'
 import { usePanels } from '@/stores/panels'
 import Diagram from '@/components/Diagram.vue'
+import Look from '@/components/Look.vue'
 
 const editor1 = ref<HTMLElement>()
 
@@ -36,22 +37,6 @@ const stopRight0 = async () => {
 	}, 400)
 	stop()
 }
-const blocks = ref([
-	{ id: 1, selected: false },
-	{ id: 2, selected: false },
-	{ id: 3, selected: false },
-])
-
-const selection = ref<number | null>(null)
-const select = (n: number) => {
-	if (selection.value == n) {
-		selection.value = null
-	} else selection.value = n
-}
-
-const calcClass = (n: number) => {
-	return selection.value == n ? 'selected' : ''
-}
 </script>
 
 <template lang="pug">
@@ -60,6 +45,7 @@ q-page(padding)
 	.editor(ref='editor1')
 		.center
 			Diagram
+			Look
 
 
 		PlusButton(@activate='startRight0' @stop='stopRight0')
@@ -72,14 +58,17 @@ q-page(padding)
 	justify-content: center;
 	position: relative;
 }
+
 .text {
 	font-size: 1.2rem;
 }
+
 .editor {
 	padding-top: 4rem;
 	display: flex;
 	justify-content: center;
 	// flex-direction: column;
 	align-items: start;
+	position: relative;
 }
 </style>
