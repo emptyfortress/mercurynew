@@ -9,3 +9,4 @@ declare module '*.vue' {
 // declare module "vue-dndrop"
 declare module 'vue3-smooth-dnd'
 declare module 'vue-draggable-resizable'
+declare module 'vue-img-mapper'

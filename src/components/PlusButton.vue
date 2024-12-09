@@ -4,6 +4,7 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useRouter } from 'vue-router'
 import { usePanels } from '@/stores/panels'
+import DiagProps from '@/components/panels/DiagProps.vue'
 
 const router = useRouter()
 const panels = usePanels()
@@ -47,29 +48,36 @@ const next = () => {
 
 <template lang="pug">
 .button(ref='button'
-	:class='{expand: panels.right0}'
+	:class='{ expand: panels.right0 }'
 	@click='expand'
 	)
 	q-icon(v-if='!panels.right0'
 		v-motion
-		:initial='{opacity: 0, rotate: "0deg"}'
-		:enter='{opacity: 1, rotate: "0deg",}'
-		:hovered='{rotate: "90deg", }'
+		:initial='{ opacity: 0, rotate: "0deg" }'
+		:enter='{ opacity: 1, rotate: "0deg", }'
+		:hovered='{ rotate: "90deg", }'
 		name="mdi-tune-vertical-variant"
 		color="primary"
 		size='24px')
 
 	q-btn.close(flat round v-if='panels.right0' size="sm"
 		v-motion
-		:initial='{opacity: 0}'
-		:enter='{opacity: 1}'
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
 		:delay='500'
 		icon='mdi-close' @click.stop='close')
 
+	DiagProps(v-if='panels.right0'
+		v-motion
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
+		:delay='1000'
+		)
+
 	q-btn.next(v-if='panels.right0'
 		v-motion
-		:initial='{opacity: 0, y: 100}'
-		:enter='{opacity: 1, y: 0}'
+		:initial='{ opacity: 0, y: 100 }'
+		:enter='{ opacity: 1, y: 0 }'
 		:delay='1000'
 		label='Настроить форму'
 		color="primary"
@@ -89,7 +97,8 @@ const next = () => {
 	right: -58px;
 	text-align: center;
 	padding: 0.6rem;
-	cursor: pointer;
+	// cursor: pointer;
+
 	&.expand {
 		width: 350px;
 		height: calc(100vh - 120px);
@@ -97,14 +106,17 @@ const next = () => {
 		border-radius: 6px;
 	}
 }
-.next {
-	position: absolute;
-	top: 20rem;
-	left: 4rem;
-}
+
+// .next {
+// 	position: absolute;
+// 	top: 20rem;
+// 	left: 4rem;
+// }
+
 .close {
 	position: absolute;
 	top: 0.5rem;
 	right: 0.5rem;
+	z-index: 10;
 }
 </style>

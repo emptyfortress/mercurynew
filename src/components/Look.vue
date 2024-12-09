@@ -46,7 +46,6 @@ const calcClass = ((s: string) => {
 }
 
 .selected {
-	// background: var(--selection);
 	background: $accent;
 }
 </style>
