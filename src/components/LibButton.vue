@@ -2,8 +2,8 @@
 import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import LibContent from '@/components/LibContent.vue'
 import { usePanels } from '@/stores/panels'
+import lib from '@/assets/img/lib.png'
 
 const panels = usePanels()
 
@@ -40,25 +40,32 @@ const close = () => {
 
 <template lang="pug">
 .button(ref='button'
-	:class='{expand: panels.left}'
+	:class='{ expand: panels.left }'
 	@click='expand'
 	)
 	q-icon(v-if='!panels.left'
 		v-motion
-		:initial='{rotate: "0deg"}'
-		:hovered='{rotate: "90deg"}'
+		:initial='{ rotate: "0deg" }'
+		:hovered='{ rotate: "90deg" }'
 		name="mdi-bookshelf"
 		color="primary"
 		size='28px')
 
 	q-btn.close(flat round v-if='panels.left' size="sm"
 		v-motion
-		:initial='{opacity: 0}'
-		:enter='{opacity: 1}'
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
 		:delay='500'
 		icon='mdi-close' @click.stop='close')
 
-	LibContent(v-if='panels.left')
+	div(v-if='panels.left'
+		v-motion
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
+		:delay='600'
+		)
+		.zg Библиотека
+		img(:src="lib")
 
 </template>
 
@@ -75,6 +82,7 @@ const close = () => {
 	text-align: center;
 	padding: 0.6rem;
 	cursor: pointer;
+
 	&.expand {
 		width: 385px;
 		height: calc(100vh - 120px);
@@ -82,9 +90,16 @@ const close = () => {
 		border-radius: 6px;
 	}
 }
+
 .close {
 	position: absolute;
 	top: 0.5rem;
 	right: 0.5rem;
+	z-index: 10;
+}
+
+.zg {
+	font-size: 1.1rem;
+	color: $primary;
 }
 </style>

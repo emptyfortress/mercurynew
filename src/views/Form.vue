@@ -4,6 +4,7 @@ import PlusButton1 from '@/components/PlusButton1.vue'
 import LibButton from '@/components/LibButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
+import form from '@/assets/img/form.png'
 
 const panels = usePanels()
 const editor = ref<HTMLElement>()
@@ -62,7 +63,8 @@ const stopLeft = async () => {
 <template lang="pug">
 q-page(padding)
 	.editor(ref='editor')
-		.text Form
+		img(:src="form")
+
 
 		PlusButton1(@activate='startRight' @stop='stopRight')
 		LibButton(@activate='startLeft' @stop='stopLeft')
