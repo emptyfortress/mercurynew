@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useDiagram } from '@/stores/diagram'
+
+const mydiagram = useDiagram()
 
 const diag = [
 	{
@@ -14,16 +16,12 @@ const diag = [
 	},
 ]
 
-const selection = ref<string | null>(null)
-
 const select = (n: string) => {
-	if (selection.value == n) {
-		selection.value = null
-	} else selection.value = n
+	mydiagram.select(n)
 }
 
 const calcClass = (s: string) => {
-	return selection.value == s ? 'selected' : ''
+	return mydiagram.selection == s ? 'selected' : ''
 }
 </script>
 

@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useDiagram } from '@/stores/diagram'
+
+const mydiagram = useDiagram()
 
 const lookers = ref([
 	{
 		id: 0,
 		label: 'Кадровик',
-		selected: false
 	}
 ])
-const select = ((item: any) => {
-	item.selected = !item.selected
+
+const select = ((s: string) => {
+	mydiagram.selection = s
+})
+
+const calcClass = ((s: string) => {
+	return mydiagram.selection == s ? 'selected' : ''
 })
 </script>
 
@@ -17,7 +24,7 @@ const select = ((item: any) => {
 .lookers
 	.zg Роли-наблюдатели:
 	.role(v-for="item in lookers" :key="item.id")
-		q-btn(round icon="mdi-account" :class="{ 'selected': item.selected }" @click='select(item)') 
+		q-btn(round icon="mdi-account" :class="calcClass(item.label)" @click='select(item.label)') 
 		div {{ item.label }}
 	q-btn(round outlined icon="mdi-plus") 
 
@@ -39,6 +46,7 @@ const select = ((item: any) => {
 }
 
 .selected {
-	background: var(--selection);
+	// background: var(--selection);
+	background: $accent;
 }
 </style>

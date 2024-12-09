@@ -6,7 +6,12 @@ export const useDiagram = defineStore('diagram', () => {
 
 	const selection = ref<string | null>(null)
 
+	const select = ((e: string) => {
+		selection.value = e
+	})
+
 	return {
-		selection
+		selection,
+		select
 	}
 })
