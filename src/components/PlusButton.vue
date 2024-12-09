@@ -72,17 +72,8 @@ const next = () => {
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
 		:delay='1000'
-		)
+		@next="next") 
 
-	q-btn.next(v-if='panels.right0'
-		v-motion
-		:initial='{ opacity: 0, y: 100 }'
-		:enter='{ opacity: 1, y: 0 }'
-		:delay='1000'
-		label='Настроить форму'
-		color="primary"
-		icon='mdi-arrow-right'
-		@click.stop="next") 
 </template>
 
 <style scoped lang="scss">
