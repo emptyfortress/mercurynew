@@ -2,7 +2,6 @@
 import { ref, nextTick, computed } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-// import LibContent from '@/components/LibContent.vue'
 import { usePanels } from '@/stores/panels'
 import prop from '@/assets/img/formprop.png'
 
