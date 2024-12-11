@@ -37,8 +37,6 @@ const calcClass = (s: string) => {
 		@click.stop='select(etap)'
 		) {{ etap }}
 
-	// .event(v-if='item.id == 1' @click.stop='select')
-
 	.user
 		q-avatar(color="info" icon="mdi-account" size="sm")
 		div {{ item.role }}
