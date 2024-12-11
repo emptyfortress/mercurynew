@@ -4,222 +4,146 @@ import { useDiagram } from '@/stores/diagram'
 const mydiagram = useDiagram()
 
 const select = (n: string) => {
+	console.log(n)
 	mydiagram.select(n)
 }
 
 const calcClass = (s: string) => {
-	if (s == '') return 'event'
 	return mydiagram.selection == s ? 'selected' : ''
 }
+
+const test = (() => {
+	console.log(111)
+})
 </script>
 
 <template>
-	<svg width="754" height="388" viewBox="0 0 754 388" fill="none" xmlns="http://www.w3.org/2000/svg">
-		<g id="diagram 1" clip-path="url(#clip0_1_2)">
-			<g id="Group">
-				<g id="zayv-group">
-					<g id="Group_2">
-						<path id="Vector" d="M749 5H5V383H749V5Z" fill="white" fill-opacity="0.95" stroke="#22242A"
-							stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-						<path id="Vector_2" d="M35 5V383" stroke="#22242A" stroke-width="1.5" stroke-linecap="round"
-							stroke-linejoin="round" />
-						<text id="otpusk" transform="matrix(0 -1 1 0 11.6 251.891)" fill="#22242A" xml:space="preserve"
-							style="white-space: pre" font-family="Arial" font-size="12" letter-spacing="0em">
-							<tspan x="0" y="11.1602">Заявление на отпуск</tspan>
-						</text>
-					</g>
-				</g>
-				<g id="Group_3">
-					<g id="role-ruk">
-						<g id="Group_4">
-							<g id="Group_5">
-								<text id="Rukov" transform="translate(49 237)" fill="#22242A" xml:space="preserve"
-									style="white-space: pre" font-family="Arial" font-size="12" letter-spacing="0em">
-									<tspan x="0" y="11.1602">Руководитель</tspan>
-								</text>
-							</g>
-						</g>
-					</g>
+	<svg width="760" height="378" viewBox="0 0 760 378" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<g id="Frame 1">
 
-					<g id="role-inic">
-						<g id="Group_6">
-							<g id="Group_7">
-								<path id="Vector_3" d="M749 5H35V223H749V5Z" fill="white" fill-opacity="0.25" stroke="#22242A"
-									stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-								<text id="Iniciator" transform="translate(49 14)" fill="#22242A" xml:space="preserve"
-									style="white-space: pre" font-family="Arial" font-size="12" letter-spacing="0em">
-									<tspan x="0" y="11.1602">Инициатор</tspan>
-								</text>
-							</g>
-						</g>
+			<g id="iniFrame" class="etap" @click="select('Инициатор')" :class='calcClass("Инициатор")'>
+				<rect id="Rectangle 1" x="37" y="1" width="677" height="205" fill="white" stroke="black" stroke-width="2" />
+				<g id="Group 19">
+					<g id="Group 18">
+						<circle id="Ellipse 10" cx="59" cy="21" r="13" fill="#D9D9D9" />
+						<path id="Vector"
+							d="M57.2954 20.5185C56.494 20.5185 55.808 20.2168 55.2373 19.6133C54.6666 19.0099 54.3813 18.2844 54.3813 17.437C54.3813 16.5896 54.6666 15.8642 55.2373 15.2607C55.808 14.6573 56.494 14.3556 57.2954 14.3556C58.0967 14.3556 58.7828 14.6573 59.3535 15.2607C59.9241 15.8642 60.2095 16.5896 60.2095 17.437C60.2095 18.2844 59.9241 19.0099 59.3535 19.6133C58.7828 20.2168 58.0967 20.5185 57.2954 20.5185ZM51.4672 26.6815V24.5244C51.4672 24.0879 51.5735 23.6868 51.7863 23.3211C51.999 22.9555 52.2812 22.6761 52.6328 22.483C53.3856 22.0849 54.1506 21.7865 54.9277 21.5878C55.7048 21.389 56.494 21.2894 57.2954 21.2889C58.0967 21.2884 58.886 21.388 59.6631 21.5878C60.4402 21.7876 61.2051 22.086 61.9579 22.483C62.3101 22.6756 62.5925 22.9549 62.8052 23.3211C63.0179 23.6873 63.1241 24.0884 63.1236 24.5244V26.6815H51.4672Z"
+							fill="black" />
 					</g>
-					<g id="start">
-						<g id="Group_8">
-							<g id="Group_9">
-								<path id="Vector_4"
-									d="M139 131C148.941 131 157 122.941 157 113C157 103.059 148.941 95 139 95C129.059 95 121 103.059 121 113C121 122.941 129.059 131 139 131Z"
-									fill="white" fill-opacity="0.95" stroke="#22242A" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" />
-							</g>
-						</g>
-					</g>
-					<g id="createEtap">
-						<g id="Group_10">
-							<g id="Group_11">
-								<path id="Vector_5" class="etap"
-									d="M309 73H229C223.477 73 219 77.4772 219 83V143C219 148.523 223.477 153 229 153H309C314.523 153 319 148.523 319 143V83C319 77.4772 314.523 73 309 73Z"
-									fill="white" fill-opacity="0.95" stroke="#22242A" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" />
-								<g id="Group_12">
-									<text id="Sozdan" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-										font-size="12" letter-spacing="0em">
-										<tspan x="241.938" y="108.56">Создание</tspan>
-									</text>
-									<text id="zayav" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-										font-size="12" letter-spacing="0em">
-										<tspan x="239.859" y="122.96">заявления</tspan>
-									</text>
-								</g>
-							</g>
-						</g>
-					</g>
-					<g id="soglEtap">
-						<g id="Group_13">
-							<g id="Sogl">
-								<path id="Vector_6"
-									d="M309 263H229C223.477 263 219 267.477 219 273V333C219 338.523 223.477 343 229 343H309C314.523 343 319 338.523 319 333V273C319 267.477 314.523 263 309 263Z"
-									fill="white" fill-opacity="0.95" stroke="#22242A" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" />
-								<text id="Sogltext" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-									font-size="12" letter-spacing="0em">
-									<tspan x="229.57" y="305.76">
-										&#x421;&#x43e;&#x433;&#x43b;&#x430;&#x441;&#x43e;&#x432;&#x430;&#x43d;&#x438;&#x435;</tspan>
-								</text>
-							</g>
-						</g>
-					</g>
-					<g id="dorabotkaEtap">
-						<g id="Group_14">
-							<g id="Group_15">
-								<path id="Vector_7"
-									d="M539 73H459C453.477 73 449 77.4772 449 83V143C449 148.523 453.477 153 459 153H539C544.523 153 549 148.523 549 143V83C549 77.4772 544.523 73 539 73Z"
-									fill="white" fill-opacity="0.95" stroke="#22242A" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" />
-								<text id="dorab" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-									font-size="12" letter-spacing="0em">
-									<tspan x="469.375" y="115.76">&#x414;&#x43e;&#x440;&#x430;&#x431;&#x43e;&#x442;&#x43a;&#x430;</tspan>
-								</text>
-							</g>
-						</g>
-					</g>
-					<g id="finishGroup">
-						<g id="Group_16">
-							<g id="Group_17">
-								<path id="Vector_8"
-									d="M659 341C668.941 341 677 332.941 677 323C677 313.059 668.941 305 659 305C649.059 305 641 313.059 641 323C641 332.941 649.059 341 659 341Z"
-									fill="white" fill-opacity="0.95" stroke="#22242A" stroke-width="4" stroke-linecap="round"
-									stroke-linejoin="round" />
-							</g>
-						</g>
-					</g>
-					<g id="arrow4">
-						<g id="Group_18">
-							<g id="Group_19">
-								<path id="Vector_9"
-									d="M157 112C156.448 112 156 112.448 156 113C156 113.552 156.448 114 157 114V112ZM219 113L209 107.226V118.774L219 113ZM157 114H210V112H157V114Z"
-									fill="#22242A" />
-							</g>
-						</g>
-					</g>
-					<g id="arrow3">
-						<g id="Group_20">
-							<g id="Group_21">
-								<path id="Vector_10"
-									d="M270 153C270 152.448 269.552 152 269 152C268.448 152 268 152.448 268 153H270ZM269 263L274.774 253H263.226L269 263ZM268 153V254H270V153H268Z"
-									fill="#22242A" />
-							</g>
-						</g>
-					</g>
-					<g id="arrow2">
-						<g id="Group_22">
-							<g id="Group_23">
-								<path id="Vector_11"
-									d="M320 285L330 290.773V279.227L320 285ZM384 278L385 277.984L384 278ZM381.5 110.5V109.5C381.235 109.5 380.98 109.605 380.793 109.793C380.605 109.98 380.5 110.235 380.5 110.5H381.5ZM446.5 111.5C447.052 111.5 447.5 111.052 447.5 110.5C447.5 109.948 447.052 109.5 446.5 109.5V111.5ZM329 286H372.5V284H329V286ZM385 277.984C382.5 119.474 382.5 125.989 382.5 110.5H380.5C380.5 126.011 380.5 119.526 383 278.016L385 277.984ZM381.5 111.5L446.5 111.5V109.5L381.5 109.5V111.5ZM372.5 286C374.737 286 376.629 286.001 378.182 285.888C379.724 285.776 381.05 285.547 382.111 285.021C383.226 284.468 383.995 283.613 384.451 282.399C384.888 281.237 385.028 279.774 385 277.984L383 278.016C383.027 279.726 382.882 280.888 382.579 281.695C382.296 282.449 381.871 282.908 381.222 283.229C380.519 283.578 379.512 283.786 378.037 283.893C376.573 283.999 374.763 284 372.5 284V286Z"
-									fill="#22242A" />
-							</g>
-						</g>
-					</g>
-					<g id="arrow1">
-						<g id="Group_24">
-							<g id="Group_25">
-								<path id="Vector_12"
-									d="M319 322C318.448 322 318 322.448 318 323C318 323.552 318.448 324 319 324V322ZM641 323L631 317.226V328.774L641 323ZM319 324H632V322H319V324Z"
-									fill="#22242A" />
-							</g>
-						</g>
-					</g>
-					<g id="arrow">
-						<g id="Group_26">
-							<g id="Group_27">
-								<path id="Vector_13"
-									d="M319 302C318.448 302 318 302.448 318 303C318 303.552 318.448 304 319 304V302ZM499 153L493.227 163H504.773L499 153ZM319 304H494V302H319V304ZM494 304C495.575 304 497.067 303.222 498.145 302.145C499.222 301.067 500 299.575 500 298H498C498 298.925 497.528 299.933 496.73 300.73C495.933 301.528 494.925 302 494 302V304ZM500 298V162H498V298H500Z"
-									fill="#22242A" />
-							</g>
-						</g>
-					</g>
+					<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+						letter-spacing="0em">
+						<tspan x="80" y="25.1602">Инициатор</tspan>
+					</text>
 				</g>
 			</g>
-			<g id="Group_28">
-				<text id="Nasogl1" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-					font-size="11" letter-spacing="0em">
-					<tspan x="175" y="185.213">&#x41d;&#x430;
-						&#x441;&#x43e;&#x433;&#x43b;&#x430;&#x441;&#x43e;&#x432;&#x430;&#x43d;&#x438;&#x435;</tspan>
+
+			<g id="rukFrame" class="etap" @click="select('Руководитель')" :class='calcClass("Руководитель")'>
+				<rect id="Rectangle 1_2" x="37" y="206" width="677" height="164" fill="white" stroke="black" stroke-width="2" />
+				<g id="Group 19_2">
+					<g id="Group 18_2">
+						<ellipse id="Ellipse 10_2" cx="57.7507" cy="229" rx="12.2939" ry="13" fill="#D9D9D9" />
+						<path id="Vector_2"
+							d="M57.2954 228.519C56.494 228.519 55.808 228.217 55.2373 227.613C54.6666 227.01 54.3813 226.284 54.3813 225.437C54.3813 224.59 54.6666 223.864 55.2373 223.261C55.808 222.657 56.494 222.356 57.2954 222.356C58.0967 222.356 58.7828 222.657 59.3535 223.261C59.9241 223.864 60.2095 224.59 60.2095 225.437C60.2095 226.284 59.9241 227.01 59.3535 227.613C58.7828 228.217 58.0967 228.519 57.2954 228.519ZM51.4672 234.681V232.524C51.4672 232.088 51.5735 231.687 51.7863 231.321C51.999 230.955 52.2812 230.676 52.6328 230.483C53.3856 230.085 54.1506 229.787 54.9277 229.588C55.7048 229.389 56.494 229.289 57.2954 229.289C58.0967 229.288 58.886 229.388 59.6631 229.588C60.4402 229.788 61.2051 230.086 61.9579 230.483C62.3101 230.676 62.5925 230.955 62.8052 231.321C63.0179 231.687 63.1241 232.088 63.1236 232.524V234.681H51.4672Z"
+							fill="black" />
+					</g>
+					<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+						letter-spacing="0em">
+						<tspan x="78" y="233.16">Руководитель</tspan>
+					</text>
+				</g>
+			</g>
+
+			<path id="Vector 1" d="M612.5 299L602.5 293.226V304.774L612.5 299ZM350.5 300H603.5V298H350.5V300Z" fill="black" />
+
+			<path id="Vector 2"
+				d="M519 146L513.227 156H524.774L519 146ZM350 287H511V285H350V287ZM520 278V155H518V278H520ZM511 287C515.971 287 520 282.971 520 278H518C518 281.866 514.866 285 511 285V287Z"
+				fill="black" />
+			<path id="Vector 3"
+				d="M351 269L361 274.774V263.227L351 269ZM458 104H414.242V106H458V104ZM405.242 113V261H407.242V113H405.242ZM398.242 268H360V270H398.242V268ZM405.242 261C405.242 264.866 402.108 268 398.242 268V270C403.212 270 407.242 265.971 407.242 261H405.242ZM414.242 104C409.271 104 405.242 108.029 405.242 113H407.242C407.242 109.134 410.376 106 414.242 106V104Z"
+				fill="black" />
+
+			<g id="Group 1">
+				<g id="Rectangle 6">
+					<rect id="Rectangle 1_3" x="3" y="1" width="34" height="369" fill="white" stroke="black" stroke-width="2" />
+				</g>
+				<text transform="translate(13 240) rotate(-90)" fill="black" xml:space="preserve" style="white-space: pre"
+					font-family="Arial" font-size="12" letter-spacing="0em">
+					<tspan x="0" y="11.1602">Заявление на отпуск</tspan>
 				</text>
 			</g>
-			<g id="Group_29">
-				<text id="Finish" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-					font-size="11" letter-spacing="0em">
-					<tspan x="627" y="357.213">&#x417;&#x430;&#x432;&#x435;&#x440;&#x448;&#x435;&#x43d;&#x438;&#x435;</tspan>
+
+			<circle id="Start" cx="122.5" cy="103.5" r="17.5" fill="white" stroke="black" stroke-width="2" class="etap"
+				@click="select('Старт')" :class="calcClass('Старт')" />
+
+			<circle id="Finish" cx="630.5" cy="298.5" r="16.5" fill="white" stroke="black" stroke-width="4" class="etap"
+				@click="select('Завершение')" :class="calcClass('Завершение')" />
+
+			<g id="Group 2" class="etap" @click="select('Создание заявления')" :class="calcClass('Создание заявления')">
+				<rect id="Rectangle 7" x="247" y="63" width="102" height="82" rx="11" fill="white" stroke="black"
+					stroke-width="2" />
+				<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+					letter-spacing="0em">
+					<tspan x="271.424" y="101.16">Создание</tspan>
+					<tspan x="269.344" y="115.16">заявления</tspan>
 				</text>
 			</g>
-			<g id="Group_30">
-				<text id="Sogl_2" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-					font-size="11" letter-spacing="0em">
-					<tspan x="447" y="335.213">&#x421;&#x43e;&#x433;&#x43b;&#x430;&#x441;&#x43e;&#x432;&#x430;&#x43d;&#x43e;
-					</tspan>
+			<g id="Group 4" class="etap" @click="select('Согласование')" :class="calcClass('Согласование')">
+				<rect id="Rectangle 7_2" x="247" y="247" width="102" height="82" rx="11" fill="white" stroke="black"
+					stroke-width="2" />
+				<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+					letter-spacing="0em">
+					<tspan x="259.049" y="292.16">Согласование</tspan>
 				</text>
 			</g>
-			<g id="Group_31">
-				<text id="Nasolg" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-					font-size="11" letter-spacing="0em">
-					<tspan x="333" y="185.213">&#x41d;&#x430;
-						&#x441;&#x43e;&#x433;&#x43b;&#x430;&#x441;&#x43e;&#x432;&#x430;&#x43d;&#x438;&#x435;</tspan>
+
+			<g id="Group 3" class="etap" @click="select('Доработка')" :class="calcClass('Доработка')">
+				<rect id="Rectangle 7_3" x="458" y="63" width="102" height="82" rx="11" fill="white" stroke="black"
+					stroke-width="2" />
+				<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+					letter-spacing="0em">
+					<tspan x="479.352" y="108.16">Доработка</tspan>
 				</text>
 			</g>
-			<g id="Group_32">
-				<text id="Nadorabotky" fill="#22242A" xml:space="preserve" style="white-space: pre" font-family="Arial"
-					font-size="11" letter-spacing="0em">
-					<tspan x="464" y="265.213">&#x41d;&#x430; &#x434;&#x43e;&#x440;&#x430;&#x431;&#x43e;&#x442;&#x43a;&#x443;
-					</tspan>
-				</text>
-			</g>
+			<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+				letter-spacing="0em">
+				<tspan x="596.072" y="330.16">Завершение</tspan>
+			</text>
+			<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+				letter-spacing="0em">
+				<tspan x="193.469" y="179.16">На согласование</tspan>
+			</text>
+			<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+				letter-spacing="0em">
+				<tspan x="356.469" y="179.16">На согласование</tspan>
+			</text>
+			<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+				letter-spacing="0em">
+				<tspan x="475.043" y="250.16">На доработку</tspan>
+			</text>
+			<text fill="black" xml:space="preserve" style="white-space: pre" font-family="Arial" font-size="12"
+				letter-spacing="0em">
+				<tspan x="443.4" y="314.16">Согласовано</tspan>
+			</text>
+			<path id="Arrow 1" d="M246 104L236 98.2265V109.774L246 104ZM141 105H237V103H141V105Z" fill="black" />
+			<path id="Arrow 2" d="M298 246L303.774 236H292.226L298 246ZM297 146V237H299V146H297Z" fill="black" />
 		</g>
-		<defs>
-			<clipPath id="clip0_1_2">
-				<rect width="754" height="388" fill="white" />
-			</clipPath>
-		</defs>
 	</svg>
 </template>
 
 <style scoped lang="scss">
 .etap {
 	cursor: pointer;
-	background: pink;
+
+	// path {
+	// 	fill: pink;
+	// }
 }
 
 .selected {
-	border: 3px solid $primary;
-	background: var(--selection);
+	fill: var(--selection);
+
+	rect {
+		fill: var(--selection);
+	}
 }
 </style>

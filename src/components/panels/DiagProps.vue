@@ -15,9 +15,8 @@ const emit = defineEmits(['next'])
 const showEtap = computed(() => {
 	if (mydiagram.selection == 'Создание заявления' ||
 		mydiagram.selection == 'Согласование' ||
-		mydiagram.selection == 'Рассмотрение' ||
-		mydiagram.selection == 'Этап 1' ||
-		mydiagram.selection == 'Этап 2') return true
+		mydiagram.selection == 'Доработка' ||
+		mydiagram.selection == 'Завершение') return true
 })
 
 const showRole = computed(() => {
