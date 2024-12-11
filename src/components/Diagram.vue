@@ -7,12 +7,12 @@ const diag = [
 	{
 		id: 0,
 		role: 'Инициатор',
-		etaps: ['Создание заявления', 'Согласование', 'Рассмотрение'],
+		etaps: ['', 'Создание заявления', 'Доработка'],
 	},
 	{
 		id: 1,
 		role: 'Руководитель',
-		etaps: ['Этап 1', 'Этап 2'],
+		etaps: ['Согласование', ''],
 	},
 ]
 
@@ -21,6 +21,7 @@ const select = (n: string) => {
 }
 
 const calcClass = (s: string) => {
+	if (s == '') return 'event'
 	return mydiagram.selection == s ? 'selected' : ''
 }
 </script>
@@ -31,13 +32,16 @@ const calcClass = (s: string) => {
 	:class='calcClass(item.role)'
 	@click='select(item.role)'
 	)
-	.user
-		q-avatar(color="info" icon="mdi-account" size="sm")
-		div {{ item.role }}
 	.block(v-for="etap in item.etaps" :key='etap'
 		:class='calcClass(etap)'
 		@click.stop='select(etap)'
 		) {{ etap }}
+
+	// .event(v-if='item.id == 1' @click.stop='select')
+
+	.user
+		q-avatar(color="info" icon="mdi-account" size="sm")
+		div {{ item.role }}
 </template>
 
 <style scoped lang="scss">
@@ -46,9 +50,10 @@ const calcClass = (s: string) => {
 	padding: 1rem;
 	padding-left: 9rem;
 	gap: 3rem;
-	border: 2px solid #999;
+	border: 2px solid #666;
 	cursor: pointer;
 	position: relative;
+	min-height: 200px;
 
 	.user {
 		position: absolute;
@@ -58,12 +63,24 @@ const calcClass = (s: string) => {
 	}
 }
 
+
 .block {
-	width: 150px;
+	width: 160px;
 	height: 80px;
 	background: #fff;
 	cursor: pointer;
-	border: 3px solid #ccc;
+	border: 3px solid #666;
+	border-radius: .8rem;
+	padding: 1rem;
+
+	&.event {
+		width: 50px;
+		height: 50px;
+		border-radius: 25px;
+		border: 3px solid #666;
+		background: #fff;
+	}
+
 }
 
 .selected {
