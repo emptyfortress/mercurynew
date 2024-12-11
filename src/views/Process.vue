@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import PlusButton from '@/components/PlusButton.vue'
 import { useMotion } from '@vueuse/motion'
 import { usePanels } from '@/stores/panels'
-import Diagram from '@/components/Diagram.vue'
+import DiagramSvg from '@/components/DiagramSvg.vue'
 import Look from '@/components/Look.vue'
 
 const editor1 = ref<HTMLElement>()
@@ -44,7 +44,7 @@ q-page(padding)
 
 	.editor(ref='editor1')
 		.center
-			Diagram
+			DiagramSvg
 			Look
 
 

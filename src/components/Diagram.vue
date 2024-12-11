@@ -27,19 +27,21 @@ const calcClass = (s: string) => {
 </script>
 
 <template lang="pug">
-.role(v-for="item in diag"
-	:key='item.id'
-	:class='calcClass(item.role)'
-	@click='select(item.role)'
-	)
-	.block(v-for="etap in item.etaps" :key='etap'
-		:class='calcClass(etap)'
-		@click.stop='select(etap)'
-		) {{ etap }}
+img(src="@/assets/img/diagram-edit.svg")
 
-	.user
-		q-avatar(color="info" icon="mdi-account" size="sm")
-		div {{ item.role }}
+// .role(v-for="item in diag"
+// 	:key='item.id'
+// 	:class='calcClass(item.role)'
+// 	@click='select(item.role)'
+// 	)
+// 	.block(v-for="etap in item.etaps" :key='etap'
+// 		:class='calcClass(etap)'
+// 		@click.stop='select(etap)'
+// 		) {{ etap }}
+//
+// 	.user
+// 		q-avatar(color="info" icon="mdi-account" size="sm")
+// 		div {{ item.role }}
 </template>
 
 <style scoped lang="scss">
