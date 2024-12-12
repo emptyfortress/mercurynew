@@ -2,19 +2,30 @@
 import { ref, nextTick } from 'vue'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
+import cadrovik from '@/assets/img/cadrovik.png'
+
+gsap.registerPlugin(Flip)
 
 const forms = ref([
 	{
-		id: 0,
-		label: 'Создание'
-	},
-	{
 		id: 1,
-		label: 'Редактирование'
+		label: 'Создание',
+		expand: false,
+		avatar: 'create'
 	},
 	{
 		id: 2,
-		label: 'Просмотр'
+		label: 'Редактирование',
+		expand: false,
+		avatar: 'edit'
+	},
+	{
+		id: 3,
+		label: 'Просмотр',
+		expand: false,
+		avatar: 'view'
 	},
 
 ])
@@ -25,15 +36,19 @@ const onDrop = (dropResult: number) => {
 
 const expanded = ref<boolean>(false)
 
-const expand = (item: any) => {
-	const state = Flip.getState('.item')
+const expand = async (item: any) => {
+	const state = Flip.getState('.item1, .img')
 	expanded.value = !expanded.value
 	item.expand = !item.expand
-	nextTick(() => {
+	await nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
+			targets: '.item1, .img',
 			absolute: true,
+			absoluteOnLeave: true,
+			nested: true,
+
 			onEnter: (elements) =>
 				gsap.fromTo(
 					elements,
@@ -46,13 +61,13 @@ const expand = (item: any) => {
 	})
 }
 
-// const calcClass = (item: App) => {
-// 	if (expanded.value == true && item.expand == true) return 'active'
-// 	if (expanded.value == true && item.expand == false) return 'inactive'
-// 	if (item.group == true) return 'group'
-// 	else return ''
-// }
+const calcClass = (item: any) => {
+	if (expanded.value == true && item.expand == true) return 'active'
+	if (expanded.value == true && item.expand == false) return 'inactive'
+	else return ''
+}
 
+const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
 </script>
 
 <template lang="pug">
@@ -62,17 +77,31 @@ q-page(padding)
 		Draggable(v-for="(item, index) in forms"
 			:key="item.id")
 			.text-center
-				.item(
+				.item1(
 					v-motion
 					:initial="{ y: 100, opacity: 0 }"
 					:enter='{ y: 0, opacity: 1, transition: { delay: 300 + (100 * index) } }'
 					@click='expand(item)'
+					:class="calcClass(item)"
 					)
-					svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24")
-						path(fill="currentColor" d="M12.308 16.25q-.343 0-.576-.232t-.232-.576V8.558q0-.343.232-.576t.576-.232h6.884q.344 0 .576.232t.232.576v6.884q0 .344-.232.576t-.576.232zm.192-1H19v-6.5h-6.5zM4.5 20q-.213 0-.356-.144T4 19.499t.144-.356T4.5 19h15q.213 0 .356.144t.144.357t-.144.356T19.5 20zm0-3.75q-.213 0-.356-.144T4 15.749t.144-.356t.356-.143h4.116q.212 0 .356.144t.144.357t-.144.356t-.356.143zm0-3.75q-.213 0-.356-.144T4 11.999t.144-.356t.356-.143h4.116q.212 0 .356.144t.144.357t-.144.356t-.356.143zm0-3.75q-.213 0-.356-.144T4 8.249t.144-.356t.356-.143h4.116q.212 0 .356.144t.144.357t-.144.356t-.356.143zM4.5 5q-.213 0-.356-.144T4 4.499t.144-.356T4.5 4h15q.213 0 .356.144t.144.357t-.144.356T19.5 5z")
-				div {{ item.label }}
 
-		q-btn.q-ml-xl(round icon="mdi-plus" color="primary" @click="") 
+					q-img.img(:src='getImageUrl(item.avatar)' :draggable="false")
+					.hg {{ item.label }}
+
+					.content(v-if='item.expand'
+						v-motion
+						:initial="{ x: 100, opacity: 0 }"
+						:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
+						br
+						img(:src='cadrovik')
+
+
+		q-btn.q-ml-xl(v-if='!expanded' round icon="mdi-plus" color="primary" @click=""
+			v-motion
+			:initial="{ y: 20, opacity: 0 }"
+			:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }'
+			) 
+
 </template>
 
 <style scoped lang="scss">
@@ -87,14 +116,62 @@ q-page(padding)
 	flex-wrap: wrap;
 }
 
-.item {
+.item1 {
 	width: 150px;
-	height: 180px;
-	border-radius: .5rem;
+	// height: 150px;
 	text-align: center;
+	margin: 0.5rem;
+	cursor: pointer;
+	padding: 1rem;
+	position: relative;
+	background: #fff;
 
-	svg {
-		color: hsl(199 23% 69% / 1);
+	.img {
+		width: 120px;
+		margin-bottom: .5rem;
 	}
+
+	&:hover {
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+	}
+
+	&.active {
+		position: fixed;
+		height: 70vh;
+		width: 900px;
+		margin: 0 auto;
+		left: 60px;
+		right: 0;
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+		text-align: left;
+
+		.img {
+			width: 220px;
+		}
+	}
+
+	&.inactive {
+		display: none;
+	}
+
+	img {
+		user-select: none;
+	}
+}
+
+.add {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	background: #fff;
+	margin-top: -1rem;
+	margin-left: 5rem;
+	background: hsl(199 23% 69% / 1);
+}
+
+.list {
+	display: flex;
 }
 </style>

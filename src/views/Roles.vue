@@ -2,20 +2,30 @@
 import { ref, nextTick } from 'vue'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
-import profile from '@/assets/img/profile.svg'
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
+import cadrovik from '@/assets/img/cadrovik.png'
+
+gsap.registerPlugin(Flip)
 
 const roles = ref([
 	{
-		id: 0,
-		label: 'Инициатор'
-	},
-	{
 		id: 1,
-		label: 'Руководитель'
+		label: 'Инициатор',
+		expand: false,
+		avatar: 'avatar1'
 	},
 	{
 		id: 2,
-		label: 'Кадровик'
+		label: 'Руководитель',
+		expand: false,
+		avatar: 'avatar2'
+	},
+	{
+		id: 3,
+		label: 'Кадровик',
+		expand: false,
+		avatar: 'avatar3'
 	},
 
 ])
@@ -27,14 +37,18 @@ const onDrop = (dropResult: number) => {
 const expanded = ref<boolean>(false)
 
 const expand = (item: any) => {
-	const state = Flip.getState('.item')
+	const state = Flip.getState('.item1')
 	expanded.value = !expanded.value
 	item.expand = !item.expand
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
-			absolute: true,
+			targets: '.item1',
+			// absolute: true,
+			absoluteOnLeave: true,
+			nested: true,
+
 			onEnter: (elements) =>
 				gsap.fromTo(
 					elements,
@@ -47,12 +61,13 @@ const expand = (item: any) => {
 	})
 }
 
-const calcClass = (item: App) => {
+const calcClass = (item: any) => {
 	if (expanded.value == true && item.expand == true) return 'active'
 	if (expanded.value == true && item.expand == false) return 'inactive'
-	if (item.group == true) return 'group'
 	else return ''
 }
+
+const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
 </script>
 
 <template lang="pug">
@@ -62,18 +77,30 @@ q-page(padding)
 		Draggable(v-for="(item, index) in roles"
 			:key="item.id")
 			.text-center
-				.item(
+				.item1(
 					v-motion
 					:initial="{ y: 100, opacity: 0 }"
 					:enter='{ y: 0, opacity: 1, transition: { delay: 300 + (100 * index) } }'
 					@click='expand(item)'
+					:class="calcClass(item)"
 					)
-					svg(viewBox="0 0 81 98" fill="none" xmlns="http://www.w3.org/2000/svg")
-						path(d="M14.2 42.3C14.8 44.3 15.9 48.2 18.3 50.5C20.1 57.4 25.5 65.3 34.1 68.3C36.2 69 38.3 69.4 40.5 69.4C42.7 69.4 44.9 69 47 68.3C55.6 65.2 61 57.4 62.8 50.6C65.2 48.3 66.3 44.4 66.9 42.4C67.8 39.2 68.8 34.5 66.3 31.2C66.2 31.1 66.1 30.9 66 30.8C67.4 22.2 66.4 15.7 63.1 11.5C61.5 9.5 59.8 8.5 58.4 7.9C57.3 6.5 55.4 4.6 52.5 3C49.1 1 45.3 0 41.1 0C40.4 0 39.7 2.23517e-08 38.9 0.1C37 0.2 35.2 0.6 33.4 1.2C31.4 1.9 29.4 2.9 27.6 4.2C25.5 5.5 23.6 7.1 21.9 8.9C18.6 12.3 16.4 16.1 15.4 20.3C14.6 23.4 14.6 26.8 15.3 30.8C15.2 30.9 15.1 31 15 31.2C12.3 34.4 13.3 39.1 14.2 42.3ZM20.4 33.3C20.5 33.3 20.6 33.3 20.7 33.3C20.7 33.3 22.2 13.4 38.3 20.3C46.7 23.9 53 23.7 57 22.8C62.1 26.3 60.6 32.2 60.3 33.2V33.3C60.4 33.3 60.5 33.3 60.6 33.3C62.3 33.3 64 34.6 62.1 41C60.7 46 59.4 47.4 58.4 47.5C57.5 53.5 52.7 61 45.3 63.7C43.7 64.3 42.1 64.5 40.5 64.5C38.9 64.5 37.3 64.2 35.7 63.7C28.1 61.1 23.5 53.5 22.6 47.5C21.6 47.4 20.3 46 18.9 41C17 34.6 18.7 33.3 20.4 33.3Z" fill="currentColor")
-						path(d="M61 63.8C57.9 67.5 53.8 70.8 48.6 72.7C46 73.6 43.3 74.1 40.5 74.1C37.8 74.1 35.1 73.6 32.5 72.7C27.2 70.8 23.1 67.6 20 63.8C15.6 66.1 8 70.5 0 76.3C9.1 88.9 23.8 97.1 40.5 97.1C57.2 97.1 71.9 88.9 81 76.4C73.1 70.5 65.4 66.2 61 63.8Z" fill="currentColor")
-				div {{ item.label }}
 
-		q-btn.q-ml-xl(round icon="mdi-plus" color="primary" @click="") 
+					img(:src='getImageUrl(item.avatar)' draggable="false")
+					.hg {{ item.label }}
+
+					.content(v-if='item.expand'
+						v-motion
+						:initial="{ x: 100, opacity: 0 }"
+						:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
+						br
+						img(:src='cadrovik')
+
+
+		q-btn.q-ml-xl(v-if='!expanded' round icon="mdi-plus" color="primary" @click=""
+			v-motion
+			:initial="{ y: 20, opacity: 0 }"
+			:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }'
+			) 
 
 </template>
 
@@ -89,14 +116,40 @@ q-page(padding)
 	flex-wrap: wrap;
 }
 
-.item {
+.item1 {
 	width: 150px;
 	height: 150px;
-	border-radius: 50%;
+	border-radius: .5rem;
 	text-align: center;
+	margin: 0.5rem;
+	cursor: pointer;
+	padding: 1rem;
+	position: relative;
+	background: #fff;
 
-	svg {
-		color: hsl(199 23% 69% / 1);
+	&:hover {
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+	}
+
+	&.active {
+		position: fixed;
+		height: 70vh;
+		width: 900px;
+		margin: 0 auto;
+		left: 60px;
+		right: 0;
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+		// text-align: left;
+	}
+
+	&.inactive {
+		display: none;
+	}
+
+	img {
+		user-select: none;
 	}
 }
 
@@ -108,5 +161,9 @@ q-page(padding)
 	margin-top: -1rem;
 	margin-left: 5rem;
 	background: hsl(199 23% 69% / 1);
+}
+
+.list {
+	display: flex;
 }
 </style>

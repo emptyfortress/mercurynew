@@ -65,7 +65,7 @@ const navigate1 = (e: any) => {
 </script>
 
 <template lang="pug">
-Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{value: 'div', props: {class: 'list'}}")
+Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ value: 'div', props: { class: 'list' } }")
 	Draggable(v-for="(item, index) in tapes"
 		:key="item.id")
 		.item(
@@ -81,7 +81,7 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{val
 			.content(v-if='item.expand'
 				v-motion
 				:initial="{ x: 100, opacity: 0 }"
-				:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30,  delay: 300 } }")
+				:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
 
 				div() {{ item.id }}
 				div() {{ item.descr }}
@@ -92,7 +92,7 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{val
 				v-if='item.expand'
 				v-motion
 				:initial="{ y: -20, opacity: 0 }"
-				:enter="{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30,  delay: 550 } }")
+				:enter="{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 550 } }")
 				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Первичные настройки" @click.stop="navigate(item)") 
 				q-btn(unelevated color="primary" icon="mdi-code-block-braces" label="К приложению" @click.stop="navigate1(item)") 
 </template>
@@ -102,6 +102,7 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{val
 	display: flex;
 	flex-wrap: wrap;
 }
+
 .content {
 	margin-top: 3rem;
 }
