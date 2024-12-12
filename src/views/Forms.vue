@@ -93,7 +93,7 @@ q-page(padding)
 						:initial="{ x: 100, opacity: 0 }"
 						:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
 						br
-						img(:src='cadrovik')
+						// img(:src='cadrovik')
 
 
 		q-btn.q-ml-xl(v-if='!expanded' round icon="mdi-plus" color="primary" @click=""
