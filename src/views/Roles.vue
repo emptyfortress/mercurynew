@@ -85,7 +85,7 @@ q-page(padding)
 					:class="calcClass(item)"
 					)
 
-					img(:src='getImageUrl(item.avatar)' draggable="false")
+					img.img(:src='getImageUrl(item.avatar)' :draggable="false")
 					.hg {{ item.label }}
 
 					.content(v-if='item.expand'
@@ -141,6 +141,7 @@ q-page(padding)
 		right: 0;
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+
 		// text-align: left;
 	}
 
