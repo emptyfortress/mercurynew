@@ -3,9 +3,9 @@ import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 
 export const usePanels = defineStore('panels', () => {
-	const left = useStorage('left', false)
-	const right = useStorage('right', false)
-	const right0 = useStorage('right0', false)
+	const left = useStorage('left', true)
+	const right = useStorage('right', true)
+	const right0 = useStorage('right0', true)
 
 	const setLeft = (state: boolean) => {
 		left.value = state
