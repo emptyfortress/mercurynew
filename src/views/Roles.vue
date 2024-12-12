@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import cadrovik from '@/assets/img/cadrovik.png'
 import IconTrash from '@/components/icons/IconTrash.vue'
+import { useMotions } from '@vueuse/motion'
+import { useQuasar } from 'quasar'
 
 gsap.registerPlugin(Flip)
 
@@ -28,31 +30,29 @@ const roles = ref([
 		expand: false,
 		avatar: 'avatar3'
 	},
-	{
-		id: 4,
-		label: 'Инициатор',
-		expand: false,
-		avatar: 'avatar1'
-	},
-	{
-		id: 5,
-		label: 'Руководитель',
-		expand: false,
-		avatar: 'avatar2'
-	},
-	{
-		id: 6,
-		label: 'Кадровик',
-		expand: false,
-		avatar: 'avatar3'
-	},
 
 ])
 
+const $q = useQuasar()
 const onDrop = (dropResult: number) => {
 	roles.value = applyDrag(roles.value, dropResult)
 	dragging.value = false
 }
+
+watch(
+	() => roles.value.length,
+	(newval, oldval) => {
+		if (oldval > newval) {
+			$q.notify({
+				message: 'Роль удалена',
+				color: 'negative',
+				icon: 'mdi-check-bold',
+				actions: [
+					{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
+				]
+			})
+		}
+	})
 
 const expanded = ref<boolean>(false)
 
@@ -98,6 +98,8 @@ const onDragEnter = (() => {
 	dragging.value = false
 })
 
+const motions = useMotions()
+
 </script>
 
 <template lang="pug">
@@ -138,13 +140,15 @@ q-page(padding)
 			:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }'
 			) 
 
-	.trash(v-if='dragging'
-		v-motion
-		:initial="{ y: 100, opacity: 0 }"
-		:enter='{ y: 0, opacity: 1, }'
-		)
-		IconTrash
-		label Удалить
+	transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
+		.trash(v-if='dragging'
+			v-motion='"cube"'
+			:initial="{ y: 200, opacity: 0, }"
+			:enter="{ y: 0, opacity: 1, }"
+			:leave="{ y: 200, opacity: 0, }"
+			)
+			IconTrash
+			label Удалить
 
 </template>
 
