@@ -5,6 +5,7 @@ import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import cadrovik from '@/assets/img/cadrovik.png'
+import IconTrash from '@/components/icons/IconTrash.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -27,11 +28,30 @@ const roles = ref([
 		expand: false,
 		avatar: 'avatar3'
 	},
+	{
+		id: 4,
+		label: 'Инициатор',
+		expand: false,
+		avatar: 'avatar1'
+	},
+	{
+		id: 5,
+		label: 'Руководитель',
+		expand: false,
+		avatar: 'avatar2'
+	},
+	{
+		id: 6,
+		label: 'Кадровик',
+		expand: false,
+		avatar: 'avatar3'
+	},
 
 ])
 
 const onDrop = (dropResult: number) => {
 	roles.value = applyDrag(roles.value, dropResult)
+	dragging.value = false
 }
 
 const expanded = ref<boolean>(false)
@@ -45,7 +65,7 @@ const expand = (item: any) => {
 			duration: 0.4,
 			ease: 'power3.inOut',
 			targets: '.item1',
-			// absolute: true,
+			absolute: true,
 			absoluteOnLeave: true,
 			nested: true,
 
@@ -68,12 +88,28 @@ const calcClass = (item: any) => {
 }
 
 const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
+
+const dragging = ref(false)
+
+const onDragLeave = (() => {
+	dragging.value = true
+})
+const onDragEnter = (() => {
+	dragging.value = false
+})
+
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.header Роли
-	Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ value: 'div', props: { class: 'list' } }")
+	Container(@drop="onDrop"
+		@drag-leave='onDragLeave'
+		@drag-enter='onDragEnter'
+		orientation='horizontal'
+		group-name='column'
+		:remove-on-drop-out='true'
+		:tag="{ value: 'div', props: { class: 'list' } }")
 		Draggable(v-for="(item, index) in roles"
 			:key="item.id")
 			.text-center
@@ -85,7 +121,7 @@ q-page(padding)
 					:class="calcClass(item)"
 					)
 
-					img.img(:src='getImageUrl(item.avatar)' :draggable="false")
+					q-img.img(:src='getImageUrl(item.avatar)')
 					.hg {{ item.label }}
 
 					.content(v-if='item.expand'
@@ -101,6 +137,14 @@ q-page(padding)
 			:initial="{ y: 20, opacity: 0 }"
 			:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }'
 			) 
+
+	.trash(v-if='dragging'
+		v-motion
+		:initial="{ y: 100, opacity: 0 }"
+		:enter='{ y: 0, opacity: 1, }'
+		)
+		IconTrash
+		label Удалить
 
 </template>
 
@@ -141,16 +185,14 @@ q-page(padding)
 		right: 0;
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
-
-		// text-align: left;
 	}
 
 	&.inactive {
 		display: none;
 	}
 
-	img {
-		user-select: none;
+	.img {
+		width: 100px;
 	}
 }
 
@@ -166,5 +208,23 @@ q-page(padding)
 
 .list {
 	display: flex;
+}
+
+.trash {
+	position: fixed;
+	bottom: 3rem;
+	left: 50%;
+	font-size: 3rem;
+	color: darkred;
+	transform: translateX(-50%);
+	vertical-align: middle;
+	text-align: center;
+	line-height: 1.0;
+
+	label {
+		display: block;
+		font-size: 1rem;
+	}
+
 }
 </style>

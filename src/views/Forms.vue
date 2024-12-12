@@ -85,7 +85,7 @@ q-page(padding)
 					:class="calcClass(item)"
 					)
 
-					q-img.img(:src='getImageUrl(item.avatar)' :draggable="false")
+					q-img.img(:src='getImageUrl(item.avatar)')
 					.hg {{ item.label }}
 
 					.content(v-if='item.expand'
