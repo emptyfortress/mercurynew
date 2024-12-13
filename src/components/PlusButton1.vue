@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, nextTick, computed } from 'vue'
+import { ref, nextTick, } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
 import prop from '@/assets/img/formprop.png'
+import CloseButton from '@/components/panels/CloseButton.vue'
 
 const panels = usePanels()
 
 gsap.registerPlugin(Flip)
 
-const button = ref<HTMLElement>()
 const emit = defineEmits(['activate', 'stop'])
 
 const expand = () => {
@@ -39,7 +39,7 @@ const close = () => {
 </script>
 
 <template lang="pug">
-.button(ref='button'
+.button(
 	:class='{ expand: panels.right }'
 	@click='expand'
 	)
@@ -52,13 +52,7 @@ const close = () => {
 		color="primary"
 		size='24px')
 
-	q-btn.close(flat round v-if='panels.right' size="sm"
-		v-motion
-		:initial='{ opacity: 0 }'
-		:enter='{ opacity: 1 }'
-		:delay='500'
-		icon='mdi-close' @click.stop='close')
-
+	CloseButton(v-model="panels.right" @close="close")
 
 	.zg(v-if='panels.right'
 		v-motion
@@ -66,6 +60,7 @@ const close = () => {
 		:enter='{ opacity: 1 }'
 		:delay='600'
 		) Свойства
+	br
 	img(v-if='panels.right' :src="prop"
 		v-motion
 		:initial='{ opacity: 0 }'
@@ -101,13 +96,6 @@ const close = () => {
 	position: absolute;
 	top: 20rem;
 	left: 4rem;
-}
-
-.close {
-	position: absolute;
-	top: 0.5rem;
-	right: 0.5rem;
-	z-index: 10;
 }
 
 .zg {

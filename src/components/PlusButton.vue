@@ -5,13 +5,13 @@ import { Flip } from 'gsap/Flip'
 import { useRouter } from 'vue-router'
 import { usePanels } from '@/stores/panels'
 import DiagProps from '@/components/panels/DiagProps.vue'
+import CloseButton from '@/components/panels/CloseButton.vue'
 
 const router = useRouter()
 const panels = usePanels()
 
 gsap.registerPlugin(Flip)
 
-const button = ref<HTMLElement>()
 const emit = defineEmits(['activate', 'stop'])
 
 // const expanded = ref<boolean>(false)
@@ -47,10 +47,11 @@ const next = () => {
 </script>
 
 <template lang="pug">
-.button(ref='button'
+.button(
 	:class='{ expand: panels.right0 }'
 	@click='expand'
 	)
+
 	q-icon(v-if='!panels.right0'
 		v-motion
 		:initial='{ opacity: 0, rotate: "0deg" }'
@@ -60,12 +61,7 @@ const next = () => {
 		color="primary"
 		size='24px')
 
-	q-btn.close(flat round v-if='panels.right0' size="sm"
-		v-motion
-		:initial='{ opacity: 0 }'
-		:enter='{ opacity: 1 }'
-		:delay='500'
-		icon='mdi-close' @click.stop='close')
+	CloseButton(v-model="panels.right0" @close="close")
 
 	DiagProps(v-if='panels.right0'
 		v-motion
@@ -88,26 +84,14 @@ const next = () => {
 	right: -58px;
 	text-align: center;
 	padding: 0.6rem;
-	// cursor: pointer;
+	cursor: pointer;
 
 	&.expand {
 		width: 350px;
 		height: calc(100vh - 120px);
 		right: -358px;
 		border-radius: 6px;
+		cursor: default;
 	}
-}
-
-// .next {
-// 	position: absolute;
-// 	top: 20rem;
-// 	left: 4rem;
-// }
-
-.close {
-	position: absolute;
-	top: 0.5rem;
-	right: 0.5rem;
-	z-index: 10;
 }
 </style>

@@ -4,12 +4,12 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
 import lib from '@/assets/img/lib.png'
+import CloseButton from '@/components/panels/CloseButton.vue'
 
 const panels = usePanels()
 
 gsap.registerPlugin(Flip)
 
-const button = ref<HTMLElement>()
 const emit = defineEmits(['activate', 'stop'])
 
 const expand = () => {
@@ -39,7 +39,7 @@ const close = () => {
 </script>
 
 <template lang="pug">
-.button(ref='button'
+.button(
 	:class='{ expand: panels.left }'
 	@click='expand'
 	)
@@ -51,12 +51,14 @@ const close = () => {
 		color="primary"
 		size='28px')
 
-	q-btn.close(flat round v-if='panels.left' size="sm"
-		v-motion
-		:initial='{ opacity: 0 }'
-		:enter='{ opacity: 1 }'
-		:delay='500'
-		icon='mdi-close' @click.stop='close')
+	CloseButton(v-model="panels.left" @close="close")
+
+	// q-btn.close(flat round v-if='panels.left' size="sm"
+	// 	v-motion
+	// 	:initial='{ opacity: 0 }'
+	// 	:enter='{ opacity: 1 }'
+	// 	:delay='500'
+	// 	icon='mdi-close' @click.stop='close')
 
 	div(v-if='panels.left'
 		v-motion
