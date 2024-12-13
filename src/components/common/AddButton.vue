@@ -33,20 +33,21 @@ const top = computed(() => {
 </script>
 
 <template lang="pug">
-.button(v-if='!adding'
-	data-flip-id='test'
-	:class="{ active: adding }"
-	@click="add"
-	v-motion
-	:initial="{ y: 20, opacity: 0 }"
-	:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }')
-	q-icon(name="mdi-plus" color="white" size="md")
+div
+	.button(v-if='!adding'
+		data-flip-id='test'
+		:class="{ active: adding }"
+		@click="add"
+		v-motion
+		:initial="{ y: 20, opacity: 0 }"
+		:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }')
+		q-icon(name="mdi-plus" color="white" size="md")
 
-.dialog(
-	:class="{ active: adding }"
-	data-flip-id='test'
-	@click="add"
-	)
+	.dialog(
+		:class="{ active: adding }"
+		data-flip-id='test'
+		@click="add"
+		)
 </template>
 
 <style scoped lang="scss">
