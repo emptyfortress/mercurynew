@@ -8,6 +8,7 @@ import cadrovik from '@/assets/img/cadrovik.png'
 import IconTrash from '@/components/icons/IconTrash.vue'
 import { useMotions } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
+import AddButton from '@/components/common/AddButton.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -133,12 +134,7 @@ q-page(padding)
 						br
 						img(:src='cadrovik')
 
-
-		q-btn.q-ml-xl(v-if='!expanded' round icon="mdi-plus" color="primary" @click=""
-			v-motion
-			:initial="{ y: 20, opacity: 0 }"
-			:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }'
-			) 
+		AddButton(v-if='!expanded')
 
 	transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 		.trash(v-if='dragging'
