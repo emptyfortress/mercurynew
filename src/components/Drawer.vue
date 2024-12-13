@@ -21,6 +21,12 @@ const pages = [
 		url: '/forms',
 	},
 	{
+		id: 3,
+		title: 'Роли',
+		icon: 'mdi-account',
+		url: '/roles',
+	},
+	{
 		id: 5,
 		title: 'Статусы',
 		icon: 'mdi-state-machine',
@@ -45,8 +51,8 @@ const pages = [
 q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
 	q-btn.back(v-if='route.name == "form"'
 		v-motion
-		:initial='{x: -200, opacity: 0}'
-		:enter='{x: 0, opacity: 1, transition: {stiffness: 190, damping: 23, delay: 1500}}'
+		:initial='{ x: -200, opacity: 0 }'
+		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1500 } }'
 		icon="mdi-arrow-left" @click="router.back()" size="md") 
 	.toolbar
 		q-list()
@@ -61,6 +67,7 @@ q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
 	background: transparent;
 	height: 100%;
 }
+
 :deep(.q-drawer__content) {
 	display: flex;
 	flex-direction: column;
@@ -68,17 +75,21 @@ q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
 	align-items: center;
 	position: relative;
 }
+
 .toolbar {
 	background: #fff;
 	box-shadow: var(--shad0);
 	margin-top: 150px;
 }
+
 a {
 	text-decoration: none;
 }
+
 a.router-link-active .q-item {
 	background: $accent;
 }
+
 .back {
 	position: absolute;
 	top: 1.8rem;

@@ -21,14 +21,18 @@ const onDrop = (dropResult: number) => {
 const expanded = ref<boolean>(false)
 
 const expand = (item: any) => {
-	const state = Flip.getState('.item')
+	const state = Flip.getState('.item, .ani')
 	expanded.value = !expanded.value
 	item.expand = !item.expand
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
+			targets: '.item, .ani',
 			absolute: true,
+			absoluteOnLeave: true,
+			nested: true,
+
 			onEnter: (elements) =>
 				gsap.fromTo(
 					elements,
@@ -75,8 +79,9 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ va
 			@click='expand(item)'
 			:class="calcClass(item)"
 			)
-			div(v-if='item.group') Группа
-			div(v-else) {{ item.label }}
+			.ani(v-if='item.group') Группа
+			.hg.ani(v-else) {{ item.label }}
+			q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 
 			.content(v-if='item.expand'
 				v-motion
@@ -105,5 +110,28 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ va
 
 .content {
 	margin-top: 3rem;
+}
+
+.item.active {
+	text-align: left;
+
+	.hg {
+		font-size: 1.2rem;
+	}
+}
+
+.img {
+	position: absolute;
+	bottom: 1rem;
+	// left: 50%;
+	// transform: translateX(-50%);
+	// font-size: 2rem;
+
+	//
+	// .active & {
+	// 	// right: 1rem;
+	// 	// left: initial;
+	// 	font-size: 4rem;
+	// }
 }
 </style>
