@@ -6,7 +6,7 @@ import { useWindowSize } from '@vueuse/core'
 
 gsap.registerPlugin(Flip)
 
-const adding = ref(false)
+const adding = ref(true)
 
 const add = (() => {
 	const state = Flip.getState('.button, .dialog')
@@ -52,8 +52,28 @@ div
 	.dialog(
 		:class="{ active: adding }"
 		data-flip-id='test'
-		@click="add"
 		)
+		q-btn.close(round icon="mdi-close"
+			v-if="adding"
+			v-motion
+			:initial="{ opacity: 0, scale: 0, rotate: -720 }"
+			:enter="{ opacity: 1, scale: 1, rotate: 0 }"
+			:delay="400"
+			color="negative" @click="add"
+			) 
+
+		.hd Новая роль
+		.section
+			label Название:
+			q-input(v-model="model" dense filled)
+		q-card-actions(align="right" v-if='adding'
+			v-motion
+			:initial="{ opacity: 0 }"
+			:enter='{ opacity: 1, transition: { delay: 200 } }'
+			)
+			q-btn(flat color="primary" label="Отмена" @click="add") 
+			q-btn(unelevated color="primary" label="Создать" @click="add") 
+
 </template>
 
 <style scoped lang="scss">
@@ -75,7 +95,7 @@ div
 
 .dialog {
 	width: 400px;
-	height: 200px;
+	// height: 200px;
 	background: #fff;
 	position: fixed;
 	left: v-bind(left);
@@ -83,6 +103,7 @@ div
 	border-radius: .5rem;
 	box-shadow: var(--shad0);
 	display: none;
+	padding: 1rem;
 
 	&.active {
 		display: block;
@@ -99,5 +120,24 @@ div
 	right: 0;
 	top: 0;
 	bottom: 0;
+}
+
+.hd {
+	font-size: 1.1rem;
+	text-align: center;
+}
+
+.close {
+	z-index: 100;
+	position: absolute;
+	top: -1.2rem;
+	right: -1.2rem;
+}
+
+.section {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	margin-left: .5rem;
+	margin-right: .5rem;
 }
 </style>
