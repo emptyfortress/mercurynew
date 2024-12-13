@@ -43,6 +43,12 @@ div
 		:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }')
 		q-icon(name="mdi-plus" color="white" size="md")
 
+	.backdrop(v-if='adding'
+		v-motion
+		:initial="{ opacity: 0 }"
+		:enter='{ opacity: 1, transition: { delay: 400 } }'
+		)
+
 	.dialog(
 		:class="{ active: adding }"
 		data-flip-id='test'
@@ -81,5 +87,17 @@ div
 	&.active {
 		display: block;
 	}
+}
+
+.backdrop {
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(4px);
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
 }
 </style>
