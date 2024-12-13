@@ -33,12 +33,6 @@ const pages = [
 		url: '/statuses',
 	},
 	{
-		id: 3,
-		title: 'Роли',
-		icon: 'mdi-account',
-		url: '/roles',
-	},
-	{
 		id: 4,
 		title: 'Реестры',
 		icon: 'mdi-script-text-outline',
