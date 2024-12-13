@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import cadrovik from '@/assets/img/cadrovik.png'
+import { useMotions } from '@vueuse/motion'
+import { useQuasar } from 'quasar'
+import IconTrash from '@/components/icons/IconTrash.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -30,9 +32,26 @@ const forms = ref([
 
 ])
 
+const $q = useQuasar()
 const onDrop = (dropResult: number) => {
 	forms.value = applyDrag(forms.value, dropResult)
+	dragging.value = false
 }
+
+watch(
+	() => forms.value.length,
+	(newval, oldval) => {
+		if (oldval > newval) {
+			$q.notify({
+				message: 'Форма удалена',
+				color: 'negative',
+				icon: 'mdi-check-bold',
+				actions: [
+					{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
+				]
+			})
+		}
+	})
 
 const expanded = ref<boolean>(false)
 
@@ -68,12 +87,30 @@ const calcClass = (item: any) => {
 }
 
 const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
+
+const dragging = ref(false)
+
+const onDragLeave = (() => {
+	dragging.value = true
+})
+const onDragEnter = (() => {
+	dragging.value = false
+})
+
+const motions = useMotions()
+
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.header Формы
-	Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ value: 'div', props: { class: 'list' } }")
+	Container(@drop="onDrop"
+		@drag-leave='onDragLeave'
+		@drag-enter='onDragEnter'
+		orientation='horizontal'
+		group-name='column'
+		:remove-on-drop-out='true'
+		:tag="{ value: 'div', props: { class: 'list' } }")
 		Draggable(v-for="(item, index) in forms"
 			:key="item.id")
 			.text-center
@@ -93,6 +130,7 @@ q-page(padding)
 						:initial="{ x: 100, opacity: 0 }"
 						:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
 						br
+						.text-h6.text-center Здесь свойства формы
 						// img(:src='cadrovik')
 
 
@@ -102,6 +140,15 @@ q-page(padding)
 			:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }'
 			) 
 
+	transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
+		.trash(v-if='dragging'
+			v-motion='"cube"'
+			:initial="{ y: 200, opacity: 0, }"
+			:enter="{ y: 0, opacity: 1, }"
+			:leave="{ y: 200, opacity: 0, }"
+			)
+			IconTrash
+			label Удалить
 </template>
 
 <style scoped lang="scss">
@@ -173,5 +220,23 @@ q-page(padding)
 
 .list {
 	display: flex;
+}
+
+.trash {
+	position: fixed;
+	bottom: 3rem;
+	left: 50%;
+	font-size: 3rem;
+	color: darkred;
+	transform: translateX(-50%);
+	vertical-align: middle;
+	text-align: center;
+	line-height: 1.0;
+
+	label {
+		display: block;
+		font-size: 1rem;
+	}
+
 }
 </style>
