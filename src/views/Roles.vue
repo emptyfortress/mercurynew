@@ -9,6 +9,7 @@ import IconTrash from '@/components/icons/IconTrash.vue'
 import { useMotions } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
+import { promiseTimeout, } from '@vueuse/core'
 
 gsap.registerPlugin(Flip)
 
@@ -101,6 +102,22 @@ const onDragEnter = (() => {
 
 const motions = useMotions()
 
+const create = ((e: string) => {
+	let tmp = {
+		id: +new Date(),
+		label: e,
+		expand: false,
+		avatar: 'avatar1'
+	}
+	roles.value.push(tmp)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Добавлена роль'
+		})
+	}, 1200)
+})
 </script>
 
 <template lang="pug">
@@ -134,7 +151,7 @@ q-page(padding)
 						br
 						img(:src='cadrovik')
 
-		AddButton(v-if='!expanded')
+		AddButton(v-if='!expanded' @create='create')
 
 	transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 		.trash(v-if='dragging'

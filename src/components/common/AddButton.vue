@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, h } from 'vue'
+import { ref, computed, nextTick, } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useWindowSize } from '@vueuse/core'
 
+const props = defineProps({
+	mode: {
+		type: String,
+		required: true,
+		default: 'app'
+	}
+})
+
 gsap.registerPlugin(Flip)
 
-const adding = ref(true)
+const input = ref()
+const form = ref()
+
+const adding = ref(false)
 
 const add = (() => {
 	const state = Flip.getState('.button, .dialog')
@@ -20,6 +31,12 @@ const add = (() => {
 			fade: true,
 		})
 	})
+	nextTick(() => {
+		if (adding.value == true) {
+			console.log('adding')
+			input.value.focus()
+		}
+	})
 })
 
 const { width, height } = useWindowSize()
@@ -30,6 +47,21 @@ const left = computed(() => {
 const top = computed(() => {
 	return height.value / 2 - 100 + 'px'
 })
+
+const emit = defineEmits(['create'])
+const model = ref(null)
+
+
+const resetForm = (() => {
+	model.value = null
+	input.value.resetValidation()
+
+})
+const submitForm = (() => {
+	emit('create', model.value)
+	adding.value = false
+	form.value.reset()
+})
 </script>
 
 <template lang="pug">
@@ -39,9 +71,9 @@ div
 		:class="{ active: adding }"
 		@click="add"
 		v-motion
-		:initial="{ y: 20, opacity: 0 }"
-		:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }')
-		q-icon(name="mdi-plus" color="white" size="md")
+		:initial="{ opacity: 0, rotate: -720, scale: .5 }"
+		:enter='{ opacity: 1, rotate: 0, scale: 1, transition: { delay: 800 } }')
+		q-icon(name="mdi-plus" color="white" size="24px")
 
 	.backdrop(v-if='adding'
 		v-motion
@@ -62,17 +94,27 @@ div
 			color="negative" @click="add"
 			) 
 
-		.hd Новая роль
-		.section
-			label Название:
-			q-input(v-model="model" dense filled)
-		q-card-actions(align="right" v-if='adding'
-			v-motion
-			:initial="{ opacity: 0 }"
-			:enter='{ opacity: 1, transition: { delay: 200 } }'
-			)
-			q-btn(flat color="primary" label="Отмена" @click="add") 
-			q-btn(unelevated color="primary" label="Создать" @click="add") 
+		q-form(ref='form' @submit="submitForm" @reset="resetForm")
+			.hd Новая роль
+			.section
+				label Название:
+				q-input(ref="input"
+					v-model="model"
+					autofocus
+					dense
+					clearable
+					filled
+					:rules="[val => !!val || 'Это обязательное поле']"
+					hint='Название должно быть уникальным'
+					)
+
+			q-card-actions(align="right" v-if='adding'
+				v-motion
+				:initial="{ opacity: 0 }"
+				:enter='{ opacity: 1, transition: { delay: 200 } }'
+				)
+				q-btn(flat color="primary" label="Отмена" @click="add") 
+				q-btn(unelevated color="primary" label="Создать" type='submit') 
 
 </template>
 
@@ -139,5 +181,9 @@ div
 	margin-bottom: 1rem;
 	margin-left: .5rem;
 	margin-right: .5rem;
+}
+
+label {
+	font-weight: 600;
 }
 </style>
