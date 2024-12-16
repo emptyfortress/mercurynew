@@ -57,6 +57,7 @@ const myapps = useApps()
 const app = useStorage('app', localStorage)
 
 const navigate = (e: App) => {
+	console.log(e)
 	e.expand = false
 	myapps.setCurrentApp(e)
 	router.push('/assistent')
@@ -66,6 +67,7 @@ const navigate1 = (e: any) => {
 	app.value = { ...e }
 	router.push('/process')
 }
+
 </script>
 
 <template lang="pug">
@@ -100,11 +102,13 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ va
 				:enter="{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 550 } }")
 				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Первичные настройки" @click.stop="navigate(item)") 
 				q-btn(unelevated color="primary" icon="mdi-code-block-braces" label="К приложению" @click.stop="navigate1(item)") 
+
 </template>
 
 <style scoped lang="scss">
 .smooth-dnd-container.horizontal.list {
 	display: flex;
+	align-items: center;
 	flex-wrap: wrap;
 }
 
