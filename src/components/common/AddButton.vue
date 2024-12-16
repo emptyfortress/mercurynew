@@ -33,7 +33,6 @@ const add = (() => {
 	})
 	nextTick(() => {
 		if (adding.value == true) {
-			console.log('adding')
 			input.value.focus()
 		}
 	})
@@ -53,14 +52,23 @@ const model = ref(null)
 
 
 const resetForm = (() => {
+	nextTick(() => {
+		input.value.resetValidation()
+	})
 	model.value = null
-	input.value.resetValidation()
 
 })
 const submitForm = (() => {
 	emit('create', model.value)
-	adding.value = false
-	form.value.reset()
+	resetForm()
+	add()
+	input.value.resetValidation()
+})
+
+const otmena = (() => {
+	add()
+	resetForm()
+	input.value.resetValidation()
 })
 </script>
 
@@ -91,10 +99,10 @@ div
 			:initial="{ opacity: 0, scale: 0, rotate: -720 }"
 			:enter="{ opacity: 1, scale: 1, rotate: 0 }"
 			:delay="400"
-			color="negative" @click="add"
+			color="negative" @click="otmena"
 			) 
 
-		q-form(ref='form' @submit="submitForm" @reset="resetForm")
+		q-form(ref='form' @submit="submitForm")
 			.hd Новая роль
 			.section
 				label Название:
@@ -113,7 +121,7 @@ div
 				:initial="{ opacity: 0 }"
 				:enter='{ opacity: 1, transition: { delay: 200 } }'
 				)
-				q-btn(flat color="primary" label="Отмена" @click="add") 
+				q-btn(flat color="primary" label="Отмена" @click="otmena") 
 				q-btn(unelevated color="primary" label="Создать" type='submit') 
 
 </template>
