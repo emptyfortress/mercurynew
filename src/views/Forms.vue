@@ -7,6 +7,7 @@ import { Flip } from 'gsap/Flip'
 import { useMotions } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
 import IconTrash from '@/components/icons/IconTrash.vue'
+import AddButton from '@/components/common/AddButton.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -99,6 +100,22 @@ const onDragEnter = (() => {
 
 const motions = useMotions()
 
+const create = ((e: string) => {
+	let tmp = {
+		id: +new Date(),
+		label: e,
+		expand: false,
+		avatar: 'edit'
+	}
+	forms.value.push(tmp)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Добавлена форма'
+		})
+	}, 1200)
+})
 </script>
 
 <template lang="pug">
@@ -134,11 +151,7 @@ q-page(padding)
 						// img(:src='cadrovik')
 
 
-		q-btn.q-ml-xl(v-if='!expanded' round icon="mdi-plus" color="primary" @click=""
-			v-motion
-			:initial="{ y: 20, opacity: 0 }"
-			:enter='{ y: 0, opacity: 1, transition: { delay: 800 } }'
-			) 
+		AddButton(v-if='!expanded' @create='create' mode="form")
 
 	transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 		.trash(v-if='dragging'
@@ -224,7 +237,7 @@ q-page(padding)
 
 .trash {
 	position: fixed;
-	bottom: 3rem;
+	bottom: 6rem;
 	left: 50%;
 	font-size: 3rem;
 	color: darkred;

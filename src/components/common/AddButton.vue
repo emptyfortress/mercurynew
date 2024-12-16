@@ -12,6 +12,17 @@ const props = defineProps({
 	}
 })
 
+const header = computed(() => {
+	switch (props.mode) {
+		case 'role':
+			return 'Новая роль'
+		case 'form':
+			return 'Новая форма'
+		default:
+			return 'Новое приложение'
+	}
+})
+
 gsap.registerPlugin(Flip)
 
 const input = ref()
@@ -99,11 +110,11 @@ div
 			:initial="{ opacity: 0, scale: 0, rotate: -720 }"
 			:enter="{ opacity: 1, scale: 1, rotate: 0 }"
 			:delay="400"
-			color="negative" @click="otmena"
+			color='negative' @click="otmena"
 			) 
 
 		q-form(ref='form' @submit="submitForm")
-			.hd Новая роль
+			.hd {{ header }}
 			.section
 				label Название:
 				q-input(ref="input"
@@ -163,8 +174,8 @@ div
 .backdrop {
 	width: 100vw;
 	height: 100vh;
-	background-color: rgba(0, 0, 0, 0.1);
-	backdrop-filter: blur(4px);
+	background-color: rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(2px);
 	position: fixed;
 	left: 0;
 	right: 0;

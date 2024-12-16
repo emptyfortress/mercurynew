@@ -9,7 +9,6 @@ import IconTrash from '@/components/icons/IconTrash.vue'
 import { useMotions } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
-import { promiseTimeout, } from '@vueuse/core'
 
 gsap.registerPlugin(Flip)
 
@@ -103,7 +102,6 @@ const onDragEnter = (() => {
 const motions = useMotions()
 
 const create = ((e: string) => {
-
 	let tmp = {
 		id: +new Date(),
 		label: e,
@@ -152,7 +150,7 @@ q-page(padding)
 						br
 						img(:src='cadrovik')
 
-		AddButton(v-if='!expanded' @create='create')
+		AddButton(v-if='!expanded' @create='create' mode="role")
 
 	transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 		.trash(v-if='dragging'
@@ -230,7 +228,7 @@ q-page(padding)
 
 .trash {
 	position: fixed;
-	bottom: 3rem;
+	bottom: 6rem;
 	left: 50%;
 	font-size: 3rem;
 	color: darkred;
