@@ -31,7 +31,6 @@ const roles = ref([
 		expand: false,
 		avatar: 'avatar3'
 	},
-
 ])
 
 const $q = useQuasar()

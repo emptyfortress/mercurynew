@@ -7,6 +7,7 @@ import { Flip } from 'gsap/Flip'
 import { useRouter } from 'vue-router'
 import { useApps } from '@/stores/apps'
 import { useStorage } from '@vueuse/core'
+import AddButton from '@/components/common/AddButton.vue'
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -68,6 +69,10 @@ const navigate1 = (e: any) => {
 	router.push('/process')
 }
 
+const emit = defineEmits(['create'])
+const create = ((e: string) => {
+	emit('create', e)
+})
 </script>
 
 <template lang="pug">
@@ -103,13 +108,32 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ va
 				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Первичные настройки" @click.stop="navigate(item)") 
 				q-btn(unelevated color="primary" icon="mdi-code-block-braces" label="К приложению" @click.stop="navigate1(item)") 
 
+	AddButton(v-if='!expanded' @create='create' mode='app')
 </template>
 
 <style scoped lang="scss">
+.smooth-dnd-container.horizontal > .smooth-dnd-draggable-wrapper {
+	// display: block;
+}
+
 .smooth-dnd-container.horizontal.list {
+	// width: 1000px;
+
+	// display: grid;
+	// grid-template-columns: repeat(5, 200px);
+	// justify-items: start;
+	// align-items: center;
+	// column-gap: 1rem;
+	// row-gap: 1rem;
+	// grid-auto-flow: row;
+	// margin: 0 auto;
+
 	display: flex;
-	align-items: center;
 	flex-wrap: wrap;
+	gap: 1rem;
+	justify-items: start;
+	align-items: center;
+
 }
 
 .content {
