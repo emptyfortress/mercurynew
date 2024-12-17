@@ -77,6 +77,12 @@ q-layout(view='hHh LpR fFf')
 	Drawer(v-model="leftDrawer")
 
 	q-drawer(v-model='rightDrawer' side='right' overlay bordered behavior="desktop")
+		q-list.q-mt-lg
+			q-item(clickable to='/bugs')
+				q-item-section(avatar)
+					q-icon(name="mdi-bug" color="primary")
+				q-item-section
+					q-item-label Баги
 	// drawer content
 
 	q-page-container
@@ -91,6 +97,7 @@ header {
 	line-height: 1.5;
 	max-height: 100vh;
 }
+
 .home {
 	font-size: 1.5rem;
 }
