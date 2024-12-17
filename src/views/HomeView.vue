@@ -45,7 +45,7 @@ const create = (e: string) => {
 
 <template lang="pug">
 q-page(padding)
-	ItemSingle(v-show='type == 0' v-model:tapes="tapes" @create="create")
+	ItemSingle(v-if='type == 0' v-model:tapes="tapes" @create="create")
 	ItemForGroup(v-if='type == 1' v-model:tapes="tapes")
 
 </template>

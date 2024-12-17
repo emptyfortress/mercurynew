@@ -50,6 +50,9 @@ const calcOver = (index: number) => {
 <style scoped lang="scss">
 .list {
 	display: flex;
+	gap: 1rem;
+	justify-items: start;
+	align-items: center;
 	flex-wrap: wrap;
 }
 </style>
