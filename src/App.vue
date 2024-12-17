@@ -83,7 +83,6 @@ q-layout(view='hHh LpR fFf')
 					q-icon(name="mdi-bug" color="primary")
 				q-item-section
 					q-item-label Баги
-	// drawer content
 
 	q-page-container
 		#cont

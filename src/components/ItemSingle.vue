@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
@@ -8,6 +8,8 @@ import { useRouter } from 'vue-router'
 import { useApps } from '@/stores/apps'
 import { useStorage } from '@vueuse/core'
 import AddButton from '@/components/common/AddButton.vue'
+import Trash from '@/components/common/Trash.vue'
+import { useQuasar } from 'quasar'
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -15,8 +17,10 @@ tapes.value?.map((item) => (item.expand = false))
 
 gsap.registerPlugin(Flip)
 
+const $q = useQuasar()
 const onDrop = (dropResult: number) => {
 	tapes.value = applyDrag(tapes.value, dropResult)
+	dragging.value = false
 }
 
 const expanded = ref<boolean>(false)
@@ -73,10 +77,41 @@ const emit = defineEmits(['create'])
 const create = ((e: string) => {
 	emit('create', e)
 })
+
+const dragging = ref(false)
+
+const onDragLeave = (() => {
+	dragging.value = true
+})
+const onDragEnter = (() => {
+	dragging.value = false
+})
+
+watch(
+	() => tapes.value?.length,
+	(newval, oldval) => {
+		if (oldval && newval && oldval > newval) {
+			$q.notify({
+				message: 'Приложение удалено',
+				color: 'negative',
+				icon: 'mdi-check-bold',
+				actions: [
+					{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
+				]
+			})
+		}
+	})
 </script>
 
 <template lang="pug">
-Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ value: 'div', props: { class: 'list' } }")
+Container(@drop="onDrop"
+	@drag-leave='onDragLeave'
+	@drag-enter='onDragEnter'
+	orientation='horizontal'
+	group-name='column'
+	:remove-on-drop-out='true'
+	:tag="{ value: 'div', props: { class: 'list' } }")
+
 	Draggable(v-for="(item, index) in tapes"
 		:key="item.id")
 		.item(
@@ -109,25 +144,13 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ va
 				q-btn(unelevated color="primary" icon="mdi-code-block-braces" label="К приложению" @click.stop="navigate1(item)") 
 
 	AddButton(v-if='!expanded' @create='create' mode='app')
+
+Trash(:dragging="dragging")
+
 </template>
 
 <style scoped lang="scss">
-.smooth-dnd-container.horizontal > .smooth-dnd-draggable-wrapper {
-	// display: block;
-}
-
 .smooth-dnd-container.horizontal.list {
-	// width: 1000px;
-
-	// display: grid;
-	// grid-template-columns: repeat(5, 200px);
-	// justify-items: start;
-	// align-items: center;
-	// column-gap: 1rem;
-	// row-gap: 1rem;
-	// grid-auto-flow: row;
-	// margin: 0 auto;
-
 	display: flex;
 	flex-wrap: wrap;
 	gap: 1rem;
@@ -151,15 +174,23 @@ Container(@drop="onDrop" orientation='horizontal' group-name='column' :tag="{ va
 .img {
 	position: absolute;
 	bottom: 1rem;
-	// left: 50%;
-	// transform: translateX(-50%);
-	// font-size: 2rem;
+}
 
-	//
-	// .active & {
-	// 	// right: 1rem;
-	// 	// left: initial;
-	// 	font-size: 4rem;
-	// }
+.trash {
+	position: fixed;
+	bottom: 6rem;
+	left: 50%;
+	font-size: 3rem;
+	color: darkred;
+	transform: translateX(-50%);
+	vertical-align: middle;
+	text-align: center;
+	line-height: 1.0;
+
+	label {
+		display: block;
+		font-size: 1rem;
+	}
+
 }
 </style>

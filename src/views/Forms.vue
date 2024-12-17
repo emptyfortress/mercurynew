@@ -4,10 +4,9 @@ import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { useMotions } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
-import IconTrash from '@/components/icons/IconTrash.vue'
 import AddButton from '@/components/common/AddButton.vue'
+import Trash from '@/components/common/Trash.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -98,8 +97,6 @@ const onDragEnter = (() => {
 	dragging.value = false
 })
 
-const motions = useMotions()
-
 const create = ((e: string) => {
 	let tmp = {
 		id: +new Date(),
@@ -152,16 +149,8 @@ q-page(padding)
 
 
 		AddButton(v-if='!expanded' @create='create' mode="form")
+	Trash(:dragging="dragging")
 
-	transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-		.trash(v-if='dragging'
-			v-motion='"cube"'
-			:initial="{ y: 200, opacity: 0, }"
-			:enter="{ y: 0, opacity: 1, }"
-			:leave="{ y: 200, opacity: 0, }"
-			)
-			IconTrash
-			label Удалить
 </template>
 
 <style scoped lang="scss">

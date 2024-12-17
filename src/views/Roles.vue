@@ -5,10 +5,9 @@ import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import cadrovik from '@/assets/img/cadrovik.png'
-import IconTrash from '@/components/icons/IconTrash.vue'
-import { useMotions } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
+import Trash from '@/components/common/Trash.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -98,8 +97,6 @@ const onDragEnter = (() => {
 	dragging.value = false
 })
 
-const motions = useMotions()
-
 const create = ((e: string) => {
 	let tmp = {
 		id: +new Date(),
@@ -150,16 +147,7 @@ q-page(padding)
 						img(:src='cadrovik')
 
 		AddButton(v-if='!expanded' @create='create' mode="role")
-
-	transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-		.trash(v-if='dragging'
-			v-motion='"cube"'
-			:initial="{ y: 200, opacity: 0, }"
-			:enter="{ y: 0, opacity: 1, }"
-			:leave="{ y: 200, opacity: 0, }"
-			)
-			IconTrash
-			label Удалить
+	Trash(:dragging="dragging")
 
 </template>
 
@@ -223,23 +211,5 @@ q-page(padding)
 
 .list {
 	display: flex;
-}
-
-.trash {
-	position: fixed;
-	bottom: 6rem;
-	left: 50%;
-	font-size: 3rem;
-	color: darkred;
-	transform: translateX(-50%);
-	vertical-align: middle;
-	text-align: center;
-	line-height: 1.0;
-
-	label {
-		display: block;
-		font-size: 1rem;
-	}
-
 }
 </style>
