@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
+import { useApps } from '@/stores/apps'
+
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -18,19 +20,33 @@ const onDragLeave = () => {
 	hoverItem.value = null
 }
 
+const apps = useApps()
 const onDrop1 = () => {
 	let item = tapes.value![hoverItem.value]
 	if (item) {
-		item.group = true
+		item.group.push({
+			id: '0',
+			label: 'Приложение 0',
+			descr: 'Это описание',
+			expand: false,
+			version: '0.0.0',
+			author: 'Орлов П.С.',
+			created: '22.10.24 14:00',
+			group: [],
+		})
 	}
+	apps.setGrouping(true)
 	onDragLeave()
 	tapes.value!.splice(draggingItem.value, 1)
 	draggingItem.value = null
+	nextTick(() => {
+		apps.setGrouping(false)
+	})
 }
 
 const calcOver = (item: any, index: number) => {
 	if (hoverItem.value == index && index !== draggingItem.value) return 'green'
-	if (item.group == true) return 'group'
+	if (item.group.length) return 'group'
 	return ''
 }
 </script>
@@ -48,7 +64,7 @@ const calcOver = (item: any, index: number) => {
 		@drop='onDrop1'
 		:class='calcOver(item, index)'
 		)
-		.ani(v-if='item.group') Группа
+		.ani(v-if='item.group.length') Группа {{ item.group.length }}
 		.hg.ani(v-else) {{ item.label }}
 		q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 
@@ -64,10 +80,12 @@ const calcOver = (item: any, index: number) => {
 	align-items: center;
 	flex-wrap: wrap;
 }
+
 .img {
 	position: absolute;
 	bottom: 1rem;
 }
+
 .button {
 	background: $primary;
 	width: 42px;

@@ -11,8 +11,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			type: 0,
-			group: false,
+			group: [],
 		},
 		{
 			id: '1',
@@ -22,8 +21,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			type: 0,
-			group: false,
+			group: [],
 		},
 		{
 			id: '2',
@@ -33,8 +31,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			type: 0,
-			group: true,
+			group: [],
 		},
 		{
 			id: '3',
@@ -44,8 +41,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			type: 0,
-			group: false,
+			group: [],
 		},
 	])
 
@@ -58,11 +54,19 @@ export const useApps = defineStore('apps', () => {
 		currentApp.value = e
 	}
 
+	const grouping = ref(false)
+	const setGrouping = ((e: boolean) => {
+		grouping.value = e
+	})
+
 	return {
 		apps,
 		createApp,
 
 		currentApp,
 		setCurrentApp,
+
+		grouping,
+		setGrouping,
 	}
 })

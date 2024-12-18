@@ -10,7 +10,7 @@ import { useStorage } from '@vueuse/core'
 import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
-import { useKeyModifier } from '@vueuse/core'
+// import { useKeyModifier } from '@vueuse/core'
 
 
 const tapes = defineModel<App[]>('tapes')
@@ -55,7 +55,7 @@ const expand = (item: any) => {
 const calcClass = (item: App) => {
 	if (expanded.value == true && item.expand == true) return 'active'
 	if (expanded.value == true && item.expand == false) return 'inactive'
-	if (item.group == true) return 'group'
+	if (item.group.length) return 'group'
 	else return ''
 }
 
@@ -92,10 +92,20 @@ const onDragEnter = (() => {
 watch(
 	() => tapes.value?.length,
 	(newval, oldval) => {
-		if (oldval && newval && oldval > newval) {
+		if (oldval && newval && oldval > newval && !myapps.grouping) {
 			$q.notify({
 				message: 'Приложение удалено',
 				color: 'negative',
+				icon: 'mdi-check-bold',
+				actions: [
+					{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
+				]
+			})
+		}
+		if (oldval && newval && oldval > newval && myapps.grouping) {
+			$q.notify({
+				message: 'Группа создана',
+				color: 'positive',
 				icon: 'mdi-check-bold',
 				actions: [
 					{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
@@ -130,11 +140,11 @@ Container(@drop="onDrop"
 		.item(
 			v-motion
 			:initial="{ scale: 0, opacity: 0 }"
-			:enter='{ scale: 1, opacity: 1, transition: { delay: calcDelay(index)} }'
+			:enter='{ scale: 1, opacity: 1, transition: { delay: calcDelay(index) } }'
 			@click='expand(item)'
 			:class="calcClass(item)"
 			)
-			.ani(v-if='item.group') Группа
+			.ani(v-if='item.group.length') Группа {{ item.group.length }}
 			.hg.ani(v-else) {{ item.label }}
 			q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 
