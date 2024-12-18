@@ -24,16 +24,7 @@ const apps = useApps()
 const onDrop1 = () => {
 	let item = tapes.value![hoverItem.value]
 	if (item) {
-		item.group.push({
-			id: '0',
-			label: 'Приложение 0',
-			descr: 'Это описание',
-			expand: false,
-			version: '0.0.0',
-			author: 'Орлов П.С.',
-			created: '22.10.24 14:00',
-			group: [],
-		})
+		item.group += 1
 	}
 	apps.setGrouping(true)
 	onDragLeave()
@@ -46,7 +37,7 @@ const onDrop1 = () => {
 
 const calcOver = (item: any, index: number) => {
 	if (hoverItem.value == index && index !== draggingItem.value) return 'green'
-	if (item.group.length) return 'group'
+	if (item.group > 1) return 'group'
 	return ''
 }
 </script>
@@ -64,7 +55,7 @@ const calcOver = (item: any, index: number) => {
 		@drop='onDrop1'
 		:class='calcOver(item, index)'
 		)
-		.ani(v-if='item.group.length') Группа {{ item.group.length }}
+		.ani(v-if='item.group > 1') Группа {{ item.group }}
 		.hg.ani(v-else) {{ item.label }}
 		q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 

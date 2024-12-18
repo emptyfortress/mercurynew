@@ -6,5 +6,5 @@ interface App {
 	version: string
 	author: string
 	created: string
-	group: App[]
+	group: number
 }

@@ -55,7 +55,7 @@ const expand = (item: any) => {
 const calcClass = (item: App) => {
 	if (expanded.value == true && item.expand == true) return 'active'
 	if (expanded.value == true && item.expand == false) return 'inactive'
-	if (item.group.length) return 'group'
+	if (item.group > 1) return 'group'
 	else return ''
 }
 
@@ -144,7 +144,7 @@ Container(@drop="onDrop"
 			@click='expand(item)'
 			:class="calcClass(item)"
 			)
-			.ani(v-if='item.group.length') Группа {{ item.group.length }}
+			.ani(v-if='item.group > 1') Группа {{ item.group }}
 			.hg.ani(v-else) {{ item.label }}
 			q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 

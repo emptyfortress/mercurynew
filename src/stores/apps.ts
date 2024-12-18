@@ -11,7 +11,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			group: [],
+			group: 1,
 		},
 		{
 			id: '1',
@@ -21,7 +21,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			group: [],
+			group: 1,
 		},
 		{
 			id: '2',
@@ -31,7 +31,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			group: [],
+			group: 1,
 		},
 		{
 			id: '3',
@@ -41,7 +41,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			group: [],
+			group: 1,
 		},
 	])
 
