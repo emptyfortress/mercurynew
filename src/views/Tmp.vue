@@ -38,7 +38,7 @@ const arr = [
 q-page(padding)
 	.list
 		.it
-		.it( @click="expand" :class="{ active: expanded }")
+		.it(@click="expand" :class="{ active: expanded }")
 			.child(v-if='expanded'
 				v-for="(item, index) in arr" :key='item.id'
 				v-motion
@@ -62,19 +62,20 @@ q-page(padding)
 
 	&.active {
 		position: fixed;
-		height: 70vh;
-		width: 900px;
-		margin: 0 auto;
+		height: 100vh;
+		width: 100vw;
 		left: 0;
 		right: 0;
-		border: 1px solid #ccc;
-		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
-
+		top: 0;
+		right: 0;
+		bottom: 0;
 		display: flex;
 		justify-content: center;
 		gap: 1rem;
-		background: #ccc;
+		background-color: rgba(0, 0, 0, 0.2);
+		backdrop-filter: blur(3px);
 		padding: 1rem;
+		padding-top: 100px;
 		z-index: 10;
 	}
 }
