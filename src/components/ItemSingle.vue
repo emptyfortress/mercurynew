@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { ref, nextTick, watch, computed, onMounted } from 'vue'
+import { ref, nextTick, watch, onMounted } from 'vue'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { useRouter } from 'vue-router'
 import { useApps } from '@/stores/apps'
-import { useStorage } from '@vueuse/core'
 import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
-// import { useKeyModifier } from '@vueuse/core'
+import AppPreview from '@/components/AppPreview.vue'
 
 
 const tapes = defineModel<App[]>('tapes')
@@ -27,29 +25,35 @@ const onDrop = (dropResult: number) => {
 
 const expanded = ref<boolean>(false)
 
-const expand = (item: any) => {
-	const state = Flip.getState('.item, .ani')
-	expanded.value = !expanded.value
-	item.expand = !item.expand
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			targets: '.item, .ani',
-			absolute: true,
-			absoluteOnLeave: true,
-			nested: true,
+const groupExpand = (item: App) => {
+	console.log('fucki')
+}
 
-			onEnter: (elements) =>
-				gsap.fromTo(
-					elements,
-					{ opacity: 0 },
-					{ opacity: 1, duration: 0.6, ease: 'linear', delay: 0.2 }
-				),
-			onLeave: (elements) =>
-				gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
+const expand = (item: App) => {
+	if (item.group == 1) {
+		const state = Flip.getState('.item, .ani')
+		expanded.value = !expanded.value
+		item.expand = !item.expand
+		nextTick(() => {
+			Flip.from(state, {
+				duration: 0.4,
+				ease: 'power3.inOut',
+				targets: '.item, .ani',
+				absolute: true,
+				absoluteOnLeave: true,
+				nested: true,
+
+				onEnter: (elements) =>
+					gsap.fromTo(
+						elements,
+						{ opacity: 0 },
+						{ opacity: 1, duration: 0.6, ease: 'linear', delay: 0.2 }
+					),
+				onLeave: (elements) =>
+					gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
+			})
 		})
-	})
+	} else groupExpand(item)
 }
 
 const calcClass = (item: App) => {
@@ -59,21 +63,8 @@ const calcClass = (item: App) => {
 	else return ''
 }
 
-const router = useRouter()
 const myapps = useApps()
-const app = useStorage('app', localStorage)
 
-const navigate = (e: App) => {
-	console.log(e)
-	e.expand = false
-	myapps.setCurrentApp(e)
-	router.push('/assistent')
-}
-const navigate1 = (e: any) => {
-	myapps.setCurrentApp(e)
-	app.value = { ...e }
-	router.push('/process')
-}
 
 const emit = defineEmits(['create'])
 const create = ((e: string) => {
@@ -146,25 +137,9 @@ Container(@drop="onDrop"
 			)
 			.ani(v-if='item.group > 1') Группа {{ item.group }}
 			.hg.ani(v-else) {{ item.label }}
-			q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
+			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
-			.content(v-if='item.expand'
-				v-motion
-				:initial="{ x: 100, opacity: 0 }"
-				:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
-
-				div() {{ item.id }}
-				div() {{ item.descr }}
-				div() Автор: {{ item.author }}
-				div() Версия: {{ item.version }}
-
-			q-card-actions(align="center"
-				v-if='item.expand'
-				v-motion
-				:initial="{ y: -20, opacity: 0 }"
-				:enter="{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 550 } }")
-				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Первичные настройки" @click.stop="navigate(item)") 
-				q-btn(unelevated color="primary" icon="mdi-code-block-braces" label="К приложению" @click.stop="navigate1(item)") 
+			AppPreview(:item='item' v-if='item.expand')
 
 	AddButton(v-show='!expanded' @create='create' mode='app')
 

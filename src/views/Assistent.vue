@@ -48,8 +48,4 @@ q-page(data-flip-id="img" padding)
 	pre(v-if="app.type == 0") {{ app.children }}
 </template>
 
-<style scoped lang="scss">
-.q-page {
-	// background: pink;
-}
-</style>
+<style scoped lang="scss"></style>

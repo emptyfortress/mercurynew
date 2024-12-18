@@ -54,6 +54,11 @@ const router = createRouter({
 			name: 'bugs',
 			component: () => import('@/views/Bugs.vue'),
 		},
+		{
+			path: '/tmp',
+			name: 'tmp',
+			component: () => import('@/views/Tmp.vue'),
+		}
 	],
 })
 

@@ -31,7 +31,7 @@ export const useApps = defineStore('apps', () => {
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			group: 1,
+			group: 2,
 		},
 		{
 			id: '3',
