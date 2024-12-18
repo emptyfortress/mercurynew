@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import AddButton from '@/components/common/AddButton.vue'
 
 const tapes = defineModel<App[]>('tapes')
 
 const hoverItem = ref()
 const draggingItem = ref()
 
-const onDragStart = (n: number) => {
+const onDragStart = (item: any, n: number) => {
+	console.log(item)
+	console.log(n)
 	draggingItem.value = n
 }
 const onDragEnter = (index: number) => {
@@ -26,8 +29,9 @@ const onDrop1 = () => {
 	draggingItem.value = null
 }
 
-const calcOver = (index: number) => {
+const calcOver = (item: any, index: number) => {
 	if (hoverItem.value == index && index !== draggingItem.value) return 'green'
+	if (item.group == true) return 'group'
 	return ''
 }
 </script>
@@ -38,13 +42,18 @@ const calcOver = (index: number) => {
 		v-for="(item, index) in tapes"
 		:key="item.id"
 		:draggable='true'
-		@dragstart='onDragStart(index)'
+		@dragstart='onDragStart(item, index)'
 		@dragover.prevent="onDragEnter(index)"
 		@dragenter.prevent
 		@dragleave="onDragLeave"
 		@drop='onDrop1'
-		:class='calcOver(index)'
-		) {{ item.label }}
+		:class='calcOver(item, index)'
+		)
+		.ani(v-if='item.group') Группа
+		.hg.ani(v-else) {{ item.label }}
+		q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
+
+	AddButton(v-if='!expanded' @create='create' mode='app')
 </template>
 
 <style scoped lang="scss">
@@ -54,5 +63,9 @@ const calcOver = (index: number) => {
 	justify-items: start;
 	align-items: center;
 	flex-wrap: wrap;
+}
+.img {
+	position: absolute;
+	bottom: 1rem;
 }
 </style>

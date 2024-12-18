@@ -31,6 +31,7 @@ const form = ref()
 const adding = ref(false)
 
 const add = (() => {
+	trans.value = false
 	const state = Flip.getState('.button, .dialog')
 	adding.value = !adding.value
 	nextTick(() => {
@@ -81,6 +82,14 @@ const otmena = (() => {
 	resetForm()
 	input.value.resetValidation()
 })
+
+const trans = ref(true)
+const start = { opacity: 0, rotate: -720, scale: .5 }
+const second = { opacity: 1, rotate: 0, scale: 1, transition: { delay: 800 } }
+
+const calcStart = computed(() => {
+	return trans.value ? start : { opacity: 1, rotate: 0, scale: 1 }
+})
 </script>
 
 <template lang="pug">
@@ -90,8 +99,8 @@ div
 		:class="{ active: adding }"
 		@click="add"
 		v-motion
-		:initial="{ opacity: 0, rotate: -720, scale: .5 }"
-		:enter='{ opacity: 1, rotate: 0, scale: 1, transition: { delay: 800 } }')
+		:initial="calcStart"
+		:enter='second')
 		q-icon(name="mdi-plus" color="white" size="24px")
 
 	.backdrop(v-if='adding'
@@ -106,10 +115,6 @@ div
 		)
 		q-btn.close(round icon="mdi-close"
 			v-if="adding"
-			v-motion
-			:initial="{ opacity: 0, scale: 0, rotate: -720 }"
-			:enter="{ opacity: 1, scale: 1, rotate: 0 }"
-			:delay="400"
 			color='negative' @click="otmena"
 			) 
 
