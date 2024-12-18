@@ -167,7 +167,7 @@ q-page(padding)
 
 .item1 {
 	width: 150px;
-	// height: 150px;
+	height: 216px;
 	text-align: center;
 	margin: 0.5rem;
 	cursor: pointer;
