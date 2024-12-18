@@ -130,8 +130,8 @@ q-page(padding)
 			.text-center
 				.item1(
 					v-motion
-					:initial="{ y: 100, opacity: 0 }"
-					:enter='{ y: 0, opacity: 1, transition: { delay: 300 + (100 * index) } }'
+					:initial="{ scale: 0, opacity: 0 }"
+					:enter='{ scale: 1, opacity: 1, transition: { delay: 300  } }'
 					@click='expand(item)'
 					:class="calcClass(item)"
 					)

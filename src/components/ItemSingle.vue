@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue'
+import { ref, nextTick, watch, } from 'vue'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
@@ -10,6 +10,7 @@ import { useStorage } from '@vueuse/core'
 import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
+
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -101,6 +102,19 @@ watch(
 			})
 		}
 	})
+
+const target = ref()
+
+const test = ref(true)
+
+const start = () => {
+	if (test.value == true) return { y: 100, opacity: 0 }
+	else return { y: 0, opacity: 1 }
+}
+
+const second = (() => {
+	return { y: 0, opacity: 1, transition: { delay: 100 } }
+})
 </script>
 
 <template lang="pug">
@@ -114,10 +128,10 @@ Container(@drop="onDrop"
 
 	Draggable(v-for="(item, index) in tapes"
 		:key="item.id")
-		.item(
+		.item(ref='target'
 			v-motion
-			:initial="{ y: 100, opacity: 0 }"
-			:enter='{ y: 0, opacity: 1, transition: { delay: 100 + (100 * index) } }'
+			:initial="{ scale: 0, opacity: 0 }"
+			:enter='{ scale: 1, opacity: 1, transition: { delay: 200 } }'
 			@click='expand(item)'
 			:class="calcClass(item)"
 			)
@@ -145,7 +159,7 @@ Container(@drop="onDrop"
 
 	AddButton(v-if='!expanded' @create='create' mode='app')
 
-Trash(:dragging="dragging")
+	Trash(:dragging="dragging")
 
 </template>
 
