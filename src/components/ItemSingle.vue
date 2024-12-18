@@ -156,7 +156,7 @@ Container(@drop="onDrop"
 				q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Первичные настройки" @click.stop="navigate(item)") 
 				q-btn(unelevated color="primary" icon="mdi-code-block-braces" label="К приложению" @click.stop="navigate1(item)") 
 
-	AddButton(v-if='!expanded' @create='create' mode='app')
+	AddButton(v-show='!expanded' @create='create' mode='app')
 
 	Trash(:dragging="dragging")
 

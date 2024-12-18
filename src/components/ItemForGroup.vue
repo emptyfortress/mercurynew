@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import AddButton from '@/components/common/AddButton.vue'
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -53,7 +52,8 @@ const calcOver = (item: any, index: number) => {
 		.hg.ani(v-else) {{ item.label }}
 		q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 
-	AddButton(v-if='!expanded' @create='create' mode='app')
+	.button
+		q-icon(name="mdi-plus" color="white" size="24px")
 </template>
 
 <style scoped lang="scss">
@@ -67,5 +67,16 @@ const calcOver = (item: any, index: number) => {
 .img {
 	position: absolute;
 	bottom: 1rem;
+}
+.button {
+	background: $primary;
+	width: 42px;
+	height: 42px;
+	border-radius: 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-left: 2rem;
+	cursor: pointer;
 }
 </style>
