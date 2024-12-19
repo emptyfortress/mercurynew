@@ -72,26 +72,26 @@
 		user-select: none;
 		display: none;
 	}
-	// &.group {
-	// 	box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.2);
-	//
-	// 	&:before {
-	// 		content: '';
-	// 		display: block;
-	// 	    width: 170px;
-	// 	    height: 170px;
-	// 		background: #fff;
-	// 		// border-radius: 0.5rem;
-	// 		position: absolute;
-	// 		top: 0px;
-	// 		left: 0px;
-	// 		transform: rotate(3deg);
-	// 		z-index: -2;
-	// 		box-shadow:
-	// 			2px 2px 3px rgba($color: #000000, $alpha: 0.2),
-	// 			-1px -1px 2px rgba($color: #000000, $alpha: 0.2);
-	// 	}
-	// }
+	&.group {
+		box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.2);
+
+		&:before {
+			content: '';
+			display: block;
+		    width: 170px;
+		    height: 170px;
+			background: #fff;
+			// border-radius: 0.5rem;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			transform: rotate(3deg);
+			z-index: -2;
+			box-shadow:
+				2px 2px 3px rgba($color: #000000, $alpha: 0.2),
+				-1px -1px 2px rgba($color: #000000, $alpha: 0.2);
+		}
+	}
 
 	&.green {
 		background: #a8d7a8;

@@ -25,11 +25,15 @@ const onDrop = (dropResult: number) => {
 }
 
 const expanded = ref<boolean>(false)
+const groupexpanded = ref<boolean>(false)
 
 const expand = (item: App) => {
 	const state = Flip.getState('.item, .ani')
 	expanded.value = !expanded.value
 	item.expand = !item.expand
+	if (item.group > 1) {
+		groupexpanded.value = !groupexpanded.value
+	}
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
@@ -52,6 +56,7 @@ const expand = (item: App) => {
 }
 
 const calcClass = (item: App) => {
+	if (expanded.value == true && item.expand == true && item.group > 1) return 'groupactive'
 	if (expanded.value == true && item.expand == true) return 'active'
 	if (expanded.value == true && item.expand == false) return 'inactive'
 	if (item.group > 1) return 'group'
@@ -138,7 +143,9 @@ Container(@drop="onDrop"
 			.hg.ani {{ calcLabel(item) }}
 			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
-			AppPreview(:item='item' v-if='item.expand && expanded')
+			AppPreview(:item='item' v-if='item.expand && item.group == 1 && expanded')
+
+	GroupPreview(:expanded="groupexpanded")
 
 	AddButton(v-show='!expanded' @create='create' mode='app')
 
@@ -192,6 +199,28 @@ Container(@drop="onDrop"
 }
 
 .item.groupactive {
+	box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.2);
+	margin-right: 6rem;
+
+	&:before {
+		content: '';
+		display: block;
+		width: 170px;
+		height: 170px;
+		background: #fff;
+		// border-radius: 0.5rem;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		transform: rotate(3deg);
+		z-index: -2;
+		box-shadow:
+			2px 2px 3px rgba($color: #000000, $alpha: 0.2),
+			-1px -1px 2px rgba($color: #000000, $alpha: 0.2);
+	}
+
+	// background: #ffffff66;
+	// box-shadow: none;
 	// position: fixed;
 	// height: 100vh;
 	// width: 100vw;

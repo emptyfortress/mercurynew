@@ -46,17 +46,24 @@ const expand1 = (item: any) => {
 </script>
 
 <template lang="pug">
-div(v-if='props.expanded')
-	.zag Группа
-	.some()
-		.child(
-			v-for="(el, index) in arr" :key='el.id'
-			@click.stop="expand1(el)"
-			:class="calcClass(el)"
-			v-motion
-			:initial="{ scale: .3, opacity: 0 }"
-			:enter="{ scale: 1, opacity: 1, transition: { delay: 200 + 100 * index } }"
-			)
+.item(v-if='props.expanded'
+	v-for="(item, index) in arr"
+	v-motion
+	:initial="{ x: -1000 }"
+	:enter="{ x: 0, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }"
+	)
+
+// div(v-if='props.expanded')
+// 	.zag Группа
+// 	.some()
+// 		.child(
+// 			v-for="(el, index) in arr" :key='el.id'
+// 			@click.stop="expand1(el)"
+// 			:class="calcClass(el)"
+// 			v-motion
+// 			:initial="{ scale: .3, opacity: 0 }"
+// 			:enter="{ scale: 1, opacity: 1, transition: { delay: 200 + 100 * index } }"
+// 			)
 </template>
 
 <style scoped lang="scss">

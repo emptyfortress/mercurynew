@@ -55,9 +55,9 @@ const calcOver = (item: any, index: number) => {
 		@drop='onDrop1'
 		:class='calcOver(item, index)'
 		)
-		.ani(v-if='item.group > 1') Группа {{ item.group }}
+		.ani(v-if='item.group > 1') Группа
 		.hg.ani(v-else) {{ item.label }}
-		q-icon.ani.img(name="mdi-application-braces-outline" color="secondary" size="lg")
+		q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
 	.button
 		q-icon(name="mdi-plus" color="white" size="24px")
