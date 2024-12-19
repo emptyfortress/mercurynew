@@ -2,35 +2,53 @@
 import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-// import { useMotion } from '@vueuse/motion'
 
 gsap.registerPlugin(Flip)
 
-// const item = ref()
-// const item1 = ref()
-
-
 const expand = () => {
 	console.log(111)
-	const state = Flip.getState('.it')
+	const state = Flip.getState('.it, .ani')
 	expanded.value = !expanded.value
 	nextTick(() => {
 		Flip.from(state, {
-			duration: .4,
-			targets: '.it',
+			duration: .6,
+			targets: '.it, .ani',
 			absolute: true,
 			absoluteOnLeave: true,
-			ease: "elastic.out(.7, 0.9)",
-			// ease: 'power3.inOut',
+			ease: "elastic.out(.5, 0.9)",
 		})
 	})
 }
 const expanded = ref(false)
+const expanded1 = ref(false)
+
+const calcClass = (item: any) => {
+	if (expanded1.value == true && item.expand == true) return 'act'
+	if (expanded1.value == true && item.expand == false) return 'inact'
+	else return ''
+}
+
+const expand1 = (item: any) => {
+	const state = Flip.getState('.child')
+	expanded1.value = !expanded1.value
+	item.expand = !item.expand
+	nextTick(() => {
+		Flip.from(state, {
+			duration: .4,
+			targets: '.child',
+			absolute: true,
+			absoluteOnLeave: true,
+			ease: "elastic.out(.8, 1)",
+		})
+		console.log(333)
+	})
+}
+
 
 const arr = [
-	{ id: 0 },
-	{ id: 1 },
-	{ id: 2 },
+	{ id: 0, expand: false },
+	{ id: 1, expand: false },
+	{ id: 2, expand: false },
 ]
 </script>
 
@@ -39,12 +57,16 @@ q-page(padding)
 	.list
 		.it
 		.it(@click="expand" :class="{ active: expanded }")
-			.child(v-if='expanded'
-				v-for="(item, index) in arr" :key='item.id'
-				v-motion
-				:initial="{ scale: .3, opacity: 0 }"
-				:enter="{ scale: 1, opacity: 1, transition: { delay: 200 + 100 * index } }"
-				)
+			.zag(v-if='!expanded1') Группа
+			.some(v-if='expanded')
+				.child(
+					v-for="(el, index) in arr" :key='el.id'
+					@click.stop="expand1(el)"
+					:class="calcClass(el)"
+					v-motion
+					:initial="{ scale: .3, opacity: 0 }"
+					:enter="{ scale: 1, opacity: 1, transition: { delay: 200 + 100 * index } }"
+					)
 		.it
 </template>
 
@@ -66,17 +88,20 @@ q-page(padding)
 		width: 100vw;
 		left: 0;
 		right: 0;
-		top: 0;
+		top: 50px;
 		right: 0;
 		bottom: 0;
-		display: flex;
-		justify-content: center;
-		gap: 1rem;
-		background-color: rgba(0, 0, 0, 0.2);
+		background-color: rgba(0, 80, 80, 0.15);
 		backdrop-filter: blur(3px);
-		padding: 1rem;
-		padding-top: 100px;
+		// padding: 1rem;
+		// padding-top: 100px;
 		z-index: 10;
+
+		.some {
+			display: flex;
+			justify-content: center;
+			gap: 1rem;
+		}
 	}
 }
 
@@ -84,13 +109,34 @@ q-page(padding)
 	width: 150px;
 	height: 150px;
 	background: #fff;
-	position: absolute;
-	top: 0;
-	left: 0;
 
-	.active & {
-		position: static;
+	&.act {
+		position: fixed;
+		height: 70vh;
+		width: 900px;
+		margin: 0 auto;
+		left: 60px;
+		right: 0;
+		margin-top: 53px;
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+
 	}
 
+	&.inact {
+		display: none;
+	}
+
+}
+
+.zag {
+	font-size: 1rem;
+	text-align: center;
+
+	.active & {
+		font-size: 1.2rem;
+		margin-top: 10px;
+		margin-bottom: 1rem;
+	}
 }
 </style>
