@@ -2,7 +2,11 @@
 import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-
+import { Container, Draggable } from 'vue3-smooth-dnd'
+import { applyDrag } from '@/utils/utils'
+import Trash from '@/components/common/Trash.vue'
+import AppPreview from '@/components/AppPreview.vue'
+// import { useMotions } from '@vueuse/motion'
 
 const props = defineProps({
 	expanded: {
@@ -22,37 +26,101 @@ const calcClass = (item: any) => {
 	else return ''
 }
 
-const arr = [
-	{ id: 0, expand: false },
-	{ id: 1, expand: false },
-	{ id: 2, expand: false },
-]
+const arr = ref([
+	{
+		id: '0',
+		label: 'Приложение 0',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		group: 1,
+	},
+	{
+		id: '1',
+		label: 'Приложение 1',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		group: 1,
+	},
+	{
+		id: '2',
+		label: 'Приложение 2',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		group: 2,
+	},
+])
+
+const dragging = ref(false)
+
+const onDragLeave = (() => {
+	dragging.value = true
+})
+const onDragEnter = (() => {
+	dragging.value = false
+})
+const onDrop = (dropResult: number) => {
+	arr.value = applyDrag(arr.value, dropResult)
+	dragging.value = false
+}
 
 const expand1 = (item: any) => {
-	const state = Flip.getState('.child')
+	const state = Flip.getState('.item, .ani')
 	expanded1.value = !expanded1.value
 	item.expand = !item.expand
 	nextTick(() => {
 		Flip.from(state, {
 			duration: .4,
-			targets: '.child',
+			ease: 'power3.inOut',
+			targets: '.item, .ani',
 			absolute: true,
 			absoluteOnLeave: true,
-			ease: "elastic.out(.8, 1)",
+			nested: true,
+
+			onEnter: (elements) =>
+				gsap.fromTo(
+					elements,
+					{ opacity: 0 },
+					{ opacity: 1, duration: 0.6, ease: 'linear', delay: 0.2 }
+				),
+			onLeave: (elements) =>
+				gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
 		})
-		console.log(333)
 	})
 }
 </script>
 
 <template lang="pug">
-.item(v-if='props.expanded'
-	v-for="(item, index) in arr"
-	v-motion
-	:initial="{ x: -1000 }"
-	:enter="{ x: 0, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }"
-	)
+Container(@drop="onDrop"
+	@drag-leave='onDragLeave'
+	@drag-enter='onDragEnter'
+	orientation='horizontal'
+	group-name='column'
+	:remove-on-drop-out='true'
+	:tag="{ value: 'div', props: { class: 'list' } }")
 
+	Draggable(v-for="(item, index) in arr" :key="item.id")
+		.item(v-if='props.expanded'
+			v-motion
+			:initial="{ x: -1000 }"
+			:enter="{ x: 0, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }"
+			:leave='{ x: -1000, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }'
+			@click='expand1(item)'
+			:class="calcClass(item)"
+			)
+			div {{ item.id }}
+
+			AppPreview(:item='item' v-if='expanded1')
+
+	Trash(:dragging="dragging")
 // div(v-if='props.expanded')
 // 	.zag Группа
 // 	.some()
@@ -73,11 +141,7 @@ const expand1 = (item: any) => {
 	gap: 1rem;
 }
 
-.child {
-	width: 150px;
-	height: 150px;
-	background: #fff;
-
+.item {
 	&.act {
 		position: fixed;
 		height: 70vh;
@@ -88,7 +152,6 @@ const expand1 = (item: any) => {
 		// margin-top: 53px;
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
-
 	}
 
 	&.inact {
@@ -106,5 +169,9 @@ const expand1 = (item: any) => {
 		margin-top: 10px;
 		// margin-bottom: 1rem;
 	}
+}
+
+.list {
+	// background: pink;
 }
 </style>
