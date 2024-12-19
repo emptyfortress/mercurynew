@@ -25,19 +25,19 @@ const onDrop = (dropResult: number) => {
 }
 
 const expanded = ref<boolean>(false)
-const groupExpanded = ref<boolean>(false)
 
-const groupExpand = (item: App) => {
+const expand = (item: App) => {
 	const state = Flip.getState('.item, .ani')
-	groupExpanded.value = !groupExpanded.value
+	expanded.value = !expanded.value
 	item.expand = !item.expand
 	nextTick(() => {
 		Flip.from(state, {
-			duration: .6,
+			duration: 0.4,
+			ease: 'power3.inOut',
 			targets: '.item, .ani',
 			absolute: true,
 			absoluteOnLeave: true,
-			ease: "elastic.out(.5, 0.9)",
+			nested: true,
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -51,37 +51,9 @@ const groupExpand = (item: App) => {
 	})
 }
 
-const expand = (item: App) => {
-	if (item.group == 1) {
-		const state = Flip.getState('.item, .ani')
-		expanded.value = !expanded.value
-		item.expand = !item.expand
-		nextTick(() => {
-			Flip.from(state, {
-				duration: 0.4,
-				ease: 'power3.inOut',
-				targets: '.item, .ani',
-				absolute: true,
-				absoluteOnLeave: true,
-				nested: true,
-
-				onEnter: (elements) =>
-					gsap.fromTo(
-						elements,
-						{ opacity: 0 },
-						{ opacity: 1, duration: 0.6, ease: 'linear', delay: 0.2 }
-					),
-				onLeave: (elements) =>
-					gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
-			})
-		})
-	} else groupExpand(item)
-}
-
 const calcClass = (item: App) => {
 	if (expanded.value == true && item.expand == true) return 'active'
 	if (expanded.value == true && item.expand == false) return 'inactive'
-	if (groupExpanded.value == true && item.expand == true) return 'groupactive'
 	if (item.group > 1) return 'group'
 	else return ''
 }
@@ -160,13 +132,15 @@ Container(@drop="onDrop"
 			:class="calcClass(item)"
 			)
 
-			.zag.ani(v-if='item.group > 1 && !groupExpanded') Группа {{ item.group }}
-			.hg.ani(v-if='item.group == 1') {{ item.label }}
+			.hg fuck
+			// .zag.ani(v-if='item.group > 1 && !groupExpanded') Группа {{ item.group }}
+			// .hg.ani(v-if='item.group == 1') {{ item.label }}
+
 			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
-			AppPreview(:item='item' v-if='item.expand && !groupExpanded')
+			// AppPreview(:item='item' v-if='item.expand && expanded')
 
-			GroupPreview(:expanded="item.expand && groupExpanded")
+			// GroupPreview(:expanded="item.expand && groupExpanded")
 
 
 
@@ -222,17 +196,17 @@ Container(@drop="onDrop"
 }
 
 .item.groupactive {
-	position: fixed;
-	height: 100vh;
-	width: 100vw;
-	left: 0;
-	right: 0;
-	top: 50px;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(0, 80, 80, 0.15);
-	backdrop-filter: blur(3px);
-	z-index: 10;
+	// position: fixed;
+	// height: 100vh;
+	// width: 100vw;
+	// left: 0;
+	// right: 0;
+	// top: 50px;
+	// right: 0;
+	// bottom: 0;
+	// background-color: rgba(0, 80, 80, 0.15);
+	// backdrop-filter: blur(3px);
+	// z-index: 10;
 }
 
 .zag {
