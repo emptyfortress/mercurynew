@@ -110,6 +110,9 @@ onMounted(() => {
 const calcDelay = (ind: number) => {
 	return delay.value ? (300 + ind * 100) : 300
 }
+const calcLabel = ((item: any) => {
+	return item.group > 1 ? 'Группа' : item.label
+})
 </script>
 
 <template lang="pug">
@@ -132,17 +135,10 @@ Container(@drop="onDrop"
 			:class="calcClass(item)"
 			)
 
-			.hg fuck
-			// .zag.ani(v-if='item.group > 1 && !groupExpanded') Группа {{ item.group }}
-			// .hg.ani(v-if='item.group == 1') {{ item.label }}
-
+			.hg.ani {{ calcLabel(item) }}
 			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
-			// AppPreview(:item='item' v-if='item.expand && expanded')
-
-			// GroupPreview(:expanded="item.expand && groupExpanded")
-
-
+			AppPreview(:item='item' v-if='item.expand && expanded')
 
 	AddButton(v-show='!expanded' @create='create' mode='app')
 

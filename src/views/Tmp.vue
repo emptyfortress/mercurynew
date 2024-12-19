@@ -88,7 +88,7 @@ q-page(padding)
 		width: 100vw;
 		left: 0;
 		right: 0;
-		// top: 50px;
+		top: 50px;
 		right: 0;
 		bottom: 0;
 		background-color: rgba(0, 80, 80, 0.15);
