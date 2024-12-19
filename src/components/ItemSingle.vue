@@ -189,23 +189,6 @@ Container(@drop="onDrop"
 	bottom: 1rem;
 }
 
-.trash {
-	position: fixed;
-	bottom: 6rem;
-	left: 50%;
-	font-size: 3rem;
-	color: darkred;
-	transform: translateX(-50%);
-	vertical-align: middle;
-	text-align: center;
-	line-height: 1.0;
-
-	label {
-		display: block;
-		font-size: 1rem;
-	}
-
-}
 
 .item.groupactive {
 	box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.2);

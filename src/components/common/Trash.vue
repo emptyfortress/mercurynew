@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useMotions } from '@vueuse/motion'
 import IconTrash from '@/components/icons/IconTrash.vue'
 
@@ -16,6 +17,14 @@ const props = defineProps({
 })
 
 const motions = useMotions()
+
+const left = computed(() => {
+	if (props.group) {
+		return window.innerWidth / 2 - 200 + 'px'
+	} else {
+		return window.innerWidth / 2 - 40 + 'px'
+	}
+})
 </script>
 
 <template lang="pug">
@@ -43,10 +52,10 @@ transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 .trash {
 	position: fixed;
 	bottom: 4rem;
-	left: 50%;
+	// left: calc(100vw / 2 - 150px);
+	left: v-bind(left);
 	font-size: 3rem;
 	color: darkred;
-	transform: translateX(-50%) !important;
 	vertical-align: middle;
 	text-align: center;
 }

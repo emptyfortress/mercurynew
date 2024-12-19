@@ -6,7 +6,6 @@ import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import Trash from '@/components/common/Trash.vue'
 import AppPreview from '@/components/AppPreview.vue'
-// import { useMotions } from '@vueuse/motion'
 
 const props = defineProps({
 	expanded: {
@@ -109,7 +108,7 @@ const expand1 = (item: any) => {
 </script>
 
 <template lang="pug">
-template( v-if='props.expanded')
+template(v-if='props.expanded')
 	Container(@drop="onDrop"
 		@drag-leave='onDragLeave'
 		@drag-enter='onDragEnter'
@@ -119,7 +118,7 @@ template( v-if='props.expanded')
 		:tag="{ value: 'div', props: { class: 'list' } }")
 
 		Draggable(v-for="(item, index) in arr" :key="item.id")
-			.item(v-if='props.expanded'
+			.item(
 				v-motion
 				:initial="{ x: -1000 }"
 				:enter="{ x: 0, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }"
@@ -135,13 +134,17 @@ template( v-if='props.expanded')
 </template>
 
 <style scoped lang="scss">
-.some {
-	display: flex;
-	justify-content: center;
-	gap: 1rem;
-}
+// .list {
+// 	display: flex;
+// 	justify-content: center;
+// 	gap: 1rem;
+// }
 
 .item {
+	&+.item {
+		margin-right: 1rem;
+	}
+
 	&.act {
 		position: fixed;
 		height: 70vh;
@@ -169,9 +172,5 @@ template( v-if='props.expanded')
 		margin-top: 10px;
 		// margin-bottom: 1rem;
 	}
-}
-
-.list {
-	// background: pink;
 }
 </style>
