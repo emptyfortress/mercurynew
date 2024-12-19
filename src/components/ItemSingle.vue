@@ -160,13 +160,13 @@ Container(@drop="onDrop"
 			:class="calcClass(item)"
 			)
 
-			// .zag.ani(v-if='item.group > 1 && !groupExpanded') Группа {{ item.group }}
+			.zag.ani(v-if='item.group > 1 && !groupExpanded') Группа {{ item.group }}
 			.hg.ani(v-if='item.group == 1') {{ item.label }}
 			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
 			AppPreview(:item='item' v-if='item.expand && !groupExpanded')
 
-			// GroupPreview(:expanded="item.expand && groupExpanded")
+			GroupPreview(:expanded="item.expand && groupExpanded")
 
 
 

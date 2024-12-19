@@ -78,7 +78,7 @@ div(v-if='props.expanded')
 		margin: 0 auto;
 		left: 60px;
 		right: 0;
-		margin-top: 53px;
+		// margin-top: 53px;
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 
@@ -97,7 +97,7 @@ div(v-if='props.expanded')
 	.groupactive & {
 		font-size: 1.2rem;
 		margin-top: 10px;
-		margin-bottom: 1rem;
+		// margin-bottom: 1rem;
 	}
 }
 </style>
