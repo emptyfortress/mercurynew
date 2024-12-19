@@ -57,6 +57,16 @@ const arr = ref([
 		created: '22.10.24 14:00',
 		group: 2,
 	},
+	{
+		id: '3',
+		label: 'Приложение 3',
+		descr: 'Это описание',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.10.24 14:00',
+		group: 1,
+	},
 ])
 
 const dragging = ref(false)
@@ -99,39 +109,29 @@ const expand1 = (item: any) => {
 </script>
 
 <template lang="pug">
-Container(@drop="onDrop"
-	@drag-leave='onDragLeave'
-	@drag-enter='onDragEnter'
-	orientation='horizontal'
-	group-name='column'
-	:remove-on-drop-out='true'
-	:tag="{ value: 'div', props: { class: 'list' } }")
+template( v-if='props.expanded')
+	Container(@drop="onDrop"
+		@drag-leave='onDragLeave'
+		@drag-enter='onDragEnter'
+		orientation='horizontal'
+		group-name='column'
+		:remove-on-drop-out='true'
+		:tag="{ value: 'div', props: { class: 'list' } }")
 
-	Draggable(v-for="(item, index) in arr" :key="item.id")
-		.item(v-if='props.expanded'
-			v-motion
-			:initial="{ x: -1000 }"
-			:enter="{ x: 0, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }"
-			:leave='{ x: -1000, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }'
-			@click='expand1(item)'
-			:class="calcClass(item)"
-			)
-			div {{ item.id }}
+		Draggable(v-for="(item, index) in arr" :key="item.id")
+			.item(v-if='props.expanded'
+				v-motion
+				:initial="{ x: -1000 }"
+				:enter="{ x: 0, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }"
+				:leave='{ x: -1000, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }'
+				@click='expand1(item)'
+				:class="calcClass(item)"
+				)
+				div {{ item.id }}
 
-			AppPreview(:item='item' v-if='expanded1')
+				AppPreview(:item='item' v-if='expanded1')
 
-	Trash(:dragging="dragging")
-// div(v-if='props.expanded')
-// 	.zag Группа
-// 	.some()
-// 		.child(
-// 			v-for="(el, index) in arr" :key='el.id'
-// 			@click.stop="expand1(el)"
-// 			:class="calcClass(el)"
-// 			v-motion
-// 			:initial="{ scale: .3, opacity: 0 }"
-// 			:enter="{ scale: 1, opacity: 1, transition: { delay: 200 + 100 * index } }"
-// 			)
+		Trash(:dragging="dragging" :group='true')
 </template>
 
 <style scoped lang="scss">

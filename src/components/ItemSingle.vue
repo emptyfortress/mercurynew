@@ -143,6 +143,15 @@ Container(@drop="onDrop"
 			.hg.ani {{ calcLabel(item) }}
 			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
+			q-icon.q-mt-lg.q-ml-lg(name="mdi-arrow-left-circle-outline"
+				v-if='groupexpanded'
+				v-motion
+				:initial='{ opacity: 0, x: 100 }'
+				:enter='{ opacity: 1, x: 0 }'
+				:delay=900
+				color="secondary" size='64px')
+
+
 			AppPreview(:item='item' v-if='item.expand && item.group == 1 && expanded')
 
 	GroupPreview(:expanded="groupexpanded")
@@ -208,7 +217,6 @@ Container(@drop="onDrop"
 		width: 170px;
 		height: 170px;
 		background: #fff;
-		// border-radius: 0.5rem;
 		position: absolute;
 		top: 0px;
 		left: 0px;
@@ -218,20 +226,6 @@ Container(@drop="onDrop"
 			2px 2px 3px rgba($color: #000000, $alpha: 0.2),
 			-1px -1px 2px rgba($color: #000000, $alpha: 0.2);
 	}
-
-	// background: #ffffff66;
-	// box-shadow: none;
-	// position: fixed;
-	// height: 100vh;
-	// width: 100vw;
-	// left: 0;
-	// right: 0;
-	// top: 50px;
-	// right: 0;
-	// bottom: 0;
-	// background-color: rgba(0, 80, 80, 0.15);
-	// backdrop-filter: blur(3px);
-	// z-index: 10;
 }
 
 .zag {
