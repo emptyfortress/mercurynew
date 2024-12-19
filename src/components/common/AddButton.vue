@@ -43,6 +43,7 @@ const add = (() => {
 			fade: true,
 		})
 	})
+
 	nextTick(() => {
 		if (adding.value == true) {
 			input.value.focus()
@@ -53,10 +54,10 @@ const add = (() => {
 const { width, height } = useWindowSize()
 
 const left = computed(() => {
-	return width.value / 2 - 200 + 64 + 'px'
+	return width.value / 2 - 270 + 64 + 'px'
 })
 const top = computed(() => {
-	return height.value / 2 - 100 + 'px'
+	return height.value / 2 - 150 + 'px'
 })
 
 const emit = defineEmits(['create'])
@@ -88,7 +89,10 @@ const start = { opacity: 0, rotate: -720, scale: .5 }
 const second = { opacity: 1, rotate: 0, scale: 1, transition: { delay: 800 } }
 
 const calcStart = computed(() => {
-	return trans.value ? start : { opacity: 1, rotate: 0, scale: 1 }
+	return trans.value ? start : { opacity: 1, rotate: 0, scale: 1, }
+})
+const calcFinish = computed(() => {
+	return trans.value ? { opacity: 1, rotate: 0, scale: 1, } : second
 })
 </script>
 
@@ -100,7 +104,7 @@ div
 		@click="add"
 		v-motion
 		:initial="calcStart"
-		:enter='second')
+		:enter='calcFinish')
 		q-icon(name="mdi-plus" color="white" size="24px")
 
 	.backdrop(v-if='adding'
