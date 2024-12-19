@@ -9,6 +9,7 @@ import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
 import AppPreview from '@/components/AppPreview.vue'
+import GroupPreview from '@/components/GroupPreview.vue'
 
 
 const tapes = defineModel<App[]>('tapes')
@@ -24,9 +25,30 @@ const onDrop = (dropResult: number) => {
 }
 
 const expanded = ref<boolean>(false)
+const groupExpanded = ref<boolean>(false)
 
 const groupExpand = (item: App) => {
-	console.log('fucki')
+	const state = Flip.getState('.item, .ani')
+	groupExpanded.value = !groupExpanded.value
+	item.expand = !item.expand
+	nextTick(() => {
+		Flip.from(state, {
+			duration: .6,
+			targets: '.item, .ani',
+			absolute: true,
+			absoluteOnLeave: true,
+			ease: "elastic.out(.5, 0.9)",
+
+			onEnter: (elements) =>
+				gsap.fromTo(
+					elements,
+					{ opacity: 0 },
+					{ opacity: 1, duration: 0.6, ease: 'linear', delay: 0.2 }
+				),
+			onLeave: (elements) =>
+				gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
+		})
+	})
 }
 
 const expand = (item: App) => {
@@ -59,6 +81,7 @@ const expand = (item: App) => {
 const calcClass = (item: App) => {
 	if (expanded.value == true && item.expand == true) return 'active'
 	if (expanded.value == true && item.expand == false) return 'inactive'
+	if (groupExpanded.value == true && item.expand == true) return 'groupactive'
 	if (item.group > 1) return 'group'
 	else return ''
 }
@@ -128,6 +151,7 @@ Container(@drop="onDrop"
 
 	Draggable(v-for="(item, index) in tapes"
 		:key="item.id")
+
 		.item(
 			v-motion
 			:initial="{ scale: 0, opacity: 0 }"
@@ -135,11 +159,16 @@ Container(@drop="onDrop"
 			@click='expand(item)'
 			:class="calcClass(item)"
 			)
-			.ani(v-if='item.group > 1') Группа {{ item.group }}
-			.hg.ani(v-else) {{ item.label }}
+
+			// .zag.ani(v-if='item.group > 1 && !groupExpanded') Группа {{ item.group }}
+			.hg.ani(v-if='item.group == 1') {{ item.label }}
 			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
-			AppPreview(:item='item' v-if='item.expand')
+			AppPreview(:item='item' v-if='item.expand && !groupExpanded')
+
+			// GroupPreview(:expanded="item.expand && groupExpanded")
+
+
 
 	AddButton(v-show='!expanded' @create='create' mode='app')
 
@@ -190,5 +219,30 @@ Container(@drop="onDrop"
 		font-size: 1rem;
 	}
 
+}
+
+.item.groupactive {
+	position: fixed;
+	height: 100vh;
+	width: 100vw;
+	left: 0;
+	right: 0;
+	top: 50px;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 80, 80, 0.15);
+	backdrop-filter: blur(3px);
+	z-index: 10;
+}
+
+.zag {
+	font-size: 1rem;
+	text-align: center;
+
+	.groupactive & {
+		font-size: 1.2rem;
+		margin-top: 10px;
+		margin-bottom: 1rem;
+	}
 }
 </style>
