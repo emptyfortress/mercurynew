@@ -9,7 +9,7 @@ const props = defineProps({
 		type: String,
 		required: true,
 		default: 'app'
-	}
+	},
 })
 
 const header = computed(() => {
@@ -99,7 +99,7 @@ const calcFinish = computed(() => {
 <template lang="pug">
 .item.fuck
 	.button(v-if='!adding'
-		data-flip-id='test'
+		data-flip-id='fuck'
 		@click="add"
 		v-motion
 		:initial="calcStart"
@@ -107,6 +107,7 @@ const calcFinish = computed(() => {
 		q-icon(name="mdi-plus" color="white" size="24px")
 
 	.backdrop(v-if='adding'
+		data-flip-id='fuck'
 		v-motion
 		:initial="{ opacity: 0 }"
 		:enter='{ opacity: 1, transition: { delay: 400 } }'
@@ -114,7 +115,7 @@ const calcFinish = computed(() => {
 
 	.dialog(
 		:class="{ active: adding }"
-		data-flip-id='test'
+		data-flip-id='fuck'
 		)
 		q-btn.close(round icon="mdi-close"
 			v-if="adding"

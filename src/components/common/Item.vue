@@ -7,7 +7,7 @@ const item = defineModel<App>('item')
 
 const props = defineProps<{
 	index: number,
-	expanded: boolean,
+	// expanded: boolean,
 }>()
 
 gsap.registerPlugin(Flip)
