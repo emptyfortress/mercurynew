@@ -63,8 +63,10 @@ const stopLeft = async () => {
 <template lang="pug">
 q-page(padding)
 	.editor(ref='editor')
-		img(:src="form")
-
+		.top
+			h6 Форма "Создание"
+			q-btn(flat round dense icon="mdi-close" color="primary" @click="") 
+		q-img(:src="form")
 
 		PlusButton1(@activate='startRight' @stop='stopRight')
 		LibButton(@activate='startLeft' @stop='stopLeft')
@@ -74,7 +76,34 @@ q-page(padding)
 <style scoped lang="scss">
 .q-page {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	// justify-content: center;
+	align-items: center;
 	position: relative;
+}
+
+.top {
+	padding: 1rem;
+	border-radius: .4rem .4rem 0 0;
+	background: hsl(214 42% 94% / 1);
+	box-shadow: inset 0 -2px 3px rgba($color: #000000, $alpha: 0.1);
+	display: flex;
+	justify-content: space-between;
+
+	h6 {
+		color: $primary;
+	}
+}
+
+.editor {
+	display: block;
+	padding: 0;
+	// background: transparent;
+	// box-shadow: none;
+	// padding: 0;
+}
+
+.editor1 {
+	background: #fff;
 }
 </style>
