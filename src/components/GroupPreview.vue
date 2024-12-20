@@ -2,10 +2,10 @@
 import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { Container, Draggable } from 'vue3-smooth-dnd'
-import { applyDrag } from '@/utils/utils'
-import Trash from '@/components/common/Trash.vue'
-import AppPreview from '@/components/AppPreview.vue'
+// import { Container, Draggable } from 'vue3-smooth-dnd'
+// import { applyDrag } from '@/utils/utils'
+// import Trash from '@/components/common/Trash.vue'
+// import AppPreview from '@/components/AppPreview.vue'
 
 const props = defineProps({
 	expanded: {
@@ -108,15 +108,17 @@ const expand1 = (item: any) => {
 </script>
 
 <template lang="pug">
+
 template(v-if='props.expanded')
-	Container(@drop="onDrop"
+	.groupreview(@click='close')
+
+	// Container(@drop="onDrop"
 		@drag-leave='onDragLeave'
 		@drag-enter='onDragEnter'
 		orientation='horizontal'
 		group-name='column'
 		:remove-on-drop-out='true'
 		:tag="{ value: 'div', props: { class: 'list' } }")
-
 		Draggable(v-for="(item, index) in arr" :key="item.id")
 			.item(
 				v-motion
@@ -127,13 +129,21 @@ template(v-if='props.expanded')
 				:class="calcClass(item)"
 				)
 				div {{ item.id }}
-
 				AppPreview(:item='item' v-if='expanded1')
-
 		Trash(:dragging="dragging" :group='true')
+
 </template>
 
 <style scoped lang="scss">
+.groupreview {
+	width: 800px;
+	height: 500px;
+	background: #ccc;
+	position: fixed;
+	top: 100px;
+	left: 400px;
+}
+
 // .list {
 // 	display: flex;
 // 	justify-content: center;
