@@ -92,15 +92,14 @@ const calcStart = computed(() => {
 	return trans.value ? start : { opacity: 1, rotate: 0, scale: 1, }
 })
 const calcFinish = computed(() => {
-	return trans.value ? { opacity: 1, rotate: 0, scale: 1, } : second
+	return trans.value ? second : { opacity: 1, rotate: 0, scale: 1, }
 })
 </script>
 
 <template lang="pug">
-div
+.item.fuck
 	.button(v-if='!adding'
 		data-flip-id='test'
-		:class="{ active: adding }"
 		@click="add"
 		v-motion
 		:initial="calcStart"
@@ -155,13 +154,10 @@ div
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-left: 2rem;
+	// margin-left: 2rem;
 	cursor: pointer;
 }
 
-.active {
-	display: none;
-}
 
 .dialog {
 	width: 400px;
@@ -213,5 +209,20 @@ div
 
 label {
 	font-weight: 600;
+}
+
+.item.fuck {
+	width: 100px;
+	background: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: default;
+
+	&:hover {
+		border: none;
+		box-shadow: none;
+	}
+
 }
 </style>

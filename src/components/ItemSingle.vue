@@ -8,8 +8,8 @@ import { useApps } from '@/stores/apps'
 import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
-import AppPreview from '@/components/AppPreview.vue'
-import GroupPreview from '@/components/GroupPreview.vue'
+// import AppPreview from '@/components/AppPreview.vue'
+// import GroupPreview from '@/components/GroupPreview.vue'
 import Item from '@/components/common/Item.vue'
 import Group from '@/components/common/Group.vue'
 
@@ -118,6 +118,7 @@ watch(
 const calcItem = ((group: number) => {
 	return group == 1 ? Item : Group
 })
+// const item = tapes.value[0]
 </script>
 
 <template lang="pug">
@@ -133,17 +134,15 @@ Container(@drop="onDrop"
 		:key="item.id")
 
 		component(:is='calcItem(item.group)'
-			:item='item'
+			v-model:item="tapes[index]"
 			:index='index'
-			:expanded='expanded'
-			:groupexpanded='groupexpanded'
 			)
 
-	AddButton(v-show='!expanded' @create='create' mode='app')
+	AddButton(@create='create' mode='app')
 
-	GroupPreview(:expanded="groupexpanded")
+	// GroupPreview(:expanded="groupexpanded")
 
-	Trash(:dragging="dragging")
+	// Trash(:dragging="dragging")
 
 </template>
 

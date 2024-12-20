@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
+
+const item = defineModel<App>('item')
 
 const props = defineProps<{
-	item: App,
 	index: number,
 	expanded: boolean,
 }>()
+
+gsap.registerPlugin(Flip)
+
+const expanded = ref(false)
 
 const delay = ref(true)
 onMounted(() => {
@@ -17,15 +24,32 @@ onMounted(() => {
 const calcDelay = (ind: number) => {
 	return delay.value ? (300 + ind * 100) : 300
 }
-const calcLabel = ((item: any) => {
-	return item.group > 1 ? 'Группа' : item.label
+const calcLabel = (() => {
+	return item.value.group > 1 ? 'Группа' : item.value.label
 })
 
-const calcClass = (item: App) => {
-	if (props.expanded == true && props.item.expand == true) return 'active'
-	if (props.expanded == true && props.item.expand == false) return 'inactive'
+const calcClass = computed(() => {
+	if (expanded.value) return 'active'
+	// if (props.expanded == true && item.value.expand == true) return 'active'
+	// if (props.expanded == true && item.value.expand == false) return 'inactive'
 	else return ''
-}
+})
+
+const expand = ((item: App) => {
+	console.log(item)
+	const state = Flip.getState('.item, .dialog')
+	expanded.value = !expanded.value
+	// item.expand = !item.expand
+	nextTick(() => {
+		Flip.from(state, {
+			duration: 0.4,
+			ease: 'power3.inOut',
+			targets: '.item, .dialog',
+			absolute: true,
+			fade: true,
+		})
+	})
+})
 
 </script>
 
@@ -34,20 +58,25 @@ const calcClass = (item: App) => {
 	v-motion
 	:initial="{ scale: 0, opacity: 0 }"
 	:enter='{ scale: 1, opacity: 1, transition: { delay: calcDelay(index) } }'
-	@click='expand(props.item)'
-	:class="calcClass(props.item)"
+	@click.stop='expand(item)'
+	:class="calcClass"
 	)
 
 	.hg.ani {{ calcLabel(item) }}
 	q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
 
-	AppPreview(:item='props.item' v-if='props.item.expand && props.item.group == 1 && props.expanded')
+	// AppPreview(:item='item' v-if='item.expand && item.group == 1 && props.expanded')
 </template>
 
 <style scoped lang="scss">
 .img {
 	position: absolute;
 	bottom: 1rem;
+}
+
+.item.active {
+	// display: none;
+	visibility: hidden;
 }
 </style>
