@@ -7,6 +7,10 @@ import { Flip } from 'gsap/Flip'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
 
 gsap.registerPlugin(Flip)
 
@@ -113,6 +117,10 @@ const create = ((e: string) => {
 		})
 	}, 1200)
 })
+
+const navigate = (() => {
+	router.push('/form')
+})
 </script>
 
 <template lang="pug">
@@ -131,7 +139,7 @@ q-page(padding)
 				.item1(
 					v-motion
 					:initial="{ scale: 0, opacity: 0 }"
-					:enter='{ scale: 1, opacity: 1, transition: { delay: 300 + 100 * index  } }'
+					:enter='{ scale: 1, opacity: 1, transition: { delay: 300 + 100 * index } }'
 					@click='expand(item)'
 					:class="calcClass(item)"
 					)
@@ -144,8 +152,10 @@ q-page(padding)
 						:initial="{ x: 100, opacity: 0 }"
 						:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
 						br
-						.text-h6.text-center Здесь свойства формы
-						// img(:src='cadrovik')
+						.text-center
+							.text-h6 Здесь свойства формы
+							br
+							q-btn(unelevated color="secondary" label="Редактировать форму" @click.stop='navigate') 
 
 
 		AddButton(v-if='!expanded' @create='create' mode="form")

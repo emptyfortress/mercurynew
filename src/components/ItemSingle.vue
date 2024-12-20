@@ -154,9 +154,10 @@ Container(@drop="onDrop"
 
 			AppPreview(:item='item' v-if='item.expand && item.group == 1 && expanded')
 
+	AddButton(v-show='!expanded' @create='create' mode='app')
+
 	GroupPreview(:expanded="groupexpanded")
 
-	AddButton(v-show='!expanded' @create='create' mode='app')
 
 	Trash(:dragging="dragging")
 
