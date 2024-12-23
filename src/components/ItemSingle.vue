@@ -132,12 +132,23 @@ div
 				@click='expand(item)'
 				:class="calcClass(item)"
 				)
-				GroupPreview(v-if='expanded')
+				template(v-if='!expanded')
+					.hg1 Группа 1
+					.img
+						q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
+						q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
+				div(v-if='expanded')
+					.zag(
+						v-motion
+						:initial="{ y: 30, opacity: 0 }"
+						:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
+						) Группа 1
+					GroupPreview()
 
 		AddButton(v-if='!expanded' @create='create' mode="role")
 
 
-	Trash(:dragging="dragging")
+	Trash(v-if='!expanded' :dragging="dragging")
 
 </template>
 
@@ -160,5 +171,13 @@ div
 	box-shadow: none;
 	background: var(--middle);
 	border: 2px solid var(--green);
+}
+
+.zag {
+	width: 100%;
+	font-size: 1.1rem;
+	position: absolute;
+	top: -2rem;
+	text-align: center;
 }
 </style>

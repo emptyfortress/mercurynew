@@ -44,7 +44,6 @@ const create = (e: string) => {
 
 <template lang="pug">
 q-page(padding)
-	.header Приложения
 	ItemSingle(v-show='type == 0' v-model:tapes="tapes" @create="create")
 	ItemForGroup(v-show='type == 1' v-model:tapes="tapes")
 

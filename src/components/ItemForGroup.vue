@@ -55,8 +55,7 @@ const calcOver = (item: any, index: number) => {
 		@drop='onDrop1'
 		:class='calcOver(item, index)'
 		)
-		.ani(v-if='item.group > 1') Группа
-		.hg.ani(v-else) {{ item.label }}
+		.hg.ani(v-if='item.group == 1') {{ item.label }}
 		q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
 	.button
@@ -66,7 +65,6 @@ const calcOver = (item: any, index: number) => {
 <style scoped lang="scss">
 .list {
 	display: flex;
-	gap: 1rem;
 	justify-items: start;
 	align-items: center;
 	flex-wrap: wrap;
@@ -85,7 +83,7 @@ const calcOver = (item: any, index: number) => {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-left: 2rem;
+	margin-left: 37px;
 	cursor: pointer;
 }
 </style>
