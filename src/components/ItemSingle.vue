@@ -116,7 +116,8 @@ watch(
 // 	return item.group > 1 ? 'Группа' : item.label
 // })
 const calcItem = ((group: number) => {
-	return group == 1 ? Item : Group
+	return Item
+	// return group == 1 ? Item : Group
 })
 // const item = tapes.value[0]
 </script>
@@ -134,7 +135,7 @@ Container(@drop="onDrop"
 		:key="item.id")
 
 		component(:is='calcItem(item.group)'
-			v-model:item="tapes[index]"
+			v-model="tapes[index]"
 			:index='index'
 			)
 

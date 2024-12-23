@@ -5,41 +5,17 @@ import { Flip } from 'gsap/Flip'
 
 gsap.registerPlugin(Flip)
 
-// const expand = () => {
-// 	console.log(111)
-// 	const state = Flip.getState('.it, .ani')
-// 	expanded.value = !expanded.value
-// 	nextTick(() => {
-// 		Flip.from(state, {
-// 			duration: .6,
-// 			targets: '.it, .ani',
-// 			absolute: true,
-// 			absoluteOnLeave: true,
-// 			ease: "elastic.out(.5, 0.9)",
-// 		})
-// 	})
-// }
-const expanded = ref(false)
-const expanded1 = ref(false)
-
-const calcClass = (item: any) => {
-	if (expanded1.value == true && item.expand == true) return 'act'
-	// if (expanded1.value == true && item.expand == false) return 'inact'
-	else return ''
-}
-
 const expand = (item: any) => {
 	console.log(item)
 	const state = Flip.getState('.it, .dialog')
 	item.expand = !item.expand
-	// expanded.value = !expanded.value
 	nextTick(() => {
 		Flip.from(state, {
 			duration: .4,
 			// targets: '.it, .dialog',
 			absolute: true,
 			// absoluteOnLeave: true,
-			ease: "elastic.out(.8, 4)",
+			ease: "elastic.out(0.6, .8)",
 			// fade: true
 		})
 	})
@@ -47,21 +23,28 @@ const expand = (item: any) => {
 
 
 const arr = ref([
-	{ id: 0, expand: false },
-	{ id: 1, expand: false },
-	{ id: 2, expand: false },
+	{ id: 0, expand: false, group: 1 },
+	{ id: 1, expand: false, group: 2 },
+	{ id: 2, expand: false, group: 1 },
 ])
 
-// const calcId = ((item) => {
-// 	return 'item' + item.id
-// })
+const calcClass = ((item: any) => {
+	if (item.expand && item.group == 1) return 'active'
+	if (item.expand && item.group > 1) return 'active'
+	if (!item.expand && item.group > 1) return 'group'
+	if (!item.expand && item.group == 1) return ''
+
+})
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.list
 		template(v-for="item in arr" :key='item.id' )
-			.it(@click="expand(item)" :class="{ active: item.expand }" :data-flip-id='item.id') {{ item.id }}
+			.it(@click="expand(item)"
+			:class="calcClass(item)"
+			:data-flip-id='item.id') {{ item.id }}
+
 			.backdrop(v-if='item.expand'
 				data-flip-id='fuck'
 				v-motion
@@ -86,7 +69,9 @@ q-page(padding)
 
 	&.active {
 		visibility: hidden;
-		// display: none;
+	}
+	&.group {
+		background: #ccc;
 	}
 }
 

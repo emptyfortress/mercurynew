@@ -3,7 +3,7 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 
-const item = defineModel<App>('item')
+const item = defineModel<App>()
 
 const props = defineProps<{
 	index: number,
@@ -22,9 +22,6 @@ onMounted(() => {
 const calcDelay = (ind: number) => {
 	return delay.value ? (300 + ind * 100) : 300
 }
-const calcLabel = (() => {
-	return item.value.group > 1 ? 'Группа' : item.value.label
-})
 
 const calcClass = computed(() => {
 	if (props.expanded == true && item.value.expand == true) return 'active'
@@ -34,7 +31,7 @@ const calcClass = computed(() => {
 
 const expand = ((item: App) => {
 	console.log(item)
-	// const state = Flip.getState('.item, .ani')
+	const state = Flip.getState('.item, .ani')
 	item.value.expand = !item.value.expand
 	console.log(item)
 	// nextTick(() => {
@@ -59,7 +56,7 @@ const expand = ((item: App) => {
 	:class="calcClass"
 	)
 
-	.hg.ani {{ calcLabel(item) }}
+	.hg.ani {{ item.label }}
 	q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
 
