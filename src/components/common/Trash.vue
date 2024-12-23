@@ -29,22 +29,23 @@ const left = computed(() => {
 
 <template lang="pug">
 transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-	.trash(v-if='props.dragging'
-		v-motion='"cube"'
-		:initial="{ y: 200, opacity: 0, }"
-		:enter="{ y: 0, opacity: 1, }"
-		:leave="{ y: 200, opacity: 0, }"
-		)
+	Teleport(to="body")
+		.trash(v-if='props.dragging'
+			v-motion='"cube"'
+			:initial="{ y: 200, opacity: 0, }"
+			:enter="{ y: 0, opacity: 1, }"
+			:leave="{ y: 200, opacity: 0, }"
+			)
 
-		.myrow
-			div(v-if='props.group')
-				q-icon(name="mdi-select-remove" color="negative" size="52px")
-				label Удалить из группы
-			div
-				IconTrash
-				label
-					|Удалить
-					span.q-ml-sm(v-if='props.group') навсегда
+			.myrow
+				div(v-if='props.group')
+					q-icon(name="mdi-select-remove" color="negative" size="52px")
+					label Удалить из группы
+				div
+					IconTrash
+					label
+						|Удалить
+						span.q-ml-sm(v-if='props.group') навсегда
 
 </template>
 

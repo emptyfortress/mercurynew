@@ -4,7 +4,7 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
-// import Trash from '@/components/common/Trash.vue'
+import Trash from '@/components/common/Trash.vue'
 import AppPreview from '@/components/AppPreview.vue'
 
 // const props = defineProps({
@@ -106,8 +106,8 @@ const expand1 = (item: any) => {
 				.hg {{ item.label }}
 				q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 				AppPreview(:item='item' v-if='expanded1')
-				// Trash(:dragging="dragging" :group='true')
 
+	Trash(:dragging="dragging" :group='true')
 </template>
 
 <style scoped lang="scss">
