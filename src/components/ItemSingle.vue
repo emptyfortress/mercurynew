@@ -10,9 +10,6 @@ import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
 import AppPreview from '@/components/AppPreview.vue'
 import GroupPreview from '@/components/GroupPreview.vue'
-// import Item from '@/components/common/Item.vue'
-// import Group from '@/components/common/Group.vue'
-
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -27,7 +24,7 @@ const onDrop = (dropResult: number) => {
 }
 
 const expanded = ref<boolean>(false)
-const groupexpanded = ref<boolean>(false)
+// const groupexpanded = ref<boolean>(false)
 
 const expand = (item: any) => {
 	const state = Flip.getState('.item')
@@ -104,19 +101,6 @@ const calcClass = (item: any) => {
 	else return ''
 }
 
-// const delay = ref(true)
-// onMounted(() => {
-// 	nextTick(() => {
-// 		delay.value = false
-// 	})
-// })
-//
-// const calcDelay = (ind: number) => {
-// 	return delay.value ? (300 + ind * 100) : 300
-// }
-// const calcLabel = ((item: any) => {
-// 	return item.group > 1 ? 'Группа' : item.label
-// })
 </script>
 
 <template lang="pug">
@@ -162,16 +146,10 @@ div
 	align-items: center;
 }
 
-.img {
-	position: absolute;
-	bottom: 1rem;
-}
-
 .groupactive {
 	position: fixed;
 	padding: 1rem;
-	height: auto;
-	// height: 230px;
+	height: 206px;
 	width: 1200px;
 	margin: 0 auto;
 	top: 150px;
@@ -180,6 +158,7 @@ div
 	box-shadow: none;
 	background: var(--middle);
 	border: 2px solid var(--green);
-	transform: none !important;
+	display: flex;
+	// transform: translate(none) !important;
 }
 </style>

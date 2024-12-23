@@ -46,7 +46,7 @@ const create = (e: string) => {
 q-page(padding)
 	.header Приложения
 	ItemSingle(v-show='type == 0' v-model:tapes="tapes" @create="create")
-	// ItemForGroup(v-show='type == 1' v-model:tapes="tapes")
+	ItemForGroup(v-show='type == 1' v-model:tapes="tapes")
 
 </template>
 
@@ -54,6 +54,7 @@ q-page(padding)
 .header {
 	font-size: 1.5rem;
 	text-align: center;
+	margin-bottom: 1rem;
 }
 
 .appblock {

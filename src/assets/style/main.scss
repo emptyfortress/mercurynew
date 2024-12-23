@@ -51,6 +51,7 @@
 	padding: 1rem;
 	position: relative;
   border-radius: var(--rad);
+  // margin-right: 1rem;
 
 	&:hover {
 		border: 1px solid #ccc;
@@ -81,6 +82,10 @@
 	&.green {
 		background: #a8d7a8;
 	}
+  .img {
+    position: absolute;
+    bottom: 1rem;
+  }
 }
 .editor {
 	width: 1500px;

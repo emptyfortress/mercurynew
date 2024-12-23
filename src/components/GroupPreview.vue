@@ -46,26 +46,6 @@ const arr = ref([
 		created: '22.10.24 14:00',
 		group: 1,
 	},
-	{
-		id: '2',
-		label: 'Приложение 2',
-		descr: 'Это описание',
-		expand: false,
-		version: '0.0.0',
-		author: 'Орлов П.С.',
-		created: '22.10.24 14:00',
-		group: 2,
-	},
-	{
-		id: '3',
-		label: 'Приложение 3',
-		descr: 'Это описание',
-		expand: false,
-		version: '0.0.0',
-		author: 'Орлов П.С.',
-		created: '22.10.24 14:00',
-		group: 1,
-	},
 ])
 
 const dragging = ref(false)
@@ -82,17 +62,17 @@ const onDrop = (dropResult: number) => {
 }
 
 const expand1 = (item: any) => {
-	const state = Flip.getState('.item, .ani')
+	const state = Flip.getState('.item')
 	expanded1.value = !expanded1.value
 	item.expand = !item.expand
 	nextTick(() => {
 		Flip.from(state, {
 			duration: .4,
 			ease: 'power3.inOut',
-			targets: '.item, .ani',
-			absolute: true,
-			absoluteOnLeave: true,
-			nested: true,
+			targets: '.item',
+			// absolute: true,
+			// absoluteOnLeave: true,
+			// nested: true,
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -125,7 +105,7 @@ const expand1 = (item: any) => {
 				)
 				.hg {{ item.label }}
 				q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
-				// AppPreview(:item='item' v-if='expanded1')
+				AppPreview(:item='item' v-if='expanded1')
 				// Trash(:dragging="dragging" :group='true')
 
 </template>
@@ -144,6 +124,7 @@ const expand1 = (item: any) => {
 }
 
 .item {
+
 	&.act {
 		position: fixed;
 		height: 70vh;
