@@ -97,6 +97,7 @@ watch(
 	})
 
 const calcClass = (item: any) => {
+	if (item.group > 1) return 'group'
 	if (expanded.value == true && item.expand == true) return 'active'
 	if (expanded.value == true && item.expand == false) return 'inactive'
 	else return ''

@@ -74,11 +74,11 @@
 		// user-select: none;
 		display: none;
 	}
-	// &.group {
-	//    background: var(--middle);
-	//    border-radius: var(--rad);
-	//    border: 2px solid var(--green);
-	// }
+	&.group {
+	   background: var(--middle);
+	   border-radius: var(--rad);
+	   border: 2px solid var(--green);
+	}
 
 	&.green {
 		background: #a8d7a8;
