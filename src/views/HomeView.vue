@@ -44,12 +44,18 @@ const create = (e: string) => {
 
 <template lang="pug">
 q-page(padding)
+	.header Приложения
 	ItemSingle(v-show='type == 0' v-model:tapes="tapes" @create="create")
 	ItemForGroup(v-show='type == 1' v-model:tapes="tapes")
 
 </template>
 
 <style scoped lang="scss">
+.header {
+	font-size: 1.5rem;
+	text-align: center;
+}
+
 .appblock {
 	display: flex;
 	align-items: center;
