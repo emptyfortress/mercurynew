@@ -70,9 +70,9 @@ const expand1 = (item: any) => {
 			duration: .4,
 			ease: 'power3.inOut',
 			targets: '.item',
-			// absolute: true,
-			// absoluteOnLeave: true,
-			// nested: true,
+			absolute: true,
+			absoluteOnLeave: true,
+			nested: true,
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -88,7 +88,7 @@ const expand1 = (item: any) => {
 </script>
 
 <template lang="pug">
-.groupreview(@click.stop)
+.groupreview()
 	Container(@drop="onDrop"
 		@drag-leave='onDragLeave'
 		@drag-enter='onDragEnter'
@@ -100,7 +100,7 @@ const expand1 = (item: any) => {
 
 		Draggable(v-for="(item, index) in arr" :key="item.id")
 			.item(
-				@click='expand1(item)'
+				@click.stop='expand1(item)'
 				:class="calcClass(item)"
 				)
 				.hg {{ item.label }}
@@ -114,13 +114,8 @@ const expand1 = (item: any) => {
 .smooth-dnd-container.horizontal.list {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1rem;
 	justify-items: start;
 	align-items: center;
-}
-
-.item+.item {
-	margin-right: 1rem;
 }
 
 .item {

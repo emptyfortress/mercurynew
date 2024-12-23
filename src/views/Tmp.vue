@@ -65,7 +65,7 @@ q-page(padding)
 				)
 			.dialog(:class='{ active: item.expand }' :data-flip-id='item.id' @click='expand(item)')
 
-		AddButton(@create='create' mode='app' v-if="!expanded")
+		// AddButton(@create='' mode='app' v-if="!expanded")
 </template>
 
 <style scoped lang="scss">

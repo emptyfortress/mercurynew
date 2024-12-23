@@ -24,20 +24,19 @@ const onDrop = (dropResult: number) => {
 }
 
 const expanded = ref<boolean>(false)
-// const groupexpanded = ref<boolean>(false)
 
 const expand = (item: any) => {
-	const state = Flip.getState('.item')
-	expanded.value = !expanded.value
+	const state = Flip.getState('.item, .group')
 	item.expand = !item.expand
+	expanded.value = !expanded.value
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
-			targets: '.item',
-			absolute: true,
-			absoluteOnLeave: true,
-			nested: true,
+			targets: '.item, .group',
+			// absolute: true,
+			// absoluteOnLeave: true,
+			// nested: true,
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -94,10 +93,8 @@ watch(
 	})
 
 const calcClass = (item: any) => {
-	if (item.group > 1 && expanded.value && item.expand) return 'groupactive'
-	if (!expanded.value && item.group > 1) return 'group'
-	if (expanded.value && !item.expand) return 'inactive'
 	if (expanded.value && item.expand) return 'active'
+	if (expanded.value && !item.expand) return 'inactive'
 	else return ''
 }
 
@@ -116,19 +113,26 @@ div
 		Draggable(v-for="(item, index) in tapes"
 			:key="item.id")
 
-			.item(
+			.item(v-if="item.group == 1"
 				v-motion
 				:initial="{ scale: 0, opacity: 0 }"
 				:enter='{ scale: 1, opacity: 1, transition: { delay: 300 + 100 * index } }'
 				@click='expand(item)'
 				:class="calcClass(item)"
 				)
-				template(v-if='item.group == 1' )
-					.hg {{ item.label }}
-					q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
+				.hg {{ item.label }}
+				q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 
 				AppPreview(v-if='expanded && item.group == 1' :item='item')
-				GroupPreview(v-if='expanded && item.group > 1')
+
+			.group(v-if="item.group > 1"
+				v-motion
+				:initial="{ scale: 0, opacity: 0 }"
+				:enter='{ scale: 1, opacity: 1, transition: { delay: 300 + 100 * index } }'
+				@click='expand(item)'
+				:class="calcClass(item)"
+				)
+				GroupPreview(v-if='expanded')
 
 		AddButton(v-if='!expanded' @create='create' mode="role")
 
@@ -140,16 +144,14 @@ div
 <style scoped lang="scss">
 .smooth-dnd-container.horizontal.list {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 1rem;
-	justify-items: start;
 	align-items: center;
+	flex-wrap: wrap;
 }
 
-.groupactive {
+.group.active {
 	position: fixed;
 	padding: 1rem;
-	height: 206px;
+	height: 221;
 	width: 1200px;
 	margin: 0 auto;
 	top: 150px;
@@ -158,7 +160,5 @@ div
 	box-shadow: none;
 	background: var(--middle);
 	border: 2px solid var(--green);
-	display: flex;
-	// transform: translate(none) !important;
 }
 </style>
