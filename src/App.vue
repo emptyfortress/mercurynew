@@ -90,6 +90,12 @@ q-layout(view='hHh LpR fFf')
 				q-item-section
 					q-item-label Temp
 
+			q-item(clickable to='/tmp1')
+				q-item-section(avatar)
+					q-icon(name="mdi-test-tube" color="primary")
+				q-item-section
+					q-item-label Temp 1
+
 	q-page-container
 		#cont
 			router-view(v-slot="{ Component, route }")
