@@ -10,8 +10,8 @@ import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
 import AppPreview from '@/components/AppPreview.vue'
 import GroupPreview from '@/components/GroupPreview.vue'
-import Item from '@/components/common/Item.vue'
-import Group from '@/components/common/Group.vue'
+// import Item from '@/components/common/Item.vue'
+// import Group from '@/components/common/Group.vue'
 
 
 const tapes = defineModel<App[]>('tapes')
@@ -180,5 +180,6 @@ div
 	box-shadow: none;
 	background: var(--middle);
 	border: 2px solid var(--green);
+	transform: none !important;
 }
 </style>

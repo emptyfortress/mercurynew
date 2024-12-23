@@ -4,26 +4,8 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
-// import Trash from '@/components/common/Trash.vue'
-import AppPreview from '@/components/AppPreview.vue'
-
-// const props = defineProps({
-// 	expanded: {
-// 		type: Boolean,
-// 		required: true,
-// 		default: false
-// 	}
-// })
 
 gsap.registerPlugin(Flip)
-
-const expanded1 = ref(false)
-
-const calcClass = (item: any) => {
-	if (expanded1.value == true && item.expand == true) return 'act'
-	if (expanded1.value == true && item.expand == false) return 'inact'
-	else return ''
-}
 
 const arr = ref([
 	{
@@ -68,47 +50,15 @@ const arr = ref([
 	},
 ])
 
-const dragging = ref(false)
-
-const onDragLeave = (() => {
-	dragging.value = true
-})
-const onDragEnter = (() => {
-	dragging.value = false
-})
 const onDrop = (dropResult: number) => {
 	arr.value = applyDrag(arr.value, dropResult)
-	dragging.value = false
 }
 
-const expand1 = (item: any) => {
-	const state = Flip.getState('.item, .ani')
-	expanded1.value = !expanded1.value
-	item.expand = !item.expand
-	nextTick(() => {
-		Flip.from(state, {
-			duration: .4,
-			ease: 'power3.inOut',
-			targets: '.item, .ani',
-			absolute: true,
-			absoluteOnLeave: true,
-			nested: true,
-
-			onEnter: (elements) =>
-				gsap.fromTo(
-					elements,
-					{ opacity: 0 },
-					{ opacity: 1, duration: 0.6, ease: 'linear', delay: 0.2 }
-				),
-			onLeave: (elements) =>
-				gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
-		})
-	})
-}
 </script>
 
 <template lang="pug">
-.groupreview(@click.stop)
+.groupreview.list()
+
 	Container(@drop="onDrop"
 		@drag-leave='onDragLeave'
 		@drag-enter='onDragEnter'
@@ -117,10 +67,9 @@ const expand1 = (item: any) => {
 		:remove-on-drop-out='true'
 		:tag="{ value: 'div', props: { class: 'list' } }")
 
-
 		Draggable(v-for="(item, index) in arr" :key="item.id")
 			.item(
-				@click='expand1(item)'
+				@click.stop='expand1(item)'
 				:class="calcClass(item)"
 				)
 				.hg {{ item.label }}
@@ -132,6 +81,15 @@ const expand1 = (item: any) => {
 
 <style scoped lang="scss">
 .smooth-dnd-container.horizontal.list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	justify-items: start;
+	align-items: center;
+	transform: none;
+}
+
+.list {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 1rem;
