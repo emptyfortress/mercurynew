@@ -25,8 +25,8 @@ const calcDelay = (ind: number) => {
 	return delay.value ? (300 + ind * 100) : 300
 }
 const calcClass = computed(() => {
-	if (expanded.value && item.value.expand == true) return 'active'
-	if (expanded.value && item.value.expand == false) return 'inactive'
+	if (expanded.value && item.value?.expand == true) return 'active'
+	if (expanded.value && item.value?.expand == false) return 'inactive'
 	// if (props.expanded == true && item.value.expand == false) return 'inactive'
 	else return ''
 })
@@ -62,8 +62,8 @@ const expand = ((item: App) => {
 	q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
 
+.dialog()
 	// AppPreview(:item='item' v-if='item.expand && item.group == 1 && props.expanded')
-.dialog
 </template>
 
 <style scoped lang="scss">
@@ -71,23 +71,22 @@ const expand = ((item: App) => {
 	position: absolute;
 	bottom: 1rem;
 }
+
 .dialog {
 	position: fixed;
 	height: 70vh;
 	width: 900px;
 	margin: 0 auto;
-	left: 0;
+	left: 60px;
 	right: 0;
 	border: 1px solid #ccc;
+	background: #fff;
 	box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
-	display: none;
 }
+
 .item.active {
 	visibility: hidden;
 
-	.dialog {
-		display: block;
-	}
 	// position: fixed;
 	// height: 70vh;
 	// width: 900px;
@@ -97,6 +96,7 @@ const expand = ((item: App) => {
 	// border: 1px solid #ccc;
 	// box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 }
+
 .item.inactive {
 	visibility: hidden;
 }

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
+import { Container, Draggable } from 'vue3-smooth-dnd'
+import { applyDrag } from '@/utils/utils'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
+import AddButton from '@/components/common/AddButton.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -12,11 +15,8 @@ const expand = (item: any) => {
 	nextTick(() => {
 		Flip.from(state, {
 			duration: .4,
-			// targets: '.it, .dialog',
 			absolute: true,
-			// absoluteOnLeave: true,
 			ease: "elastic.out(0.6, .8)",
-			// fade: true
 		})
 	})
 }
@@ -35,12 +35,23 @@ const calcClass = ((item: any) => {
 	if (!item.expand && item.group == 1) return ''
 
 })
+
+const dragging = ref(false)
+const onDrop = (dropResult: number) => {
+	arr.value = applyDrag(arr.value, dropResult)
+	dragging.value = false
+}
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.list
-		template(v-for="item in arr" :key='item.id' )
+	Container(@drop="onDrop"
+		orientation='horizontal'
+		group-name='column'
+		:remove-on-drop-out='true'
+		:tag="{ value: 'div', props: { class: 'list' } }")
+
+		Draggable(v-for="item in arr" :key='item.id' )
 			.it(@click="expand(item)"
 			:class="calcClass(item)"
 			:data-flip-id='item.id') {{ item.id }}
@@ -53,6 +64,8 @@ q-page(padding)
 				:duration='100'
 				)
 			.dialog(:class='{ active: item.expand }' :data-flip-id='item.id' @click='expand(item)')
+
+		AddButton(@create='create' mode='app' v-if="!expanded")
 </template>
 
 <style scoped lang="scss">
@@ -70,6 +83,7 @@ q-page(padding)
 	&.active {
 		visibility: hidden;
 	}
+
 	&.group {
 		background: #ccc;
 	}
