@@ -9,7 +9,7 @@ import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
 import AppPreview from '@/components/AppPreview.vue'
-// import GroupPreview from '@/components/GroupPreview.vue'
+import GroupPreview from '@/components/GroupPreview.vue'
 import Item from '@/components/common/Item.vue'
 import Group from '@/components/common/Group.vue'
 
@@ -97,9 +97,10 @@ watch(
 	})
 
 const calcClass = (item: any) => {
-	if (item.group > 1) return 'group'
-	if (expanded.value == true && item.expand == true) return 'active'
-	if (expanded.value == true && item.expand == false) return 'inactive'
+	if (item.group > 1 && expanded.value && item.expand) return 'groupactive'
+	if (!expanded.value && item.group > 1) return 'group'
+	if (expanded.value && !item.expand) return 'inactive'
+	if (expanded.value && item.expand) return 'active'
 	else return ''
 }
 
@@ -138,15 +139,17 @@ div
 				@click='expand(item)'
 				:class="calcClass(item)"
 				)
-				.hg {{ item.label }}
+				template(v-if='item.group == 1' )
+					.hg {{ item.label }}
+					q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
 
-				AppPreview(v-if='expanded' :item='item')
+				AppPreview(v-if='expanded && item.group == 1' :item='item')
+				GroupPreview(v-if='expanded && item.group > 1')
 
 		AddButton(v-if='!expanded' @create='create' mode="role")
 
-		GroupPreview(:expanded="groupexpanded")
 
-Trash(:dragging="dragging")
+	Trash(:dragging="dragging")
 
 </template>
 
@@ -157,5 +160,25 @@ Trash(:dragging="dragging")
 	gap: 1rem;
 	justify-items: start;
 	align-items: center;
+}
+
+.img {
+	position: absolute;
+	bottom: 1rem;
+}
+
+.groupactive {
+	position: fixed;
+	padding: 1rem;
+	height: auto;
+	// height: 230px;
+	width: 1200px;
+	margin: 0 auto;
+	top: 150px;
+	left: 0;
+	right: 0;
+	box-shadow: none;
+	background: var(--middle);
+	border: 2px solid var(--green);
 }
 </style>

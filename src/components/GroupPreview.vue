@@ -2,18 +2,18 @@
 import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-// import { Container, Draggable } from 'vue3-smooth-dnd'
-// import { applyDrag } from '@/utils/utils'
+import { Container, Draggable } from 'vue3-smooth-dnd'
+import { applyDrag } from '@/utils/utils'
 // import Trash from '@/components/common/Trash.vue'
-// import AppPreview from '@/components/AppPreview.vue'
+import AppPreview from '@/components/AppPreview.vue'
 
-const props = defineProps({
-	expanded: {
-		type: Boolean,
-		required: true,
-		default: false
-	}
-})
+// const props = defineProps({
+// 	expanded: {
+// 		type: Boolean,
+// 		required: true,
+// 		default: false
+// 	}
+// })
 
 gsap.registerPlugin(Flip)
 
@@ -109,52 +109,47 @@ const expand1 = (item: any) => {
 
 <template lang="pug">
 
-template(v-if='props.expanded')
-	.groupreview(@click='close')
+.groupreview(@click='close')
 
-	// Container(@drop="onDrop"
+	Container(@drop="onDrop"
 		@drag-leave='onDragLeave'
 		@drag-enter='onDragEnter'
 		orientation='horizontal'
 		group-name='column'
 		:remove-on-drop-out='true'
 		:tag="{ value: 'div', props: { class: 'list' } }")
-		Draggable(v-for="(item, index) in arr" :key="item.id")
-			.item(
-				v-motion
-				:initial="{ x: -1000 }"
-				:enter="{ x: 0, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }"
-				:leave='{ x: -1000, transition: { stiffness: 90, damping: 12, delay: 300 + 100 * index } }'
-				@click='expand1(item)'
-				:class="calcClass(item)"
-				)
-				div {{ item.id }}
-				AppPreview(:item='item' v-if='expanded1')
-		Trash(:dragging="dragging" :group='true')
+
+		Draggable
+			.item
+		Draggable
+			.item
+
+	// 	Draggable(v-for="(item, index) in arr" :key="item.id")
+	// 		.item(
+	// 			@click.stop='expand1(item)'
+	// 			:class="calcClass(item)"
+	// 			)
+	// 			.hg {{ item.label }}
+	// 			q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
+	// 			AppPreview(:item='item' v-if='expanded1')
+	// Trash(:dragging="dragging" :group='true')
 
 </template>
 
 <style scoped lang="scss">
-.groupreview {
-	width: 800px;
-	height: 500px;
-	background: #ccc;
-	position: fixed;
-	top: 100px;
-	left: 400px;
+.smooth-dnd-container.horizontal.list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	justify-items: start;
+	align-items: center;
 }
 
-// .list {
-// 	display: flex;
-// 	justify-content: center;
-// 	gap: 1rem;
-// }
+.item+.item {
+	margin-right: 1rem;
+}
 
 .item {
-	&+.item {
-		margin-right: 1rem;
-	}
-
 	&.act {
 		position: fixed;
 		height: 70vh;
