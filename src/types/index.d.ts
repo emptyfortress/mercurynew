@@ -7,5 +7,5 @@ interface App {
 	author: string
 	created: string
 	group: number
-	pic: string
+	pic?: any
 }

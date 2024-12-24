@@ -10,8 +10,8 @@ import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
 import AppPreview from '@/components/AppPreview.vue'
 import GroupPreview from '@/components/GroupPreview.vue'
-import forum from '@/assets/img/forum1.png'
-import newspapers from '@/assets/img/newspapers.png'
+import IconMicrophone from '@/components/icons/IconMicrophone.vue'
+import IconPresentation from '@/components/icons/IconPresentation.vue'
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -123,7 +123,9 @@ div
 				:class="calcClass(item)"
 				)
 				.hg {{ item.label }}
-				q-img.myicon(:src='item.pic' fit='contain' height="100px" width='100px')
+				.img
+					component(:is='item.pic')
+				// img.myicon(:src='item.pic' fit='contain' height="100px" width='100px')
 
 				AppPreview(v-if='expanded && item.group == 1' :item='item')
 
@@ -137,8 +139,11 @@ div
 				template(v-if='!expanded')
 					.hg1 Приложения отдела маркетинга
 					.img
-						q-img(:src='newspapers' fit='contain' height="32px" width='32px')
-						q-img(:src='forum' fit='contain' height="32px" width='32px')
+						IconPresentation
+						IconMicrophone
+					// 	component(:is='item.pic')
+					// q-img(:src='newspapers' fit='contain' height="32px" width='32px')
+					// q-img(:src='forum' fit='contain' height="32px" width='32px')
 
 				div(v-if='expanded')
 					.zag(
@@ -181,7 +186,7 @@ div
 		position: fixed;
 		padding: 1rem;
 		height: auto;
-		// height: 221px;
+		height: 221px;
 		width: 1200px;
 		margin: 0 auto;
 		top: 150px;
@@ -194,6 +199,13 @@ div
 
 	&.inactive {
 		display: none;
+	}
+
+	.img {
+		position: absolute;
+		bottom: 0.5rem;
+		font-size: 1.5rem;
+		color: hsl(199 23% 45% / 1);
 	}
 }
 

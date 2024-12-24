@@ -6,8 +6,8 @@ import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import Trash from '@/components/common/Trash.vue'
 import AppPreview from '@/components/AppPreview.vue'
-import forum from '@/assets/img/forum1.png'
-import newspapers from '@/assets/img/newspapers.png'
+import IconMicrophone from '@/components/icons/IconMicrophone.vue'
+import IconPresentation from '@/components/icons/IconPresentation.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -29,7 +29,7 @@ const arr = ref([
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		group: 1,
-		pic: newspapers
+		pic: IconPresentation
 	},
 	{
 		id: '1',
@@ -40,7 +40,7 @@ const arr = ref([
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		group: 1,
-		pic: forum
+		pic: IconMicrophone
 	},
 ])
 
@@ -65,10 +65,10 @@ const expand1 = (item: any) => {
 		Flip.from(state, {
 			duration: .4,
 			ease: 'power3.inOut',
-			targets: '.item',
+			// targets: '.item',
 			absolute: true,
-			absoluteOnLeave: true,
-			nested: true,
+			// absoluteOnLeave: true,
+			// nested: true,
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -100,7 +100,9 @@ const expand1 = (item: any) => {
 				:class="calcClass(item)"
 				)
 				.hg {{ item.label }}
-				q-img.myicon(:src='item.pic' fit='contain' height="100px" width='100px')
+				.img
+					component(:is='item.pic')
+				// q-img.myicon(:src='item.pic' fit='contain' height="100px" width='100px')
 				AppPreview(:item='item' v-if='expanded1')
 
 	Trash(:dragging="dragging" :group='true')

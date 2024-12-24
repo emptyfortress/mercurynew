@@ -79,7 +79,11 @@
 	}
   .img {
     position: absolute;
-    bottom: 1rem;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    font-size: 3rem;
+    line-height: 0;
+    color: $secondary;
   }
 }
 
