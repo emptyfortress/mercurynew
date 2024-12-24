@@ -6,14 +6,8 @@ import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import Trash from '@/components/common/Trash.vue'
 import AppPreview from '@/components/AppPreview.vue'
-
-// const props = defineProps({
-// 	expanded: {
-// 		type: Boolean,
-// 		required: true,
-// 		default: false
-// 	}
-// })
+import forum from '@/assets/img/forum1.png'
+import newspapers from '@/assets/img/newspapers.png'
 
 gsap.registerPlugin(Flip)
 
@@ -28,23 +22,25 @@ const calcClass = (item: any) => {
 const arr = ref([
 	{
 		id: '0',
-		label: 'Приложение 0',
+		label: 'Подготовка публикации',
 		descr: 'Это описание',
 		expand: false,
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		group: 1,
+		pic: newspapers
 	},
 	{
 		id: '1',
-		label: 'Приложение 1',
+		label: 'Партнерский форум',
 		descr: 'Это описание',
 		expand: false,
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		group: 1,
+		pic: forum
 	},
 ])
 
@@ -104,7 +100,7 @@ const expand1 = (item: any) => {
 				:class="calcClass(item)"
 				)
 				.hg {{ item.label }}
-				q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
+				q-img.myicon(:src='item.pic' fit='contain' height="100px" width='100px')
 				AppPreview(:item='item' v-if='expanded1')
 
 	Trash(:dragging="dragging" :group='true')
@@ -147,5 +143,11 @@ const expand1 = (item: any) => {
 		margin-top: 10px;
 		// margin-bottom: 1rem;
 	}
+}
+
+.myicon {
+	position: absolute;
+	bottom: 0;
+	left: .5rem;
 }
 </style>

@@ -99,17 +99,18 @@
 	}
 
 	&.active {
-    position: fixed;
-    padding: 1rem;
-    height: 221px;
-    width: 1200px;
-    margin: 0 auto;
-    top: 150px;
-    left: 0;
-    right: 0;
-    box-shadow: none;
-    background: var(--middle);
-    border: 2px solid var(--green);
+		position: fixed;
+		padding: 1rem;
+		height: auto;
+		// height: 221px;
+		width: 1200px;
+		margin: 0 auto;
+		top: 150px;
+		left: 0;
+		right: 0;
+		box-shadow: none;
+		background: var(--middle);
+		border: 2px solid var(--green);
 	}
 
 	&.inactive {

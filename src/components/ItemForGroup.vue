@@ -44,19 +44,26 @@ const calcOver = (item: any, index: number) => {
 
 <template lang="pug">
 .list
-	.item(
-		v-for="(item, index) in tapes"
-		:key="item.id"
-		:draggable='true'
-		@dragstart='onDragStart(item, index)'
-		@dragover.prevent="onDragEnter(index)"
-		@dragenter.prevent
-		@dragleave="onDragLeave"
-		@drop='onDrop1'
-		:class='calcOver(item, index)'
-		)
-		.hg.ani(v-if='item.group == 1') {{ item.label }}
-		q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
+	template(v-for="(item, index) in tapes" :key="item.id")
+		.item(v-if="item.group == 1"
+			:draggable='true'
+			@dragstart='onDragStart(item, index)'
+			@dragover.prevent="onDragEnter(index)"
+			@dragenter.prevent
+			@dragleave="onDragLeave"
+			@drop='onDrop1'
+			:class='calcOver(item, index)'
+			)
+			.hg.ani(v-if='item.group == 1') {{ item.label }}
+			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
+
+		.group(v-if="item.group > 1"
+			:class='calcOver(item, index)'
+			)
+			.hg1 Группа 1
+			.img
+				q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
+				q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
 
 	.button
 		q-icon(name="mdi-plus" color="white" size="24px")
@@ -73,6 +80,26 @@ const calcOver = (item: any, index: number) => {
 .img {
 	position: absolute;
 	bottom: 1rem;
+}
+
+.group {
+	width: 170px;
+	min-height: 170px;
+	position: relative;
+	cursor: pointer;
+	padding: 1rem;
+	background: var(--middle);
+	border: 2px solid var(--green);
+	border-radius: var(--rad);
+	margin: .5rem;
+
+	&:hover {
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.3);
+	}
+
+	&.green {
+		background: #a8d7a8;
+	}
 }
 
 .button {

@@ -10,6 +10,8 @@ import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
 import AppPreview from '@/components/AppPreview.vue'
 import GroupPreview from '@/components/GroupPreview.vue'
+import forum from '@/assets/img/forum1.png'
+import newspapers from '@/assets/img/newspapers.png'
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -121,7 +123,7 @@ div
 				:class="calcClass(item)"
 				)
 				.hg {{ item.label }}
-				q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
+				q-img.myicon(:src='item.pic' fit='contain' height="100px" width='100px')
 
 				AppPreview(v-if='expanded && item.group == 1' :item='item')
 
@@ -133,19 +135,20 @@ div
 				:class="calcClass(item)"
 				)
 				template(v-if='!expanded')
-					.hg1 Группа 1
+					.hg1 Приложения отдела маркетинга
 					.img
-						q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
-						q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
+						q-img(:src='newspapers' fit='contain' height="32px" width='32px')
+						q-img(:src='forum' fit='contain' height="32px" width='32px')
+
 				div(v-if='expanded')
 					.zag(
 						v-motion
 						:initial="{ y: 30, opacity: 0 }"
 						:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
-						) Группа 1
+						) Приложения отдела маркетинга
 					GroupPreview()
 
-		AddButton(v-if='!expanded' @create='create' mode="role")
+		AddButton(v-if='!expanded' @create='create' mode="app")
 
 
 	Trash(v-if='!expanded' :dragging="dragging")
@@ -159,18 +162,45 @@ div
 	flex-wrap: wrap;
 }
 
-.group.active {
-	position: fixed;
+.group {
+	width: 170px;
+	min-height: 170px;
+	position: relative;
+	cursor: pointer;
 	padding: 1rem;
-	height: 221;
-	width: 1200px;
-	margin: 0 auto;
-	top: 150px;
-	left: 0;
-	right: 0;
-	box-shadow: none;
 	background: var(--middle);
 	border: 2px solid var(--green);
+	border-radius: var(--rad);
+	margin: .5rem;
+
+	&:hover {
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.3);
+	}
+
+	&.active {
+		position: fixed;
+		padding: 1rem;
+		height: auto;
+		// height: 221px;
+		width: 1200px;
+		margin: 0 auto;
+		top: 150px;
+		left: 0;
+		right: 0;
+		box-shadow: none;
+		background: var(--middle);
+		border: 2px solid var(--green);
+	}
+
+	&.inactive {
+		display: none;
+	}
+}
+
+.myicon {
+	position: absolute;
+	bottom: 0;
+	left: .5rem;
 }
 
 .zag {

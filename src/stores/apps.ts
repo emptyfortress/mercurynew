@@ -1,27 +1,32 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import travel from '@/assets/img/travel.png'
+import beach from '@/assets/img/beach.png'
+import letter from '@/assets/img/letter.png'
 
 export const useApps = defineStore('apps', () => {
 	const apps = ref<App[]>([
 		{
 			id: '0',
-			label: 'Приложение 0',
+			label: 'Управление командировками',
 			descr: 'Это описание',
 			expand: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
+			pic: travel
 		},
 		{
 			id: '1',
-			label: 'Приложение 1',
+			label: 'Заявки на отпуск',
 			descr: 'Это описание',
 			expand: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
+			pic: beach
 		},
 		{
 			id: '2',
@@ -32,16 +37,18 @@ export const useApps = defineStore('apps', () => {
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 2,
+			pic: letter
 		},
 		{
 			id: '3',
-			label: 'Приложение 3',
+			label: 'Служебные записки',
 			descr: 'Это описание',
 			expand: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
+			pic: letter
 		},
 	])
 

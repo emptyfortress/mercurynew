@@ -57,7 +57,8 @@ const left = computed(() => {
 	return width.value / 2 - 270 + 64 + 'px'
 })
 const top = computed(() => {
-	return height.value / 2 - 150 + 'px'
+	if (props.mode == "app") return height.value / 2 - 300 + 'px'
+	return height.value / 2 - 200 + 'px'
 })
 
 const emit = defineEmits(['create'])
@@ -94,6 +95,8 @@ const calcStart = computed(() => {
 const calcFinish = computed(() => {
 	return trans.value ? second : { opacity: 1, rotate: 0, scale: 1, }
 })
+
+const pic = ref(false)
 </script>
 
 <template lang="pug">
@@ -134,6 +137,34 @@ const calcFinish = computed(() => {
 					filled
 					:rules="[val => !!val || 'Это обязательное поле']"
 					hint='Название должно быть уникальным'
+					)
+
+
+			div(v-if='props.mode == "app"')
+				.section
+					label Описание:
+					q-input(
+						v-model="model"
+						dense
+						clearable
+						filled
+						hint='Описание не обязательно'
+						)
+
+				q-checkbox(v-model="pic" label="Иконка")
+
+				.section(v-if='pic'
+					v-motion
+					:initial="{ y: 20, opacity: 0 }"
+					:enter='{ y: 0, opacity: 1, transition: { delay: 200 } }'
+					)
+					label Иконка (png, jpg, webp, gif):
+					q-uploader(
+					url="http://localhost:4444/upload"
+					label="Загрузить картинку"
+					color="secondary"
+					flat
+					bordered
 					)
 
 			q-card-actions(align="right" v-if='adding'
