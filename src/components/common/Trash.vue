@@ -40,7 +40,7 @@ transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 			.myrow
 				div(v-if='props.group')
 					q-icon(name="mdi-select-remove" color="negative" size="52px")
-					label Удалить из группы
+					label Исключить из группы
 				div
 					IconTrash
 					label
