@@ -63,6 +63,7 @@ const top = computed(() => {
 
 const emit = defineEmits(['create'])
 const model = ref(null)
+const model1 = ref(null)
 
 
 const resetForm = (() => {
@@ -144,7 +145,7 @@ const pic = ref(false)
 				.section
 					label Описание:
 					q-input(
-						v-model="model"
+						v-model="model1"
 						dense
 						clearable
 						filled
