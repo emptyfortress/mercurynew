@@ -27,6 +27,7 @@ const create = (e: string) => {
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
 		group: 1,
+		pic: '',
 	}
 
 	tapes.value?.push(tmp)
