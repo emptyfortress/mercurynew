@@ -54,7 +54,7 @@ const add = (() => {
 	items.value.push(newItem)
 })
 const remove = ((id: number) => {
-	items.value = items.value.filter((i) => i.id !== item.id)
+	// items.value = items.value.filter((i) => i.id !== item.id)
 })
 const onDragStart = (() => {
 	console.log(111)
