@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import travel from '@/assets/img/travel.png'
 import beach from '@/assets/img/beach.png'
 import letter from '@/assets/img/letter.png'
+import folders from '@/assets/img/folders.png'
 
 export const useApps = defineStore('apps', () => {
 	const apps = ref<App[]>([
@@ -48,7 +49,7 @@ export const useApps = defineStore('apps', () => {
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
-			pic: letter
+			pic: folders
 		},
 	])
 
