@@ -84,13 +84,13 @@ q-layout(view='hHh LpR fFf')
 				q-item-section
 					q-item-label Баги
 
-			q-item(clickable to='/tmp')
+			// q-item(clickable to='/tmp')
 				q-item-section(avatar)
 					q-icon(name="mdi-test-tube" color="primary")
 				q-item-section
 					q-item-label Temp
 
-			q-item(clickable to='/tmp1')
+			// q-item(clickable to='/tmp1')
 				q-item-section(avatar)
 					q-icon(name="mdi-test-tube" color="primary")
 				q-item-section

@@ -119,7 +119,6 @@ div
 				:enter='{ scale: 1, opacity: 1, transition: { delay: 300 + 100 * index } }'
 				@click='expand(item)'
 				:class="calcClass(item)"
-				style="transform: none;"
 				)
 				.hg {{ item.label }}
 				q-icon.img(name="mdi-application-braces-outline" color="secondary" size="lg")
