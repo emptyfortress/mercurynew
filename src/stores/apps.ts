@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import travel from '@/assets/img/travel.png'
+import briefcase from '@/assets/img/briefcase.png'
 import beach from '@/assets/img/beach.png'
 import letter from '@/assets/img/letter.png'
 import folders from '@/assets/img/folders.png'
@@ -16,7 +16,7 @@ export const useApps = defineStore('apps', () => {
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
-			pic: travel
+			pic: briefcase
 		},
 		{
 			id: '1',
