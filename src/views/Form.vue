@@ -64,8 +64,12 @@ const stopLeft = async () => {
 q-page(padding)
 	.editor(ref='editor')
 		.top
-			h6 Форма "Создание"
-			q-btn(flat round dense icon="mdi-close" color="primary" @click="") 
+			.zg Форма "Создание"
+			div
+				q-btn(flat round dense icon="mdi-undo" color="primary" @click="") 
+				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
+				q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
+				q-btn.q-ml-md(flat round dense icon="mdi-fullscreen" color="primary" @click="") 
 		q-img(:src="form")
 
 		PlusButton1(@activate='startRight' @stop='stopRight')
@@ -82,18 +86,6 @@ q-page(padding)
 	position: relative;
 }
 
-.top {
-	padding: 1rem;
-	border-radius: .4rem .4rem 0 0;
-	background: hsl(214 42% 94% / 1);
-	box-shadow: inset 0 -2px 3px rgba($color: #000000, $alpha: 0.1);
-	display: flex;
-	justify-content: space-between;
-
-	h6 {
-		color: $primary;
-	}
-}
 
 .editor {
 	display: block;
@@ -105,5 +97,10 @@ q-page(padding)
 
 .editor1 {
 	background: #fff;
+}
+
+.zg {
+	font-size: 1.3rem;
+	font-weight: 500;
 }
 </style>

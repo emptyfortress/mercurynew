@@ -3,8 +3,9 @@ import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
-import lib from '@/assets/img/lib.png'
+// import lib from '@/assets/img/lib.png'
 import CloseButton from '@/components/panels/CloseButton.vue'
+import LibContent from '@/components/LibContent.vue'
 
 const panels = usePanels()
 
@@ -43,7 +44,7 @@ const close = () => {
 	:class='{ expand: panels.left }'
 	@click='expand'
 	)
-	q-icon(v-if='!panels.left'
+	q-icon.ic(v-if='!panels.left'
 		v-motion
 		:initial='{ rotate: "0deg" }'
 		:hovered='{ rotate: "90deg" }'
@@ -53,21 +54,15 @@ const close = () => {
 
 	CloseButton(v-model="panels.left" @close="close")
 
-	// q-btn.close(flat round v-if='panels.left' size="sm"
-	// 	v-motion
-	// 	:initial='{ opacity: 0 }'
-	// 	:enter='{ opacity: 1 }'
-	// 	:delay='500'
-	// 	icon='mdi-close' @click.stop='close')
-
 	div(v-if='panels.left'
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
 		:delay='600'
 		)
-		.zg Библиотека
-		img(:src="lib")
+		.top
+			.zg Библиотека
+		LibContent
 
 </template>
 
@@ -82,8 +77,13 @@ const close = () => {
 	top: 0;
 	left: -58px;
 	text-align: center;
-	padding: 0.6rem;
+	// padding: 0.6rem;
+	// padding-top: 0;
 	cursor: pointer;
+
+	.ic {
+		margin-top: 9px;
+	}
 
 	&.expand {
 		width: 385px;
@@ -93,15 +93,13 @@ const close = () => {
 	}
 }
 
-.close {
-	position: absolute;
-	top: 0.5rem;
-	right: 0.5rem;
-	z-index: 10;
+.top {
+	display: block;
 }
 
 .zg {
 	font-size: 1.1rem;
 	color: $primary;
+	text-align: center;
 }
 </style>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
 import { useApps } from '@/stores/apps'
-
+import IconMicrophone from '@/components/icons/IconMicrophone.vue'
+import IconPresentation from '@/components/icons/IconPresentation.vue'
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -55,15 +56,19 @@ const calcOver = (item: any, index: number) => {
 			:class='calcOver(item, index)'
 			)
 			.hg.ani(v-if='item.group == 1') {{ item.label }}
-			q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
+			.img
+				component(:is='item.pic')
+			// q-icon.ani.img(v-if='item.group == 1' name="mdi-application-braces-outline" color="secondary" size="lg")
 
 		.group(v-if="item.group > 1"
 			:class='calcOver(item, index)'
 			)
-			.hg1 Группа 1
+			.hg1 Приложения отдела маркетинга
 			.img
-				q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
-				q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
+				IconPresentation
+				IconMicrophone
+				// q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
+				// q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
 
 	.button
 		q-icon(name="mdi-plus" color="white" size="24px")
@@ -75,11 +80,6 @@ const calcOver = (item: any, index: number) => {
 	justify-items: start;
 	align-items: center;
 	flex-wrap: wrap;
-}
-
-.img {
-	position: absolute;
-	bottom: 1rem;
 }
 
 .group {
@@ -99,6 +99,13 @@ const calcOver = (item: any, index: number) => {
 
 	&.green {
 		background: #a8d7a8;
+	}
+
+	.img {
+		position: absolute;
+		bottom: 0.5rem;
+		font-size: 1.5rem;
+		color: hsl(199 23% 45% / 1);
 	}
 }
 

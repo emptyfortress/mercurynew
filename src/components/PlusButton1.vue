@@ -3,7 +3,7 @@ import { ref, nextTick, } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
-import prop from '@/assets/img/formprop.png'
+// import prop from '@/assets/img/formprop.png'
 import CloseButton from '@/components/panels/CloseButton.vue'
 
 const panels = usePanels()
@@ -43,7 +43,7 @@ const close = () => {
 	:class='{ expand: panels.right }'
 	@click='expand'
 	)
-	q-icon(v-if='!panels.right'
+	q-icon.ic(v-if='!panels.right'
 		v-motion
 		:initial='{ opacity: 0, rotate: "0deg" }'
 		:enter='{ opacity: 1, rotate: "0deg", }'
@@ -54,19 +54,15 @@ const close = () => {
 
 	CloseButton(v-model="panels.right" @close="close")
 
-	.zg(v-if='panels.right'
-		v-motion
-		:initial='{ opacity: 0 }'
-		:enter='{ opacity: 1 }'
-		:delay='600'
-		) Свойства
-	br
-	img(v-if='panels.right' :src="prop"
+	div(
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
 		:delay='600'
 		)
+		.top(v-if='panels.right')
+			.zg Свойства
+
 
 </template>
 
@@ -81,8 +77,13 @@ const close = () => {
 	top: 0;
 	right: -58px;
 	text-align: center;
-	padding: 0.6rem;
+	// padding: 0.6rem;
 	cursor: pointer;
+
+	.ic {
+		margin-top: 11px;
+	}
+
 
 	&.expand {
 		width: 385px;
@@ -101,5 +102,9 @@ const close = () => {
 .zg {
 	font-size: 1.1rem;
 	color: $primary;
+}
+
+.top {
+	display: block;
 }
 </style>
