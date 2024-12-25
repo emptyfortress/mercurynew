@@ -54,7 +54,7 @@ const close = () => {
 
 	CloseButton(v-model="panels.left" @close="close")
 
-	div(v-if='panels.left'
+	.rrel(v-if='panels.left'
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
@@ -63,10 +63,31 @@ const close = () => {
 		.top
 			.zg Библиотека
 		LibContent
+		.info
+			q-icon(name="mdi-lightbulb-outline" size="sm")
+			span Перетащите элемент в поле редактора
 
 </template>
 
 <style scoped lang="scss">
+.rrel {
+	height: 100%;
+	position: relative;
+}
+
+.info {
+	position: absolute;
+	bottom: 0;
+	padding: .5rem;
+	font-size: .8rem;
+	vertical-align: bottom;
+	color: $secondary;
+
+	.q-icon {
+		margin-bottom: 3px;
+	}
+}
+
 .button {
 	width: 48px;
 	height: 48px;

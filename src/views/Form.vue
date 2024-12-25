@@ -70,7 +70,7 @@ q-page(padding)
 				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense icon="mdi-fullscreen" color="primary" @click="") 
-		q-img(:src="form")
+		// q-img(:src="form")
 
 		PlusButton1(@activate='startRight' @stop='stopRight')
 		LibButton(@activate='startLeft' @stop='stopLeft')
