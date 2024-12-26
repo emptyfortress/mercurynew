@@ -6,7 +6,7 @@
 		<mask id="path-1-inside-1_41_17" fill="white">
 			<rect x="28" width="16" height="34" rx="2" />
 		</mask>
-		<rect x="28" width="16" height="34" rx="2" stroke="currentColor" stroke-width="6"
+		<rect x="28" width="16" height="34" rx="2" fill="#D6E1E5" stroke="currentColor" stroke-width="6"
 			mask="url(#path-1-inside-1_41_17)" />
 		<mask id="path-2-inside-2_41_17" fill="white">
 			<rect width="24" height="34" rx="2" />

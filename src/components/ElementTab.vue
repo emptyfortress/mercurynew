@@ -14,6 +14,11 @@ const layouts = [
 		icon: IconLayout1
 	},
 	{
+		id: 5,
+		label: '1 колонка фиксированной ширины',
+		icon: IconLayout6
+	},
+	{
 		id: 1,
 		label: '2 колонки по 50% каждая',
 		icon: IconLayout2
@@ -24,18 +29,13 @@ const layouts = [
 		icon: IconLayout3
 	},
 	{
-		id: 5,
-		label: '1 колонка фиксированной ширины',
-		icon: IconLayout6
-	},
-	{
 		id: 3,
-		label: '2 колонки, левая фиксированная',
+		label: '2 колонки, одна фиксирована',
 		icon: IconLayout4
 	},
 	{
 		id: 4,
-		label: '2 колонки, правая фиксированная',
+		label: '2 колонки 3/7',
 		icon: IconLayout5
 	},
 ]

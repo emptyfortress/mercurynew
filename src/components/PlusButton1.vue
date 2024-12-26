@@ -54,14 +54,20 @@ const close = () => {
 
 	CloseButton(v-model="panels.right" @close="close")
 
-	div(
+	.top(v-show='panels.right'
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
-		:delay='600'
+		:delay='800'
 		)
-		.top(v-if='panels.right')
-			.zg Свойства
+		.zg(v-show='panels.right'
+			v-motion
+			:initial='{ opacity: 0 }'
+			:enter='{ opacity: 1 }'
+			:delay='800'
+			)
+			q-icon(name="mdi-tune-vertical-variant")
+			|Свойства
 
 
 </template>
@@ -104,7 +110,17 @@ const close = () => {
 	color: $primary;
 }
 
+.zg .q-icon {
+	font-size: 1.3rem;
+	margin-right: .5rem;
+}
+
 .top {
 	display: block;
+}
+
+.rrel {
+	height: 100%;
+	position: relative;
 }
 </style>

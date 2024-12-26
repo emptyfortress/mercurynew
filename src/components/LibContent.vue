@@ -20,7 +20,7 @@ const tab = ref('design')
 			label Макет
 		q-tab(name="block")
 			IconBlock.ic
-			label Блоки
+			label Элементы
 		q-tab(name="field")
 			IconField.ic
 			label Поля

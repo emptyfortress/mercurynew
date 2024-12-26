@@ -3,7 +3,6 @@ import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
-// import lib from '@/assets/img/lib.png'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import LibContent from '@/components/LibContent.vue'
 
@@ -61,7 +60,9 @@ const close = () => {
 		:delay='600'
 		)
 		.top
-			.zg Библиотека
+			.zg
+				q-icon(name="mdi-bookshelf")
+				|Библиотека
 		LibContent
 		.info
 			q-icon(name="mdi-lightbulb-outline" size="sm")
@@ -73,6 +74,11 @@ const close = () => {
 .rrel {
 	height: 100%;
 	position: relative;
+}
+
+.zg .q-icon {
+	font-size: 1.5rem;
+	margin-right: .5rem;
 }
 
 .info {
@@ -111,6 +117,7 @@ const close = () => {
 		height: calc(100vh - 120px);
 		left: -395px;
 		border-radius: 6px;
+		cursor: default;
 	}
 }
 
