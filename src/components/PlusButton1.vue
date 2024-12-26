@@ -54,20 +54,15 @@ const close = () => {
 
 	CloseButton(v-model="panels.right" @close="close")
 
-	.top(v-show='panels.right'
+	.top(v-if='panels.right'
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
-		:delay='800'
+		:delay='600'
 		)
-		.zg(v-show='panels.right'
-			v-motion
-			:initial='{ opacity: 0 }'
-			:enter='{ opacity: 1 }'
-			:delay='800'
-			)
+		.zg()
 			q-icon(name="mdi-tune-vertical-variant")
-			|Свойства
+			| Настройки
 
 
 </template>
