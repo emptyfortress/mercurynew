@@ -38,12 +38,12 @@ const expanded = ref<boolean>(false)
 const expand = ((item: any) => {
 	const state = Flip.getState('.chil')
 	item.expand = !item.expand
-	// expanded.value = !expanded.value
+	expanded.value = !expanded.value
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
-			// targets: '.chil',
+			targets: '.chil',
 			// absolute: true,
 			// absoluteOnLeave: true,
 			// nested: true,
@@ -67,6 +67,11 @@ q-page(padding)
 			)
 			.con {{ item.label }}
 
+	.backdrop(v-if='expanded'
+		v-motion
+		:initial="{ opacity: 0 }"
+		:enter='{ opacity: 1, transition: { delay: 400 } }'
+		)
 </template>
 
 <style scoped lang="scss">
@@ -123,5 +128,17 @@ q-page(padding)
 	&.active {
 		display: block;
 	}
+}
+
+.backdrop {
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(2px);
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
 }
 </style>
