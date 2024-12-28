@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { ref, nextTick } from 'vue'
 import { animations, insert } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
 
+gsap.registerPlugin(Flip)
 
 const [parent, tapes] = useDragAndDrop([
 	{ id: 0, expand: false, label: "Depeche Mode", },
@@ -26,13 +30,27 @@ const [parent, tapes] = useDragAndDrop([
 )
 
 const calcClass = ((item: any) => {
-	item.expand ? 'active' : ''
+	return item.expand ? 'active' : ''
 
 })
 
+const expanded = ref<boolean>(false)
 const expand = ((item: any) => {
-	// item.expand = !item.expand
-	console.log(item)
+	const state = Flip.getState('.chil')
+	item.expand = !item.expand
+	// expanded.value = !expanded.value
+	nextTick(() => {
+		Flip.from(state, {
+			duration: 0.4,
+			ease: 'power3.inOut',
+			// targets: '.chil',
+			// absolute: true,
+			// absoluteOnLeave: true,
+			// nested: true,
+			// fade: true,
+
+		})
+	})
 })
 
 </script>
@@ -40,9 +58,14 @@ const expand = ((item: any) => {
 <template lang="pug">
 q-page(padding)
 	.pa(ref="parent")
-		.chil(v-for=" (tape, index) in tapes" :key="tape.id"
+		.chil(v-for=" (item, index) in tapes" :key="item.id"
+			v-motion
+			:initial="{ scale: 0, opacity: 0 }"
+			:enter='{ scale: 1, opacity: 1, transition: { delay: 300 + 100 * index } }'
+			@click='expand(item)'
+			:class="calcClass(item)"
 			)
-			.con {{ tape.label }}
+			.con {{ item.label }}
 
 </template>
 
@@ -53,8 +76,7 @@ q-page(padding)
 	column-gap: 1rem;
 	row-gap: 1rem;
 	margin: 0 auto;
-	width: 470px;
-	background: #ccc;
+	width: 482px;
 }
 
 .chil {
@@ -72,6 +94,7 @@ q-page(padding)
 		right: 0;
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+		z-index: 10;
 	}
 }
 
@@ -82,5 +105,23 @@ q-page(padding)
 		display: none;
 	}
 
+}
+
+.dialog {
+	position: fixed;
+	height: 70vh;
+	width: 900px;
+	margin: 0 auto;
+	top: 150px;
+	left: 0;
+	right: 0;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+	background: #fff;
+	display: none;
+
+	&.active {
+		display: block;
+	}
 }
 </style>
