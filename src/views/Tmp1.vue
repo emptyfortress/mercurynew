@@ -67,27 +67,28 @@ q-page(padding)
 			)
 			.con {{ item.label }}
 
-	.backdrop(v-if='expanded'
-		v-motion
-		:initial="{ opacity: 0 }"
-		:enter='{ opacity: 1, transition: { delay: 400 } }'
-		)
+	.backdrop(v-if='expanded')
 </template>
 
 <style scoped lang="scss">
 .pa {
 	display: grid;
-	grid-template-columns: repeat(3, 150px);
+	grid-template-columns: repeat(4, 170px);
 	column-gap: 1rem;
 	row-gap: 1rem;
 	margin: 0 auto;
-	width: 482px;
+	width: 728px;
 }
 
 .chil {
-	height: 100px;
+	width: 170px;
+	height: 170px;
 	background: #fff;
+	cursor: pointer;
 	padding: 1rem;
+	position: relative;
+	border-radius: var(--rad);
+	// margin: .5rem;
 
 	&.active {
 		position: fixed;
@@ -112,28 +113,10 @@ q-page(padding)
 
 }
 
-.dialog {
-	position: fixed;
-	height: 70vh;
-	width: 900px;
-	margin: 0 auto;
-	top: 150px;
-	left: 0;
-	right: 0;
-	border: 1px solid #ccc;
-	box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
-	background: #fff;
-	display: none;
-
-	&.active {
-		display: block;
-	}
-}
-
 .backdrop {
 	width: 100vw;
 	height: 100vh;
-	background-color: rgba(0, 0, 0, 0.2);
+	background-color: rgba(0, 100, 200, 0.1);
 	backdrop-filter: blur(2px);
 	position: fixed;
 	left: 0;
