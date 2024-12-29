@@ -103,7 +103,7 @@ const pic = ref(false)
 </script>
 
 <template lang="pug">
-.item.fuck
+.fuck
 	.button(v-if='!adding'
 		data-flip-id='fuck'
 		@click="add"
@@ -246,7 +246,7 @@ label {
 	font-weight: 600;
 }
 
-.item.fuck {
+.fuck {
 	width: 100px;
 	background: transparent;
 	display: flex;

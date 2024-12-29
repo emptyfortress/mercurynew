@@ -5,6 +5,7 @@ import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useKeyModifier } from '@vueuse/core'
+import AddButton from '@/components/common/AddButton.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -82,17 +83,23 @@ const sort = ref(false)
 
 <template lang="pug">
 q-page(padding)
-	// .all
-	.pa(ref="parent")
-		.chil(v-for=" (item, index) in tapes" :key="item.id"
-			v-motion
-			:initial="{ scale: 0, opacity: 0 }"
-			:enter='{ scale: 1, opacity: 1, transition: { delay: 300 + 100 * index } }'
-			@click='expand(item)'
-			:class="calcClass(item)"
-			)
-			.con {{ item.label }}
-		// q-toggle.q-mt-md(v-model="sort" label="Группировка")
+	.all
+		.pa(ref='parent')
+			.chil(v-for=" (item, index) in tapes" :key="item.id"
+				v-motion
+				:initial="{ y: 40, opacity: 0 }"
+				:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
+				@click='expand(item)'
+				:class="calcClass(item)"
+				)
+				.con {{ item.label }}
+		.row.items-center.justify-between
+			q-toggle.q-mt-md(v-if='!expanded'
+				v-motion
+				:initial="{ opacity: 0 }"
+				:enter='{ opacity: 1, transition: { delay: 800 } }'
+				v-model="sort" label="Группировка")
+			AddButton(v-if='!expanded' @create='create' mode="app")
 
 	// .backdrop(v-if='expanded')
 </template>
@@ -107,6 +114,7 @@ q-page(padding)
 	display: grid;
 	grid-template-columns: repeat(4, 170px);
 	column-gap: 1rem;
+	align-items: center;
 	row-gap: 1rem;
 	margin: 0 auto;
 	width: 728px;
