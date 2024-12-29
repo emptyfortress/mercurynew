@@ -1,13 +1,37 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { animations, insert } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
+import { useKeyModifier } from '@vueuse/core'
 
 gsap.registerPlugin(Flip)
 
-const [parent, tapes] = useDragAndDrop([
+const shift = useKeyModifier('Shift')
+
+const sortable = ref(true)
+
+const toggle = (() => {
+	sortable.value = !sortable.value
+	updateConfig({ sortable: true })
+})
+
+const config = {
+	plugins: [animations(),
+		// insert({
+		// 	insertPoint: (parent) => {
+		// 		const div = document.createElement("div")
+		// 		for (const cls of insertPointClasses) div.classList.add(cls)
+		// 		return div
+		// 	}
+		// })
+	],
+	dragPlaceholderClass: 'custom',
+	sortable: true
+}
+
+const [parent, tapes, updateConfig] = useDragAndDrop([
 	{ id: 0, expand: false, label: "Depeche Mode", },
 	{ id: 1, expand: false, label: "Duran Duran", },
 	{ id: 2, expand: false, label: "Pet Shop Boys", },
@@ -15,26 +39,18 @@ const [parent, tapes] = useDragAndDrop([
 	{ id: 4, expand: false, label: "Tears for Fears", },
 	{ id: 5, expand: false, label: "Spandau Ballet", },
 ],
-	{
-		plugins: [animations(),
-			// insert({
-			// 	insertPoint: (parent) => {
-			// 		const div = document.createElement("div")
-			// 		for (const cls of insertPointClasses) div.classList.add(cls)
-			// 		return div
-			// 	}
-			// })
-		],
-		dragPlaceholderClass: 'custom'
-	},
-)
+	config)
+
+const expanded = ref<boolean>(false)
 
 const calcClass = ((item: any) => {
-	return item.expand ? 'active' : ''
+	if (expanded.value && item.expand) return 'active'
+	if (expanded.value && !item.expand) return 'inactive'
+	else return ''
 
 })
 
-const expanded = ref<boolean>(false)
+
 const expand = ((item: any) => {
 	const state = Flip.getState('.chil')
 	item.expand = !item.expand
@@ -49,14 +65,24 @@ const expand = ((item: any) => {
 			// nested: true,
 			// fade: true,
 
+			onEnter: (elements) =>
+				gsap.fromTo(
+					elements,
+					{ opacity: 0 },
+					{ opacity: 1, duration: 0.6, ease: 'linear', delay: 0.2 }
+				),
+			onLeave: (elements) =>
+				gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
 		})
 	})
 })
 
+const sort = ref(false)
 </script>
 
 <template lang="pug">
 q-page(padding)
+	// .all
 	.pa(ref="parent")
 		.chil(v-for=" (item, index) in tapes" :key="item.id"
 			v-motion
@@ -66,11 +92,17 @@ q-page(padding)
 			:class="calcClass(item)"
 			)
 			.con {{ item.label }}
+		// q-toggle.q-mt-md(v-model="sort" label="Группировка")
 
-	.backdrop(v-if='expanded')
+	// .backdrop(v-if='expanded')
 </template>
 
 <style scoped lang="scss">
+.all {
+	margin: 0 auto;
+	width: 728px;
+}
+
 .pa {
 	display: grid;
 	grid-template-columns: repeat(4, 170px);
@@ -101,6 +133,10 @@ q-page(padding)
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 		z-index: 10;
+	}
+
+	&.inactive {
+		display: none;
 	}
 }
 
