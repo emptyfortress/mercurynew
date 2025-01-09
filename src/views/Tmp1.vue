@@ -1,22 +1,27 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, } from 'vue'
 import { animations, insert } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useKeyModifier } from '@vueuse/core'
 import AddButton from '@/components/common/AddButton.vue'
+import { useApps } from '@/stores/apps'
+// import AppPreview from '@/components/AppPreview.vue'
+// import GroupPreview from '@/components/GroupPreview.vue'
+import IconMicrophone from '@/components/icons/IconMicrophone.vue'
+// import IconPresentation from '@/components/icons/IconPresentation.vue'
 
 gsap.registerPlugin(Flip)
 
 const shift = useKeyModifier('Shift')
 
-const sortable = ref(true)
+// const sortable = ref(true)
 
-const toggle = (() => {
-	sortable.value = !sortable.value
-	updateConfig({ sortable: true })
-})
+// const toggle = (() => {
+// 	sortable.value = !sortable.value
+// 	updateConfig({ sortable: true })
+// })
 
 const config = {
 	plugins: [animations(),
@@ -29,18 +34,14 @@ const config = {
 		// })
 	],
 	dragPlaceholderClass: 'custom',
-	sortable: true
+	sortable: true,
+	draggable: (el: any) => { return el.id !== "no-drag" },
 }
 
-const [parent, tapes, updateConfig] = useDragAndDrop([
-	{ id: 0, expand: false, label: "Depeche Mode", },
-	{ id: 1, expand: false, label: "Duran Duran", },
-	{ id: 2, expand: false, label: "Pet Shop Boys", },
-	{ id: 3, expand: false, label: "Kraftwerk", },
-	{ id: 4, expand: false, label: "Tears for Fears", },
-	{ id: 5, expand: false, label: "Spandau Ballet", },
-],
-	config)
+const myapps = useApps()
+const applications = ref([...myapps.apps])
+
+const [parent, tapes, updateConfig] = useDragAndDrop(applications.value, config)
 
 const expanded = ref<boolean>(false)
 
@@ -85,7 +86,7 @@ const sort = ref(false)
 q-page(padding)
 	.all
 		.pa(ref='parent')
-			.chil(v-for=" (item, index) in tapes" :key="item.id"
+			.chil(v-for=" (item, index) in tapes" :key="item.id" :id="item.id"
 				v-motion
 				:initial="{ y: 40, opacity: 0 }"
 				:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
@@ -93,13 +94,18 @@ q-page(padding)
 				:class="calcClass(item)"
 				)
 				.con {{ item.label }}
+				.img
+					component(:is='item.pic')
+
+			div(id="no-drag")
+				AddButton(v-if='!expanded' @create='' mode="app")
+
 		.row.items-center.justify-between
 			q-toggle.q-mt-md(v-if='!expanded'
 				v-motion
 				:initial="{ opacity: 0 }"
 				:enter='{ opacity: 1, transition: { delay: 800 } }'
 				v-model="sort" label="Группировка")
-			AddButton(v-if='!expanded' @create='create' mode="app")
 
 	// .backdrop(v-if='expanded')
 </template>
@@ -151,7 +157,8 @@ q-page(padding)
 .custom {
 	background: hsl(213 38% 81% / 1);
 
-	.con {
+	.con,
+	.img {
 		display: none;
 	}
 
@@ -167,5 +174,14 @@ q-page(padding)
 	right: 0;
 	top: 0;
 	bottom: 0;
+}
+
+.img {
+	position: absolute;
+	bottom: 0;
+	left: 0.5rem;
+	font-size: 2.5rem;
+	line-height: 1;
+	color: hsl(199 23% 45% / 1);
 }
 </style>

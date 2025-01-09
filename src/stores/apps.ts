@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, markRaw } from 'vue'
 import IconTravel from '@/components/icons/IconTravel.vue'
 import IconBeach from '@/components/icons/IconBeach.vue'
 import IconLetter from '@/components/icons/IconLetter.vue'
@@ -7,6 +7,10 @@ import IconLetter from '@/components/icons/IconLetter.vue'
 // import beach from '@/assets/img/beach.png'
 // import letter from '@/assets/img/letter.png'
 // import folders from '@/assets/img/folders.png'
+
+const IconTravel1 = markRaw(IconTravel)
+const IconBeach1 = markRaw(IconBeach)
+const IconLetter1 = markRaw(IconLetter)
 
 export const useApps = defineStore('apps', () => {
 	const apps = ref<App[]>([
@@ -19,7 +23,7 @@ export const useApps = defineStore('apps', () => {
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
-			pic: IconTravel
+			pic: IconTravel1
 		},
 		{
 			id: '1',
@@ -30,18 +34,18 @@ export const useApps = defineStore('apps', () => {
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
-			pic: IconBeach
+			pic: IconBeach1
 		},
 		{
 			id: '2',
-			label: 'Приложение 2',
+			label: 'Приложения отдела маркетинга',
 			descr: 'Это описание',
 			expand: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 2,
-			pic: 'IconTravel'
+			// pic: 'IconTravel'
 		},
 		{
 			id: '3',
@@ -52,7 +56,18 @@ export const useApps = defineStore('apps', () => {
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
-			pic: IconLetter
+			pic: IconLetter1
+		},
+		{
+			id: '4',
+			label: 'Служебные записки 1',
+			descr: 'Это описание',
+			expand: false,
+			version: '0.0.0',
+			author: 'Орлов П.С.',
+			created: '22.10.24 14:00',
+			group: 1,
+			pic: IconLetter1
 		},
 	])
 
