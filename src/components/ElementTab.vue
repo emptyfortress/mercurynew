@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 // import IconLayout from '@/components/icons/IconLayout.vue'
 import IconLayout1 from '@/components/icons/IconLayout1.vue'
 import IconLayout2 from '@/components/icons/IconLayout2.vue'
@@ -7,45 +9,40 @@ import IconLayout4 from '@/components/icons/IconLayout4.vue'
 import IconLayout5 from '@/components/icons/IconLayout5.vue'
 import IconLayout6 from '@/components/icons/IconLayout6.vue'
 
-const layouts = [
+const elements = [
 	{
 		id: 0,
-		label: '1 колонка на всю ширину',
+		label: 'Control 1',
 		icon: IconLayout1
 	},
 	{
 		id: 5,
-		label: '1 колонка фиксированной ширины',
+		label: 'Control 2',
 		icon: IconLayout6
 	},
 	{
 		id: 1,
-		label: '2 колонки по 50% каждая',
+		label: 'Control 3',
 		icon: IconLayout2
 	},
 	{
 		id: 2,
-		label: '3 колонки по 33% каждая',
+		label: 'Control 4',
 		icon: IconLayout3
 	},
 	{
 		id: 3,
-		label: '2 колонки, одна фиксирована',
+		label: 'Control 3',
 		icon: IconLayout4
 	},
-	{
-		id: 4,
-		label: '2 колонки 3/7',
-		icon: IconLayout5
-	},
 ]
+
+const [lib, libitems] = useDragAndDrop(elements, { group: "controls", sortable: false })
 </script>
 
 <template lang="pug">
-q-list(bordered separator)
-	q-item(v-for="item in layouts" :key="item.id" :draggable="true")
-		q-item-section(avatar)
-			component.big(:is="item.icon")
+q-list(bordered separator ref="lib")
+	q-item(v-for="item in libitems" :key="item.id")
 		q-item-section {{ item.label }}
 </template>
 
@@ -60,7 +57,6 @@ q-list(bordered separator)
 
 	&:hover {
 		color: $primary;
-		// background: var(--dvblue);
 		background: #efefef;
 	}
 

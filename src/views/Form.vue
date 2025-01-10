@@ -4,7 +4,7 @@ import PlusButton1 from '@/components/PlusButton1.vue'
 import LibButton from '@/components/LibButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
-import form from '@/assets/img/form.png'
+import FormEditor from '@/components/FormEditor.vue'
 
 const panels = usePanels()
 const editor = ref<HTMLElement>()
@@ -70,7 +70,7 @@ q-page(padding)
 				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense icon="mdi-fullscreen" color="primary" @click="") 
-		// q-img(:src="form")
+		FormEditor
 
 		PlusButton1(@activate='startRight' @stop='stopRight')
 		LibButton(@activate='startLeft' @stop='stopLeft')

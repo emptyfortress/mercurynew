@@ -4,8 +4,9 @@ import IconLayout from '@/components/icons/IconLayout.vue'
 import IconBlock from '@/components/icons/IconBlock.vue'
 import IconField from '@/components/icons/IconField.vue'
 import LayoutTab from '@/components/LayoutTab.vue'
+import ElementTab from '@/components/ElementTab.vue'
 
-const tab = ref('design')
+const tab = ref('block')
 </script>
 
 <template lang="pug">
@@ -34,7 +35,7 @@ const tab = ref('design')
 		q-tab-panel(name='design')
 			LayoutTab
 		q-tab-panel(name='block')
-			div block
+			ElementTab
 		q-tab-panel(name='field')
 			div field
 </template>

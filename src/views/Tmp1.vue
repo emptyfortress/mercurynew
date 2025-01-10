@@ -7,6 +7,7 @@ import { Flip } from 'gsap/Flip'
 import { useKeyModifier } from '@vueuse/core'
 import AddButton from '@/components/common/AddButton.vue'
 import { useApps } from '@/stores/apps'
+import { uid, useQuasar } from 'quasar'
 // import AppPreview from '@/components/AppPreview.vue'
 // import GroupPreview from '@/components/GroupPreview.vue'
 import IconMicrophone from '@/components/icons/IconMicrophone.vue'
@@ -80,6 +81,31 @@ const expand = ((item: any) => {
 })
 
 const sort = ref(false)
+
+const $q = useQuasar()
+const create = (e: string) => {
+	let tmp = {
+		id: uid(),
+		label: e,
+		descr: 'description',
+		expand: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.09.2022',
+		group: 1,
+		pic: '',
+	}
+
+	tapes.value?.push(tmp)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Добавлено приложение'
+		})
+	}, 1200)
+	myapps.createApp(tmp)
+}
 </script>
 
 <template lang="pug">
@@ -98,7 +124,7 @@ q-page(padding)
 					component(:is='item.pic')
 
 			div(id="no-drag")
-				AddButton(v-if='!expanded' @create='' mode="app")
+				AddButton(v-if='!expanded' @create='create' mode="app")
 
 		.row.items-center.justify-between
 			q-toggle.q-mt-md(v-if='!expanded'
