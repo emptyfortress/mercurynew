@@ -38,7 +38,7 @@ const elements = [
 ]
 
 const [lib, libitems] = useDragAndDrop(elements, {
-	// group: "controls",
+	group: "one",
 	sortable: false
 })
 

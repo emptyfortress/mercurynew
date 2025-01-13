@@ -52,40 +52,24 @@ state.on("dragEnded", (event: any) => {
 }
 
 .q-item {
-	cursor: all-scroll;
-	color: $secondary;
-
-	&:hover {
-		color: $primary;
-		background: #efefef;
-	}
-}
-
-.grd {
-	display: grid;
-	grid-template-columns: repeat(3, 200px);
-
-	// justify-items: start;
-	// align-items: stretch;
-	// column-gap: 1rem;
-	// row-gap: .5rem;
-	div {
-		width: 200px;
-		height: 50px;
-		background: #eee;
-	}
+	// margin-bottom: .5rem;
 }
 
 ul {
-	display: flex;
+	// display: flex;
+	// flex-direction: column;
 	list-style: none;
-	gap: 1rem;
-	flex-wrap: wrap;
+	gap: .5rem;
+	// flex-wrap: wrap;
+	margin: 0;
+	padding: 0;
 
 	li {
-		height: 100px;
-		width: 200px;
+		padding: 1rem;
+		// height: 100px;
+		// width: 200px;
 		background: #eee;
+		margin-bottom: .5rem;
 	}
 }
 </style>
