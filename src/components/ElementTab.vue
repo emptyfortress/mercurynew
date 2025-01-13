@@ -37,12 +37,20 @@ const elements = [
 	},
 ]
 
-const [lib, libitems] = useDragAndDrop(elements, { group: "controls", sortable: false })
+const [lib, libitems] = useDragAndDrop(elements, {
+	// group: "controls",
+	sortable: false
+})
+
+const dragStart = ((event: DragEvent, item: any) => {
+	event.dataTransfer?.setData('text/plain', JSON.stringify(item))
+	// console.log(item)
+})
 </script>
 
 <template lang="pug">
 q-list(bordered separator ref="lib")
-	q-item(v-for="item in libitems" :key="item.id")
+	q-item(v-for="item in libitems" :key="item.id" @dragstart="dragStart($event, item)")
 		q-item-section {{ item.label }}
 </template>
 

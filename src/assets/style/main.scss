@@ -155,3 +155,29 @@
   min-height: 50px;
   line-height: 50px;
 }
+
+.fuck {
+  position: absolute;
+  background-color: #3b82f6;
+  z-index: 1000;
+  border-radius: 9999px;
+  // transition-duration: 5ms;
+
+  &::before {
+    display: block;
+    // content: "Вставить";
+    // white-space: nowrap;
+    background-color: #3b82f6;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-radius: 9999px;
+    // font-size: 0.75rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+  }
+}
