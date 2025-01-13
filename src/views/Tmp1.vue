@@ -127,11 +127,11 @@ q-page(padding)
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
 		.row.items-center.justify-between
-			q-toggle.q-mt-md(v-if='!expanded'
-				v-motion
-				:initial="{ opacity: 0 }"
-				:enter='{ opacity: 1, transition: { delay: 800 } }'
-				v-model="sort" label="Группировка")
+		// 	q-toggle.q-mt-md(v-if='!expanded'
+		// 		v-motion
+		// 		:initial="{ opacity: 0 }"
+		// 		:enter='{ opacity: 1, transition: { delay: 800 } }'
+			v-model="sort" label="Группировка")
 
 	// .backdrop(v-if='expanded')
 </template>

@@ -159,6 +159,7 @@ q-page(padding)
 
 
 		AddButton(v-if='!expanded' @create='create' mode="form")
+
 	Trash(:dragging="dragging")
 
 </template>
