@@ -36,10 +36,14 @@ state.on("dragEnded", (event: any) => {
 	// console.log(itemData)
 })
 
+const edit = ref()
+onMounted(() => {
+
+})
 </script>
 
 <template lang="pug">
-.edit
+.edit(ref="edit")
 	// q-list(ref="doneList" bordered separator)
 	// 	q-item(v-for="done in dones" :key="done.id")
 	// 		q-item-section {{ done.label }}
@@ -56,6 +60,7 @@ state.on("dragEnded", (event: any) => {
 <style scoped lang="scss">
 .edit {
 	padding: 1rem;
+	// background: #ccc;
 }
 
 .q-item {

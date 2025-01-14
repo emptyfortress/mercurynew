@@ -1,11 +1,27 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useElementSize } from '@vueuse/core'
+
+const props = defineProps({
+	wid: {
+		type: Number,
+		required: true,
+		default: 900
+	}
+})
 
 const resizable = ref<HTMLElement | null>(null)
-const step = 20
+const { width: mywidth } = useElementSize(resizable)
+
+const step = computed(() => {
+	return props.wid / 12
+})
+
+const digit = ref(0)
 
 onMounted(() => {
 	resizable.value?.addEventListener('mousedown', initResize)
+	digit.value = Math.ceil(mywidth.value / step.value)
 
 	function initResize() {
 		window.addEventListener('mousemove', doDrag)
@@ -14,11 +30,11 @@ onMounted(() => {
 
 	function doDrag(e: any) {
 		// Calculate new width based on mouse movement
-		const newWidth = Math.ceil((e.clientX - resizable.value!.getBoundingClientRect().left) / step) * step;
-		console.log(newWidth)
+		const newWidth = Math.ceil((e.clientX - resizable.value!.getBoundingClientRect().left) / step.value) * step.value
 
 		// Apply the new dimensions to the element
 		resizable.value!.style.width = `${newWidth}px`
+		digit.value = Math.ceil(mywidth.value / step.value)
 	}
 
 	function stopDrag() {
@@ -31,7 +47,7 @@ onMounted(() => {
 <template lang="pug">
 .resizable(ref="resizable")
 	.handle
-	.digit
+	.digit {{ digit }}
 </template>
 
 <style scoped lang="scss">
@@ -50,6 +66,10 @@ onMounted(() => {
 		height: 16px;
 		border: 1px solid var(--drag);
 		background: white;
+		font-size: .6rem;
+		padding: 1px;
+		display: none;
+		text-align: center;
 	}
 
 	.handle {
@@ -68,7 +88,8 @@ onMounted(() => {
 	&:hover {
 		border: 1px solid var(--drag);
 
-		.handle {
+		.handle,
+		.digit {
 			display: block;
 		}
 	}
