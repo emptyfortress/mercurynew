@@ -126,7 +126,7 @@ q-page(padding)
 			div(id="no-drag")
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
-		.row.items-center.justify-between
+		// .row.items-center.justify-between
 		// 	q-toggle.q-mt-md(v-if='!expanded'
 		// 		v-motion
 		// 		:initial="{ opacity: 0 }"

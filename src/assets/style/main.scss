@@ -158,16 +158,16 @@
 
 .fuck {
   position: absolute;
-  background-color: #3b82f6;
+  background-color: var(--drag);
   z-index: 1000;
   border-radius: 9999px;
   transition-duration: 5ms;
 
   &::before {
-    // display: block;
-    // content: "Вставить";
-    // white-space: nowrap;
-    background-color: #3b82f6;
+    display: block;
+    content: "Вставить";
+    white-space: nowrap;
+    background-color: var(--drag);
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
     padding-left: 0.5rem;

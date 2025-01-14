@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { state } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { insert } from "@formkit/drag-and-drop"
 import IconLayout1 from '@/components/icons/IconLayout1.vue'
+import Resizable from '@/components/Resizable.vue'
 
 const doneItems = [
 	{
@@ -33,6 +35,7 @@ state.on("dragEnded", (event: any) => {
 	// const itemData = JSON.parse(event.dataTransfer?.getData('text/plain'))
 	// console.log(itemData)
 })
+
 </script>
 
 <template lang="pug">
@@ -42,8 +45,12 @@ state.on("dragEnded", (event: any) => {
 	// 		q-item-section {{ done.label }}
 
 
-	ul(ref="doneList" bordered separator)
-		li(v-for="done in dones" :key="done.id") {{ done.label }}
+	// ul(ref="doneList" bordered separator)
+	// 	li(v-for="done in dones" :key="done.id") {{ done.label }}
+
+	// .resizable(ref='resizable')
+	// 	.handle
+	Resizable
 </template>
 
 <style scoped lang="scss">
@@ -56,8 +63,12 @@ state.on("dragEnded", (event: any) => {
 }
 
 ul {
-	// display: flex;
-	// flex-direction: column;
+	display: flex;
+	display: flex;
+	display: flex;
+	display: flex;
+	display: flex;
+	// flex-direction: column;: column;: column;: column;
 	list-style: none;
 	gap: .5rem;
 	// flex-wrap: wrap;
@@ -70,6 +81,8 @@ ul {
 		// width: 200px;
 		background: #eee;
 		margin-bottom: .5rem;
+		resize: horizontal;
+		overflow: auto;
 	}
 }
 </style>

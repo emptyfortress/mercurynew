@@ -39,7 +39,8 @@ const elements = [
 
 const [lib, libitems] = useDragAndDrop(elements, {
 	group: "one",
-	sortable: false
+	sortable: false,
+	dragPlaceholderClass: 'custom',
 })
 
 const dragStart = ((event: DragEvent, item: any) => {
@@ -72,5 +73,15 @@ q-list(bordered separator ref="lib")
 
 .big {
 	font-size: 3rem;
+}
+
+.custom {
+	background: hsl(213 38% 81% / 1);
+
+	.con,
+	.img {
+		display: none;
+	}
+
 }
 </style>
