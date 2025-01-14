@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { state } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { insert } from "@formkit/drag-and-drop"
 import IconLayout1 from '@/components/icons/IconLayout1.vue'
 import Resizable from '@/components/Resizable.vue'
+import { useElementSize, onClickOutside } from '@vueuse/core'
+import { useControl } from '@/stores/controls'
 
-const doneItems = [
-	{
-		id: 4,
-		label: 'Control 0',
-		icon: IconLayout1
-	},
-]
+const control = useControl()
+
+// const items = reactive([
+// 	{
+// 		id: 4,
+// 		label: 'Control 0',
+// 		icon: IconLayout1,
+// 		selected: false,
+// 	},
+// 	{
+// 		id: 5,
+// 		label: 'Control 0',
+// 		icon: IconLayout1,
+// 		selected: false,
+// 	},
+// ])
 
 const config = {
 	sortable: true,
@@ -28,7 +39,7 @@ const config = {
 	]
 }
 
-const [doneList, dones] = useDragAndDrop(doneItems, config)
+const [doneList, dones] = useDragAndDrop(control.editorControls, config)
 
 state.on("dragEnded", (event: any) => {
 	console.log(event.draggedNode.data.value)
@@ -37,8 +48,10 @@ state.on("dragEnded", (event: any) => {
 })
 
 const edit = ref()
-onMounted(() => {
+const { width } = useElementSize(edit)
 
+const select = ((item: any) => {
+	control.select(item)
 })
 </script>
 
@@ -52,9 +65,7 @@ onMounted(() => {
 	// ul(ref="doneList" bordered separator)
 	// 	li(v-for="done in dones" :key="done.id") {{ done.label }}
 
-	// .resizable(ref='resizable')
-	// 	.handle
-	Resizable
+	Resizable(:wid="width" v-for="(item, index) in control.editorControls" :item='item' :key='item.id' @select='select(item)')
 </template>
 
 <style scoped lang="scss">
@@ -68,10 +79,6 @@ onMounted(() => {
 }
 
 ul {
-	display: flex;
-	display: flex;
-	display: flex;
-	display: flex;
 	display: flex;
 	// flex-direction: column;: column;: column;: column;
 	list-style: none;

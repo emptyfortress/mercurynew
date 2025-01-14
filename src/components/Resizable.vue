@@ -1,27 +1,36 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, } from 'vue'
 import { useElementSize } from '@vueuse/core'
 
 const props = defineProps({
 	wid: {
 		type: Number,
 		required: true,
-		default: 900
-	}
+		default: 768
+	},
+	item: Object
 })
 
+
+const emit = defineEmits(['select'])
+const toggle = (() => {
+	emit('select')
+})
+
+
 const resizable = ref<HTMLElement | null>(null)
-const { width: mywidth } = useElementSize(resizable)
+const handle = ref<HTMLElement | null>(null)
+
+const { width } = useElementSize(resizable)
 
 const step = computed(() => {
 	return props.wid / 12
 })
 
-const digit = ref(0)
+const digit = ref(12)
 
 onMounted(() => {
-	resizable.value?.addEventListener('mousedown', initResize)
-	digit.value = Math.ceil(mywidth.value / step.value)
+	handle.value?.addEventListener('mousedown', initResize)
 
 	function initResize() {
 		window.addEventListener('mousemove', doDrag)
@@ -34,7 +43,7 @@ onMounted(() => {
 
 		// Apply the new dimensions to the element
 		resizable.value!.style.width = `${newWidth}px`
-		digit.value = Math.ceil(mywidth.value / step.value)
+		digit.value = Math.ceil(width.value / step.value)
 	}
 
 	function stopDrag() {
@@ -42,32 +51,34 @@ onMounted(() => {
 		window.removeEventListener('mouseup', stopDrag)
 	}
 })
+
 </script>
 
 <template lang="pug">
-.resizable(ref="resizable")
-	.handle
+.resizable(ref='resizable' @click.stop="toggle" :class="{ selected: props.item?.selected }")
+	.handle(ref="handle")
 	.digit {{ digit }}
+	slot
 </template>
 
 <style scoped lang="scss">
 .resizable {
-	width: 200px;
+	width: 100%;
 	height: 100px;
 	background: #eee;
 	position: relative;
+	margin-bottom: .5rem;
 
 	.digit {
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
-		left: -8px;
-		width: 16px;
-		height: 16px;
+		left: -7px;
+		width: 14px;
+		height: 14px;
 		border: 1px solid var(--drag);
 		background: white;
 		font-size: .6rem;
-		padding: 1px;
 		display: none;
 		text-align: center;
 	}
@@ -92,6 +103,18 @@ onMounted(() => {
 		.digit {
 			display: block;
 		}
+	}
+
+	&.selected {
+		border: 1px solid var(--drag);
+
+		background: #e7f0fe;
+
+		.handle,
+		.digit {
+			display: block;
+		}
+
 	}
 }
 </style>

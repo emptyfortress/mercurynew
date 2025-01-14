@@ -9,3 +9,9 @@ interface App {
 	group: number
 	pic?: any
 }
+
+type Control = {
+	id: number
+	label: string
+	selected: boolean
+}

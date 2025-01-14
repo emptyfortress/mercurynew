@@ -5,7 +5,10 @@ import LibButton from '@/components/LibButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
 import FormEditor from '@/components/FormEditor.vue'
+import { useControl } from '@/stores/controls'
 
+
+const control = useControl()
 const panels = usePanels()
 const editor = ref<HTMLElement>()
 
@@ -62,14 +65,15 @@ const stopLeft = async () => {
 
 <template lang="pug">
 q-page(padding)
-	.editor(ref='editor')
-		.top
+	.editor(ref='editor' @click.stop='control.deselect')
+		.top(@click='control.deselect')
 			.zg Форма "Создание"
 			div
 				q-btn(flat round dense icon="mdi-undo" color="primary" @click="") 
 				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense icon="mdi-fullscreen" color="primary" @click="") 
+
 		FormEditor
 
 		PlusButton1(@activate='startRight' @stop='stopRight')
@@ -90,14 +94,15 @@ q-page(padding)
 .editor {
 	display: block;
 	padding: 0;
+	// background: red;
 	// background: transparent;
 	// box-shadow: none;
 	// padding: 0;
 }
 
-.editor1 {
-	background: #fff;
-}
+// .editor1 {
+// 	background: #fff;
+// }
 
 .zg {
 	font-size: 1.3rem;
