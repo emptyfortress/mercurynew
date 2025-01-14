@@ -65,7 +65,9 @@ const select = ((item: any) => {
 	// ul(ref="doneList" bordered separator)
 	// 	li(v-for="done in dones" :key="done.id") {{ done.label }}
 
-	Resizable(:wid="width" v-for="(item, index) in control.editorControls" :item='item' :key='item.id' @select='select(item)')
+
+	ul()
+		Resizable(v-for="(item, index) in control.editorControls" :item='item' :key='item.id' :wid="width"  @select='select(item)')
 </template>
 
 <style scoped lang="scss">
@@ -80,21 +82,11 @@ const select = ((item: any) => {
 
 ul {
 	display: flex;
-	// flex-direction: column;: column;: column;: column;
 	list-style: none;
 	gap: .5rem;
-	// flex-wrap: wrap;
+	flex-wrap: wrap;
 	margin: 0;
 	padding: 0;
 
-	li {
-		padding: 1rem;
-		// height: 100px;
-		// width: 200px;
-		background: #eee;
-		margin-bottom: .5rem;
-		resize: horizontal;
-		overflow: auto;
-	}
 }
 </style>
