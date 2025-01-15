@@ -5,12 +5,12 @@ import { ref } from 'vue'
 export const useControl = defineStore('control', () => {
 	const editorControls = ref<Control[]>([
 		{
-			id: 4,
+			id: 10,
 			label: 'one',
 			selected: false,
 		},
 		{
-			id: 5,
+			id: 11,
 			label: 'two',
 			selected: false,
 		},
@@ -25,9 +25,14 @@ export const useControl = defineStore('control', () => {
 		item.selected = true
 	})
 
+	const addControl = ((e: Control) => {
+		editorControls.value.push(e)
+	})
+
 	return {
 		editorControls,
 		select,
 		deselect,
+		addControl,
 	}
 })

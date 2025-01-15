@@ -12,27 +12,32 @@ import IconLayout6 from '@/components/icons/IconLayout6.vue'
 const elements = [
 	{
 		id: 0,
-		label: 'Control 1',
-		icon: IconLayout1
-	},
-	{
-		id: 5,
-		label: 'Control 2',
-		icon: IconLayout6
+		label: 'Control 0',
+		icon: IconLayout1,
+		selected: false,
 	},
 	{
 		id: 1,
-		label: 'Control 3',
-		icon: IconLayout2
+		label: 'Control 1',
+		selected: false,
+		icon: IconLayout6
 	},
 	{
 		id: 2,
-		label: 'Control 4',
-		icon: IconLayout3
+		label: 'Control 2',
+		selected: false,
+		icon: IconLayout2
 	},
 	{
 		id: 3,
 		label: 'Control 3',
+		selected: false,
+		icon: IconLayout3
+	},
+	{
+		id: 4,
+		label: 'Control 4',
+		selected: false,
 		icon: IconLayout4
 	},
 ]

@@ -29,9 +29,7 @@ const config = {
 const [doneList, dones] = useDragAndDrop(control.editorControls, config)
 
 state.on("dragEnded", (event: any) => {
-	console.log(event.draggedNode.data.value)
-	// const itemData = JSON.parse(event.dataTransfer?.getData('text/plain'))
-	// console.log(itemData)
+	control.addControl(event.draggedNode.data.value)
 })
 
 const edit = ref()
@@ -54,14 +52,6 @@ const select = ((item: any) => {
 .edit {
 	padding: 1rem;
 }
-
-.test {
-	padding: 1rem;
-	background: #ccc;
-	width: 200px;
-	height: 100px;
-}
-
 
 .list {
 	display: flex;
