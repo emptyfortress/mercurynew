@@ -104,8 +104,6 @@ const close = () => {
 	top: 0;
 	left: -58px;
 	text-align: center;
-	// padding: 0.6rem;
-	// padding-top: 0;
 	cursor: pointer;
 
 	.ic {

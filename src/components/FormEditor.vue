@@ -51,14 +51,21 @@ const select = ((item: any) => {
 <style scoped lang="scss">
 .edit {
 	padding: 1rem;
+	// background: red;
 }
 
 .list {
 	display: flex;
+	align-content: flex-start;
+	justify-content: flex-start;
 	gap: .5rem;
 	flex-wrap: wrap;
-	margin: 0;
-	padding: 0;
+	margin: .5rem 2rem;
+	padding: 2rem;
+	background: #fff;
+	border-radius: .5rem;
+	box-shadow: var(--shad);
+	min-height: 500px;
 
 }
 </style>

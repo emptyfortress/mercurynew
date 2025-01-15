@@ -6,6 +6,7 @@ import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
 import FormEditor from '@/components/FormEditor.vue'
 import { useControl } from '@/stores/controls'
+import Toolbar from '@/components/common/Toolbar.vue'
 
 
 const control = useControl()
@@ -76,8 +77,11 @@ q-page(padding)
 
 		FormEditor
 
+
 		PlusButton1(@activate='startRight' @stop='stopRight')
 		LibButton(@activate='startLeft' @stop='stopLeft')
+
+	Toolbar
 
 </template>
 
@@ -94,15 +98,10 @@ q-page(padding)
 .editor {
 	display: block;
 	padding: 0;
-	// background: red;
+	background: hsl(214 42% 96% / 1);
 	// background: transparent;
 	// box-shadow: none;
-	// padding: 0;
 }
-
-// .editor1 {
-// 	background: #fff;
-// }
 
 .zg {
 	font-size: 1.3rem;

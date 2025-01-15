@@ -5,6 +5,8 @@ import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
 // import prop from '@/assets/img/formprop.png'
 import CloseButton from '@/components/panels/CloseButton.vue'
+import TopButton from '@/components/panels/TopButton.vue'
+
 
 const panels = usePanels()
 
@@ -54,15 +56,18 @@ const close = () => {
 
 	CloseButton(v-model="panels.right" @close="close")
 
-	.top(v-if='panels.right'
-		v-motion
-		:initial='{ opacity: 0 }'
-		:enter='{ opacity: 1 }'
-		:delay='600'
-		)
-		.zg()
-			q-icon(name="mdi-tune-vertical-variant")
-			| Настройки
+	TopButton(v-model="panels.right")
+
+	// .rrel(v-if='panels.right'
+	// 	v-motion
+	// 	:initial='{ opacity: 0 }'
+	// 	:enter='{ opacity: 1 }'
+	// 	:delay='500')
+	// 	.top
+	// 		.zg
+	// 			q-icon(name="mdi-tune-vertical-variant")
+	// 			| Настройки
+
 
 
 </template>
@@ -78,13 +83,11 @@ const close = () => {
 	top: 0;
 	right: -58px;
 	text-align: center;
-	// padding: 0.6rem;
 	cursor: pointer;
 
 	.ic {
 		margin-top: 11px;
 	}
-
 
 	&.expand {
 		width: 385px;
@@ -98,24 +101,5 @@ const close = () => {
 	position: absolute;
 	top: 20rem;
 	left: 4rem;
-}
-
-.zg {
-	font-size: 1.1rem;
-	color: $primary;
-}
-
-.zg .q-icon {
-	font-size: 1.3rem;
-	margin-right: .5rem;
-}
-
-.top {
-	display: block;
-}
-
-.rrel {
-	height: 100%;
-	position: relative;
 }
 </style>

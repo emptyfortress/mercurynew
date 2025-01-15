@@ -16,7 +16,7 @@ const tab = ref('block')
 		inline-label
 		class="text-secondary"
 		)
-		q-tab(name="design")
+		// q-tab(name="design")
 			IconLayout.ic
 			label Макет
 		q-tab(name="block")
