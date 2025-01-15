@@ -6,12 +6,12 @@ export const useControl = defineStore('control', () => {
 	const editorControls = ref<Control[]>([
 		{
 			id: 4,
-			label: 'Control 0',
+			label: 'one',
 			selected: false,
 		},
 		{
 			id: 5,
-			label: 'Control 0',
+			label: 'two',
 			selected: false,
 		},
 	])

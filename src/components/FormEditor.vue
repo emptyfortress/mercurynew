@@ -5,29 +5,15 @@ import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { insert } from "@formkit/drag-and-drop"
 import IconLayout1 from '@/components/icons/IconLayout1.vue'
 import Resizable from '@/components/Resizable.vue'
-import { useElementSize, onClickOutside } from '@vueuse/core'
+import { useElementSize } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
 
 const control = useControl()
 
-// const items = reactive([
-// 	{
-// 		id: 4,
-// 		label: 'Control 0',
-// 		icon: IconLayout1,
-// 		selected: false,
-// 	},
-// 	{
-// 		id: 5,
-// 		label: 'Control 0',
-// 		icon: IconLayout1,
-// 		selected: false,
-// 	},
-// ])
-
 const config = {
 	sortable: true,
 	group: 'one',
+	dragHandle: '.move',
 	plugins: [
 		insert({
 			insertPoint: (parent) => {
@@ -38,6 +24,7 @@ const config = {
 		})
 	]
 }
+
 
 const [doneList, dones] = useDragAndDrop(control.editorControls, config)
 
@@ -57,32 +44,27 @@ const select = ((item: any) => {
 
 <template lang="pug">
 .edit(ref="edit")
-	// q-list(ref="doneList" bordered separator)
-	// 	q-item(v-for="done in dones" :key="done.id")
-	// 		q-item-section {{ done.label }}
 
-
-	// ul(ref="doneList" bordered separator)
-	// 	li(v-for="done in dones" :key="done.id") {{ done.label }}
-
-
-	ul()
-		Resizable(v-for="(item, index) in control.editorControls" :item='item' :key='item.id' :wid="width"  @select='select(item)')
+	.list(ref="doneList")
+		Resizable(v-for="(item, index) in dones" :key='item.id'  :item='item' :wid="width"  @select='select(item)')
+			div {{ item.id }}
 </template>
 
 <style scoped lang="scss">
 .edit {
 	padding: 1rem;
-	// background: #ccc;
 }
 
-.q-item {
-	// margin-bottom: .5rem;
+.test {
+	padding: 1rem;
+	background: #ccc;
+	width: 200px;
+	height: 100px;
 }
 
-ul {
+
+.list {
 	display: flex;
-	list-style: none;
 	gap: .5rem;
 	flex-wrap: wrap;
 	margin: 0;
