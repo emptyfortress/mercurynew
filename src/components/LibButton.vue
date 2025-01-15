@@ -47,7 +47,7 @@ const close = () => {
 		v-motion
 		:initial='{ rotate: "0deg" }'
 		:hovered='{ rotate: "90deg" }'
-		name="mdi-bookshelf"
+		name="mdi-book-open-page-variant-outline"
 		color="primary"
 		size='28px')
 
@@ -61,7 +61,7 @@ const close = () => {
 		)
 		.top
 			.zg
-				q-icon(name="mdi-bookshelf")
+				q-icon(name="mdi-book-open-page-variant-outline")
 				|Библиотека
 		LibContent
 		.info

@@ -1,32 +1,34 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import IconLayout from '@/components/icons/IconLayout.vue'
-import IconBlock from '@/components/icons/IconBlock.vue'
+// import IconLayout from '@/components/icons/IconLayout.vue'
+import IconPallete from '@/components/icons/IconPallete.vue'
 import IconField from '@/components/icons/IconField.vue'
-import LayoutTab from '@/components/LayoutTab.vue'
+import CommonElements from '@/components/CommonElements.vue'
 import ElementTab from '@/components/ElementTab.vue'
 
-const tab = ref('block')
+const item1 = ref(true)
+const item2 = ref(true)
 </script>
 
 <template lang="pug">
-.grid
-	q-tabs(
-		v-model="tab"
-		inline-label
-		class="text-secondary"
-		)
-		// q-tab(name="design")
-			IconLayout.ic
-			label Макет
-		q-tab(name="block")
-			IconBlock.ic
-			label Элементы
-		q-tab(name="field")
-			IconField.ic
-			label Поля
+q-list(separator)
+	q-expansion-item(v-model="item1")
+		template(v-slot:header)
+			q-item-section(side)
+				IconPallete.ic
+			q-item-section.zg Оформление
 
-	q-tab-panels(
+		CommonElements
+
+	q-expansion-item(v-model="item2")
+		template(v-slot:header)
+			q-item-section(side)
+				IconField.ic
+			q-item-section.zg Поля
+
+		ElementTab
+
+	// q-tab-panels(
 		v-model="tab"
 		animated
 		transition-prev="jump-up"
@@ -44,6 +46,13 @@ const tab = ref('block')
 .ic {
 	font-size: 1.5rem;
 	margin-right: .5rem;
+	color: $secondary;
+}
+
+.zg {
+	text-transform: uppercase;
+	color: $secondary;
+	text-align: left;
 }
 
 .info {

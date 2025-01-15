@@ -47,7 +47,6 @@ const preview = () => {
 
 	.q-icon {
 		transform: translateY(-2px);
-		// color: $primary;
 		color: $secondary;
 	}
 
