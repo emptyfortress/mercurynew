@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, } from 'vue'
 import { state } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { insert } from "@formkit/drag-and-drop"
-// import IconLayout1 from '@/components/icons/IconLayout1.vue'
 import Resizable from '@/components/Resizable.vue'
 import { useElementSize } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
+import DropZone from '@/components/DropZone.vue'
 
 const control = useControl()
 
@@ -43,9 +43,11 @@ const select = ((item: any) => {
 <template lang="pug">
 .edit(ref="edit")
 
-	.list(ref="doneList")
-		Resizable(v-for="(item, index) in dones" :key='item.id'  :item='item' :wid="width"  @select='select(item)')
-			div {{ item.id }}
+	.list(ref="doneList" )
+		template(v-if='dones.length > 0')
+			Resizable(v-for="(item, index) in dones" :key='item.id'  :item='item' :wid="width"  @select='select(item)')
+				div {{ item.id }}
+		DropZone(v-else)
 </template>
 
 <style scoped lang="scss">

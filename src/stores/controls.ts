@@ -3,18 +3,7 @@ import { ref } from 'vue'
 
 
 export const useControl = defineStore('control', () => {
-	const editorControls = ref<Control[]>([
-		{
-			id: 10,
-			label: 'one',
-			selected: false,
-		},
-		{
-			id: 11,
-			label: 'two',
-			selected: false,
-		},
-	])
+	const editorControls = ref<Control[]>([])
 
 	const deselect = (() => {
 		editorControls.value.map((el) => el.selected = false)
