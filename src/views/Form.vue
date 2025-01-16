@@ -81,7 +81,7 @@ q-page(padding)
 		PlusButton1(@activate='startRight' @stop='stopRight')
 		LibButton(@activate='startLeft' @stop='stopLeft')
 
-	// Toolbar
+	Toolbar
 
 </template>
 
@@ -89,7 +89,6 @@ q-page(padding)
 .q-page {
 	display: flex;
 	flex-direction: column;
-	// justify-content: center;
 	align-items: center;
 	position: relative;
 }

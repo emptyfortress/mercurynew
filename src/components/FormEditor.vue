@@ -7,6 +7,7 @@ import { useElementSize } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
 import DropZone from '@/components/DropZone.vue'
 import { storeToRefs } from 'pinia';
+import { state } from "@formkit/drag-and-drop"
 
 const control = useControl()
 const { editorControls } = storeToRefs(control)
@@ -37,6 +38,10 @@ const select = ((item: Control) => {
 })
 const remove = ((ind: number) => {
 	control.removeControl(ind)
+})
+
+state.on("dragEnded", () => {
+	editorControls.value = dones.value
 })
 </script>
 
