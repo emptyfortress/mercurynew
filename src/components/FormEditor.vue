@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, } from 'vue'
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { useDragAndDrop, } from "@formkit/drag-and-drop/vue"
 import { insert } from "@formkit/drag-and-drop"
 import Resizable from '@/components/Resizable.vue'
 import { useElementSize } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
 import DropZone from '@/components/DropZone.vue'
+import { storeToRefs } from 'pinia';
 
 const control = useControl()
+const { editorControls } = storeToRefs(control)
 
 const config = {
 	sortable: true,
@@ -25,16 +27,15 @@ const config = {
 }
 
 
-const [doneList, dones] = useDragAndDrop(control.editorControls, config)
+const [doneList, dones] = useDragAndDrop(editorControls.value, config)
 
 const edit = ref()
 const { width } = useElementSize(edit)
 
-const select = ((item: any) => {
+const select = ((item: Control) => {
 	control.select(item)
 })
 const remove = ((ind: number) => {
-	dones.value.splice(ind, 1)
 	control.removeControl(ind)
 })
 </script>

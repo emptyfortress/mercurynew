@@ -5,7 +5,7 @@ import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
 import { state } from "@formkit/drag-and-drop"
 
-const elements = ref([
+const elements = [
 	{
 		id: 0,
 		label: 'Автор',
@@ -24,12 +24,12 @@ const elements = ref([
 		caption: 'Текущее состояние документа',
 		selected: false,
 	},
-])
+]
 
-const [lib, libitems] = useDragAndDrop(elements.value, {
+const [lib, libitems] = useDragAndDrop(elements, {
 	group: "one",
 	sortable: false,
-	dragPlaceholderClass: 'custom',
+	// dragPlaceholderClass: 'custom',
 })
 
 const tmp = ref<Control[]>([])

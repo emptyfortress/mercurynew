@@ -66,7 +66,7 @@ const stopLeft = async () => {
 
 <template lang="pug">
 q-page(padding)
-	.editor(ref='editor' @click.stop='control.deselect')
+	.editor(ref='editor')
 		.top(@click='control.deselect')
 			.zg Форма "Создание"
 			div

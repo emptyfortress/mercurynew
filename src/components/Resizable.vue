@@ -2,19 +2,35 @@
 import { ref, computed, onMounted, } from 'vue'
 import { useElementSize } from '@vueuse/core'
 
-const props = defineProps({
-	wid: {
-		type: Number,
-		required: true,
-		default: 768
-	},
-	item: Object
-})
+// const props = defineProps({
+// 	wid: {
+// 		type: Number,
+// 		required: true,
+// 		default: 768
+// 	},
+// 	item: {
+// 		type: Control
+// 	}
+// })
+
+interface Control {
+	id: number
+	label: string
+	caption: string
+	selected: boolean
+}
+const props = defineProps<{
+	item: Control,
+	wid: number
+}>()
 
 
 const emit = defineEmits(['select', 'remove'])
-const toggle = (() => {
+const select = (() => {
 	emit('select')
+})
+const remove = (() => {
+	emit('remove',)
 })
 
 
@@ -22,7 +38,6 @@ const resizable = ref<HTMLElement | null>(null)
 const handle = ref<HTMLElement | null>(null)
 
 const { width } = useElementSize(resizable)
-// const { width1: width } = useElementSize(resizable)
 
 const step = computed(() => {
 	return props.wid / 12
@@ -56,13 +71,10 @@ onMounted(() => {
 })
 
 
-const remove = (() => {
-	emit('remove',)
-})
 </script>
 
 <template lang="pug">
-.resizable(ref='resizable' @click.stop="toggle" :class="{ selected: props.item?.selected }")
+.resizable(ref='resizable' @click.stop="select" :class="{ selected: props.item?.selected }")
 	.handle(ref="handle" @click.stop)
 	.digit {{ digit }}
 	.icon.move
@@ -87,7 +99,7 @@ const remove = (() => {
 <style scoped lang="scss">
 .resizable {
 	width: 768px;
-	height: 100px;
+	// height: 100px;
 	background: #eee;
 	position: relative;
 	margin-bottom: .5rem;
