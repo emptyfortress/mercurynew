@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
-// import { state } from "@formkit/drag-and-drop"
+import { state } from "@formkit/drag-and-drop"
 
 const elements = ref([
 	{
@@ -32,13 +32,17 @@ const [lib, libitems] = useDragAndDrop(elements.value, {
 	dragPlaceholderClass: 'custom',
 })
 
-// state.on("dragEnded", (event: any) => {
-// 	console.log('fuck')
-// 	elements.push(event.draggedNode.data.value)
-// })
+const tmp = ref<Control[]>([])
+
+state.on('dragStarted', () => {
+	tmp.value = [...libitems.value]
+})
+
+state.on("dragEnded", () => {
+	libitems.value = [...tmp.value]
+})
 
 const create = ((e: Control) => {
-	// elements.value.push(e)
 	libitems.value.push(e)
 })
 
