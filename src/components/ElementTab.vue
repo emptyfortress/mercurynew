@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
-import { state } from "@formkit/drag-and-drop"
+// import { state } from "@formkit/drag-and-drop"
 
-const elements = [
+const elements = ref([
 	{
 		id: 0,
 		label: 'Автор',
@@ -24,27 +24,30 @@ const elements = [
 		caption: 'Текущее состояние документа',
 		selected: false,
 	},
-]
+])
 
-const [lib, libitems] = useDragAndDrop(elements, {
+const [lib, libitems] = useDragAndDrop(elements.value, {
 	group: "one",
 	sortable: false,
 	dragPlaceholderClass: 'custom',
 })
 
-state.on("dragEnded", (event: any) => {
-	elements.push(event.draggedNode.data.value)
+// state.on("dragEnded", (event: any) => {
+// 	console.log('fuck')
+// 	elements.push(event.draggedNode.data.value)
+// })
+
+const create = ((e: Control) => {
+	// elements.value.push(e)
+	libitems.value.push(e)
 })
 
-const dragStart = ((event: DragEvent, item: any) => {
-	event.dataTransfer?.setData('text/plain', JSON.stringify(item))
-	// console.log(item)
-})
+
 </script>
 
 <template lang="pug">
 q-list(bordered separator ref="lib")
-	q-item(v-for="item in libitems" :key="item.id" @dragstart="dragStart($event, item)")
+	q-item(v-for="item in libitems" :key="item.id")
 		q-item-section(avatar)
 			.big
 				IconBlock
@@ -53,7 +56,7 @@ q-list(bordered separator ref="lib")
 			q-item-label.grey(caption) {{ item.caption }}
 
 br
-AddFormButton(@create='')
+AddFormButton(@create='create')
 </template>
 
 <style scoped lang="scss">

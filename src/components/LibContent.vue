@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// import IconLayout from '@/components/icons/IconLayout.vue'
 import IconPallete from '@/components/icons/IconPallete.vue'
 import IconField from '@/components/icons/IconField.vue'
 import CommonElements from '@/components/CommonElements.vue'
@@ -28,18 +27,6 @@ q-list(separator)
 
 		ElementTab
 
-	// q-tab-panels(
-		v-model="tab"
-		animated
-		transition-prev="jump-up"
-		transition-next="jump-up"
-		)
-		q-tab-panel(name='design')
-			LayoutTab
-		q-tab-panel(name='block')
-			ElementTab
-		q-tab-panel(name='field')
-			div field
 </template>
 
 <style scoped lang="scss">

@@ -13,5 +13,6 @@ interface App {
 type Control = {
 	id: number
 	label: string
+	caption: string
 	selected: boolean
 }

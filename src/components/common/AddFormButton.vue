@@ -42,8 +42,8 @@ const top = computed(() => {
 
 const emit = defineEmits(['create'])
 const model = ref(null)
+const model2 = ref('Строка')
 const model1 = ref(null)
-const model2 = ref(null)
 const options = [
 	'Строка', 'Число', 'Текст', 'Дата', 'Ссылка на справочник',
 ]
@@ -54,11 +54,18 @@ const resetForm = (() => {
 		input.value.resetValidation()
 	})
 	model.value = null
+	model1.value = null
+	model2.value = 'Строка'
 	pic.value = false
 
 })
 const submitForm = (() => {
-	emit('create', model.value)
+	emit('create', {
+		id: + Date.now(),
+		label: model.value,
+		caption: model1.value,
+		selected: false
+	})
 	resetForm()
 	add()
 	input.value.resetValidation()
