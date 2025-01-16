@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'remove'])
 const toggle = (() => {
 	emit('select')
 })
@@ -55,6 +55,10 @@ onMounted(() => {
 	}
 })
 
+
+const remove = (() => {
+	emit('remove',)
+})
 </script>
 
 <template lang="pug">
@@ -66,12 +70,12 @@ onMounted(() => {
 		svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24")
 			path(fill="currentColor" d="M18 11V8l4 4l-4 4v-3h-5v5h3l-4 4l-4-4h3v-5H6v3l-4-4l4-4v3h5V6H8l4-4l4 4h-3v5z")
 
-	// .icon.clone
+	.icon.clone
 		q-tooltip Дублировать
 		svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512")
 			path(fill="currentColor" fill-rule="evenodd" d="M448 149.333V448H149.333V149.333zM405.333 192H192v213.333h213.333zM320 234.667v42.666h42.667V320h-42.668l.001 42.667h-42.667v-42.668l-42.666.001v-42.667h42.666v-42.666zM362.667 64l-.001 64H320v-21.333H106.667V320H128v42.666H64V64z")
 
-	.icon.remove
+	.icon.remove(@click='remove')
 		q-tooltip Удалить
 		svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24")
 			path(fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z")
@@ -87,6 +91,7 @@ onMounted(() => {
 	background: #eee;
 	position: relative;
 	margin-bottom: .5rem;
+	padding: 1rem;
 	// border: 1px solid #ddd;
 
 	.digit {

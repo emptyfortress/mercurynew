@@ -18,10 +18,16 @@ export const useControl = defineStore('control', () => {
 		editorControls.value.push(e)
 	})
 
+	const removeControl = ((n: number) => {
+		console.log(111)
+		editorControls.value.splice(n, 1)
+	})
+
 	return {
 		editorControls,
 		select,
 		deselect,
 		addControl,
+		removeControl,
 	}
 })

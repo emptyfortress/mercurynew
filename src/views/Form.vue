@@ -81,7 +81,7 @@ q-page(padding)
 		PlusButton1(@activate='startRight' @stop='stopRight')
 		LibButton(@activate='startLeft' @stop='stopLeft')
 
-	Toolbar
+	// Toolbar
 
 </template>
 
