@@ -3,7 +3,7 @@ import { ref, reactive } from 'vue'
 import { state } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { insert } from "@formkit/drag-and-drop"
-import IconLayout1 from '@/components/icons/IconLayout1.vue'
+// import IconLayout1 from '@/components/icons/IconLayout1.vue'
 import Resizable from '@/components/Resizable.vue'
 import { useElementSize } from '@vueuse/core'
 import { useControl } from '@/stores/controls'

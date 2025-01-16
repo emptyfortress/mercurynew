@@ -7,7 +7,7 @@ import { useDraggable } from '@vueuse/core'
 //
 const el = ref<HTMLElement | null>(null)
 const { x, y, style } = useDraggable(el, {
-	initialValue: { x: 560, y: 148 },
+	initialValue: { x: 570, y: 148 },
 })
 
 const preview = () => {

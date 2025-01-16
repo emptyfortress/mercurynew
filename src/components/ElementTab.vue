@@ -2,7 +2,8 @@
 import { ref } from 'vue'
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import IconBlock from '@/components/icons/IconBlock.vue'
-import AddButton from '@/components/common/AddButton.vue'
+import AddFormButton from '@/components/common/AddFormButton.vue'
+import { state } from "@formkit/drag-and-drop"
 
 const elements = [
 	{
@@ -31,6 +32,10 @@ const [lib, libitems] = useDragAndDrop(elements, {
 	dragPlaceholderClass: 'custom',
 })
 
+state.on("dragEnded", (event: any) => {
+	elements.push(event.draggedNode.data.value)
+})
+
 const dragStart = ((event: DragEvent, item: any) => {
 	event.dataTransfer?.setData('text/plain', JSON.stringify(item))
 	// console.log(item)
@@ -48,7 +53,7 @@ q-list(bordered separator ref="lib")
 			q-item-label.grey(caption) {{ item.caption }}
 
 br
-AddButton(@create='' mode="form")
+AddFormButton(@create='')
 </template>
 
 <style scoped lang="scss">
