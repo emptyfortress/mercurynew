@@ -59,20 +59,6 @@ const close = () => {
 	TopButton(v-model="panels.right")
 	PropertyPanel(v-model="panels.right")
 
-
-
-	// .rrel(v-if='panels.right'
-	// 	v-motion
-	// 	:initial='{ opacity: 0 }'
-	// 	:enter='{ opacity: 1 }'
-	// 	:delay='500')
-	// 	.top
-	// 		.zg
-	// 			q-icon(name="mdi-tune-vertical-variant")
-	// 			| Настройки
-
-
-
 </template>
 
 <style scoped lang="scss">
