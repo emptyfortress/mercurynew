@@ -81,7 +81,8 @@ q-page(padding)
 		PlusButton1(@activate='startRight' @stop='stopRight')
 		LibButton(@activate='startLeft' @stop='stopLeft')
 
-	Toolbar
+		Toolbar
+	// Toolbar
 
 </template>
 
@@ -98,6 +99,7 @@ q-page(padding)
 	display: block;
 	padding: 0;
 	background: hsl(214 42% 96% / 1);
+	position: relative;
 }
 
 .zg {

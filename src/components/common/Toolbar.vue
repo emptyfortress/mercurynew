@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDraggable } from '@vueuse/core'
+// import { useDraggable } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
-// import { useLayoutStore } from '@/stores/layout'
 
-// const lstore = useLayoutStore()
-//
 const el = ref<HTMLElement | null>(null)
-const { x, y, style } = useDraggable(el, {
-	initialValue: { x: 570, y: 148 },
-})
+// const { x, y, style } = useDraggable(el, {
+// 	initialValue: { x: 570, y: 148 },
+// })
 
 const preview = () => {
 	const url = 'https://google.com'
@@ -25,7 +22,8 @@ const removeAll = (() => {
 
 <template lang="pug">
 
-.toolbar(ref="el" :style="style" style="position: fixed")
+// .toolbar(ref="el" :style="style" style="position: fixed")
+.toolbar(ref="el")
 	.square.q-mt-sm(@click='')
 		q-icon(name="mdi-cellphone" size='18px') 
 		q-tooltip.bg-primary(anchor="center right" self="center left") Телефон
@@ -72,6 +70,9 @@ const removeAll = (() => {
 	background: #fff;
 	border: 1px solid #ccc;
 	box-shadow: var(--shad0);
+	position: absolute;
+	top: 5.6rem;
+	left: 4px;
 
 	&:hover {
 		box-shadow: var(--shad);
