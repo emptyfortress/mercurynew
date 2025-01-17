@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useDraggable } from '@vueuse/core'
+import { useControl } from '@/stores/controls'
 // import { useLayoutStore } from '@/stores/layout'
 
 // const lstore = useLayoutStore()
@@ -14,6 +15,12 @@ const preview = () => {
 	const url = 'https://google.com'
 	window.open(url, '_blank')!.focus()
 }
+
+const control = useControl()
+
+const removeAll = (() => {
+	control.removeAll()
+})
 </script>
 
 <template lang="pug">
@@ -33,7 +40,7 @@ const preview = () => {
 		q-icon(name="mdi-eye" size='18px') 
 		q-tooltip.bg-primary(anchor="center right" self="center left") Превью
 	q-separator.q-mb-sm
-	.square(@click='')
+	.square(@click='removeAll')
 		q-icon(name="mdi-trash-can-outline" size='18px' color="negative") 
 		q-tooltip.bg-negative(anchor="center right" self="center left") Очистить форму
 </template>

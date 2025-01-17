@@ -3,9 +3,9 @@ import { ref, nextTick, } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
-// import prop from '@/assets/img/formprop.png'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
+import PropertyPanel from '@/components/panels/PropertyPanel.vue'
 
 
 const panels = usePanels()
@@ -57,6 +57,9 @@ const close = () => {
 	CloseButton(v-model="panels.right" @close="close")
 
 	TopButton(v-model="panels.right")
+	PropertyPanel(v-model="panels.right")
+
+
 
 	// .rrel(v-if='panels.right'
 	// 	v-motion

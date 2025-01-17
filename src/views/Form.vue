@@ -98,8 +98,6 @@ q-page(padding)
 	display: block;
 	padding: 0;
 	background: hsl(214 42% 96% / 1);
-	// background: transparent;
-	// box-shadow: none;
 }
 
 .zg {

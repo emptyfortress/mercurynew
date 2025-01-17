@@ -1,9 +1,13 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 
 export const useControl = defineStore('control', () => {
-	const editorControls = ref<Control[]>([ ])
+	const editorControls = ref<Control[]>([])
+
+	const selectedControl = computed(() => {
+		return editorControls.value.find((el: Control) => el.selected)
+	})
 
 	const deselect = (() => {
 		editorControls.value.map((el) => el.selected = false)
@@ -19,15 +23,20 @@ export const useControl = defineStore('control', () => {
 	})
 
 	const removeControl = ((n: number) => {
-		console.log(111)
 		editorControls.value.splice(n, 1)
+	})
+
+	const removeAll = (() => {
+		editorControls.value.length = 0
 	})
 
 	return {
 		editorControls,
+		selectedControl,
 		select,
 		deselect,
 		addControl,
 		removeControl,
+		removeAll,
 	}
 })
