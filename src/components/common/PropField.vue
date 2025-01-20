@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<Props>(), {
 	textarea: false,
 	toggle: false,
 	radio: false,
-	group: [],
+	// group: [{ label: 'one', val: 'one' }],
 })
 
 const rasp = ref(props.startValue)
@@ -51,7 +51,7 @@ const check = defineModel<boolean>('check')
 <template lang="pug">
 q-separator(v-if='props.radio')
 .dat
-	label(v-if='props.label' :class='{start: props.radio}') {{ props.label }} 
+	label(v-if='props.label' :class='{ start: props.radio }') {{ props.label }} 
 
 	q-checkbox(v-if="props.checkbox" v-model="check" dense :label="props.descr" :disable="props.disable")
 	q-toggle(v-if="props.toggle" v-model="check" )
@@ -92,6 +92,7 @@ q-separator(v-if='props.radio')
 	margin-right: -1rem;
 	background: hsl(217 40% 92% / 1);
 }
+
 .dat {
 	display: grid;
 	grid-template-columns: 130px 1fr;
@@ -111,9 +112,11 @@ q-separator(v-if='props.radio')
 	// justify-self: end;
 	// justify-self: end;
 }
+
 label {
 	text-align: left;
 	line-height: 1.2;
+
 	&.start {
 		align-self: start;
 	}

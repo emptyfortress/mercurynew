@@ -55,7 +55,6 @@ q-list.prop
 		:label='item.label'
 		v-model:main="item.main"
 		:toggle="item.toggle"
-		:select='item.select'
 		:check='item.check'
 		:radio='item.radio'
 		:group='item.group'
@@ -63,5 +62,4 @@ q-list.prop
 		)
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
