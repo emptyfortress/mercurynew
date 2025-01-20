@@ -41,7 +41,7 @@ const list = [
 	},
 	{
 		id: 6,
-		label: 'Текущее время',
+		label: 'Текущее время по умолчанию',
 		toggle: true,
 		check: true,
 	},

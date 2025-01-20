@@ -20,7 +20,7 @@ q-list(separator)
 		// 	PropField
 		FormPropsMain
 
-	q-expansion-item(v-model="item2")
+	// q-expansion-item(v-model="item2")
 		template(v-slot:header)
 			q-item-section(side)
 				IconRelation.ic
