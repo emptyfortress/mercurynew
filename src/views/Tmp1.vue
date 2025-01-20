@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, } from 'vue'
-import { animations, insert } from "@formkit/drag-and-drop"
+import { animations, } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
@@ -25,16 +25,8 @@ const shift = useKeyModifier('Shift')
 // })
 
 const config = {
-	plugins: [animations(),
-		// insert({
-		// 	insertPoint: (parent) => {
-		// 		const div = document.createElement("div")
-		// 		for (const cls of insertPointClasses) div.classList.add(cls)
-		// 		return div
-		// 	}
-		// })
-	],
-	dragPlaceholderClass: 'custom',
+	plugins: [animations(),],
+	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (el: any) => { return el.id !== "no-drag" },
 }
@@ -47,6 +39,7 @@ const [parent, tapes, updateConfig] = useDragAndDrop(applications.value, config)
 const expanded = ref<boolean>(false)
 
 const calcClass = ((item: any) => {
+	if (item.group > 1) return 'group1'
 	if (expanded.value && item.expand) return 'active'
 	if (expanded.value && !item.expand) return 'inactive'
 	else return ''
@@ -112,7 +105,7 @@ const create = (e: string) => {
 q-page(padding)
 	.all
 		.pa(ref='parent')
-			.chil(v-for=" (item, index) in tapes" :key="item.id" :id="item.id"
+			.chil(v-for="(item, index) in tapes" :key="item.id" :id="item.id"
 				v-motion
 				:initial="{ y: 40, opacity: 0 }"
 				:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
@@ -160,7 +153,12 @@ q-page(padding)
 	padding: 1rem;
 	position: relative;
 	border-radius: var(--rad);
-	// margin: .5rem;
+
+	&.group1 {
+		background: hsl(213deg 83.95% 94.68%);
+		border: 2px solid var(--green);
+
+	}
 
 	&.active {
 		position: fixed;
@@ -178,10 +176,16 @@ q-page(padding)
 	&.inactive {
 		display: none;
 	}
+
+	&:hover {
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+	}
 }
 
-.custom {
-	background: hsl(213 38% 81% / 1);
+.ghost {
+	background: hsl(213 38% 81% / 1) !important;
+	box-shadow: none !important;
+	border: none !important;
 
 	.con,
 	.img {
@@ -206,7 +210,7 @@ q-page(padding)
 	position: absolute;
 	bottom: 0;
 	left: 0.5rem;
-	font-size: 2.5rem;
+	font-size: 3rem;
 	line-height: 1;
 	color: hsl(199 23% 45% / 1);
 }
