@@ -4,6 +4,9 @@ import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
 import { state } from "@formkit/drag-and-drop"
+import { Kind } from '@/types/enum'
+
+
 
 const elements = [
 	{
@@ -11,18 +14,28 @@ const elements = [
 		label: 'Автор',
 		caption: 'Автор документа',
 		selected: false,
+		type: Kind.Man,
 	},
 	{
 		id: 1,
 		label: 'Дата создания',
 		caption: 'Когда создан документ',
 		selected: false,
+		type: Kind.Date,
 	},
 	{
 		id: 2,
-		label: 'Статус',
-		caption: 'Текущее состояние документа',
+		label: 'Строка',
+		caption: 'Пример контрола строки',
 		selected: false,
+		type: Kind.String,
+	},
+	{
+		id: 3,
+		label: 'Текст',
+		caption: 'Пример длинного текста',
+		selected: false,
+		type: Kind.Text,
 	},
 ]
 

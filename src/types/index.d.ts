@@ -15,4 +15,5 @@ type Control = {
 	label: string
 	caption: string
 	selected: boolean
+	type: Kind
 }

@@ -62,6 +62,22 @@ const stopLeft = async () => {
 	}, 400)
 	stop()
 }
+
+const fullscreen = ref(false)
+const toggleFull = (() => {
+	if (fullscreen.value == false) {
+		panels.setRight(false)
+		stopRight()
+		panels.setLeft(false)
+		stopLeft()
+	} else {
+		panels.setRight(true)
+		startRight()
+		panels.setLeft(true)
+		startLeft()
+	}
+	fullscreen.value = !fullscreen.value
+})
 </script>
 
 <template lang="pug">
@@ -73,7 +89,9 @@ q-page(padding)
 				q-btn(flat round dense icon="mdi-undo" color="primary" @click="") 
 				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
-				q-btn.q-ml-md(flat round dense icon="mdi-fullscreen" color="primary" @click="") 
+				q-btn.q-ml-md(flat round dense color="primary" @click="toggleFull") 
+					q-icon(v-if='fullscreen' name="mdi-fullscreen-exit" color="primary")
+					q-icon(v-else name="mdi-fullscreen" color="primary")
 
 		FormEditor
 
@@ -98,7 +116,7 @@ q-page(padding)
 .editor {
 	display: block;
 	padding: 0;
-	background: hsl(214 42% 96% / 1);
+	background: var(--bgLight);
 	position: relative;
 }
 

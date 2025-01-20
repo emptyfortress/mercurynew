@@ -7,6 +7,13 @@ export const useControl = defineStore('control', () => {
 
 	const selectedControl = computed(() => {
 		return editorControls.value.find((el: Control) => el.selected)
+		// return {
+		// 	id: 1,
+		// 	label: 'Дата создания',
+		// 	caption: 'Когда создан документ',
+		// 	selected: false,
+		// 	type: Kind.Date,
+		// }
 	})
 
 	const deselect = (() => {

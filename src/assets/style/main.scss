@@ -147,7 +147,7 @@
 	// padding: 0 1rem;
 	padding: .5rem 1rem;
 	border-radius: .4rem .4rem 0 0;
-	background: hsl(214 42% 96% / 1);
+	background: var(--bgLight);
 	box-shadow: inset 0 -2px 3px rgba($color: #000000, $alpha: 0.1);
 	display: flex;
 	justify-content: space-between;

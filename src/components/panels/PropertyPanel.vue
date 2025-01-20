@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+// import { computed } from 'vue'
 import { useControl } from '@/stores/controls'
 import FormProps from '@/components/panels/FormProps.vue'
 import ControlProps from '@/components/panels/ControlProps.vue'
@@ -7,13 +7,13 @@ import ControlProps from '@/components/panels/ControlProps.vue'
 const control = useControl()
 const modelValue = defineModel()
 
-const activeComponent = computed(() => {
-	return control.selectedControl ? ControlProps : FormProps
-})
+// const activeComponent = computed(() => {
+// 	return control.selectedControl ? ControlProps : FormProps
+// })
 </script>
 
 <template lang="pug">
-.property(v-if='modelValue'
+div(v-if='modelValue'
 	v-motion
 	:initial='{ opacity: 0 }'
 	:enter='{ opacity: 1 }'
@@ -32,8 +32,4 @@ const activeComponent = computed(() => {
 		)
 </template>
 
-<style scoped lang="scss">
-.property {
-	padding: 1rem;
-}
-</style>
+<style scoped lang="scss"></style>
