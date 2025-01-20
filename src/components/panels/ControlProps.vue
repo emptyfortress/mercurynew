@@ -36,5 +36,6 @@ div
 <style scoped lang="scss">
 .prop {
 	margin: 1rem;
+	font-size: .8rem;
 }
 </style>

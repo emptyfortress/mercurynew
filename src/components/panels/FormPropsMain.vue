@@ -30,6 +30,7 @@ q-list.prop
 
 <style scoped lang="scss">
 .prop {
-	margin: .5rem 1rem;
+	margin: 1rem;
+	font-size: .8rem;
 }
 </style>
