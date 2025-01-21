@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 // import { useDraggable } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
+import IconEye from '@/components/icons/IconEye.vue'
 
 const el = ref<HTMLElement | null>(null)
 // const { x, y, style } = useDraggable(el, {
@@ -17,6 +18,10 @@ const control = useControl()
 
 const removeAll = (() => {
 	control.removeAll()
+})
+
+const toggleHide = (() => {
+	control.toggleHideMode()
 })
 </script>
 
@@ -34,9 +39,13 @@ const removeAll = (() => {
 		q-icon(name="mdi-monitor" size='18px') 
 		q-tooltip.bg-primary(anchor="center right" self="center left") Десктоп
 	q-separator.q-mt-sm
-	.square(@click='preview' style="padding-top: 5px;")
-		q-icon(name="mdi-eye" size='18px') 
+	.square(@click='' style="padding-top: 5px;")
+		q-icon(name="mdi-play-box-outline" size='18px') 
 		q-tooltip.bg-primary(anchor="center right" self="center left") Превью
+	q-separator
+	.square(@click='toggleHide' style="padding-top: 5px;" :class='{ selected: control.hideMode }')
+		q-icon(name="mdi-eye" size='18px') 
+		q-tooltip.bg-primary(anchor="center right" self="center left") Показать скрытые элементы
 	q-separator.q-mb-sm
 	.square(@click='removeAll')
 		q-icon(name="mdi-trash-can-outline" size='18px' color="negative") 

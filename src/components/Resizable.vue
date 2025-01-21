@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, } from 'vue'
 import { useElementSize } from '@vueuse/core'
+import { useControl } from '@/stores/controls'
+
 
 // const props = defineProps({
 // 	wid: {
@@ -70,11 +72,21 @@ onMounted(() => {
 	}
 })
 
+const control = useControl()
 
+const hidden = ref(false)
+
+const calcClass = ((item: Control) => {
+	if (!hidden.value && item.selected == true) return 'selected'
+	if (hidden.value && item.selected) return 'selhid'
+	if (hidden.value && !item.selected && !control.hideMode) return 'hidd'
+	if (hidden.value && !item.selected && control.hideMode) return 'hid'
+})
 </script>
 
 <template lang="pug">
-.resizable(ref='resizable' @click.stop="select" :class="{ selected: props.item?.selected }")
+// .resizable(ref='resizable' @click.stop="select" :class="{ selected: props.item?.selected }")
+.resizable(ref='resizable' @click.stop="select" :class="calcClass(props.item)")
 	.handle(ref="handle" @click.stop)
 	.digit {{ digit }}
 	.icon.move
@@ -82,10 +94,14 @@ onMounted(() => {
 		svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24")
 			path(fill="currentColor" d="M18 11V8l4 4l-4 4v-3h-5v5h3l-4 4l-4-4h3v-5H6v3l-4-4l4-4v3h5V6H8l4-4l4 4h-3v5z")
 
-	.icon.clone
-		q-tooltip Дублировать
-		svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512")
-			path(fill="currentColor" fill-rule="evenodd" d="M448 149.333V448H149.333V149.333zM405.333 192H192v213.333h213.333zM320 234.667v42.666h42.667V320h-42.668l.001 42.667h-42.667v-42.668l-42.666.001v-42.667h42.666v-42.666zM362.667 64l-.001 64H320v-21.333H106.667V320H128v42.666H64V64z")
+	.icon.clone(@click='hidden = !hidden')
+		q-tooltip Скрыть/показать
+		svg(v-if='!hidden' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24")
+			path(d="M8.073 12.194L4.212 8.333c-1.52 1.657-2.096 3.317-2.106 3.351L2 12l.105.316C2.127 12.383 4.421 19 12.054 19c.929 0 1.775-.102 2.552-.273l-2.746-2.746a3.987 3.987 0 0 1-3.787-3.787zM12.054 5c-1.855 0-3.375.404-4.642.998L3.707 2.293L2.293 3.707l18 18l1.414-1.414l-3.298-3.298c2.638-1.953 3.579-4.637 3.593-4.679l.105-.316l-.105-.316C21.98 11.617 19.687 5 12.054 5zm1.906 7.546c.187-.677.028-1.439-.492-1.96s-1.283-.679-1.96-.492L10 8.586A3.955 3.955 0 0 1 12.054 8c2.206 0 4 1.794 4 4a3.94 3.94 0 0 1-.587 2.053l-1.507-1.507z" fill="currentColor")
+
+		svg(v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24")
+			path(fill="currentColor" d="M12 5c-7.633 0-9.927 6.617-9.948 6.684L1.946 12l.105.316C2.073 12.383 4.367 19 12 19s9.927-6.617 9.948-6.684l.106-.316l-.105-.316C21.927 11.617 19.633 5 12 5m0 11c-2.206 0-4-1.794-4-4s1.794-4 4-4s4 1.794 4 4s-1.794 4-4 4")
+			path(fill="currentColor" d="M12 10c-1.084 0-2 .916-2 2s.916 2 2 2s2-.916 2-2s-.916-2-2-2")
 
 	.icon.remove(@click='remove')
 		q-tooltip Удалить
@@ -100,7 +116,8 @@ onMounted(() => {
 .resizable {
 	width: 768px;
 	// height: 100px;
-	background: #eee;
+	// background: #ededed;
+	background: #f1f4f9;
 	position: relative;
 	margin-bottom: .5rem;
 	padding: 1rem;
@@ -180,6 +197,27 @@ onMounted(() => {
 			display: block;
 		}
 
+	}
+
+	&.selhid {
+		border: 1px solid #ccc;
+
+		background: #eee;
+
+		.handle,
+		.digit,
+		.icon {
+			display: block;
+		}
+
+	}
+
+	&.hid {
+		opacity: .4;
+	}
+
+	&.hidd {
+		display: none;
 	}
 }
 </style>

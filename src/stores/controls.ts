@@ -7,13 +7,6 @@ export const useControl = defineStore('control', () => {
 
 	const selectedControl = computed(() => {
 		return editorControls.value.find((el: Control) => el.selected)
-		// return {
-		// 	id: 1,
-		// 	label: 'Дата создания',
-		// 	caption: 'Когда создан документ',
-		// 	selected: false,
-		// 	type: Kind.Date,
-		// }
 	})
 
 	const deselect = (() => {
@@ -37,6 +30,12 @@ export const useControl = defineStore('control', () => {
 		editorControls.value.length = 0
 	})
 
+	const hideMode = ref(true)
+
+	const toggleHideMode = (() => {
+		hideMode.value = !hideMode.value
+	})
+
 	return {
 		editorControls,
 		selectedControl,
@@ -45,5 +44,7 @@ export const useControl = defineStore('control', () => {
 		addControl,
 		removeControl,
 		removeAll,
+		hideMode,
+		toggleHideMode,
 	}
 })
