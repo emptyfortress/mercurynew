@@ -10,25 +10,41 @@ import { useApps } from '@/stores/apps'
 import { uid, useQuasar } from 'quasar'
 // import AppPreview from '@/components/AppPreview.vue'
 // import GroupPreview from '@/components/GroupPreview.vue'
-import IconMicrophone from '@/components/icons/IconMicrophone.vue'
-// import IconPresentation from '@/components/icons/IconPresentation.vue'
 
 gsap.registerPlugin(Flip)
 
 const shift = useKeyModifier('Shift')
 
-// const sortable = ref(true)
+watch(shift, (val) => {
+	if (val) {
+		updateConfig({ 
+			plugins: [animations(),],
+			dragPlaceholderClass: 'ghost',
+			sortable: false,
+			draggable: (el: any) => {
+				return el.id !== 'no-drag'
+			},
+		})
+	} else {
+		updateConfig({ 
+			plugins: [animations(),],
+			dragPlaceholderClass: 'ghost',
+			sortable: true,
+			draggable: (el: any) => {
+				return el.id !== 'no-drag'
+			},
+		})
 
-// const toggle = (() => {
-// 	sortable.value = !sortable.value
-// 	updateConfig({ sortable: true })
-// })
+	}
+})
 
 const config = {
 	plugins: [animations(),],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
-	draggable: (el: any) => { return el.id !== "no-drag" },
+	draggable: (el: any) => {
+		return el.id !== 'no-drag'
+	},
 }
 
 const myapps = useApps()
@@ -39,13 +55,13 @@ const [parent, tapes, updateConfig] = useDragAndDrop(applications.value, config)
 const expanded = ref<boolean>(false)
 
 const calcClass = ((item: any) => {
-	if (item.group > 1) return 'group1'
+	if (item.group > 1 && expanded.value && item.expand) return 'group1 active'
 	if (expanded.value && item.expand) return 'active'
 	if (expanded.value && !item.expand) return 'inactive'
+	if (item.group > 1) return 'group1'
 	else return ''
 
 })
-
 
 const expand = ((item: any) => {
 	const state = Flip.getState('.chil')
@@ -56,10 +72,6 @@ const expand = ((item: any) => {
 			duration: 0.4,
 			ease: 'power3.inOut',
 			targets: '.chil',
-			// absolute: true,
-			// absoluteOnLeave: true,
-			// nested: true,
-			// fade: true,
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -99,6 +111,11 @@ const create = (e: string) => {
 	}, 1200)
 	myapps.createApp(tmp)
 }
+
+const showGroup = ((item: any) => {
+	if (item.group > 1 && item.expand == true) return false
+	return true
+})
 </script>
 
 <template lang="pug">
@@ -112,21 +129,28 @@ q-page(padding)
 				@click='expand(item)'
 				:class="calcClass(item)"
 				)
-				.con {{ item.label }}
-				.img
+				.con(v-if='showGroup(item)'
+					v-motion
+					:initial="{ y: -20, opacity: 0 }"
+					:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
+					) {{ item.label }}
+				.con1(v-if='!showGroup(item)'
+					v-motion
+					:initial="{ y: 20, opacity: 0 }"
+					:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
+					) {{ item.label }}
+
+				.img(v-if='item.group == 1')
 					component(:is='item.pic')
+				template(v-if='item.group > 1 && !item.expand')
+					.img1
+						component(:is='el.pic' v-for="el in item.list")
+				.inner(v-if='item.group > 1 && item.expand')
+					.chil(v-for="el in item.list ")
 
 			div(id="no-drag")
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
-		// .row.items-center.justify-between
-		// 	q-toggle.q-mt-md(v-if='!expanded'
-		// 		v-motion
-		// 		:initial="{ opacity: 0 }"
-		// 		:enter='{ opacity: 1, transition: { delay: 800 } }'
-			v-model="sort" label="Группировка")
-
-	// .backdrop(v-if='expanded')
 </template>
 
 <style scoped lang="scss">
@@ -143,6 +167,8 @@ q-page(padding)
 	row-gap: 1rem;
 	margin: 0 auto;
 	width: 728px;
+	border: none;
+	outline: none;
 }
 
 .chil {
@@ -153,12 +179,6 @@ q-page(padding)
 	padding: 1rem;
 	position: relative;
 	border-radius: var(--rad);
-
-	&.group1 {
-		background: hsl(213deg 83.95% 94.68%);
-		border: 2px solid var(--green);
-
-	}
 
 	&.active {
 		position: fixed;
@@ -171,6 +191,15 @@ q-page(padding)
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 		z-index: 10;
+		draggable: false;
+	}
+
+	&.group1 {
+		background: hsl(213deg 83.95% 94.68%);
+		border: 2px solid var(--green);
+		&.active {
+			height: 206px;
+		}
 	}
 
 	&.inactive {
@@ -187,11 +216,16 @@ q-page(padding)
 	box-shadow: none !important;
 	border: none !important;
 
-	.con,
-	.img {
+	.con, .img, .img1 {
 		display: none;
 	}
 
+}
+.con1 {
+	width: 100%;
+	position: absolute;
+	top: -2rem;
+	text-align: center;
 }
 
 .backdrop {
@@ -206,12 +240,21 @@ q-page(padding)
 	bottom: 0;
 }
 
-.img {
+.img, .img1 {
 	position: absolute;
 	bottom: 0;
 	left: 0.5rem;
 	font-size: 3rem;
 	line-height: 1;
 	color: hsl(199 23% 45% / 1);
+}
+.img1 {
+	bottom: .5rem;
+	left: .8rem;
+	font-size: 1.5rem;
+}
+.inner {
+	display: flex;
+	gap: 1rem;
 }
 </style>

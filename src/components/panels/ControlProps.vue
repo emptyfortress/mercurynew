@@ -11,14 +11,10 @@ const control = useControl()
 
 <template lang="pug">
 div
-	StringProp(v-if='control.selectedControl?.type == 0'
-		)
-	TextProp(v-if='control.selectedControl?.type == 1'
-		)
-	DateProp(v-if='control.selectedControl?.type == 2'
-		)
-	ManProp(v-if='control.selectedControl?.type == 5'
-		)
+	StringProp(v-if='control.selectedControl?.type == 0')
+	TextProp(v-if='control.selectedControl?.type == 1')
+	DateProp(v-if='control.selectedControl?.type == 2')
+	ManProp(v-if='control.selectedControl?.type == 5')
 </template>
 
 <style scoped lang="scss">

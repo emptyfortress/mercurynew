@@ -8,6 +8,7 @@ interface App {
 	created: string
 	group: number
 	pic?: any
+	list?: App[]
 }
 
 type Control = {
