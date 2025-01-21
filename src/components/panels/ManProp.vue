@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PropField from '@/components/common/PropField.vue'
+import Visibility from '@/components/panels/Visibility.vue'
 
 const manList = [
 	{
@@ -22,12 +23,6 @@ const manList = [
 		label: 'Обязательное поле',
 		toggle: true,
 		check: false,
-	},
-	{
-		id: 4,
-		label: 'Видимость',
-		toggle: true,
-		check: true,
 	},
 	{
 		id: 5,
@@ -54,6 +49,7 @@ q-list.prop
 		:select='item.select'
 		:check='item.check'
 		)
+	Visibility
 </template>
 
 <style scoped lang="scss"></style>
