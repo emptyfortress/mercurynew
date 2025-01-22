@@ -5,8 +5,7 @@ import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
 import { state } from "@formkit/drag-and-drop"
 import { Kind } from '@/types/enum'
-
-
+// import Trash from '@/components/common/Trash.vue'
 
 const elements = ref([
 	{
@@ -55,12 +54,15 @@ const create = ((e: Control) => {
 	libitems.value.push(e)
 })
 
+const remove = ((ind: number) => {
+	libitems.value.splice(ind, 1)
+})
 
 </script>
 
 <template lang="pug">
-q-list(bordered separator ref="lib")
-	q-item(v-for="item in libitems" :key="item.id")
+q-list.list(bordered separator ref="lib")
+	q-item.drag(v-for="(item, index) in libitems" :key="item.id")
 		q-item-section(avatar)
 			.big
 				IconBlock
@@ -68,23 +70,39 @@ q-list(bordered separator ref="lib")
 			q-item-label.text-bold {{ item.label }}
 			q-item-label.grey(caption) {{ item.caption }}
 
+		q-item-section(side)
+			q-btn.remove(flat round icon="mdi-trash-can-outline" color="secondary" dense size="sm") 
+				q-menu
+					q-list(dense)
+						q-item.pink(clickable @click="remove(index)")
+							q-item-section Удалить
+
 br
 AddFormButton(@create='create')
+// Trash(:dragging='true')
 </template>
 
 <style scoped lang="scss">
-.q-list {
+.list {
 	text-align: left;
 	margin: 0 1rem;
 }
 
-.q-item {
+.drag {
 	cursor: all-scroll;
 	color: $secondary;
+
+	.remove {
+		display: none;
+	}
 
 	&:hover {
 		color: $primary;
 		background: #efefef;
+
+		.remove {
+			display: block;
+		}
 	}
 
 }
