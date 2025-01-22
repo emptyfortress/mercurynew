@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PropField from '@/components/common/PropField.vue'
 import Visibility from '@/components/panels/Visibility.vue'
+import Editability from '@/components/panels/Editability.vue'
 
 const list = [
 	{
@@ -36,6 +37,7 @@ q-list.prop
 		:check='item.check'
 		)
 	Visibility
+	Editability
 </template>
 
 <style scoped lang="scss"></style>

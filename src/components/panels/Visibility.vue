@@ -77,12 +77,17 @@ q-expansion-item(v-model="model" expand-separator switch-toggle-side)
 <style scoped lang="scss">
 .header {
 	display: grid;
-	grid-template-columns: 100px 1fr;
+	grid-template-columns: 88px 1fr;
 	justify-items: start;
 	align-items: center;
 	column-gap: 1rem;
 	font-size: .8rem;
 	margin-left: -1rem;
+}
+
+.q-list {
+	padding-bottom: .5rem;
+	margin-bottom: .5rem;
 }
 
 .header,
@@ -93,7 +98,7 @@ label {
 
 .lab {
 	text-align: left;
-	width: 104px;
+	width: 90px;
 }
 
 .q-item__section--main {

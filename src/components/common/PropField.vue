@@ -54,7 +54,7 @@ q-separator(v-if='props.radio')
 	label(v-if='props.label' :class='{ start: props.radio }') {{ props.label }} 
 
 	q-checkbox(v-if="props.checkbox" v-model="check" dense :label="props.descr" :disable="props.disable")
-	q-toggle(v-if="props.toggle" v-model="check" )
+	q-toggle(v-if="props.toggle" v-model="check" size="sm")
 
 	q-list.radio(dense v-if='props.radio')
 		q-item(v-for="item in props.group" :key="item.label")
