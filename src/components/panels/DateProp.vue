@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import PropField from '@/components/common/PropField.vue'
-import Visibility from '@/components/panels/Visibility.vue'
 
 const list = [
 	{
@@ -25,6 +24,12 @@ const list = [
 		check: false,
 	},
 	{
+		id: 7,
+		label: 'Запрет на изменение',
+		toggle: true,
+		check: false,
+	},
+	{
 		id: 5,
 		label: 'Тип',
 		radio: true,
@@ -38,7 +43,7 @@ const list = [
 		id: 6,
 		label: 'Текущее время по умолчанию',
 		toggle: true,
-		check: true,
+		check: false,
 	},
 
 ]
@@ -55,7 +60,6 @@ q-list.prop
 		:group='item.group'
 		:startValue='item.startValue'
 		)
-	Visibility
 </template>
 
 <style scoped lang="scss"></style>

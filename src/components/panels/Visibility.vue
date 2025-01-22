@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import Editability from '@/components/panels/Editability.vue'
 
 const model = ref(false)
 const all = ref<boolean | string>(true)
@@ -72,12 +73,14 @@ q-expansion-item(v-model="model" expand-separator switch-toggle-side)
 			q-item-section.lab Десктоп
 			q-item-section(side)
 				q-checkbox(v-model="desktop" dense)
+
+Editability
 </template>
 
 <style scoped lang="scss">
 .header {
 	display: grid;
-	grid-template-columns: 88px 1fr;
+	grid-template-columns: 100px 1fr;
 	justify-items: start;
 	align-items: center;
 	column-gap: 1rem;
@@ -98,7 +101,7 @@ label {
 
 .lab {
 	text-align: left;
-	width: 90px;
+	width: 102px;
 }
 
 .q-item__section--main {

@@ -24,7 +24,8 @@ const config = {
 				return div
 			}
 		})
-	]
+	],
+	draggable: (el: any) => el.id !== 'no-drag',
 }
 
 
@@ -41,7 +42,7 @@ const remove = ((ind: number) => {
 })
 
 state.on("dragEnded", () => {
-	editorControls.value = dones.value
+	editorControls.value = [...dones.value]
 })
 </script>
 
@@ -58,7 +59,7 @@ state.on("dragEnded", () => {
 				@remove='remove(index)'
 				)
 				div {{ item.label }}
-		DropZone(v-else)
+		DropZone(v-else id="no-drag")
 </template>
 
 <style scoped lang="scss">

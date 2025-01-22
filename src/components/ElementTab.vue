@@ -8,7 +8,7 @@ import { Kind } from '@/types/enum'
 
 
 
-const elements = [
+const elements = ref([
 	{
 		id: 0,
 		label: 'Автор',
@@ -37,13 +37,9 @@ const elements = [
 		selected: false,
 		type: Kind.Text,
 	},
-]
+])
 
-const [lib, libitems] = useDragAndDrop(elements, {
-	group: "one",
-	sortable: false,
-	// dragPlaceholderClass: 'custom',
-})
+const [lib, libitems] = useDragAndDrop(elements.value, { sortable: false, group: 'one' })
 
 const tmp = ref<Control[]>([])
 
@@ -52,7 +48,7 @@ state.on('dragStarted', () => {
 })
 
 state.on("dragEnded", () => {
-	libitems.value = [...tmp.value]
+	libitems.value = tmp.value
 })
 
 const create = ((e: Control) => {

@@ -2,12 +2,12 @@
 import { ref } from 'vue'
 import PropField from '@/components/common/PropField.vue'
 
-const main = ref(true)
+const main = ref(false)
 </script>
 
 <template lang="pug">
 PropField(
-	label='Доступность для редактирования'
+	label='Запрет на изменение'
 	v-model="main"
 	:toggle="true"
 	:check='main'

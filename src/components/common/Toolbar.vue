@@ -42,10 +42,10 @@ const toggleHide = (() => {
 	.square(@click='' style="padding-top: 5px;")
 		q-icon(name="mdi-play-box-outline" size='18px') 
 		q-tooltip.bg-primary(anchor="center right" self="center left") Превью
-	q-separator
-	.square(@click='toggleHide' style="padding-top: 5px;" :class='{ selected: control.hideMode }')
-		q-icon(name="mdi-eye" size='18px') 
-		q-tooltip.bg-primary(anchor="center right" self="center left") Показать скрытые элементы
+	// q-separator
+	// .square(@click='toggleHide' style="padding-top: 5px;" :class='{ selected: control.hideMode }')
+	// 	q-icon(name="mdi-eye" size='18px') 
+	// 	q-tooltip.bg-primary(anchor="center right" self="center left") Показать скрытые элементы
 	q-separator.q-mb-sm
 	.square(@click='removeAll')
 		q-icon(name="mdi-trash-can-outline" size='18px' color="negative") 

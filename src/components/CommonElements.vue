@@ -2,10 +2,6 @@
 import IconGroup from '@/components/icons/IconGroup.vue'
 import IconPic from '@/components/icons/IconPic.vue'
 import IconAa from '@/components/icons/IconAa.vue'
-// import IconTextBlock from '@/components/icons/IconTextBlock.vue'
-// import IconDivider from '@/components/icons/IconDivider.vue'
-// import IconSpacer from '@/components/icons/IconSpacer.vue'
-// import IconHeader from '@/components/icons/IconHeader.vue'
 
 const layouts = [
 	{
@@ -14,12 +10,6 @@ const layouts = [
 		caption: 'Группировка элементов',
 		icon: IconGroup
 	},
-	// {
-	// 	id: 1,
-	// 	label: 'Заголовок',
-	// 	caption: 'Статичный заголовок',
-	// 	icon: IconHeader
-	// },
 	{
 		id: 2,
 		label: 'Текст',
@@ -32,24 +22,6 @@ const layouts = [
 		caption: 'Изображение в формате png, jpg, gif',
 		icon: IconPic
 	},
-	// {
-	// 	id: 3,
-	// 	label: 'Блок текста',
-	// 	caption: 'Статичный текстовый параграф',
-	// 	icon: IconTextBlock
-	// },
-	// {
-	// 	id: 4,
-	// 	label: 'Разделитель',
-	// 	caption: 'Горизонтальная разделительная линейка',
-	// 	icon: IconDivider
-	// },
-	// {
-	// 	id: 5,
-	// 	label: 'Отступ',
-	// 	caption: 'Вертикальный отступ 20 px',
-	// 	icon: IconSpacer
-	// },
 ]
 </script>
 

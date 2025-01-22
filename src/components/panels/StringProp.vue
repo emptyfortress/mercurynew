@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import PropField from '@/components/common/PropField.vue'
-import Visibility from '@/components/panels/Visibility.vue'
-import Editability from '@/components/panels/Editability.vue'
 
 const list = [
 	{
@@ -25,6 +23,12 @@ const list = [
 		toggle: true,
 		check: false,
 	},
+	{
+		id: 4,
+		label: 'Запрет на изменение',
+		toggle: true,
+		check: false,
+	},
 ]
 </script>
 
@@ -36,8 +40,6 @@ q-list.prop
 		:toggle="item.toggle"
 		:check='item.check'
 		)
-	Visibility
-	Editability
 </template>
 
 <style scoped lang="scss"></style>
