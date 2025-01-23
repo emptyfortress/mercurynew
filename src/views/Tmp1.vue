@@ -10,6 +10,7 @@ import { useApps } from '@/stores/apps'
 import { uid, useQuasar } from 'quasar'
 import GroupPreview1 from '@/components/GroupPreview1.vue'
 import Trash from '@/components/common/Trash.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 // import AppPreview from '@/components/AppPreview.vue'
 
 gsap.registerPlugin(Flip)
@@ -173,9 +174,22 @@ const showGroup = ((item: any) => {
 	return true
 })
 
-const remove = (() => {
+const confirm = ref(false)
+
+const removeGroup = (() => {
 	tapes.value.splice(draggedItem.value, 1)
-	setTimeout(() => {
+	$q.notify({
+		icon: 'mdi-check-bold',
+		color: 'negative',
+		message: 'Группа удалена',
+	})
+})
+
+const remove = (() => {
+	if (tapes.value[draggedItem.value].group > 1) {
+		confirm.value = true
+	} else {
+		tapes.value.splice(draggedItem.value, 1)
 		$q.notify({
 			icon: 'mdi-check-bold',
 			color: 'negative',
@@ -184,7 +198,7 @@ const remove = (() => {
 				{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
 			]
 		})
-	}, 500)
+	}
 })
 
 </script>
@@ -233,6 +247,7 @@ q-page(padding)
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
 		Trash(v-model="dragStatus" @remove="remove" :group='expanded')
+		ConfirmDialog(v-model="confirm" @remove="removeGroup")
 </template>
 
 <style scoped lang="scss">
