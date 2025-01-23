@@ -217,7 +217,7 @@ q-page(padding)
 			div(id="no-drag")
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
-	Trash(v-if='!expanded' :dragging="dragStatus")
+	Trash(v-model="dragStatus" )
 </template>
 
 <style scoped lang="scss">

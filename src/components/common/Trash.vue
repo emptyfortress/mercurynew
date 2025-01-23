@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useMotions } from '@vueuse/motion'
 import IconTrash from '@/components/icons/IconTrash.vue'
 
 const props = defineProps({
-	dragging: {
-		type: Boolean,
-		required: true,
-		default: false,
-	},
 	group: {
 		type: Boolean,
 		default: false
 	}
 
 })
+const modelValue = defineModel<boolean>()
 
 const motions = useMotions()
 
@@ -22,26 +18,61 @@ const left = computed(() => {
 	if (props.group) {
 		return window.innerWidth / 2 - 200 + 'px'
 	} else {
-		return window.innerWidth / 2 - 40 + 'px'
+		return window.innerWidth / 2 - 110 + 'px'
 	}
+})
+
+const over1 = ref(false)
+const over2 = ref(false)
+const onDragEnter1 = (() => {
+	over1.value = true
+})
+const onDragLeave1 = (() => {
+	over1.value = false
+})
+const onDragEnter2 = (() => {
+	over2.value = true
+})
+const onDragLeave2 = (() => {
+	over2.value = false
+})
+
+const emit = defineEmits(['remove'])
+const onDrop = (() => {
+	over1.value = false
+	over2.value = false
+	emit('remove')
 })
 </script>
 
 <template lang="pug">
 transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 	Teleport(to="body")
-		.trash(v-if='props.dragging'
+		.trash(v-if='modelValue'
 			v-motion='"cube"'
 			:initial="{ y: 200, opacity: 0, }"
 			:enter="{ y: 0, opacity: 1, }"
 			:leave="{ y: 200, opacity: 0, }"
+			:delay=800
 			)
 
 			.myrow
-				div(v-if='props.group')
+				.one(v-if='props.group'
+					@dragover.prevent="onDragEnter1"
+					@dragenter.prevent
+					@dragleave="onDragLeave1"
+					@drop='onDrop'
+					:class='{ over: over1 }'
+					)
 					q-icon(name="mdi-select-remove" color="negative" size="52px")
 					label Исключить из группы
-				div
+				.two(
+					@dragover.prevent="onDragEnter2"
+					@dragenter.prevent
+					@dragleave="onDragLeave2"
+					@drop='onDrop'
+					:class='{ over: over2 }'
+					)
 					IconTrash
 					label
 						|Удалить
@@ -51,22 +82,35 @@ transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 
 <style scoped lang="scss">
 .trash {
-	position: fixed;
-	bottom: 4rem;
-	// left: calc(100vw / 2 - 150px);
+	position: absolute;
+	bottom: 3rem;
 	left: v-bind(left);
 	font-size: 3rem;
 	color: darkred;
 	vertical-align: middle;
 	text-align: center;
+	background: transparent;
 }
 
 .myrow {
 	display: flex;
-	gap: 6rem;
+	gap: 0;
 	align-items: center;
 	justify-content: center;
 	line-height: .5;
+}
+
+.one,
+.two {
+	padding: 2rem 5rem;
+	box-sizing: border-box;
+	border: 2px solid transparent;
+	border-radius: var(--rad);
+}
+
+.over {
+	background: pink;
+	border: 2px dashed darkred;
 }
 
 label {
