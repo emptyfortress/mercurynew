@@ -45,15 +45,26 @@ const onDragLeave = () => {
 
 const onDrop1 = () => {
 	if (shift.value) {
-		let tmp = tapes.value[hoverItem.value]
+		let tmp = {} as App
+		if (tapes.value[hoverItem.value].group == 1) {
+			tmp.id = uid()
+			tmp.label = 'Группа'
+			tmp.descr = ''
+			tmp.expand = false
+			tmp.over = false
+			tmp.version = ''
+			tmp.author = ''
+			tmp.group = 1
+			tmp.list = []
+		} else tmp = tapes.value[hoverItem.value]
+
 		tmp.group += 1
-		if (tmp.group == 2) {
-			tapes.value[hoverItem.value].label = 'Группа'
-		}
 		tmp.list.push(tapes.value[hoverItem.value])
 		tmp.list.push(tapes.value[draggedItem.value])
 
+		tapes.value.splice(hoverItem.value, 1, tmp)
 		tapes.value.splice(draggedItem.value, 1)
+
 		draggedItem.value = 100
 		hoverItem.value = 100
 	}
@@ -98,7 +109,7 @@ const calcClass = ((item: any, index: number) => {
 
 })
 
-const expand = ((item: any) => {
+const expand = ((item: App) => {
 	const state = Flip.getState('.chil')
 	item.expand = !item.expand
 	expanded.value = !expanded.value
@@ -174,11 +185,15 @@ q-page(padding)
 					:initial="{ y: -20, opacity: 0 }"
 					:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
 					) {{ item.label }}
+
 				.con1(v-if='!showGroup(item)'
 					v-motion
 					:initial="{ y: 20, opacity: 0 }"
 					:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
+					@click.stop
 					) {{ item.label }}
+					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
+						q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
 				.img(v-if='item.group == 1')
 					component(:is='item.pic')
