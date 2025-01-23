@@ -162,7 +162,7 @@ const create = (e: string) => {
 		$q.notify({
 			icon: 'mdi-check-bold',
 			color: 'positive',
-			message: 'Добавлено приложение'
+			message: 'Добавлено новое приложение'
 		})
 	}, 1200)
 	myapps.createApp(tmp)
@@ -171,6 +171,20 @@ const create = (e: string) => {
 const showGroup = ((item: any) => {
 	if (item.group > 1 && item.expand == true) return false
 	return true
+})
+
+const remove = (() => {
+	tapes.value.splice(draggedItem.value, 1)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'negative',
+			message: 'Приложение удалено',
+			actions: [
+				{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
+			]
+		})
+	}, 500)
 })
 
 </script>
@@ -214,10 +228,11 @@ q-page(padding)
 				.inner(v-if='item.group > 1 && item.expand')
 					GroupPreview1(:list="item.list")
 
+
 			div(id="no-drag")
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
-	Trash(v-model="dragStatus" )
+		Trash(v-model="dragStatus" @remove="remove" :group='expanded')
 </template>
 
 <style scoped lang="scss">

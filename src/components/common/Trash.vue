@@ -16,7 +16,7 @@ const motions = useMotions()
 
 const left = computed(() => {
 	if (props.group) {
-		return window.innerWidth / 2 - 200 + 'px'
+		return window.innerWidth / 2 - 350 + 'px'
 	} else {
 		return window.innerWidth / 2 - 110 + 'px'
 	}
@@ -39,9 +39,10 @@ const onDragLeave2 = (() => {
 
 const emit = defineEmits(['remove'])
 const onDrop = (() => {
+	emit('remove')
+	modelValue.value = false
 	over1.value = false
 	over2.value = false
-	emit('remove')
 })
 </script>
 
