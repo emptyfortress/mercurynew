@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, } from 'vue'
-import { animations } from "@formkit/drag-and-drop"
+import { animations, state } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
@@ -9,12 +9,22 @@ import AddButton from '@/components/common/AddButton.vue'
 import { useApps } from '@/stores/apps'
 import { uid, useQuasar } from 'quasar'
 import GroupPreview1 from '@/components/GroupPreview1.vue'
+import Trash from '@/components/common/Trash.vue'
 // import AppPreview from '@/components/AppPreview.vue'
 
 gsap.registerPlugin(Flip)
 
 const shift = useKeyModifier('Shift')
 const expanded = ref<boolean>(false)
+const dragStatus = ref(false)
+
+state.on("dragStarted", () => {
+	dragStatus.value = true
+})
+
+state.on("dragEnded", () => {
+	dragStatus.value = false
+})
 
 watch(shift, (val) => {
 	if (val) {
@@ -207,6 +217,7 @@ q-page(padding)
 			div(id="no-drag")
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
+	Trash(v-if='!expanded' :dragging="dragStatus")
 </template>
 
 <style scoped lang="scss">

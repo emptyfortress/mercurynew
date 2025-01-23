@@ -141,9 +141,6 @@ div
 					.img
 						IconPresentation
 						IconMicrophone
-					// 	component(:is='item.pic')
-					// q-img(:src='newspapers' fit='contain' height="32px" width='32px')
-					// q-img(:src='forum' fit='contain' height="32px" width='32px')
 
 				div(v-if='expanded')
 					.zag(
