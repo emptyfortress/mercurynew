@@ -19,10 +19,12 @@ export const useApps = defineStore('apps', () => {
 			label: 'Управление командировками',
 			descr: 'Это описание',
 			expand: false,
+			over: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
+			list: [],
 			pic: IconTravel1
 		},
 		{
@@ -30,10 +32,12 @@ export const useApps = defineStore('apps', () => {
 			label: 'Заявки на отпуск',
 			descr: 'Это описание',
 			expand: false,
+			over: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
+			list: [],
 			pic: IconBeach1
 		},
 		{
@@ -41,6 +45,7 @@ export const useApps = defineStore('apps', () => {
 			label: 'Приложения отдела маркетинга',
 			descr: 'Это описание',
 			expand: false,
+			over: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
@@ -51,10 +56,12 @@ export const useApps = defineStore('apps', () => {
 					label: 'Подготовка публикации',
 					descr: 'Это описание',
 					expand: false,
+					over: false,
 					version: '0.0.0',
 					author: 'Орлов П.С.',
 					created: '22.10.24 14:00',
 					group: 1,
+					list: [],
 					pic: IconPresentation1
 				},
 				{
@@ -62,10 +69,12 @@ export const useApps = defineStore('apps', () => {
 					label: 'Партнерский форум',
 					descr: 'Это описание',
 					expand: false,
+					over: false,
 					version: '0.0.0',
 					author: 'Орлов П.С.',
 					created: '22.10.24 14:00',
 					group: 1,
+					list: [],
 					pic: IconMicrophone1
 				},
 			]
@@ -75,10 +84,12 @@ export const useApps = defineStore('apps', () => {
 			label: 'Служебные записки',
 			descr: 'Это описание',
 			expand: false,
+			over: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
+			list: [],
 			pic: IconLetter1
 		},
 		{
@@ -86,10 +97,12 @@ export const useApps = defineStore('apps', () => {
 			label: 'Служебные записки 1',
 			descr: 'Это описание',
 			expand: false,
+			over: false,
 			version: '0.0.0',
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
 			group: 1,
+			list: [],
 			pic: IconLetter1
 		},
 	])

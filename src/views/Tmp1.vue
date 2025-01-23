@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, } from 'vue'
-import { animations, } from "@formkit/drag-and-drop"
+import { ref, watch, nextTick, } from 'vue'
+import { animations } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
@@ -8,35 +8,56 @@ import { useKeyModifier } from '@vueuse/core'
 import AddButton from '@/components/common/AddButton.vue'
 import { useApps } from '@/stores/apps'
 import { uid, useQuasar } from 'quasar'
+import GroupPreview1 from '@/components/GroupPreview1.vue'
 // import AppPreview from '@/components/AppPreview.vue'
-// import GroupPreview from '@/components/GroupPreview.vue'
 
 gsap.registerPlugin(Flip)
 
 const shift = useKeyModifier('Shift')
+const expanded = ref<boolean>(false)
 
 watch(shift, (val) => {
 	if (val) {
-		updateConfig({ 
-			plugins: [animations(),],
-			dragPlaceholderClass: 'ghost',
-			sortable: false,
-			draggable: (el: any) => {
-				return el.id !== 'no-drag'
-			},
-		})
+		updateConfig(config1)
 	} else {
-		updateConfig({ 
-			plugins: [animations(),],
-			dragPlaceholderClass: 'ghost',
-			sortable: true,
-			draggable: (el: any) => {
-				return el.id !== 'no-drag'
-			},
-		})
-
+		updateConfig(config)
 	}
 })
+watch(expanded, (val) => {
+	if (val) {
+		updateConfig({ draggable: () => false })
+	} else {
+		updateConfig(config)
+	}
+})
+
+const hoverItem = ref(100)
+const draggedItem = ref(100)
+
+const onDragEnter = (index: number) => {
+	if (shift.value) {
+		hoverItem.value = index
+	}
+}
+const onDragLeave = () => {
+	hoverItem.value = 100
+}
+
+const onDrop1 = () => {
+	if (shift.value) {
+		let tmp = tapes.value[hoverItem.value]
+		tmp.group += 1
+		if (tmp.group == 2) {
+			tapes.value[hoverItem.value].label = 'Группа'
+		}
+		tmp.list.push(tapes.value[hoverItem.value])
+		tmp.list.push(tapes.value[draggedItem.value])
+
+		tapes.value.splice(draggedItem.value, 1)
+		draggedItem.value = 100
+		hoverItem.value = 100
+	}
+}
 
 const config = {
 	plugins: [animations(),],
@@ -45,20 +66,34 @@ const config = {
 	draggable: (el: any) => {
 		return el.id !== 'no-drag'
 	},
+	onDragstart: (e: any) => {
+		draggedItem.value = e.draggedNode.data.index
+	},
+}
+const config1 = {
+	plugins: [animations(),],
+	dragPlaceholderClass: 'ghost',
+	sortable: false,
+	draggable: (el: any) => {
+		return el.id !== 'no-drag'
+	},
+	onDragstart: (e: any) => {
+		draggedItem.value = e.draggedNode.data.index
+	},
 }
 
 const myapps = useApps()
-const applications = ref([...myapps.apps])
 
-const [parent, tapes, updateConfig] = useDragAndDrop(applications.value, config)
+const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
 
-const expanded = ref<boolean>(false)
-
-const calcClass = ((item: any) => {
+const calcClass = ((item: any, index: number) => {
 	if (item.group > 1 && expanded.value && item.expand) return 'group1 active'
 	if (expanded.value && item.expand) return 'active'
 	if (expanded.value && !item.expand) return 'inactive'
+	if (item.group > 1 && hoverItem.value == index && index !== draggedItem.value) return 'group1 over'
 	if (item.group > 1) return 'group1'
+	if (draggedItem.value == hoverItem.value) return ''
+	if (hoverItem.value == index && index !== draggedItem.value) return 'over'
 	else return ''
 
 })
@@ -85,8 +120,6 @@ const expand = ((item: any) => {
 	})
 })
 
-const sort = ref(false)
-
 const $q = useQuasar()
 const create = (e: string) => {
 	let tmp = {
@@ -94,10 +127,12 @@ const create = (e: string) => {
 		label: e,
 		descr: 'description',
 		expand: false,
+		over: false,
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
 		group: 1,
+		list: [],
 		pic: '',
 	}
 
@@ -116,6 +151,7 @@ const showGroup = ((item: any) => {
 	if (item.group > 1 && item.expand == true) return false
 	return true
 })
+
 </script>
 
 <template lang="pug">
@@ -127,7 +163,11 @@ q-page(padding)
 				:initial="{ y: 40, opacity: 0 }"
 				:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
 				@click='expand(item)'
-				:class="calcClass(item)"
+				:class="calcClass(item, index)"
+				@dragover.prevent="onDragEnter(index)"
+				@dragenter.prevent
+				@dragleave="onDragLeave"
+				@drop='onDrop1'
 				)
 				.con(v-if='showGroup(item)'
 					v-motion
@@ -144,9 +184,10 @@ q-page(padding)
 					component(:is='item.pic')
 				template(v-if='item.group > 1 && !item.expand')
 					.img1
-						component(:is='el.pic' v-for="el in item.list")
+						component(:is='el.pic' v-for="el in item.list" :key="el.id")
+
 				.inner(v-if='item.group > 1 && item.expand')
-					.chil(v-for="el in item.list ")
+					GroupPreview1(:list="item.list")
 
 			div(id="no-drag")
 				AddButton(v-if='!expanded' @create='create' mode="app")
@@ -180,6 +221,7 @@ q-page(padding)
 	position: relative;
 	border-radius: var(--rad);
 
+
 	&.active {
 		position: fixed;
 		height: 70vh;
@@ -191,15 +233,24 @@ q-page(padding)
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 		z-index: 10;
-		draggable: false;
 	}
 
 	&.group1 {
 		background: hsl(213deg 83.95% 94.68%);
 		border: 2px solid var(--green);
+
+		&.over {
+			background: #a8d7a8;
+		}
+
 		&.active {
 			height: 206px;
 		}
+
+	}
+
+	&.over {
+		background: #a8d7a8;
 	}
 
 	&.inactive {
@@ -216,11 +267,14 @@ q-page(padding)
 	box-shadow: none !important;
 	border: none !important;
 
-	.con, .img, .img1 {
+	.con,
+	.img,
+	.img1 {
 		display: none;
 	}
 
 }
+
 .con1 {
 	width: 100%;
 	position: absolute;
@@ -240,7 +294,8 @@ q-page(padding)
 	bottom: 0;
 }
 
-.img, .img1 {
+.img,
+.img1 {
 	position: absolute;
 	bottom: 0;
 	left: 0.5rem;
@@ -248,11 +303,13 @@ q-page(padding)
 	line-height: 1;
 	color: hsl(199 23% 45% / 1);
 }
+
 .img1 {
 	bottom: .5rem;
 	left: .8rem;
 	font-size: 1.5rem;
 }
+
 .inner {
 	display: flex;
 	gap: 1rem;
