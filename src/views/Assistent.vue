@@ -46,6 +46,7 @@ q-page(data-flip-id="img" padding)
 	div {{ app.type }}
 	div {{ app.text }}
 	pre(v-if="app.type == 0") {{ app.children }}
+	pre {{ app }}
 </template>
 
 <style scoped lang="scss"></style>

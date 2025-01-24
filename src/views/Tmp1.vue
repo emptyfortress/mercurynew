@@ -12,7 +12,7 @@ import GroupPreview1 from '@/components/GroupPreview1.vue'
 import Trash from '@/components/common/Trash.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import IconApp from '@/components/icons/IconApp.vue'
-// import AppPreview from '@/components/AppPreview.vue'
+import AppPreview from '@/components/AppPreview.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -122,14 +122,14 @@ const calcClass = ((item: any, index: number) => {
 })
 
 const expand = ((item: App) => {
-	const state = Flip.getState('.chil,.con,.img,.img1')
+	const state = Flip.getState('.chil')
 	item.expand = !item.expand
 	expanded.value = !expanded.value
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
-			targets: '.chil,.con, .img, .img1',
+			targets: '.chil',
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -159,8 +159,8 @@ const create = (e: string) => {
 		pic: IconApp,
 	}
 
-	// tapes.value?.push(tmp)
-	myapps.createApp(tmp)
+	tapes.value?.push(tmp)
+	// myapps.createApp(tmp)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
@@ -224,6 +224,15 @@ q-page(padding)
 					:initial="{ y: -20, opacity: 0 }"
 					:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
 					) {{ item.label }}
+					.edit(v-if='item.expand' size='sm' @click.stop
+						v-motion
+						:initial='{ x: 100, opacity: 0 }'
+						:enter='{ x: 0, opacity: 1 }'
+						:delay=500
+						)
+						q-icon(name="mdi-pencil-outline" color="primary")
+						q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope" style='width: 300px')
+							q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 				.con1(v-if='!showGroup(item)'
 					v-motion
@@ -236,12 +245,24 @@ q-page(padding)
 
 				.img(v-if='item.group == 1')
 					component(:is='item.pic')
+					.edit1(v-if='item.expand' @click.stop)
+						q-icon(name="mdi-pencil-outline" color="primary")
+
+
 				template(v-if='item.group > 1 && !item.expand')
 					.img1
 						component(:is='el.pic' v-for="el in item.list" :key="el.id")
 
 				.inner(v-if='item.group > 1 && item.expand')
 					GroupPreview1(:list="item.list")
+
+				AppPreview(:item='item'
+					v-if='item.expand && item.group == 1'
+					v-motion
+					:initial='{ x: 100, opacity: 0 }'
+					:enter='{ x: 0, opacity: 1 }'
+					:delay=500
+					)
 
 
 			div(id="no-drag")
@@ -280,8 +301,9 @@ q-page(padding)
 
 
 	&.active {
+		padding: 2rem;
 		position: fixed;
-		height: 70vh;
+		height: 50vh;
 		width: 900px;
 		margin: 0 auto;
 		top: 150px;
@@ -322,6 +344,23 @@ q-page(padding)
 .active .con {
 	// font-weight: 600;
 	font-size: 1.2rem;
+	// color: $primary;
+	margin-bottom: 2rem;
+
+	.edit {
+		margin-left: 1rem;
+		display: inline-block;
+		font-size: .8rem;
+	}
+
+	// &:hover {
+	// 	.edit {
+	// 		display: inline-block;
+	// 	}
+	// }
+
+	// border-bottom: 1px dotted $primary;
+
 }
 
 .ghost {
@@ -371,6 +410,18 @@ q-page(padding)
 	bottom: 1rem;
 	left: 1rem;
 	font-size: 5rem;
+	.edit1 {
+		font-size: .9rem;
+		position: absolute;
+		top: 0;
+		right:0;
+		display: none;
+	}
+	&:hover {
+		.edit1 {
+			display: block;
+		}
+	}
 }
 
 .img1 {

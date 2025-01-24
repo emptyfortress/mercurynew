@@ -4,6 +4,7 @@ import { useKeyModifier } from '@vueuse/core'
 import { useApps } from '@/stores/apps'
 import ItemForGroup from '@/components/ItemForGroup.vue'
 import ItemSingle from '@/components/ItemSingle.vue'
+// import Tmp1 from '@/views/Tmp1.vue'
 import { uid, useQuasar } from 'quasar'
 
 const myapps = useApps()
@@ -27,6 +28,7 @@ const create = (e: string) => {
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
 		group: 1,
+		list: [],
 		pic: '',
 	}
 
@@ -45,6 +47,7 @@ const create = (e: string) => {
 
 <template lang="pug">
 q-page(padding)
+	// Tmp1
 	ItemSingle(v-show='type == 0' v-model:tapes="tapes" @create="create")
 	ItemForGroup(v-show='type == 1' v-model:tapes="tapes")
 

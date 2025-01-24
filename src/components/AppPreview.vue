@@ -7,20 +7,20 @@ const myapps = useApps()
 const router = useRouter()
 
 const props = defineProps<{
-	item: App
+	item: any
 }>()
 
 const app = useStorage('app', localStorage)
 
-const navigate = (e: App) => {
-	console.log(e)
-	e.expand = false
-	myapps.setCurrentApp(e)
+const navigate = () => {
+	app.value = props.item
+	myapps.setCurrentApp(props.item)
 	router.push('/assistent')
 }
-const navigate1 = (e: any) => {
-	myapps.setCurrentApp(e)
-	app.value = { ...e }
+const navigate1 = () => {
+	// props.item.expand = false
+	myapps.setCurrentApp(props.item)
+	app.value = props.item
 	router.push('/process')
 }
 
@@ -28,26 +28,43 @@ const navigate1 = (e: any) => {
 
 <template lang="pug">
 div
-	.contt(
-		v-motion
-		:initial="{ x: 100, opacity: 0 }"
-		:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
 
-		div() {{ props.item.id }}
-		div() {{ props.item.descr }}
-		div() Автор: {{ props.item.author }}
-		div() Версия: {{ props.item.version }}
+	div() {{ props.item.id }}
+	div() {{ props.item.descr }}
+	div() Автор: {{ props.item.author }}
+	div() Версия: {{ props.item.version }}
 
-	q-card-actions(align="center"
-		v-motion
-		:initial="{ y: -20, opacity: 0 }"
-		:enter="{ y: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 550 } }")
-		q-btn(unelevated color="primary" icon="mdi-tune-variant" label="Первичные настройки" @click.stop="navigate(item)") 
-		q-btn(unelevated color="primary" icon="mdi-code-block-braces" label="К приложению" @click.stop="navigate1(item)") 
+	.myrow
+		.bt(@click='navigate') Выполнить первичные настройки
+		.bt(@click='navigate1') Перейти к приложению
+
 </template>
 
 <style scoped lang="scss">
-.contt {
-	margin-top: 3rem;
+.myrow {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: .5rem;
+	margin-top: 2rem;
+}
+
+.bt {
+	width: 200px;
+	height: 100px;
+	border: 1px solid $secondary;
+	// background: $secondary;
+	border-radius: var(--rad);
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: $secondary;
+	font-weight: 600;
+
+	&:hover {
+		background: $secondary;
+		color: white;
+	}
 }
 </style>

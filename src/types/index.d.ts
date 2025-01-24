@@ -3,7 +3,6 @@ interface App {
 	label: string
 	descr: string
 	expand: boolean
-	over: boolean
 	version: string
 	author: string
 	created: string
