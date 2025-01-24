@@ -11,7 +11,7 @@ const remove = (() => {
 </script>
 
 <template lang="pug">
-q-dialog(v-model="modelValue")
+q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 	q-card
 		q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 		q-card-section.row.items-center.q-pb-none

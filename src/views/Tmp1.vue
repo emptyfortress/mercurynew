@@ -11,6 +11,7 @@ import { uid, useQuasar } from 'quasar'
 import GroupPreview1 from '@/components/GroupPreview1.vue'
 import Trash from '@/components/common/Trash.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import IconApp from '@/components/icons/IconApp.vue'
 // import AppPreview from '@/components/AppPreview.vue'
 
 gsap.registerPlugin(Flip)
@@ -121,14 +122,14 @@ const calcClass = ((item: any, index: number) => {
 })
 
 const expand = ((item: App) => {
-	const state = Flip.getState('.chil')
+	const state = Flip.getState('.chil,.con,.img,.img1')
 	item.expand = !item.expand
 	expanded.value = !expanded.value
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
-			targets: '.chil',
+			targets: '.chil,.con, .img, .img1',
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -155,10 +156,11 @@ const create = (e: string) => {
 		created: '22.09.2022',
 		group: 1,
 		list: [],
-		pic: '',
+		pic: IconApp,
 	}
 
-	tapes.value?.push(tmp)
+	// tapes.value?.push(tmp)
+	myapps.createApp(tmp)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
@@ -166,7 +168,6 @@ const create = (e: string) => {
 			message: 'Добавлено новое приложение'
 		})
 	}, 1200)
-	myapps.createApp(tmp)
 }
 
 const showGroup = ((item: any) => {
@@ -318,6 +319,11 @@ q-page(padding)
 	}
 }
 
+.active .con {
+	// font-weight: 600;
+	font-size: 1.2rem;
+}
+
 .ghost {
 	background: hsl(213 38% 81% / 1) !important;
 	box-shadow: none !important;
@@ -358,6 +364,13 @@ q-page(padding)
 	font-size: 3rem;
 	line-height: 1;
 	color: hsl(199 23% 45% / 1);
+}
+
+.active .img,
+.active .img1 {
+	bottom: 1rem;
+	left: 1rem;
+	font-size: 5rem;
 }
 
 .img1 {
