@@ -1,138 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions 
-  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-  targetNamespace="http://example.org/bpmn20"
-  id="Definitions_1">
-
-  <!-- Процесс с дорожками -->
-  <process id="Process_1">
-    <laneSet id="LaneSet_1">
-      <!-- Дорожка сотрудника -->
-      <lane id="Lane_Employee" name="Сотрудник">
-        <flowNodeRef>StartEvent_1</flowNodeRef>
-        <flowNodeRef>UserTask_1</flowNodeRef>
-        <flowNodeRef>UserTask_3</flowNodeRef>
-      </lane>
-
-      <!-- Дорожка руководителя -->
-      <lane id="Lane_Manager" name="Руководитель">
-        <flowNodeRef>ExclusiveGateway_1</flowNodeRef>
-        <flowNodeRef>UserTask_2</flowNodeRef>
-      </lane>
-    </laneSet>
-
-    <!-- Элементы процесса -->
-    <startEvent id="StartEvent_1" name="Начало">
-      <outgoing>Flow_1</outgoing>
-    </startEvent>
-
-    <userTask id="UserTask_1" name="Создать предложение">
-      <incoming>Flow_1</incoming>
-      <incoming>Flow_6</incoming>
-      <outgoing>Flow_2</outgoing>
-    </userTask>
-
-    <exclusiveGateway id="ExclusiveGateway_1" name="Проверка">
-      <incoming>Flow_2</incoming>
-      <outgoing>Flow_3</outgoing>
-      <outgoing>Flow_4</outgoing>
-    </exclusiveGateway>
-
-    <userTask id="UserTask_2" name="Согласовать">
-      <incoming>Flow_3</incoming>
-      <outgoing>Flow_5</outgoing>
-    </userTask>
-
-    <userTask id="UserTask_3" name="Доработать">
-      <incoming>Flow_4</incoming>
-      <outgoing>Flow_6</outgoing>
-    </userTask>
-
-    <endEvent id="EndEvent_1" name="Конец">
-      <incoming>Flow_5</incoming>
-    </endEvent>
-
-    <!-- Потоки управления -->
-    <sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="UserTask_1"/>
-    <sequenceFlow id="Flow_2" sourceRef="UserTask_1" targetRef="ExclusiveGateway_1"/>
-    <sequenceFlow id="Flow_3" sourceRef="ExclusiveGateway_1" targetRef="UserTask_2"/>
-    <sequenceFlow id="Flow_4" sourceRef="ExclusiveGateway_1" targetRef="UserTask_3"/>
-    <sequenceFlow id="Flow_5" sourceRef="UserTask_2" targetRef="EndEvent_1"/>
-    <sequenceFlow id="Flow_6" sourceRef="UserTask_3" targetRef="UserTask_1"/>
-  </process>
-
-  <!-- Визуальное представление -->
+<bpmn:definitions 
+    xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+    xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+    xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+    id="Definitions_1" 
+    targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:laneSet>
+      <bpmn:lane id="Lane_Initiator" name="Инициатор">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CreateDocument</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ReviseDocument</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Manager" name="Руководитель">
+        <bpmn:flowNodeRef>Task_ApproveDocument</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_HR" name="Кадровик">
+        <bpmn:flowNodeRef>Task_PublishDocument</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" name="Старт">
+      <bpmn:documentation>Начало процесса согласования документа</bpmn:documentation>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_CreateDocument" name="Создание документа">
+      <bpmn:documentation>Инициатор создает документ для согласования</bpmn:documentation>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ApproveDocument" name="Согласование документа">
+      <bpmn:documentation>Руководитель рассматривает документ и решает его судьбу</bpmn:documentation>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ReviseDocument" name="Доработка документа">
+      <bpmn:documentation>Инициатор вносит изменения в документ по замечаниям руководителя</bpmn:documentation>
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_PublishDocument" name="Публикация">
+      <bpmn:documentation>Кадровик публикует согласованный документ</bpmn:documentation>
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_1" name="Завершение">
+      <bpmn:documentation>Процесс согласования и публикации документа завершен</bpmn:documentation>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_CreateDocument"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_CreateDocument" targetRef="Task_ApproveDocument"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_ApproveDocument" targetRef="Task_PublishDocument" name="Согласовано"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_ApproveDocument" targetRef="Task_ReviseDocument" name="На доработку"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_ReviseDocument" targetRef="Task_ApproveDocument"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_PublishDocument" targetRef="EndEvent_1"/>
+  </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
-      <!-- Дорожки -->
-      <bpmndi:BPMNShape id="Lane_Employee_di" bpmnElement="Lane_Employee" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="800" height="200"/>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1" isMarkerVisible="true">
+        <dc:Bounds x="150" y="100" width="36" height="36"/>
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Lane_Manager_di" bpmnElement="Lane_Manager" isHorizontal="true">
-        <dc:Bounds x="0" y="200" width="800" height="200"/>
+      <bpmndi:BPMNShape id="Task_CreateDocument_di" bpmnElement="Task_CreateDocument">
+        <dc:Bounds x="240" y="80" width="100" height="80"/>
       </bpmndi:BPMNShape>
-
-      <!-- Элементы -->
-      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="100" y="100" width="36" height="36"/>
+      <bpmndi:BPMNShape id="Task_ApproveDocument_di" bpmnElement="Task_ApproveDocument">
+        <dc:Bounds x="400" y="200" width="100" height="80"/>
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="UserTask_1_di" bpmnElement="UserTask_1">
-        <dc:Bounds x="200" y="80" width="100" height="80"/>
+      <bpmndi:BPMNShape id="Task_ReviseDocument_di" bpmnElement="Task_ReviseDocument">
+        <dc:Bounds x="240" y="280" width="100" height="80"/>
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="ExclusiveGateway_1_di" bpmnElement="ExclusiveGateway_1">
-        <dc:Bounds x="400" y="250" width="50" height="50"/>
+      <bpmndi:BPMNShape id="Task_PublishDocument_di" bpmnElement="Task_PublishDocument">
+        <dc:Bounds x="550" y="300" width="100" height="80"/>
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="UserTask_2_di" bpmnElement="UserTask_2">
-        <dc:Bounds x="520" y="250" width="100" height="80"/>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1" isMarkerVisible="true">
+        <dc:Bounds x="700" y="320" width="36" height="36"/>
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="UserTask_3_di" bpmnElement="UserTask_3">
-        <dc:Bounds x="520" y="350" width="100" height="80"/>
+      <bpmndi:BPMNShape id="Lane_Initiator_di" bpmnElement="Lane_Initiator">
+        <dc:Bounds x="110" y="10" width="500" height="200"/>
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
-        <dc:Bounds x="700" y="250" width="36" height="36"/>
+      <bpmndi:BPMNShape id="Lane_Manager_di" bpmnElement="Lane_Manager">
+        <dc:Bounds x="110" y="210" width="500" height="200"/>
       </bpmndi:BPMNShape>
-
-      <!-- Соединения -->
+      <bpmndi:BPMNShape id="Lane_HR_di" bpmnElement="Lane_HR">
+        <dc:Bounds x="110" y="410" width="500" height="200"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
-        <di:waypoint x="118" y="118" />
-        <di:waypoint x="200" y="120" />
+        <di:waypoint x="186" y="118"/>
+        <di:waypoint x="240" y="120"/>
       </bpmndi:BPMNEdge>
-
       <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
-        <di:waypoint x="300" y="120" />
-        <di:waypoint x="400" y="275" />
+        <di:waypoint x="340" y="120"/>
+        <di:waypoint x="400" y="240"/>
       </bpmndi:BPMNEdge>
-
       <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
-        <di:waypoint x="425" y="275" />
-        <di:waypoint x="520" y="290" />
+        <di:waypoint x="500" y="240"/>
+        <di:waypoint x="550" y="340"/>
       </bpmndi:BPMNEdge>
-
       <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
-        <di:waypoint x="425" y="275" />
-        <di:waypoint x="520" y="390" />
+        <di:waypoint x="450" y="280"/>
+        <di:waypoint x="290" y="280"/>
       </bpmndi:BPMNEdge>
-
       <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
-        <di:waypoint x="620" y="290" />
-        <di:waypoint x="700" y="268" />
+        <di:waypoint x="340" y="320"/>
+        <di:waypoint x="400" y="280"/>
       </bpmndi:BPMNEdge>
-
       <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
-        <di:waypoint x="620" y="390" />
-        <di:waypoint x="300" y="390" />
-        <di:waypoint x="200" y="160" />
+        <di:waypoint x="650" y="340"/>
+        <di:waypoint x="700" y="338"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</definitions>
+</bpmn:definitions>

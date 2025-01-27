@@ -63,7 +63,6 @@ const onDrop1 = () => {
 			tmp.label = 'Группа'
 			tmp.descr = ''
 			tmp.expand = false
-			tmp.over = false
 			tmp.version = ''
 			tmp.author = ''
 			tmp.group = 1
@@ -119,6 +118,15 @@ const calcClass = ((item: any, index: number) => {
 	if (hoverItem.value == index && index !== draggedItem.value) return 'over'
 	else return ''
 
+})
+
+const preexpand = ((item: App) => {
+	if (item.expand && expanded) return
+	else expand(item)
+})
+const close = ((item: App) => {
+	expanded.value = false
+	item.expand = false
 })
 
 const expand = ((item: App) => {
@@ -212,7 +220,7 @@ q-page(padding)
 				v-motion
 				:initial="{ y: 40, opacity: 0 }"
 				:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
-				@click='expand(item)'
+				@click.stop='preexpand(item)'
 				:class="calcClass(item, index)"
 				@dragover.prevent="onDragEnter(index)"
 				@dragenter.prevent
@@ -223,23 +231,18 @@ q-page(padding)
 					v-motion
 					:initial="{ y: -20, opacity: 0 }"
 					:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
-					) {{ item.label }}
-					.edit(v-if='item.expand' size='sm' @click.stop
-						v-motion
-						:initial='{ x: 100, opacity: 0 }'
-						:enter='{ x: 0, opacity: 1 }'
-						:delay=500
-						)
-						q-icon(name="mdi-pencil-outline" color="primary")
-						q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope" style='width: 300px')
-							q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+					)
+					span {{ item.label }}
+					q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope" style='width: 300px')
+						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 				.con1(v-if='!showGroup(item)'
 					v-motion
 					:initial="{ y: 20, opacity: 0 }"
 					:enter='{ y: 0, opacity: 1, transition: { delay: 300 } }'
 					@click.stop
-					) {{ item.label }}
+					)
+					span {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
@@ -262,7 +265,17 @@ q-page(padding)
 					:initial='{ x: 100, opacity: 0 }'
 					:enter='{ x: 0, opacity: 1 }'
 					:delay=500
+					@close='close(item)'
 					)
+				q-btn.close(v-if='item.expand'
+					round color="negative"
+					icon='mdi-close'
+					@click.stop="expand(item)"
+					v-motion
+					:initial='{ scale: 0.1, opacity: 0 }'
+					:enter='{ scale: 1, opacity: 1 }'
+					:delay='200'
+					) 
 
 
 			div(id="no-drag")
@@ -298,6 +311,7 @@ q-page(padding)
 	padding: 1rem;
 	position: relative;
 	border-radius: var(--rad);
+	position: relative;
 
 
 	&.active {
@@ -312,6 +326,7 @@ q-page(padding)
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 		z-index: 10;
+		cursor: default;
 	}
 
 	&.group1 {
@@ -324,6 +339,7 @@ q-page(padding)
 
 		&.active {
 			height: 206px;
+			padding: 1rem;
 		}
 
 	}
@@ -342,25 +358,14 @@ q-page(padding)
 }
 
 .active .con {
-	// font-weight: 600;
 	font-size: 1.2rem;
-	// color: $primary;
-	margin-bottom: 2rem;
+	color: $primary;
+	margin-bottom: .5rem;
 
-	.edit {
-		margin-left: 1rem;
-		display: inline-block;
-		font-size: .8rem;
+	span {
+		border-bottom: 1px dotted $primary;
+		cursor: pointer;
 	}
-
-	// &:hover {
-	// 	.edit {
-	// 		display: inline-block;
-	// 	}
-	// }
-
-	// border-bottom: 1px dotted $primary;
-
 }
 
 .ghost {
@@ -379,8 +384,13 @@ q-page(padding)
 .con1 {
 	width: 100%;
 	position: absolute;
-	top: -2rem;
+	top: -2.5rem;
 	text-align: center;
+	color: $primary;
+
+	span {
+		border-bottom: 1px dotted $primary;
+	}
 }
 
 .backdrop {
@@ -410,13 +420,15 @@ q-page(padding)
 	bottom: 1rem;
 	left: 1rem;
 	font-size: 5rem;
+
 	.edit1 {
 		font-size: .9rem;
 		position: absolute;
 		top: 0;
-		right:0;
+		right: 0;
 		display: none;
 	}
+
 	&:hover {
 		.edit1 {
 			display: block;
@@ -433,5 +445,12 @@ q-page(padding)
 .inner {
 	display: flex;
 	gap: 1rem;
+}
+
+.close {
+	z-index: 100;
+	position: absolute;
+	top: -1.2rem;
+	right: -1.2rem;
 }
 </style>
