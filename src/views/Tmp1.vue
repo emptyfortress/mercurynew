@@ -127,6 +127,7 @@ const preexpand = ((item: App) => {
 const close = ((item: App) => {
 	expanded.value = false
 	item.expand = false
+	item.list.map((el) => el.expand = false)
 })
 
 const expand = ((item: App) => {
@@ -257,7 +258,9 @@ q-page(padding)
 						component(:is='el.pic' v-for="el in item.list" :key="el.id")
 
 				.inner(v-if='item.group > 1 && item.expand')
-					GroupPreview1(:list="item.list")
+					GroupPreview1(:list="item.list"
+						@close='close(item)'
+						)
 
 				AppPreview(:item='item'
 					v-if='item.expand && item.group == 1'
@@ -267,7 +270,8 @@ q-page(padding)
 					:delay=500
 					@close='close(item)'
 					)
-				q-btn.close(v-if='item.expand'
+
+				q-btn.close(v-if='item.expand && expanded'
 					round color="negative"
 					icon='mdi-close'
 					@click.stop="expand(item)"
@@ -339,6 +343,7 @@ q-page(padding)
 
 		&.active {
 			height: 206px;
+			width: 850px;
 			padding: 1rem;
 		}
 
@@ -448,7 +453,6 @@ q-page(padding)
 }
 
 .close {
-	z-index: 100;
 	position: absolute;
 	top: -1.2rem;
 	right: -1.2rem;

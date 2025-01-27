@@ -4,6 +4,7 @@ import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { animations } from "@formkit/drag-and-drop"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
+import AppPreview from '@/components/AppPreview.vue'
 
 const props = defineProps<{
 	list: App[]
@@ -49,6 +50,12 @@ const calcClass = ((item: any, index: number) => {
 	else return ''
 
 })
+
+const emit = defineEmits(['close'])
+const close = (() => {
+	emit('close')
+})
+
 </script>
 
 <template lang="pug">
@@ -58,9 +65,29 @@ const calcClass = ((item: any, index: number) => {
 		@click.stop='actionExpand(item)'
 		:class="calcClass(item, index)"
 		)
-		.con {{ item.label }}
+		.con
+			span {{ item.label }}
 			.img
 				component(:is='item.pic')
+
+		AppPreview(:item='item'
+			v-if='item.expand && item.group == 1'
+			v-motion
+			:initial='{ x: 100, opacity: 0 }'
+			:enter='{ x: 0, opacity: 1 }'
+			:delay=500
+			@close='close'
+			)
+		q-btn.close(v-if='item.expand'
+			round color="negative"
+			icon='mdi-close'
+			@click.stop="actionExpand(item)"
+			v-motion
+			:initial='{ scale: 0.1, opacity: 0 }'
+			:enter='{ scale: 1, opacity: 1 }'
+			:delay='400'
+			) 
+
 </template>
 
 <style scoped lang="scss">
@@ -82,7 +109,7 @@ const calcClass = ((item: any, index: number) => {
 
 	&.active {
 		position: fixed;
-		height: 70vh;
+		height: 50vh;
 		width: 900px;
 		margin: 0 auto;
 		top: -40px;
@@ -122,5 +149,22 @@ const calcClass = ((item: any, index: number) => {
 	font-size: 3rem;
 	line-height: 1;
 	color: hsl(199 23% 45% / 1);
+}
+
+.close {
+	position: absolute;
+	top: -1.2rem;
+	right: -1.2rem;
+}
+
+.active .active .con {
+	font-size: 1.2rem;
+	color: $primary;
+	margin-bottom: .5rem;
+
+	span {
+		border-bottom: 1px dotted $primary;
+		cursor: pointer;
+	}
 }
 </style>
