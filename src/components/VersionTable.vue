@@ -178,8 +178,8 @@ q-table(flat
 		q-td
 		q-btn(v-if='!props.row.published' flat round icon="mdi-trash-can-outline" color="negative" @click.stop="destroy(props.row)" size='sm') 
 
-q-card-actions.q-mx-md.q-mb-md
-	q-btn(unelevated color="primary" label="Создать версию на основе выбранной" @click="create0" :disable="selected?.length == 0") 
+q-card-actions(align="center")
+	q-btn(flat color="primary" label="Создать версию на основе выбранной" @click="create0" :disable="selected?.length == 0") 
 
 PublishDialog(v-model="dialog2" @publish='publish' @create="create" :newversion="newVersion" v-model:comment="tmpVer.comment")
 </template>
