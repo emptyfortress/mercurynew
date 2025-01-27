@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter } from 'vue-router'
 import { useStorage } from '@vueuse/core'
-import IconWizard from '@/components/icons/IconWizard.vue'
+// import IconWizard from '@/components/icons/IconWizard.vue'
 import IconFlag from '@/components/icons/IconFlag.vue'
 import IconEntrance from '@/components/icons/IconEntrance.vue'
+import VersionTable from '@/components/VersionTable.vue'
 
 const myapps = useApps()
 const router = useRouter()
@@ -30,6 +32,11 @@ const navigate1 = () => {
 	emit('close')
 }
 
+const version = ref(false)
+const toggleVersion = (() => {
+	version.value = !version.value
+})
+
 </script>
 
 <template lang="pug">
@@ -39,38 +46,48 @@ div(
 	:enter='{ x: 0, opacity: 1 }'
 	:delay='200'
 	)
-	.descr
-		span {{ props.item.descr }}
-		q-popup-edit(v-model="props.item.descr" auto-save v-slot="scope")
-			q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
-	.mygrid
-		label Автор:
-		.val {{ props.item.author }}
-		label Создано:
-		.val {{ props.item.created }}
-		label Изменено:
-		.val {{ props.item.created }}
-		label Версия:
-		.val.link {{ props.item.version }}
-		template(v-if='props.item.version == "0.0.0"')
-			.publ Версия не опубликована
-		template(v-else)
-			label Опубликовано:
-			.val.link {{ props.item.created }}
+	div(v-if='!version'
+		v-motion
+		:initial="{ x: 20, opacity: 0 }"
+		:enter='{ x: 0, opacity: 1 }'
+		:delay='200'
+		)
+		.descr
+			span {{ props.item.descr }}
+			q-popup-edit(v-model="props.item.descr" auto-save v-slot="scope")
+				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+		.mygrid
+			label Автор:
+			.val {{ props.item.author }}
+			label Создано:
+			.val {{ props.item.created }}
+			label Изменено:
+			.val {{ props.item.created }}
+			label Версия:
+			.val.link(@click='toggleVersion') {{ props.item.version }}
+			template(v-if='props.item.version == "0.0.0"')
+				.publ(@click='toggleVersion') Версия не опубликована
+			template(v-else)
+				label Опубликовано:
+				.val.link(@click='toggleVersion') {{ props.item.created }}
 
-	.myrow
-		.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
-			div
-				IconFlag.ic
-				div Создать первичные настройки
-		// .bt(@click='')
-			div
-				IconWizard.ic
-				div Воспользоваться ИИ-помощником
-		.bt(@click.stop='navigate1')
-			div
-				IconEntrance.ic
-				div Перейти к приложению
+		.myrow
+			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
+				div
+					IconFlag.ic
+					div Создать первичные настройки
+			.bt(@click.stop='navigate1')
+				div
+					IconEntrance.ic
+					div Перейти к приложению
+	div(v-else
+		v-motion
+		:initial="{ x: 20, opacity: 0 }"
+		:enter='{ x: 0, opacity: 1 }'
+		:delay='200'
+		)
+		q-btn(flat icon="mdi-arrow-left-circle-outline" label='Назад' color="primary" @click="toggleVersion") 
+		VersionTable
 
 </template>
 
@@ -88,6 +105,7 @@ div(
 	color: darkred;
 	cursor: pointer;
 	margin-top: 1rem;
+	border-bottom: 1px dotted darkred;
 }
 
 .descr {

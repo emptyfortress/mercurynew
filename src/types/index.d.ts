@@ -18,3 +18,14 @@ type Control = {
 	selected: boolean
 	type: Kind
 }
+
+interface Version {
+	id: number
+	label: string
+	value: string
+	created: string
+	published: null | string
+	author: string
+	comment: string
+	current: boolean
+}
