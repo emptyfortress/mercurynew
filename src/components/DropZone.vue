@@ -7,7 +7,7 @@ const active = ref()
 </script>
 
 <template lang="pug">
-.drop(ref="dropZoneRef" :class='{ active: active }' @dragover.prevent @dragenter="active = true" @dragleave="active = false")
+.drop(:class='{ active: active }' @dragover.prevent @dragenter="active = true" @dragleave="active = false")
 	IconDragHere.big
 	.text-h6 Форма не настроена
 	.text-caption Перетащите сюда элемент из библиотеки слева.
