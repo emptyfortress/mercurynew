@@ -13,6 +13,7 @@ import Trash from '@/components/common/Trash.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import IconApp from '@/components/icons/IconApp.vue'
 import AppPreview from '@/components/AppPreview.vue'
+// import { useStorage } from '@vueuse/core'
 
 gsap.registerPlugin(Flip)
 
@@ -124,9 +125,13 @@ const preexpand = ((item: App) => {
 	if (item.expand && expanded) return
 	else expand(item)
 })
+
+// const app = useStorage('app', localStorage)
+
 const close = ((item: App) => {
 	expanded.value = false
 	item.expand = false
+	// app.value = item
 	item.list.map((el) => el.expand = false)
 })
 

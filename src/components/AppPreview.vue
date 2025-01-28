@@ -2,8 +2,6 @@
 import { ref } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter } from 'vue-router'
-import { useStorage } from '@vueuse/core'
-// import IconWizard from '@/components/icons/IconWizard.vue'
 import IconFlag from '@/components/icons/IconFlag.vue'
 import IconEntrance from '@/components/icons/IconEntrance.vue'
 import VersionTable from '@/components/VersionTable.vue'
@@ -15,19 +13,16 @@ const props = defineProps<{
 	item: any
 }>()
 
-const app = useStorage('app', localStorage)
-
 const emit = defineEmits(['close'])
 
 const navigate = () => {
-	app.value = props.item
 	myapps.setCurrentApp(props.item)
 	router.push('/assistent')
 	emit('close')
+
 }
 const navigate1 = () => {
 	myapps.setCurrentApp(props.item)
-	app.value = props.item
 	router.push('/process')
 	emit('close')
 }
@@ -141,7 +136,6 @@ div(
 	height: 120px;
 	padding: 1rem;
 	border: 1px solid $secondary;
-	// background: $secondary;
 	border-radius: var(--rad);
 	text-align: center;
 	display: flex;
@@ -149,6 +143,7 @@ div(
 	align-items: start;
 	color: $secondary;
 	font-weight: 600;
+	cursor: pointer;
 
 	&:hover {
 		background: $secondary;

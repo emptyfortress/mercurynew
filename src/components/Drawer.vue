@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -39,21 +40,27 @@ const pages = [
 		url: 'lists',
 	},
 ]
+const showBack = computed(() => {
+	if (route.name == 'form') return true
+	if (route.name == 'assistent') return true
+	return false
+})
 </script>
 
 <template lang="pug">
 q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
-	q-btn.back(v-if='route.name == "form"'
+	q-btn.back(v-if='showBack'
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1500 } }'
 		icon="mdi-arrow-left" @click="router.back()" size="md") 
-	.toolbar
+	.toolbar(v-if="route.name !== 'assistent'")
 		q-list()
 			RouterLink(v-for="page in pages" :key="page.id" :to="page.url")
 				q-item(clickable v-ripple )
 					q-item-section
 						q-icon(:name="page.icon" color="primary" size="22px")
+					q-tooltip(anchor="center end" self="center start") {{ page.title }}
 </template>
 
 <style scoped lang="scss">

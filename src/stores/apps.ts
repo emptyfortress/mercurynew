@@ -5,12 +5,15 @@ import IconBeach from '@/components/icons/IconBeach.vue'
 import IconLetter from '@/components/icons/IconLetter.vue'
 import IconPresentation from '@/components/icons/IconPresentation.vue'
 import IconMicrophone from '@/components/icons/IconMicrophone.vue'
+import { useStorage } from '@vueuse/core'
 
 const IconTravel1 = markRaw(IconTravel)
 const IconBeach1 = markRaw(IconBeach)
 const IconLetter1 = markRaw(IconLetter)
 const IconPresentation1 = markRaw(IconPresentation)
 const IconMicrophone1 = markRaw(IconMicrophone)
+
+const app = useStorage('app', localStorage)
 
 export const useApps = defineStore('apps', () => {
 	const apps = ref<App[]>([
@@ -105,8 +108,10 @@ export const useApps = defineStore('apps', () => {
 	}
 
 	const currentApp = ref<App | null>(null)
+
 	const setCurrentApp = (e: App) => {
 		currentApp.value = e
+		app.value = e
 	}
 
 	const grouping = ref(false)
