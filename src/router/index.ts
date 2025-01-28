@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
 import Tmp1 from '../views/Tmp1.vue'
 
 const router = createRouter({
@@ -14,6 +13,11 @@ const router = createRouter({
 			path: '/assistent',
 			name: 'assistent',
 			component: () => import('@/views/Assistent.vue'),
+		},
+		{
+			path: '/ai',
+			name: 'ai',
+			component: () => import('@/views/Ai.vue'),
 		},
 		{
 			path: '/process',

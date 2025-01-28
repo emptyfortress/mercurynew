@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import IconWizard from '@/components/icons/IconWizard.vue'
 import AssistentInside from '@/components/AssistentInside.vue'
+import { useRouter, } from 'vue-router'
 
+const router = useRouter()
+
+const navigate = (() => {
+	router.push('ai')
+})
 
 
 </script>
@@ -11,7 +17,7 @@ q-page(padding)
 	.cont
 		.row.justify-between.items-center
 			.hd Первичные настройки
-			.bt(@click='navigate1')
+			.bt(@click='navigate')
 				IconWizard.ic
 				span ИИ-ассистент
 

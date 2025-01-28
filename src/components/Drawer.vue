@@ -45,6 +45,10 @@ const showBack = computed(() => {
 	if (route.name == 'assistent') return true
 	return false
 })
+const showToolbar = computed(() => {
+	if (route.name !== 'assistent' && route.name !== 'ai') return true
+	return false
+})
 </script>
 
 <template lang="pug">
@@ -54,7 +58,11 @@ q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1500 } }'
 		icon="mdi-arrow-left" @click="router.back()" size="md") 
-	.toolbar(v-if="route.name !== 'assistent'")
+	.toolbar(v-if="showToolbar"
+		v-motion
+		:initial='{ x: -200, opacity: 0 }'
+		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1500 } }'
+		)
 		q-list()
 			RouterLink(v-for="page in pages" :key="page.id" :to="page.url")
 				q-item(clickable v-ripple )
