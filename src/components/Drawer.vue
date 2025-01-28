@@ -43,10 +43,16 @@ const pages = [
 const showBack = computed(() => {
 	if (route.name == 'form') return true
 	if (route.name == 'assistent') return true
+	if (route.name == 'ai') return true
 	return false
 })
 const showToolbar = computed(() => {
-	if (route.name !== 'assistent' && route.name !== 'ai') return true
+	if (route.name == 'form') return true
+	if (route.name == 'forms') return true
+	if (route.name == 'process') return true
+	if (route.name == 'roles') return true
+	if (route.name == 'statuses') return true
+	if (route.name == 'lists') return true
 	return false
 })
 </script>
