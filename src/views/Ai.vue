@@ -6,12 +6,18 @@ import { useElementSize } from '@vueuse/core'
 
 const el = ref()
 
-const { width, height } = useElementSize(el)
+const { height } = useElementSize(el)
 
 const hei = computed(() => {
 	return height.value - 90 + 'px'
 })
 const splitter = ref(50)
+
+const result = ref(false)
+
+const toggleResult = (() => {
+	result.value = true
+})
 </script>
 
 <template lang="pug">
@@ -28,15 +34,13 @@ q-page(padding ref="el")
 		.hd ИИ-ассистент
 		q-splitter.hei(v-model="splitter")
 			template(v-slot:before)
-				Promt
+				Promt(@setResult="toggleResult")
 			template(v-slot:after)
-				PromtPreview
+				PromtPreview(:result='result')
 
 </template>
 
 <style scoped lang="scss">
-.q-page {}
-
 .hei {
 	margin-top: 1rem;
 	height: v-bind(hei);

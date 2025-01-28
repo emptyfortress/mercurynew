@@ -13,6 +13,9 @@ const toggleVoice = (() => {
 const calcSize = computed(() => {
 	return voice.value ? 'lg' : 'sm'
 })
+
+const emit = defineEmits(['setResult'])
+
 const ask = () => {
 	loading.value = true
 	setTimeout(() => {
@@ -20,7 +23,8 @@ const ask = () => {
 		result.value = true
 		query.value = ''
 		place.value = 'Вы можете уточнить вопрос.'
-	}, 2000)
+		emit('setResult', true)
+	}, 4000)
 }
 </script>
 
@@ -34,7 +38,7 @@ const ask = () => {
 					.wave
 
 	.search Вы всегда сможете дополнить и уточнить свой запрос.
-		q-btn(unelevated color="primary" icon-right='mdi-arrow-right' label="Отправить" @click="ask") 
+		q-btn(outline color="primary" icon-right='mdi-arrow-right' label="Отправить" @click="ask") 
 </template>
 
 <style scoped lang="scss">
