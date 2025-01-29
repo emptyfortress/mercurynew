@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+// import { ref } from 'vue'
 import IconDragHere from '@/components/icons/IconDragHere.vue'
 
-const active = ref()
+// const active = ref()
 
 </script>
 
 <template lang="pug">
-.drop(:class='{ active: active }' @dragover.prevent @dragenter="active = true" @dragleave="active = false")
+// .drop(:class='{ active: active }' @dragover.prevent @dragenter="active = true" @dragleave="active = false")
+.drop
 	IconDragHere.big
 	.text-h6 Форма не настроена
 	.text-caption Перетащите сюда элемент из библиотеки слева.
@@ -26,9 +27,9 @@ const active = ref()
 		font-size: 2rem;
 	}
 
-	&.active {
-		background: #e8f3e1;
-	}
+	// &.active {
+	// 	background: #e8f3e1;
+	// }
 
 }
 </style>

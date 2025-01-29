@@ -109,7 +109,7 @@ export const useApps = defineStore('apps', () => {
 
 	const currentApp = ref<App | null>(null)
 
-	const setCurrentApp = (e: App) => {
+	const setCurrentApp = (e: any) => {
 		currentApp.value = e
 		app.value = e
 	}

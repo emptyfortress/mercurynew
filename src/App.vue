@@ -67,7 +67,7 @@ q-layout(view='hHh LpR fFf')
 				IconHome.home
 			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
-				span(v-else) {{ app.label }}
+				span(v-else) Настройка приложения "{{ app.label }}"
 			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
 
 	Drawer
