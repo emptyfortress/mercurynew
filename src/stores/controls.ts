@@ -4,6 +4,7 @@ import { ref, computed } from 'vue'
 
 export const useControl = defineStore('control', () => {
 	const editorControls = ref<Control[]>([])
+	const clean = ref(0)
 
 	const selectedControl = computed(() => {
 		return editorControls.value.find((el: Control) => el.selected)
@@ -28,6 +29,7 @@ export const useControl = defineStore('control', () => {
 
 	const removeAll = (() => {
 		editorControls.value.length = 0
+		clean.value += 1
 	})
 
 	const hideMode = ref(true)
@@ -39,6 +41,7 @@ export const useControl = defineStore('control', () => {
 	return {
 		editorControls,
 		selectedControl,
+		clean,
 		select,
 		deselect,
 		addControl,

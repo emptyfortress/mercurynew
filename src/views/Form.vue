@@ -100,7 +100,6 @@ q-page(padding)
 		LibButton(@activate='startLeft' @stop='stopLeft')
 
 		Toolbar
-	// Toolbar
 
 </template>
 

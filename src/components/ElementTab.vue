@@ -124,4 +124,21 @@ AddFormButton(@create='create')
 	}
 
 }
-</style>
+
+// .ghost {
+// 	// background: hsl(213 38% 90% / 1) !important;
+// 	background: #73ad81 !important;
+// 	box-shadow: none !important;
+// 	border: none !important;
+//
+// 	.handle,
+// 	.digit,
+// 	.icon {
+// 		display: none;
+// 	}
+//
+// 	label {
+// 		visibility: hidden;
+// 	}
+//
+// }</style>

@@ -19,11 +19,6 @@ import IconHome from '@/components/icons/IconHome.vue'
 const route = useRoute()
 const router = useRouter()
 
-const leftDrawer = computed(() => {
-	return true
-	// return route.name == 'home' ? false : true
-})
-
 const rightDrawer = ref(false)
 const toggleRightDrawer = () => {
 	rightDrawer.value = !rightDrawer.value
@@ -85,7 +80,6 @@ q-layout(view='hHh LpR fFf')
 				q-item-section
 					q-item-label Баги
 
-			// q-item(clickable to='/tmp')
 				q-item-section(avatar)
 					q-icon(name="mdi-test-tube" color="primary")
 				q-item-section

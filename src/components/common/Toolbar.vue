@@ -16,6 +16,7 @@ const preview = () => {
 
 const control = useControl()
 
+const emit = defineEmits(['clean'])
 const removeAll = (() => {
 	control.removeAll()
 })
