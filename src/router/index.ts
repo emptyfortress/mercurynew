@@ -103,33 +103,6 @@ const router = createRouter({
 				back: false,
 			},
 		},
-		{
-			path: '/tmp',
-			name: 'tmp',
-			component: () => import('@/views/Tmp.vue'),
-			meta: {
-				toolbar: true,
-				back: false,
-			},
-		},
-		{
-			path: '/tmp1',
-			name: 'tmp1',
-			component: () => import('@/views/Tmp1.vue'),
-			meta: {
-				toolbar: true,
-				back: false,
-			},
-		},
-		{
-			path: '/tmp2',
-			name: 'tmp2',
-			component: () => import('@/views/Tmp2.vue'),
-			meta: {
-				toolbar: true,
-				back: false,
-			},
-		}
 	],
 })
 
