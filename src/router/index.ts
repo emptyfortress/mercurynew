@@ -103,6 +103,24 @@ const router = createRouter({
 				back: false,
 			},
 		},
+		{
+			path: '/try',
+			name: 'try',
+			component: () => import('@/views/Try.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+			},
+		},
+		{
+			path: '/try1',
+			name: 'try1',
+			component: () => import('@/views/Try1.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+			},
+		},
 	],
 })
 
