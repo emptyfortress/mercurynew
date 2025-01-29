@@ -14,6 +14,7 @@ q-page(padding)
 					th страница
 					th описание
 					th серьезность
+					th fix
 
 			tbody
 				tr
@@ -21,26 +22,43 @@ q-page(padding)
 					td Главная, роли, формы
 					td При большом числе карточек и их переносе на вторую строку, невозможно сортировать перетаскиванием.
 					td 1
+					td
+						q-icon(name="mdi-check-bold" color="green" size="sm")
 				tr
 					td 2
 					td Главная
 					td При раскрытии группы невозможно сортировать приложения
 					td 1
+					td
+						q-icon(name="mdi-check-bold" color="green" size="sm")
 				tr
 					td 3
 					td Главная, роли, формы
 					td При большом числе карточек flip-анимация неправильно отрабатывает сворачивание распахнутой карточки (в правой части экрана). Баг появляется, когда включаешь wrap in flex container.
 					td 2
+					td
+						q-icon(name="mdi-check-bold" color="green" size="sm")
 				tr
 					td 4
 					td Главная
 					td При распахивании группы заголовок иногда скачет вниз, под кнопку "Назад"
 					td 3
+					td
+						q-icon(name="mdi-check-bold" color="green" size="sm")
 				tr
 					td 5
 					td Главная
 					td При сворачивании распахнутой карточки кнопка, "Плюс" появляется раньше, чем нужно (до сворачивания) и двигается вместе в карточкой.
 					td 3
+					td
+						q-icon(name="mdi-check-bold" color="green" size="sm")
+				tr
+					td 6
+					td Редактор процессов
+					td Ширина страницы фиксирована, чтобы ускорить разработку.
+					td 3
+					td
+						q-icon(name="mdi-close" color="negative" size="sm")
 
 </template>
 
