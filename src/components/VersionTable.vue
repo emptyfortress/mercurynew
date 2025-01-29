@@ -176,7 +176,7 @@ q-table(flat
 
 	template(v-slot:body-cell-action="props")
 		q-td
-		q-btn(v-if='!props.row.published' flat round icon="mdi-trash-can-outline" color="negative" @click.stop="destroy(props.row)" size='sm') 
+			q-btn(v-if='!props.row.published' flat round icon="mdi-trash-can-outline" color="negative" @click.stop="destroy(props.row)" size='sm') 
 
 q-card-actions(align="center")
 	q-btn(flat color="primary" label="Создать версию на основе выбранной" @click="create0" :disable="selected?.length == 0") 
