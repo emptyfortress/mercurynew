@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
-
-const modelValue = defineModel<boolean>()
 
 const pages = [
 	{
@@ -40,31 +38,25 @@ const pages = [
 		url: 'lists',
 	},
 ]
-const showBack = computed(() => {
-	if (route.name == 'form') return true
-	if (route.name == 'assistent') return true
-	if (route.name == 'ai') return true
-	return false
+
+const draw = ref(true)
+
+const back = computed(() => {
+	return route.meta.back
 })
-const showToolbar = computed(() => {
-	if (route.name == 'form') return true
-	if (route.name == 'forms') return true
-	if (route.name == 'process') return true
-	if (route.name == 'roles') return true
-	if (route.name == 'statuses') return true
-	if (route.name == 'lists') return true
-	return false
+const tool = computed(() => {
+	return route.meta.toolbar
 })
 </script>
 
 <template lang="pug">
-q-drawer(v-model='modelValue' side='left' behavior="desktop" :width="60")
-	q-btn.back(v-if='showBack'
+q-drawer(v-model='draw' side='left' behavior="desktop" :width="60")
+	q-btn.back(v-if='back'
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1500 } }'
 		icon="mdi-arrow-left" @click="router.back()" size="md") 
-	.toolbar(v-if="showToolbar"
+	.toolbar(v-if="tool"
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1500 } }'

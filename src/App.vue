@@ -20,7 +20,8 @@ const route = useRoute()
 const router = useRouter()
 
 const leftDrawer = computed(() => {
-	return route.name == 'home' ? false : true
+	return true
+	// return route.name == 'home' ? false : true
 })
 
 const rightDrawer = ref(false)
@@ -74,7 +75,7 @@ q-layout(view='hHh LpR fFf')
 				span(v-else) {{ app.label }}
 			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
 
-	Drawer(v-model="leftDrawer")
+	Drawer
 
 	q-drawer(v-model='rightDrawer' side='right' overlay bordered behavior="desktop")
 		q-list.q-mt-lg

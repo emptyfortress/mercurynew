@@ -16,15 +16,15 @@ const config = {
 	sortable: true,
 	group: 'one',
 	dragHandle: '.move',
-	plugins: [
-		insert({
-			insertPoint: (parent) => {
-				const div = document.createElement("div")
-				div.classList.add('fuck')
-				return div
-			}
-		})
-	],
+	// plugins: [
+	// 	insert({
+	// 		insertPoint: (parent) => {
+	// 			const div = document.createElement("div")
+	// 			div.classList.add('fuck')
+	// 			return div
+	// 		}
+	// 	})
+	// ],
 	draggable: (el: any) => el.id !== 'no-drag',
 }
 

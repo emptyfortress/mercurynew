@@ -24,7 +24,7 @@ const ask = () => {
 		query.value = ''
 		place.value = 'Вы можете уточнить вопрос.'
 		emit('setResult', true)
-	}, 4000)
+	}, 2000)
 }
 </script>
 

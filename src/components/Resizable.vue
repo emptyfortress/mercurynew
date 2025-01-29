@@ -3,18 +3,6 @@ import { ref, computed, onMounted, } from 'vue'
 import { useElementSize } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
 
-
-// const props = defineProps({
-// 	wid: {
-// 		type: Number,
-// 		required: true,
-// 		default: 768
-// 	},
-// 	item: {
-// 		type: Control
-// 	}
-// })
-
 interface Control {
 	id: number
 	label: string
