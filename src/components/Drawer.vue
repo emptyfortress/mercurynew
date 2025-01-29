@@ -51,12 +51,12 @@ const tool = computed(() => {
 
 <template lang="pug">
 q-drawer(v-model='draw' side='left' behavior="desktop" :width="60")
-	q-btn.back(v-if='back'
+	q-btn.back(v-show='back'
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1500 } }'
 		icon="mdi-arrow-left" @click="router.back()" size="md") 
-	.toolbar(v-if="tool"
+	.toolbar(v-show="tool"
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1500 } }'
