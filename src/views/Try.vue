@@ -1,22 +1,52 @@
 <script setup lang="ts">
-import IconFlag from '@/components/icons/IconFlag.vue'
-import IconEntrance from '@/components/icons/IconEntrance.vue'
-import { useRouter, useRoute } from 'vue-router'
+import { onBeforeUnmount, onMounted } from 'vue'
+// import IconFlag from '@/components/icons/IconFlag.vue'
+// import IconEntrance from '@/components/icons/IconEntrance.vue'
+import { useRouter, } from 'vue-router'
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
+import { useFlip } from '@/stores/flip'
 
+const flip = useFlip()
 const router = useRouter()
-const route = useRoute()
 
 const navigate = (() => {
 	router.push('try1')
 })
+
+gsap.registerPlugin(Flip)
+
+onBeforeUnmount(() => {
+	console.log('transition away from home');
+	const elemToFlip = document.querySelector('[data-flip-id]');
+	if (elemToFlip) {
+		flip.setLastState(Flip.getState(elemToFlip))
+	}
+
+})
+
+onMounted(() => {
+	console.log('home page mounted');
+	const elemToFlip = document.querySelector('[data-flip-id]');
+	if (elemToFlip && flip.lastState) {
+		Flip.from(flip.lastState, {
+			targets: elemToFlip,
+		})
+	}
+
+	flip.setLastState(null)
+
+})
+
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.cont
 		h2 Try
+		.rectangle(data-flip-id="rect" @click="navigate")
 
-		.myrow
+		// .myrow
 			.bt(@click.stop='navigate')
 				div
 					IconFlag.ic
@@ -31,6 +61,13 @@ q-page(padding)
 .cont {
 	width: 1000px;
 	margin: 0 auto;
+}
+
+.rectangle {
+	width: 100px;
+	height: 100px;
+	background-color: blue;
+	cursor: pointer;
 }
 
 .myrow {

@@ -15,6 +15,8 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import IconHome from '@/components/icons/IconHome.vue'
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
 
 const route = useRoute()
 const router = useRouter()
@@ -57,6 +59,26 @@ const enter = (el: any, done: any) => {
 	if (cover.value == 1) return slideEnterFromRight(el, done)
 	if (cover.value == 0) return coverEnter(el, done)
 }
+
+// gsap.registerPlugin(Flip)
+// const be = ((el: any) => {
+// 	gsap.set(el, { opacity: 0 })
+//
+// })
+// const ent = ((el: any, done: any) => {
+// 	gsap.to(el, {
+// 		opacity: 1,
+// 		duration: 0.5,
+// 		onComplete: done,
+// 	})
+// })
+// const lea = ((el: any, done: any) => {
+// 	gsap.to(el, {
+// 		opacity: 0,
+// 		duration: 0.5,
+// 		onComplete: done,
+// 	})
+// })
 </script>
 
 <template lang="pug">
@@ -83,8 +105,11 @@ q-layout(view='hHh LpR fFf')
 	q-page-container
 		#cont
 			router-view(v-slot="{ Component, route }")
-				transition(@before-enter="beforeEnter" @enter="enter" @leave="leave" :css="false" :mode="mode")
-					component(:is="Component")
+				component(:is="Component")
+				// transition(@before-enter="be" @enter="ent" @leave="lea" :css="false" mode='out-in')
+				// 	component(:is="Component")
+				// transition(@before-enter="beforeEnter" @enter="enter" @leave="leave" :css="false" :mode="mode")
+				// 	component(:is="Component")
 </template>
 
 <style scoped lang="scss">
