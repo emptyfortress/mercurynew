@@ -28,26 +28,29 @@ const toggleRightDrawer = () => {
 
 const app = useStorage('app', localStorage)
 
-const cover = ref(0)
+// const cover = ref(0)
 
 const mode = ref<any>('out-in')
 
-router.afterEach((to, from) => {
-	if (to.name == 'form' && from.name == 'process') {
-		cover.value = 1
-	} else if (to.name == 'process' && from.name == 'form') {
-		cover.value = 2
-	} else {
-		cover.value = 0
-	}
-})
+// router.afterEach((to, from) => {
+// 	if (to.name == 'form' && from.name == 'process') {
+// 		cover.value = 1
+// 	} else if (to.name == 'process' && from.name == 'form') {
+// 		cover.value = 2
+// 	} else {
+// 		cover.value = 0
+// 	}
+// })
 
+const beforeLeave = ((el: any) => {
+	console.log('beforeLeave')
+})
 const leave = (el: any, done: any) => {
 	console.log('leave')
 	gsap.to(el, {
-		xPercent: -100,
 		opacity: 0,
-		duration: .2,
+		x: -100,
+		duration: .3,
 		onComplete: done,
 	})
 }
@@ -59,9 +62,9 @@ const beforeEnter = (el: any) => {
 const enter = (el: any, done: any,) => {
 	console.log('enter')
 	gsap.from(el, {
-		autoAlpha: 0,
-		xPercent: 100,
-		duration: .2,
+		opacity: 0,
+		x: 100,
+		duration: .3,
 		onComplete: done,
 	}
 	)
@@ -93,15 +96,17 @@ q-layout(view='hHh LpR fFf')
 	q-page-container
 		#cont
 			router-view(v-slot="{ Component, route }")
-				component(:is="Component")
-				// transition(
-				// 	@before-enter="beforeEnter"
-				// 	@enter="enter"
-				// 	@before-leave="beforeLeave"
-				// 	@leave="leave"
-				// 	:css="false"
-				// 	)
-				// 	component(:is="Component")
+				transition(
+					@before-enter="beforeEnter"
+					@enter="enter"
+					@before-leave="beforeLeave"
+					@leave="leave"
+					mode='out-in'
+					:css='true'
+					)
+					component(:is="Component")
+				
+				// component(:is="Component")
 
 </template>
 
