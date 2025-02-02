@@ -31,6 +31,7 @@ onMounted(() => {
 	if (elemToFlip && flip.lastState) {
 		Flip.from(flip.lastState, {
 			targets: elemToFlip,
+			duration: .3,
 		})
 	}
 

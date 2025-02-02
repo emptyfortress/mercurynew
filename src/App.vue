@@ -43,42 +43,30 @@ router.afterEach((to, from) => {
 })
 
 const leave = (el: any, done: any) => {
-	if (cover.value == 2) return slideLeaveRight(el, done)
-	if (cover.value == 1) return slideLeaveLeft(el, done)
-	if (cover.value == 0) return coverLeave(el, done)
+	console.log('leave')
+	gsap.to(el, {
+		xPercent: -100,
+		opacity: 0,
+		duration: .2,
+		onComplete: done,
+	})
 }
 
 const beforeEnter = (el: any) => {
-	if (cover.value == 2) return slideBeforeEnter()
-	if (cover.value == 1) return slideBeforeEnter()
-	if (cover.value == 0) return coverBeforeEnter()
+	console.log('before enter')
 }
 
-const enter = (el: any, done: any) => {
-	if (cover.value == 2) return slideEnterFromLeft(el, done)
-	if (cover.value == 1) return slideEnterFromRight(el, done)
-	if (cover.value == 0) return coverEnter(el, done)
+const enter = (el: any, done: any,) => {
+	console.log('enter')
+	gsap.from(el, {
+		autoAlpha: 0,
+		xPercent: 100,
+		duration: .2,
+		onComplete: done,
+	}
+	)
 }
 
-// gsap.registerPlugin(Flip)
-// const be = ((el: any) => {
-// 	gsap.set(el, { opacity: 0 })
-//
-// })
-// const ent = ((el: any, done: any) => {
-// 	gsap.to(el, {
-// 		opacity: 1,
-// 		duration: 0.5,
-// 		onComplete: done,
-// 	})
-// })
-// const lea = ((el: any, done: any) => {
-// 	gsap.to(el, {
-// 		opacity: 0,
-// 		duration: 0.5,
-// 		onComplete: done,
-// 	})
-// })
 </script>
 
 <template lang="pug">
@@ -106,18 +94,18 @@ q-layout(view='hHh LpR fFf')
 		#cont
 			router-view(v-slot="{ Component, route }")
 				component(:is="Component")
-				// transition(@before-enter="be" @enter="ent" @leave="lea" :css="false" mode='out-in')
+				// transition(
+				// 	@before-enter="beforeEnter"
+				// 	@enter="enter"
+				// 	@before-leave="beforeLeave"
+				// 	@leave="leave"
+				// 	:css="false"
+				// 	)
 				// 	component(:is="Component")
-				// transition(@before-enter="beforeEnter" @enter="enter" @leave="leave" :css="false" :mode="mode")
-				// 	component(:is="Component")
+
 </template>
 
 <style scoped lang="scss">
-header {
-	line-height: 1.5;
-	max-height: 100vh;
-}
-
 .home {
 	font-size: 1.5rem;
 }
@@ -153,21 +141,11 @@ nav a:first-of-type {
 }
 
 @media (min-width: 1024px) {
-	header {
-		display: flex;
-		place-items: center;
-		padding-right: calc(var(--section-gap) / 2);
-	}
 
 	.logo {
 		margin: 0 2rem 0 0;
 	}
 
-	header .wrapper {
-		display: flex;
-		place-items: flex-start;
-		flex-wrap: wrap;
-	}
 
 	nav {
 		text-align: left;
@@ -181,6 +159,5 @@ nav a:first-of-type {
 
 #cont {
 	position: relative;
-	// background: yellow;
 }
 </style>

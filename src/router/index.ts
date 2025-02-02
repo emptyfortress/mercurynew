@@ -11,6 +11,8 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: false,
+				enterClass: 'animate__animated animate__fadeInLeft',
+				leaveClass: 'animate__animated animate__fadeOutRight',
 			},
 		},
 		{
@@ -38,6 +40,8 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
+				enterClass: 'animate__animated animate__fadeInLeft',
+				leaveClass: 'animate__animated animate__fadeOutRight',
 			},
 		},
 		{
@@ -56,6 +60,8 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
+				enterClass: 'animate__animated animate__fadeInLeft',
+				leaveClass: 'animate__animated animate__fadeOutRight',
 			},
 		},
 		{

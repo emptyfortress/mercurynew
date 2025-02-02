@@ -31,6 +31,7 @@ onMounted(() => {
 	if (elemToFlip && flip.lastState) {
 		Flip.from(flip.lastState, {
 			targets: elemToFlip,
+			duration: .3,
 		})
 	}
 
@@ -45,6 +46,8 @@ q-page(padding)
 	.cont
 		h2 Fuck
 		.rectangle(data-flip-id="rect" @click="navigate")
+	q-btn(unelevated color="primary" label="Отмена" @click="") 
+
 </template>
 
 <style scoped lang="scss">
@@ -54,8 +57,12 @@ q-page(padding)
 }
 
 .rectangle {
-	width: 200px;
-	height: 200px;
-	background-color: blue;
+	width: 100%;
+	height: calc(100vh - 50px);
+	background: blue;
+	position: fixed;
+	top: 50px;
+	left: 0;
 }
+
 </style>
