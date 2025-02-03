@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
@@ -28,6 +28,35 @@ router.beforeEach((to, from, next) => {
 	else next()
 })
 
+const calcLeave = computed(() => {
+	if (cover.value == 19) {
+		return 'fadeOutLeft'
+	}
+	if (cover.value == -19) {
+		return 'fadeOutRight'
+	}
+	if (cover.value > 0) {
+		return 'fadeOutTop'
+	}
+	if (cover.value < 0) {
+		return 'fadeOutBottom'
+	}
+})
+
+const calcEnter = computed(() => {
+	if (cover.value == 19) {
+		return 'fadeInRight'
+	}
+	if (cover.value == -19) {
+		return 'fadeInLeft'
+	}
+	if (cover.value > 0) {
+		return 'fadeInBottom'
+	}
+	if (cover.value < 0) {
+		return 'fadeInTop'
+	}
+})
 
 </script>
 
@@ -55,22 +84,16 @@ q-layout(view='hHh LpR fFf')
 	q-page-container
 		#cont
 			router-view(v-slot="{ Component }")
+				component(:is="Component")
+				// component(:is="Component" v-if='cover == 0')
 
-				component(:is="Component" v-if='cover == 0')
+				// transition(v-else
+				// 	:leave-active-class='calcLeave'
+				// 	:enter-active-class='calcEnter'
+				// 	mode='out-in'
+				// 	)
+				// 	component(:is="Component")
 
-				transition(v-if='cover > 0'
-					leave-active-class='fadeOutTop'
-					enter-active-class='fadeInBottom'
-					:mode="mode"
-					)
-					component(:is="Component")
-
-				transition(v-if='cover < 0'
-					leave-active-class='fadeOutBottom'
-					enter-active-class='fadeInTop'
-					:mode="mode"
-					)
-					component(:is="Component")
 
 </template>
 

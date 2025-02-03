@@ -31,7 +31,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: true,
-				count: 10
+				count: 0
 			},
 		},
 		{
@@ -41,7 +41,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: true,
-				count: 20
+				count: 19
 			},
 		},
 		{

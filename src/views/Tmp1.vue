@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, } from 'vue'
+import { ref, watch, nextTick, onBeforeUnmount, onMounted } from 'vue'
 import { animations, state } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
@@ -15,10 +15,12 @@ import IconApp from '@/components/icons/IconApp.vue'
 import AppPreview from '@/components/AppPreview.vue'
 // import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
+// import { useFlip } from '@/stores/flip'
 
 const router = useRouter()
 const route = useRoute()
 
+// const flip = useFlip()
 gsap.registerPlugin(Flip)
 
 const shift = useKeyModifier('Shift')
@@ -470,5 +472,11 @@ q-page(padding)
 	position: absolute;
 	top: -1.2rem;
 	right: -1.2rem;
+}
+.rectangle {
+	width: 100px;
+	height: 100px;
+	background-color: blue;
+	cursor: pointer;
 }
 </style>

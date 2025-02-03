@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onBeforeUnmount, onMounted } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter } from 'vue-router'
 import IconFlag from '@/components/icons/IconFlag.vue'
 import IconEntrance from '@/components/icons/IconEntrance.vue'
 import VersionTable from '@/components/VersionTable.vue'
 
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
+import { useFlip } from '@/stores/flip'
+
+const flip = useFlip()
+gsap.registerPlugin(Flip)
 const myapps = useApps()
 const router = useRouter()
 
@@ -16,8 +22,9 @@ const props = defineProps<{
 const emit = defineEmits(['close'])
 
 const navigate = () => {
-	myapps.setCurrentApp(props.item)
+	// router.push('/try1')
 	router.push('/assistent')
+	myapps.setCurrentApp(props.item)
 	emit('close')
 
 }
@@ -32,6 +39,28 @@ const toggleVersion = (() => {
 	version.value = !version.value
 })
 
+onBeforeUnmount(() => {
+	console.log('transition away from home');
+	const elemToFlip = document.querySelector('[data-flip-id="rect"]');
+	if (elemToFlip) {
+		flip.setLastState(Flip.getState(elemToFlip))
+	}
+
+})
+
+onMounted(() => {
+	console.log('home page mounted');
+	const elemToFlip = document.querySelector('[data-flip-id="rect"]');
+	if (elemToFlip && flip.lastState) {
+		Flip.from(flip.lastState, {
+			targets: elemToFlip,
+			duration: .3,
+		})
+	}
+
+	flip.setLastState(null)
+
+})
 </script>
 
 <template lang="pug">
@@ -67,7 +96,7 @@ div(
 				.val.link(@click='toggleVersion') {{ props.item.created }}
 
 		.myrow
-			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
+			.bt(data-flip-id="rect" @click.stop='navigate' v-if='props.item.version == "0.0.0"')
 				div
 					IconFlag.ic
 					div Создать первичные настройки
@@ -75,6 +104,9 @@ div(
 				div
 					IconEntrance.ic
 					div Перейти к приложению
+
+		.rectangle(data-flip-id="rect" @click.stop="navigate")
+
 	div(v-else
 		v-motion
 		:initial="{ x: 20, opacity: 0 }"
@@ -153,5 +185,12 @@ div(
 
 .ic {
 	font-size: 2rem;
+}
+
+.rectangle {
+	width: 100px;
+	height: 100px;
+	background-color: blue;
+	cursor: pointer;
 }
 </style>

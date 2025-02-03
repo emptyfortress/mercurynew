@@ -17,17 +17,16 @@ const navigate = (() => {
 onBeforeUnmount(() => {
 	console.log('transition away from project');
 
-	const elemToFlip = document.querySelector('[data-flip-id]');
+	const elemToFlip = document.querySelector('[data-flip-id="rect"]');
 	if (elemToFlip) {
 		flip.setLastState(Flip.getState(elemToFlip))
-		// lastState = Flip.getState(elemToFlip);
 	}
 })
 
 onMounted(() => {
 	console.log('project page mounted');
 
-	const elemToFlip = document.querySelector('[data-flip-id]');
+	const elemToFlip = document.querySelector('[data-flip-id="rect"]');
 	if (elemToFlip && flip.lastState) {
 		Flip.from(flip.lastState, {
 			targets: elemToFlip,
@@ -36,7 +35,6 @@ onMounted(() => {
 	}
 
 	flip.setLastState(null)
-	// lastState = null
 })
 
 </script>

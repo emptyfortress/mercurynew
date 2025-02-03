@@ -57,6 +57,7 @@ q-page(padding)
 	display: flex;
 	justify-content: center;
 	position: relative;
+	// top: 0;
 }
 
 .text {
