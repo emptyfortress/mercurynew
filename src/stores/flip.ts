@@ -9,8 +9,15 @@ export const useFlip = defineStore('flip', () => {
 		lastState.value = e
 	})
 
+	const cover = ref(0)
+	const setCover = ((e: number) => {
+		cover.value = e
+	})
+
 	return {
 		lastState,
-		setLastState
+		setLastState,
+		cover,
+		setCover,
 	}
 })

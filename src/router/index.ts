@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Tmp1 from '../views/Tmp1.vue'
 
-
 declare module 'vue-router' {
 	interface RouteMeta {
 		toolbar: boolean,
@@ -9,6 +8,8 @@ declare module 'vue-router' {
 		count: number
 	}
 }
+
+
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),

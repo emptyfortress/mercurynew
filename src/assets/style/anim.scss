@@ -18,7 +18,7 @@
 @keyframes fadeInTop {
   from {
     opacity: 0;
-    transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -20px, 0);
   }
 
   to {
@@ -29,7 +29,7 @@
 
 .fadeInTop {
   animation-name: fadeInTop;
-  animation-duration: .3s;
+  animation-duration: .2s;
   animation-fill-mode: both;
 }
 
@@ -41,20 +41,20 @@
 
   to {
     opacity: 0;
-    transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -20px, 0);
   }
 }
 
 .fadeOutTop {
   animation-name: fadeOutTop;
-  animation-duration: .3s;
+  animation-duration: .2s;
   animation-fill-mode: both;
 }
 
 @keyframes fadeInBottom {
   from {
     opacity: 0;
-    transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 20px, 0);
   }
 
   to {
@@ -65,7 +65,7 @@
 
 .fadeInBottom {
   animation-name: fadeInBottom;
-  animation-duration: .3s;
+  animation-duration: .2s;
   animation-fill-mode: both;
 }
 
@@ -77,12 +77,12 @@
 
   to {
     opacity: 0;
-    transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 20px, 0);
   }
 }
 
 .fadeOutBottom {
   animation-name: fadeOutBottom;
-  animation-duration: .3s;
+  animation-duration: .2s;
   animation-fill-mode: both;
 }

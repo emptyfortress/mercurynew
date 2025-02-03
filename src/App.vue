@@ -16,16 +16,16 @@ const toggleRightDrawer = () => {
 
 const app = useStorage('app', localStorage)
 
-const cover = ref(1)
+const cover = ref(0)
 
-// const mode = ref<any>('out-in')
+const mode = ref<any>('out-in')
 
-const mode = computed(() => {
-	return cover.value == 0 ? 'out-in' : undefined
-})
-
-router.beforeEach((to, from) => {
-	cover.value = to.meta.count - from.meta.count
+router.beforeEach((to, from, next) => {
+	if (!!from.meta.count) {
+		cover.value = to.meta.count - from.meta.count
+		next()
+	}
+	else next()
 })
 
 
@@ -54,7 +54,9 @@ q-layout(view='hHh LpR fFf')
 
 	q-page-container
 		#cont
-			router-view(v-slot="{ Component, route }")
+			router-view(v-slot="{ Component }")
+
+				component(:is="Component" v-if='cover == 0')
 
 				transition(v-if='cover > 0'
 					leave-active-class='fadeOutTop'
@@ -69,8 +71,6 @@ q-layout(view='hHh LpR fFf')
 					:mode="mode"
 					)
 					component(:is="Component")
-
-				component(:is="Component" v-if='cover == 0')
 
 </template>
 
