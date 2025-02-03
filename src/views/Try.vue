@@ -59,6 +59,10 @@ q-page(padding)
 </template>
 
 <style scoped lang="scss">
+.q-page {
+	position: relative;
+}
+
 .cont {
 	width: 1000px;
 	margin: 0 auto;

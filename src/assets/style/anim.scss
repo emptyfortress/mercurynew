@@ -13,3 +13,41 @@
 .list-leave-active {
 	position: absolute;
 }
+
+// page transition ************************************************************ 
+@keyframes fadeInTop {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fadeInTop {
+  animation-name: fadeInTop;
+  animation-duration: .3s;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeOutTop {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+.fadeOutTop {
+  animation-name: fadeOutTop;
+  animation-duration: .3s;
+  animation-fill-mode: both;
+}
+

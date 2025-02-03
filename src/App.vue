@@ -28,23 +28,25 @@ const toggleRightDrawer = () => {
 
 const app = useStorage('app', localStorage)
 
-// const cover = ref(0)
+const cover = ref(0)
 
 const mode = ref<any>('out-in')
 
-// router.afterEach((to, from) => {
-// 	if (to.name == 'form' && from.name == 'process') {
-// 		cover.value = 1
-// 	} else if (to.name == 'process' && from.name == 'form') {
-// 		cover.value = 2
-// 	} else {
-// 		cover.value = 0
-// 	}
-// })
+router.afterEach((to, from) => {
+	if (to.name == 'try1' && from.name == 'try') {
+		cover.value = 1
+		// } else if (to.name == 'process' && from.name == 'form') {
+		// 	cover.value = 2
+	} else {
+		cover.value = 0
+		mode.value = ''
+	}
+})
 
 const beforeLeave = ((el: any) => {
 	console.log('beforeLeave')
 })
+
 const leave = (el: any, done: any) => {
 	console.log('leave')
 	gsap.to(el, {
@@ -60,7 +62,6 @@ const beforeEnter = (el: any) => {
 }
 
 const enter = (el: any, done: any,) => {
-	console.log('enter')
 	gsap.from(el, {
 		opacity: 0,
 		x: 100,
@@ -96,17 +97,14 @@ q-layout(view='hHh LpR fFf')
 	q-page-container
 		#cont
 			router-view(v-slot="{ Component, route }")
-				transition(
-					@before-enter="beforeEnter"
-					@enter="enter"
-					@before-leave="beforeLeave"
-					@leave="leave"
-					mode='out-in'
-					:css='true'
+				transition(v-if='cover == 0'
+					enter-active-class='fadeInTop'
+					leave-active-class='fadeOutTop'
+					:mode="mode"
 					)
 					component(:is="Component")
-				
-				// component(:is="Component")
+
+				component(:is="Component" v-if='cover == 1')
 
 </template>
 
