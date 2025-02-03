@@ -51,3 +51,38 @@
   animation-fill-mode: both;
 }
 
+@keyframes fadeInBottom {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fadeInBottom {
+  animation-name: fadeInBottom;
+  animation-duration: .3s;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeOutBottom {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+.fadeOutBottom {
+  animation-name: fadeOutBottom;
+  animation-duration: .3s;
+  animation-fill-mode: both;
+}

@@ -1,22 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import {
-	coverBeforeEnter,
-	coverEnter,
-	coverLeave,
-	slideLeaveLeft,
-	slideLeaveRight,
-	slideEnterFromLeft,
-	slideEnterFromRight,
-	slideBeforeEnter,
-} from '@/utils/utils'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import IconHome from '@/components/icons/IconHome.vue'
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,48 +16,18 @@ const toggleRightDrawer = () => {
 
 const app = useStorage('app', localStorage)
 
-const cover = ref(0)
+const cover = ref(1)
 
-const mode = ref<any>('out-in')
+// const mode = ref<any>('out-in')
 
-router.afterEach((to, from) => {
-	if (to.name == 'try1' && from.name == 'try') {
-		cover.value = 1
-		// } else if (to.name == 'process' && from.name == 'form') {
-		// 	cover.value = 2
-	} else {
-		cover.value = 0
-		mode.value = ''
-	}
+const mode = computed(() => {
+	return cover.value == 0 ? 'out-in' : undefined
 })
 
-const beforeLeave = ((el: any) => {
-	console.log('beforeLeave')
+router.beforeEach((to, from) => {
+	cover.value = to.meta.count - from.meta.count
 })
 
-const leave = (el: any, done: any) => {
-	console.log('leave')
-	gsap.to(el, {
-		opacity: 0,
-		x: -100,
-		duration: .3,
-		onComplete: done,
-	})
-}
-
-const beforeEnter = (el: any) => {
-	console.log('before enter')
-}
-
-const enter = (el: any, done: any,) => {
-	gsap.from(el, {
-		opacity: 0,
-		x: 100,
-		duration: .3,
-		onComplete: done,
-	}
-	)
-}
 
 </script>
 
@@ -97,14 +55,22 @@ q-layout(view='hHh LpR fFf')
 	q-page-container
 		#cont
 			router-view(v-slot="{ Component, route }")
-				transition(v-if='cover == 0'
-					enter-active-class='fadeInTop'
+
+				transition(v-if='cover > 0'
 					leave-active-class='fadeOutTop'
+					enter-active-class='fadeInBottom'
 					:mode="mode"
 					)
 					component(:is="Component")
 
-				component(:is="Component" v-if='cover == 1')
+				transition(v-if='cover < 0'
+					leave-active-class='fadeOutBottom'
+					enter-active-class='fadeInTop'
+					:mode="mode"
+					)
+					component(:is="Component")
+
+				component(:is="Component" v-if='cover == 0')
 
 </template>
 

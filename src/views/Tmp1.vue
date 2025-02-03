@@ -224,8 +224,7 @@ const remove = (() => {
 
 <template lang="pug">
 q-page(padding)
-	div(@click="router.push('/forms')") home
-	// .all
+	.all
 		.pa(ref='parent')
 			.chil(v-for="(item, index) in tapes" :key="item.id" :id="item.id"
 				v-motion
@@ -295,11 +294,15 @@ q-page(padding)
 			div(id="no-drag")
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
-		// Trash(v-model="dragStatus" @remove="remove" :group='expanded')
-		// ConfirmDialog(v-model="confirm" @remove="removeGroup")
+		Trash(v-model="dragStatus" @remove="remove" :group='expanded')
+		ConfirmDialog(v-model="confirm" @remove="removeGroup")
 </template>
 
 <style scoped lang="scss">
+.q-page {
+	position: relative;
+}
+
 .all {
 	margin: 0 auto;
 	padding: 0;

@@ -1,6 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Tmp1 from '../views/Tmp1.vue'
 
+
+declare module 'vue-router' {
+	interface RouteMeta {
+		toolbar: boolean,
+		back: boolean,
+		count: number
+	}
+}
+
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
@@ -11,8 +20,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: false,
-				enterClass: 'animate__animated animate__fadeInLeft',
-				leaveClass: 'animate__animated animate__fadeOutRight',
+				count: 0
 			},
 		},
 		{
@@ -22,6 +30,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: true,
+				count: 10
 			},
 		},
 		{
@@ -31,6 +40,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: true,
+				count: 20
 			},
 		},
 		{
@@ -40,8 +50,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
-				enterClass: 'animate__animated animate__fadeInLeft',
-				leaveClass: 'animate__animated animate__fadeOutRight',
+				count: 1,
 			},
 		},
 		{
@@ -51,6 +60,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: true,
+				count: 20,
 			},
 		},
 		{
@@ -60,17 +70,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
-				enterClass: 'animate__animated animate__fadeInLeft',
-				leaveClass: 'animate__animated animate__fadeOutRight',
-			},
-		},
-		{
-			path: '/statuses',
-			name: 'statuses',
-			component: () => import('@/views/Statuses.vue'),
-			meta: {
-				toolbar: true,
-				back: false,
+				count: 2,
 			},
 		},
 		{
@@ -80,6 +80,17 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
+				count: 3,
+			},
+		},
+		{
+			path: '/statuses',
+			name: 'statuses',
+			component: () => import('@/views/Statuses.vue'),
+			meta: {
+				toolbar: true,
+				back: false,
+				count: 4,
 			},
 		},
 		{
@@ -89,15 +100,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
-			},
-		},
-		{
-			path: '/project',
-			name: 'project',
-			component: () => import('@/views/Project.vue'),
-			meta: {
-				toolbar: true,
-				back: false,
+				count: 5,
 			},
 		},
 		{
@@ -107,6 +110,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
+				count: 0,
 			},
 		},
 		{
@@ -116,6 +120,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: true,
+				count: 10,
 			},
 		},
 		{
@@ -125,9 +130,11 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: true,
+				count: 10,
 			},
 		},
 	],
 })
+
 
 export default router

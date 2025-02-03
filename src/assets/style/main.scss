@@ -19,9 +19,10 @@
 }
 
 .q-page {
+  width: 100%;
   position: absolute;
   top: 0;
-  // background: green;
+  background: green;
 }
 .q-splitter__separator {
 	&:hover,

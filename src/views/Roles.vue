@@ -118,7 +118,7 @@ const create = ((e: string) => {
 <template lang="pug">
 q-page(padding)
 	.header Роли
-	// Container(@drop="onDrop"
+	Container(@drop="onDrop"
 		@drag-leave='onDragLeave'
 		@drag-enter='onDragEnter'
 		orientation='horizontal'
