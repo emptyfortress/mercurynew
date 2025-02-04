@@ -153,6 +153,7 @@ q-page(padding)
 						.text-h6 Здесь свойства формы
 						br
 						q-btn(unelevated color="secondary" label="Редактировать форму" @click.stop='navigate') 
+
 			div(id="no-drag")
 				AddButton(v-if='!expanded' @create='create' mode="form")
 

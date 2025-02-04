@@ -7,6 +7,7 @@ import { Flip } from 'gsap/Flip'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
 import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
+import Trash from '@/components/common/Trash.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -104,6 +105,18 @@ const create = ((e: any) => {
 		})
 	}, 1200)
 })
+
+const remove = (() => {
+	tapes.value.splice(draggedItem.value, 1)
+	$q.notify({
+		message: 'Список удален',
+		color: 'negative',
+		icon: 'mdi-check-bold',
+		actions: [
+			{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
+		]
+	})
+})
 </script>
 
 <template lang="pug">
@@ -120,8 +133,22 @@ q-page(padding)
 			IconFolderSearch.img
 			.hg {{ item.label }}
 
+			.content(v-if='item.expand'
+				v-motion
+				:initial="{ x: 100, opacity: 0 }"
+				:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
+				br
+				.text-center
+					.text-h6 Здесь свойства списка
+					br
+					.q-gutter-x-sm
+						q-btn(unelevated color="secondary" label="Редактировать запрос" @click.stop='') 
+						q-btn(unelevated color="secondary" label="Редактировать представление" @click.stop='') 
+
 		div(id="no-drag")
 			AddButton(v-if='!expanded' @create='create' mode="list")
+
+	Trash(v-model="dragStatus" @remove="remove" :group='expanded')
 </template>
 
 <style scoped lang="scss">
