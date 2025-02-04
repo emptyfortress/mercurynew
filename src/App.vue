@@ -85,9 +85,7 @@ q-layout(view='hHh LpR fFf')
 	q-page-container
 		#cont
 			router-view(v-slot="{ Component, route }")
-				component(:is="Component" v-if='cover == 0')
-
-				transition(v-else
+				transition(
 					:leave-active-class='calcLeave'
 					:enter-active-class='calcEnter'
 					mode='out-in'

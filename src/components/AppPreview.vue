@@ -6,12 +6,12 @@ import IconFlag from '@/components/icons/IconFlag.vue'
 import IconEntrance from '@/components/icons/IconEntrance.vue'
 import VersionTable from '@/components/VersionTable.vue'
 
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
-import { useFlip } from '@/stores/flip'
+// import { gsap } from 'gsap'
+// import { Flip } from 'gsap/Flip'
+// import { useFlip } from '@/stores/flip'
 
-const flip = useFlip()
-gsap.registerPlugin(Flip)
+// const flip = useFlip()
+// gsap.registerPlugin(Flip)
 const myapps = useApps()
 const router = useRouter()
 
@@ -22,8 +22,8 @@ const props = defineProps<{
 const emit = defineEmits(['close'])
 
 const navigate = () => {
-	myapps.setCurrentApp(props.item)
 	router.push('/assistent')
+	myapps.setCurrentApp(props.item)
 }
 const navigate1 = () => {
 	myapps.setCurrentApp(props.item)
@@ -36,27 +36,9 @@ const toggleVersion = (() => {
 })
 
 onBeforeUnmount(() => {
-	console.log('transition away from home');
-	const elemToFlip = document.querySelector('[data-flip-id="rect"]');
-	if (elemToFlip) {
-		flip.setLastState(Flip.getState(elemToFlip))
-	}
 	emit('close')
-
 })
 
-onMounted(() => {
-	console.log('home page mounted');
-	const elemToFlip = document.querySelector('[data-flip-id="rect"]');
-	if (elemToFlip && flip.lastState) {
-		Flip.from(flip.lastState, {
-			targets: elemToFlip,
-			duration: .3,
-		})
-	}
-
-	flip.setLastState(null)
-})
 </script>
 
 <template lang="pug">
@@ -92,7 +74,7 @@ div(
 				.val.link(@click='toggleVersion') {{ props.item.created }}
 
 		.myrow
-			.bt(data-flip-id="rect" @click.stop='navigate' v-if='props.item.version == "0.0.0"')
+			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
 				div
 					IconFlag.ic
 					div Создать первичные настройки
@@ -101,7 +83,6 @@ div(
 					IconEntrance.ic
 					div Перейти к приложению
 
-		// .rectangle(data-flip-id="rect" @click.stop="navigate")
 
 	div(v-else
 		v-motion
