@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue'
-import { Container, Draggable } from 'vue3-smooth-dnd'
-import { applyDrag } from '@/utils/utils'
+import { ref, nextTick, } from 'vue'
+import { animations, state } from "@formkit/drag-and-drop"
+import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, } from 'vue-router'
 
 const router = useRouter()
-const route = useRoute()
 
 gsap.registerPlugin(Flip)
 
@@ -37,25 +36,15 @@ const forms = ref([
 ])
 
 const $q = useQuasar()
-const onDrop = (dropResult: number) => {
-	forms.value = applyDrag(forms.value, dropResult)
-	dragging.value = false
-}
 
-watch(
-	() => forms.value.length,
-	(newval, oldval) => {
-		if (oldval > newval) {
-			$q.notify({
-				message: 'Форма удалена',
-				color: 'negative',
-				icon: 'mdi-check-bold',
-				actions: [
-					{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
-				]
-			})
-		}
-	})
+const dragStatus = ref(false)
+state.on("dragStarted", () => {
+	dragStatus.value = true
+})
+
+state.on("dragEnded", () => {
+	dragStatus.value = false
+})
 
 const expanded = ref<boolean>(false)
 
@@ -92,15 +81,6 @@ const calcClass = (item: any) => {
 
 const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
 
-const dragging = ref(false)
-
-const onDragLeave = (() => {
-	dragging.value = true
-})
-const onDragEnter = (() => {
-	dragging.value = false
-})
-
 const create = ((e: string) => {
 	let tmp = {
 		id: +new Date(),
@@ -121,51 +101,94 @@ const create = ((e: string) => {
 const navigate = (() => {
 	router.push('/form')
 })
+
+const draggedItem = ref(100)
+
+const config = {
+	plugins: [animations(),],
+	dragPlaceholderClass: 'ghost',
+	sortable: true,
+	draggable: (el: any) => {
+		return el.id !== 'no-drag'
+	},
+	onDragstart: (e: any) => {
+		draggedItem.value = e.draggedNode.data.index
+	},
+}
+const [parent, tapes] = useDragAndDrop(forms.value, config)
+
+const remove = (() => {
+	tapes.value.splice(draggedItem.value, 1)
+	$q.notify({
+		message: 'Форма удалена',
+		color: 'negative',
+		icon: 'mdi-check-bold',
+		actions: [
+			{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
+		]
+	})
+})
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.header Формы
-
-	Container(@drop="onDrop"
-		@drag-leave='onDragLeave'
-		@drag-enter='onDragEnter'
-		orientation='horizontal'
-		group-name='column'
-		:remove-on-drop-out='true'
-		:tag="{ value: 'div', props: { class: 'list' } }")
-		Draggable(v-for="(item, index) in forms"
-			:key="item.id")
-			.text-center
-				.item1(
-					@click='expand(item)'
-					:class="calcClass(item)"
-					)
-
-					q-img.img(:src='getImageUrl(item.avatar)')
-					.hg {{ item.label }}
-
-					.content(v-if='item.expand'
-						v-motion
-						:initial="{ x: 100, opacity: 0 }"
-						:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
+	.all
+		.header Формы
+		.pa(ref='parent')
+			.item1(v-for="(item, index) in tapes" :key="item.id"
+				v-motion
+				:initial="{ y: 40, opacity: 0 }"
+				:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
+				@click.stop='expand(item)'
+				:class="calcClass(item)"
+				)
+				q-img.img(:src='getImageUrl(item.avatar)')
+				.hg {{ item.label }}
+				.content(v-if='item.expand'
+					v-motion
+					:initial="{ x: 100, opacity: 0 }"
+					:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
+					br
+					.text-center
+						.text-h6 Здесь свойства формы
 						br
-						.text-center
-							.text-h6 Здесь свойства формы
-							br
-							q-btn(unelevated color="secondary" label="Редактировать форму" @click.stop='navigate') 
+						q-btn(unelevated color="secondary" label="Редактировать форму" @click.stop='navigate') 
+			div(id="no-drag")
+				AddButton(v-if='!expanded' @create='create' mode="form")
 
-
-		AddButton(v-if='!expanded' @create='create' mode="form")
-
-	Trash(:dragging="dragging")
+	Trash(v-model="dragStatus" @remove="remove" :group='expanded')
 
 </template>
 
 <style scoped lang="scss">
-// .q-page {
-// 	position: relative;
-// }
+.all {
+	margin: 0 auto;
+	padding: 0;
+	width: 728px;
+}
+
+.pa {
+	display: grid;
+	grid-template-columns: repeat(5, 150px);
+	column-gap: 1rem;
+	align-items: center;
+	row-gap: 1rem;
+	margin: 0 auto;
+	width: 728px;
+	border: none;
+	outline: none;
+}
+
+.ghost {
+	background: hsl(213 38% 81% / 1) !important;
+	box-shadow: none !important;
+	border: none !important;
+
+	* {
+		display: none;
+	}
+
+}
 
 .header {
 	font-size: 1.5rem;
@@ -203,8 +226,9 @@ q-page(padding)
 		height: 70vh;
 		width: 900px;
 		margin: 0 auto;
-		left: 60px;
+		left: 0;
 		right: 0;
+		top: 120px;
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 		text-align: left;
