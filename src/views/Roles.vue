@@ -77,10 +77,10 @@ const calcClass = (item: any) => {
 
 const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
 
-const create = ((e: string) => {
+const create = ((e: any) => {
 	let tmp = {
 		id: +new Date(),
-		label: e,
+		label: e.label,
 		expand: false,
 		avatar: 'avatar1'
 	}

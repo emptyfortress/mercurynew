@@ -164,11 +164,11 @@ const expand = ((item: App) => {
 })
 
 const $q = useQuasar()
-const create = (e: string) => {
+const create = (e: any) => {
 	let tmp = {
 		id: uid(),
-		label: e,
-		descr: 'description',
+		label: e.label,
+		descr: e.description,
 		expand: false,
 		over: false,
 		version: '0.0.0',

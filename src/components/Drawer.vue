@@ -34,7 +34,7 @@ const pages = [
 	{
 		id: 4,
 		title: 'Реестры',
-		icon: 'mdi-script-text-outline',
+		icon: 'mdi-folder-search-outline',
 		url: 'lists',
 	},
 ]

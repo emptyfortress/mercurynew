@@ -18,6 +18,8 @@ const header = computed(() => {
 			return 'Новая роль'
 		case 'form':
 			return 'Новая форма'
+		case 'list':
+			return 'Новый список'
 		default:
 			return 'Новое приложение'
 	}
@@ -75,7 +77,10 @@ const resetForm = (() => {
 
 })
 const submitForm = (() => {
-	emit('create', model.value)
+	emit('create', {
+		label: model.value,
+		description: model1.value,
+	})
 	resetForm()
 	add()
 	input.value.resetValidation()
@@ -143,7 +148,7 @@ const pic = ref(false)
 					)
 
 
-			div(v-if='props.mode == "app"')
+			div(v-if='props.mode == "app" || props.mode == "list"')
 				.section
 					label Описание:
 					q-input(
