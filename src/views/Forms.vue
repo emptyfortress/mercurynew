@@ -88,7 +88,7 @@ const create = ((e: string) => {
 		expand: false,
 		avatar: 'edit'
 	}
-	forms.value.push(tmp)
+	tapes.value.push(tmp)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
