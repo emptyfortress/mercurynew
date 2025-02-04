@@ -126,6 +126,7 @@ const navigate = (() => {
 <template lang="pug">
 q-page(padding)
 	.header Формы
+
 	Container(@drop="onDrop"
 		@drag-leave='onDragLeave'
 		@drag-enter='onDragEnter'
