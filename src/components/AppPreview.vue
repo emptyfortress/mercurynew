@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeUnmount, onMounted } from 'vue'
+import { ref, onBeforeUnmount, onMounted, nextTick } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter } from 'vue-router'
 import IconFlag from '@/components/icons/IconFlag.vue'
@@ -16,22 +16,18 @@ const myapps = useApps()
 const router = useRouter()
 
 const props = defineProps<{
-	item: any
+	item: App
 }>()
 
 const emit = defineEmits(['close'])
 
 const navigate = () => {
-	// router.push('/try1')
-	router.push('/assistent')
 	myapps.setCurrentApp(props.item)
-	emit('close')
-
+	router.push('/assistent')
 }
 const navigate1 = () => {
 	myapps.setCurrentApp(props.item)
 	router.push('/process')
-	emit('close')
 }
 
 const version = ref(false)
@@ -45,6 +41,7 @@ onBeforeUnmount(() => {
 	if (elemToFlip) {
 		flip.setLastState(Flip.getState(elemToFlip))
 	}
+	emit('close')
 
 })
 
@@ -59,7 +56,6 @@ onMounted(() => {
 	}
 
 	flip.setLastState(null)
-
 })
 </script>
 
@@ -105,7 +101,7 @@ div(
 					IconEntrance.ic
 					div Перейти к приложению
 
-		.rectangle(data-flip-id="rect" @click.stop="navigate")
+		// .rectangle(data-flip-id="rect" @click.stop="navigate")
 
 	div(v-else
 		v-motion

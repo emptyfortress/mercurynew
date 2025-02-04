@@ -137,8 +137,8 @@ const preexpand = ((item: App) => {
 const close = ((item: App) => {
 	expanded.value = false
 	item.expand = false
-	// app.value = item
 	item.list.map((el) => el.expand = false)
+	// tapes.value.map((el) => el.expand = false)
 })
 
 const expand = ((item: App) => {
@@ -274,7 +274,7 @@ q-page(padding)
 						)
 
 				AppPreview(:item='item'
-					v-if='item.expand && item.group == 1'
+					v-if='expanded && item.expand && item.group == 1'
 					v-motion
 					:initial='{ x: 100, opacity: 0 }'
 					:enter='{ x: 0, opacity: 1 }'
@@ -473,6 +473,7 @@ q-page(padding)
 	top: -1.2rem;
 	right: -1.2rem;
 }
+
 .rectangle {
 	width: 100px;
 	height: 100px;

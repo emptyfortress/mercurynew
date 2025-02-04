@@ -22,7 +22,6 @@ onBeforeUnmount(() => {
 	const elemToFlip = document.querySelector('[data-flip-id="rect"]');
 	if (elemToFlip) {
 		flip.setLastState(Flip.getState(elemToFlip))
-		// lastState = Flip.getState(elemToFlip);
 	}
 })
 
@@ -44,8 +43,17 @@ onMounted(() => {
 
 <template lang="pug">
 q-page(padding)
-	.rectangle(data-flip-id="rect" @click="$router.back()")
-	// .cont
+	.rectangle(data-flip-id="rect"
+		v-motion
+		:initial="{ opacity: 1 }"
+		:enter="{ opacity: 0 }"
+		)
+	.cont(
+		v-motion
+		:initial="{ opacity: 0, x: 100 }"
+		:enter="{ opacity: 1, x: 0 }"
+		:delay='400'
+		)
 		.row.justify-between.items-center
 			.hd Первичные настройки
 			.bt(@click='navigate')
@@ -60,7 +68,8 @@ q-page(padding)
 .rectangle {
 	width: 100%;
 	height: calc(100vh - 50px);
-	background: blue;
+	// background: blue;
+	background: $secondary;
 	position: fixed;
 	top: 50px;
 	left: 0;
