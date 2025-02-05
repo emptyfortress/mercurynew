@@ -250,8 +250,9 @@ const test = () => {
 	}
 }
 const test1 = (() => {
-	showFirst.value = false
+	// showFirst.value = false
 })
+
 const addAll = (e: Option) => {
 	if (!!e.parents) {
 		let temp = e.parents.map((el) => ({
