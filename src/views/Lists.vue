@@ -133,9 +133,11 @@ q-page(padding)
 				:initial="{ x: 100, opacity: 0 }"
 				:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
 				br
+				.grid
+					label Название
+					label Название
+
 				.text-center
-					.text-h6 Здесь свойства списка
-					br
 					.q-gutter-x-sm
 						q-btn(unelevated color="secondary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
 						q-btn(unelevated color="secondary" label="Редактировать представление" @click.stop='') 
@@ -197,13 +199,13 @@ q-page(padding)
 	}
 
 	&.active {
-		position: fixed;
+		position: absolute;
 		height: 70vh;
 		width: 900px;
 		margin: 0 auto;
 		left: 60px;
 		right: 0;
-		top: 120px;
+		top: 64px;
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	}
