@@ -103,6 +103,17 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/request/:id',
+			name: 'request',
+			component: () => import('@/views/Request.vue'),
+			props: true,
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 25,
+			},
+		},
+		{
 			path: '/bugs',
 			name: 'bugs',
 			component: () => import('@/views/Bugs.vue'),

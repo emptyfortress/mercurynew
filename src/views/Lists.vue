@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, } from 'vue'
+import { ref, nextTick, onBeforeUnmount, } from 'vue'
 import { animations, state } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { gsap } from 'gsap'
@@ -8,29 +8,15 @@ import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
 import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
 import Trash from '@/components/common/Trash.vue'
+import { useRouter, } from 'vue-router'
+import { useList } from '@/stores/list'
+
+
+const router = useRouter()
 
 gsap.registerPlugin(Flip)
 
-const lists = ref([
-	{
-		id: 1,
-		label: 'Все карточки',
-		descr: 'Все карточки доступные пользователю ролевой модели',
-		expand: false,
-	},
-	{
-		id: 2,
-		label: 'На ознакомление',
-		descr: 'Задания на ознакомление',
-		expand: false,
-	},
-	{
-		id: 3,
-		label: 'Договоры',
-		descr: 'Договоры с контрагентами за текущий год',
-		expand: false,
-	},
-])
+const list = useList()
 
 const $q = useQuasar()
 
@@ -87,7 +73,7 @@ const config = {
 		draggedItem.value = e.draggedNode.data.index
 	},
 }
-const [parent, tapes] = useDragAndDrop(lists.value, config)
+const [parent, tapes] = useDragAndDrop(list.lists, config)
 
 const create = ((e: any) => {
 	let tmp = {
@@ -117,6 +103,15 @@ const remove = (() => {
 		]
 	})
 })
+
+const navigate = ((id: any) => {
+	router.push(`/request/${id}`)
+})
+
+onBeforeUnmount(() => {
+	expanded.value = false
+	list.reset()
+})
 </script>
 
 <template lang="pug">
@@ -142,7 +137,7 @@ q-page(padding)
 					.text-h6 Здесь свойства списка
 					br
 					.q-gutter-x-sm
-						q-btn(unelevated color="secondary" label="Редактировать запрос" @click.stop='') 
+						q-btn(unelevated color="secondary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
 						q-btn(unelevated color="secondary" label="Редактировать представление" @click.stop='') 
 
 		div(id="no-drag")
@@ -155,6 +150,10 @@ q-page(padding)
 .header {
 	font-size: 1.5rem;
 	text-align: center;
+}
+
+.q-page {
+	position: relative;
 }
 
 .pa {
