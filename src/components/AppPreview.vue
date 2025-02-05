@@ -77,7 +77,7 @@ div(
 			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
 				div
 					IconFlag.ic
-					div Создать первичные настройки
+					div Помощник по настройке
 			.bt(@click.stop='navigate1')
 				div
 					IconEntrance.ic

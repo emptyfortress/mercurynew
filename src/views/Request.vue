@@ -21,7 +21,7 @@ const current = computed(() => {
 q-page(padding)
 	.editor(ref='editor1')
 		.top()
-			.zg {{ current?.label }}
+			.zg Запрос "{{ current?.label }}"
 
 		// PlusButton(@activate='startRight0' @stop='stopRight0')
 </template>
