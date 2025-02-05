@@ -29,7 +29,8 @@ const arr = ref([
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		group: 1,
-		pic: IconPresentation
+		pic: IconPresentation,
+		list: [],
 	},
 	{
 		id: '1',
@@ -40,7 +41,8 @@ const arr = ref([
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
 		group: 1,
-		pic: IconMicrophone
+		pic: IconMicrophone,
+		list: [],
 	},
 ])
 
