@@ -59,7 +59,7 @@ const coverLeave = async (el: any, done: any) => {
 
 // slide anim *************************************************
 
-const slideBeforeEnter = () => {}
+const slideBeforeEnter = () => { }
 
 const slideLeaveLeft = async (el: any, done: any) => {
 	await gsap.to(el, {
@@ -105,6 +105,21 @@ const slideEnterFromLeft = async (el: any, done: any) => {
 	done()
 }
 
+// old utils from application ************************************
+const getMembers = (members: any[]): any[] => {
+	let children = [] as any[]
+	return members
+		.map((mem) => {
+			const m = { ...mem } // use spread operator
+			if (m.children && m.children.length) {
+				children = [...children, ...m.children]
+			}
+			delete m.children // this will not affect the original array object
+			return m
+		})
+		.concat(children.length ? getMembers(children) : children)
+}
+
 export {
 	applyDrag,
 	coverBeforeEnter,
@@ -115,4 +130,5 @@ export {
 	slideEnterFromRight,
 	slideEnterFromLeft,
 	slideBeforeEnter,
+	getMembers,
 }

@@ -135,7 +135,10 @@ q-page(padding)
 				br
 				.grid
 					label Название
-					label Название
+					.val {{ item.label }}
+					template(v-for="n in 3")
+						label Свойство
+						.val Параметр
 
 				.text-center
 					.q-gutter-x-sm
@@ -156,6 +159,22 @@ q-page(padding)
 
 .q-page {
 	position: relative;
+}
+
+.val {
+	color: $primary;
+	border-bottom: 1px dotted $primary;
+}
+
+.grid {
+	width: 300px;
+	margin: 1rem auto 4rem;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	justify-items: start;
+	align-items: center;
+	column-gap: 1rem;
+	row-gap: .5rem;
 }
 
 .pa {

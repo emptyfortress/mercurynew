@@ -29,3 +29,18 @@ interface Version {
 	comment: string
 	current: boolean
 }
+
+interface Option {
+	id?: string
+	text: string
+	selected: boolean
+	type?: number
+	level?: number
+	parents?: string[] | []
+	kind?: number
+	inp?: boolean
+	drag?: boolean
+	man?: boolean
+	date?: boolean
+	children?: Option[] | []
+}

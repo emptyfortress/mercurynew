@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useList } from '@/stores/list'
+import Text1 from '@/components/Text1.vue'
 
 const props = defineProps({
 	id: {
@@ -22,34 +23,27 @@ q-page(padding)
 	.editor(ref='editor1')
 		.top()
 			.zg Запрос "{{ current?.label }}"
+			div
+				q-btn(flat round dense icon="mdi-undo" color="primary" @click="") 
+				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
+				q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
 
-		// PlusButton(@activate='startRight0' @stop='stopRight0')
+		Text1(req='test')
 </template>
 
 <style scoped lang="scss">
-// .editor {
-// 	padding-top: 4rem;
-// 	display: flex;
-// 	justify-content: center;
-// 	// flex-direction: column;
-// 	align-items: start;
-// 	position: relative;
-// 	// max-width: 1200px;
-// }
-
 .q-page {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	position: relative;
-	// top: 0;
 }
 
 
 .editor {
 	display: block;
 	padding: 0;
-	background: var(--bgLight);
+	// background: var(--bgLight);
 	position: relative;
 }
 

@@ -159,3 +159,14 @@
   animation-duration: .2s;
   animation-fill-mode: both;
 }
+
+// поиски и представления анимация *********************************
+.slide-right-enter-active,
+.slide-right-leave-active {
+	transition: all 0.2s ease;
+}
+.slide-right-enter-from,
+.slide-right-leave-to {
+	transform: translateX(30px);
+	opacity: 0;
+}
