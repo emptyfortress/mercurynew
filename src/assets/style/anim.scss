@@ -96,7 +96,7 @@
 
   to {
     opacity: 0;
-    transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100px, 0, 0);
   }
 }
 
@@ -114,7 +114,7 @@
 
   to {
     opacity: 0;
-    transform: translate3d(100%, 0, 0);
+    transform: translate3d(100px, 0, 0);
   }
 }
 
@@ -127,7 +127,7 @@
 @keyframes fadeInLeft {
   from {
     opacity: 0;
-    transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100px, 0, 0);
   }
 
   to {
@@ -145,7 +145,7 @@
 @keyframes fadeInRight {
   from {
     opacity: 0;
-    transform: translate3d(100%, 0, 0);
+    transform: translate3d(100px, 0, 0);
   }
 
   to {
