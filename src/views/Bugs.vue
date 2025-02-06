@@ -14,7 +14,7 @@ q-page(padding)
 					th страница
 					th описание
 					th серьезность
-					th fix
+					th fixed?
 
 			tbody
 				tr
@@ -24,6 +24,13 @@ q-page(padding)
 					td 2
 					td
 						q-icon(name="mdi-close" color="negative" size="sm")
+				tr
+					td 2
+					td Главная
+					td При просмотре приложения в группе и закрытии панели, закрывается и панель группы тоже.
+					td 3
+					td
+						q-icon(name="mdi-close" color="negative" size="sm")
 
 </template>
 
@@ -31,6 +38,10 @@ q-page(padding)
 .q-page {
 	display: flex;
 	justify-content: center;
+}
+
+th {
+	text-align: left;
 }
 
 .container {

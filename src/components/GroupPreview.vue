@@ -8,6 +8,7 @@ import Trash from '@/components/common/Trash.vue'
 import AppPreview from '@/components/AppPreview.vue'
 import IconMicrophone from '@/components/icons/IconMicrophone.vue'
 import IconPresentation from '@/components/icons/IconPresentation.vue'
+import AddButton from '@/components/common/AddButton.vue'
 
 gsap.registerPlugin(Flip)
 

@@ -5,6 +5,7 @@ import { animations } from "@formkit/drag-and-drop"
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import AppPreview from '@/components/AppPreview.vue'
+import AddButton from '@/components/common/AddButton.vue'
 
 const props = defineProps<{
 	list: App[]
@@ -18,6 +19,9 @@ const config = {
 	plugins: [animations(),],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
+	draggable: (el: any) => {
+		return el.id !== 'no-drag'
+	},
 }
 const [parent, tapes, updateConfig] = useDragAndDrop(mylist.value, config)
 
@@ -88,6 +92,16 @@ const close = (() => {
 			:delay='400'
 			) 
 
+	div(id="no-drag")
+		.button(v-if='!expanded'
+			v-motion
+			:initial='{ scale: 0.1, opacity: 0, rotate: 720 }'
+			:enter='{ scale: 1, rotate: 0, opacity: 1 }'
+			:delay='400')
+			q-icon(name="mdi-plus" color="white" size="24px")
+
+		// AddButton(v-if='!expanded' mode="role")
+
 </template>
 
 <style scoped lang="scss">
@@ -95,6 +109,19 @@ const close = (() => {
 	display: flex;
 	gap: 1rem;
 	justify-content: start;
+	align-items: center;
+}
+
+.button {
+	background: $primary;
+	width: 42px;
+	height: 42px;
+	border-radius: 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-left: 2rem;
+	cursor: pointer;
 }
 
 .chil {
