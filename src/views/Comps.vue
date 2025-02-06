@@ -1,64 +1,8 @@
 <script setup lang="ts">
-import type { QTableProps } from 'quasar';
 
-const cols: QTableProps['columns'] = [
-	{
-		name: 'screen',
-		required: true,
-		label: 'Скриншот',
-		align: 'center',
-		field: 'screen',
-		// format: (val: string) => val,
-		sortable: false
-	},
-	{
-		name: 'name',
-		required: true,
-		label: 'Название',
-		align: 'left',
-		field: 'name',
-		// format: (val: string) => val,
-		sortable: false
-	},
-	{
-		name: 'page',
-		required: true,
-		label: 'Страница',
-		align: 'left',
-		field: 'page',
-		format: (val: string) => val,
-		sortable: false
-	},
-	{
-		name: 'diff',
-		required: true,
-		label: 'Отличия',
-		align: 'left',
-		field: 'diff',
-		format: (val: string) => val,
-		sortable: false
-	},
-]
-
-interface Screen {
-	id: number
-	screen: string
-	name: string
-	page: string
-	diff: string
-}
 
 const getImageUrl = (name: string) => new URL(`../assets/img/screenshots/${name}.png`, import.meta.url).href
 
-const rows: Screen[] = [
-	{
-		id: 0,
-		screen: 'plus',
-		name: 'Кнопка "Добавить"',
-		page: 'Главная',
-		diff: 'lajsdlkaj',
-	}
-]
 </script>
 
 <template lang="pug">
@@ -66,16 +10,55 @@ q-page(padding)
 	.container
 		h6 Общие компоненты
 		br
-		q-table(
-			:columns='cols'
-			:rows='rows'
-			hide-bottom
-			)
-			template(v-slot:body-cell-screen='props')
-				q-td(:props="props")
-					q-img(:src='getImageUrl(props.value)' style="max-width: 50px" fit='none')
+		q-markup-table(wrap-cells)
+			thead
+				q-tr
+					th Скриншот
+					th Название
+					th Страница
+					th Отличия
 
-		// q-img(:src='getImageUrl("plus")' width='32px' fit="cover")
+			tbody
+				tr
+					td
+						img(:src='getImageUrl("plus")')
+					td Кнопка "Добавить"
+					td
+						RouterLink(to="/") Главная
+						RouterLink(to="/roles") Роли
+						RouterLink(to="/forms") Формы
+						RouterLink(to="/lists") Списки
+						RouterLink(to="/form") Редактор форм
+					td
+						q-icon(name="mdi-cancel" color="primary" size="md")
+
+				tr
+					td
+						img(:src='getImageUrl("close")' fit="none")
+					td Кнопка "Закрыть"
+					td
+						RouterLink(to="/") Главная
+						RouterLink(to="/roles") Роли
+						RouterLink(to="/forms") Формы
+						RouterLink(to="/lists") Списки
+						RouterLink(to="/form") Редактор форм
+					td
+						q-icon(name="mdi-cancel" color="primary" size="md")
+				tr
+					td
+						img(:src='getImageUrl("close1")')
+					td Кнопка "Закрыть" small
+					td
+						RouterLink(to="/form") Редактор форм
+					td
+						q-icon(name="mdi-cancel" color="primary" size="md")
+				tr
+					td
+						img(:src='getImageUrl("buttons")' width="150")
+					td Стандартные кнопки
+					td Диалоги создания
+					td
+						q-icon(name="mdi-cancel" color="primary" size="md")
 </template>
 
 <style scoped lang="scss">
@@ -84,8 +67,24 @@ q-page(padding)
 	justify-content: center;
 }
 
+th {
+	text-align: left;
+}
+
+tr td:first-child {
+	text-align: center;
+}
+
+a {
+	margin-left: .5rem;
+
+	&::after {
+		content: ','
+	}
+
+}
 
 .container {
-	max-width: 800px;
+	max-width: 900px;
 }
 </style>
