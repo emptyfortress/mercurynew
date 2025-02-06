@@ -44,3 +44,23 @@ interface Option {
 	date?: boolean
 	children?: Option[] | []
 }
+
+type Form = {
+	id: string
+	label: string
+	value: string
+	desc: string
+	selected: boolean
+	type: number
+	layout: Layout
+	// creation: boolean
+}
+
+type Condition = {
+	id: string
+	etap: string
+	form: string
+	status: string
+	newstatus: string
+	// role: string | string[]
+}
