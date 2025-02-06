@@ -120,7 +120,17 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
-				count: 0,
+				count: 10,
+			},
+		},
+		{
+			path: '/vars',
+			name: 'vars',
+			component: () => import('@/views/Comps.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 30,
 			},
 		},
 		{

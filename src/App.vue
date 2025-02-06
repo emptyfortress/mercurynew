@@ -70,7 +70,7 @@ q-layout(view='hHh LpR fFf')
 			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
-			q-btn(dense flat round icon='menu' @click='toggleRightDrawer')
+			q-btn(dense flat round icon='mdi-information-outline' @click='toggleRightDrawer')
 
 	Drawer
 
@@ -81,6 +81,11 @@ q-layout(view='hHh LpR fFf')
 					q-icon(name="mdi-bug" color="primary")
 				q-item-section
 					q-item-label Баги
+			q-item(clickable to='/vars')
+				q-item-section(avatar)
+					q-icon(name="mdi-puzzle-outline" color="primary")
+				q-item-section
+					q-item-label Общие компоненты
 
 	q-page-container
 		#cont
