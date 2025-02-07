@@ -2,8 +2,8 @@
 import { ref, computed, watch, reactive } from 'vue'
 import type { Option } from '@/types/enum'
 import { Kind } from '@/types/enum'
-import { zero } from '@/stores/options1'
-import { manDetails, datee, str } from '@/stores/conditions'
+import { zero } from '@/stores/options2'
+import { manDetails, datee, str, stat } from '@/stores/conditions'
 
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
@@ -22,6 +22,7 @@ const query = ref('')
 const keys = ref<Option[]>([])
 const options = ref(zero)
 const str1 = ref(str)
+const stat1 = ref(stat)
 
 const selected1 = ref<null | String>(null)
 const selected2 = ref<null | String>(null)
@@ -226,6 +227,10 @@ const addCond = () => {
 	reset()
 }
 
+const addStatus = ((e: any) => {
+	console.log(e)
+})
+
 const addKeyWord = (e: any) => {
 	if (keys.value.at(-1)?.word == true) {
 		keys.value.pop()
@@ -249,9 +254,6 @@ const test = () => {
 		showFirst.value = true
 	}
 }
-const test1 = (() => {
-	// showFirst.value = false
-})
 
 const addAll = (e: Option) => {
 	if (!!e.parents) {
@@ -279,7 +281,7 @@ const dialog = ref(false)
 				span(v-if="item.and") И
 				span(v-else) ИЛИ
 	br
-	q-input(v-model="query" dense @clear="query = ''" @focus="test" @blur="test1" placeholder="Что ищем?")
+	q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
 		template(v-slot:prepend)
 			q-chip(v-for="key in keys" :key="key.id" removable @remove="remove(key)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
 		template(v-slot:append)
@@ -316,6 +318,10 @@ const dialog = ref(false)
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.at(-1)?.kind == 0 || keys.at(-1)?.kind == 1 || keys.at(-1)?.kind == 4 || keys.at(-1)?.word == true")
 				Level1(v-model:options="str1" v-model:query="query" @addKey="addKeyWord")
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.at(-1)?.kind == 6 || keys.at(-1)?.word == true")
+				Level1(v-model:options="stat1" v-model:query="query" @addKey="addStatus")
 
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.at(-1)?.kind == 2 || keyDate !== null")

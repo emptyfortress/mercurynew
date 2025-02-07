@@ -30,6 +30,14 @@ const dWords = [
 	{ text: 'текущий квартал', selected: false },
 	{ text: 'текущий год', selected: false },
 ]
+
+const stat = [
+	{ word: false, text: 'равно', selected: false },
+	{ word: false, text: 'не равно', selected: false },
+	{ word: false, text: 'задано', selected: false },
+	{ word: false, text: 'не задано', selected: false },
+]
+
 const manDetails = [
 	{
 		id: uid(),
@@ -202,4 +210,4 @@ const manKeys = [
 	},
 ]
 
-export { str, datee, dWords, manDetails, manKeys }
+export { str, datee, dWords, manDetails, manKeys, stat }

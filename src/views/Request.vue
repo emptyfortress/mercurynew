@@ -5,16 +5,16 @@ import Text1 from '@/components/Text1.vue'
 
 const props = defineProps({
 	id: {
-		type: Number,
+		type: String,
 		required: true,
-		default: 0
+		default: '0'
 	}
 })
 
 const list = useList()
 
 const current = computed(() => {
-	return list.lists.find((el) => el.id == props.id)
+	return list.lists.find((el) => el.id == +props.id)
 })
 </script>
 
