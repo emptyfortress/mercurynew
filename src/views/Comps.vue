@@ -56,7 +56,7 @@ q-page(padding)
 					td
 						img(:src='getImageUrl("buttons")' width="150")
 					td Стандартные кнопки
-					td Диалоги создания
+					td Диалоги создания (по кнопке "Плюс")
 					td
 						q-icon(name="mdi-cancel" color="primary" size="md")
 </template>
@@ -71,7 +71,8 @@ th {
 	text-align: left;
 }
 
-tr td:first-child {
+tr td:first-child,
+tr th:first-child {
 	text-align: center;
 }
 

@@ -10,7 +10,7 @@ import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
 import Trash from '@/components/common/Trash.vue'
 import { useRouter, } from 'vue-router'
 import { useList } from '@/stores/list'
-
+import Empty from '@/components/Empty.vue'
 
 const router = useRouter()
 
@@ -118,7 +118,13 @@ onBeforeUnmount(() => {
 q-page(padding)
 	.header Cписки
 	.pa(ref='parent')
-		.item1(v-for="(item, index) in tapes" :key="item.id"
+		div(v-if='tapes.length == 0' id="no-drag"
+			v-motion
+			:initial="{ y: 40, opacity: 0 }"
+			:enter='{ y: 0, opacity: 1, transition: { delay: 400 } }'
+			)
+			Empty(mode='list')
+		.item1(v-else v-for="(item, index) in tapes" :key="item.id"
 			v-motion
 			:initial="{ y: 40, opacity: 0 }"
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'

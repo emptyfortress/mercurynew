@@ -26,6 +26,7 @@ const config = {
 const [parent, tapes, updateConfig] = useDragAndDrop(mylist.value, config)
 
 const expanded = ref<boolean>(false)
+
 const actionExpand = ((item: App) => {
 	const state = Flip.getState('.chil')
 	item.expand = !item.expand
@@ -100,7 +101,6 @@ const close = (() => {
 			:delay='400')
 			q-icon(name="mdi-plus" color="white" size="24px")
 
-		// AddButton(v-if='!expanded' mode="role")
 
 </template>
 

@@ -24,13 +24,15 @@ q-page(padding)
 					td 2
 					td
 						q-icon(name="mdi-close" color="negative" size="sm")
+							q-tooltip Не исправлено
 				tr
 					td 2
 					td Главная
 					td При просмотре приложения в группе и закрытии панели, закрывается и панель группы тоже.
 					td 3
 					td
-						q-icon(name="mdi-close" color="negative" size="sm")
+						q-icon(name="mdi-check-bold" color="positive" size="sm")
+							q-tooltip Исправлено
 
 </template>
 

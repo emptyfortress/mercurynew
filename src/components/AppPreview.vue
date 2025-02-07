@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import { ref, onBeforeUnmount, onMounted, nextTick } from 'vue'
+import { ref, } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter } from 'vue-router'
 import IconFlag from '@/components/icons/IconFlag.vue'
 import IconEntrance from '@/components/icons/IconEntrance.vue'
 import VersionTable from '@/components/VersionTable.vue'
 
-// import { gsap } from 'gsap'
-// import { Flip } from 'gsap/Flip'
-// import { useFlip } from '@/stores/flip'
-
-// const flip = useFlip()
-// gsap.registerPlugin(Flip)
 const myapps = useApps()
 const router = useRouter()
 
@@ -33,10 +27,6 @@ const navigate1 = () => {
 const version = ref(false)
 const toggleVersion = (() => {
 	version.value = !version.value
-})
-
-onBeforeUnmount(() => {
-	emit('close')
 })
 
 </script>

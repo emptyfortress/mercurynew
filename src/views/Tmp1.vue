@@ -13,9 +13,10 @@ import Trash from '@/components/common/Trash.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import IconApp from '@/components/icons/IconApp.vue'
 import AppPreview from '@/components/AppPreview.vue'
-// import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
+import Empty from '@/components/Empty.vue'
 // import { useFlip } from '@/stores/flip'
+// import { useStorage } from '@vueuse/core'
 
 const router = useRouter()
 const route = useRoute()
@@ -228,7 +229,13 @@ const remove = (() => {
 q-page(padding)
 	.all
 		.pa(ref='parent')
-			.chil(v-for="(item, index) in tapes" :key="item.id" :id="item.id"
+			div(v-if='tapes.length == 0' id="no-drag"
+				v-motion
+				:initial="{ y: 40, opacity: 0 }"
+				:enter='{ y: 0, opacity: 1, transition: { delay: 400 } }'
+				)
+				Empty(mode='app')
+			.chil(v-else v-for="(item, index) in tapes" :key="item.id" :id="item.id"
 				v-motion
 				:initial="{ y: 40, opacity: 0 }"
 				:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'

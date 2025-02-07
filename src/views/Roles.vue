@@ -8,6 +8,7 @@ import cadrovik from '@/assets/img/cadrovik.png'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
+import Empty from '@/components/Empty.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -105,6 +106,7 @@ const config = {
 		draggedItem.value = e.draggedNode.data.index
 	},
 }
+
 const [parent, tapes] = useDragAndDrop(roles.value, config)
 
 const remove = (() => {
@@ -124,7 +126,13 @@ const remove = (() => {
 q-page(padding)
 	.header Роли
 	.pa(ref='parent')
-		.item1(v-for="(item, index) in tapes" :key="item.id"
+		div(v-if='tapes.length == 0' id="no-drag"
+			v-motion
+			:initial="{ y: 40, opacity: 0 }"
+			:enter='{ y: 0, opacity: 1, transition: { delay: 400 } }'
+			)
+			Empty(mode='role')
+		.item1(v-else v-for="(item, index) in tapes" :key="item.id"
 			v-motion
 			:initial="{ y: 40, opacity: 0 }"
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
