@@ -320,7 +320,7 @@ const dialog = ref(false)
 				Level1(v-model:options="str1" v-model:query="query" @addKey="addKeyWord")
 
 		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.at(-1)?.kind == 6 || keys.at(-1)?.word == true")
+			q-list.list(v-if="keys.at(-1)?.kind == 6")
 				Level1(v-model:options="stat1" v-model:query="query" @addKey="addStatus")
 
 		transition(name="slide-right" mode="out-in")
