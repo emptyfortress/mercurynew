@@ -102,30 +102,33 @@ const add = (el: Option) => {
 const add1 = (e: Option) => {
 	if (keys.value.length == 1) {
 		keys.value.push(e)
-	} else {
+	} else if (keys.value.length == 2) {
+		keys.value.pop()
+		keys.value.push(e)
+	} else if (keys.value.length > 2) {
+		keys.value.length = 2
 		keys.value.pop()
 		keys.value.push(e)
 	}
 }
 
 const add2 = (e: Option) => {
-	console.log(e)
-	// if (keys.value.filter((item) => item.level == 2).length == 0) {
-	// 	keys.value.push(e)
-	// } else {
-	// 	keys.value = keys.value
-	// 		.filter((item) => item.level !== 2)
-	// 		.filter((item) => item.man !== true)
-	// 		.filter((item) => item.date !== true)
-	// 		.filter((item) => item.dvalue !== true)
-	// 	keys.value.push(e)
-	// }
-	// selected2.value = e.text
-	// selected3.value = null
-	// keyMan.value = null
-	// keyDate.value = null
-	// keyDateValue.value = null
-	// query.value = ''
+	if (keys.value.length == 2) {
+		keys.value.push(e)
+	} else if (keys.value.length > 2) {
+		keys.value.length = 3
+		keys.value.pop()
+		keys.value.push(e)
+	}
+}
+
+const addDValue = (e: Option) => {
+	if (keys.value.at(-1)?.dvalue == true) {
+		keys.value.pop()
+		keys.value.push(e)
+	} else {
+		keys.value.push(e)
+	}
 }
 
 const add3 = (e: Option) => {
@@ -157,14 +160,14 @@ const addDate = (e: Option) => {
 	keyDate.value = e.text
 	query.value = ''
 }
-const addDValue = (e: Option) => {
-	if (keys.value.at(-1)?.dvalue == true) {
-		keys.value.pop()
-	}
-	keys.value.push(e)
-	keyDateValue.value = e.text
-	query.value = ''
-}
+// const addDValue = (e: Option) => {
+// 	if (keys.value.at(-1)?.dvalue == true) {
+// 		keys.value.pop()
+// 	}
+// 	keys.value.push(e)
+// 	keyDateValue.value = e.text
+// 	query.value = ''
+// }
 
 const reset = () => {
 	keys.value = []
@@ -192,13 +195,6 @@ const searchActive = computed(() => {
 	else return false
 })
 const man = ref()
-// const fio = ['Иванов', 'Петров', 'Сидоров', 'Орлов', 'Воробьев', 'Лебедева']
-
-// watch(man, (val) => {
-// 	if (val) {
-// 		keys.value.push({ text: val, kind: Kind.Man, selected: false })
-// 	}
-// })
 
 interface CondL {
 	id: Number
@@ -289,6 +285,10 @@ const test = () => {
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 1" )
 				Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 2 && keys.at(2)?.date == true" )
+				LevelDate(@add="addDValue")
 
 		// transition(name="slide-right" mode="out-in")
 		// 	q-list.list(v-if="keys.length > 1" )

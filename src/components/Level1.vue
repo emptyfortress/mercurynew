@@ -5,7 +5,7 @@ import { Kind } from '@/types/enum'
 
 const props = defineProps({
   kind: {
-    type: Kind,
+    type: Number,
     default: 0
   }
 })
@@ -65,6 +65,9 @@ q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :cla
 </template>
 
 <style scoped lang="scss">
+.q-select {
+	min-width: 200px;
+}
 .selected {
 	background: $blue-2;
 }

@@ -74,6 +74,7 @@ const manDetails = [
 		text: 'Имя',
 		kind: Kind.Text,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -81,6 +82,7 @@ const manDetails = [
 		text: 'Отчество',
 		kind: Kind.Text,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -89,6 +91,7 @@ const manDetails = [
 		kind: Kind.Text,
 		date: true,
 		selected: false,
+		children: datee,
 	},
 	{
 		id: uid(),
@@ -96,6 +99,7 @@ const manDetails = [
 		text: 'Должность',
 		kind: Kind.Text,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -103,6 +107,7 @@ const manDetails = [
 		text: 'Руководитель',
 		kind: Kind.Man,
 		selected: false,
+		// children: manDetails,
 	},
 	{
 		id: uid(),
@@ -110,6 +115,7 @@ const manDetails = [
 		text: 'Местный телефон',
 		kind: Kind.Phone,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -117,6 +123,7 @@ const manDetails = [
 		text: 'Домашний телефон',
 		kind: Kind.Phone,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -124,6 +131,7 @@ const manDetails = [
 		text: 'Факс',
 		kind: Kind.Phone,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -131,6 +139,7 @@ const manDetails = [
 		text: 'Номер паспорта',
 		kind: Kind.Text,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -139,6 +148,7 @@ const manDetails = [
 		kind: Kind.Text,
 		date: true,
 		selected: false,
+		children: datee,
 	},
 	{
 		id: uid(),
@@ -146,6 +156,7 @@ const manDetails = [
 		text: 'Комната',
 		kind: Kind.Text,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -153,6 +164,7 @@ const manDetails = [
 		text: 'Сотовый телефон',
 		kind: Kind.Phone,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -160,12 +172,14 @@ const manDetails = [
 		text: 'IP телефон',
 		kind: Kind.Phone,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
 		man: true,
 		text: 'Значимость',
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
@@ -173,6 +187,7 @@ const manDetails = [
 		text: 'Email',
 		kind: Kind.Email,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),
