@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, watchEffect, } from 'vue'
+
+const props = defineProps({
+	txt: {
+		type: String,
+		required: true,
+		default: ''
+	}
+})
 
 const emit = defineEmits(['add'])
 
-const date = ref()
+const date = ref('')
 
-const keys = reactive([
+const keywords = reactive([
 	{ dvalue: true, text: 'сегодня', selected: false },
 	{ dvalue: true, text: 'сейчас', selected: false },
 	{ dvalue: true, text: 'текущая неделя', selected: false },
@@ -15,14 +23,22 @@ const keys = reactive([
 ])
 
 const add = (item: any) => {
-	date.value = null
-	keys.map((el) => (el.selected = false))
-	item.selected = true
+	date.value = ''
+	keywords.map((el) => el.selected = false)
+	item.selected = !item.selected
 	emit('add', item)
 }
+
+watchEffect(() => {
+	if (props.txt) {
+		date.value = ''
+		keywords.map((el) => el.selected = false)
+	}
+})
+
 watch(date, (val) => {
 	if (val) {
-		keys.map((el) => (el.selected = false))
+		keywords.map((el) => (el.selected = false))
 		emit('add', { text: val, dvalue: true })
 	}
 })
@@ -30,16 +46,17 @@ watch(date, (val) => {
 
 <template lang="pug">
 q-date(v-model="date" minimal)
+
 q-list
-	q-item(v-for="item in keys" clickable :key="item.text" @click="add(item)" :class="{key: item.selected}")
+	q-item(v-for="item in keywords" clickable :key="item.text" @click="add(item)" :class="{ selkey: item.selected }")
 		q-item-section(side)
 			q-icon(name="mdi-star" size="16px")
 		q-item-section
-			q-item-label {{item.text}}
+			q-item-label {{ item.text }}
 </template>
 
 <style scoped lang="scss">
-.key {
+.selkey {
 	background: $purple-2;
 }
 </style>

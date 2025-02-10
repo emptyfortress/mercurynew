@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, reactive } from 'vue'
+import { ref, computed, } from 'vue'
 import type { Option } from '@/types/enum'
-import { Kind } from '@/types/enum'
 import { zero } from '@/stores/options2'
-import { manDetails, datee, str, stat } from '@/stores/conditions'
 
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
@@ -14,8 +12,6 @@ import SimpleQuery from '@/components/SimpleQuery.vue'
 const query = ref('')
 const keys = ref<Option[]>([])
 const options = ref(zero)
-const str1 = ref(str)
-const stat1 = ref(stat)
 
 const selected1 = ref<null | String>(null)
 const selected2 = ref<null | String>(null)
@@ -30,66 +26,6 @@ const remove = (el: Option, ind: number) => {
 	el.selected = false
 	keys.value.splice(ind)
 	query.value = ''
-
-	// if (el.level !== undefined && el.level == 0) {
-	// 	options.value.map((item) => (item.selected = false))
-	// 	keys.value = []
-	// 	selected1.value = null
-	// 	selected2.value = null
-	// 	selected3.value = null
-	// 	keyMan.value = null
-	// 	keyWord.value = null
-	// 	keyDate.value = null
-	// 	keyDateValue.value = null
-	// }
-	// if (el.level !== undefined && el.level == 1) {
-	// 	keys.value = keys.value.filter((item) => item.level == 0)
-	// 	selected1.value = null
-	// 	selected2.value = null
-	// 	selected3.value = null
-	// 	keyWord.value = null
-	// 	keyMan.value = null
-	// 	keyDate.value = null
-	// 	keyDateValue.value = null
-	// }
-	// if (el.level !== undefined && el.level == 2) {
-	// 	keys.value = keys.value.filter((item) => item.level! < 2)
-	// 	selected2.value = null
-	// 	selected3.value = null
-	// 	keyWord.value = null
-	// 	keyMan.value = null
-	// 	keyDate.value = null
-	// 	keyDateValue.value = null
-	// }
-	// if (el.level !== undefined && el.level == 3) {
-	// 	keys.value = keys.value.filter((item: any) => item.level < 3)
-	// 	selected3.value = null
-	// 	keyWord.value = null
-	// 	keyMan.value = null
-	// 	keyDate.value = null
-	// 	keyDateValue.value = null
-	// }
-	// if (el.word !== undefined && el.word == true) {
-	// 	console.log(el)
-	// 	keys.value = keys.value.filter((item: any) => item.word !== true)
-	// 	keyWord.value = null
-	// 	keyMan.value = null
-	// 	keyDate.value = null
-	// 	keyDateValue.value = null
-	// }
-	// if (el.kind !== undefined && el.kind == 11) {
-	// 	keys.value = keys.value.filter((item: any) => item.kind !== 11)
-	// 	keyWord.value = null
-	// 	keyMan.value = null
-	// 	keyDate.value = null
-	// 	keyDateValue.value = null
-	// }
-	// if (el.man == true) {
-	// 	keys.value = keys.value.filter((item: any) => item.man !== true)
-	// 	keyMan.value = null
-	// 	keyDate.value = null
-	// 	keyDateValue.value = null
-	// }
 }
 
 const add = (el: Option) => {
@@ -131,70 +67,15 @@ const addDValue = (e: Option) => {
 	}
 }
 
-const add3 = (e: Option) => {
-	if (keys.value.filter((item) => item.level == 3).length == 0) {
-		keys.value.push(e)
-	} else {
-		keys.value = keys.value.filter((item) => item.level !== 3)
-		keys.value.push(e)
-	}
-	selected3.value = e.text
-	keyMan.value = null
-	keyDate.value = null
-	keyDateValue.value = null
-	query.value = ''
-}
-const addMan = (e: Option) => {
-	if (keys.value.at(-1)?.man == true) {
-		keys.value.pop()
-	}
-	keyMan.value = e.text
-	keys.value.push(e)
-	query.value = ''
-}
-const addDate = (e: Option) => {
-	if (keys.value.at(-1)?.date == true) {
-		keys.value.pop()
-	}
-	keys.value.push(e)
-	keyDate.value = e.text
-	query.value = ''
-}
-// const addDValue = (e: Option) => {
-// 	if (keys.value.at(-1)?.dvalue == true) {
-// 		keys.value.pop()
-// 	}
-// 	keys.value.push(e)
-// 	keyDateValue.value = e.text
-// 	query.value = ''
-// }
-
 const reset = () => {
 	keys.value = []
 	options.value.map((item) => (item.selected = false))
-	selected1.value = null
-	selected2.value = null
-	selected3.value = null
-	keyMan.value = null
-	keyDate.value = null
-	keyWord.value = null
-	keyDateValue.value = null
 	query.value = ''
-	man.value = null
 }
 const searchActive = computed(() => {
-	if (!!keyMan.value || !!keyDateValue.value) return true
-	else if (keys.value.length > 0 && keys.value.at(-1)?.kind == 0 && query.value.length > 0)
-		return true
-	else if (keys.value.length > 0 && keys.value.at(-1)?.kind == 1 && query.value.length > 0)
-		return true
-	else if (keys.value.length > 0 && keys.value.at(-1)?.kind == 4 && query.value.length > 0)
-		return true
-	else if (!!keyWord.value && query.value.length > 0) return true
-	else if (!!man.value) return true
+	if (keys.value.length | query.value.length) return true
 	else return false
 })
-const man = ref()
 
 interface CondL {
 	id: Number
@@ -203,6 +84,7 @@ interface CondL {
 }
 const date = new Date()
 const condList = ref<CondL[]>([])
+
 const addCond = () => {
 	let temp = keys.value.map((item) => item.text)
 	temp.push(query.value)
@@ -212,17 +94,6 @@ const addCond = () => {
 	reset()
 }
 
-const addStatus = ((e: any) => {
-	console.log(e)
-})
-
-const addKeyWord = (e: any) => {
-	if (keys.value.at(-1)?.word == true) {
-		keys.value.pop()
-	}
-	keys.value.push(e)
-	keyWord.value = e.text
-}
 const remCond = (e: any) => {
 	const ind = condList.value.findIndex((item) => item == e)
 	condList.value.splice(ind, 1)
@@ -237,20 +108,6 @@ const test = () => {
 	showFirst.value = true
 }
 
-// const addAll = (e: Option) => {
-// 	if (!!e.parents) {
-// 		let temp = e.parents.map((el) => ({
-// 			text: el,
-// 			selected: false,
-// 		}))
-// 		keys.value = [...temp]
-// 		keys.value.push(e)
-// 		query.value = ''
-// 		showFirst.value = false
-// 	}
-// }
-
-// const dialog = ref(false)
 </script>
 
 <template lang="pug">
@@ -267,10 +124,11 @@ const test = () => {
 		template(v-slot:prepend)
 			q-chip Заявка
 			q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
-		template(v-slot:append)
-			q-btn(v-if="keys.length | query.length" flat round icon="mdi-close" @click="reset" dense) 
-			q-btn(v-if="searchActive" unelevated label="Искать" color="primary" @click="" size="sm") 
-			q-btn(v-if="searchActive" unelevated round icon="mdi-plus" color="primary" @click="addCond" size="sm") 
+
+		template(v-slot:append v-if='searchActive')
+			q-btn(flat round icon="mdi-close" @click="reset" dense) 
+			q-btn(unelevated label="Искать" color="primary" @click="" size="sm") 
+			q-btn(unelevated round icon="mdi-plus" color="primary" @click="addCond" size="sm") 
 				q-tooltip Добавить условие
 
 	.grid
@@ -287,42 +145,9 @@ const test = () => {
 				Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
 
 		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 2 && keys.at(2)?.date == true" )
-				LevelDate(@add="addDValue")
+			q-list.list(v-if="keys.at(-2)?.date || keys.at(-1)?.dvalue" )
+				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
 
-		// transition(name="slide-right" mode="out-in")
-		// 	q-list.list(v-if="keys.length > 1" )
-		// 		Level1(v-model:options="keys[1].children" v-model:query="query" @addKey="add2")
-		//
-		// transition(name="slide-right" mode="out-in")
-		// 	q-list.list(v-if="keys.length > 2" )
-		// 		Level1(v-model:options="keys[2].children" v-model:query="query" @addKey="add3")
-
-		// transition(name="slide-right" mode="out-in")
-		// 	div(v-if="keys.at(-1)?.kind == 5 || keyMan !== null")
-		// 		q-list.list
-		// 			q-select(v-model="man" outlined bg-color="white" dense :options="fio")
-		// 				template(v-slot:prepend)
-		// 					q-icon(name="mdi-book-open-page-variant-outline")
-		// 			Level1(v-model:options="manDetails" v-model:query="query" @addKey="addMan")
-
-		// transition(name="slide-right" mode="out-in")
-		// 	q-list.list(v-if="keys.at(-1)?.kind == 0 || keys.at(-1)?.kind == 1 || keys.at(-1)?.kind == 4 || keys.at(-1)?.word == true")
-		// 		Level1(v-model:options="str1" v-model:query="query" @addKey="addKeyWord")
-
-		// transition(name="slide-right" mode="out-in")
-		// 	q-list.list(v-if="keys.at(-1)?.kind == 6")
-		// 		Level1(v-model:options="stat1" v-model:query="query" @addKey="addStatus")
-
-		// transition(name="slide-right" mode="out-in")
-		// 	q-list.list(v-if="keys.at(-1)?.kind == 2 || keyDate !== null")
-		// 		Level1(v-model:options="datee" v-model:query="query" @addKey="addDate")
-
-		// transition(name="slide-right" mode="out-in")
-		// 	q-list.list(v-if="keys.at(-1)?.date == true || keyDateValue !== null")
-		// 		LevelDate(@add="addDValue")
-
-// chooseDialog(v-model="dialog" kind='request')
 </template>
 
 <style scoped lang="scss">
