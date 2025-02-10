@@ -9,14 +9,7 @@ import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
 import LevelDate from '@/components/LevelDate.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
-import chooseDialog from '@/components/chooseDialog.vue'
 
-const props = defineProps({
-	req: {
-		type: String,
-		required: true,
-	},
-})
 
 const query = ref('')
 const keys = ref<Option[]>([])
@@ -32,112 +25,107 @@ const keyMan = ref<null | String>(null)
 const keyDate = ref<null | String>(null)
 const keyDateValue = ref<null | String>(null)
 
-const remove = (el: Option) => {
-	if (el.level !== undefined && el.level == 0) {
-		options.value.map((item) => (item.selected = false))
-		keys.value = []
-		selected1.value = null
-		selected2.value = null
-		selected3.value = null
-		keyMan.value = null
-		keyWord.value = null
-		keyDate.value = null
-		keyDateValue.value = null
-	}
-	if (el.level !== undefined && el.level == 1) {
-		keys.value = keys.value.filter((item) => item.level == 0)
-		selected1.value = null
-		selected2.value = null
-		selected3.value = null
-		keyWord.value = null
-		keyMan.value = null
-		keyDate.value = null
-		keyDateValue.value = null
-	}
-	if (el.level !== undefined && el.level == 2) {
-		keys.value = keys.value.filter((item) => item.level! < 2)
-		selected2.value = null
-		selected3.value = null
-		keyWord.value = null
-		keyMan.value = null
-		keyDate.value = null
-		keyDateValue.value = null
-	}
-	if (el.level !== undefined && el.level == 3) {
-		keys.value = keys.value.filter((item: any) => item.level < 3)
-		selected3.value = null
-		keyWord.value = null
-		keyMan.value = null
-		keyDate.value = null
-		keyDateValue.value = null
-	}
-	if (el.word !== undefined && el.word == true) {
-		keys.value = keys.value.filter((item: any) => item.word !== true)
-		keyWord.value = null
-		keyMan.value = null
-		keyDate.value = null
-		keyDateValue.value = null
-	}
-	if (el.kind !== undefined && el.kind == 11) {
-		keys.value = keys.value.filter((item: any) => item.kind !== 11)
-		keyWord.value = null
-		keyMan.value = null
-		keyDate.value = null
-		keyDateValue.value = null
-	}
-	if (el.man == true) {
-		keys.value = keys.value.filter((item: any) => item.man !== true)
-		keyMan.value = null
-		keyDate.value = null
-		keyDateValue.value = null
-	}
+const remove = (el: Option, ind: number) => {
+	console.log(el)
+	el.selected = false
+	keys.value.splice(ind)
+	query.value = ''
+
+	// if (el.level !== undefined && el.level == 0) {
+	// 	options.value.map((item) => (item.selected = false))
+	// 	keys.value = []
+	// 	selected1.value = null
+	// 	selected2.value = null
+	// 	selected3.value = null
+	// 	keyMan.value = null
+	// 	keyWord.value = null
+	// 	keyDate.value = null
+	// 	keyDateValue.value = null
+	// }
+	// if (el.level !== undefined && el.level == 1) {
+	// 	keys.value = keys.value.filter((item) => item.level == 0)
+	// 	selected1.value = null
+	// 	selected2.value = null
+	// 	selected3.value = null
+	// 	keyWord.value = null
+	// 	keyMan.value = null
+	// 	keyDate.value = null
+	// 	keyDateValue.value = null
+	// }
+	// if (el.level !== undefined && el.level == 2) {
+	// 	keys.value = keys.value.filter((item) => item.level! < 2)
+	// 	selected2.value = null
+	// 	selected3.value = null
+	// 	keyWord.value = null
+	// 	keyMan.value = null
+	// 	keyDate.value = null
+	// 	keyDateValue.value = null
+	// }
+	// if (el.level !== undefined && el.level == 3) {
+	// 	keys.value = keys.value.filter((item: any) => item.level < 3)
+	// 	selected3.value = null
+	// 	keyWord.value = null
+	// 	keyMan.value = null
+	// 	keyDate.value = null
+	// 	keyDateValue.value = null
+	// }
+	// if (el.word !== undefined && el.word == true) {
+	// 	console.log(el)
+	// 	keys.value = keys.value.filter((item: any) => item.word !== true)
+	// 	keyWord.value = null
+	// 	keyMan.value = null
+	// 	keyDate.value = null
+	// 	keyDateValue.value = null
+	// }
+	// if (el.kind !== undefined && el.kind == 11) {
+	// 	keys.value = keys.value.filter((item: any) => item.kind !== 11)
+	// 	keyWord.value = null
+	// 	keyMan.value = null
+	// 	keyDate.value = null
+	// 	keyDateValue.value = null
+	// }
+	// if (el.man == true) {
+	// 	keys.value = keys.value.filter((item: any) => item.man !== true)
+	// 	keyMan.value = null
+	// 	keyDate.value = null
+	// 	keyDateValue.value = null
+	// }
 }
 
 const add = (el: Option) => {
+	console.log(el)
 	query.value = ''
 	keys.value = []
-	selected1.value = null
-	selected2.value = null
-	selected3.value = null
-	keyMan.value = null
-	keyDate.value = null
-	keyDateValue.value = null
 	keys.value.push(el)
 }
 
 const add1 = (e: Option) => {
-	if (selected1.value !== null) {
-		keys.value = keys.value.filter((item: any) => item.level == 0)
+	if (keys.value.length == 1) {
 		keys.value.push(e)
 	} else {
+		keys.value.pop()
 		keys.value.push(e)
 	}
-	selected1.value = e.text
-	selected2.value = null
-	selected3.value = null
-	keyMan.value = null
-	keyDate.value = null
-	keyDateValue.value = null
-	query.value = ''
 }
 
 const add2 = (e: Option) => {
-	if (keys.value.filter((item) => item.level == 2).length == 0) {
-		keys.value.push(e)
-	} else {
-		keys.value = keys.value
-			.filter((item) => item.level !== 2)
-			.filter((item) => item.man !== true)
-			.filter((item) => item.date !== true)
-			.filter((item) => item.dvalue !== true)
-		keys.value.push(e)
-	}
-	selected2.value = e.text
-	selected3.value = null
-	keyMan.value = null
-	keyDate.value = null
-	keyDateValue.value = null
-	query.value = ''
+	console.log(e)
+	// if (keys.value.filter((item) => item.level == 2).length == 0) {
+	// 	keys.value.push(e)
+	// } else {
+	// 	keys.value = keys.value
+	// 		.filter((item) => item.level !== 2)
+	// 		.filter((item) => item.man !== true)
+	// 		.filter((item) => item.date !== true)
+	// 		.filter((item) => item.dvalue !== true)
+	// 	keys.value.push(e)
+	// }
+	// selected2.value = e.text
+	// selected3.value = null
+	// keyMan.value = null
+	// keyDate.value = null
+	// keyDateValue.value = null
+	// query.value = ''
 }
 
 const add3 = (e: Option) => {
@@ -204,12 +192,13 @@ const searchActive = computed(() => {
 	else return false
 })
 const man = ref()
-const fio = ['Иванов', 'Петров', 'Сидоров', 'Орлов', 'Воробьев', 'Лебедева']
-watch(man, (val) => {
-	if (val) {
-		keys.value.push({ text: val, kind: Kind.Man, selected: false })
-	}
-})
+// const fio = ['Иванов', 'Петров', 'Сидоров', 'Орлов', 'Воробьев', 'Лебедева']
+
+// watch(man, (val) => {
+// 	if (val) {
+// 		keys.value.push({ text: val, kind: Kind.Man, selected: false })
+// 	}
+// })
 
 interface CondL {
 	id: Number
@@ -242,7 +231,6 @@ const remCond = (e: any) => {
 	const ind = condList.value.findIndex((item) => item == e)
 	condList.value.splice(ind, 1)
 }
-const and = ref([true])
 const toggleAnd = (item: any) => {
 	item.and = !item.and
 }
@@ -250,25 +238,23 @@ const toggleAnd = (item: any) => {
 const showFirst = ref(false)
 
 const test = () => {
-	if (keys.value?.length == 0) {
-		showFirst.value = true
-	}
+	showFirst.value = true
 }
 
-const addAll = (e: Option) => {
-	if (!!e.parents) {
-		let temp = e.parents.map((el) => ({
-			text: el,
-			selected: false,
-		}))
-		keys.value = [...temp]
-		keys.value.push(e)
-		query.value = ''
-		showFirst.value = false
-	}
-}
+// const addAll = (e: Option) => {
+// 	if (!!e.parents) {
+// 		let temp = e.parents.map((el) => ({
+// 			text: el,
+// 			selected: false,
+// 		}))
+// 		keys.value = [...temp]
+// 		keys.value.push(e)
+// 		query.value = ''
+// 		showFirst.value = false
+// 	}
+// }
 
-const dialog = ref(false)
+// const dialog = ref(false)
 </script>
 
 <template lang="pug">
@@ -283,7 +269,8 @@ const dialog = ref(false)
 	br
 	q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
 		template(v-slot:prepend)
-			q-chip(v-for="key in keys" :key="key.id" removable @remove="remove(key)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
+			q-chip Заявка
+			q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
 		template(v-slot:append)
 			q-btn(v-if="keys.length | query.length" flat round icon="mdi-close" @click="reset" dense) 
 			q-btn(v-if="searchActive" unelevated label="Искать" color="primary" @click="" size="sm") 
@@ -293,44 +280,49 @@ const dialog = ref(false)
 	.grid
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="showFirst")
-				Level0(v-model:options="options" v-model:query="query" @addKey="add" @addAllKey="addAll")
+				Level0(v-model:options="options" v-model:query="query" @addKey="add")
 
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 0" )
-				Level1(v-model:options="keys[0].children" v-model:query="query" @addKey="add1")
+				Level1(v-model:options="keys[0].children" :kind='keys[0].kind' v-model:query="query" @addKey="add1")
 
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 1" )
-				Level1(v-model:options="keys[1].children" v-model:query="query" @addKey="add2")
+				Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 2" )
-				Level1(v-model:options="keys[2].children" v-model:query="query" @addKey="add3")
+		// transition(name="slide-right" mode="out-in")
+		// 	q-list.list(v-if="keys.length > 1" )
+		// 		Level1(v-model:options="keys[1].children" v-model:query="query" @addKey="add2")
+		//
+		// transition(name="slide-right" mode="out-in")
+		// 	q-list.list(v-if="keys.length > 2" )
+		// 		Level1(v-model:options="keys[2].children" v-model:query="query" @addKey="add3")
 
-		transition(name="slide-right" mode="out-in")
-			div(v-if="keys.at(-1)?.kind == 5 || keyMan !== null")
-				q-list.list
-					q-select(v-model="man" outlined bg-color="white" dense :options="fio")
-						template(v-slot:prepend)
-							q-icon(name="mdi-book-open-page-variant-outline")
-					Level1(v-model:options="manDetails" v-model:query="query" @addKey="addMan")
+		// transition(name="slide-right" mode="out-in")
+		// 	div(v-if="keys.at(-1)?.kind == 5 || keyMan !== null")
+		// 		q-list.list
+		// 			q-select(v-model="man" outlined bg-color="white" dense :options="fio")
+		// 				template(v-slot:prepend)
+		// 					q-icon(name="mdi-book-open-page-variant-outline")
+		// 			Level1(v-model:options="manDetails" v-model:query="query" @addKey="addMan")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.at(-1)?.kind == 0 || keys.at(-1)?.kind == 1 || keys.at(-1)?.kind == 4 || keys.at(-1)?.word == true")
-				Level1(v-model:options="str1" v-model:query="query" @addKey="addKeyWord")
+		// transition(name="slide-right" mode="out-in")
+		// 	q-list.list(v-if="keys.at(-1)?.kind == 0 || keys.at(-1)?.kind == 1 || keys.at(-1)?.kind == 4 || keys.at(-1)?.word == true")
+		// 		Level1(v-model:options="str1" v-model:query="query" @addKey="addKeyWord")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.at(-1)?.kind == 6")
-				Level1(v-model:options="stat1" v-model:query="query" @addKey="addStatus")
+		// transition(name="slide-right" mode="out-in")
+		// 	q-list.list(v-if="keys.at(-1)?.kind == 6")
+		// 		Level1(v-model:options="stat1" v-model:query="query" @addKey="addStatus")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.at(-1)?.kind == 2 || keyDate !== null")
-				Level1(v-model:options="datee" v-model:query="query" @addKey="addDate")
+		// transition(name="slide-right" mode="out-in")
+		// 	q-list.list(v-if="keys.at(-1)?.kind == 2 || keyDate !== null")
+		// 		Level1(v-model:options="datee" v-model:query="query" @addKey="addDate")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.at(-1)?.date == true || keyDateValue !== null")
-				LevelDate(@add="addDValue")
-chooseDialog(v-model="dialog" kind='request')
+		// transition(name="slide-right" mode="out-in")
+		// 	q-list.list(v-if="keys.at(-1)?.date == true || keyDateValue !== null")
+		// 		LevelDate(@add="addDValue")
+
+// chooseDialog(v-model="dialog" kind='request')
 </template>
 
 <style scoped lang="scss">

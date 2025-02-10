@@ -1,6 +1,15 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeUnmount, watch } from 'vue'
 import type { Option } from '@/types/enum'
+import { Kind } from '@/types/enum'
+
+const props = defineProps({
+  kind: {
+    type: Kind,
+    default: 0
+  }
+})
+
 
 const options = defineModel<Option[] | undefined>('options')
 
@@ -27,20 +36,39 @@ const filtered = computed(() => {
 		)
 	} else return options.value
 })
+
+onBeforeUnmount(() => {
+	options.value?.map((el) => el.selected = false)
+
+})
+const man = ref()
+const fio = ['Иванов', 'Петров', 'Сидоров', 'Орлов', 'Воробьев', 'Лебедева']
+
+watch(man, (val) => {
+	if (val) {
+		emit('addKey', { text: val, kind: Kind.Man, selected: false })
+	}
+})
 </script>
 
 <template lang="pug">
-q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :class="{selected: item.selected}" )
+
+q-select(v-if='props.kind == 5' v-model="man" outlined bg-color="white" dense :options="fio")
+	template(v-slot:prepend)
+		q-icon(name="mdi-book-open-page-variant-outline")
+
+q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :class="{ selected: item.selected }" )
 	q-item-section(side v-if="item.kind == 11")
 		q-icon(name="mdi-star" size="16px")
 	q-item-section
-		q-item-label {{item.text}}
+		q-item-label {{ item.text }}
 </template>
 
 <style scoped lang="scss">
 .selected {
 	background: $blue-2;
 }
+
 .key {
 	background: $purple-2;
 }

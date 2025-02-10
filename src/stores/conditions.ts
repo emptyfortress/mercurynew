@@ -66,6 +66,7 @@ const manDetails = [
 		text: 'Фамилия',
 		kind: Kind.Text,
 		selected: false,
+		children: str,
 	},
 	{
 		id: uid(),

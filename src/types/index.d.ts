@@ -37,7 +37,7 @@ interface Option {
 	type?: number
 	level?: number
 	parents?: string[] | []
-	kind?: number
+	kind: number
 	inp?: boolean
 	drag?: boolean
 	man?: boolean
