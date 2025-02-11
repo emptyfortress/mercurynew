@@ -28,7 +28,6 @@ const filtered = computed(() => {
 		)
 	} else return options.value
 })
-
 </script>
 
 <template lang="pug">

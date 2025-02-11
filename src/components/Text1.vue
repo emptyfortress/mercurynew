@@ -7,7 +7,8 @@ import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
 import LevelDate from '@/components/LevelDate.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
-
+import { useElementSize } from '@vueuse/core'
+import { useTemplateRef } from 'vue'
 
 const query = ref('')
 const keys = ref<Option[]>([])
@@ -107,13 +108,17 @@ const showFirst = ref(false)
 const test = () => {
 	showFirst.value = true
 }
+const el = useTemplateRef('el')
+const { height } = useElementSize(el)
+const myhei = computed(() => {
+	return window.innerHeight - 300 - 120 - height.value + 'px'
+})
 
 </script>
 
 <template lang="pug">
 .pad
-
-	.q-mt-md(v-if="condList?.length > 0")
+	.q-mt-md(ref='el' v-if="condList?.length > 0")
 		div(v-for="item in condList")
 			SimpleQuery(:arr="item" @remove="remCond(item)")
 			.oper(@click="toggleAnd(item)" :class="{ and: item.and }")
@@ -127,9 +132,9 @@ const test = () => {
 
 		template(v-slot:append v-if='searchActive')
 			q-btn(flat round icon="mdi-close" @click="reset" dense) 
-			q-btn(unelevated label="Искать" color="primary" @click="" size="sm") 
 			q-btn(unelevated round icon="mdi-plus" color="primary" @click="addCond" size="sm") 
 				q-tooltip Добавить условие
+			q-btn(unelevated label="Искать" color="primary" @click="" size="sm") 
 
 	.grid
 		transition(name="slide-right" mode="out-in")
@@ -148,6 +153,9 @@ const test = () => {
 			q-list.list(v-if="keys.at(-2)?.date || keys.at(-1)?.dvalue" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
 
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 0 && keys.at(-1).date" )
+				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
 </template>
 
 <style scoped lang="scss">
@@ -177,7 +185,6 @@ const test = () => {
 }
 
 .grid {
-	height: 500px;
 	display: flex;
 	gap: 0.5rem;
 	justify-content: start;
@@ -199,7 +206,7 @@ const test = () => {
 }
 
 .list {
-	height: 600px;
+	height: v-bind(myhei);
 	overflow-y: auto;
 }
 

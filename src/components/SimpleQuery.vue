@@ -17,10 +17,12 @@ const remove = () => {
 
 <template lang="pug">
 .simple
+	.con Заявка
+	q-icon(name="mdi-chevron-right")
 	template(v-for="item in arr.data")
 		.con {{ item }}
 		q-icon(name="mdi-chevron-right")
-	q-btn(flat round dense icon="mdi-close" @click="remove") 
+	q-btn(flat round dense icon="mdi-close" @click="remove" size="sm") 
 </template>
 
 <style scoped lang="scss">
@@ -28,23 +30,21 @@ const remove = () => {
 	padding: 0.5rem 1rem;
 	background: #dedede;
 	border: 1px solid #ccc;
-	display: flex;
+	display: inline-flex;
 	align-items: center;
-	width: 100%;
-	position: relative;
-	// margin-bottom: 0.5rem;
 	gap: 11px;
+
 	:nth-last-child(2) {
 		// color: red;
 		display: none;
 	}
 }
+
 .con {
 	font-size: 0.9rem;
 }
+
 .q-btn {
-	position: absolute;
-	right: 0.5rem;
-	top: 0.1rem;
+	margin-left: 3rem;
 }
 </style>

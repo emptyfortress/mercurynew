@@ -44,8 +44,10 @@ q-page(padding)
 .editor {
 	display: block;
 	padding: 0;
+	max-width: 1200px;
 	// background: var(--bgLight);
 	position: relative;
+	// background: #ccc;
 }
 
 .zg {
