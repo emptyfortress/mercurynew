@@ -10,7 +10,6 @@ const props = defineProps({
   }
 })
 
-
 const options = defineModel<Option[] | undefined>('options')
 
 const query = defineModel('query', { type: String, default: '' })
@@ -52,7 +51,6 @@ watch(man, (val) => {
 </script>
 
 <template lang="pug">
-
 q-select(v-if='props.kind == 5' v-model="man" outlined bg-color="white" dense :options="fio")
 	template(v-slot:prepend)
 		q-icon(name="mdi-book-open-page-variant-outline")

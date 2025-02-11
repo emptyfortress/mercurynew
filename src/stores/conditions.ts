@@ -38,6 +38,12 @@ const stat = [
 	{ word: false, text: 'не задано', selected: false },
 ]
 
+const exec = [
+	{ exe: true, text: 'Активные заявки', selected: false},
+	{ exe: true, text: 'Завершенные заявки', selected: false},
+	{ exe: true, text: 'Просроченные заявки', selected: false},
+]
+
 const manDetails = [
 	{
 		id: uid(),
@@ -226,4 +232,4 @@ const manKeys = [
 	},
 ]
 
-export { str, datee, dWords, manDetails, manKeys, stat }
+export { str, datee, dWords, manDetails, manKeys, stat, exec }

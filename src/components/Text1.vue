@@ -6,6 +6,7 @@ import { zero } from '@/stores/options2'
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
 import LevelDate from '@/components/LevelDate.vue'
+import LevelExec from '@/components/LevelExec.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
@@ -30,7 +31,6 @@ const remove = (el: Option, ind: number) => {
 }
 
 const add = (el: Option) => {
-	console.log(el)
 	query.value = ''
 	keys.value = []
 	keys.value.push(el)
@@ -88,6 +88,7 @@ const condList = ref<CondL[]>([])
 
 const addCond = () => {
 	let temp = keys.value.map((item) => item.text)
+
 	temp.push(query.value)
 
 	let obj: CondL = { id: +date, data: temp, and: true }
@@ -119,7 +120,7 @@ const myhei = computed(() => {
 <template lang="pug">
 .pad
 	.q-mt-md(ref='el' v-if="condList?.length > 0")
-		div(v-for="item in condList")
+		div(v-for="item in condList" :key="item.id")
 			SimpleQuery(:arr="item" @remove="remCond(item)")
 			.oper(@click="toggleAnd(item)" :class="{ and: item.and }")
 				span(v-if="item.and") И
@@ -150,12 +151,16 @@ const myhei = computed(() => {
 				Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
 
 		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.at(-2)?.date || keys.at(-1)?.dvalue" )
+			q-list.list(v-if="keys.length > 0 && keys.at(-1).date" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
 
 		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 0 && keys.at(-1).date" )
+			q-list.list(v-if="keys.at(-2)?.date && keys.at(-1)?.dvalue" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 0 && keys.at(-1).exe" )
+				LevelExec
 </template>
 
 <style scoped lang="scss">
@@ -189,6 +194,7 @@ const myhei = computed(() => {
 	gap: 0.5rem;
 	justify-content: start;
 	align-items: start;
+	margin-top: .5rem;
 }
 
 .q-chip {
@@ -211,17 +217,18 @@ const myhei = computed(() => {
 }
 
 .oper {
-	background: #93d6ff;
+	background: $amber;
 	border: 1px solid $secondary;
 	font-size: 0.8rem;
 	font-weight: 600;
-	width: 70px;
 	text-align: center;
-	border-radius: 6px;
-	// color: white;
+	border-radius: 0 5rem 5rem 0;
+	width: 50px;
 	margin-top: 4px;
 	margin-bottom: 4px;
+	margin-left: 1.5rem;
 	cursor: pointer;
+	box-shadow: 2px 2px 2px rgba(0,0,0, .3);
 
 	&.and {
 		background: #a7df83;

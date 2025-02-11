@@ -12,6 +12,7 @@ enum Kind {
 	Bool,
 	Key,
 	Goal,
+	Exec,
 }
 
 interface Option {

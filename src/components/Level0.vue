@@ -48,4 +48,8 @@ q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :cla
 .caption {
 	margin-right: 5px;
 }
+.q-item:last-child {
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
 </style>
