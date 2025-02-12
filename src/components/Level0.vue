@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { Option } from '@/types/enum'
-// import { zero } from '@/stores/options'
-// import { getMembers } from '@/utils/utils'
 
 const options = defineModel<Option[] | undefined>('options')
 const query = defineModel('query', { type: String, default: '' })
@@ -40,6 +38,9 @@ q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :cla
 .selected {
 	background: $blue-2;
 }
+.ic {
+	font-size: 1.3rem;
+}
 
 .caption:last-child {
 	display: none;
@@ -49,7 +50,6 @@ q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :cla
 	margin-right: 5px;
 }
 .q-item:last-child {
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #ccc;
+	border-top: 1px dotted #ccc;
 }
 </style>

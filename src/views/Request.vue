@@ -5,6 +5,8 @@ import Text1 from '@/components/Text1.vue'
 import IconCopy from '@/components/icons/IconCopy.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 import IconSearch from '@/components/icons/IconSearch.vue'
+import IconUndo from '@/components/icons/IconUndo.vue'
+import IconRedo from '@/components/icons/IconRedo.vue'
 
 // const props = defineProps({
 // 	id: {
@@ -27,16 +29,20 @@ q-page(padding)
 		.top()
 			// .zg Запрос "{{ current?.label }}"
 			.zg Запрос "Все заявки"
-			div
-				q-btn(flat round dense icon="mdi-undo" color="primary" @click="") 
-				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
-				q-btn.q-ml-md(flat round dense color="primary" @click="") 
+			.q-gutter-x-sm
+				q-btn(flat round dense color="primary" @click="") 
+					IconUndo.ic
+					q-tooltip Отменить
+				q-btn(flat round dense color="primary" @click="") 
+					IconRedo.ic
+					q-tooltip Повторить
+				q-btn(flat round dense color="primary" @click="") 
 					IconCopy.ic
 					q-tooltip Дублировать
-				q-btn.q-ml-sm(flat round dense color="primary" @click="") 
+				q-btn(flat round dense color="primary" @click="") 
 					IconSave.ic
 					q-tooltip Сохранить
-				q-btn.q-ml-sm(flat round dense color="primary" @click="") 
+				q-btn(flat round dense color="primary" @click="") 
 					IconSearch.ic
 					q-tooltip Искать
 
