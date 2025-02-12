@@ -112,19 +112,30 @@ const test = () => {
 const el = useTemplateRef('el')
 const { height } = useElementSize(el)
 const myhei = computed(() => {
-	return window.innerHeight - 300 - 120 - height.value + 'px'
+	return window.innerHeight - 300 - 150 - height.value + 'px'
+})
+
+const clear = (() => {
+	condList.value.length = 0
 })
 
 </script>
 
 <template lang="pug">
-.pad
-	.q-mt-md(ref='el' v-if="condList?.length > 0")
-		div(v-for="item in condList" :key="item.id")
-			SimpleQuery(:arr="item" @remove="remCond(item)")
-			.oper(@click="toggleAnd(item)" :class="{ and: item.and }")
+.topblock(ref='el' v-if="condList?.length > 0")
+	div
+		div(v-for="(item, index) in condList" :key="item.id")
+			.oper(v-if='index > 0' @click="toggleAnd(item)" :class="{ and: item.and }")
 				span(v-if="item.and") И
 				span(v-else) ИЛИ
+			SimpleQuery(:arr="item" @remove="remCond(item)")
+	.btt
+		q-btn(size='sm' flat color="primary" label="Очистить" @click="clear") 
+		// q-btn(size='sm' flat color="primary" label="Дублировать" @click="") 
+		q-btn(size='sm' flat color="primary" label="Искать" @click="") 
+		q-btn(size='sm' unelevated color="primary" label="Сохранить" @click="") 
+
+.pad
 	br
 	q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
 		template(v-slot:prepend)
@@ -135,7 +146,7 @@ const myhei = computed(() => {
 			q-btn(flat round icon="mdi-close" @click="reset" dense) 
 			q-btn(unelevated round icon="mdi-plus" color="primary" @click="addCond" size="sm") 
 				q-tooltip Добавить условие
-			q-btn(unelevated label="Искать" color="primary" @click="" size="sm") 
+			// q-btn(unelevated label="Искать" color="primary" @click="" size="sm") 
 
 	.grid
 		transition(name="slide-right" mode="out-in")
@@ -152,10 +163,6 @@ const myhei = computed(() => {
 
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 0 && keys.at(-1).date" )
-				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
-
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.at(-2)?.date && keys.at(-1)?.dvalue" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
 
 		transition(name="slide-right" mode="out-in")
@@ -214,6 +221,7 @@ const myhei = computed(() => {
 .list {
 	height: v-bind(myhei);
 	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .oper {
@@ -242,5 +250,25 @@ const myhei = computed(() => {
 
 .pad {
 	margin: 1rem;
+}
+.topblock {
+	display: grid;
+	grid-template-columns: 1fr 150px;
+	justify-items: start;
+	// align-items: center;
+	column-gap: 1rem;
+	row-gap: .5rem;
+	padding: 1rem;
+	box-shadow: 0 2px 4px rgba(0,0,0, .2);
+}
+.btt {
+	// background: #ccc;
+	justify-self: end;
+	align-self: end;
+	text-align: right;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
 }
 </style>

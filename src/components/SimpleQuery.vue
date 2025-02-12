@@ -22,12 +22,12 @@ const input = ref('')
 <template lang="pug">
 .simple
 	q-chip Заявка
-	q-icon(name="mdi-chevron-right")
+	q-icon(name="mdi-chevron-right" size="sm" color="primary")
 	template(v-for="(item, index) in arr.data" :key="item")
 		q-chip(v-if='index !== arr.data.length - 1') {{ item }}
 		q-input(v-if='index == arr.data.length - 1' :model-value="item" dense outlined bg-color="white" placeholder='Укажите значение')
-		q-icon(name="mdi-chevron-right")
-	q-btn(flat round dense icon="mdi-close" @click="remove" size="sm") 
+		q-icon(name="mdi-chevron-right" size="sm" color="primary")
+	q-btn(flat round dense icon="mdi-close" @click="remove" size="sm" color="primary") 
 </template>
 
 <style scoped lang="scss">
@@ -38,7 +38,6 @@ const input = ref('')
 	display: inline-flex;
 	justify-content: start;
 	align-items: center;
-	gap: 11px;
 
 	:nth-last-child(2) {
 		display: none;
