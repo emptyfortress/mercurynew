@@ -1,6 +1,6 @@
 import { uid } from 'quasar'
 import { Kind } from '@/types/enum'
-import { manDetails, str, datee, stat, exec } from '@/stores/conditions'
+import { manDetails, str, datee, stat, exec, execute } from '@/stores/conditions'
 
 const zero = [
 	{
@@ -66,14 +66,23 @@ const zero = [
 		selected: false,
 		children: stat,
 	},
+	// {
+	// 	id: uid(),
+	// 	text: 'Исполнительская дисциплина',
+	// 	kind: Kind.Exec,
+	// 	type: 1,
+	// 	level: 1,
+	// 	selected: false,
+	// 	children: exec,
+	// },
 	{
 		id: uid(),
-		text: 'Исполнительская дисциплина',
-		kind: Kind.Exec,
+		text: 'Исполнение',
+		kind: Kind.Execute,
 		type: 1,
 		level: 1,
 		selected: false,
-		children: exec,
+		children: execute,
 	},
 
 ]

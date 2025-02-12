@@ -44,6 +44,7 @@ const exec = [
 	{ exe: true, text: 'Просроченные заявки', selected: false},
 ]
 
+
 const manDetails = [
 	{
 		id: uid(),
@@ -232,4 +233,11 @@ const manKeys = [
 	},
 ]
 
-export { str, datee, dWords, manDetails, manKeys, stat, exec }
+const execute = [
+	{ execute: true, text: 'Срок', selected: false, children: datee},
+	{ execute: true, text: 'Исполнитель', selected: false, children: manDetails},
+	{ execute: true, text: 'Состояние', selected: false, children: exec},
+
+]
+
+export { str, datee, dWords, manDetails, manKeys, stat, exec, execute }

@@ -10,6 +10,7 @@ import LevelExec from '@/components/LevelExec.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
+import IconClear from '@/components/icons/IconClear.vue'
 
 const query = ref('')
 const keys = ref<Option[]>([])
@@ -130,10 +131,9 @@ const clear = (() => {
 				span(v-else) ИЛИ
 			SimpleQuery(:arr="item" @remove="remCond(item)")
 	.btt
-		q-btn(size='sm' flat color="primary" label="Очистить" @click="clear") 
-		// q-btn(size='sm' flat color="primary" label="Дублировать" @click="") 
-		q-btn(size='sm' flat color="primary" label="Искать" @click="") 
-		q-btn(size='sm' unelevated color="primary" label="Сохранить" @click="") 
+		q-btn(size='md' flat round color="negative" @click="clear") 
+			IconClear.ic
+			q-tooltip Очистить все
 
 .pad
 	br
@@ -165,9 +165,9 @@ const clear = (() => {
 			q-list.list(v-if="keys.length > 0 && keys.at(-1).date" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 0 && keys.at(-1).exe" )
-				LevelExec
+		// transition(name="slide-right" mode="out-in")
+		// 	q-list.list(v-if="keys.length > 0 && keys.at(-1).kind == 14" )
+		// 		LevelExec
 </template>
 
 <style scoped lang="scss">
@@ -255,20 +255,18 @@ const clear = (() => {
 	display: grid;
 	grid-template-columns: 1fr 150px;
 	justify-items: start;
-	// align-items: center;
+	align-items: center;
 	column-gap: 1rem;
 	row-gap: .5rem;
 	padding: 1rem;
 	box-shadow: 0 2px 4px rgba(0,0,0, .2);
 }
 .btt {
-	// background: #ccc;
 	justify-self: end;
 	align-self: end;
 	text-align: right;
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-
+}
+.ic {
+	font-size: 1.5rem;
 }
 </style>

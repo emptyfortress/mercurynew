@@ -13,6 +13,7 @@ enum Kind {
 	Key,
 	Goal,
 	Exec,
+	Execute,
 }
 
 interface Option {
