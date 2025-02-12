@@ -125,7 +125,7 @@ const clear = (() => {
 <template lang="pug">
 .topblock(ref='el' v-if="condList?.length > 0")
 	div
-		div(v-for="(item, index) in condList" :key="item.id")
+		div(v-for="(item, index) in condList")
 			.oper(v-if='index > 0' @click="toggleAnd(item)" :class="{ and: item.and }")
 				span(v-if="item.and") И
 				span(v-else) ИЛИ
@@ -162,8 +162,8 @@ const clear = (() => {
 				Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
 
 		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 0 && keys.at(-1).date" )
-				LevelDate(@add="addDValue" :txt='keys.at(-2).text')
+			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
+				LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
 
 		// transition(name="slide-right" mode="out-in")
 		// 	q-list.list(v-if="keys.length > 0 && keys.at(-1).kind == 14" )
