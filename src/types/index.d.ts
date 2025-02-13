@@ -33,6 +33,8 @@ interface Version {
 interface Option {
 	id?: string
 	text: string
+	label?: string
+	value?: string
 	selected: boolean
 	type?: number
 	level?: number
@@ -42,6 +44,7 @@ interface Option {
 	drag?: boolean
 	man?: boolean
 	date?: boolean
+	st?: boolean
 	children?: Option[] | []
 }
 

@@ -14,6 +14,7 @@ enum Kind {
 	Goal,
 	Exec,
 	Execute,
+	Selector,
 }
 
 interface Option {

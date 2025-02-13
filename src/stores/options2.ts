@@ -1,6 +1,6 @@
 import { uid } from 'quasar'
 import { Kind } from '@/types/enum'
-import { manDetails, str, datee, stat, exec, execute } from '@/stores/conditions'
+import { manDetails, str, datee, stat, execute } from '@/stores/conditions'
 
 const zero = [
 	{

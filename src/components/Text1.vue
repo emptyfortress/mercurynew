@@ -2,11 +2,11 @@
 import { ref, computed, } from 'vue'
 import type { Option } from '@/types/enum'
 import { zero } from '@/stores/options2'
+import { status } from '@/stores/conditions'
 
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
 import LevelDate from '@/components/LevelDate.vue'
-import LevelExec from '@/components/LevelExec.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
@@ -15,14 +15,6 @@ import IconClear from '@/components/icons/IconClear.vue'
 const query = ref('')
 const keys = ref<Option[]>([])
 const options = ref(zero)
-
-const selected1 = ref<null | String>(null)
-const selected2 = ref<null | String>(null)
-const selected3 = ref<null | String>(null)
-const keyWord = ref<null | String>(null)
-const keyMan = ref<null | String>(null)
-const keyDate = ref<null | String>(null)
-const keyDateValue = ref<null | String>(null)
 
 const remove = (el: Option, ind: number) => {
 	console.log(el)
@@ -79,22 +71,58 @@ const searchActive = computed(() => {
 	else return false
 })
 
+interface TmpCond {
+	// id: string,
+	text: string,
+	kind?: number
+}
+
 interface CondL {
 	id: Number
-	data: String[]
+	data: TmpCond[]
 	and: Boolean
 }
 const date = new Date()
 const condList = ref<CondL[]>([])
 
+function convertArray(arrayOne: any) {
+	const result = []
+	let i = 0
+
+	while (i < arrayOne.length) {
+		if (i + 1 < arrayOne.length && 'kind' in arrayOne[i] && 'kind' in arrayOne[i + 1] &&
+			arrayOne[i].kind === 5 && arrayOne[i + 1].kind === 1) {
+			// Merge text properties if conditions are met
+			result.push({
+				"text": `${arrayOne[i].text}.${arrayOne[i + 1].text}`,
+				"kind": arrayOne[i].kind // Use kind from first element
+			});
+			i += 2; // Skip both merged elements
+		} else {
+			result.push(arrayOne[i]); // Add element unchanged if no merge condition is met
+			i++;
+		}
+	}
+	const ind = result.findIndex((item) => item.kind == 11)
+	if (ind > -1) {
+		result.splice(ind + 1, result.length - ind)
+	}
+	return result
+}
+
 const addCond = () => {
-	let temp = keys.value.map((item) => item.text)
+	let temp = keys.value.map((item) => ({
+		text: item.text,
+		kind: item.kind
+	}))
+	temp.push({ text: query.value, kind: 100 })
 
-	temp.push(query.value)
+	let tmp = convertArray(temp)
 
-	let obj: CondL = { id: +date, data: temp, and: true }
+	let obj: CondL = { id: +date, data: tmp, and: true }
 	condList.value.push(obj)
 	reset()
+
 }
 
 const remCond = (e: any) => {
@@ -146,7 +174,6 @@ const clear = (() => {
 			q-btn(flat round icon="mdi-close" @click="reset" dense) 
 			q-btn(unelevated round icon="mdi-plus" color="primary" @click="addCond" size="sm") 
 				q-tooltip Добавить условие
-			// q-btn(unelevated label="Искать" color="primary" @click="" size="sm") 
 
 	.grid
 		transition(name="slide-right" mode="out-in")
@@ -165,9 +192,10 @@ const clear = (() => {
 			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
 
-		// transition(name="slide-right" mode="out-in")
-		// 	q-list.list(v-if="keys.length > 0 && keys.at(-1).kind == 14" )
-		// 		LevelExec
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.st" )
+				Level1(v-model:options="status" @addKey="add2")
+
 </template>
 
 <style scoped lang="scss">
@@ -236,7 +264,7 @@ const clear = (() => {
 	margin-bottom: 4px;
 	margin-left: 1.5rem;
 	cursor: pointer;
-	box-shadow: 2px 2px 2px rgba(0,0,0, .3);
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, .3);
 
 	&.and {
 		background: #a7df83;
@@ -251,6 +279,7 @@ const clear = (() => {
 .pad {
 	margin: 1rem;
 }
+
 .topblock {
 	display: grid;
 	grid-template-columns: 1fr 150px;
@@ -259,13 +288,15 @@ const clear = (() => {
 	column-gap: 1rem;
 	row-gap: .5rem;
 	padding: 1rem;
-	box-shadow: 0 2px 4px rgba(0,0,0, .2);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
 }
+
 .btt {
 	justify-self: end;
 	align-self: end;
 	text-align: right;
 }
+
 .ic {
 	font-size: 1.5rem;
 }
