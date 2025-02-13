@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { str, datee, stat } from '@/stores/conditions'
+import { str, datee, stat, mystatus } from '@/stores/conditions'
 
 const props = defineProps({
 	arr: {
@@ -24,7 +24,9 @@ const options = ((num: number) => {
 		case 15:
 			return str
 		case 16:
-			return datee
+			return mystatus
+		case 17:
+			return stat
 		default:
 			return stat
 	}
@@ -38,8 +40,10 @@ const options = ((num: number) => {
 	q-icon(name="mdi-chevron-right" size="sm" color="primary")
 
 	template(v-for="(item, index) in arr.data" :key="item.id")
-		q-chip(v-if='item.kind !== 15 && item.kind !== 100' :class="{ man: item.kind == 11 }") {{ item.text }}
-		q-select(v-if='item.kind == 15' v-model="item.text" dense outlined :options="options(item.kind)" bg-color="white")
+		q-select(v-if='item.kind > 14 && item.kind !== 100' v-model="item.text" dense outlined :options="options(item.kind)" bg-color="white")
+
+		q-chip(v-if='item.kind < 14' :class="{ man: item.kind == 11 }") {{ item.text }}
+		// q-chip(v-if='item.kind !== 15 && item.kind !== 100' :class="{ man: item.kind == 11 }") {{ item.text }}
 
 
 		q-input(v-if='item.kind !== 11 && index == arr.data.length - 1' :model-value="item.text" dense outlined bg-color="white" placeholder='Укажите значение')

@@ -32,17 +32,17 @@ const dWords = [
 ]
 
 const stat = [
-	{ kind: Kind.Selector, st: true, label: 'равно', value: 'равно', text: 'равно', selected: false },
-	{ kind: Kind.Selector, st: true, label: 'не равно', value: 'не равно', text: 'не равно', selected: false },
-	{ kind: Kind.Selector, st: true, label: 'задано', value: 'задано', text: 'задано', selected: false },
-	{ kind: Kind.Selector, st: true, label: 'не задано', value: 'не задано', text: 'не задано', selected: false },
+	{ kind: Kind.Selector2, st: true, label: 'равно', value: 'равно', text: 'равно', selected: false },
+	{ kind: Kind.Selector2, st: true, label: 'не равно', value: 'не равно', text: 'не равно', selected: false },
+	{ kind: Kind.Selector2, st: true, label: 'задано', value: 'задано', text: 'задано', selected: false },
+	{ kind: Kind.Selector2, st: true, label: 'не задано', value: 'не задано', text: 'не задано', selected: false },
 ]
 
-const status = [
-	{ kind: Kind.Selector, st: true, llabel: 'Подготовка', value: 'Подготовка', text: 'Подготовка', selected: false },
-	{ kind: Kind.Selector, st: true, llabel: 'На согласовании', value: 'На согласовании', text: 'На согласовании', selected: false },
-	{ kind: Kind.Selector, st: true, llabel: 'На доработке', value: 'На доработке', text: 'На доработке', selected: false },
-	{ kind: Kind.Selector, st: true, llabel: 'Согласовано', value: 'Согласовано', text: 'Согласовано', selected: false },
+const mystatus = [
+	{ kind: Kind.Selector1, st: true, label: 'Подготовка', value: 'Подготовка', text: 'Подготовка', selected: false },
+	{ kind: Kind.Selector1, st: true, label: 'На согласовании', value: 'На согласовании', text: 'На согласовании', selected: false },
+	{ kind: Kind.Selector1, st: true, label: 'На доработке', value: 'На доработке', text: 'На доработке', selected: false },
+	{ kind: Kind.Selector1, st: true, label: 'Согласовано', value: 'Согласовано', text: 'Согласовано', selected: false },
 ]
 
 const exec = [
@@ -246,4 +246,4 @@ const execute = [
 
 ]
 
-export { str, datee, dWords, manDetails, manKeys, stat, status, exec, execute }
+export { str, datee, dWords, manDetails, manKeys, stat, mystatus, exec, execute }

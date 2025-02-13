@@ -15,6 +15,8 @@ enum Kind {
 	Exec,
 	Execute,
 	Selector,
+	Selector1,
+	Selector2,
 }
 
 interface Option {

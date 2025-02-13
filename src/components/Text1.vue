@@ -2,7 +2,7 @@
 import { ref, computed, } from 'vue'
 import type { Option } from '@/types/enum'
 import { zero } from '@/stores/options2'
-import { status } from '@/stores/conditions'
+import { mystatus } from '@/stores/conditions'
 
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
@@ -91,8 +91,7 @@ function convertArray(arrayOne: any) {
 
 	while (i < arrayOne.length) {
 		if (i + 1 < arrayOne.length && 'kind' in arrayOne[i] && 'kind' in arrayOne[i + 1] &&
-			arrayOne[i].kind === 5 && arrayOne[i + 1].kind === 1) {
-			// Merge text properties if conditions are met
+			arrayOne[i].kind === 5 && (arrayOne[i + 1].kind === 1 || arrayOne[i + 1].kind == 2)) {
 			result.push({
 				"text": `${arrayOne[i].text}.${arrayOne[i + 1].text}`,
 				"kind": arrayOne[i].kind // Use kind from first element
@@ -194,7 +193,7 @@ const clear = (() => {
 
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.st" )
-				Level1(v-model:options="status" @addKey="add2")
+				Level1(v-model:options="mystatus" @addKey="add2")
 
 </template>
 
