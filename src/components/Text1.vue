@@ -2,7 +2,7 @@
 import { ref, computed, } from 'vue'
 import type { Option } from '@/types/enum'
 import { zero } from '@/stores/options2'
-import { mystatus } from '@/stores/conditions'
+// import { mystatus } from '@/stores/conditions'
 
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
@@ -11,6 +11,7 @@ import SimpleQuery from '@/components/SimpleQuery.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
 import IconClear from '@/components/icons/IconClear.vue'
+import IconSave from '@/components/icons/IconSave.vue'
 
 const query = ref('')
 const keys = ref<Option[]>([])
@@ -134,7 +135,7 @@ const addCond = () => {
 	let obj: CondL = { id: +date, data: tmp, and: true }
 	condList.value.push(obj)
 	reset()
-
+	adding.value = false
 }
 
 const remCond = (e: any) => {
@@ -159,6 +160,7 @@ const myhei = computed(() => {
 const clear = (() => {
 	condList.value.length = 0
 })
+const adding = ref(true)
 
 </script>
 
@@ -174,8 +176,10 @@ const clear = (() => {
 		q-btn(size='md' flat round color="negative" @click="clear") 
 			IconClear.ic
 			q-tooltip Очистить все
+		q-btn(flat round color="primary" icon='mdi-plus-circle-outline' @click="adding = true") 
+			q-tooltip Добавить условие
 
-.pad
+.pad(v-if='adding')
 	br
 	q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
 		template(v-slot:prepend)
@@ -184,8 +188,11 @@ const clear = (() => {
 
 		template(v-slot:append v-if='searchActive')
 			q-btn(flat round icon="mdi-close" @click="reset" dense) 
-			q-btn(unelevated round icon="mdi-plus" color="primary" @click="addCond" size="sm") 
-				q-tooltip Добавить условие
+			q-btn(flat round color="primary" @click="addCond") 
+				IconSave.ic
+			// q-btn(v-else flat round color="primary" icon='mdi-plus-circle-outline' @click="addCond") 
+			// 	q-tooltip Добавить условие
+
 
 	.grid
 		transition(name="slide-right" mode="out-in")
@@ -207,10 +214,6 @@ const clear = (() => {
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
-
-		// transition(name="slide-right" mode="out-in")
-		// 	q-list.list(v-if="keys.length > 0 && keys.at(-1)?.st" )
-		// 		Level1(v-model:options="mystatus" @addKey="add2")
 
 </template>
 

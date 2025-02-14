@@ -3,7 +3,7 @@
 // import { useList } from '@/stores/list'
 import Text1 from '@/components/Text1.vue'
 import IconCopy from '@/components/icons/IconCopy.vue'
-import IconSave from '@/components/icons/IconSave.vue'
+// import IconSave from '@/components/icons/IconSave.vue'
 import IconSearch from '@/components/icons/IconSearch.vue'
 import IconUndo from '@/components/icons/IconUndo.vue'
 import IconRedo from '@/components/icons/IconRedo.vue'
@@ -39,9 +39,9 @@ q-page(padding)
 				q-btn(flat round dense color="primary" @click="") 
 					IconCopy.ic
 					q-tooltip Дублировать
-				q-btn(flat round dense color="primary" @click="") 
-					IconSave.ic
-					q-tooltip Сохранить
+				// q-btn(flat round dense color="primary" @click="") 
+				// 	IconSave.ic
+				// 	q-tooltip Сохранить
 				q-btn(flat round dense color="primary" @click="") 
 					IconSearch.ic
 					q-tooltip Искать
