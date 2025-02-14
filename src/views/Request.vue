@@ -8,6 +8,7 @@ import IconSearch from '@/components/icons/IconSearch.vue'
 import IconUndo from '@/components/icons/IconUndo.vue'
 import IconRedo from '@/components/icons/IconRedo.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
+import TextAi from '@/components/TextAi.vue'
 
 </script>
 
@@ -34,7 +35,8 @@ q-page(padding)
 					IconSearch.ic
 					q-tooltip Искать
 
-		Text1()
+		// Text1()
+		TextAi
 </template>
 
 <style scoped lang="scss">

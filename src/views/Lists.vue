@@ -112,6 +112,17 @@ onBeforeUnmount(() => {
 	expanded.value = false
 	list.reset()
 })
+
+const duple = ref(false)
+const onDragEnterPlus = (() => {
+	duple.value = true
+})
+const onDragLeavePlus = (() => {
+	duple.value = false
+})
+const onDropPlus = (() => {
+	duple.value = false
+})
 </script>
 
 <template lang="pug">
@@ -151,10 +162,16 @@ q-page(padding)
 						q-btn(unelevated color="secondary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
 						q-btn(unelevated color="secondary" label="Редактировать представление" @click.stop='') 
 
-		div(id="no-drag")
+		.plusCont(id="no-drag"
+			@dragover.prevent="onDragEnterPlus"
+			@dragenter.prevent
+			@dragleave="onDragLeavePlus"
+			@drop='onDropPlus'
+			:class="{ duplicate: duple }"
+			)
 			AddButton(v-if='!expanded' @create='create' mode="list")
 
-	Trash(v-model="dragStatus" @remove="remove" :group='expanded')
+	Trash(v-model="dragStatus" @remove="remove" :group='expanded' :duple='duple')
 </template>
 
 <style scoped lang="scss">
@@ -248,5 +265,19 @@ q-page(padding)
 .hg {
 	margin-top: .5rem;
 	line-height: 100%;
+}
+
+.plusCont {
+	width: 150px;
+	height: 150px;
+	border-radius: var(--rad);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	&.duplicate {
+		background: hsl(213 38% 81% / 1) !important;
+		border: 2px dashed $primary;
+	}
 }
 </style>
