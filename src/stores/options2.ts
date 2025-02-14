@@ -78,7 +78,7 @@ const zero = [
 	{
 		id: uid(),
 		text: 'Исполнение',
-		kind: Kind.Execute,
+		kind: Kind.Text,
 		type: 1,
 		level: 1,
 		selected: false,

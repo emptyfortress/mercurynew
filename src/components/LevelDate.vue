@@ -14,12 +14,12 @@ const emit = defineEmits(['add'])
 const date = ref('')
 
 const keywords = reactive([
-	{ dvalue: true, text: 'сегодня', selected: false },
-	{ dvalue: true, text: 'сейчас', selected: false },
-	{ dvalue: true, text: 'текущая неделя', selected: false },
-	{ dvalue: true, text: 'текущий месяц', selected: false },
-	{ dvalue: true, text: 'текущий квартал', selected: false },
-	{ dvalue: true, text: 'текущий год', selected: false },
+	{ kind: 7, dvalue: true, text: 'сегодня', selected: false },
+	{ kind: 7, dvalue: true, text: 'сейчас', selected: false },
+	{ kind: 7, dvalue: true, text: 'текущая неделя', selected: false },
+	{ kind: 7, dvalue: true, text: 'текущий месяц', selected: false },
+	{ kind: 7, dvalue: true, text: 'текущий квартал', selected: false },
+	{ kind: 7, dvalue: true, text: 'текущий год', selected: false },
 ])
 
 const add = (item: any) => {
@@ -39,7 +39,7 @@ watchEffect(() => {
 watch(date, (val) => {
 	if (val) {
 		keywords.map((el) => (el.selected = false))
-		emit('add', { text: val, dvalue: true })
+		emit('add', { text: val, dvalue: true, kind: 7 })
 	}
 })
 </script>

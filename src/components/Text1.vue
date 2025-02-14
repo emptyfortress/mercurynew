@@ -51,6 +51,9 @@ const add2 = (e: Option) => {
 		keys.value.push(e)
 	}
 }
+const add3 = (e: Option) => {
+	keys.value.push(e)
+}
 
 const addDValue = (e: Option) => {
 	if (keys.value.at(-1)?.dvalue == true) {
@@ -106,14 +109,24 @@ function convertArray(arrayOne: any) {
 	if (ind > -1) {
 		result.splice(ind + 1, result.length - ind)
 	}
+	const ind1 = result.findIndex((item) => item.kind == 7)
+	if (ind1 > -1) {
+		result.splice(ind1 + 1, result.length - ind1)
+	}
+	const ind2 = result.findIndex((item) => item.kind == 16)
+	if (ind2 > -1) {
+		result.splice(ind2 + 1, result.length - ind2)
+	}
+
 	return result
 }
 
 const addCond = () => {
 	let temp = keys.value.map((item) => ({
 		text: item.text,
-		kind: item.kind
+		kind: item.kind,
 	}))
+
 	temp.push({ text: query.value, kind: 100 })
 
 	let tmp = convertArray(temp)
@@ -186,6 +199,10 @@ const clear = (() => {
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 1" )
 				Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 2" )
+				Level1(v-model:options="keys[2].children" :kind='keys[2].kind' v-model:query="query" @addKey="add3")
 
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
@@ -263,7 +280,10 @@ const clear = (() => {
 	margin-bottom: 4px;
 	margin-left: 1.5rem;
 	cursor: pointer;
-	box-shadow: 2px 2px 2px rgba(0, 0, 0, .3);
+
+	&:hover {
+		box-shadow: 2px 2px 2px rgba(0, 0, 0, .3);
+	}
 
 	&.and {
 		background: #a7df83;

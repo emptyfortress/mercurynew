@@ -45,11 +45,16 @@ const mystatus = [
 	{ kind: Kind.Selector1, st: true, label: 'Согласовано', value: 'Согласовано', text: 'Согласовано', selected: false },
 ]
 
-const exec = [
-	{ exe: true, text: 'Активные заявки', selected: false },
-	{ exe: true, text: 'Завершенные заявки', selected: false },
-	{ exe: true, text: 'Просроченные заявки', selected: false },
+const deadline = [
+	{ kind: Kind.Text, exe: true, label: 'Просрочено', value: 'Просрочено', text: 'Просрочено', selected: false },
 ]
+
+const exec = [
+	{ kind: Kind.Text, exe: true, value: 'Все', label: 'Все', text: 'Все', selected: false, children: deadline },
+	{ kind: Kind.Text, exe: true, value: 'Незавершено', label: 'Незавершено', text: 'Незавершено', selected: false, children: deadline },
+	{ kind: Kind.Text, exe: true, value: 'Завершено', label: 'Завершено', text: 'Завершено', selected: false, children: deadline },
+]
+
 
 const manDetails = [
 	{
@@ -240,9 +245,9 @@ const manKeys = [
 ]
 
 const execute = [
-	{ execute: true, text: 'Срок', selected: false, children: datee },
-	{ execute: true, text: 'Исполнитель', selected: false, children: manDetails },
-	{ execute: true, text: 'Состояние', selected: false, children: exec },
+	{ kind: Kind.Text, execute: true, label: 'Срок', value: 'Срок', text: 'Срок', selected: false, children: datee },
+	{ kind: Kind.Text, execute: true, label: 'Исполнитель', value: 'Исполнитель', text: 'Исполнитель', selected: false, children: manDetails },
+	{ kind: Kind.Text, execute: true, label: 'Состояние ?', value: 'Состояние ?', text: 'Состояние ?', selected: false, children: exec },
 
 ]
 

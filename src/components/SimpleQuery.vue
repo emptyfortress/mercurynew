@@ -32,6 +32,12 @@ const options = ((num: number) => {
 	}
 })
 
+const showInput = ((item: any, index: number) => {
+	if (props.arr.data[1].text == 'Состояние ?') return false
+	if (item.kind == 16) return false
+	if (item.kind !== 11 && index == props.arr.data.length - 1) return true
+	else return false
+})
 </script>
 
 <template lang="pug">
@@ -42,12 +48,11 @@ const options = ((num: number) => {
 	template(v-for="(item, index) in arr.data" :key="item.id")
 		q-select(v-if='item.kind > 14 && item.kind !== 100' v-model="item.text" dense outlined :options="options(item.kind)" bg-color="white")
 
-		q-chip(v-if='item.kind < 14' :class="{ man: item.kind == 11 }") {{ item.text }}
-		// q-chip(v-if='item.kind !== 15 && item.kind !== 100' :class="{ man: item.kind == 11 }") {{ item.text }}
+		q-chip(v-if='item.kind < 14 && item.kind !== 7' :class="{ man: item.kind == 11 }") {{ item.text }}
 
+		q-input.q-ml-sm(v-if='showInput(item, index)' :model-value="item.text" dense outlined bg-color="white" placeholder='Укажите значение')
 
-		q-input(v-if='item.kind !== 11 && index == arr.data.length - 1' :model-value="item.text" dense outlined bg-color="white" placeholder='Укажите значение')
-		q-icon(name="mdi-chevron-right" size="sm" color="primary")
+		// q-icon(v-if='showInput(item, index)' name="mdi-chevron-right" size="sm" color="primary")
 	q-btn(flat round dense icon="mdi-close" @click="remove" size="sm" color="primary") 
 </template>
 
@@ -97,7 +102,7 @@ const options = ((num: number) => {
 	&.man {
 		background: $purple-2;
 		border: 1px solid $purple-3;
-
+		cursor: pointer;
 	}
 }
 

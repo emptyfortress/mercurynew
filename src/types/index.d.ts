@@ -44,6 +44,7 @@ interface Option {
 	drag?: boolean
 	man?: boolean
 	date?: boolean
+	exe?: boolean
 	st?: boolean
 	children?: Option[] | []
 }
