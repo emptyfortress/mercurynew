@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { Option } from '@/types/enum'
+import IconRun from '@/components/icons/IconRun.vue'
 
 const options = defineModel<Option[] | undefined>('options')
 const query = defineModel('query', { type: String, default: '' })
@@ -32,14 +33,19 @@ const filtered = computed(() => {
 q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :class="{ selected: item.selected }")
 	q-item-section
 		q-item-label {{ item.text }}
+	q-item-section(side v-if='item.text == "Исполнение"')
+		IconRun.ic
+
 </template>
 
 <style scoped lang="scss">
 .selected {
 	background: $blue-2;
 }
+
 .ic {
 	font-size: 1.3rem;
+	color: $primary;
 }
 
 .caption:last-child {
@@ -49,6 +55,7 @@ q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :cla
 .caption {
 	margin-right: 5px;
 }
+
 .q-item:last-child {
 	border-top: 1px dotted #ccc;
 }

@@ -223,6 +223,16 @@ const remove = (() => {
 	}
 })
 
+const duple = ref(false)
+const onDragEnterPlus = (() => {
+	duple.value = true
+})
+const onDragLeavePlus = (() => {
+	duple.value = false
+})
+const onDropPlus = (() => {
+	duple.value = false
+})
 </script>
 
 <template lang="pug">
@@ -300,10 +310,16 @@ q-page(padding)
 					) 
 
 
-			div(id="no-drag")
+			.plusCont(id="no-drag"
+				@dragover.prevent="onDragEnterPlus"
+				@dragenter.prevent
+				@dragleave="onDragLeavePlus"
+				@drop='onDropPlus'
+				:class="{ duplicate: duple }"
+				)
 				AddButton(v-if='!expanded' @create='create' mode="app")
 
-		Trash(v-model="dragStatus" @remove="remove" :group='expanded')
+		Trash(v-model="dragStatus" @remove="remove" :group='expanded' :duple='duple')
 		ConfirmDialog(v-model="confirm" @remove="removeGroup")
 </template>
 
@@ -339,7 +355,6 @@ q-page(padding)
 	position: relative;
 	border-radius: var(--rad);
 	position: relative;
-
 
 	&.active {
 		padding: 2rem;
@@ -486,5 +501,19 @@ q-page(padding)
 	height: 100px;
 	background-color: blue;
 	cursor: pointer;
+}
+
+.plusCont {
+	width: 170px;
+	height: 170px;
+	border-radius: var(--rad);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	&.duplicate {
+		background: hsl(213 38% 81% / 1) !important;
+		border: 2px dashed $primary;
+	}
 }
 </style>

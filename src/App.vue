@@ -23,7 +23,6 @@ const mode = ref<any>('out-in')
 router.beforeEach((to, from, next) => {
 	if (from.meta.count !== undefined) {
 		cover.value = to.meta.count - from.meta.count
-		console.log(cover.value)
 		next()
 	}
 	else next()

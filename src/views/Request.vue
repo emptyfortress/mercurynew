@@ -7,20 +7,8 @@ import IconCopy from '@/components/icons/IconCopy.vue'
 import IconSearch from '@/components/icons/IconSearch.vue'
 import IconUndo from '@/components/icons/IconUndo.vue'
 import IconRedo from '@/components/icons/IconRedo.vue'
+import IconWizard from '@/components/icons/IconWizard.vue'
 
-// const props = defineProps({
-// 	id: {
-// 		type: String,
-// 		required: true,
-// 		default: '0'
-// 	}
-// })
-
-// const list = useList()
-
-// const current = computed(() => {
-// 	return list.lists.find((el) => el.id == +props.id)
-// })
 </script>
 
 <template lang="pug">
@@ -39,9 +27,9 @@ q-page(padding)
 				q-btn(flat round dense color="primary" @click="") 
 					IconCopy.ic
 					q-tooltip Дублировать
-				// q-btn(flat round dense color="primary" @click="") 
-				// 	IconSave.ic
-				// 	q-tooltip Сохранить
+				q-btn(flat round dense color="primary" @click="") 
+					IconWizard.ic
+					q-tooltip ИИ-ассистент
 				q-btn(flat round dense color="primary" @click="") 
 					IconSearch.ic
 					q-tooltip Искать

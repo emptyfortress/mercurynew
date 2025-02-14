@@ -7,8 +7,11 @@ const props = defineProps({
 	group: {
 		type: Boolean,
 		default: false
+	},
+	duple: {
+		type: Boolean,
+		default: false
 	}
-
 })
 const modelValue = defineModel<boolean>()
 
@@ -49,12 +52,12 @@ const onDrop = (() => {
 <template lang="pug">
 transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 	Teleport(to="body")
-		.trash(v-if='modelValue'
+		.trash(v-if='modelValue && !duple'
 			v-motion='"cube"'
 			:initial="{ y: 200, opacity: 0, }"
 			:enter="{ y: 0, opacity: 1, }"
 			:leave="{ y: 200, opacity: 0, }"
-			:delay=800
+			:delay=600
 			)
 
 			.myrow

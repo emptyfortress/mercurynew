@@ -251,18 +251,17 @@ label {
 	font-weight: 600;
 }
 
-.fucking {
-	width: 100px;
-	background: transparent;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	cursor: default;
-
-	&:hover {
-		border: none;
-		box-shadow: none;
-	}
-
-}
-</style>
+// .fucking {
+// 	width: 100px;
+// 	background: transparent;
+// 	display: flex;
+// 	justify-content: center;
+// 	align-items: center;
+// 	cursor: default;
+//
+// 	&:hover {
+// 		border: none;
+// 		box-shadow: none;
+// 	}
+//
+// }</style>

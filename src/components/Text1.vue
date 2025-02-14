@@ -18,7 +18,6 @@ const keys = ref<Option[]>([])
 const options = ref(zero)
 
 const remove = (el: Option, ind: number) => {
-	console.log(el)
 	el.selected = false
 	keys.value.splice(ind)
 	query.value = ''
@@ -159,6 +158,7 @@ const myhei = computed(() => {
 
 const clear = (() => {
 	condList.value.length = 0
+	adding.value = true
 })
 const adding = ref(true)
 
