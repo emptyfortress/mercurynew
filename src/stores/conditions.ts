@@ -31,19 +31,20 @@ const dWords = [
 	{ text: 'текущий год', selected: false },
 ]
 
-const stat = [
-	{ kind: Kind.Selector2, st: true, label: 'равно', value: 'равно', text: 'равно', selected: false },
-	{ kind: Kind.Selector2, st: true, label: 'не равно', value: 'не равно', text: 'не равно', selected: false },
-	{ kind: Kind.Selector2, st: true, label: 'задано', value: 'задано', text: 'задано', selected: false },
-	{ kind: Kind.Selector2, st: true, label: 'не задано', value: 'не задано', text: 'не задано', selected: false },
+const mystatus = [
+	{ kind: Kind.Selector1, label: 'Подготовка', value: 'Подготовка', text: 'Подготовка', selected: false },
+	{ kind: Kind.Selector1, label: 'На согласовании', value: 'На согласовании', text: 'На согласовании', selected: false },
+	{ kind: Kind.Selector1, label: 'На доработке', value: 'На доработке', text: 'На доработке', selected: false },
+	{ kind: Kind.Selector1, label: 'Согласовано', value: 'Согласовано', text: 'Согласовано', selected: false },
 ]
 
-const mystatus = [
-	{ kind: Kind.Selector1, st: true, label: 'Подготовка', value: 'Подготовка', text: 'Подготовка', selected: false },
-	{ kind: Kind.Selector1, st: true, label: 'На согласовании', value: 'На согласовании', text: 'На согласовании', selected: false },
-	{ kind: Kind.Selector1, st: true, label: 'На доработке', value: 'На доработке', text: 'На доработке', selected: false },
-	{ kind: Kind.Selector1, st: true, label: 'Согласовано', value: 'Согласовано', text: 'Согласовано', selected: false },
+const stat = [
+	{ kind: Kind.Selector2, label: 'равно', value: 'равно', text: 'равно', selected: false, children: mystatus },
+	{ kind: Kind.Selector2, label: 'не равно', value: 'не равно', text: 'не равно', selected: false, children: mystatus },
+	{ kind: Kind.Selector2, label: 'задано', value: 'задано', text: 'задано', selected: false, children: mystatus },
+	{ kind: Kind.Selector2, label: 'не задано', value: 'не задано', text: 'не задано', selected: false, children: mystatus },
 ]
+
 
 const deadline = [
 	{ kind: Kind.Text, exe: true, label: 'Просрочено', value: 'Просрочено', text: 'Просрочено', selected: false },

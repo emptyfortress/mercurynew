@@ -208,9 +208,9 @@ const clear = (() => {
 			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.st" )
-				Level1(v-model:options="mystatus" @addKey="add2")
+		// transition(name="slide-right" mode="out-in")
+		// 	q-list.list(v-if="keys.length > 0 && keys.at(-1)?.st" )
+		// 		Level1(v-model:options="mystatus" @addKey="add2")
 
 </template>
 
