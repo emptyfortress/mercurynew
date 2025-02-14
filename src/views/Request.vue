@@ -35,8 +35,8 @@ q-page(padding)
 					IconSearch.ic
 					q-tooltip Искать
 
-		// Text1()
-		TextAi
+		Text1()
+		// TextAi
 </template>
 
 <style scoped lang="scss">
