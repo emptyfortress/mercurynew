@@ -165,55 +165,56 @@ const adding = ref(true)
 </script>
 
 <template lang="pug">
-.topblock(ref='el' v-if="condList?.length > 0")
-	div
-		div(v-for="(item, index) in condList")
-			.oper(v-if='index > 0' @click="toggleAnd(item)" :class="{ and: item.and }")
-				span(v-if="item.and") И
-				span(v-else) ИЛИ
-			SimpleQuery(:arr="item" @remove="remCond(item)")
-	.btt
-		q-btn(size='md' flat round color="negative" @click="clear") 
-			IconClear.ic
-			q-tooltip Очистить все
-		q-btn(flat round color="primary" icon='mdi-plus-circle-outline' @click="adding = true") 
-			q-tooltip Добавить условие
+div
+	.topblock(ref='el' v-if="condList?.length > 0")
+		div
+			div(v-for="(item, index) in condList")
+				.oper(v-if='index > 0' @click="toggleAnd(item)" :class="{ and: item.and }")
+					span(v-if="item.and") И
+					span(v-else) ИЛИ
+				SimpleQuery(:arr="item" @remove="remCond(item)")
+		.btt
+			q-btn(size='md' flat round color="negative" @click="clear") 
+				IconClear.ic
+				q-tooltip Очистить все
+			q-btn(flat round color="primary" icon='mdi-plus-circle-outline' @click="adding = true") 
+				q-tooltip Добавить условие
 
-.pad(v-if='adding')
-	br
-	q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
-		template(v-slot:prepend)
-			q-chip Заявка
-			q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
+	.pad(v-if='adding')
+		br
+		q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
+			template(v-slot:prepend)
+				q-chip Заявка
+				q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
 
-		template(v-slot:append v-if='searchActive')
-			q-btn(flat round icon="mdi-close" @click="reset" dense) 
-			q-btn(flat round color="primary" @click="addCond") 
-				IconSave.ic
-			// q-btn(v-else flat round color="primary" icon='mdi-plus-circle-outline' @click="addCond") 
-			// 	q-tooltip Добавить условие
+			template(v-slot:append v-if='searchActive')
+				q-btn(flat round icon="mdi-close" @click="reset" dense) 
+				q-btn(flat round color="primary" @click="addCond") 
+					IconSave.ic
+				// q-btn(v-else flat round color="primary" icon='mdi-plus-circle-outline' @click="addCond") 
+				// 	q-tooltip Добавить условие
 
 
-	.grid
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="showFirst")
-				Level0(v-model:options="options" v-model:query="query" @addKey="add")
+		.grid
+			transition(name="slide-right" mode="out-in")
+				q-list.list(v-if="showFirst")
+					Level0(v-model:options="options" v-model:query="query" @addKey="add")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 0" )
-				Level1(v-model:options="keys[0].children" :kind='keys[0].kind' v-model:query="query" @addKey="add1")
+			transition(name="slide-right" mode="out-in")
+				q-list.list(v-if="keys.length > 0" )
+					Level1(v-model:options="keys[0].children" :kind='keys[0].kind' v-model:query="query" @addKey="add1")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 1" )
-				Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
+			transition(name="slide-right" mode="out-in")
+				q-list.list(v-if="keys.length > 1" )
+					Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 2" )
-				Level1(v-model:options="keys[2].children" :kind='keys[2].kind' v-model:query="query" @addKey="add3")
+			transition(name="slide-right" mode="out-in")
+				q-list.list(v-if="keys.length > 2" )
+					Level1(v-model:options="keys[2].children" :kind='keys[2].kind' v-model:query="query" @addKey="add3")
 
-		transition(name="slide-right" mode="out-in")
-			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
-				LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
+			transition(name="slide-right" mode="out-in")
+				q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
+					LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
 
 </template>
 

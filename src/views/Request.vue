@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// import { computed } from 'vue'
+import { ref } from 'vue'
 // import { useList } from '@/stores/list'
 import Text1 from '@/components/Text1.vue'
 import IconCopy from '@/components/icons/IconCopy.vue'
@@ -10,6 +10,10 @@ import IconRedo from '@/components/icons/IconRedo.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
 import TextAi from '@/components/TextAi.vue'
 
+const main = ref(true)
+const toggleMain = (() => {
+	main.value = !main.value
+})
 </script>
 
 <template lang="pug">
@@ -28,15 +32,23 @@ q-page(padding)
 				q-btn(flat round dense color="primary" @click="") 
 					IconCopy.ic
 					q-tooltip Дублировать
-				q-btn(flat round dense color="primary" @click="") 
+				q-btn(flat round dense color="primary" @click="toggleMain") 
 					IconWizard.ic
 					q-tooltip ИИ-ассистент
 				q-btn(flat round dense color="primary" @click="") 
 					IconSearch.ic
 					q-tooltip Искать
 
-		Text1()
-		// TextAi
+		Text1(v-if='main'
+			v-motion
+			:initial='{ y: 20, opacity: 0 }'
+			:enter='{ y: 0, opacity: 1 }'
+			)
+		TextAi(v-else
+			v-motion
+			:initial='{ y: 20, opacity: 0 }'
+			:enter='{ y: 0, opacity: 1 }'
+			)
 </template>
 
 <style scoped lang="scss">
