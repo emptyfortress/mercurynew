@@ -29,9 +29,9 @@ q-page(padding)
 				q-btn(flat round dense color="primary" @click="") 
 					IconRedo.ic
 					q-tooltip Повторить
-				q-btn(flat round dense color="primary" @click="") 
-					IconCopy.ic
-					q-tooltip Дублировать
+				// q-btn(flat round dense color="primary" @click="") 
+				// 	IconCopy.ic
+				// 	q-tooltip Дублировать
 				q-btn(flat round dense color="primary" @click="toggleMain") 
 					IconWizard.ic
 					q-tooltip ИИ-ассистент

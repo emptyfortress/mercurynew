@@ -58,7 +58,7 @@ const showInput = ((item: any, index: number) => {
 
 <style scoped lang="scss">
 .simple {
-	padding: 0.2rem 1rem;
+	padding: 0.2rem .5rem;
 	background: var(--bgLight);
 	border: 1px solid $blue-3;
 	display: inline-flex;
