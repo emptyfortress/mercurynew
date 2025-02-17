@@ -37,17 +37,18 @@ const calcClass = (item: any) => {
 }
 
 const expand = (item: any) => {
-	const state = Flip.getState('.item1')
+	const state = Flip.getState('.item1, .hg')
 	expanded.value = !expanded.value
 	item.expand = !item.expand
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
-			targets: '.item1',
-			absolute: true,
-			absoluteOnLeave: true,
-			nested: true,
+			targets: '.item1, .hg',
+			// scale: false,
+			// absolute: true,
+			// absoluteOnLeave: true,
+			// nested: true,
 
 			onEnter: (elements) =>
 				gsap.fromTo(
@@ -127,7 +128,7 @@ const onDropPlus = (() => {
 
 <template lang="pug">
 q-page(padding)
-	.header Cписки
+	.header Папки
 	.pa(ref='parent')
 		div(v-if='tapes.length == 0' id="no-drag"
 			v-motion
@@ -143,7 +144,8 @@ q-page(padding)
 			:class="calcClass(item)"
 			)
 			IconFolderSearch.img
-			.hg {{ item.label }}
+			.hg
+				span(@click.stop) {{ item.label }}
 
 			.content(v-if='item.expand'
 				v-motion
@@ -151,16 +153,24 @@ q-page(padding)
 				:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
 				br
 				.grid
-					label Название
-					.val {{ item.label }}
-					template(v-for="n in 3")
-						label Свойство
-						.val Параметр
+					label Описание:
+					.val(@click.stop)
+						span Здесь описание папки
+
+					// label Запрос
+					// .val(@click.stop)
+					// 	span Название запроса
+					// 	q-btn(flat color="primary" label="Выбрать" @click="" size="xs") 
+					// label Представление
+					// .val(@click.stop)
+					// 	span Название представления
+					// 	q-btn(flat color="primary" label="Выбрать" @click="" size="xs") 
 
 				.text-center
 					.q-gutter-x-sm
 						q-btn(unelevated color="secondary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
 						q-btn(unelevated color="secondary" label="Редактировать представление" @click.stop='') 
+						q-btn(unelevated color="secondary" label="Превью ?" @click.stop='') 
 
 		.plusCont(id="no-drag"
 			@dragover.prevent="onDragEnterPlus"
@@ -185,12 +195,18 @@ q-page(padding)
 }
 
 .val {
-	color: $primary;
-	border-bottom: 1px dotted $primary;
+	display: flex;
+
+	span {
+		color: $primary;
+		border-bottom: 1px dotted $primary;
+		margin-right: 2rem;
+
+	}
 }
 
 .grid {
-	width: 300px;
+	width: 400px;
 	margin: 1rem auto 4rem;
 	display: grid;
 	grid-template-columns: auto 1fr;
@@ -245,11 +261,20 @@ q-page(padding)
 		height: 70vh;
 		width: 900px;
 		margin: 0 auto;
-		left: 60px;
+		left: 0;
 		right: 0;
 		top: 64px;
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+
+		.hg {
+			font-size: 1.3rem;
+			color: $primary;
+
+			span {
+				border-bottom: 1px dotted $primary;
+			}
+		}
 	}
 
 	&.inactive {

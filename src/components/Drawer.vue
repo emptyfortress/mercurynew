@@ -33,7 +33,7 @@ const pages = [
 	},
 	{
 		id: 4,
-		title: 'Реестры',
+		title: 'Папки',
 		icon: 'mdi-folder-search-outline',
 		url: 'lists',
 	},
