@@ -114,6 +114,17 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/views/:id',
+			name: 'views',
+			component: () => import('@/views/Views.vue'),
+			props: true,
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 25,
+			},
+		},
+		{
 			path: '/bugs',
 			name: 'bugs',
 			component: () => import('@/views/Bugs.vue'),

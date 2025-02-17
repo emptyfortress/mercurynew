@@ -109,6 +109,10 @@ const navigate = ((id: any) => {
 	router.push(`/request/${id}`)
 })
 
+const navigate1 = ((id: any) => {
+	router.push(`/views/${id}`)
+})
+
 onBeforeUnmount(() => {
 	expanded.value = false
 	list.reset()
@@ -169,7 +173,7 @@ q-page(padding)
 				.text-center
 					.q-gutter-x-sm
 						q-btn(unelevated color="secondary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
-						q-btn(unelevated color="secondary" label="Редактировать представление" @click.stop='') 
+						q-btn(unelevated color="secondary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
 						q-btn(unelevated color="secondary" label="Превью ?" @click.stop='') 
 
 		.plusCont(id="no-drag"
