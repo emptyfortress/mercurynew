@@ -72,12 +72,6 @@ const addDue = (e: any) => {
 	e.forEach((el: any) => {
 		keys.value.push(el)
 	})
-	// if (keys.value.at(-1)?.due == true) {
-	// 	keys.value.pop()
-	// 	keys.value.push(e)
-	// } else {
-	// 	keys.value.push(e)
-	// }
 }
 
 const reset = () => {
@@ -91,7 +85,6 @@ const searchActive = computed(() => {
 })
 
 interface TmpCond {
-	// id: string,
 	text: string,
 	kind?: number
 }
@@ -188,6 +181,13 @@ const clear = (() => {
 })
 const adding = ref(true)
 
+const calcClass = ((key: any) => {
+	if (key.kind == 11) return 'man'
+	if (key.dvalue) return 'man'
+	if (key.due) return 'due'
+	return ''
+})
+
 </script>
 
 <template lang="pug">
@@ -216,7 +216,8 @@ div
 			q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
 				template(v-slot:prepend)
 					q-chip Заявка
-					q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
+					q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="calcClass(key)" ) {{ key.text }}
+					// q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
 
 				template(v-slot:append v-if='searchActive')
 					q-btn(flat round icon="mdi-close" @click="reset" dense) 
@@ -302,6 +303,10 @@ div
 
 .man {
 	background: $purple-2;
+}
+
+.due {
+	background: $orange-3;
 }
 
 .list {

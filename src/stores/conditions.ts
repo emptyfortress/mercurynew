@@ -47,8 +47,8 @@ const stat = [
 
 
 const deadline = [
-	{ kind: Kind.Text, exe: true, label: 'Просрочено', value: 'Просрочено', text: 'Просрочено', selected: false },
-	{ kind: Kind.Text, exe: true, label: 'Есть просроченные этапы', value: 'Есть просроченные этапы', text: 'Есть просроченные этапы', selected: false },
+	{ kind: Kind.Text, exe: true, due: true, label: 'Просрочено', value: 'Просрочено', text: 'Просрочено', selected: false },
+	{ kind: Kind.Text, exe: true, due: true, label: 'Есть просроченные этапы', value: 'Есть просроченные этапы', text: 'Есть просроченные этапы', selected: false },
 ]
 
 const exec = [
