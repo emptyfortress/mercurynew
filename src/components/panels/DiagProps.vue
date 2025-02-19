@@ -19,6 +19,10 @@ const showEtap = computed(() => {
 		mydiagram.selection == 'Завершение') return true
 })
 
+const showRoot = computed(() => {
+	if (mydiagram.selection == 'Заявление') return true
+})
+
 const showRole = computed(() => {
 	if (mydiagram.selection == 'Инициатор' ||
 		mydiagram.selection == 'Руководитель' ||
@@ -30,6 +34,9 @@ const showRole = computed(() => {
 <template lang="pug">
 div
 	div Свойства
+	template(v-if='showRoot')
+		.text-h6 Процесс: Заявление на отпуск 
+		.q-mt-md.text-bold Длительность: 63ч.
 	template(v-if='showEtap')
 		img(:src="etapProps" usemap="#image-map" width="335")
 		map(name="image-map")

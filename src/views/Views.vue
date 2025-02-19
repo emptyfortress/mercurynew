@@ -79,13 +79,8 @@ q-page(padding)
 				div Настройте выделение:
 				DrawBottom
 
-				// q-select(dense outlined v-model="column" label='Колонка' :options='options1')
-				// q-select(dense outlined v-model="column" label='Условие' :options='options1')
-				// q-select(dense outlined v-model="column" label='Значение' :options='options1')
-
 	br
 	q-img(:src='img' width='1200px')
-
 
 </template>
 
@@ -114,7 +109,8 @@ q-page(padding)
 .cols {
 	padding: 1rem;
 	display: grid;
-	grid-template-columns: 250px 230px 1fr;
+	// grid-template-columns: 250px 230px 1fr;
+	grid-template-columns: repeat(3, 1fr);
 	justify-items: space-between;
 	// align-items: start;
 	column-gap: 1rem;

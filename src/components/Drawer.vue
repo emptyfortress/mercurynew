@@ -11,7 +11,7 @@ const pages = [
 		id: 1,
 		title: 'Процесс',
 		icon: 'mdi-shuffle-variant',
-		url: 'process',
+		url: '/process',
 	},
 	{
 		id: 2,
@@ -35,7 +35,7 @@ const pages = [
 		id: 4,
 		title: 'Папки',
 		icon: 'mdi-folder-search-outline',
-		url: 'lists',
+		url: '/lists',
 	},
 ]
 

@@ -10,7 +10,8 @@ import LevelDate from '@/components/LevelDate.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
-import IconTrash from '@/components/icons/IconTrash.vue'
+// import IconTrash from '@/components/icons/IconTrash.vue'
+import IconClear from '@/components/icons/IconClear.vue'
 import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import { useQuasar } from 'quasar'
 import { useMotions } from '@vueuse/motion'
@@ -137,8 +138,8 @@ const addCond = () => {
 
 	let obj: CondL = { id: +date, data: tmp, and: true }
 	condList.value.push(obj)
-	reset()
 	adding.value = false
+	reset()
 
 	setTimeout(() => {
 		$q.notify({
@@ -164,6 +165,7 @@ const test = () => {
 }
 const el = useTemplateRef('el')
 const { height } = useElementSize(el)
+
 const myhei = computed(() => {
 	return window.innerHeight - 300 - 150 - height.value + 'px'
 })
@@ -186,12 +188,10 @@ div
 					span(v-else) ИЛИ
 				SimpleQuery(:arr="item" @remove="remCond(item)")
 		.btt
-			q-btn(v-if='condList.length > 1' size='md' flat round color="negative" @click="clear") 
-				IconTrash.ic
-				q-tooltip Очистить все
-			q-btn(flat round @click="adding = !adding") 
-				q-icon(name="mdi-plus-circle-outline" color="primary" :class="{ rot: adding }")
-				q-tooltip Добавить условие
+			q-btn(v-if='condList.length > 1' size='sm' flat color="negative" @click="clear") 
+				IconClear.ic.q-mr-sm
+				.q-cursor Очистить условия
+			q-btn(size='sm' flat color="primary" icon='mdi-plus-circle-outline' label='Добавить условие' @click="adding = !adding") 
 
 	transition(:css="false" @leave="(el, done) => motions.inp.leave(done)")
 		.pad(v-if='adding'
@@ -325,7 +325,7 @@ div
 
 .topblock {
 	display: grid;
-	grid-template-columns: 1fr 150px;
+	grid-template-columns: 1fr 170px;
 	justify-items: start;
 	align-items: center;
 	column-gap: 1rem;
