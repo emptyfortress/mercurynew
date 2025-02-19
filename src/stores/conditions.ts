@@ -246,11 +246,15 @@ const manKeys = [
 	},
 ]
 
-const execute = [
-	{ kind: Kind.Text, execute: true, label: 'Срок', value: 'Срок', text: 'Срок', selected: false, children: datee },
-	{ kind: Kind.Text, execute: true, label: 'Исполнитель', value: 'Исполнитель', text: 'Исполнитель', selected: false, children: manDetails },
-	{ kind: Kind.Text, execute: true, label: 'Состояние ?', value: 'Состояние ?', text: 'Состояние ?', selected: false, children: exec },
+const etap = [
+	{ kind: Kind.Text, exe: true, due: true, label: 'Есть просроченные этапы', value: 'Есть просроченные этапы', text: 'Есть просроченные этапы', selected: false },
 
+]
+const execute = [
+	{ kind: Kind.Text, label: 'Срок', value: 'Срок', text: 'Срок', selected: false, children: datee },
+	{ kind: Kind.Text, label: 'Исполнитель', value: 'Исполнитель', text: 'Исполнитель', selected: false, children: manDetails },
+	{ kind: Kind.Text, label: 'Состояние ?', value: 'Состояние ?', text: 'Состояние ?', selected: false, children: exec },
+	{ kind: Kind.Text, execute: true, label: 'Текущий этап', value: 'Текущий этап', text: 'Текущий этап', selected: false } ,
 ]
 
 export { str, datee, dWords, manDetails, manKeys, stat, mystatus, exec, execute, deadline }

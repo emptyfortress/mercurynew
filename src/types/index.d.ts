@@ -45,6 +45,7 @@ interface Option {
 	man?: boolean
 	date?: boolean
 	exe?: boolean
+	execute?: boolean
 	dvalue?: boolean
 	due?: boolean
 	word?: boolean

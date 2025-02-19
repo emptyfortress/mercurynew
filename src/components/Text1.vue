@@ -5,6 +5,7 @@ import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
 import LevelDate from '@/components/LevelDate.vue'
 import LevelDue from '@/components/LevelDue.vue'
+import LevelEtap from '@/components/LevelEtap.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
@@ -72,6 +73,9 @@ const addDue = (e: any) => {
 	e.forEach((el: any) => {
 		keys.value.push(el)
 	})
+}
+const addEtap = (e: any) => {
+	keys.value.push(e)
 }
 
 const reset = () => {
@@ -249,6 +253,9 @@ div
 					q-list.list(v-if="keys.length > 2 && keys.at(-1)?.exe" )
 						LevelDue(@add="addDue")
 
+				transition(name="slide-right" mode="out-in")
+					q-list.list(v-if="keys.length >= 2 && keys.at(-1)?.execute" )
+						LevelEtap(@add="addEtap")
 
 				transition(name="slide-right" mode="out-in")
 					q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
