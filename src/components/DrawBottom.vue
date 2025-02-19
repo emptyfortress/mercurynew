@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const group = ref(['due'])
+const group = ref(['one'])
 const options = ref([
-	{ id: 0, label: 'Выделить просроченные', value: 'due', color: 'red' },
-	{ id: 1, label: 'Выделить завершенные', value: 'fin', color: 'green' },
-	{ id: 2, label: 'Выделить важные', value: 'imp', color: 'orange' },
+	{ id: 0, label: 'Незавершенный процесс', value: 'one', color: 'red' },
+	{ id: 1, label: 'Просрочен незавершенный процесс', value: 'two', color: 'green' },
+	{ id: 2, label: 'Просрочены задания в незавершенном процессе', value: 'three', color: 'orange' },
+	{ id: 3, label: 'Просрочен  завершенный процесс', value: 'four', color: 'blue' },
 ])
 
 const option2 = [
