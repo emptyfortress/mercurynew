@@ -66,15 +66,6 @@ const zero = [
 		selected: false,
 		children: stat,
 	},
-	// {
-	// 	id: uid(),
-	// 	text: 'Исполнительская дисциплина',
-	// 	kind: Kind.Exec,
-	// 	type: 1,
-	// 	level: 1,
-	// 	selected: false,
-	// 	children: exec,
-	// },
 	{
 		id: uid(),
 		text: 'Исполнение',

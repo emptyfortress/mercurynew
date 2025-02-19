@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { Option } from '@/types/enum'
+// import type { Option } from '@/types/enum'
 import IconRun from '@/components/icons/IconRun.vue'
 
 const options = defineModel<Option[] | undefined>('options')

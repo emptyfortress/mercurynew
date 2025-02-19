@@ -48,12 +48,13 @@ const stat = [
 
 const deadline = [
 	{ kind: Kind.Text, exe: true, label: 'Просрочено', value: 'Просрочено', text: 'Просрочено', selected: false },
+	{ kind: Kind.Text, exe: true, label: 'Есть просроченные этапы', value: 'Есть просроченные этапы', text: 'Есть просроченные этапы', selected: false },
 ]
 
 const exec = [
-	{ kind: Kind.Text, exe: true, value: 'Все', label: 'Все', text: 'Все', selected: false, children: deadline },
-	{ kind: Kind.Text, exe: true, value: 'Незавершено', label: 'Незавершено', text: 'Незавершено', selected: false, children: deadline },
-	{ kind: Kind.Text, exe: true, value: 'Завершено', label: 'Завершено', text: 'Завершено', selected: false, children: deadline },
+	{ kind: Kind.Text, exe: true, value: 'Все', label: 'Все', text: 'Все', selected: false, },
+	{ kind: Kind.Text, exe: true, value: 'Незавершены', label: 'Незавершены', text: 'Незавершены', selected: false, },
+	{ kind: Kind.Text, exe: true, value: 'Завершены', label: 'Завершены', text: 'Завершены', selected: false, },
 ]
 
 
@@ -252,4 +253,4 @@ const execute = [
 
 ]
 
-export { str, datee, dWords, manDetails, manKeys, stat, mystatus, exec, execute }
+export { str, datee, dWords, manDetails, manKeys, stat, mystatus, exec, execute, deadline }

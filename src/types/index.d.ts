@@ -39,11 +39,15 @@ interface Option {
 	type?: number
 	level?: number
 	parents?: string[] | []
-	kind: number
+	kind?: number
 	inp?: boolean
 	drag?: boolean
 	man?: boolean
 	date?: boolean
+	exe?: boolean
+	dvalue?: boolean
+	due?: boolean
+	word?: boolean
 	children?: Option[] | []
 }
 

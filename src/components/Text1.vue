@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, } from 'vue'
-import type { Option } from '@/types/enum'
 import { zero } from '@/stores/options2'
-// import { mystatus } from '@/stores/conditions'
-
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
 import LevelDate from '@/components/LevelDate.vue'
+import LevelDue from '@/components/LevelDue.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
-// import IconTrash from '@/components/icons/IconTrash.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import { useQuasar } from 'quasar'
@@ -47,14 +44,16 @@ const add1 = (e: Option) => {
 }
 
 const add2 = (e: Option) => {
-	if (keys.value.length == 2) {
+	if (keys.value.length <= 2) {
 		keys.value.push(e)
-	} else if (keys.value.length > 2) {
+	}
+	if (keys.value.length > 2) {
 		keys.value.length = 3
 		keys.value.pop()
 		keys.value.push(e)
 	}
 }
+
 const add3 = (e: Option) => {
 	keys.value.push(e)
 }
@@ -66,6 +65,19 @@ const addDValue = (e: Option) => {
 	} else {
 		keys.value.push(e)
 	}
+}
+
+const addDue = (e: any) => {
+	keys.value.length = 3
+	e.forEach((el: any) => {
+		keys.value.push(el)
+	})
+	// if (keys.value.at(-1)?.due == true) {
+	// 	keys.value.pop()
+	// 	keys.value.push(e)
+	// } else {
+	// 	keys.value.push(e)
+	// }
 }
 
 const reset = () => {
@@ -227,9 +239,15 @@ div
 					q-list.list(v-if="keys.length > 1" )
 						Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
 
+
 				transition(name="slide-right" mode="out-in")
-					q-list.list(v-if="keys.length > 2" )
+					q-list.list(v-if="keys.length > 2 && !keys.at(-1)?.exe" )
 						Level1(v-model:options="keys[2].children" :kind='keys[2].kind' v-model:query="query" @addKey="add3")
+
+				transition(name="slide-right" mode="out-in")
+					q-list.list(v-if="keys.length > 2 && keys.at(-1)?.exe" )
+						LevelDue(@add="addDue")
+
 
 				transition(name="slide-right" mode="out-in")
 					q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )

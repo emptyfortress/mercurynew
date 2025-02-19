@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeUnmount, watch } from 'vue'
-import type { Option } from '@/types/enum'
 import { Kind } from '@/types/enum'
 
 const props = defineProps({
-  kind: {
-    type: Number,
-    default: 0
-  }
+	kind: {
+		type: Number,
+		default: 0
+	}
 })
 
 const options = defineModel<Option[] | undefined>('options')
@@ -55,17 +54,20 @@ q-select(v-if='props.kind == 5' v-model="man" outlined bg-color="white" dense :o
 	template(v-slot:prepend)
 		q-icon(name="mdi-book-open-page-variant-outline")
 
+
 q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :class="{ selected: item.selected }" )
 	q-item-section(side v-if="item.kind == 11")
 		q-icon(name="mdi-star" size="16px")
 	q-item-section
 		q-item-label {{ item.text }}
+
 </template>
 
 <style scoped lang="scss">
 .q-select {
 	min-width: 200px;
 }
+
 .selected {
 	background: $blue-2;
 }

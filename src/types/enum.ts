@@ -19,21 +19,22 @@ enum Kind {
 	Selector2,
 }
 
-interface Option {
-	id?: string
-	text: string
-	selected: boolean
-	type?: number
-	level?: number
-	parents?: string[] | []
-	kind?: number
-	inp?: boolean
-	drag?: boolean
-	man?: boolean
-	date?: boolean
-	word?: boolean
-	dvalue?: boolean
-	children?: Option[] | []
-}
+// interface Option {
+// 	id?: string
+// 	text: string
+// 	selected: boolean
+// 	type?: number
+// 	level?: number
+// 	parents?: string[] | []
+// 	kind?: number
+// 	inp?: boolean
+// 	drag?: boolean
+// 	man?: boolean
+// 	date?: boolean
+// 	word?: boolean
+// 	dvalue?: boolean
+// 	exe?: boolean
+// 	children?: Option[] | []
+// }
 export { Kind }
-export type { Option }
+// export type { Option }
