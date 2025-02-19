@@ -2,16 +2,15 @@
 import { ref } from 'vue'
 import IconUndo from '@/components/icons/IconUndo.vue'
 import IconRedo from '@/components/icons/IconRedo.vue'
-// import IconSave from '@/components/icons/IconSave.vue'
 import { animations } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import img from '@/assets/img/predstavlenie.png'
 import DrawBottom from '@/components/DrawBottom.vue'
-
-// const main = ref(true)
-// const toggleMain = (() => {
-// 	main.value = !main.value
-// })
+import frame1 from '@/assets/img/frame1.png'
+import frame2 from '@/assets/img/frame2.png'
+import frame3 from '@/assets/img/frame3.png'
+import frame4 from '@/assets/img/frame4.png'
+import frame5 from '@/assets/img/frame5.png'
 
 const cols = [
 	{ id: 0, vis: true, label: 'Автор', },
@@ -33,11 +32,11 @@ const config = {
 const [parent, tapes] = useDragAndDrop(cols, config)
 
 const colors = [
-	{ label: 'Dark matter', val: 1, },
-	{ label: 'Mexico', val: 2, },
-	{ label: 'Grey hound', val: 3, },
-	{ label: 'Sunny', val: 4, },
-	{ label: 'Rain', val: 5, },
+	{ label: 'Dark matter', val: 1, pic: frame1 },
+	{ label: 'Mexico', val: 2, pic: frame2 },
+	{ label: 'Grey hound', val: 3, pic: frame3 },
+	{ label: 'Sunny', val: 4, pic: frame4 },
+	{ label: 'Rain', val: 5, pic: frame5 },
 ]
 const theme = ref(1)
 </script>
@@ -54,14 +53,11 @@ q-page(padding)
 				q-btn(flat round dense color="primary" @click="") 
 					IconRedo.ic
 					q-tooltip Повторить
-				// q-btn(flat round dense color="secondary" @click="") 
-				// 	IconSave.ic
-				// 	q-tooltip Сохранить
 				q-btn(flat round dense icon='mdi-fullscreen' color="primary" @click="") 
 					q-tooltip Во весь экран
 		.cols
 			div
-				div Настройте порядок и видимость колонок:
+				div Порядок и видимость колонок:
 				q-list.pa(ref='parent' dense)
 					q-item(v-for="item in tapes" :key='item.id')
 						q-item-section(side)
@@ -69,14 +65,16 @@ q-page(padding)
 						q-item-section()
 							q-item-label {{ item.label }}
 			div
-				div Настройте тему оформления:
+				div Тема оформления:
 				q-list(dense)
 					q-item(tag='label' v-for="item in colors" :key='item.val')
 						q-item-section(side)
 							q-radio(v-model="theme" :val='item.val' dense)
 						q-item-section {{ item.label }}
+						q-item-section(side)
+							q-img(:src='item.pic' width='100px' height='34px' fit='cover' position='0 -8px')
 			div
-				div Настройте выделение:
+				div Выделение:
 				DrawBottom
 
 	br
@@ -125,7 +123,7 @@ q-page(padding)
 	font-size: 1.5rem;
 }
 
-.q-item {
+.pa .q-item {
 	background: #fff;
 	cursor: move;
 	width: 200px;
