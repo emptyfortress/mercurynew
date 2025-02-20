@@ -64,6 +64,10 @@ onMounted(() => {
 				td.text-left Николаев Н.Н.
 				td.text-left В процессе
 
+	.warn(v-if='isLoaded')
+		q-icon(name="mdi-alert" color="negative")
+		span Данные фиктивные и используются только для настройки.
+
 	q-markup-table(v-else)
 		thead
 			tr
@@ -99,5 +103,18 @@ onMounted(() => {
 <style scoped lang="scss">
 .loading {
 	margin-top: 1rem;
+}
+
+.warn {
+	color: darkred;
+	font-weight: 600;
+	margin-top: .5rem;
+	font-size: .8rem;
+
+	.q-icon {
+		font-size: 1.1rem;
+		color: $negative;
+		margin-right: .5rem;
+	}
 }
 </style>
