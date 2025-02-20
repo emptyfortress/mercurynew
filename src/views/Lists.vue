@@ -11,6 +11,7 @@ import Trash from '@/components/common/Trash.vue'
 import { useRouter, } from 'vue-router'
 import { useList } from '@/stores/list'
 import Empty from '@/components/Empty.vue'
+import Loading from '@/components/Loading.vue'
 
 const router = useRouter()
 
@@ -60,6 +61,7 @@ const expand = (item: any) => {
 				gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
 		})
 	})
+	// load()
 }
 
 const draggedItem = ref(100)
@@ -128,6 +130,9 @@ const onDragLeavePlus = (() => {
 const onDropPlus = (() => {
 	duple.value = false
 })
+
+
+	 
 </script>
 
 <template lang="pug">
@@ -155,26 +160,17 @@ q-page(padding)
 				v-motion
 				:initial="{ x: 100, opacity: 0 }"
 				:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
-				br
 				.grid
 					label Описание:
 					.val(@click.stop)
 						span Здесь описание папки
 
-					// label Запрос
-					// .val(@click.stop)
-					// 	span Название запроса
-					// 	q-btn(flat color="primary" label="Выбрать" @click="" size="xs") 
-					// label Представление
-					// .val(@click.stop)
-					// 	span Название представления
-					// 	q-btn(flat color="primary" label="Выбрать" @click="" size="xs") 
-
 				.text-center
 					.q-gutter-x-sm
-						q-btn(unelevated color="secondary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
-						q-btn(unelevated color="secondary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
-						q-btn(unelevated color="secondary" label="Превью ?" @click.stop='') 
+						q-btn(unelevated color="primary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
+						q-btn(unelevated color="primary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
+
+				Loading(v-if='expanded')
 
 		.plusCont(id="no-drag"
 			@dragover.prevent="onDragEnterPlus"
@@ -184,6 +180,7 @@ q-page(padding)
 			:class="{ duplicate: duple }"
 			)
 			AddButton(v-if='!expanded' @create='create' mode="list")
+
 
 	Trash(v-model="dragStatus" @remove="remove" :group='expanded' :duple='duple')
 </template>
@@ -200,6 +197,7 @@ q-page(padding)
 
 .val {
 	display: flex;
+	margin-left: 1rem;
 
 	span {
 		color: $primary;
@@ -210,14 +208,9 @@ q-page(padding)
 }
 
 .grid {
-	width: 400px;
-	margin: 1rem auto 4rem;
-	display: grid;
-	grid-template-columns: auto 1fr;
-	justify-items: start;
-	align-items: center;
-	column-gap: 1rem;
-	row-gap: .5rem;
+	margin: 1rem auto;
+	display: flex;
+	justify-content: center;
 }
 
 .pa {
@@ -262,7 +255,7 @@ q-page(padding)
 
 	&.active {
 		position: absolute;
-		height: 70vh;
+		height: 60vh;
 		width: 900px;
 		margin: 0 auto;
 		left: 0;

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const group = ref(['one'])
+const group = ref(['one', 'two', 'three'])
 const options = ref([
-	{ id: 0, label: 'Незавершенный процесс', value: 'one', color: 'red' },
-	{ id: 1, label: 'Просрочен незавершенный процесс', value: 'two', color: 'green' },
-	{ id: 2, label: 'Просрочены задания в незавершенном процессе', value: 'three', color: 'orange' },
-	{ id: 3, label: 'Просрочен  завершенный процесс', value: 'four', color: 'blue' },
+	{ id: 1, label: 'Просрочен незавершенный процесс', value: 'one', color: 'red' },
+	{ id: 2, label: 'Просрочены задания в незавершенном процессе', value: 'two', color: 'orange' },
+	{ id: 3, label: 'Просрочен  завершенный процесс', value: 'three', color: 'blue' },
+	{ id: 0, label: 'Незавершенный процесс', value: 'four', color: 'green' },
 ])
 
 const option2 = [
@@ -28,7 +28,7 @@ div
 			q-item-section(side)
 				q-checkbox(v-model="group" :val='item.value' dense)
 			q-item-section
-				q-item-label {{ item.label }}
+				q-item-label(:class='item.color') {{ item.label }}
 			q-item-section(side)
 				.square(:class="item.color" @click.stop)
 					q-menu
@@ -69,5 +69,23 @@ div
 	&.orange {
 		background: orange;
 	}
+}
+.q-item__label {
+
+	&.red {
+		color: red;
+		font-weight: 600;
+	}
+	&.orange {
+		color: $orange-6;
+		font-weight: 600;
+	}
+	&.blue {
+		color: $blue-9;
+	}
+	&.green {
+		color: $teal-7;
+	}
+
 }
 </style>

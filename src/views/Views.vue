@@ -32,11 +32,11 @@ const config = {
 const [parent, tapes] = useDragAndDrop(cols, config)
 
 const colors = [
-	{ label: 'Dark matter', val: 1, pic: frame1 },
-	{ label: 'Mexico', val: 2, pic: frame2 },
-	{ label: 'Grey hound', val: 3, pic: frame3 },
-	{ label: 'Sunny', val: 4, pic: frame4 },
-	{ label: 'Rain', val: 5, pic: frame5 },
+	{ label: 'Контраст', val: 1, pic: frame1 },
+	{ label: 'Мексика', val: 2, pic: frame2 },
+	{ label: 'Петербург', val: 3, pic: frame3 },
+	{ label: 'Лето', val: 4, pic: frame4 },
+	{ label: 'Водный мио', val: 5, pic: frame5 },
 ]
 const theme = ref(1)
 </script>
@@ -107,10 +107,8 @@ q-page(padding)
 .cols {
 	padding: 1rem;
 	display: grid;
-	// grid-template-columns: 250px 230px 1fr;
 	grid-template-columns: 1fr 1fr 1.5fr;
 	justify-items: space-between;
-	// align-items: start;
 	column-gap: 1rem;
 	row-gap: .5rem;
 
