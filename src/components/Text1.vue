@@ -162,6 +162,7 @@ const addCond = () => {
 const remCond = (e: any) => {
 	const ind = condList.value.findIndex((item) => item == e)
 	condList.value.splice(ind, 1)
+	if (condList.value.length == 0) adding.value = true
 }
 const toggleAnd = (item: any) => {
 	item.and = !item.and

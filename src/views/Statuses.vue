@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FieldList from '@/components/FieldList.vue'
 import StatusList from '@/components/StatusList.vue'
 </script>
 
@@ -6,9 +7,12 @@ import StatusList from '@/components/StatusList.vue'
 q-page(padding)
 	.header Атрибуты
 	.grid
-		StatusList
+		div
+			StatusList
+		div
+			FieldList
+			// StatusList
 
-		div Статусы
 </template>
 
 <style scoped lang="scss">
@@ -21,10 +25,10 @@ q-page(padding)
 	max-width: 1200px;
 	margin: 1rem auto;
 	display: grid;
-	grid-template-columns: 1fr 2fr;
+	grid-template-columns: 1fr 1fr;
 	// justify-items: center;
 	// align-items: start;
-	column-gap: 1rem;
+	column-gap: 4rem;
 	row-gap: .5rem;
 }
 </style>
