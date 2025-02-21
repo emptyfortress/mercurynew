@@ -8,47 +8,26 @@ const fields = [
 	{
 		id: uid(),
 		label: 'Автор',
+		caption: 'Кто создал заявку',
 		type: 'Строка справочника сотрудников',
 	},
 	{
 		id: uid(),
-		label: 'Дата создания',
+		label: 'Дата начала отпуска',
+		caption: 'Планируемая дата старта',
 		type: 'Дата',
 	},
 	{
 		id: uid(),
-		label: 'Завершено',
-		type: '',
-	},
-	{
-		id: uid(),
-		label: 'Не завершено',
-		type: '',
-	},
-	{
-		id: uid(),
-		label: 'Планируемая дата завершения',
+		label: 'Дата окончания отпуска',
+		caption: 'Планируемая дата завершения',
 		type: 'Дата',
 	},
 	{
 		id: uid(),
-		label: 'Просрочено',
-		type: '',
-	},
-	{
-		id: uid(),
-		label: 'Есть просроченный этап',
-		type: 'Boolean',
-	},
-	{
-		id: uid(),
-		label: 'Текущий этап обработки',
-		type: '',
-	},
-	{
-		id: uid(),
-		label: 'Исполнитель текущего этапа',
-		type: 'Строка справочника сотрудников',
+		label: 'Комментарий',
+		caption: 'Свободный комментарий',
+		type: 'Строка',
 	},
 ]
 
@@ -56,6 +35,7 @@ const config = {
 	plugins: [animations(),],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
+	group: 'digest',
 	draggable: (el: any) => {
 		return el.id !== 'no-drag'
 	},

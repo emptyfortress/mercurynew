@@ -14,11 +14,16 @@ import frame5 from '@/assets/img/frame5.png'
 
 const cols = [
 	{ id: 0, vis: true, label: 'Автор', },
-	{ id: 1, vis: true, label: 'Дата создания', },
-	{ id: 2, vis: true, label: 'Контролер', },
-	{ id: 3, vis: true, label: 'Тема', },
-	{ id: 4, vis: true, label: 'Номер', },
-	{ id: 5, vis: true, label: 'Вложения', },
+	{ id: 1, vis: true, label: 'Дата начала отпуска', },
+	{ id: 2, vis: true, label: 'Дата окончания отпуска', },
+	{ id: 3, vis: true, label: 'Комментарий', },
+	{ id: 4, vis: false, label: 'Процесс завершен', },
+	{ id: 5, vis: false, label: 'Процесс не завершен', },
+	{ id: 6, vis: false, label: 'Планируемая дата завершения', },
+	{ id: 7, vis: false, label: 'Просрочено', },
+	{ id: 8, vis: false, label: 'Есть просроченный этап', },
+	{ id: 9, vis: false, label: 'Текущий этап обработки', },
+	{ id: 10, vis: false, label: 'Исполнитель текущего этапа', },
 ]
 
 const config = {
@@ -124,7 +129,7 @@ q-page(padding)
 .pa .q-item {
 	background: #fff;
 	cursor: move;
-	width: 200px;
+	// width: 200px;
 }
 
 .ghost {
