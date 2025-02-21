@@ -36,7 +36,7 @@ const colors = [
 	{ label: 'Мексика', val: 2, pic: frame2 },
 	{ label: 'Петербург', val: 3, pic: frame3 },
 	{ label: 'Лето', val: 4, pic: frame4 },
-	{ label: 'Водный мио', val: 5, pic: frame5 },
+	{ label: 'Водный мир', val: 5, pic: frame5 },
 ]
 const theme = ref(1)
 </script>
