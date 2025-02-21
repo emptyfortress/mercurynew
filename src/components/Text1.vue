@@ -157,13 +157,6 @@ function convertArray1(array: any) {
 const $q = useQuasar()
 
 const addCond = () => {
-	// let temp = keys.value.map((item) => ({
-	// 	text: item.text,
-	// 	kind: item.kind,
-	// 	exe: item.exe,
-	// }))
-	//
-
 	if (keys.value.at(-1)?.word == true) {
 		keys.value.push({ text: query.value, kind: 100, selected: false })
 	}
@@ -207,7 +200,7 @@ const el = useTemplateRef('el')
 const { height } = useElementSize(el)
 
 const myhei = computed(() => {
-	return window.innerHeight - 300 - 150 - height.value + 'px'
+	return window.innerHeight - 300 - 140 - height.value + 'px'
 })
 
 const clear = (() => {
