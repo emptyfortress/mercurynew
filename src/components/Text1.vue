@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { zero } from '@/stores/options2'
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
@@ -134,21 +134,51 @@ function convertArray(arrayOne: any) {
 	return result
 }
 
+function convertArray1(array: any) {
+	const result = []
+	let i = 0
+
+	while (i < array.length) {
+		if (i + 1 < array.length && 'exe' in array[i] && 'exe' in array[i + 1]) {
+			result.push({
+				"text": `${array[i].text}.${array[i + 1].text}`,
+				"kind": array[i].kind,
+				"exe": true
+			})
+			i += 2
+		} else {
+			result.push(array[i])
+			i++
+		}
+	}
+	return result
+}
+
 const $q = useQuasar()
+
 const addCond = () => {
-	let temp = keys.value.map((item) => ({
-		text: item.text,
-		kind: item.kind,
-	}))
+	// let temp = keys.value.map((item) => ({
+	// 	text: item.text,
+	// 	kind: item.kind,
+	// 	exe: item.exe,
+	// }))
+	//
 
-	temp.push({ text: query.value, kind: 100 })
+	if (keys.value.at(-1)?.word == true) {
+		keys.value.push({ text: query.value, kind: 100, selected: false })
+	}
 
-	let tmp = convertArray(temp)
+	let tmp = convertArray(keys.value)
+	let newtmp = convertArray1(tmp)
 
-	let obj: CondL = { id: +date, data: tmp, and: true }
+
+
+	let obj: CondL = { id: +date, data: newtmp, and: true }
 	condList.value.push(obj)
-	adding.value = false
 	reset()
+	nextTick(() => {
+		adding.value = false
+	})
 
 	setTimeout(() => {
 		$q.notify({

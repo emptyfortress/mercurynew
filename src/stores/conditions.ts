@@ -248,7 +248,7 @@ const manKeys = [
 
 const execute = [
 	{ kind: Kind.Text, label: 'Срок', value: 'Срок', text: 'Срок', selected: false, children: datee },
-	{ kind: Kind.Text, label: 'Исполнитель', value: 'Исполнитель', text: 'Исполнитель', selected: false, children: manDetails },
+	{ kind: Kind.Man, label: 'Исполнитель', value: 'Исполнитель', text: 'Исполнитель', selected: false, children: manDetails },
 	{ kind: Kind.Text, label: 'Состояние ?', value: 'Состояние ?', text: 'Состояние ?', selected: false, children: exec },
 	{ kind: Kind.Text, execute: true, label: 'Текущий этап', value: 'Текущий этап', text: 'Текущий этап', selected: false },
 ]
