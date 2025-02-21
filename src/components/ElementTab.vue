@@ -5,7 +5,6 @@ import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
 import { state } from "@formkit/drag-and-drop"
 import { Kind } from '@/types/enum'
-// import Trash from '@/components/common/Trash.vue'
 
 const elements = ref([
 	{

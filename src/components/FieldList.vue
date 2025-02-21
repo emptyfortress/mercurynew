@@ -1,9 +1,31 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import { animations } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
-import AddButton from '@/components/common/AddButton.vue'
+import { state } from "@formkit/drag-and-drop"
 import { uid } from 'quasar'
 
+const props = defineProps({
+	restore: {
+		type: Boolean,
+		required: true,
+		default: false
+	}
+})
+
+watch(() => props.restore,
+	(val) => {
+		if (val) {
+			tapes.value.splice(ind.value, 0, tmp.value!)
+		}
+	})
+
+interface Field {
+	id: string
+	label: string
+	caption: string
+	type: string
+}
 const fields = [
 	{
 		id: uid(),
@@ -45,18 +67,26 @@ const [parent, tapes] = useDragAndDrop(fields, config)
 const remove = ((index: number) => {
 	tapes.value.splice(index, 1)
 })
+
+const tmp = ref<Field>()
+const ind = ref(0)
+state.on('dragStarted', (event: any) => {
+	tmp.value = event.draggedNode.data.value
+	ind.value = event.initialIndex
+})
+
 </script>
 
 <template lang="pug">
 .full
-	.text-center Поля
+	.text-center Поля {{ props.restore }}
 	.pa(ref='parent')
 		div(v-if='tapes.length == 0' id="no-drag"
 			v-motion
 			:initial="{ y: 40, opacity: 0 }"
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 } }'
 			)
-			div Статусы не заданы
+			div Поля не заданы
 
 		.stat(v-else
 			v-for="(item, index) in tapes" :key="item.id"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 import FieldList from '@/components/FieldList.vue'
 import StatusList from '@/components/StatusList.vue'
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
@@ -17,8 +17,8 @@ const config = {
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	group: 'digest',
-	draggable: (el: any) => {
-		return el.id !== 'nodrag'
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains("q-chip");
 	},
 }
 
@@ -27,6 +27,21 @@ const list = [] as Chip[]
 
 const [digest, chips] = useDragAndDrop(list, config)
 
+const clearAll = (() => {
+	chips.value.length = 0
+})
+
+const clear = ((index: number) => {
+	chips.value.splice(index, 1)
+})
+
+const restore = ref(false)
+const add = (() => {
+	restore.value = true
+	nextTick(() => {
+		restore.value = false
+	})
+})
 </script>
 
 <template lang="pug">
@@ -36,19 +51,30 @@ q-page(padding)
 		div
 			StatusList
 		div
-			FieldList
+			FieldList(:restore='restore')
 	.header Дайджест
-	.droparea(ref="digest")
-		q-chip(v-for="item in chips"
-			:key="item.id"
-			removable
-			) {{ item.label }}
-		q-btn#nodrag(v-if='chips.length' round flat dense @click="" icon="mdi-close") 
+	.droparea(ref="digest"
+		@drop="add"
+		)
+		span(v-if='chips.length' contenteditable="true")
+		template(v-for="(item, index) in chips" :key="item.id")
+			q-chip(
+				removable
+				@remove='clear(index)'
+				) {{ item.label }}
+			span(contenteditable="true")
+
+		q-btn(v-if='chips.length' round flat dense @click="clearAll" icon="mdi-close") 
 		.comm(v-if="chips.length == 0") Перетащите сюда нужные поля и/ если необходимо, добавьте текст
 
 </template>
 
 <style scoped lang="scss">
+span {
+	outline: none;
+	min-width: l0px;
+}
+
 .header {
 	font-size: 1.5rem;
 	text-align: center;
