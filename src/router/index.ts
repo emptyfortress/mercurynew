@@ -83,13 +83,23 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/fields',
+			name: 'fields',
+			component: () => import('@/views/Fields.vue'),
+			meta: {
+				toolbar: true,
+				back: false,
+				count: 5,
+			},
+		},
+		{
 			path: '/statuses',
 			name: 'statuses',
 			component: () => import('@/views/Statuses.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
-				count: 5,
+				back: true,
+				count: 21,
 			},
 		},
 		{

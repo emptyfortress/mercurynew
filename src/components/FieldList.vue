@@ -1,24 +1,27 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { animations } from "@formkit/drag-and-drop"
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
-import { state } from "@formkit/drag-and-drop"
+// import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+// import { state } from "@formkit/drag-and-drop"
 import { uid } from 'quasar'
+import { useRouter } from 'vue-router'
 
-const props = defineProps({
-	restore: {
-		type: Boolean,
-		required: true,
-		default: false
-	}
-})
+const router = useRouter()
 
-watch(() => props.restore,
-	(val) => {
-		if (val) {
-			tapes.value.splice(ind.value, 0, tmp.value!)
-		}
-	})
+// const props = defineProps({
+// 	restore: {
+// 		type: Boolean,
+// 		required: true,
+// 		default: false
+// 	}
+// })
+
+// watch(() => props.restore,
+// 	(val) => {
+// 		if (val) {
+// 			tapes.value.splice(ind.value, 0, tmp.value!)
+// 		}
+// 	})
 
 interface Field {
 	id: string
@@ -27,14 +30,7 @@ interface Field {
 	type: string
 	def: boolean
 }
-const fields = [
-	{
-		id: uid(),
-		label: 'Автор',
-		caption: 'Кто создал заявку',
-		type: 'Строка справочника сотрудников',
-		def: true,
-	},
+const fields = ref([
 	{
 		id: uid(),
 		label: 'Дата начала отпуска',
@@ -58,6 +54,13 @@ const fields = [
 	},
 	{
 		id: uid(),
+		label: 'Автор',
+		caption: 'Кто создал заявку',
+		type: 'Строка справочника сотрудников',
+		def: true,
+	},
+	{
+		id: uid(),
 		label: 'Статус',
 		caption: 'Состояние в котором находится процесс',
 		type: 'Строка',
@@ -77,51 +80,61 @@ const fields = [
 		type: 'Строка',
 		def: true,
 	},
-]
+])
 
-const config = {
-	plugins: [animations(),],
-	dragPlaceholderClass: 'ghost',
-	sortable: true,
-	group: 'digest',
-	draggable: (el: any) => {
-		return el.id !== 'no-drag'
-	},
-}
-const [parent, tapes] = useDragAndDrop(fields, config)
+// const config = {
+// 	plugins: [animations(),],
+// 	dragPlaceholderClass: 'ghost',
+// 	sortable: false,
+// 	group: 'digest',
+// 	draggable: (el: any) => {
+// 		return el.id !== 'no-drag'
+// 	},
+// }
+
+// const [parent, tapes] = useDragAndDrop(fields, config)
 
 const remove = ((index: number) => {
-	tapes.value.splice(index, 1)
+	fields.value.splice(index, 1)
 })
 
-const tmp = ref<Field>()
 const ind = ref(0)
-state.on('dragStarted', (event: any) => {
-	tmp.value = event.draggedNode.data.value
-	ind.value = event.initialIndex
+
+// state.on('dragStarted', (event: any) => {
+// 	tmp.value = event.draggedNode.data.value
+// 	ind.value = event.initialIndex
+// 	console.log(event.draggedNode.data.value)
+// })
+
+const goto = (() => {
+	router.push('/statuses')
+})
+
+const emit = defineEmits(['begin'])
+const tmp = ref<Field>()
+const start = ((e: Field) => {
+	emit('begin', e)
 })
 
 </script>
 
 <template lang="pug">
 .full
-	.text-center Поля
 	.pa(ref='parent')
-		div(v-if='tapes.length == 0' id="no-drag"
+		.stat(
+			v-for="(item, index) in fields" :key="item.id" :draggable="true"
 			v-motion
 			:initial="{ y: 40, opacity: 0 }"
-			:enter='{ y: 0, opacity: 1, transition: { delay: 400 } }'
-			)
-			div Поля не заданы
-
-		.stat(v-else
-			v-for="(item, index) in tapes" :key="item.id"
+			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
+			@dragstart="start(item)"
 			)
 			.hg
 				span {{ item.label }}
 				span.star(v-if='item.def') *
 			.sma {{ item.type }}
-			q-btn(v-if='!item.def' flat round icon='mdi-close' @click="remove(index)" dense size='sm') 
+			q-btn.del(v-if='!item.def' flat round icon='mdi-close' @click="remove(index)" dense size='sm') 
+			q-btn(v-if='item.label == "Статус"' flat round color="primary" icon='mdi-arrow-right-circle-outline' @click="goto" dense ) 
+				q-tooltip Редактировать
 
 	.sma.q-mt-sm * Системное поле (не может быть удалено)
 	q-btn.q-mt-md(round unelevated
@@ -131,6 +144,7 @@ state.on('dragStarted', (event: any) => {
 		:initial="{ scale: 0.1, opacity: 0, rotate: 360 }"
 		:enter='{ scale: 1, opacity: 1, rotate: 0, transition: { delay: 900 } }'
 		)
+
 </template>
 
 <style scoped lang="scss">
@@ -139,7 +153,6 @@ state.on('dragStarted', (event: any) => {
 }
 
 .star {
-	// font-size: 1rem;
 	margin-left: .25rem;
 	color: $primary;
 }
@@ -162,12 +175,15 @@ state.on('dragStarted', (event: any) => {
 	display: grid;
 
 	.q-btn {
-		display: none;
 		justify-self: end;
 	}
 
+	.q-btn.del {
+		display: none;
+	}
+
 	&:hover {
-		.q-btn {
+		.q-btn.del {
 			display: inline-flex;
 		}
 	}

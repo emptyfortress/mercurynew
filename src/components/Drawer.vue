@@ -29,7 +29,7 @@ const pages = [
 		id: 5,
 		title: 'Поля, статусы',
 		icon: 'mdi-dots-square',
-		url: '/statuses',
+		url: '/fields',
 	},
 	{
 		id: 4,
