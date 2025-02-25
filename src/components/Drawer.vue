@@ -27,7 +27,7 @@ const pages = [
 	},
 	{
 		id: 5,
-		title: 'Атрибуты',
+		title: 'Поля, статусы',
 		icon: 'mdi-dots-square',
 		url: '/statuses',
 	},

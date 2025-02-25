@@ -25,6 +25,7 @@ interface Field {
 	label: string
 	caption: string
 	type: string
+	def: boolean
 }
 const fields = [
 	{
@@ -32,24 +33,49 @@ const fields = [
 		label: 'Автор',
 		caption: 'Кто создал заявку',
 		type: 'Строка справочника сотрудников',
+		def: true,
 	},
 	{
 		id: uid(),
 		label: 'Дата начала отпуска',
 		caption: 'Планируемая дата старта',
 		type: 'Дата',
+		def: false,
 	},
 	{
 		id: uid(),
 		label: 'Дата окончания отпуска',
 		caption: 'Планируемая дата завершения',
 		type: 'Дата',
+		def: false,
 	},
 	{
 		id: uid(),
 		label: 'Комментарий',
 		caption: 'Свободный комментарий',
 		type: 'Строка',
+		def: false,
+	},
+	{
+		id: uid(),
+		label: 'Статус',
+		caption: 'Состояние в котором находится процесс',
+		type: 'Строка',
+		def: true,
+	},
+	{
+		id: uid(),
+		label: 'Дата создания',
+		caption: 'Когда создано',
+		type: 'Строка',
+		def: true,
+	},
+	{
+		id: uid(),
+		label: 'Дата изменения',
+		caption: 'Последняя дата изменения',
+		type: 'Строка',
+		def: true,
 	},
 ]
 
@@ -79,7 +105,7 @@ state.on('dragStarted', (event: any) => {
 
 <template lang="pug">
 .full
-	.text-center Поля {{ props.restore }}
+	.text-center Поля
 	.pa(ref='parent')
 		div(v-if='tapes.length == 0' id="no-drag"
 			v-motion
@@ -90,14 +116,14 @@ state.on('dragStarted', (event: any) => {
 
 		.stat(v-else
 			v-for="(item, index) in tapes" :key="item.id"
-			v-motion
-			:initial="{ y: 40, opacity: 0 }"
-			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
 			)
-			.hg {{ item.label }}
+			.hg
+				span {{ item.label }}
+				span.star(v-if='item.def') *
 			.sma {{ item.type }}
-			q-btn(flat round icon='mdi-close' @click="remove(index)" dense size='sm') 
+			q-btn(v-if='!item.def' flat round icon='mdi-close' @click="remove(index)" dense size='sm') 
 
+	.sma.q-mt-sm * Системное поле (не может быть удалено)
 	q-btn.q-mt-md(round unelevated
 		icon='mdi-plus'
 		color="primary"
@@ -110,6 +136,12 @@ state.on('dragStarted', (event: any) => {
 <style scoped lang="scss">
 .pa {
 	margin-top: 1rem;
+}
+
+.star {
+	// font-size: 1rem;
+	margin-left: .25rem;
+	color: $primary;
 }
 
 .stat {

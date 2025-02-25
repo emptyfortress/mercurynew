@@ -47,12 +47,12 @@ const add = (() => {
 
 <template lang="pug">
 q-page(padding)
-	.header Атрибуты ?
+	.header Поля, статусы
 	.grid
 		div
-			StatusList
-		div
 			FieldList(:restore='restore')
+		div
+			StatusList
 	.header Дайджест
 	.droparea(ref="digest"
 		@drop="add"
