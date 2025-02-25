@@ -38,10 +38,11 @@ const clear = ((index: number) => {
 const restore = ref(false)
 const add = (() => {
 	restore.value = true
-	nextTick(() => {
+	setTimeout(() => {
 		restore.value = false
-	})
+	}, 200)
 })
+// TODO: поправить id у айтемов - путаница из-за них
 </script>
 
 <template lang="pug">
