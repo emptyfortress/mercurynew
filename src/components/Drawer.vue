@@ -61,13 +61,13 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 	q-btn.back(v-if='back'
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
-		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1300 } }'
+		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
 		icon="mdi-arrow-left" @click="router.back()" size="md") 
 
 	.toolbar(v-if="tool"
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
-		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 1300 } }'
+		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
 		)
 		q-list()
 			RouterLink(v-for="page in pages" :key="page.id" :to="page.url")
