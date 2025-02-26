@@ -5,6 +5,7 @@ import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { state } from "@formkit/drag-and-drop"
 import { uid } from 'quasar'
 import { useRouter } from 'vue-router'
+import AddButton from '@/components/common/AddButton.vue'
 
 const router = useRouter()
 
@@ -103,7 +104,6 @@ const ind = ref(0)
 state.on('dragStarted', (event: any) => {
 	tmp.value = event.draggedNode.data.value
 	ind.value = event.initialIndex
-	// console.log(event.draggedNode.data.value)
 })
 
 const goto = (() => {
@@ -147,13 +147,9 @@ const stop = (() => {
 						q-item(clickable @click="remove(index)" ).pink
 							q-item-section Удалить
 
-	q-btn.q-mt-md(round unelevated
-		icon='mdi-plus'
-		color="primary"
-		v-motion
-		:initial="{ scale: 0.1, opacity: 0, rotate: 360 }"
-		:enter='{ scale: 1, opacity: 1, rotate: 0, transition: { delay: 900 } }'
-		)
+
+	.q-mt-sm
+		AddButton(mode='app')
 
 </template>
 

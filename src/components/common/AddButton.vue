@@ -117,71 +117,73 @@ const pic = ref(false)
 		:enter='calcFinish')
 		q-icon(name="mdi-plus" color="white" size="24px")
 
-	.backdrop(v-if='adding'
-		data-flip-id='fuck'
-		v-motion
-		:initial="{ opacity: 0 }"
-		:enter='{ opacity: 1, transition: { delay: 400 } }'
-		)
+	Teleport(to='body')
+		.backdrop(v-if='adding'
+			data-flip-id='fuck'
+			v-motion
+			:initial="{ opacity: 0 }"
+			:enter='{ opacity: 1, transition: { delay: 400 } }'
+			)
 
-	.dialog(
-		:class="{ active: adding }"
-		data-flip-id='fuck'
-		)
-		q-btn.close(round icon="mdi-close"
-			v-if="adding"
-			color='negative' @click="otmena"
-			) 
+	Teleport(to='body')
+		.dialog(
+			:class="{ active: adding }"
+			data-flip-id='fuck'
+			)
+			q-btn.close(round icon="mdi-close"
+				v-if="adding"
+				color='negative' @click="otmena"
+				) 
 
-		q-form(ref='form' @submit="submitForm")
-			.hd {{ header }}
-			.section
-				label Название:
-				q-input(ref="input"
-					v-model="model"
-					autofocus
-					dense
-					clearable
-					filled
-					:rules="[val => !!val || 'Это обязательное поле']"
-					hint='Название должно быть уникальным'
-					)
-
-
-			div(v-if='props.mode == "app" || props.mode == "list"')
+			q-form(ref='form' @submit="submitForm")
+				.hd {{ header }}
 				.section
-					label Описание:
-					q-input(
-						v-model="model1"
+					label Название:
+					q-input(ref="input"
+						v-model="model"
+						autofocus
 						dense
 						clearable
 						filled
-						hint='Описание не обязательно'
+						:rules="[val => !!val || 'Это обязательное поле']"
+						hint='Название должно быть уникальным'
 						)
 
-				q-checkbox(v-model="pic" label="Иконка")
 
-				.section(v-if='pic'
+				div(v-if='props.mode == "app" || props.mode == "list"')
+					.section
+						label Описание:
+						q-input(
+							v-model="model1"
+							dense
+							clearable
+							filled
+							hint='Описание не обязательно'
+							)
+
+					q-checkbox(v-model="pic" label="Иконка")
+
+					.section(v-if='pic'
+						v-motion
+						:initial="{ y: 20, opacity: 0 }"
+						:enter='{ y: 0, opacity: 1, transition: { delay: 200 } }'
+						)
+						label Иконка (png, jpg, webp, gif):
+						q-uploader(
+						url="http://localhost:4444/upload"
+						label="Загрузить картинку"
+						color="secondary"
+						flat
+						bordered
+						)
+
+				q-card-actions(align="right" v-if='adding'
 					v-motion
-					:initial="{ y: 20, opacity: 0 }"
-					:enter='{ y: 0, opacity: 1, transition: { delay: 200 } }'
+					:initial="{ opacity: 0 }"
+					:enter='{ opacity: 1, transition: { delay: 200 } }'
 					)
-					label Иконка (png, jpg, webp, gif):
-					q-uploader(
-					url="http://localhost:4444/upload"
-					label="Загрузить картинку"
-					color="secondary"
-					flat
-					bordered
-					)
-
-			q-card-actions(align="right" v-if='adding'
-				v-motion
-				:initial="{ opacity: 0 }"
-				:enter='{ opacity: 1, transition: { delay: 200 } }'
-				)
-				q-btn(flat color="primary" label="Отмена" @click="otmena") 
-				q-btn(unelevated color="primary" label="Создать" type='submit') 
+					q-btn(flat color="primary" label="Отмена" @click="otmena") 
+					q-btn(unelevated color="primary" label="Создать" type='submit') 
 
 </template>
 

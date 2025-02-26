@@ -143,7 +143,6 @@ span {
 
 	&.active {
 		background: hsl(118.06deg 26% 90%);
-		// border-color: green;
 		border: 2px dashed green;
 	}
 }

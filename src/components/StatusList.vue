@@ -66,6 +66,8 @@ const remove = ((index: number) => {
 						q-item(clickable @click="remove(index)" ).pink
 							q-item-section Удалить
 
+	// AddButton(mode='app')
+
 	q-btn.q-mt-md(round unelevated
 		icon='mdi-plus'
 		color="primary"
