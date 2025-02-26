@@ -60,9 +60,14 @@ const test = (() => {
 	console.log(item.value)
 })
 
+const dragging = ref(false)
 const item = ref<Field>()
 const setItem = ((e: Field) => {
 	item.value = e
+	dragging.value = true
+})
+const stop = (() => {
+	dragging.value = false
 })
 </script>
 
@@ -70,11 +75,12 @@ const setItem = ((e: Field) => {
 q-page(padding)
 	.header Поля
 	.grid
-		FieldList(@begin='setItem' :restore='restore')
+		FieldList(@begin='setItem' @stop='stop' :restore='restore')
 
 	.header Дайджест
 	.droparea(ref="digest"
 		@drop="add"
+		:class="{ active: dragging }"
 		)
 		span(v-if='chips.length' contenteditable="true")
 		template(v-for="(item, index) in chips" :key="item.id")
@@ -114,6 +120,10 @@ span {
 	text-align: center;
 	color: $secondary;
 	margin-top: 4px;
+
+	.active & {
+		color: green;
+	}
 }
 
 .droparea {
@@ -129,6 +139,12 @@ span {
 	.q-btn {
 		position: absolute;
 		right: .5rem;
+	}
+
+	&.active {
+		background: hsl(118.06deg 26% 90%);
+		// border-color: green;
+		border: 2px dashed green;
 	}
 }
 

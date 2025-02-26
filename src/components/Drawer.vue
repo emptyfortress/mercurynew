@@ -2,6 +2,9 @@
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
+import { useStorage } from '@vueuse/core'
+
+const mini = useStorage('mini', true)
 
 const router = useRouter()
 const route = useRoute()
@@ -28,7 +31,7 @@ const pages = [
 	{
 		id: 5,
 		title: 'Поля, статусы',
-		icon: 'mdi-dots-square',
+		icon: 'mdi-nut',
 		url: '/fields',
 	},
 	{
@@ -47,10 +50,15 @@ const back = computed(() => {
 const tool = computed(() => {
 	return route.meta.toolbar
 })
+
+// const mini = ref(true)
+const calcWidth = computed(() => {
+	return mini.value ? 60 : 120
+})
 </script>
 
 <template lang="pug">
-q-drawer(v-model='draw' side='left' behavior="desktop" :width="60")
+q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 	q-btn.back(v-show='back'
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
@@ -64,15 +72,27 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="60")
 		q-list()
 			RouterLink(v-for="page in pages" :key="page.id" :to="page.url")
 				q-item(clickable v-ripple )
-					q-item-section
+					q-item-section(:side="!mini")
 						q-icon(:name="page.icon" color="primary" size="22px")
-					q-tooltip(anchor="center end" self="center start") {{ page.title }}
+					q-tooltip(v-if='mini' anchor="center end" self="center start") {{ page.title }}
+					q-item-section(v-if='!mini')
+						q-item-label {{ page.title }}
+
+	q-btn.mini(flat round color="primary" @click="mini = !mini") 
+		q-icon(v-if='mini' name="mdi-forwardburger" color="primary")
+		q-icon(v-else name="mdi-backburger" color="primary")
 </template>
 
 <style scoped lang="scss">
 :deep(.q-drawer) {
 	background: transparent;
 	height: 100%;
+}
+
+.mini {
+	position: fixed;
+	bottom: 4rem;
+	left: .5rem;
 }
 
 :deep(.q-drawer__content) {
@@ -91,6 +111,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="60")
 
 a {
 	text-decoration: none;
+	color: $primary;
 }
 
 a.router-link-active .q-item {

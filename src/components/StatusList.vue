@@ -58,7 +58,7 @@ const remove = ((index: number) => {
 			:initial="{ y: 40, opacity: 0 }"
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
 			)
-			.hand
+			q-icon.move(name="mdi-drag-vertical" color="primary" size="sm")
 			.hg {{ item.label }}
 			q-btn(flat round icon='mdi-close' dense size='sm') 
 				q-menu

@@ -110,10 +110,17 @@ const goto = (() => {
 	router.push('/statuses')
 })
 
-const emit = defineEmits(['begin'])
+const emit = defineEmits(['begin', 'stop'])
 const tmp = ref<Field>()
+
+const dragging = ref(false)
 const start = ((e: Field) => {
 	emit('begin', e)
+	// dragging.value = true
+})
+const stop = (() => {
+	emit('stop')
+	// dragging.value = false
 })
 
 </script>
@@ -127,22 +134,19 @@ const start = ((e: Field) => {
 			:initial="{ y: 40, opacity: 0 }"
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
 			@dragstart="start(item)"
+			@dragend="stop"
 			)
-			.hand
-			.hg
-				span {{ item.label }}
-				span.star(v-if='item.def') *
-			.sma Системное
+			q-icon.move(name="mdi-drag-vertical" color="primary" size="sm")
+			.hg {{ item.label }}
 			.sma {{ item.type }}
+			.sma
+				span(v-if='item.def') Системное поле
 			q-btn(v-if='!item.def' flat round icon='mdi-close' dense size='sm') 
 				q-menu
 					q-list
 						q-item(clickable @click="remove(index)" ).pink
 							q-item-section Удалить
-			q-btn(v-if='item.label == "Статус"' flat round color="primary" icon='mdi-arrow-right-circle-outline' @click="goto" dense ) 
-				q-tooltip Редактировать список
 
-	// .sma.q-mt-sm * Вычисляемое поле (не может быть удалено)
 	q-btn.q-mt-md(round unelevated
 		icon='mdi-plus'
 		color="primary"
@@ -157,15 +161,6 @@ const start = ((e: Field) => {
 .pa {
 	margin-top: 1rem;
 }
-
-// .hand {
-// 	width: 100%;
-// 	height: 100%;
-// 	background-color: red;
-// 	color: red;
-// 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAAXNSR0IArs4c6QAAADJJREFUGFdjtG76/v9YPScjAwMjA8N/MMnAwAgmQXxGEITwrJu+/j9Wyw2Tg4r//88AALy6DAxZ0IuxAAAAAElFTkSuQmCC) repeat;
-// 	cursor: move;
-// }
 
 .star {
 	margin-left: .25rem;
@@ -183,7 +178,7 @@ const start = ((e: Field) => {
 
 	margin-bottom: 1px;
 	display: grid;
-	grid-template-columns: 24px 1fr .4fr 1fr 38px;
+	grid-template-columns: 24px 1fr 1fr .5fr 38px;
 	justify-items: start;
 	align-items: center;
 	display: grid;
