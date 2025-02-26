@@ -1,27 +1,27 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { animations } from "@formkit/drag-and-drop"
-// import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
-// import { state } from "@formkit/drag-and-drop"
+import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { state } from "@formkit/drag-and-drop"
 import { uid } from 'quasar'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// const props = defineProps({
-// 	restore: {
-// 		type: Boolean,
-// 		required: true,
-// 		default: false
-// 	}
-// })
+const props = defineProps({
+	restore: {
+		type: Boolean,
+		required: true,
+		default: false
+	}
+})
 
-// watch(() => props.restore,
-// 	(val) => {
-// 		if (val) {
-// 			tapes.value.splice(ind.value, 0, tmp.value!)
-// 		}
-// 	})
+watch(() => props.restore,
+	(val) => {
+		if (val) {
+			tapes.value.splice(ind.value, 0, tmp.value!)
+		}
+	})
 
 interface Field {
 	id: string
@@ -30,28 +30,7 @@ interface Field {
 	type: string
 	def: boolean
 }
-const fields = ref([
-	{
-		id: uid(),
-		label: 'Дата начала отпуска',
-		caption: 'Планируемая дата старта',
-		type: 'Дата',
-		def: false,
-	},
-	{
-		id: uid(),
-		label: 'Дата окончания отпуска',
-		caption: 'Планируемая дата завершения',
-		type: 'Дата',
-		def: false,
-	},
-	{
-		id: uid(),
-		label: 'Комментарий',
-		caption: 'Свободный комментарий',
-		type: 'Строка',
-		def: false,
-	},
+const fields = [
 	{
 		id: uid(),
 		label: 'Автор',
@@ -80,31 +59,52 @@ const fields = ref([
 		type: 'Строка',
 		def: true,
 	},
-])
+	{
+		id: uid(),
+		label: 'Дата начала отпуска',
+		caption: 'Планируемая дата старта',
+		type: 'Дата',
+		def: false,
+	},
+	{
+		id: uid(),
+		label: 'Дата окончания отпуска',
+		caption: 'Планируемая дата завершения',
+		type: 'Дата',
+		def: false,
+	},
+	{
+		id: uid(),
+		label: 'Комментарий',
+		caption: 'Свободный комментарий',
+		type: 'Строка',
+		def: false,
+	},
+]
 
-// const config = {
-// 	plugins: [animations(),],
-// 	dragPlaceholderClass: 'ghost',
-// 	sortable: false,
-// 	group: 'digest',
-// 	draggable: (el: any) => {
-// 		return el.id !== 'no-drag'
-// 	},
-// }
+const config = {
+	plugins: [animations(),],
+	dragPlaceholderClass: 'ghost',
+	sortable: false,
+	group: 'digest',
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains("stat");
+	},
+}
 
-// const [parent, tapes] = useDragAndDrop(fields, config)
+const [parent, tapes] = useDragAndDrop(fields, config)
 
 const remove = ((index: number) => {
-	fields.value.splice(index, 1)
+	tapes.value.splice(index, 1)
 })
 
 const ind = ref(0)
 
-// state.on('dragStarted', (event: any) => {
-// 	tmp.value = event.draggedNode.data.value
-// 	ind.value = event.initialIndex
-// 	console.log(event.draggedNode.data.value)
-// })
+state.on('dragStarted', (event: any) => {
+	tmp.value = event.draggedNode.data.value
+	ind.value = event.initialIndex
+	// console.log(event.draggedNode.data.value)
+})
 
 const goto = (() => {
 	router.push('/statuses')
@@ -122,7 +122,7 @@ const start = ((e: Field) => {
 .full
 	.pa(ref='parent')
 		.stat(
-			v-for="(item, index) in fields" :key="item.id" :draggable="true"
+			v-for="(item, index) in tapes" :key="item.id" :draggable="true"
 			v-motion
 			:initial="{ y: 40, opacity: 0 }"
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
@@ -132,11 +132,15 @@ const start = ((e: Field) => {
 				span {{ item.label }}
 				span.star(v-if='item.def') *
 			.sma {{ item.type }}
-			q-btn.del(v-if='!item.def' flat round icon='mdi-close' @click="remove(index)" dense size='sm') 
+			q-btn(v-if='!item.def' flat round icon='mdi-close' dense size='sm') 
+				q-menu
+					q-list
+						q-item(clickable @click="remove(index)" ).pink
+							q-item-section Удалить
 			q-btn(v-if='item.label == "Статус"' flat round color="primary" icon='mdi-arrow-right-circle-outline' @click="goto" dense ) 
-				q-tooltip Редактировать
+				q-tooltip Редактировать список
 
-	.sma.q-mt-sm * Системное поле (не может быть удалено)
+	.sma.q-mt-sm * Вычисляемое поле (не может быть удалено)
 	q-btn.q-mt-md(round unelevated
 		icon='mdi-plus'
 		color="primary"
@@ -176,17 +180,9 @@ const start = ((e: Field) => {
 
 	.q-btn {
 		justify-self: end;
+		color: grey;
 	}
 
-	.q-btn.del {
-		display: none;
-	}
-
-	&:hover {
-		.q-btn.del {
-			display: inline-flex;
-		}
-	}
 }
 
 .sma {

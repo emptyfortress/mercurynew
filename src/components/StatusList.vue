@@ -44,8 +44,6 @@ const remove = ((index: number) => {
 
 <template lang="pug">
 .full
-	.text-center Статусы
-
 	.pa(ref='parent')
 		div(v-if='tapes.length == 0' id="no-drag"
 			v-motion
@@ -61,7 +59,11 @@ const remove = ((index: number) => {
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
 			)
 			.hg {{ item.label }}
-			q-btn(flat round icon='mdi-close' @click="remove(index)" dense size='sm') 
+			q-btn(flat round icon='mdi-close' dense size='sm') 
+				q-menu
+					q-list
+						q-item(clickable @click="remove(index)" ).pink
+							q-item-section Удалить
 
 	q-btn.q-mt-md(round unelevated
 		icon='mdi-plus'
@@ -95,14 +97,8 @@ const remove = ((index: number) => {
 	display: grid;
 
 	.q-btn {
-		display: none;
 		justify-self: end;
-	}
-
-	&:hover {
-		.q-btn {
-			display: inline-flex;
-		}
+		color: grey;
 	}
 }
 
@@ -110,9 +106,7 @@ const remove = ((index: number) => {
 	background: hsl(213 38% 81% / 1) !important;
 	box-shadow: none !important;
 	border: none !important;
-	height: 36px;
-
-	* {
+	height: 36px;	* {
 		display: none;
 	}
 

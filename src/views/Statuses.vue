@@ -4,7 +4,7 @@ import StatusList from '@/components/StatusList.vue'
 
 <template lang="pug">
 q-page(padding)
-	.header Поля
+	.header Статусы
 	.grid
 		StatusList
 </template>

@@ -23,6 +23,7 @@ interface Field {
 const config = {
 	plugins: [animations(),],
 	dragPlaceholderClass: 'ghost',
+	group: 'digest',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains("q-chip");
@@ -48,10 +49,10 @@ const add = (() => {
 	if (item.value) {
 		list.push(item.value)
 	}
-	// restore.value = true
-	// setTimeout(() => {
-	// 	restore.value = false
-	// }, 200)
+	restore.value = true
+	setTimeout(() => {
+		restore.value = false
+	}, 200)
 })
 
 const test = (() => {
@@ -68,7 +69,7 @@ const setItem = ((e: Field) => {
 q-page(padding)
 	.header Поля
 	.grid
-		FieldList(@begin='setItem')
+		FieldList(@begin='setItem' :restore='restore')
 
 	.header Дайджест
 	.droparea(ref="digest"
