@@ -277,8 +277,8 @@ q-page(padding)
 
 				.img(v-if='item.group == 1')
 					component(:is='item.pic')
-					.edit1(v-if='item.expand' @click.stop)
-						q-icon(name="mdi-pencil-outline" color="primary")
+					// .edit1(v-if='item.expand' @click.stop)
+					// 	q-icon(name="mdi-pencil-outline" color="primary")
 
 
 				template(v-if='item.group > 1 && !item.expand')
