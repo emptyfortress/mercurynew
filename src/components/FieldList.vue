@@ -128,9 +128,11 @@ const start = ((e: Field) => {
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
 			@dragstart="start(item)"
 			)
+			.hand
 			.hg
 				span {{ item.label }}
 				span.star(v-if='item.def') *
+			.sma Системное
 			.sma {{ item.type }}
 			q-btn(v-if='!item.def' flat round icon='mdi-close' dense size='sm') 
 				q-menu
@@ -140,7 +142,7 @@ const start = ((e: Field) => {
 			q-btn(v-if='item.label == "Статус"' flat round color="primary" icon='mdi-arrow-right-circle-outline' @click="goto" dense ) 
 				q-tooltip Редактировать список
 
-	.sma.q-mt-sm * Вычисляемое поле (не может быть удалено)
+	// .sma.q-mt-sm * Вычисляемое поле (не может быть удалено)
 	q-btn.q-mt-md(round unelevated
 		icon='mdi-plus'
 		color="primary"
@@ -156,6 +158,15 @@ const start = ((e: Field) => {
 	margin-top: 1rem;
 }
 
+// .hand {
+// 	width: 100%;
+// 	height: 100%;
+// 	background-color: red;
+// 	color: red;
+// 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAAXNSR0IArs4c6QAAADJJREFUGFdjtG76/v9YPScjAwMjA8N/MMnAwAgmQXxGEITwrJu+/j9Wyw2Tg4r//88AALy6DAxZ0IuxAAAAAElFTkSuQmCC) repeat;
+// 	cursor: move;
+// }
+
 .star {
 	margin-left: .25rem;
 	color: $primary;
@@ -165,7 +176,6 @@ const start = ((e: Field) => {
 	border-radius: .25rem;
 	text-align: left;
 	cursor: pointer;
-	padding-left: 1rem;
 	padding-right: .5rem;
 	background: #fff;
 	width: 100%;
@@ -173,10 +183,11 @@ const start = ((e: Field) => {
 
 	margin-bottom: 1px;
 	display: grid;
-	grid-template-columns: 1fr 1fr 38px;
+	grid-template-columns: 24px 1fr .4fr 1fr 38px;
 	justify-items: start;
 	align-items: center;
 	display: grid;
+	gap: 1rem;
 
 	.q-btn {
 		justify-self: end;

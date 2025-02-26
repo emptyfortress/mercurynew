@@ -4,6 +4,7 @@ import FieldList from '@/components/FieldList.vue'
 // import StatusList from '@/components/StatusList.vue'
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import { animations } from "@formkit/drag-and-drop"
+import StatusList from '@/components/StatusList.vue'
 
 // interface Chip {
 // 	id: string
@@ -86,6 +87,11 @@ q-page(padding)
 		q-btn(v-if='chips.length' round flat dense @click="clearAll" icon="mdi-close") 
 		.comm(v-if="chips.length == 0") Перетащите сюда нужные поля и/ если необходимо, добавьте текст
 
+	br
+	br
+	.header Статусы
+	.grid
+		StatusList()
 </template>
 
 <style scoped lang="scss">

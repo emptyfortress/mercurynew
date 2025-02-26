@@ -58,6 +58,7 @@ const remove = ((index: number) => {
 			:initial="{ y: 40, opacity: 0 }"
 			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
 			)
+			.hand
 			.hg {{ item.label }}
 			q-btn(flat round icon='mdi-close' dense size='sm') 
 				q-menu
@@ -83,7 +84,6 @@ const remove = ((index: number) => {
 	border-radius: .25rem;
 	text-align: left;
 	cursor: pointer;
-	padding-left: 1rem;
 	padding-right: .5rem;
 	background: #fff;
 	width: 100%;
@@ -91,22 +91,26 @@ const remove = ((index: number) => {
 
 	margin-bottom: 1px;
 	display: grid;
-	grid-template-columns: 1fr 48px;
+	grid-template-columns: 24px 1fr 38px;
 	justify-items: start;
 	align-items: center;
 	display: grid;
+	gap: 1rem;
 
 	.q-btn {
 		justify-self: end;
 		color: grey;
 	}
+
 }
 
 .ghost {
 	background: hsl(213 38% 81% / 1) !important;
 	box-shadow: none !important;
 	border: none !important;
-	height: 36px;	* {
+	height: 36px;
+
+	* {
 		display: none;
 	}
 
