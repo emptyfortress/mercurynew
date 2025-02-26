@@ -107,6 +107,9 @@ const config1 = {
 	draggable: (el: any) => {
 		return el.id !== 'no-drag'
 	},
+
+	// TODO: fix draggable
+
 	onDragstart: (e: any) => {
 		draggedItem.value = e.draggedNode.data.index
 	},
@@ -115,6 +118,11 @@ const config1 = {
 const myapps = useApps()
 
 const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
+
+onMounted(() => {
+	tapes.value.map((item: any) => item.expand = false)
+
+})
 
 const calcClass = ((item: any, index: number) => {
 	if (item.group > 1 && expanded.value && item.expand) return 'group1 active'
