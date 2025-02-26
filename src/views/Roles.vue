@@ -99,8 +99,8 @@ const config = {
 	plugins: [animations(),],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
-	draggable: (el: any) => {
-		return el.id !== 'no-drag'
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains("item1");
 	},
 	onDragstart: (e: any) => {
 		draggedItem.value = e.draggedNode.data.index

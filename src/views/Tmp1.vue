@@ -93,8 +93,8 @@ const config = {
 	plugins: [animations(),],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
-	draggable: (el: any) => {
-		return el.id !== 'no-drag'
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains("chil");
 	},
 	onDragstart: (e: any) => {
 		draggedItem.value = e.draggedNode.data.index
@@ -104,12 +104,9 @@ const config1 = {
 	plugins: [animations(),],
 	dragPlaceholderClass: 'ghost',
 	sortable: false,
-	draggable: (el: any) => {
-		return el.id !== 'no-drag'
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains("chil");
 	},
-
-	// TODO: fix draggable
-
 	onDragstart: (e: any) => {
 		draggedItem.value = e.draggedNode.data.index
 	},
