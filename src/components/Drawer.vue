@@ -78,7 +78,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 					q-item-section(v-if='!mini')
 						q-item-label {{ page.title }}
 
-	q-btn.mini(flat round color="primary" @click="mini = !mini") 
+	q-btn.mini(v-if='tool' flat round color="primary" @click="mini = !mini") 
 		q-icon(v-if='mini' name="mdi-forwardburger" color="primary")
 		q-icon(v-else name="mdi-backburger" color="primary")
 </template>

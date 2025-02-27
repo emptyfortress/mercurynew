@@ -68,6 +68,8 @@ onMounted(() => {
 		q-icon(name="mdi-alert" color="negative")
 		span Данные фиктивные и используются только для настройки.
 
+// TODO: Сделать вотемарк про фиктивные данные
+
 	q-markup-table(v-else)
 		thead
 			tr
