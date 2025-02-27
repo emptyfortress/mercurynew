@@ -9,6 +9,7 @@ import IconUndo from '@/components/icons/IconUndo.vue'
 import IconRedo from '@/components/icons/IconRedo.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
 import TextAi from '@/components/TextAi.vue'
+import Text2 from '@/components/Text2.vue'
 
 const main = ref(true)
 const toggleMain = (() => {
@@ -20,7 +21,6 @@ const toggleMain = (() => {
 q-page(padding)
 	.editor(ref='editor1')
 		.top()
-			// .zg Запрос "{{ current?.label }}"
 			.zg Запрос "Все заявки"
 			.q-gutter-x-sm
 				q-btn(flat round dense color="primary" @click="") 
@@ -29,9 +29,6 @@ q-page(padding)
 				q-btn(flat round dense color="primary" @click="") 
 					IconRedo.ic
 					q-tooltip Повторить
-				// q-btn(flat round dense color="primary" @click="") 
-				// 	IconCopy.ic
-				// 	q-tooltip Дублировать
 				q-btn(flat round dense color="primary" @click="toggleMain") 
 					IconWizard.ic
 					q-tooltip ИИ-ассистент
@@ -39,12 +36,14 @@ q-page(padding)
 					IconSearch.ic
 					q-tooltip Искать
 
-		Text1(v-if='main'
+		Text2.vue
+
+		// Text1(v-if='main'
 			v-motion
 			:initial='{ y: 20, opacity: 0 }'
 			:enter='{ y: 0, opacity: 1 }'
 			)
-		TextAi(v-else
+		TextAi(v-if='!main'
 			v-motion
 			:initial='{ y: 20, opacity: 0 }'
 			:enter='{ y: 0, opacity: 1 }'
