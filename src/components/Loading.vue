@@ -64,7 +64,7 @@ onMounted(() => {
 				td.text-left Николаев Н.Н.
 				td.text-left В процессе
 
-		.water Example data
+		.water Образец
 
 	q-markup-table(v-else)
 		thead
@@ -112,7 +112,7 @@ onMounted(() => {
 	font-weight: 600;
 	position: absolute;
 	top: 9rem;
-	left: 6rem;
+	left: 11rem;
 	z-index: 2;
 	color: red;
 	transform: rotate(-15deg);
