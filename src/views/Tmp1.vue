@@ -149,13 +149,16 @@ const close = ((item: App) => {
 
 const expand = ((item: App) => {
 	const state = Flip.getState('.chil')
-	item.expand = !item.expand
 	expanded.value = !expanded.value
+	item.expand = !item.expand
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
 			targets: '.chil',
+			absolute: true,
+			absoluteOnLeave: true,
+			nested: true,
 
 			onEnter: (elements) =>
 				gsap.fromTo(

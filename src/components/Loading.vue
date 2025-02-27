@@ -14,7 +14,6 @@ onMounted(() => {
 		isLoaded.value = true
 	}, 1500)
 })
-// TODO: insert watermark
 </script>
 
 <template lang="pug">
