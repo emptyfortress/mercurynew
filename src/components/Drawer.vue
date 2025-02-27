@@ -54,6 +54,7 @@ const tool = computed(() => {
 const calcWidth = computed(() => {
 	return mini.value ? 60 : 120
 })
+// TODO: move back batton in !mini mode
 </script>
 
 <template lang="pug">

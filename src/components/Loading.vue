@@ -14,11 +14,12 @@ onMounted(() => {
 		isLoaded.value = true
 	}, 1500)
 })
+// TODO: insert watermark
 </script>
 
 <template lang="pug">
 .loading
-	q-markup-table(v-if='isLoaded' flat bordered)
+	q-markup-table.ready(v-if='isLoaded' flat bordered)
 		thead
 			tr
 				th.text-left() Номер
@@ -64,11 +65,7 @@ onMounted(() => {
 				td.text-left Николаев Н.Н.
 				td.text-left В процессе
 
-	.warn(v-if='isLoaded')
-		q-icon(name="mdi-alert" color="negative")
-		span Данные фиктивные и используются только для настройки.
-
-// TODO: Сделать вотемарк про фиктивные данные
+		.water Example data
 
 	q-markup-table(v-else)
 		thead
@@ -99,7 +96,7 @@ onMounted(() => {
 					q-skeleton( type="text" width="25px")
 				td.text-right
 					q-skeleton( type="text" width="85px")
-	
+
 </template>
 
 <style scoped lang="scss">
@@ -107,16 +104,20 @@ onMounted(() => {
 	margin-top: 1rem;
 }
 
-.warn {
-	color: darkred;
-	font-weight: 600;
-	margin-top: .5rem;
-	font-size: .8rem;
+.ready {
+	position: relative;
+}
 
-	.q-icon {
-		font-size: 1.1rem;
-		color: $negative;
-		margin-right: .5rem;
-	}
+.water {
+	font-size: 6.5rem;
+	font-weight: 600;
+	position: absolute;
+	top: 9rem;
+	left: 6rem;
+	z-index: 2;
+	color: red;
+	transform: rotate(-15deg);
+	opacity: .1;
+	line-height: 0;
 }
 </style>
