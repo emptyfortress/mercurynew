@@ -1,0 +1,79 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { UseDraggable as Draggable } from '@vueuse/components'
+
+const modelValue = defineModel()
+
+const el = ref<HTMLElement | null>(null)
+
+const handle = ref<HTMLElement | null>(null)
+
+const initial = computed(() => {
+	let xval = window.innerWidth / 2 - 450
+	let yval = window.innerHeight / 2 - 300
+	return { x: xval, y: yval }
+})
+
+// const fullscreen = ref(false)
+// const expand = () => {
+// 	fullscreen.value = !fullscreen.value
+// }
+// const calcClass = computed(() => {
+// 	return fullscreen.value ? 'top: 0; left: 0; width: 100%; height: 100vh; ' : ''
+// })
+</script>
+
+<template lang="pug">
+transition(name="slide-bottom")
+	Draggable.fucker(v-slot="{ x, y }"
+		:prevent-default="true"
+		v-if="modelValue"
+		:initial-value="initial"
+		style="position: fixed;"
+		:handle="handle")
+		q-card-section.sec(ref="handle")
+			q-icon(name="mdi-drag-vertical" color="white" size="sm")
+			div Настройка запроса
+			q-btn(icon="mdi-close" flat round dense color="white" @click="modelValue = false")
+
+
+		q-card-section.tt
+			div lakjsdlkj lj laksdj
+</template>
+
+<style scoped lang="scss">
+.close {
+	z-index: 100;
+	position: absolute;
+	top: -1rem;
+	right: -1rem;
+}
+
+.close {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.sec {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	cursor: move;
+	padding: .25rem;
+	background: $secondary;
+	color: #ffffff;
+	border-bottom: 1px solid #ccc;
+}
+
+.fucker {
+	width: 900px;
+	height: 600px;
+	background: white;
+	box-shadow: var(--shad);
+	resize: both;
+	overflow: scroll;
+	z-index: 1002;
+	position: relative;
+}
+</style>
