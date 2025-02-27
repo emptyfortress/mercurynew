@@ -36,7 +36,7 @@ q-page(padding)
 					IconSearch.ic
 					q-tooltip Искать
 
-		Text2.vue
+		Text2
 
 		// Text1(v-if='main'
 			v-motion
