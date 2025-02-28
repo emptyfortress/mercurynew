@@ -36,14 +36,14 @@ q-page(padding)
 					IconSearch.ic
 					q-tooltip Искать
 
-		Text2
 
-		// Text1(v-if='main'
+		Text2(v-if='main'
 			v-motion
 			:initial='{ y: 20, opacity: 0 }'
 			:enter='{ y: 0, opacity: 1 }'
 			)
-		TextAi(v-if='!main'
+
+		TextAi(v-else
 			v-motion
 			:initial='{ y: 20, opacity: 0 }'
 			:enter='{ y: 0, opacity: 1 }'

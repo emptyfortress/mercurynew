@@ -19,16 +19,17 @@ const toggle = (() => {
 </script>
 
 <template lang="pug">
-.empty(v-if='list.length == 0')
-	IconFaceMask.big
-	div Запрос не настроен.
+div
+	.empty(v-if='list.length == 0')
+		IconFaceMask.big
+		div Запрос не настроен.
 
 
-.text-center
-	q-btn(unelevated color="primary" :label="text" @click="toggle" size="md") 
-		q-icon(v-if='list.length' name="mdi-plus-circle-outline" color="primary")
+	.text-center
+		q-btn(unelevated color="primary" :label="text" @click="toggle" size="md") 
+			q-icon(v-if='list.length' name="mdi-plus-circle-outline" color="primary")
 
-DragEditWindow(v-model="show")
+	DragEditWindow(v-model="show")
 </template>
 
 <style scoped lang="scss">

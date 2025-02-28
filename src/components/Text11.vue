@@ -227,8 +227,6 @@ div
 				IconSave.ic
 				q-tooltip Сохранить
 
-
-	// .q-mt-md {{ props.height }}
 	.grid
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="showFirst")
@@ -258,7 +256,6 @@ div
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
 				LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
-
 
 </template>
 
