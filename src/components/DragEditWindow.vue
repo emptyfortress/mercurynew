@@ -2,10 +2,12 @@
 import { ref, computed } from 'vue'
 import { UseDraggable as Draggable } from '@vueuse/components'
 import Text11 from '@/components/Text11.vue'
+import { useElementSize } from '@vueuse/core'
+import { useTemplateRef } from 'vue'
 
 const modelValue = defineModel()
 
-const el = ref<HTMLElement | null>(null)
+// const el = ref<HTMLElement | null>(null)
 
 const handle = ref<HTMLElement | null>(null)
 
@@ -14,6 +16,9 @@ const initial = computed(() => {
 	let yval = window.innerHeight / 2 - 350
 	return { x: xval, y: yval }
 })
+
+const el = useTemplateRef('el')
+const { height } = useElementSize(el)
 
 // const fullscreen = ref(false)
 // const expand = () => {
@@ -26,7 +31,8 @@ const initial = computed(() => {
 
 <template lang="pug">
 transition(name="slide-bottom")
-	Draggable.fucker(v-slot="{ x, y }"
+	Draggable.fucker(ref='el'
+		v-slot="{ x, y }"
 		:prevent-default="true"
 		v-if="modelValue"
 		:initial-value="initial"
@@ -34,12 +40,12 @@ transition(name="slide-bottom")
 		:handle="handle")
 		q-card-section.sec(ref="handle")
 			q-icon(name="mdi-drag-vertical" color="white" size="sm")
-			div Настройка запроса
+			.hd Настройка запроса
 			q-btn(icon="mdi-close" flat round dense color="white" @click="modelValue = false")
 
 
 		q-card-section.scroll
-			Text11
+			Text11(:height="height")
 </template>
 
 <style scoped lang="scss">
@@ -48,6 +54,10 @@ transition(name="slide-bottom")
 	position: absolute;
 	top: -1rem;
 	right: -1rem;
+}
+
+.hd {
+	font-size: 1.1rem;
 }
 
 .close {
@@ -73,7 +83,7 @@ transition(name="slide-bottom")
 	height: 600px;
 	background: white;
 	box-shadow: var(--shad);
-	z-index: 1002;
+	z-index: 6002;
 	position: relative;
 	resize: both;
 	overflow: scroll;

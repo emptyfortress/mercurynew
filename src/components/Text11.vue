@@ -6,18 +6,25 @@ import Level0 from '@/components/Level0.vue'
 import LevelDate from '@/components/LevelDate.vue'
 import LevelDue from '@/components/LevelDue.vue'
 import LevelEtap from '@/components/LevelEtap.vue'
-import SimpleQuery from '@/components/SimpleQuery.vue'
-import { useElementSize } from '@vueuse/core'
-import { useTemplateRef } from 'vue'
-import IconClear from '@/components/icons/IconClear.vue'
+// import SimpleQuery from '@/components/SimpleQuery.vue'
+// import IconClear from '@/components/icons/IconClear.vue'
+import IconUpArrowCircleFill from '@/components/icons/IconUpArrowCircleFill.vue'
 import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
+import IconSave from '@/components/icons/IconSave.vue'
 import { useQuasar } from 'quasar'
-import { useMotions } from '@vueuse/motion'
+// import { useMotions } from '@vueuse/motion'
 
+const props = defineProps({
+	height: {
+		type: Number,
+		required: true,
+		default: 100
+	}
+})
 const query = ref('')
 const keys = ref<Option[]>([])
 const options = ref(zero)
-const motions = useMotions()
+// const motions = useMotions()
 
 const remove = (el: Option, ind: number) => {
 	el.selected = false
@@ -182,31 +189,15 @@ const addCond = () => {
 	}, 1200)
 }
 
-const remCond = (e: any) => {
-	const ind = condList.value.findIndex((item) => item == e)
-	condList.value.splice(ind, 1)
-	if (condList.value.length == 0) adding.value = true
-}
-const toggleAnd = (item: any) => {
-	item.and = !item.and
-}
-
 const showFirst = ref(false)
 
 const test = () => {
 	showFirst.value = true
 }
-const el = useTemplateRef('el')
-const { height } = useElementSize(el)
-
 const myhei = computed(() => {
-	return window.innerHeight - 300 - 140 - height.value + 'px'
+	return props.height - 125 + 'px'
 })
 
-const clear = (() => {
-	condList.value.length = 0
-	adding.value = true
-})
 const adding = ref(true)
 
 const calcClass = ((key: any) => {
@@ -220,70 +211,53 @@ const calcClass = ((key: any) => {
 
 <template lang="pug">
 div
-	.topblock(ref='el' v-if="condList?.length > 0")
-		div
-			div(v-for="(item, index) in condList")
-				.oper(v-if='index > 0' @click="toggleAnd(item)" :class="{ and: item.and }")
-					span(v-if="item.and") И
-					span(v-else) ИЛИ
-				SimpleQuery(:arr="item" @remove="remCond(item)")
-		.btt
-			q-btn(v-if='condList.length > 1' size='sm' flat color="negative" @click="clear") 
-				IconClear.ic.q-mr-sm
-				.q-cursor Очистить условия
-			q-btn(size='sm' flat color="primary" icon='mdi-plus-circle-outline' label='Добавить условие' @click="adding = !adding") 
-
-	transition(:css="false" @leave="(el, done) => motions.inp.leave(done)")
-		.pad(v-if='adding'
-			v-motion="'inp'"
-			:initial="{ y: -50, opacity: 0 }"
-			:enter="{ y: 0, opacity: 1 }"
-			:leave="{ y: -50, opacity: 0, transition: { type: 'spring', stiffness: 250, damping: 25, mass: 1 } }"
-			)
-			br
-			q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
-				template(v-slot:prepend)
-					q-chip Заявка
-					q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="calcClass(key)" ) {{ key.text }}
-					// q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="{ man: key.kind == 11 || key.dvalue }" ) {{ key.text }}
-
-				template(v-slot:append v-if='searchActive')
-					q-btn(flat round icon="mdi-close" @click="reset" dense) 
-						q-tooltip Очистить
-					q-btn(flat round color="primary" @click="addCond") 
-						IconUpArrowCircle.ic
-						q-tooltip Добавить условие
+	q-input(v-model="query" dense @clear="query = ''" @focus="test" placeholder="Что ищем?")
+		template(v-slot:prepend)
+			q-chip Заявка
+			q-chip(v-for="(key, index) in keys" :key="key.id" removable @remove="remove(key, index)" :class="calcClass(key)" ) {{ key.text }}
 
 
-			.grid
-				transition(name="slide-right" mode="out-in")
-					q-list.list(v-if="showFirst")
-						Level0(v-model:options="options" v-model:query="query" @addKey="add")
-
-				transition(name="slide-right" mode="out-in")
-					q-list.list(v-if="keys.length > 0" )
-						Level1(v-model:options="keys[0].children" :kind='keys[0].kind' v-model:query="query" @addKey="add1")
-
-				transition(name="slide-right" mode="out-in")
-					q-list.list(v-if="keys.length > 1" )
-						Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
+		template(v-slot:append)
+			q-btn(flat round icon="mdi-close-circle" color="negative" @click="reset" dense) 
+				q-tooltip Очистить
+			q-btn(flat round color="primary" @click="addCond" dense ) 
+				IconUpArrowCircle.ic
+				q-tooltip Добавить условие и продолжить
+			q-btn(flat round color="primary" @click="addCond" dense ) 
+				IconSave.ic
+				q-tooltip Сохранить
 
 
-				transition(name="slide-right" mode="out-in")
-					q-list.list(v-if="keys.length > 2 && !keys.at(-1)?.exe" )
-						Level1(v-model:options="keys[2].children" :kind='keys[2].kind' v-model:query="query" @addKey="add3")
+	// .q-mt-md {{ props.height }}
+	.grid
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="showFirst")
+				Level0(v-model:options="options" v-model:query="query" @addKey="add")
 
-				transition(name="slide-right" mode="out-in")
-					q-list.list(v-if="keys.length > 2 && keys.at(-1)?.exe" )
-						LevelDue(@add="addDue")
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 0" )
+				Level1(v-model:options="keys[0].children" :kind='keys[0].kind' v-model:query="query" @addKey="add1")
 
-				transition(name="slide-right" mode="out-in")
-					q-list.list(v-if="keys.length >= 2 && keys.at(-1)?.execute" )
-						LevelEtap(@add="addEtap")
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 1" )
+				Level1(v-model:options="keys[1].children" :kind='keys[1].kind' v-model:query="query" @addKey="add2")
 
-				transition(name="slide-right" mode="out-in")
-					q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
-						LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 2 && !keys.at(-1)?.exe" )
+				Level1(v-model:options="keys[2].children" :kind='keys[2].kind' v-model:query="query" @addKey="add3")
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 2 && keys.at(-1)?.exe" )
+				LevelDue(@add="addDue")
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length >= 2 && keys.at(-1)?.execute" )
+				LevelEtap(@add="addEtap")
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.length > 0 && keys.at(-1)?.date" )
+				LevelDate(@add="addDValue" :txt='keys.at(-2)?.text')
 
 
 </template>
