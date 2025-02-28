@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { UseDraggable as Draggable } from '@vueuse/components'
+import Text11 from '@/components/Text11.vue'
 
 const modelValue = defineModel()
 
@@ -9,8 +10,8 @@ const el = ref<HTMLElement | null>(null)
 const handle = ref<HTMLElement | null>(null)
 
 const initial = computed(() => {
-	let xval = window.innerWidth / 2 - 450
-	let yval = window.innerHeight / 2 - 300
+	let xval = window.innerWidth / 2 - 600
+	let yval = window.innerHeight / 2 - 350
 	return { x: xval, y: yval }
 })
 
@@ -37,8 +38,8 @@ transition(name="slide-bottom")
 			q-btn(icon="mdi-close" flat round dense color="white" @click="modelValue = false")
 
 
-		q-card-section.tt
-			div lakjsdlkj lj laksdj
+		q-card-section.scroll
+			Text11
 </template>
 
 <style scoped lang="scss">
@@ -55,6 +56,7 @@ transition(name="slide-bottom")
 	right: 0;
 }
 
+
 .sec {
 	display: flex;
 	justify-content: space-between;
@@ -67,13 +69,13 @@ transition(name="slide-bottom")
 }
 
 .fucker {
-	width: 900px;
+	width: 1200px;
 	height: 600px;
 	background: white;
 	box-shadow: var(--shad);
-	resize: both;
-	overflow: scroll;
 	z-index: 1002;
 	position: relative;
+	resize: both;
+	overflow: scroll;
 }
 </style>

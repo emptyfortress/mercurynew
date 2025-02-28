@@ -25,7 +25,8 @@ const toggle = (() => {
 
 
 .text-center
-	q-btn(unelevated color="primary" icon="mdi-plus-circle-outline" :label="text" @click="toggle" size="md") 
+	q-btn(unelevated color="primary" :label="text" @click="toggle" size="md") 
+		q-icon(v-if='list.length' name="mdi-plus-circle-outline" color="primary")
 
 DragEditWindow(v-model="show")
 </template>
@@ -38,7 +39,7 @@ DragEditWindow(v-model="show")
 }
 
 .big {
-	font-size: 5rem;
+	font-size: 3rem;
 	color: $secondary;
 }
 </style>
