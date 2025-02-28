@@ -81,9 +81,9 @@ const setOr = ((e: any) => {
 	q-btn.close(flat round dense icon="mdi-close" @click="remove" size="sm" color="primary") 
 
 .q-my-sm(v-if='!last')
-	q-btn-group
-		q-btn(unelevated :outline='!arr.and' label="И" size="sm" color="primary" @click="setAnd(arr)")
-		q-btn(unelevated :outline='arr.and' label="Или" size='sm' color="primary" @click='setOr(arr)')
+	q-btn-group(flat)
+		q-btn(unelevated :outline='!arr.and' label="И" size="sm" color="positive" @click="setAnd(arr)")
+		q-btn(unelevated :outline='arr.and' label="Или" size='sm' color="positive" @click='setOr(arr)')
 </template>
 
 <style scoped lang="scss">
