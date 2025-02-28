@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// import { useList } from '@/stores/list'
-import Text1 from '@/components/Text1.vue'
-import IconCopy from '@/components/icons/IconCopy.vue'
-// import IconSave from '@/components/icons/IconSave.vue'
 import IconSearch from '@/components/icons/IconSearch.vue'
 import IconUndo from '@/components/icons/IconUndo.vue'
 import IconRedo from '@/components/icons/IconRedo.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
+import IconLogic from '@/components/icons/IconLogic.vue'
 import TextAi from '@/components/TextAi.vue'
 import Text2 from '@/components/Text2.vue'
 
@@ -30,24 +27,19 @@ q-page(padding)
 					IconRedo.ic
 					q-tooltip Повторить
 				q-btn(flat round dense color="primary" @click="toggleMain") 
-					IconWizard.ic
-					q-tooltip ИИ-ассистент
+					template(v-if='main')
+						IconWizard.ic
+						q-tooltip ИИ-ассистент
+					template(v-else)
+						IconLogic.ic
+						q-tooltip Конструктор
 				q-btn(flat round dense color="primary" @click="") 
 					IconSearch.ic
 					q-tooltip Искать
 
-
-		Text2(v-if='main'
-			v-motion
-			:initial='{ y: 20, opacity: 0 }'
-			:enter='{ y: 0, opacity: 1 }'
-			)
-
-		TextAi(v-else
-			v-motion
-			:initial='{ y: 20, opacity: 0 }'
-			:enter='{ y: 0, opacity: 1 }'
-			)
+		transition(name="slide-bottom" mode="out-in")
+			Text2(v-if='main')
+			TextAi(v-else)
 </template>
 
 <style scoped lang="scss">

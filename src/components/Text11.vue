@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, } from 'vue'
 import { zero } from '@/stores/options2'
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
@@ -106,7 +106,7 @@ interface CondL {
 	and: Boolean
 }
 const date = new Date()
-const condList = ref<CondL[]>([])
+// const condList = ref<CondL[]>([])
 
 function convertArray(arrayOne: any) {
 	const result = []
@@ -161,8 +161,7 @@ function convertArray1(array: any) {
 	return result
 }
 
-const $q = useQuasar()
-
+const emit = defineEmits(['addCond', 'close'])
 const addCond = () => {
 	if (keys.value.at(-1)?.word == true) {
 		keys.value.push({ text: query.value, kind: 100, selected: false })
@@ -171,23 +170,15 @@ const addCond = () => {
 	let tmp = convertArray(keys.value)
 	let newtmp = convertArray1(tmp)
 
-
-
 	let obj: CondL = { id: +date, data: newtmp, and: true }
-	condList.value.push(obj)
+	emit('addCond', obj)
 	reset()
-	nextTick(() => {
-		adding.value = false
-	})
-
-	setTimeout(() => {
-		$q.notify({
-			icon: 'mdi-check-bold',
-			color: 'positive',
-			message: 'Запрос сохранен'
-		})
-	}, 1200)
 }
+
+const save = (() => {
+	addCond()
+	emit('close')
+})
 
 const showFirst = ref(false)
 
@@ -197,8 +188,6 @@ const test = () => {
 const myhei = computed(() => {
 	return props.height - 125 + 'px'
 })
-
-const adding = ref(true)
 
 const calcClass = ((key: any) => {
 	if (key.kind == 11) return 'man'
@@ -223,7 +212,7 @@ div
 			q-btn(flat round color="primary" @click="addCond" dense ) 
 				IconUpArrowCircle.ic
 				q-tooltip Добавить условие и продолжить
-			q-btn(flat round color="primary" @click="addCond" dense ) 
+			q-btn(flat round color="primary" @click="save" dense ) 
 				IconSave.ic
 				q-tooltip Сохранить
 

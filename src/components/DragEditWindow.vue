@@ -20,13 +20,14 @@ const initial = computed(() => {
 const el = useTemplateRef('el')
 const { height } = useElementSize(el)
 
-// const fullscreen = ref(false)
-// const expand = () => {
-// 	fullscreen.value = !fullscreen.value
-// }
-// const calcClass = computed(() => {
-// 	return fullscreen.value ? 'top: 0; left: 0; width: 100%; height: 100vh; ' : ''
-// })
+const emit = defineEmits(['addCond'])
+const addCond = ((e: any) => {
+	emit('addCond', e)
+})
+
+const close = (() => {
+	modelValue.value = false
+})
 </script>
 
 <template lang="pug">
@@ -45,7 +46,7 @@ transition(name="slide-bottom")
 
 
 		q-card-section.scroll
-			Text11(:height="height")
+			Text11(:height="height" @addCond="addCond" @close="close")
 </template>
 
 <style scoped lang="scss">

@@ -2,15 +2,29 @@
 import { ref } from 'vue'
 import { str, datee, stat, mystatus } from '@/stores/conditions'
 
+interface TmpCond {
+	text: string,
+	kind?: number
+}
+
+interface CondL {
+	id: Number
+	data: TmpCond[]
+	and: Boolean
+}
+
 const props = defineProps({
 	arr: {
 		type: Object,
 		default: {
 			id: 0,
-			data: [{ text: 'One' }],
+			data: [{ text: 'One', kind: 0 }],
 			kind: 0
 		}
 	},
+	last: {
+		type: Boolean
+	}
 })
 
 
@@ -42,12 +56,18 @@ const calcClass = ((item: any) => {
 	if (item.exe == true) return 'exe'
 	return ''
 })
+
+
+const setAnd = ((e: any) => {
+	e.and = true
+})
+const setOr = ((e: any) => {
+	e.and = false
+})
 </script>
 
 <template lang="pug">
 .simple
-	q-chip Заявка
-	q-icon(name="mdi-chevron-right" size="sm" color="primary")
 
 	template(v-for="(item, index) in arr.data" :key="item.id")
 		q-select(v-if='item.kind > 14 && item.kind !== 100' v-model="item.text" dense outlined :options="options(item.kind)" bg-color="white")
@@ -58,7 +78,12 @@ const calcClass = ((item: any) => {
 
 		q-input.q-ml-sm(v-if='showInput(item, index)' :model-value="item.text" dense outlined bg-color="white" placeholder='Укажите значение')
 
-	q-btn(flat round dense icon="mdi-close" @click="remove" size="sm" color="primary") 
+	q-btn.close(flat round dense icon="mdi-close" @click="remove" size="sm" color="primary") 
+
+.q-my-sm(v-if='!last')
+	q-btn-group
+		q-btn(unelevated :outline='!arr.and' label="И" size="sm" color="primary" @click="setAnd(arr)")
+		q-btn(unelevated :outline='arr.and' label="Или" size='sm' color="primary" @click='setOr(arr)')
 </template>
 
 <style scoped lang="scss">
@@ -117,7 +142,7 @@ const calcClass = ((item: any) => {
 	}
 }
 
-.q-btn {
-	margin-left: 3rem;
+.close {
+	margin-left: 2rem;
 }
 </style>
