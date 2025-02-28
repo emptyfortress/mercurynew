@@ -68,6 +68,8 @@ const isLast = ((num: number) => {
 	return condList.value.length == num + 1 ? true : false
 })
 
+const test = ref()
+
 </script>
 
 <template lang="pug">
@@ -76,7 +78,11 @@ div
 		.topblock
 			.list(v-for="(item, index) in condList")
 				SimpleQuery(:arr="item" :last='isLast(index)' @remove="remCond(item)")
-		.err(v-if='err')
+		.err(v-if='err' ref='test'
+			v-motion
+			:initial="{ y: -20, opacity: 0 }"
+			:enter="{ y: 0, opacity: 1, transition: { delay: 1000 } }"
+			)
 			IconPersonNo.big
 			q-menu
 				q-card(dark) Текущий запрос вернет 0 результатов
@@ -133,5 +139,55 @@ div
 	width: 150px;
 	text-align: center;
 	padding: .25rem;
+}
+
+.err {
+	animation: bounce-top 0.9s 5s;
+}
+
+@keyframes bounce-top {
+	0% {
+		transform: translateY(-45px);
+		animation-timing-function: ease-in;
+		opacity: 1;
+	}
+
+	24% {
+		opacity: 1;
+	}
+
+	40% {
+		transform: translateY(-24px);
+		animation-timing-function: ease-in;
+	}
+
+	65% {
+		transform: translateY(-12px);
+		animation-timing-function: ease-in;
+	}
+
+	82% {
+		transform: translateY(-6px);
+		animation-timing-function: ease-in;
+	}
+
+	93% {
+		transform: translateY(-4px);
+		animation-timing-function: ease-in;
+	}
+
+	25%,
+	55%,
+	75%,
+	87% {
+		transform: translateY(0px);
+		animation-timing-function: ease-out;
+	}
+
+	100% {
+		transform: translateY(0px);
+		animation-timing-function: ease-out;
+		opacity: 1;
+	}
 }
 </style>
