@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
+import IconPersonNo from '@/components/icons/IconPersonNo.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import DragEditWindow from '@/components/DragEditWindow.vue'
 import { useQuasar } from 'quasar'
@@ -37,6 +38,25 @@ const addCond = ((e: any) => {
 	}, 1200)
 })
 
+function hasDuplicateText(condLArray: CondL[]): boolean {
+	const seenTexts = new Set<string>();
+
+	for (const condL of condLArray) {
+		for (const tmpCond of condL.data) {
+			if (seenTexts.has(tmpCond.text)) {
+				return true; // Duplicate found
+			}
+			seenTexts.add(tmpCond.text);
+		}
+	}
+
+	return false; // No duplicates found
+}
+
+const err = computed(() => {
+	return hasDuplicateText(condList.value)
+})
+
 const clear = (() => {
 	condList.value.length = 0
 })
@@ -52,9 +72,14 @@ const isLast = ((num: number) => {
 
 <template lang="pug">
 div
-	.topblock(v-if="condList.length")
-		.list(v-for="(item, index) in condList")
-			SimpleQuery(:arr="item" :last='isLast(index)' @remove="remCond(item)")
+	.grid(v-if="condList.length")
+		.topblock
+			.list(v-for="(item, index) in condList")
+				SimpleQuery(:arr="item" :last='isLast(index)' @remove="remCond(item)")
+		.err(v-if='err')
+			IconPersonNo.big
+			q-menu
+				q-card(dark) Текущий запрос вернет 0 результатов
 
 	.empty(v-else)
 		IconFaceMask.big
@@ -88,14 +113,25 @@ div
 	font-size: 1.5rem;
 }
 
-.topblock {
+.topblock,
+.err {
 	padding: 1rem;
 }
 
-.list:last-child {
-	.q-my-sm {
-		display: none;
-	}
+.grid {
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+}
 
+.err {
+	cursor: pointer;
+	padding-bottom: 0;
+}
+
+.q-card {
+	width: 150px;
+	text-align: center;
+	padding: .25rem;
 }
 </style>
