@@ -13,7 +13,7 @@ const handle = ref<HTMLElement | null>(null)
 
 const initial = computed(() => {
 	let xval = window.innerWidth / 2 - 600
-	let yval = window.innerHeight / 2 - 350
+	let yval = window.innerHeight / 2 - 300
 	return { x: xval, y: yval }
 })
 

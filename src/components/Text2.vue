@@ -54,7 +54,8 @@ function hasDuplicateText(condLArray: CondL[]): boolean {
 }
 
 const err = computed(() => {
-	return hasDuplicateText(condList.value)
+	if (hasDuplicateText(condList.value) && !show.value) return true
+	return false
 })
 
 const clear = (() => {
@@ -81,7 +82,7 @@ div
 		.err(v-if='err' ref='test'
 			v-motion
 			:initial="{ y: -20, opacity: 0 }"
-			:enter="{ y: 0, opacity: 1, transition: { delay: 1000 } }"
+			:enter="{ y: 0, opacity: 1, transition: { delay: 2000 } }"
 			)
 			IconPersonNo.big
 			q-menu
