@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import IconPersonNo from '@/components/icons/IconPersonNo.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import DragEditWindow from '@/components/DragEditWindow.vue'
+import { Draggable } from '@he-tree/vue'
+import '@he-tree/vue/style/default.css'
+import '@he-tree/vue/style/material-design.css'
 import { useQuasar } from 'quasar'
 
 interface TmpCond {
@@ -71,35 +74,59 @@ const isLast = ((num: number) => {
 
 const test = ref()
 
+const treeData = ref([])
+
+const tree = ref()
+
+const calcLength = computed(() => {
+	if (tree.value && tree.value.statsFlat.length > 0) {
+		return true
+	} else return false
+})
+
+const add = (() => {
+	tree.value.add({})
+})
 </script>
 
 <template lang="pug">
 div
-	.grid(v-if="condList.length")
-		.topblock
-			.list(v-for="(item, index) in condList")
-				SimpleQuery(:arr="item" :last='isLast(index)' @remove="remCond(item)")
-		.err(v-if='err' ref='test'
-			v-motion
-			:initial="{ y: -20, opacity: 0 }"
-			:enter="{ y: 0, opacity: 1, transition: { delay: 2000 } }"
-			)
-			IconPersonNo.big
-			q-menu
-				q-card(dark) Текущий запрос вернет 0 результатов
+	.grid
 
-	.empty(v-else)
+		Draggable(ref="tree"
+			treeLine
+			v-model="treeData"
+			:indent="40"
+			class='mtl-tree'
+			)
+
+			template(#default="{ stat }" v-if='calcLength')
+				div emptylkajsdlcalcLengthдылво
+
+			// .list(v-for="(item, index) in condList")
+			// 	SimpleQuery(:arr="item" :last='isLast(index)' @remove="remCond(item)")
+
+		// .err(v-if='err' ref='test'
+		// 	v-motion
+		// 	:initial="{ y: -20, opacity: 0 }"
+		// 	:enter="{ y: 0, opacity: 1, transition: { delay: 2000 } }"
+		// 	)
+		// 	IconPersonNo.big
+		// 	q-menu
+		// 		q-card(dark) Текущий запрос вернет 0 результатов
+
+	.empty(v-if='!calcLength')
 		IconFaceMask.big
 		div Запрос не настроен.
 
 
 	.text-center.q-mt-md
-		template(v-if='condList.length' )
+		template(v-if='calcLength' )
 			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="toggle") 
 			q-btn.q-ml-sm(v-if='condList.length > 1' flat color="negative" @click="clear") 
 				IconClear.ic.q-mr-sm
 				.q-cursor Очистить все
-		q-btn(v-else unelevated color="primary" label="Настроить" @click="toggle") 
+		q-btn(v-else unelevated color="primary" label="Настроить" @click="add") 
 
 	DragEditWindow(v-model="show" @addCond='addCond')
 </template>
@@ -126,6 +153,7 @@ div
 }
 
 .grid {
+	padding: 1rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: start;
