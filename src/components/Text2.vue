@@ -122,7 +122,7 @@ div
 
 	.text-center.q-mt-md
 		template(v-if='calcLength' )
-			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="toggle") 
+			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="add") 
 			q-btn.q-ml-sm(v-if='condList.length > 1' flat color="negative" @click="clear") 
 				IconClear.ic.q-mr-sm
 				.q-cursor Очистить все
