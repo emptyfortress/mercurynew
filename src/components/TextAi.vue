@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useElementSize } from '@vueuse/core'
+// import { useElementSize } from '@vueuse/core'
 import Promt from '@/components/Promt.vue'
 import PromtPreview1 from '@/components/PromtPreview1.vue'
 
 const el = ref()
 
 const splitter = ref(50)
-const { height } = useElementSize(el)
+// const { height } = useElementSize(el)
 
+// TODO: fix heigth calculation
 const hei = computed(() => {
-	return height.value - 130 + 'px'
+	return '500px'
+	// return height.value - 130 + 'px'
 })
 const result = ref(false)
 

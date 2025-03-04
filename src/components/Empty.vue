@@ -36,7 +36,7 @@ const txt = computed(() => {
 }
 
 .big {
-	font-size: 5rem;
+	font-size: 3rem;
 	color: $secondary;
 }
 </style>
