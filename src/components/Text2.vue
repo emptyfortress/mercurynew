@@ -3,22 +3,16 @@ import { ref, computed, reactive } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import IconPersonNo from '@/components/icons/IconPersonNo.vue'
-import SimpleQuery from '@/components/SimpleQuery.vue'
+import TreeQuery from '@/components/TreeQuery.vue'
 import DragEditWindow from '@/components/DragEditWindow.vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
 import { useQuasar } from 'quasar'
 
-interface TmpCond {
-	text: string,
-	kind?: number
-}
-
 interface CondL {
 	id: Number
-	data: TmpCond[]
-	and: Boolean
+	data: Option[]
 }
 
 const condList = ref<CondL[]>([])
@@ -29,8 +23,9 @@ const toggle = (() => {
 })
 
 const $q = useQuasar()
+
 const addCond = ((e: any) => {
-	condList.value.push(e)
+	add(e)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
@@ -41,57 +36,68 @@ const addCond = ((e: any) => {
 	}, 1200)
 })
 
-function hasDuplicateText(condLArray: CondL[]): boolean {
-	const seenTexts = new Set<string>();
-
-	for (const condL of condLArray) {
-		for (const tmpCond of condL.data) {
-			if (seenTexts.has(tmpCond.text)) {
-				return true; // Duplicate found
-			}
-			seenTexts.add(tmpCond.text);
-		}
-	}
-
-	return false; // No duplicates found
-}
-
-const err = computed(() => {
-	if (hasDuplicateText(condList.value) && !show.value) return true
-	return false
-})
-
 const clear = (() => {
-	condList.value.length = 0
+	treeData.value.length = 0
 })
 const remCond = (e: any) => {
 	const ind = condList.value.findIndex((item) => item == e)
 	condList.value.splice(ind, 1)
 }
-const isLast = ((num: number) => {
-	return condList.value.length == num + 1 ? true : false
-})
 
 const test = ref()
 
-const treeData = ref([])
+const treeData = reactive([
+	{
+		type: 10,
+		typ: false,
+		drop: false,
+		drag: false,
+		text: 'И',
+		children: [
+		] as Option[],
+	},
+])
 
 const tree = ref()
 
-const calcLength = computed(() => {
-	if (tree.value && tree.value.statsFlat.length > 0) {
-		return true
-	} else return false
+function flattenTree(data: any) {
+	const result: any[] = []
+	data.forEach((node: any) => {
+		result.push(node) // Add the current node
+		if (node.children && node.children.length > 0) {
+			result.push(...flattenTree(node.children)) // Recursively flatten children
+		}
+	})
+	return result
+}
+
+const treeLength = computed(() => {
+	return flattenTree(treeData).length
 })
 
-const add = (() => {
-	tree.value.add({})
+const zero = computed(() => {
+	return treeLength.value == 1 ? true : false
+})
+const oneRule = computed(() => {
+	return treeLength.value == 2 ? true : false
+})
+const twoMore = computed(() => {
+	return treeLength.value > 2 ? true : false
+})
+
+const add = ((e: Option) => {
+	tree.value.add(e, tree.value.rootChildren[0])
+	// treeData.push(e)
 })
 </script>
 
 <template lang="pug">
 div
 	.grid
+
+		TreeQuery(v-if='oneRule'
+			:arr="treeData[0]"
+			)
 
 		Draggable(ref="tree"
 			treeLine
@@ -100,33 +106,35 @@ div
 			class='mtl-tree'
 			)
 
-			template(#default="{ stat }" v-if='calcLength')
-				div emptylkajsdlcalcLengthдылво
+			template(#default="{ node, stat }" )
+				.node(v-if='twoMore')
+					div(v-if='node.type == 10') {{ node.text }}
+					div(v-else) fucucucuc
 
 			// .list(v-for="(item, index) in condList")
 			// 	SimpleQuery(:arr="item" :last='isLast(index)' @remove="remCond(item)")
 
-		// .err(v-if='err' ref='test'
-		// 	v-motion
-		// 	:initial="{ y: -20, opacity: 0 }"
-		// 	:enter="{ y: 0, opacity: 1, transition: { delay: 2000 } }"
-		// 	)
-		// 	IconPersonNo.big
-		// 	q-menu
-		// 		q-card(dark) Текущий запрос вернет 0 результатов
+		.err(v-if='twoMore' ref='test'
+			v-motion
+			:initial="{ y: -20, opacity: 0 }"
+			:enter="{ y: 0, opacity: 1, transition: { delay: 2000 } }"
+			)
+			IconPersonNo.big
+			q-menu
+				q-card(dark) Текущий запрос вернет 0 результатов
 
-	.empty(v-if='!calcLength')
+	.empty(v-if='zero')
 		IconFaceMask.big
 		div Запрос не настроен.
 
 
 	.text-center.q-mt-md
-		template(v-if='calcLength' )
-			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="add") 
-			q-btn.q-ml-sm(v-if='condList.length > 1' flat color="negative" @click="clear") 
+		q-btn(v-if='zero' unelevated color="primary" label="Настроить" @click="toggle") 
+		template(v-else)
+			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="toggle") 
+			q-btn.q-ml-sm(v-if='treeData.length > 1' flat color="negative" @click="clear") 
 				IconClear.ic.q-mr-sm
 				.q-cursor Очистить все
-		q-btn(v-else unelevated color="primary" label="Настроить" @click="add") 
 
 	DragEditWindow(v-model="show" @addCond='addCond')
 </template>

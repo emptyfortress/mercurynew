@@ -21,7 +21,9 @@ const el = useTemplateRef('el')
 const { height } = useElementSize(el)
 
 const emit = defineEmits(['addCond'])
+
 const addCond = ((e: any) => {
+	console.log(e)
 	emit('addCond', e)
 })
 

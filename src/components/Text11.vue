@@ -152,7 +152,6 @@ interface TmpCond {
 interface CondL {
 	id: Number
 	data: TmpCond[]
-	and: Boolean
 }
 const date = new Date()
 
@@ -210,6 +209,7 @@ function convertArray1(array: any) {
 }
 
 const emit = defineEmits(['addCond', 'close'])
+
 const addCond = () => {
 	if (keys.value.at(-1)?.word == true) {
 		keys.value.push({ text: query.value, kind: 100, selected: false })
@@ -218,7 +218,7 @@ const addCond = () => {
 	let tmp = convertArray(keys.value)
 	let newtmp = convertArray1(tmp)
 
-	let obj: CondL = { id: +date, data: newtmp, and: true }
+	let obj: CondL = { id: +date, data: newtmp }
 	emit('addCond', obj)
 	reset()
 }
