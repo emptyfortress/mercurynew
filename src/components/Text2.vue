@@ -86,8 +86,8 @@ const twoMore = computed(() => {
 })
 
 const add = ((e: Option) => {
-	// tree.value.add(e, tree.value.rootChildren[0])
-	treeData[0].children.push(e)
+	tree.value.add(e, tree.value.rootChildren[0])
+	// treeData[0].children.push(e)
 })
 </script>
 
@@ -100,7 +100,7 @@ div
 			:arr="treeData[0]"
 			)
 
-		Draggable(ref="tree" v-if='twoMore'
+		Draggable(ref="tree"
 			treeLine
 			v-model="treeData"
 			:indent="40"
@@ -108,7 +108,7 @@ div
 			)
 
 			template(#default="{ node, stat }" )
-				.node()
+				.node(v-if='twoMore')
 					div(v-if='node.type == 10') {{ node.text }}
 					div(v-else) fucucucuc
 
