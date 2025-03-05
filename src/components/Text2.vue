@@ -37,7 +37,7 @@ const addCond = ((e: any) => {
 })
 
 const clear = (() => {
-	treeData.value.length = 0
+	treeData[0].children.length = 0
 })
 const remCond = (e: any) => {
 	const ind = condList.value.findIndex((item) => item == e)
@@ -86,8 +86,8 @@ const twoMore = computed(() => {
 })
 
 const add = ((e: Option) => {
-	tree.value.add(e, tree.value.rootChildren[0])
-	// treeData.push(e)
+	// tree.value.add(e, tree.value.rootChildren[0])
+	treeData[0].children.push(e)
 })
 </script>
 
@@ -95,11 +95,12 @@ const add = ((e: Option) => {
 div
 	.grid
 
+		div(v-if='zero') empty
 		TreeQuery(v-if='oneRule'
 			:arr="treeData[0]"
 			)
 
-		Draggable(ref="tree"
+		Draggable(ref="tree" v-if='twoMore'
 			treeLine
 			v-model="treeData"
 			:indent="40"
@@ -107,7 +108,7 @@ div
 			)
 
 			template(#default="{ node, stat }" )
-				.node(v-if='twoMore')
+				.node()
 					div(v-if='node.type == 10') {{ node.text }}
 					div(v-else) fucucucuc
 
@@ -132,7 +133,7 @@ div
 		q-btn(v-if='zero' unelevated color="primary" label="Настроить" @click="toggle") 
 		template(v-else)
 			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="toggle") 
-			q-btn.q-ml-sm(v-if='treeData.length > 1' flat color="negative" @click="clear") 
+			q-btn.q-ml-sm(flat color="negative" @click="clear") 
 				IconClear.ic.q-mr-sm
 				.q-cursor Очистить все
 
