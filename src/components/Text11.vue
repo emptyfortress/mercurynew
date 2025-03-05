@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, } from 'vue'
 import { zero } from '@/stores/options2'
+import { stat } from '@/stores/conditions'
 import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
 import LevelDate from '@/components/LevelDate.vue'
 import LevelDue from '@/components/LevelDue.vue'
 import LevelEtap from '@/components/LevelEtap.vue'
-// import SimpleQuery from '@/components/SimpleQuery.vue'
-// import IconClear from '@/components/icons/IconClear.vue'
-import IconUpArrowCircleFill from '@/components/icons/IconUpArrowCircleFill.vue'
 import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import IconSave from '@/components/icons/IconSave.vue'
-import { useQuasar } from 'quasar'
-// import { useMotions } from '@vueuse/motion'
+import { Kind } from '@/types/enum'
 
 const props = defineProps({
 	height: {
@@ -25,6 +22,7 @@ const query = ref('')
 const keys = ref<Option[]>([])
 const options = ref(zero)
 // const motions = useMotions()
+const statRef = ref(stat)
 
 const remove = (el: Option, ind: number) => {
 	el.selected = false
@@ -34,19 +32,69 @@ const remove = (el: Option, ind: number) => {
 
 const add = (el: Option) => {
 	query.value = ''
-	keys.value = []
+	keys.value.length = 0
 	keys.value.push(el)
 }
 
 const add1 = (e: Option) => {
-	if (keys.value.length == 1) {
+	if (keys.value.length == 1 && keys.value.at(-1)?.text == 'Автор' && e.kind == 11) {
+		keys.value.push({
+			kind: Kind.Selector2,
+			label: 'равно',
+			value: 'равно',
+			text: 'равно',
+			selected: true,
+		})
 		keys.value.push(e)
-	} else if (keys.value.length == 2) {
+	}
+
+	else if (keys.value.length == 1 && keys.value.at(-1)?.text !== 'Автор') {
+		keys.value.push(e)
+	}
+
+	else if (keys.value.length == 2 && keys.value.at(-1)?.kind !== 11 && e.kind == 11) {
+		keys.value.pop()
+		keys.value.push({
+			kind: Kind.Selector2,
+			label: 'равно',
+			value: 'равно',
+			text: 'равно',
+			selected: true,
+		})
+		keys.value.push(e)
+	}
+
+	else if (keys.value.length == 2 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
 		keys.value.pop()
 		keys.value.push(e)
-	} else if (keys.value.length > 2) {
+	}
+
+	else if (keys.value.length == 3 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
 		keys.value.length = 2
 		keys.value.pop()
+		keys.value.push(e)
+	}
+
+	else if (keys.value.length == 3 && keys.value.at(-1)?.kind == 11 && e.kind == 11) {
+		keys.value.pop()
+		keys.value.push(e)
+	}
+
+	else if (keys.value.length == 3 && keys.value.at(-1)?.kind == 11 && e.kind !== 11) {
+		keys.value.pop()
+		keys.value.pop()
+		keys.value.push(e)
+	}
+
+	else if (keys.value.length == 3 && keys.value.at(-1)?.kind !== 11 && e.kind == 11) {
+		keys.value.length = 1
+		keys.value.push({
+			kind: Kind.Selector2,
+			label: 'равно',
+			value: 'равно',
+			text: 'равно',
+			selected: true,
+		})
 		keys.value.push(e)
 	}
 }
@@ -85,15 +133,16 @@ const addEtap = (e: any) => {
 	keys.value.push(e)
 }
 
+const changeOption = ((e: any) => {
+	// keys.value.splice(1, 1, e)
+})
+
 const reset = () => {
 	keys.value = []
 	options.value.map((item) => (item.selected = false))
 	query.value = ''
 }
-const searchActive = computed(() => {
-	if (keys.value.length | query.value.length) return true
-	else return false
-})
+
 
 interface TmpCond {
 	text: string,
@@ -106,7 +155,6 @@ interface CondL {
 	and: Boolean
 }
 const date = new Date()
-// const condList = ref<CondL[]>([])
 
 function convertArray(arrayOne: any) {
 	const result = []
@@ -220,6 +268,10 @@ div
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="showFirst")
 				Level0(v-model:options="options" v-model:query="query" @addKey="add")
+
+		transition(name="slide-right" mode="out-in")
+			q-list.list(v-if="keys.at(-1)?.kind == 11" )
+				Level1(v-model:options="statRef" @addKey='changeOption')
 
 		transition(name="slide-right" mode="out-in")
 			q-list.list(v-if="keys.length > 0" )

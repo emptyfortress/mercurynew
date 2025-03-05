@@ -39,7 +39,7 @@ const mystatus = [
 ]
 
 const stat = [
-	{ kind: Kind.Selector2, label: 'равно', value: 'равно', text: 'равно', selected: false, children: mystatus },
+	{ kind: Kind.Selector2, label: 'равно', value: 'равно', text: 'равно', selected: true, children: mystatus },
 	{ kind: Kind.Selector2, label: 'не равно', value: 'не равно', text: 'не равно', selected: false, children: mystatus },
 	{ kind: Kind.Selector2, label: 'задано', value: 'задано', text: 'задано', selected: false, children: mystatus },
 	{ kind: Kind.Selector2, label: 'не задано', value: 'не задано', text: 'не задано', selected: false, children: mystatus },
