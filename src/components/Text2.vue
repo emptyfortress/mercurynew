@@ -52,7 +52,7 @@ const treeData = reactive([
 		typ: false,
 		drop: false,
 		drag: false,
-		text: 'И',
+		text: 'И fffffffffffff',
 		children: [
 		] as Option[],
 	},
@@ -86,8 +86,14 @@ const twoMore = computed(() => {
 })
 
 const add = ((e: Option) => {
-	tree.value.add(e, tree.value.rootChildren[0])
-	// treeData[0].children.push(e)
+	if (tree.value) {
+		tree.value.add(e, tree.value.rootChildren[0])
+	} else {
+		treeData[0].children.push(e)
+	}
+})
+const remove = ((e: any) => {
+	tree.value.remove(e)
 })
 </script>
 
@@ -95,22 +101,22 @@ const add = ((e: Option) => {
 div
 	.grid
 
-		div(v-if='zero') empty
 		TreeQuery(v-if='oneRule'
 			:arr="treeData[0]"
 			)
 
-		Draggable(ref="tree"
-			treeLine
-			v-model="treeData"
-			:indent="40"
-			class='mtl-tree'
-			)
+		div(v-if='twoMore')
+			Draggable(ref="tree"
+				treeLine
+				v-model="treeData"
+				:indent="40"
+				class='mtl-tree'
+				)
 
-			template(#default="{ node, stat }" )
-				.node(v-if='twoMore')
-					div(v-if='node.type == 10') {{ node.text }}
-					div(v-else) fucucucuc
+				template(#default="{ node, stat }")
+					.node(@click='remove(stat)')
+						div(v-if='node.type == 10') {{ node.text }}
+						div(v-else) fucucucuc
 
 			// .list(v-for="(item, index) in condList")
 			// 	SimpleQuery(:arr="item" :last='isLast(index)' @remove="remCond(item)")
