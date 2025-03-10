@@ -3,6 +3,7 @@ import { ref, computed, reactive } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import IconPersonNo from '@/components/icons/IconPersonNo.vue'
+import IconTrash from '@/components/icons/IconTrash.vue'
 import TreeItem from '@/components/TreeItem.vue'
 import TreeQuery from '@/components/TreeQuery.vue'
 import DragEditWindow from '@/components/DragEditWindow.vue'
@@ -182,17 +183,33 @@ div
 				)
 
 				template(#default="{ node, stat }")
-					TreeItem(:stat='stat')
-					q-btn.close(dense flat round icon="mdi-close" color="primary" @click="remove(stat)" size='sm') 
+					TreeItem(:stat='stat' :class='{ hid: stat.data.hidden }')
+					// q-icon(name="mdi-eye-settings-outline" size="sm" color="secondary")
+					q-icon(name='mdi-eye-off' v-if='stat.data.hidden')
+					q-btn.close(dense flat round icon="mdi-dots-vertical" color="primary" size='sm') 
+						q-menu(auto-close)
+							q-list
+								q-item(clickable)
+									q-item-section(side)
+										q-icon(name="mdi-plus-circle-multiple")
+									q-item-section Дублировать
+								q-item(clickable v-if='stat.data.type !== 10' @click='stat.data.hidden = !stat.data.hidden')
+									q-item-section(side)
+										q-icon(name="mdi-eye-off")
+									q-item-section Скрыть
+								q-item(clickable @click='remove(stat)')
+									q-item-section(side)
+										q-icon(name="mdi-trash-can-outline")
+									q-item-section Удалить
 
-		// .err(v-if='twoMore' ref='test'
-		// 	v-motion
-		// 	:initial="{ y: -20, opacity: 0 }"
-		// 	:enter="{ y: 0, opacity: 1, transition: { delay: 2000 } }"
-		// 	)
-		// 	IconPersonNo.big
-		// 	q-menu
-		// 		q-card(dark) Текущий запрос вернет 0 результатов
+		.err(v-if='twoMore' ref='test'
+			v-motion
+			:initial="{ y: -20, opacity: 0 }"
+			:enter="{ y: 0, opacity: 1, transition: { delay: 2000 } }"
+			)
+			IconPersonNo.big
+			q-menu
+				q-card(dark) Текущий запрос вернет 0 результатов
 
 	.empty(v-if='zero')
 		IconFaceMask.big
@@ -280,5 +297,15 @@ div
 
 .err {
 	animation: bounce-top 0.9s 5s;
+}
+
+.pink {
+	background: transparent;
+	color: darkred;
+}
+
+.hid {
+	opacity: .5;
+	background: #dedede;
 }
 </style>

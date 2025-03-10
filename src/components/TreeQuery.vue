@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+// import { ref } from 'vue'
 import { str, datee, stat, mystatus } from '@/stores/conditions'
 
 
@@ -38,19 +38,18 @@ const showInput = ((item: any) => {
 	else return false
 })
 
-const calcClass = ((item: any) => {
-	if (item.kind == 11) return 'man'
-	if (item.exe == true) return 'exe'
-	return ''
-})
-
+// const calcClass = ((item: any) => {
+// 	if (item.kind == 11) return 'man'
+// 	if (item.exe == true) return 'exe'
+// 	return ''
+// })
 
 </script>
 
 <template lang="pug">
 .simple
 
-	template(v-for="(item, index) in arr" :key="item.id")
+	template(v-for="(item, index) in arr" :key="item.text")
 		div(v-if='item.kind < 14 && item.kind !== 11') {{ item.text }}
 
 		.q-ml-md(v-if='item.kind == 11') {{ item.text }}
@@ -60,6 +59,7 @@ const calcClass = ((item: any) => {
 
 		q-input.q-ml-sm(v-if='showInput(item)' :model-value="item.text" dense outlined bg-color="white" placeholder='Укажите значение')
 
+
 </template>
 
 <style scoped lang="scss">
@@ -67,12 +67,14 @@ const calcClass = ((item: any) => {
 	display: flex;
 	align-items: center;
 }
+
 .trig {
 	padding: .25rem .5rem;
 	border-radius: .5rem;
 	border: 1px solid #ccc;
 	margin-right: 1rem;
-} 
+}
+
 .node {
 	// height: 36px;
 	// min-width: 500px;
@@ -99,19 +101,13 @@ const calcClass = ((item: any) => {
 
 .simple {
 	padding: 0.2rem 0.5rem;
-	// padding-right: 4rem;
-	// display: grid;
-	// grid-template-columns: auto auto auto auto;
 	display: flex;
-	// width: 100%;
-	// justify-content: start;
 	align-items: center;
-	// position: relative;
 }
 
 :deep(.q-field--dense .q-field__control) {
 	height: 28px;
-	// width: 150px;
+	padding-right: .25rem;
 }
 
 :deep(.q-field--dense .q-field__marginal) {

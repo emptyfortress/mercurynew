@@ -22,7 +22,9 @@ const next = (() => {
 			span(v-else) ИЛИ
 
 	TreeQuery(v-else :arr="props.stat.data")
-	// q-btn.close(dense flat round icon="mdi-close" color="primary" @click="action") 
+	// q-btn(v-if='props.stat.data.type !== 10' flat round color="secondary" dense @click="props.stat.checked = !props.stat.checked" size="sm") 
+	// 	q-icon(v-if='props.stat.checked' name="mdi-eye" color="secondary" size='16px')
+	// 	q-icon(v-else name="mdi-eye-off" color="secondary" size='16px')
 
 </template>
 
