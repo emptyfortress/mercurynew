@@ -150,8 +150,15 @@ interface TmpCond {
 }
 
 interface CondL {
-	id: Number
-	data: TmpCond[]
+	id: string
+	text: string
+	kind: Kind
+	type?: number
+	level?: number
+	selected?: boolean
+	children?: any
+	// id: Number
+	// list: TmpCond[]
 }
 const date = new Date()
 
@@ -218,8 +225,7 @@ const addCond = () => {
 	let tmp = convertArray(keys.value)
 	let newtmp = convertArray1(tmp)
 
-	let obj: CondL = { id: +date, data: newtmp }
-	emit('addCond', obj)
+	emit('addCond', newtmp)
 	reset()
 }
 
