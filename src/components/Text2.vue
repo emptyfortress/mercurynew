@@ -142,7 +142,7 @@ const twoMore = computed(() => {
 	return treeLength.value > 2 ? true : false
 })
 
-const add = ((e: Option) => {
+const add = ((e: any) => {
 	if (tree.value) {
 		tree.value.add(e, tree.value.rootChildren[0])
 	} else {
