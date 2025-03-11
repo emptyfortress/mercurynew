@@ -13,7 +13,9 @@ const panels = usePanels()
 	.grid(v-else)
 		template(v-for="item in panels.condL")
 			div {{ item[0].text }}:
-			q-input(v-model="item[2].text" dense outlined)
+			q-input(v-model="item[2].text" dense filled)
+			q-toggle(v-model="item.active" dense)
+
 
 
 </template>
@@ -34,10 +36,14 @@ const panels = usePanels()
 
 .grid {
 	display: grid;
-	grid-template-columns: auto 1fr;
+	grid-template-columns: auto 1fr auto;
 	justify-items: start;
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: .5rem;
+
+	.q-input {
+		width: 100%;
+	}
 }
 </style>

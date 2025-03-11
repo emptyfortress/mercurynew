@@ -198,7 +198,7 @@ div
 					TreeItem(:stat='stat')
 
 					q-btn.eye(v-if='stat.data.type !== 10 && !stat.data.hidden' dense flat round icon="mdi-eye" color="primary" size='sm' @click='addToCondL(stat)')
-					q-btn.close(v-if='!stat.data.root' dense flat round icon="mdi-close" color="primary" size='sm') 
+					q-btn.close(v-if='!stat.data.root' dense flat round icon="mdi-close" color="primary" size='sm' @click='remove(stat)') 
 
 		.err(v-if='twoMore' ref='test'
 			v-motion
