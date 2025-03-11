@@ -6,6 +6,7 @@ export const usePanels = defineStore('panels', () => {
 	const left = useStorage('left', true)
 	const right = useStorage('right', true)
 	const right0 = useStorage('right0', true)
+	const preview = useStorage('preview', false)
 
 	const setLeft = (state: boolean) => {
 		left.value = state
@@ -18,12 +19,18 @@ export const usePanels = defineStore('panels', () => {
 		right0.value = state
 	}
 
+	const setPreview = (state: boolean) => {
+		preview.value = state
+	}
+
 	return {
 		right0,
 		left,
 		right,
+		preview,
 		setLeft,
 		setRight,
 		setRight0,
+		setPreview,
 	}
 })
