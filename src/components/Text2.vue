@@ -3,7 +3,6 @@ import { ref, computed, reactive } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import IconPersonNo from '@/components/icons/IconPersonNo.vue'
-// import IconTrash from '@/components/icons/IconTrash.vue'
 import TreeItem from '@/components/TreeItem.vue'
 import TreeQuery from '@/components/TreeQuery.vue'
 import DragEditWindow from '@/components/DragEditWindow.vue'
@@ -11,6 +10,7 @@ import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
 import { useQuasar } from 'quasar'
+import { usePanels } from '@/stores/panels'
 
 
 const show = ref(false)
@@ -162,6 +162,14 @@ const isDrop = (e: any) => {
 const isDrag = (e: any) => {
 	return true
 }
+
+
+const panels = usePanels()
+const addToCondL = ((e: any) => {
+	console.log(e)
+	panels.addToCondL(e.data)
+	e.data.hidden = !e.data.hidden
+})
 </script>
 
 <template lang="pug">
@@ -184,11 +192,12 @@ div
 				)
 
 				template(#default="{ node, stat }")
-					TreeItem(:stat='stat' :class='{ hid: stat.data.hidden }')
+					// TreeItem(:stat='stat' :class='{ hid: stat.data.hidden }')
 					q-btn(flat round v-if='stat.data.hidden && stat.data.type !== 10' dense size='sm' @click='stat.data.hidden = !stat.data.hidden')
 						q-icon(name="mdi-eye-off" color="primary")
+					TreeItem(:stat='stat')
 
-					q-btn.eye(v-if='stat.data.type !== 10 && !stat.data.hidden' dense flat round icon="mdi-eye" color="primary" size='sm' @click='stat.data.hidden = !stat.data.hidden')
+					q-btn.eye(v-if='stat.data.type !== 10 && !stat.data.hidden' dense flat round icon="mdi-eye" color="primary" size='sm' @click='addToCondL(stat)')
 					q-btn.close(v-if='!stat.data.root' dense flat round icon="mdi-close" color="primary" size='sm') 
 
 		.err(v-if='twoMore' ref='test'

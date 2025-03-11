@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-// import { ref, nextTick } from 'vue'
+import { ref, } from 'vue'
 import { useStorage } from '@vueuse/core'
 
 export const usePanels = defineStore('panels', () => {
@@ -23,14 +23,21 @@ export const usePanels = defineStore('panels', () => {
 		preview.value = state
 	}
 
+	const condL = ref([])
+	const addToCondL = ((e: any) => {
+		condL.value.push(e)
+	})
+
 	return {
 		right0,
 		left,
 		right,
 		preview,
+		condL,
 		setLeft,
 		setRight,
 		setRight0,
 		setPreview,
+		addToCondL,
 	}
 })

@@ -71,7 +71,7 @@ const close = () => {
 		.top.top1
 			.zg
 				IconForm.ic1
-				|Превью формы
+				|Настройка формы
 
 	FormPreview(v-if='panels.preview'
 		v-motion
