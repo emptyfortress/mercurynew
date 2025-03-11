@@ -139,7 +139,8 @@ const form = ref('Просмотр')
 const options = ['Создание', 'Просмотр', 'Редактирование',]
 
 const dialog = ref(false)
-const toggleDialog = (() => {
+
+const toggle = (() => {
 	dialog.value = !dialog.value
 })
 const goto = (() => {
@@ -185,9 +186,9 @@ q-page(padding)
 								q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 					label Правила определения роли:
-					.val(v-if='role' @click.stop="toggleDialog")
+					.val(v-if='role' @click.stop="toggle")
 						span {{ role }}
-					q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog" size='sm') 
+					q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggle" size='sm') 
 
 				.hr Форма для показа в папках
 				.grid(@click.stop)
