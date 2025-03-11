@@ -16,6 +16,7 @@ const otdel = ref('one')
 const dep = ref()
 
 const depOptions = ['Отдел разработки', 'Тестировщики', 'Склад', 'Отдел кадров']
+const item = ref()
 </script>
 
 <template lang="pug">
@@ -30,7 +31,7 @@ const depOptions = ['Отдел разработки', 'Тестировщики
 			.sma Роль существует по умолчанию не может быть удалена.
 		div(v-if='pers == "Группа"')
 			.des Группа из справочника сотрудников
-				q-select(dense filled label="Группа")
+				q-select(dense filled label="Группа" v-model="item")
 					template(v-slot:prepend)
 						q-icon(name="mdi-account-multiple" color="primary")
 		div(v-if='pers == "Сотрудники подразделения, отдела"')
@@ -41,14 +42,14 @@ const depOptions = ['Отдел разработки', 'Тестировщики
 			q-checkbox.q-mt-md(v-model="sotrZam" dense label='Включая заместителей')
 		div(v-if='pers == "Сотрудники из поля в приложении"')
 			.des Сотрудники из поля в приложении
-			q-select(dense filled label="Поле")
+			q-select(dense filled label="Поле" v-model="item")
 				template(v-slot:prepend)
 					q-icon(name="mdi-account" color="primary")
 			q-checkbox.q-mt-md(v-model="sotrZam" dense label='Включая заместителей')
 
 		div(v-if='pers == "Сотрудник и все его заместители"')
 			.des Сотрудник из справочника и все его замы
-			q-select(dense filled label="Сотрудник")
+			q-select(dense filled label="Сотрудник" v-model="item")
 				template(v-slot:prepend)
 					q-icon(name="mdi-account" color="primary")
 </template>
@@ -61,15 +62,18 @@ const depOptions = ['Отдел разработки', 'Тестировщики
 	align-items: start;
 	column-gap: 2rem;
 }
+
 .desc {
 	border-left: 1px solid #ccc;
 	height: 100%;
 	padding-left: 1rem;
 }
+
 .des {
 	font-weight: 600;
 	margin-bottom: 1rem;
 }
+
 .sma {
 	font-size: 0.8rem;
 }
