@@ -6,6 +6,9 @@ import { useRouter } from 'vue-router'
 import { usePanels } from '@/stores/panels'
 // import DiagProps from '@/components/panels/DiagProps.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
+import IconForm from '@/components/icons/IconForm.vue'
+import FormPreview from '@/components/FormPreview.vue'
+
 
 const router = useRouter()
 const panels = usePanels()
@@ -42,9 +45,6 @@ const close = () => {
 	})
 }
 
-const next = () => {
-	router.push('/form')
-}
 </script>
 
 <template lang="pug">
@@ -53,23 +53,32 @@ const next = () => {
 	@click='expand'
 	)
 
-	q-icon(v-if='!panels.preview'
+	IconForm.ic(v-if='!panels.preview'
 		v-motion
 		:initial='{ opacity: 0, rotate: "0deg" }'
 		:enter='{ opacity: 1, rotate: "0deg", }'
 		:hovered='{ rotate: "90deg", }'
-		name="mdi-tune-vertical-variant"
-		color="primary"
-		size='24px')
+		)
 
 	CloseButton(v-model="panels.preview" @close="close")
 
-	// DiagProps(v-if='panels.right0'
-	// 	v-motion
-	// 	:initial='{ opacity: 0 }'
-	// 	:enter='{ opacity: 1 }'
-	// 	:delay='1000'
-	// 	@next="next") 
+	.rrel(v-if='panels.preview'
+		v-motion
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
+		:delay='600'
+		)
+		.top.top1
+			.zg
+				IconForm.ic1
+				|Превью формы
+
+	FormPreview(v-if='panels.preview'
+		v-motion
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
+		:delay='1000'
+		) 
 
 </template>
 
@@ -84,7 +93,6 @@ const next = () => {
 	top: 0;
 	right: -58px;
 	text-align: center;
-	padding: 0.6rem;
 	cursor: pointer;
 
 	&.expand {
@@ -94,5 +102,26 @@ const next = () => {
 		border-radius: 6px;
 		cursor: default;
 	}
+
+	.ic {
+		margin-top: 13px;
+		font-size: 1.4rem;
+		color: $primary;
+	}
+}
+
+.ic1 {
+	font-size: 1.3rem;
+	margin-right: .5rem;
+}
+
+.zg {
+	font-size: 1.1rem;
+	color: $primary;
+	text-align: center;
+}
+
+.top1 {
+	display: block;
 }
 </style>
