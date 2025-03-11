@@ -63,6 +63,7 @@ let treeData = reactive([
 		type: 10,
 		text: "И",
 		and: true,
+		root: true,
 		children: [
 			[
 				{
@@ -185,22 +186,26 @@ div
 				template(#default="{ node, stat }")
 					TreeItem(:stat='stat' :class='{ hid: stat.data.hidden }')
 					// q-icon(name="mdi-eye-settings-outline" size="sm" color="secondary")
-					q-icon(name='mdi-eye-off' v-if='stat.data.hidden')
-					q-btn.close(dense flat round icon="mdi-dots-vertical" color="primary" size='sm') 
-						q-menu(auto-close)
-							q-list
-								q-item(clickable)
-									q-item-section(side)
-										q-icon(name="mdi-plus-circle-multiple")
-									q-item-section Дублировать
-								q-item(clickable v-if='stat.data.type !== 10' @click='stat.data.hidden = !stat.data.hidden')
-									q-item-section(side)
-										q-icon(name="mdi-eye-off")
-									q-item-section Скрыть
-								q-item(clickable @click='remove(stat)')
-									q-item-section(side)
-										q-icon(name="mdi-trash-can-outline")
-									q-item-section Удалить
+					q-btn(flat round v-if='stat.data.hidden && stat.data.type !== 10' dense size='sm' @click='stat.data.hidden = !stat.data.hidden')
+						q-icon(name="mdi-eye-off" color="primary")
+
+					q-btn.eye(v-if='stat.data.type !== 10 && !stat.data.hidden' dense flat round icon="mdi-eye" color="primary" size='sm' @click='stat.data.hidden = !stat.data.hidden')
+					q-btn.close(v-if='!stat.data.root' dense flat round icon="mdi-close" color="primary" size='sm') 
+
+						// q-menu(auto-close)
+						// 	q-list
+						// 		q-item(clickable)
+						// 			q-item-section(side)
+						// 				q-icon(name="mdi-plus-circle-multiple")
+						// 			q-item-section Дублировать
+						// 		q-item(clickable v-if='stat.data.type !== 10' @click='stat.data.hidden = !stat.data.hidden')
+						// 			q-item-section(side)
+						// 				q-icon(name="mdi-eye-off")
+						// 			q-item-section Скрыть
+						// 		q-item(clickable @click='remove(stat)')
+						// 			q-item-section(side)
+						// 				q-icon(name="mdi-trash-can-outline")
+						// 			q-item-section Удалить
 
 		.err(v-if='twoMore' ref='test'
 			v-motion
@@ -249,10 +254,20 @@ div
 	min-width: 450px;
 
 	&:hover {
-		.close {
+
+		.close,
+		.eye {
 			display: block;
 		}
 	}
+}
+
+.eye {
+	position: absolute;
+	right: 1.7rem;
+	top: 50%;
+	transform: translateY(-50%);
+	display: none;
 }
 
 .close {
