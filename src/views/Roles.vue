@@ -119,7 +119,7 @@ const remove = (() => {
 		message: 'Роль удалена',
 		color: 'negative',
 		icon: 'mdi-check-bold',
-		toggleDialogs: [
+		actions: [
 			{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
 		]
 	})
@@ -140,7 +140,7 @@ const options = ['Создание', 'Просмотр', 'Редактирова
 
 const dialog = ref(false)
 
-const toggle = (() => {
+const toggleDialog = (() => {
 	dialog.value = !dialog.value
 })
 const goto = (() => {
@@ -188,7 +188,7 @@ q-page(padding)
 					label Правила определения роли:
 					.val(v-if='role' @click.stop="toggle")
 						span {{ role }}
-					q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggle" size='sm') 
+					q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog" size='sm') 
 
 				.hr Форма для показа в папках
 				.grid(@click.stop)
