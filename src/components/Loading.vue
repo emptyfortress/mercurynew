@@ -12,7 +12,7 @@ const load = (() => {
 onMounted(() => {
 	setTimeout(() => {
 		isLoaded.value = true
-	}, 1500)
+	}, 1000)
 })
 </script>
 
