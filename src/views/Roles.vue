@@ -186,7 +186,7 @@ q-page(padding)
 								q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 					label Правила определения роли:
-					.val(v-if='role' @click.stop="toggle")
+					.val(v-if='role' @click.stop="toggleDialog")
 						span {{ role }}
 					q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog" size='sm') 
 
