@@ -23,6 +23,17 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/icons',
+			name: 'icons',
+			component: () => import('@/views/Icons.vue'),
+			meta: {
+				toolbar: true,
+				back: false,
+				count: 0
+			},
+		},
+
+		{
 			path: '/assistent',
 			name: 'assistent',
 			component: () => import('@/views/Assistent.vue'),

@@ -171,7 +171,7 @@ function convertArray(arrayOne: any) {
 			arrayOne[i].kind === 5 && (arrayOne[i + 1].kind === 1 || arrayOne[i + 1].kind == 2)) {
 			result.push({
 				"text": `${arrayOne[i].text}.${arrayOne[i + 1].text}`,
-				"kind": arrayOne[i].kind // Use kind from first element
+				"kind": arrayOne[i].kind, // Use kind from first element
 			});
 			i += 2; // Skip both merged elements
 		} else {
@@ -204,7 +204,7 @@ function convertArray1(array: any) {
 			result.push({
 				"text": `${array[i].text}.${array[i + 1].text}`,
 				"kind": array[i].kind,
-				"exe": true
+				"exe": true,
 			})
 			i += 2
 		} else {

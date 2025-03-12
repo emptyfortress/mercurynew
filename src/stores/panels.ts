@@ -23,7 +23,7 @@ export const usePanels = defineStore('panels', () => {
 		preview.value = state
 	}
 
-	const condL = ref([])
+	const condL = ref<Option[][]>([])
 	const addToCondL = ((e: any) => {
 		condL.value.push(e)
 	})

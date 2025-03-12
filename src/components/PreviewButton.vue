@@ -53,12 +53,21 @@ const close = () => {
 	@click='expand'
 	)
 
-	IconForm.ic(v-if='!panels.preview'
+	q-icon(v-if='!panels.preview'
 		v-motion
 		:initial='{ opacity: 0, rotate: "0deg" }'
 		:enter='{ opacity: 1, rotate: "0deg", }'
 		:hovered='{ rotate: "90deg", }'
-		)
+		name="mdi-tune-vertical-variant"
+		color="primary"
+		size='24px')
+
+	// IconForm.ic(v-if='!panels.preview'
+	// 	v-motion
+	// 	:initial='{ opacity: 0, rotate: "0deg" }'
+	// 	:enter='{ opacity: 1, rotate: "0deg", }'
+	// 	:hovered='{ rotate: "90deg", }'
+	// 	)
 
 	CloseButton(v-model="panels.preview" @close="close")
 
@@ -70,8 +79,8 @@ const close = () => {
 		)
 		.top.top1
 			.zg
-				IconForm.ic1
-				|Настройка формы
+				q-icon.q-mr-sm(name="mdi-tune-vertical-variant" color="primary" size='24px')
+				|Параметрический запрос
 
 	FormPreview(v-if='panels.preview'
 		v-motion
@@ -94,6 +103,7 @@ const close = () => {
 	right: -58px;
 	text-align: center;
 	cursor: pointer;
+	padding: 0.6rem;
 
 	&.expand {
 		width: 400px;
@@ -101,6 +111,7 @@ const close = () => {
 		right: -408px;
 		border-radius: 6px;
 		cursor: default;
+		padding: 0;
 	}
 
 	.ic {
