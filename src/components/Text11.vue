@@ -10,6 +10,7 @@ import LevelEtap from '@/components/LevelEtap.vue'
 import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 import { Kind } from '@/types/enum'
+import { useTree } from '@/stores/tree'
 
 const props = defineProps({
 	height: {
@@ -18,6 +19,7 @@ const props = defineProps({
 		default: 100
 	}
 })
+const mytree = useTree()
 const query = ref('')
 const keys = ref<Option[]>([])
 const options = ref(zero)
@@ -215,7 +217,7 @@ function convertArray1(array: any) {
 	return result
 }
 
-const emit = defineEmits(['addCond', 'close'])
+// const emit = defineEmits(['addCond', 'close'])
 
 const addCond = () => {
 	if (keys.value.at(-1)?.word == true) {
@@ -225,13 +227,20 @@ const addCond = () => {
 	let tmp = convertArray(keys.value)
 	let newtmp = convertArray1(tmp)
 
-	emit('addCond', newtmp)
+	// if (mytree.treeData[0].children.length == 0) {
+	// 	mytree.addFirstNode(newtmp)
+	// } else {
+	mytree.addFlag = true
+	mytree.node = newtmp
+	// }
+	// emit('addCond', newtmp)
 	reset()
 }
 
 const save = (() => {
 	addCond()
-	emit('close')
+	mytree.toggleDragWindow()
+	// emit('close')
 })
 
 const showFirst = ref(false)

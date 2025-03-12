@@ -11,6 +11,9 @@ import PreviewButton from '@/components/PreviewButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
 import DragEditWindow from '@/components/DragEditWindow.vue'
+import { useTree } from '@/stores/tree'
+
+const mytree = useTree()
 
 const main = ref(true)
 const toggleMain = (() => {
@@ -46,9 +49,8 @@ const stopPreview = async () => {
 	}, 400)
 	stop()
 }
-const show = ref(false)
 const showDrag = (() => {
-	show.value = !show.value
+	mytree.toggleDragWindow()
 })
 </script>
 
@@ -82,7 +84,7 @@ q-page(padding)
 
 		PreviewButton(@activate='startPreview' @stop='stopPreview')
 
-	DragEditWindow(v-model="show" @addCond='addCond')
+	DragEditWindow(v-model="mytree.isDragWindow")
 </template>
 
 <style scoped lang="scss">

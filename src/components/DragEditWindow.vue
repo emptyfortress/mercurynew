@@ -4,8 +4,11 @@ import { UseDraggable as Draggable } from '@vueuse/components'
 import Text11 from '@/components/Text11.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
+import { useTree } from '@/stores/tree'
+
 
 const modelValue = defineModel()
+const mytree = useTree()
 
 // const el = ref<HTMLElement | null>(null)
 
@@ -20,12 +23,14 @@ const initial = computed(() => {
 const el = useTemplateRef('el')
 const { height } = useElementSize(el)
 
-const emit = defineEmits(['addCond'])
+// const emit = defineEmits(['addCond'])
 
-const addCond = ((e: any) => {
-	console.log(e)
-	emit('addCond', e)
-})
+// const addCond = ((e: any) => {
+// 	console.log(e)
+// 	mytree.addFlag = true
+// 	mytree.node = e
+// 	// emit('addCond', e)
+// })
 
 const close = (() => {
 	modelValue.value = false
@@ -48,7 +53,7 @@ transition(name="slide-bottom")
 
 
 		q-card-section.scroll
-			Text11(:height="height" @addCond="addCond" @close="close")
+			Text11(:height="height" @close="close")
 </template>
 
 <style scoped lang="scss">

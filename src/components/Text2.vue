@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, watch } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import TreeItem from '@/components/TreeItem.vue'
@@ -8,27 +8,25 @@ import TreeQuery from '@/components/TreeQuery.vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
-import { useQuasar } from 'quasar'
+// import { useQuasar } from 'quasar'
 import { usePanels } from '@/stores/panels'
+import { useTree } from '@/stores/tree'
 
-const show = ref(false)
-const toggle = (() => {
-	show.value = !show.value
-})
+const mytree = useTree()
 
-const $q = useQuasar()
+// const $q = useQuasar()
 
-const addCond = ((e: any) => {
-	add(e)
-	setTimeout(() => {
-		$q.notify({
-			icon: 'mdi-check-bold',
-			color: 'positive',
-			message: 'Запрос сохранен',
-			position: 'top'
-		})
-	}, 1200)
-})
+// const addCond = ((e: any) => {
+// 	add(e)
+// 	setTimeout(() => {
+// 		$q.notify({
+// 			icon: 'mdi-check-bold',
+// 			color: 'positive',
+// 			message: 'Запрос сохранен',
+// 			position: 'top'
+// 		})
+// 	}, 1200)
+// })
 
 const addOper = (() => {
 	let tmp = {
@@ -41,114 +39,41 @@ const addOper = (() => {
 })
 
 const clear = (() => {
-	treeData[0].children.length = 0
-})
-
-const test = ref()
-
-// let treeData = reactive([
-// 	{
-// 		type: 10,
-// 		and: true,
-// 		text: 'И',
-// 		children: [
-// 		] as Option[],
-// 	},
-// ])
-
-let treeData = reactive([
-	{
+	tree.value.removeMulti(tree.value.rootChildren)
+	tree.value.add({
 		type: 10,
 		text: "И",
 		and: true,
 		root: true,
-		children: [
-			[
-				{
-					id: "6c028f26-a3aa-417f-8b47-d235b08ce134",
-					text: "Автор",
-					kind: 5,
-					type: 1,
-					level: 0,
-					selected: false,
-				},
-				{
-					kind: 17,
-					label: "равно",
-					value: "равно",
-					text: "равно",
-					selected: true
-				},
-				{
-					id: "d76ba093-1a96-4f44-bdfc-6bb6ce0fb13c",
-					man: true,
-					text: "Я",
-					kind: 11,
-					selected: false
-				}
-			],
-			[
-				{
-					id: "5422cf4c-e098-4d67-90ce-9011f767320f",
-					text: "Название",
-					kind: 0,
-					type: 1,
-					level: 0,
-					selected: false,
-				},
-				{
-					kind: 15,
-					word: true,
-					text: "содержит",
-					value: "содержит",
-					label: "содержит",
-					selected: false
-				},
-				{
-					text: "",
-					kind: 100,
-					selected: false
-				}
-			]
-		]
-	}
-
-])
+		children: []
+	})
+})
 
 const tree = ref()
 
-function flattenTree(data: any) {
-	const result: any[] = []
-	data.forEach((node: any) => {
-		result.push(node) // Add the current node
-		if (node.children && node.children.length > 0) {
-			result.push(...flattenTree(node.children)) // Recursively flatten children
-		}
-	})
-	return result
-}
-
-const treeLength = computed(() => {
-	return flattenTree(treeData).length
-})
-
 const zero = computed(() => {
-	return treeLength.value == 1 ? true : false
+	if (tree.value && tree.value.statsFlat.length == 1) return true
+	return false
 })
 const oneRule = computed(() => {
-	return treeLength.value == 2 ? true : false
+	if (tree.value && tree.value.statsFlat.length == 2) return true
+	return false
 })
 const twoMore = computed(() => {
-	return treeLength.value > 2 ? true : false
+	if (tree.value && tree.value.statsFlat.length > 2) return true
+	return false
 })
 
-const add = ((e: any) => {
-	if (tree.value) {
-		tree.value.add(e, tree.value.rootChildren[0])
-	} else {
-		treeData[0].children.push(e)
+watch(
+	() => mytree.addFlag,
+	() => {
+		if (mytree.addFlag && tree.value) {
+			tree.value.add(mytree.node, tree.value.rootChildren[0])
+		}
+		mytree.addFlag = false
 	}
-})
+)
+
 const remove = ((e: any) => {
 	tree.value.remove(e)
 })
@@ -163,6 +88,7 @@ const isDrag = (e: any) => {
 
 
 const panels = usePanels()
+
 const addToCondL = ((e: any) => {
 	panels.addToCondL(e.data)
 	e.data.hidden = !e.data.hidden
@@ -172,20 +98,27 @@ const removeFromCondL = ((e: any) => {
 	e.hidden = !e.hidden
 	panels.removeById(e[0].id)
 })
+
 </script>
 
 <template lang="pug">
 div
-	.grid
 
+	.empty(v-if='zero')
+		IconFaceMask.big
+		div Запрос не настроен.
+		q-btn.q-mt-md(unelevated color="primary" label="Настроить" @click="mytree.toggleDragWindow") 
+
+
+	.grid
 		TreeQuery(v-if='oneRule'
-			:arr="treeData[0].children[0]"
+			:arr="mytree.treeData[0].children[0]"
 			)
 
-		div(v-if='twoMore')
+		div(v-show='twoMore')
 			Draggable(ref="tree"
 				treeLine
-				v-model="treeData"
+				v-model="mytree.treeData"
 				:indent="40"
 				:eachDroppable="isDrop"
 				:eachDraggable="isDrag"
@@ -198,23 +131,14 @@ div
 					// q-btn(flat round v-if='stat.data.hidden && stat.data.type !== 10' dense size='sm' @click='removeFromCondL(node)')
 					// 	q-icon(name="mdi-eye-off" color="primary")
 					TreeItem(:stat='stat')
-
-					// q-btn.eye(v-if='stat.data.type !== 10 && !stat.data.hidden' dense flat round icon="mdi-eye" color="primary" size='sm' @click='addToCondL(stat)')
 					q-btn.close(v-if='!stat.data.root' dense flat round icon="mdi-close" color="primary" size='sm' @click='remove(stat)') 
 
-	.empty(v-if='zero')
-		IconFaceMask.big
-		div Запрос не настроен.
-
-
-	.text-center.q-mt-md
-		q-btn(v-if='zero' unelevated color="primary" label="Настроить" @click="toggle") 
-		template(v-else)
-			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="toggle") 
-			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить оператор" @click="addOper") 
-			q-btn.q-ml-sm(flat color="negative" @click="clear") 
-				IconClear.ic.q-mr-sm
-				.q-cursor Очистить все
+	.text-center.q-mt-md(v-if='!zero')
+		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mytree.toggleDragWindow") 
+		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить оператор" @click="addOper") 
+		q-btn.q-ml-sm(flat color="negative" @click="clear") 
+			IconClear.ic.q-mr-sm
+			.q-cursor Очистить все
 
 // DragEditWindow(v-model="show" @addCond='addCond')
 </template>
