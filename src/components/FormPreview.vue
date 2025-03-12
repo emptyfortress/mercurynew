@@ -13,7 +13,7 @@ const panels = usePanels()
 	.grid(v-else)
 		template(v-for="item in panels.condL")
 			div {{ item[0].text }}:
-			q-input(v-model="item[2].text" dense filled)
+			q-input(v-model="item[2].text" dense filled :disable="item[0].selected")
 			q-toggle(:model-value="!item[0].selected" @update:model-value="(val) => item[0].selected = !val" dense size="sm")
 
 </template>
@@ -43,5 +43,10 @@ const panels = usePanels()
 	.q-input {
 		width: 100%;
 	}
+}
+
+.hid {
+	opacity: .5;
+	background: #dedede;
 }
 </style>

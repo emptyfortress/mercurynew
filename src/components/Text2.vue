@@ -166,9 +166,13 @@ const isDrag = (e: any) => {
 
 const panels = usePanels()
 const addToCondL = ((e: any) => {
-	console.log(e)
 	panels.addToCondL(e.data)
 	e.data.hidden = !e.data.hidden
+})
+
+const removeFromCondL = ((e: any) => {
+	e.hidden = !e.hidden
+	panels.removeById(e[0].id)
 })
 </script>
 
@@ -192,8 +196,7 @@ div
 				)
 
 				template(#default="{ node, stat }")
-					// TreeItem(:stat='stat' :class='{ hid: stat.data.hidden }')
-					q-btn(flat round v-if='stat.data.hidden && stat.data.type !== 10' dense size='sm' @click='stat.data.hidden = !stat.data.hidden')
+					q-btn(flat round v-if='stat.data.hidden && stat.data.type !== 10' dense size='sm' @click='removeFromCondL(node)')
 						q-icon(name="mdi-eye-off" color="primary")
 					TreeItem(:stat='stat')
 
