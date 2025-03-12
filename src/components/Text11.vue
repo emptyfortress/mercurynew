@@ -243,7 +243,7 @@ const save = (() => {
 	// emit('close')
 })
 
-const showFirst = ref(false)
+const showFirst = ref(true)
 
 const test = () => {
 	showFirst.value = true
