@@ -2,16 +2,14 @@
 import { ref, computed, reactive } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
-import IconPersonNo from '@/components/icons/IconPersonNo.vue'
 import TreeItem from '@/components/TreeItem.vue'
 import TreeQuery from '@/components/TreeQuery.vue'
-import DragEditWindow from '@/components/DragEditWindow.vue'
+// import DragEditWindow from '@/components/DragEditWindow.vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
 import { useQuasar } from 'quasar'
 import { usePanels } from '@/stores/panels'
-
 
 const show = ref(false)
 const toggle = (() => {
@@ -196,21 +194,13 @@ div
 				)
 
 				template(#default="{ node, stat }")
-					q-btn(flat round v-if='stat.data.hidden && stat.data.type !== 10' dense size='sm' @click='removeFromCondL(node)')
-						q-icon(name="mdi-eye-off" color="primary")
+					input(v-if='stat.data.type !== 10' v-model="stat.data.hidden" type='checkbox')
+					// q-btn(flat round v-if='stat.data.hidden && stat.data.type !== 10' dense size='sm' @click='removeFromCondL(node)')
+					// 	q-icon(name="mdi-eye-off" color="primary")
 					TreeItem(:stat='stat')
 
-					q-btn.eye(v-if='stat.data.type !== 10 && !stat.data.hidden' dense flat round icon="mdi-eye" color="primary" size='sm' @click='addToCondL(stat)')
+					// q-btn.eye(v-if='stat.data.type !== 10 && !stat.data.hidden' dense flat round icon="mdi-eye" color="primary" size='sm' @click='addToCondL(stat)')
 					q-btn.close(v-if='!stat.data.root' dense flat round icon="mdi-close" color="primary" size='sm' @click='remove(stat)') 
-
-		.err(v-if='twoMore' ref='test'
-			v-motion
-			:initial="{ y: -20, opacity: 0 }"
-			:enter="{ y: 0, opacity: 1, transition: { delay: 2000 } }"
-			)
-			IconPersonNo.big
-			q-menu
-				q-card(dark) Текущий запрос вернет 0 результатов
 
 	.empty(v-if='zero')
 		IconFaceMask.big
@@ -226,7 +216,7 @@ div
 				IconClear.ic.q-mr-sm
 				.q-cursor Очистить все
 
-	DragEditWindow(v-model="show" @addCond='addCond')
+// DragEditWindow(v-model="show" @addCond='addCond')
 </template>
 
 <style scoped lang="scss">
@@ -313,10 +303,5 @@ div
 .pink {
 	background: transparent;
 	color: darkred;
-}
-
-.hid {
-	opacity: .5;
-	background: #dedede;
 }
 </style>

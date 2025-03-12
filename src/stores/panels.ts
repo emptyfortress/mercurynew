@@ -2,28 +2,6 @@ import { defineStore } from 'pinia'
 import { ref, } from 'vue'
 import { useStorage } from '@vueuse/core'
 
-interface Option {
-	id?: string
-	text: string
-	label?: string
-	value?: string
-	selected: boolean
-	type?: number
-	level?: number
-	parents?: string[] | []
-	kind?: number
-	inp?: boolean
-	drag?: boolean
-	man?: boolean
-	date?: boolean
-	exe?: boolean
-	execute?: boolean
-	dvalue?: boolean
-	due?: boolean
-	word?: boolean
-	children?: Option[] | []
-}
-
 export const usePanels = defineStore('panels', () => {
 	const left = useStorage('left', true)
 	const right = useStorage('right', true)
@@ -52,8 +30,8 @@ export const usePanels = defineStore('panels', () => {
 	})
 
 	const removeById = (id: string) => {
-  condL.value = condL.value.filter(innerArray => innerArray[0]?.id !== id);
-};
+		condL.value = condL.value.filter(innerArray => innerArray[0]?.id !== id)
+	}
 
 
 	return {

@@ -10,6 +10,7 @@ import Text2 from '@/components/Text2.vue'
 import PreviewButton from '@/components/PreviewButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
+import DragEditWindow from '@/components/DragEditWindow.vue'
 
 const main = ref(true)
 const toggleMain = (() => {
@@ -45,6 +46,10 @@ const stopPreview = async () => {
 	}, 400)
 	stop()
 }
+const show = ref(false)
+const showDrag = (() => {
+	show.value = !show.value
+})
 </script>
 
 <template lang="pug">
@@ -67,7 +72,7 @@ q-page(padding)
 						template(v-else)
 							IconLogic.ic
 							q-tooltip Конструктор
-					q-btn(flat round dense color="primary" @click="") 
+					q-btn(flat round dense color="primary" @click="showDrag") 
 						IconSearch.ic
 					q-tooltip Искать
 
@@ -76,6 +81,8 @@ q-page(padding)
 				TextAi(v-else)
 
 		PreviewButton(@activate='startPreview' @stop='stopPreview')
+
+	DragEditWindow(v-model="show" @addCond='addCond')
 </template>
 
 <style scoped lang="scss">
