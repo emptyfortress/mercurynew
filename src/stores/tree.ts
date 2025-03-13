@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed, } from 'vue'
 
 export const useTree = defineStore('tree', () => {
 
@@ -62,6 +62,10 @@ export const useTree = defineStore('tree', () => {
 
 	])
 
+	const len = computed(() => {
+		return treeData.value[0].children.length
+	})
+
 	const addFirstNode = ((e: any) => {
 		treeData.value[0].children.push(e)
 	})
@@ -79,6 +83,7 @@ export const useTree = defineStore('tree', () => {
 		isDragWindow,
 		addFlag,
 		node,
+		len,
 		toggleDragWindow,
 		addFirstNode,
 	}

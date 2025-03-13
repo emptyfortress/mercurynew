@@ -76,7 +76,7 @@ q-page(padding)
 							q-tooltip Конструктор
 					q-btn(flat round dense color="primary" @click="startPreview") 
 						IconSearch.ic
-					q-tooltip Искать
+						q-tooltip Искать
 
 			transition(name="slide-bottom" mode="out-in")
 				Text2(v-if='main' @button='startPreview')

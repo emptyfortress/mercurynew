@@ -56,6 +56,7 @@ import IconUndo from '@/components/icons/IconUndo.vue'
 import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import IconUpArrowCircleFill from '@/components/icons/IconUpArrowCircleFill.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
+import IconRocket from '@/components/icons/IconRocket.vue'
 </script>
 
 <template lang="pug">
@@ -119,6 +120,7 @@ q-page(padding)
 		IconUpArrowCircle
 		IconUpArrowCircleFill
 		IconWizard
+		IconRocket
 </template>
 
 <style scoped lang="scss">
