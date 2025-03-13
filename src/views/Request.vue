@@ -90,11 +90,9 @@ q-page(padding)
 <style scoped lang="scss">
 .q-page {
 	display: flex;
-	// flex-direction: column;
 	justify-content: center;
 	position: relative;
 	align-items: start;
-	// position: relative;
 }
 
 .edito {

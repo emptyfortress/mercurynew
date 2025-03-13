@@ -4,29 +4,14 @@ import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import TreeItem from '@/components/TreeItem.vue'
 import TreeQuery from '@/components/TreeQuery.vue'
-// import DragEditWindow from '@/components/DragEditWindow.vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
-// import { useQuasar } from 'quasar'
 import { usePanels } from '@/stores/panels'
 import { useTree } from '@/stores/tree'
 
 const mytree = useTree()
-
-// const $q = useQuasar()
-
-// const addCond = ((e: any) => {
-// 	add(e)
-// 	setTimeout(() => {
-// 		$q.notify({
-// 			icon: 'mdi-check-bold',
-// 			color: 'positive',
-// 			message: 'Запрос сохранен',
-// 			position: 'top'
-// 		})
-// 	}, 1200)
-// })
+const panels = usePanels()
 
 const addOper = (() => {
 	let tmp = {
@@ -47,6 +32,7 @@ const clear = (() => {
 		root: true,
 		children: []
 	})
+	panels.condL = []
 })
 
 const tree = ref()
@@ -82,21 +68,18 @@ const isDrop = (e: any) => {
 	if (e.data.type == 10) return true
 	else return false
 }
-const isDrag = (e: any) => {
+const isDrag = () => {
 	return true
 }
 
 
-const panels = usePanels()
 
-const addToCondL = ((e: any) => {
-	panels.addToCondL(e.data)
-	e.data.hidden = !e.data.hidden
-})
-
-const removeFromCondL = ((e: any) => {
-	e.hidden = !e.hidden
-	panels.removeById(e[0].id)
+const addRemoveCondL = ((e: any, n: any) => {
+	if (e.data.hidden) {
+		panels.addToCondL(e.data)
+	} else {
+		panels.removeById(n[0].id)
+	}
 })
 
 </script>
@@ -127,9 +110,7 @@ div
 				)
 
 				template(#default="{ node, stat }")
-					input(v-if='stat.data.type !== 10' v-model="stat.data.hidden" type='checkbox')
-					// q-btn(flat round v-if='stat.data.hidden && stat.data.type !== 10' dense size='sm' @click='removeFromCondL(node)')
-					// 	q-icon(name="mdi-eye-off" color="primary")
+					input(v-if='stat.data.type !== 10' v-model="stat.data.hidden" type='checkbox' @change='addRemoveCondL(stat, node)')
 					TreeItem(:stat='stat')
 					q-btn.close(v-if='!stat.data.root' dense flat round icon="mdi-close" color="primary" size='sm' @click='remove(stat)') 
 
@@ -140,7 +121,6 @@ div
 			IconClear.ic.q-mr-sm
 			.q-cursor Очистить все
 
-// DragEditWindow(v-model="show" @addCond='addCond')
 </template>
 
 <style scoped lang="scss">

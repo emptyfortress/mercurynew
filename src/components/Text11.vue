@@ -11,6 +11,7 @@ import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 import { Kind } from '@/types/enum'
 import { useTree } from '@/stores/tree'
+import { useQuasar } from 'quasar'
 
 const props = defineProps({
 	height: {
@@ -23,7 +24,6 @@ const mytree = useTree()
 const query = ref('')
 const keys = ref<Option[]>([])
 const options = ref(zero)
-// const motions = useMotions()
 const statRef = ref(stat)
 
 const remove = (el: Option, ind: number) => {
@@ -146,24 +146,6 @@ const reset = () => {
 }
 
 
-interface TmpCond {
-	text: string,
-	kind?: number
-}
-
-interface CondL {
-	id: string
-	text: string
-	kind: Kind
-	type?: number
-	level?: number
-	selected?: boolean
-	children?: any
-	// id: Number
-	// list: TmpCond[]
-}
-const date = new Date()
-
 function convertArray(arrayOne: any) {
 	const result = []
 	let i = 0
@@ -217,8 +199,6 @@ function convertArray1(array: any) {
 	return result
 }
 
-// const emit = defineEmits(['addCond', 'close'])
-
 const addCond = () => {
 	if (keys.value.at(-1)?.word == true) {
 		keys.value.push({ text: query.value, kind: 100, selected: false })
@@ -227,20 +207,23 @@ const addCond = () => {
 	let tmp = convertArray(keys.value)
 	let newtmp = convertArray1(tmp)
 
-	// if (mytree.treeData[0].children.length == 0) {
-	// 	mytree.addFirstNode(newtmp)
-	// } else {
 	mytree.addFlag = true
 	mytree.node = newtmp
-	// }
-	// emit('addCond', newtmp)
 	reset()
 }
 
+const $q = useQuasar()
 const save = (() => {
 	addCond()
 	mytree.toggleDragWindow()
-	// emit('close')
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Запрос сохранен',
+			position: 'top'
+		})
+	}, 1000)
 })
 
 const showFirst = ref(true)
