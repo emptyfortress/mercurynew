@@ -15,6 +15,8 @@ const panels = usePanels()
 			div {{ item[0].text }}:
 			q-input(v-model="item[2].text" dense filled :disable="item[0].selected")
 			q-toggle(:model-value="!item[0].selected" @update:model-value="(val) => item[0].selected = !val" dense size="sm")
+		.action
+			q-btn(unelevated color="primary" label="Искать" @click="") 
 
 </template>
 
@@ -23,8 +25,15 @@ const panels = usePanels()
 	padding: 1rem;
 }
 
+.action {
+	grid-column: 1/-1;
+	margin-top: 1rem;
+	width: 100%;
+}
+
 .empty {
 	text-align: center;
+	color: $secondary;
 }
 
 .big {

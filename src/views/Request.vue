@@ -74,7 +74,7 @@ q-page(padding)
 						template(v-else)
 							IconLogic.ic
 							q-tooltip Конструктор
-					q-btn(flat round dense color="primary" @click="showDrag") 
+					q-btn(flat round dense color="primary" @click="startPreview") 
 						IconSearch.ic
 					q-tooltip Искать
 
