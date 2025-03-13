@@ -80,7 +80,7 @@ const close = () => {
 		.top.top1
 			.zg
 				q-icon.q-mr-sm(name="mdi-tune-vertical-variant" color="primary" size='24px')
-				|Параметрический запрос
+				|Параметры запроса
 
 	FormPreview(v-if='panels.preview'
 		v-motion
