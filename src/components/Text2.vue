@@ -72,11 +72,12 @@ const isDrag = () => {
 	return true
 }
 
-
+const emit = defineEmits(['button'])
 
 const addRemoveCondL = ((e: any, n: any) => {
 	if (e.data.hidden) {
 		panels.addToCondL(e.data)
+		emit('button')
 	} else {
 		panels.removeById(n[0].id)
 	}

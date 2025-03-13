@@ -79,7 +79,7 @@ q-page(padding)
 					q-tooltip Искать
 
 			transition(name="slide-bottom" mode="out-in")
-				Text2(v-if='main')
+				Text2(v-if='main' @button='startPreview')
 				TextAi(v-else)
 
 		PreviewButton(@activate='startPreview' @stop='stopPreview')
