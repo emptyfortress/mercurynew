@@ -1,48 +1,40 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import FormPreview from '@/components/FormPreview.vue'
+import CloseButton from '@/components/panels/CloseButton.vue'
+import { usePanels } from '@/stores/panels'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { useRouter } from 'vue-router'
-import { usePanels } from '@/stores/panels'
-// import DiagProps from '@/components/panels/DiagProps.vue'
-import CloseButton from '@/components/panels/CloseButton.vue'
-import IconForm from '@/components/icons/IconForm.vue'
-import FormPreview from '@/components/FormPreview.vue'
+import { nextTick } from 'vue'
 
-
-const router = useRouter()
 const panels = usePanels()
 
 gsap.registerPlugin(Flip)
 
 const emit = defineEmits(['activate', 'stop'])
 
-// const expanded = ref<boolean>(false)
-
-const expand = () => {
+// Function to animate Flip state transition
+const animateFlip = (previewState: boolean) => {
 	const state = Flip.getState('.button')
-	emit('activate')
-	panels.setPreview(true)
+	panels.setPreview(previewState)
 	nextTick(() => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
-			delay: 0.2,
+			delay: 0.2
 		})
 	})
 }
 
+// Expand the preview
+const expand = () => {
+	emit('activate')
+	animateFlip(true)
+}
+
+// Close the preview
 const close = () => {
 	emit('stop')
-	const state = Flip.getState('.button')
-	panels.setPreview(false)
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
+	animateFlip(false)
 }
 
 </script>
@@ -61,13 +53,6 @@ const close = () => {
 		name="mdi-tune-vertical-variant"
 		color="primary"
 		size='24px')
-
-	// IconForm.ic(v-if='!panels.preview'
-	// 	v-motion
-	// 	:initial='{ opacity: 0, rotate: "0deg" }'
-	// 	:enter='{ opacity: 1, rotate: "0deg", }'
-	// 	:hovered='{ rotate: "90deg", }'
-	// 	)
 
 	CloseButton(v-model="panels.preview" @close="close")
 
@@ -134,5 +119,6 @@ const close = () => {
 
 .top1 {
 	display: block;
+	width: 100%;
 }
 </style>

@@ -1,42 +1,44 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconRocket from '@/components/icons/IconRocket.vue'
 import { usePanels } from '@/stores/panels'
 import { useTree } from '@/stores/tree'
 
+// Retrieve data from the stores
 const panels = usePanels()
-const mytree = useTree()
+const tree = useTree()
 
-const zero = computed(() => {
-	return mytree.len == 0 ? true : false
-})
-const hid = computed(() => {
-	if (mytree.len > 0 && panels.condL.length == 0) {
-		return true
-	} else return false
-})
+// Computed property that returns true if the tree is empty
+const isTreeEmpty = computed(() => tree.len === 0)
+
+// Computed property that returns true if the tree is not empty but has no conditions
+const hasNoConditions = computed(() => tree.len > 0 && panels.condL.length === 0)
 
 </script>
 
 <template lang="pug">
 .preview
-	// .empty(v-if='panels.condL.length == 0')
-	.empty(v-if='zero')
+	// When the tree is empty, show a corresponding message with an icon
+	.empty(v-if="isTreeEmpty")
 		IconFaceMask.big
-		div() Запрос не настроен.
-	.empty(v-if='hid')
+		div Запрос не настроен.
+
+	// When the tree is not empty but there are no conditions, show another message with an icon
+	.empty(v-else-if="hasNoConditions")
 		IconRocket.big
-		div() Запрос не содержит параметров.
+		div Запрос не содержит параметров.
+
+	// Otherwise, display the grid with input fields for each condition
 	.grid(v-else)
-		template(v-for="item in panels.condL")
+		template(v-for="(item, index) in panels.condL" :key="index")
 			div {{ item[0].text }}:
 			q-input(v-model="item[2].text" dense filled :disable="item[0].selected")
 			q-toggle(:model-value="!item[0].selected" @update:model-value="(val) => item[0].selected = !val" dense size="sm")
 
-	.action(v-if='hid || !zero')
-		q-btn(unelevated color="primary" label="Искать" @click="") 
-
+	// Show action button if there are conditions or if the tree is not empty
+	.action(v-if="hasNoConditions || !isTreeEmpty")
+		q-btn(unelevated color="primary" label="Искать" @click="")
 </template>
 
 <style scoped lang="scss">
@@ -66,15 +68,10 @@ const hid = computed(() => {
 	justify-items: start;
 	align-items: center;
 	column-gap: 1rem;
-	row-gap: .5rem;
+	row-gap: 0.5rem;
 
 	.q-input {
 		width: 100%;
 	}
-}
-
-.hid {
-	opacity: .5;
-	background: #dedede;
 }
 </style>

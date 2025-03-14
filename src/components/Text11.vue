@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, } from 'vue'
-import { zero } from '@/stores/options2'
-import { stat } from '@/stores/conditions'
-import Level1 from '@/components/Level1.vue'
 import Level0 from '@/components/Level0.vue'
+import Level1 from '@/components/Level1.vue'
 import LevelDate from '@/components/LevelDate.vue'
 import LevelDue from '@/components/LevelDue.vue'
 import LevelEtap from '@/components/LevelEtap.vue'
-import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import IconSave from '@/components/icons/IconSave.vue'
-import { Kind } from '@/types/enum'
+import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
+import { stat } from '@/stores/conditions'
+import { zero } from '@/stores/options2'
 import { useTree } from '@/stores/tree'
+import { Kind } from '@/types/enum'
 import { useQuasar } from 'quasar'
+import { computed, ref, } from 'vue'
 
 const props = defineProps({
 	height: {
