@@ -6,7 +6,7 @@ import IconRedo from '@/components/icons/IconRedo.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
 import IconLogic from '@/components/icons/IconLogic.vue'
 import TextAi from '@/components/TextAi.vue'
-import Text2 from '@/components/Text2.vue'
+import RequestTree from '@/components/RequestTree.vue'
 import PreviewButton from '@/components/PreviewButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
@@ -79,7 +79,7 @@ q-page(padding)
 						q-tooltip Искать
 
 			transition(name="slide-bottom" mode="out-in")
-				Text2(v-if='main' @button='startPreview')
+				RequestTree(v-if='main' @button='startPreview')
 				TextAi(v-else)
 
 		PreviewButton(@activate='startPreview' @stop='stopPreview')
