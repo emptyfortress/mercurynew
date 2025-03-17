@@ -98,7 +98,7 @@ div(
 	font-weight: 600;
 	color: darkred;
 	cursor: pointer;
-	margin-top: 1rem;
+	// margin-top: 1rem;
 	border-bottom: 1px dotted darkred;
 }
 
@@ -123,6 +123,7 @@ div(
 }
 
 .myrow {
+	// background: red;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -131,8 +132,8 @@ div(
 }
 
 .bt {
-	width: 200px;
-	height: 120px;
+	// width: 200px;
+	// height: 90px;
 	padding: 1rem;
 	border: 1px solid $secondary;
 	border-radius: var(--rad);

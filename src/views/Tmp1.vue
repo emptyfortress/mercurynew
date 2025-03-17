@@ -367,8 +367,10 @@ q-page(padding)
 	&.active {
 		padding: 2rem;
 		position: fixed;
-		height: 52vh;
-		width: 900px;
+		// height: 52vh;
+		width: 800px;
+		height: 370px;
+
 		margin: 0 auto;
 		top: 150px;
 		left: 0;
