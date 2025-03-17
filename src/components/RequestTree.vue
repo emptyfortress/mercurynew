@@ -9,13 +9,9 @@ import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
 import { usePanels } from '@/stores/panels'
 import { useTree } from '@/stores/tree'
-import { StagePlaySpotlight, StagePlayScene, useStagePlay } from 'vue-stage-play'
-import MyTour from '@/components/MyTour.vue'
 
 const mytree = useTree()
 const panels = usePanels()
-
-const { action } = useStagePlay()
 
 const addOper = (() => {
 	let tmp = {
@@ -128,23 +124,9 @@ div
 		q-btn.q-ml-sm(flat color="negative" @click="clear") 
 			IconClear.ic.q-mr-sm
 			.q-cursor Очистить все
+
 	.text-center.q-mt-md(v-if='!zero')
 
-		StagePlayScene(:act-name="'stt'" :scene="1"
-      :voice-over-title="'Step1'"
-      :voice-over-content="'Open the door of the refrigerator.'"
-			)
-			q-btn(unelevated color="primary" label="Отмена" @click="action('stt')") 
-			// template(#voiceOver="scopedProps")
-			// 	MyTour(
-			// 		:title="'Step3'"
-			// 		:content="'Place the giraffe inside the refrigerator.'"
-			// 		:has-prev-scene="scopedProps.hasPrevScene"
-			// 		:has-next-scene="scopedProps.hasNextScene"
-			// 		@prev="scopedProps.prevScene()"
-			// 		@next="scopedProps.nextScene()"
-			// 		@done="scopedProps.cut()"
-			// 	)
 
 </template>
 

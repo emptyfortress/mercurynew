@@ -111,6 +111,10 @@ const navigate = ((id: any) => {
 	router.push(`/request/${id}`)
 })
 
+const navigate2 = ((id: any) => {
+	router.push(`/request1/${id}`)
+})
+
 const navigate1 = ((id: any) => {
 	router.push(`/views/${id}`)
 })
@@ -132,7 +136,7 @@ const onDropPlus = (() => {
 })
 
 
-	 
+
 </script>
 
 <template lang="pug">
@@ -167,7 +171,8 @@ q-page(padding)
 
 				.text-center
 					.q-gutter-x-sm
-						q-btn(unelevated color="primary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
+						q-btn(unelevated color="primary" label="Tree" @click.stop='navigate(item.id)') 
+						q-btn(unelevated color="primary" label="Grid" @click.stop='navigate2(item.id)') 
 						q-btn(unelevated color="primary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
 
 				Loading(v-if='expanded')

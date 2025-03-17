@@ -5,7 +5,6 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import IconHome from '@/components/icons/IconHome.vue'
-// import { StagePlaySpotlight } from 'vue-stage-play'
 
 const route = useRoute()
 const router = useRouter()

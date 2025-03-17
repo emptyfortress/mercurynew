@@ -27,6 +27,7 @@
     "vue-draggable-resizable": "^3.0.0",
     "vue-router": "^4.4.5",
     "vue-stage-play": "^0.5.2",
+    "vue3-grid-layout-next": "^1.0.7",
     "vue3-smooth-dnd": "^0.0.6"
   },
   "devDependencies": {
