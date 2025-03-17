@@ -5,6 +5,7 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import IconHome from '@/components/icons/IconHome.vue'
+// import { StagePlaySpotlight } from 'vue-stage-play'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,8 +18,6 @@ const toggleRightDrawer = () => {
 const app = useStorage('app', localStorage)
 
 const cover = ref(0)
-
-const mode = ref<any>('out-in')
 
 router.beforeEach((to, from, next) => {
 	if (from.meta.count !== undefined) {
@@ -61,6 +60,7 @@ const calcEnter = computed(() => {
 </script>
 
 <template lang="pug">
+// StagePlaySpotlight
 q-layout(view='hHh LpR fFf')
 	q-header(elevated)
 		q-toolbar
@@ -95,7 +95,6 @@ q-layout(view='hHh LpR fFf')
 					mode='out-in'
 					)
 					component(:is="Component")
-
 
 </template>
 
