@@ -23,6 +23,16 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/spot',
+			name: 'spot',
+			component: () => import('@/views/Spotlight.vue'),
+			meta: {
+				toolbar: true,
+				back: false,
+				count: 0
+			},
+		},
+		{
 			path: '/icons',
 			name: 'icons',
 			component: () => import('@/views/Icons.vue'),
@@ -187,6 +197,5 @@ const router = createRouter({
 		},
 	],
 })
-
 
 export default router
