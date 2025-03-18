@@ -15,7 +15,7 @@ interface GridItem {
 	i: string
 }
 
-const colNum = ref<number>(12)
+const colNum = ref<number>(6)
 const index = ref<number>(2)
 
 const addItem = (): void => {
@@ -56,21 +56,48 @@ const isAdjacent = (item: GridItem, selectedItems: GridItem[]) => {
 	));
 };
 
-const select = (i: string) => {
-	const selectedItems = mytree.layout.filter(item => selection.value.includes(item.i));
-	const item = mytree.layout.find(item => item.i === i);
-	if (!item) return; // Prevent errors
+const isStillConnected = (tempSelection: string[]) => {
+	if (tempSelection.length === 0) return true; // No items left = valid state
 
-	// Allow first selection unconditionally
-	if (selection.value.length === 0 || isAdjacent(item, selectedItems)) {
-		if (!selection.value.includes(i)) {
-			selection.value.push(i);
+	const remainingItems = mytree.layout.filter(item => tempSelection.includes(item.i));
+	const queue = [remainingItems[0]]; // Start BFS from the first selected item
+	const visited = new Set<string>();
+
+	while (queue.length) {
+		const current = queue.pop();
+		if (!current) continue;
+		visited.add(current.i);
+
+		remainingItems.forEach(item => {
+			if (!visited.has(item.i) && isAdjacent(item, [current])) {
+				queue.push(item);
+			}
+		});
+	}
+
+	return visited.size === tempSelection.length; // Ensure all selected items are connected
+};
+
+const select = (i: string) => {
+	const item = mytree.layout.find(item => item.i === i);
+	if (!item) return;
+
+	if (selection.value.includes(i)) {
+		// Deselect item
+		const tempSelection = selection.value.filter(id => id !== i);
+
+		if (isStillConnected(tempSelection)) {
+			selection.value = tempSelection;
 		} else {
-			// Allow deselecting an already selected item
-			selection.value = selection.value.filter(id => id !== i);
+			console.warn("Deselecting this item would break the selection group.");
 		}
 	} else {
-		console.warn("Only adjacent items can be selected.");
+		// Selecting new item - must be adjacent to existing selection
+		if (selection.value.length === 0 || isAdjacent(item, mytree.layout.filter(it => selection.value.includes(it.i)))) {
+			selection.value.push(i);
+		} else {
+			console.warn("Only adjacent items can be selected.");
+		}
 	}
 };
 
@@ -108,7 +135,7 @@ div
 	.grid
 		grid-layout(v-if='!isGridEmpty'
 			:layout.sync="mytree.layout"
-			:col-num="12"
+			:col-num="6"
 			:row-height="40"
 			:is-draggable="true"
 			:is-resizable="true"
@@ -133,7 +160,7 @@ div
 				div(v-else) x: {{ item.x }}, y: {{ item.y }}, {{ item.i }}
 
 		div.selection-box(v-if="selectedBounds"
-			:style="{ left: `calc(${(selectedBounds.x * (100 / 12))}% + 2px`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 12))}%`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
+			:style="{ left: `calc(${(selectedBounds.x * (100 / 6))}% + 2px`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 6))}%`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
 		)
 			q-btn.and(round icon='mdi-plus' dense size='xs')
 			q-btn.or(round icon='mdi-plus' dense size='xs')
