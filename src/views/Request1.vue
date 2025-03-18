@@ -10,8 +10,8 @@ import RequestGrid from '@/components/RequestGrid.vue'
 import PreviewButton from '@/components/PreviewButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
-import DragEditWindow from '@/components/DragEditWindow.vue'
-import { useTree } from '@/stores/tree'
+import DragEditWindow1 from '@/components/DragEditWindow1.vue'
+import { useTree } from '@/stores/tree12'
 
 const mytree = useTree()
 
@@ -49,9 +49,9 @@ const stopPreview = async () => {
 	}, 400)
 	stop()
 }
-const showDrag = (() => {
-	mytree.toggleDragWindow()
-})
+// const showDrag = (() => {
+// 	mytree.toggleDragWindow()
+// })
 </script>
 
 <template lang="pug">
@@ -84,7 +84,7 @@ q-page(padding)
 
 		PreviewButton(@activate='startPreview' @stop='stopPreview')
 
-	DragEditWindow(v-model="mytree.isDragWindow")
+	DragEditWindow1(v-model="mytree.isDragWindow")
 </template>
 
 <style scoped lang="scss">
