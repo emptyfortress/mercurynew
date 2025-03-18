@@ -122,6 +122,8 @@ div
 		div.selection-box(v-if="selectedBounds"
 			:style="{ left: `calc(${(selectedBounds.x * (100 / 12))}% + ${selectedBounds.x * 4}px)`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 12))}% + ${(selectedBounds.w - 1) * 4}px)`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
 		)
+			q-btn.and(round icon='mdi-plus' dense size='xs')
+			q-btn.or(round icon='mdi-plus' dense size='xs')
 
 	.text-center.q-mt-md(v-if='!isGridEmpty')
 		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Quick add" @click="addTemp") 
@@ -190,5 +192,23 @@ div
 	pointer-events: none;
 	box-shadow: 0 0 5px hsl(240.69deg 93.55% 70%);
 	z-index: 10; // Ensure it appears above grid items
+
+	.and {
+		position: absolute;
+		bottom: -12px;
+		left: 50%;
+		transform: translateX(-50%);
+		background: hsl(240.69deg 93.55% 70%);
+		color: white;
+	}
+
+	.or {
+		position: absolute;
+		right: -12px;
+		top: 50%;
+		transform: translateY(-50%);
+		background: hsl(240.69deg 93.55% 70%);
+		color: white;
+	}
 }
 </style>
