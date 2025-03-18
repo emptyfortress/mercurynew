@@ -120,7 +120,7 @@ div
 				div(v-else) x: {{ item.x }}, y: {{ item.y }}, {{ item.i }}
 
 		div.selection-box(v-if="selectedBounds"
-			:style="{ left: `calc(${(selectedBounds.x * (100 / 12))}% + ${selectedBounds.x * 4}px)`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 12))}% + ${(selectedBounds.w - 1) * 4}px)`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
+			:style="{ left: `calc(${(selectedBounds.x * (100 / 12))}% + 2px`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 12))}%`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
 		)
 			q-btn.and(round icon='mdi-plus' dense size='xs')
 			q-btn.or(round icon='mdi-plus' dense size='xs')
@@ -200,6 +200,8 @@ div
 		transform: translateX(-50%);
 		background: hsl(240.69deg 93.55% 70%);
 		color: white;
+		cursor: pointer;
+		pointer-events: auto;
 	}
 
 	.or {
@@ -209,6 +211,8 @@ div
 		transform: translateY(-50%);
 		background: hsl(240.69deg 93.55% 70%);
 		color: white;
+		cursor: pointer;
+		pointer-events: auto;
 	}
 }
 </style>
