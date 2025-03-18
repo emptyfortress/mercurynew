@@ -22,7 +22,7 @@ const addItem = (): void => {
 	mytree.layout.push({
 		x: 0, // Always starts at the leftmost position
 		y: mytree.layout.length + (colNum.value || 12), // Puts it at the bottom
-		w: 2,
+		w: 1,
 		h: 1,
 		i: index.value.toString(), // Convert number to string
 	})
@@ -48,19 +48,32 @@ const addTemp = (() => {
 const isGridEmpty = computed(() => mytree.layout.length === 0)
 
 const selection = ref<string[]>([])
-// const select = ((i: string) => {
-// 	selection.value = i
-// })
+
+const isAdjacent = (item: GridItem, selectedItems: GridItem[]) => {
+	return selectedItems.some(selected => (
+		(item.x === selected.x && Math.abs(item.y - selected.y) === 1) || // Vertical adjacency
+		(item.y === selected.y && Math.abs(item.x - selected.x) === 1)    // Horizontal adjacency
+	));
+};
+
 const select = (i: string) => {
-	const index = selection.value.indexOf(i)
-	if (index === -1) {
-		// If item is not already selected, add it
-		selection.value.push(i)
+	const selectedItems = mytree.layout.filter(item => selection.value.includes(item.i));
+	const item = mytree.layout.find(item => item.i === i);
+	if (!item) return; // Prevent errors
+
+	// Allow first selection unconditionally
+	if (selection.value.length === 0 || isAdjacent(item, selectedItems)) {
+		if (!selection.value.includes(i)) {
+			selection.value.push(i);
+		} else {
+			// Allow deselecting an already selected item
+			selection.value = selection.value.filter(id => id !== i);
+		}
 	} else {
-		// If item is already selected, remove it (toggle)
-		selection.value.splice(index, 1)
+		console.warn("Only adjacent items can be selected.");
 	}
-}
+};
+
 
 const selectedBounds = computed(() => {
 	if (selection.value.length === 0) return null
