@@ -12,6 +12,7 @@ import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
 import DragEditWindow1 from '@/components/DragEditWindow1.vue'
 import { useTree } from '@/stores/tree12'
+import InfoDialog from '@/components/InfoDialog.vue'
 
 const mytree = useTree()
 
@@ -49,9 +50,8 @@ const stopPreview = async () => {
 	}, 400)
 	stop()
 }
-// const showDrag = (() => {
-// 	mytree.toggleDragWindow()
-// })
+
+const isInfoVisible = ref(false)
 </script>
 
 <template lang="pug">
@@ -82,9 +82,13 @@ q-page(padding)
 				RequestGrid(v-if='main' @button='startPreview')
 				TextAi(v-else)
 
+			q-btn.info(flat round icon="mdi-help-circle" dense color="secondary" @click="isInfoVisible = !isInfoVisible") 
+
 		PreviewButton(@activate='startPreview' @stop='stopPreview')
 
 	DragEditWindow1(v-model="mytree.isDragWindow")
+	InfoDialog(v-model="isInfoVisible")
+
 </template>
 
 <style scoped lang="scss">
@@ -106,6 +110,12 @@ q-page(padding)
 
 .top {
 	width: 100%;
+}
+
+.info {
+	position: absolute;
+	bottom: .5rem;
+	left: .5rem;
 }
 
 

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
-import { usePanels } from '@/stores/panels'
 import { useTree } from '@/stores/tree12'
 import { GridLayout, GridItem } from 'vue3-grid-layout-next'
 
 const mytree = useTree()
-// const panels = usePanels()
 
 interface GridItem {
 	x: number,
@@ -49,6 +47,40 @@ const addTemp = (() => {
 
 const isGridEmpty = computed(() => mytree.layout.length === 0)
 
+const selection = ref<string[]>([])
+// const select = ((i: string) => {
+// 	selection.value = i
+// })
+const select = (i: string) => {
+	const index = selection.value.indexOf(i)
+	if (index === -1) {
+		// If item is not already selected, add it
+		selection.value.push(i)
+	} else {
+		// If item is already selected, remove it (toggle)
+		selection.value.splice(index, 1)
+	}
+}
+
+const selectedBounds = computed(() => {
+	if (selection.value.length === 0) return null
+
+	const selectedItems = mytree.layout.filter(item => selection.value.includes(item.i))
+	if (selectedItems.length === 0) return null
+
+	const minX = Math.min(...selectedItems.map(item => item.x))
+	const maxX = Math.max(...selectedItems.map(item => item.x + item.w))
+	const minY = Math.min(...selectedItems.map(item => item.y))
+	const maxY = Math.max(...selectedItems.map(item => item.y + item.h))
+
+	return {
+		x: minX,
+		y: minY,
+		w: maxX - minX,
+		h: maxY - minY
+	}
+})
+
 </script>
 
 <template lang="pug">
@@ -80,10 +112,16 @@ div
 				:h="item.h"
 				:i="item.i"
 				:key="item.i"
+				@click='select(item.i)'
+				:class="{ selected: selection.includes(item.i) }"
 			)
 				.remove(@click='removeItem(item.i)') &times;
 				div(v-if='item.data?.length') {{ item.data[0].text }} {{ item.data[1].text }} {{ item.data[2].text }}
-				div(v-else) {{ item.i }}
+				div(v-else) x: {{ item.x }}, y: {{ item.y }}, {{ item.i }}
+
+		div.selection-box(v-if="selectedBounds"
+			:style="{ left: `calc(${(selectedBounds.x * (100 / 12))}% + ${selectedBounds.x * 4}px)`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 12))}% + ${(selectedBounds.w - 1) * 4}px)`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
+		)
 
 	.text-center.q-mt-md(v-if='!isGridEmpty')
 		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Quick add" @click="addTemp") 
@@ -112,14 +150,9 @@ div
 }
 
 .grid {
-	padding: 1rem;
+	margin: 1rem;
+	position: relative;
 }
-
-// .q-card {
-// 	width: 150px;
-// 	text-align: center;
-// 	padding: .25rem;
-// }
 
 .vue-grid-item {
 	background: #ccc;
@@ -129,6 +162,12 @@ div
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	touch-action: none;
+
+	&.selected {
+		background: var(--selection);
+		// border: 2px solid hsl(240.69deg 93.55% 70%);
+	}
 }
 
 :deep(.vue-grid-item.vue-grid-placeholder) {
@@ -142,5 +181,14 @@ div
 	cursor: pointer;
 	font-size: .9rem;
 	color: #666;
+}
+
+.selection-box {
+	position: absolute;
+	// border: 2px solid red;
+	border: 2px solid hsl(240.69deg 93.55% 70%);
+	pointer-events: none;
+	box-shadow: 0 0 5px hsl(240.69deg 93.55% 70%);
+	z-index: 10; // Ensure it appears above grid items
 }
 </style>
