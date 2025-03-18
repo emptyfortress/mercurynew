@@ -89,14 +89,16 @@ const select = (i: string) => {
 		if (isStillConnected(tempSelection)) {
 			selection.value = tempSelection;
 		} else {
-			console.warn("Deselecting this item would break the selection group.");
+			alert("Deselecting this item would break the selection group.")
+			// console.warn("Deselecting this item would break the selection group.");
 		}
 	} else {
 		// Selecting new item - must be adjacent to existing selection
 		if (selection.value.length === 0 || isAdjacent(item, mytree.layout.filter(it => selection.value.includes(it.i)))) {
 			selection.value.push(i);
 		} else {
-			console.warn("Only adjacent items can be selected.");
+			alert("Only adjacent items can be selected.");
+			// console.warn("Only adjacent items can be selected.");
 		}
 	}
 };
@@ -242,6 +244,7 @@ div
 		color: white;
 		cursor: pointer;
 		pointer-events: auto;
+		display: inline-flex;
 	}
 
 	.or {
@@ -253,6 +256,7 @@ div
 		color: white;
 		cursor: pointer;
 		pointer-events: auto;
+		display: inline-flex;
 	}
 }
 </style>
