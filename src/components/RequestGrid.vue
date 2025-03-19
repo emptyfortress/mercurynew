@@ -31,7 +31,6 @@ const addItem = (): void => {
 }
 
 const removeItem = (val: string): void => {
-	console.log(val)
 	const itemIndex = mytree.layout.findIndex((item) => item.i === val)
 	if (itemIndex !== -1) {
 		mytree.layout.splice(itemIndex, 1)
@@ -40,6 +39,10 @@ const removeItem = (val: string): void => {
 
 const clearAll = (() => {
 	mytree.layout.length = 0
+	selection.value = []
+})
+
+const deselect = (() => {
 	selection.value = []
 })
 
@@ -134,14 +137,6 @@ const selectedBounds = computed(() => {
 	}
 })
 
-// const addAnd = (() => {
-// 	// this function must add item to the mytree.layout array and place it  below the selection-box
-// })
-//
-// const addOr = (() => {
-// 	// this function must add item to mytree.layout array and place it to the right of the selection-box
-// })
-
 const addAnd = () => {
 	if (!selectedBounds.value) return;
 
@@ -158,6 +153,7 @@ const addAnd = () => {
 
 const addOr = () => {
 	if (!selectedBounds.value) return;
+	console.log(selectedBounds.value.y)
 
 	mytree.layout.push({
 		x: selectedBounds.value.x + selectedBounds.value.w, // Immediately to the right
@@ -208,7 +204,7 @@ div
 				.remove(@click='removeItem(item.i)') &times;
 				div(v-if='item.data?.length') {{ item.data[0].text }} {{ item.data[1].text }} {{ item.data[2].text }}
 				div(v-else) i: {{ item.i }}
-					span.q-ml-md x: {{ item.x }}, y: {{ item.y }}, {{ item.i }}
+					span.q-ml-md x: {{ item.x }}, y: {{ item.y }}
 
 		div.selection-box(v-if="selectedBounds"
 			:style="{ left: `calc(${(selectedBounds.x * (100 / 6))}% + 2px`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 6))}%`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
@@ -217,6 +213,7 @@ div
 			q-btn.or(round icon='mdi-plus' dense size='xs' @click='addOr')
 
 	.text-center.q-mt-md(v-if='!isGridEmpty')
+		q-btn(v-if='selection.length' flat color="primary" icon='mdi-select-remove' label="Deslelect" @click="deselect") 
 		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Quick add" @click="addTemp") 
 		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mytree.toggleDragWindow") 
 		q-btn.q-ml-sm(flat color="negative" @click="clearAll") 
