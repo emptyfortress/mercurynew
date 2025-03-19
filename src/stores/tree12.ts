@@ -25,8 +25,9 @@ export const useTree = defineStore('tree12', () => {
 	const addGridItem = (e: any): void => {
 		layout.value.push({
 			x: 0, // Always starts at the leftmost position
-			y: layout.value.length + (colNum.value || 6), // Puts it at the bottom
-			w: 2,
+			// y: layout.value.length + (colNum.value || 6), // Puts it at the bottom
+			y: layout.value.length, // Puts it at the bottom
+			w: 1,
 			h: 1,
 			i: index.value.toString(), // Convert number to string
 			data: e

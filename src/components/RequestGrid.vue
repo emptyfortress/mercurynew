@@ -22,7 +22,7 @@ const index = ref<number>(0)
 const addItem = (): void => {
 	mytree.layout.push({
 		x: 0, // Always starts at the leftmost position
-		y: mytree.layout.length + (colNum.value || 6), // Puts it at the bottom
+		y: mytree.layout.length, // Puts it at the bottom
 		w: 1,
 		h: 1,
 		i: index.value.toString(), // Convert number to string
@@ -40,6 +40,7 @@ const removeItem = (val: string): void => {
 
 const clearAll = (() => {
 	mytree.layout.length = 0
+	selection.value = []
 })
 
 const addTemp = (() => {
@@ -188,7 +189,8 @@ div
 			:is-draggable="true"
 			:is-resizable="true"
 			:is-mirrored="false"
-			:vertical-compact="true"
+			:vertical-compact="false"
+			:auto-size="true"
 			:margin="[4, 4]"
 			:use-css-transforms="true"
 		)
@@ -206,7 +208,7 @@ div
 				.remove(@click='removeItem(item.i)') &times;
 				div(v-if='item.data?.length') {{ item.data[0].text }} {{ item.data[1].text }} {{ item.data[2].text }}
 				div(v-else) i: {{ item.i }}
-					// span x: {{ item.x }}, y: {{ item.y }}, {{ item.i }}
+					span.q-ml-md x: {{ item.x }}, y: {{ item.y }}, {{ item.i }}
 
 		div.selection-box(v-if="selectedBounds"
 			:style="{ left: `calc(${(selectedBounds.x * (100 / 6))}% + 2px`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 6))}%`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
