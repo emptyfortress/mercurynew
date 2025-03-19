@@ -4,6 +4,7 @@ import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import { useTree } from '@/stores/tree12'
 import { GridLayout, GridItem } from 'vue3-grid-layout-next'
+import { useQuasar } from 'quasar'
 
 const mytree = useTree()
 
@@ -16,12 +17,12 @@ interface GridItem {
 }
 
 const colNum = ref<number>(6)
-const index = ref<number>(2)
+const index = ref<number>(0)
 
 const addItem = (): void => {
 	mytree.layout.push({
 		x: 0, // Always starts at the leftmost position
-		y: mytree.layout.length + (colNum.value || 12), // Puts it at the bottom
+		y: mytree.layout.length + (colNum.value || 6), // Puts it at the bottom
 		w: 1,
 		h: 1,
 		i: index.value.toString(), // Convert number to string
@@ -76,8 +77,9 @@ const isStillConnected = (tempSelection: string[]) => {
 	}
 
 	return visited.size === tempSelection.length; // Ensure all selected items are connected
-};
+}
 
+const $q = useQuasar()
 const select = (i: string) => {
 	const item = mytree.layout.find(item => item.i === i);
 	if (!item) return;
@@ -89,16 +91,24 @@ const select = (i: string) => {
 		if (isStillConnected(tempSelection)) {
 			selection.value = tempSelection;
 		} else {
-			alert("Deselecting this item would break the selection group.")
-			// console.warn("Deselecting this item would break the selection group.");
+			$q.notify({
+				icon: 'mdi-alert',
+				color: 'negative',
+				message: 'Снятие выделения с этого элемента нарушит группу выбора',
+				position: 'top'
+			})
 		}
 	} else {
 		// Selecting new item - must be adjacent to existing selection
 		if (selection.value.length === 0 || isAdjacent(item, mytree.layout.filter(it => selection.value.includes(it.i)))) {
 			selection.value.push(i);
 		} else {
-			alert("Only adjacent items can be selected.");
-			// console.warn("Only adjacent items can be selected.");
+			$q.notify({
+				icon: 'mdi-alert',
+				color: 'negative',
+				message: 'Можно выбирать только соседние элементы',
+				position: 'top'
+			})
 		}
 	}
 };
@@ -122,6 +132,42 @@ const selectedBounds = computed(() => {
 		h: maxY - minY
 	}
 })
+
+// const addAnd = (() => {
+// 	// this function must add item to the mytree.layout array and place it  below the selection-box
+// })
+//
+// const addOr = (() => {
+// 	// this function must add item to mytree.layout array and place it to the right of the selection-box
+// })
+
+const addAnd = () => {
+	if (!selectedBounds.value) return;
+
+	mytree.layout.push({
+		x: selectedBounds.value.x, // Align with selection-box horizontally
+		y: selectedBounds.value.y + selectedBounds.value.h - 1, // Immediately below
+		w: selectedBounds.value.w, // Match width of the selection
+		h: 1, // Single row height
+		i: index.value.toString(),
+	});
+
+	index.value++; // Ensure unique ID
+};
+
+const addOr = () => {
+	if (!selectedBounds.value) return;
+
+	mytree.layout.push({
+		x: selectedBounds.value.x + selectedBounds.value.w, // Immediately to the right
+		y: selectedBounds.value.y, // Align with selection-box vertically
+		w: 1, // Single column width
+		h: selectedBounds.value.h, // Match height of the selection
+		i: index.value.toString(),
+	});
+
+	index.value++; // Ensure unique ID
+};
 
 </script>
 
@@ -159,13 +205,14 @@ div
 			)
 				.remove(@click='removeItem(item.i)') &times;
 				div(v-if='item.data?.length') {{ item.data[0].text }} {{ item.data[1].text }} {{ item.data[2].text }}
-				div(v-else) x: {{ item.x }}, y: {{ item.y }}, {{ item.i }}
+				div(v-else) i: {{ item.i }}
+					// span x: {{ item.x }}, y: {{ item.y }}, {{ item.i }}
 
 		div.selection-box(v-if="selectedBounds"
 			:style="{ left: `calc(${(selectedBounds.x * (100 / 6))}% + 2px`, top: `calc(${(selectedBounds.y * 40) + (selectedBounds.y * 4) + 3}px)`, width: `calc(${(selectedBounds.w * (100 / 6))}%`, height: `calc(${(selectedBounds.h * 40)}px + ${(selectedBounds.h - 1) * 4}px)` }"
 		)
-			q-btn.and(round icon='mdi-plus' dense size='xs')
-			q-btn.or(round icon='mdi-plus' dense size='xs')
+			q-btn.and(round icon='mdi-plus' dense size='xs' @click='addAnd')
+			q-btn.or(round icon='mdi-plus' dense size='xs' @click='addOr')
 
 	.text-center.q-mt-md(v-if='!isGridEmpty')
 		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Quick add" @click="addTemp") 
@@ -210,7 +257,6 @@ div
 
 	&.selected {
 		background: var(--selection);
-		// border: 2px solid hsl(240.69deg 93.55% 70%);
 	}
 }
 
@@ -229,11 +275,10 @@ div
 
 .selection-box {
 	position: absolute;
-	// border: 2px solid red;
 	border: 2px solid hsl(240.69deg 93.55% 70%);
 	pointer-events: none;
 	box-shadow: 0 0 5px hsl(240.69deg 93.55% 70%);
-	z-index: 10; // Ensure it appears above grid items
+	z-index: 10;
 
 	.and {
 		position: absolute;
