@@ -1,0 +1,63 @@
+<script setup lang="ts">
+import { motion, AnimatePresence } from 'motion-v'
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useMotionValue, useTransform } from "motion-v"
+
+const router = useRouter()
+
+const Div = motion.div
+
+const play = (() => {
+	router.push('/dev')
+})
+
+
+const x = useMotionValue(-200)
+const background = useTransform(
+	x,
+	[0, 500],
+	['red', 'blue']
+)
+</script>
+
+<template lang="pug">
+div
+	Div.list(:style='background')
+		Div.box1(@click='play' layout-id="underline")
+	br
+	Div.text-center(
+		:initial="{ opacity: 0, y: 200 }"
+		:animate="{ opacity: 1, y: 0, transition: { delay: .5 } }"
+		)
+		ul
+			li lajsdljalsdjlk
+			li lajsdljalsdjlk
+			li lajsdljalsdjlk
+
+</template>
+
+<style scoped lang="scss">
+.list {
+	width: 600px;
+	margin: 2rem auto;
+	background: #ccc;
+}
+
+.box {
+	width: 100px;
+	height: 100px;
+	background-color: $primary;
+	border-radius: 5px;
+}
+
+.box1 {
+	width: 100px;
+	height: 100px;
+	background-color: $primary;
+	border-radius: 5px;
+	justify-self: end;
+	background: red;
+	// flex-grow: 1;
+}
+</style>

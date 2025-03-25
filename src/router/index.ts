@@ -3,8 +3,8 @@ import Tmp1 from '../views/Tmp1.vue'
 
 declare module 'vue-router' {
 	interface RouteMeta {
-		toolbar: boolean,
-		back: boolean,
+		toolbar: boolean
+		back: boolean
 		count: number
 	}
 }
@@ -19,7 +19,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: false,
-				count: 0
+				count: 0,
 			},
 		},
 		{
@@ -29,7 +29,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
-				count: 0
+				count: 0,
 			},
 		},
 		{
@@ -39,7 +39,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: false,
-				count: 0
+				count: 0,
 			},
 		},
 
@@ -50,7 +50,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: true,
-				count: 1
+				count: 1,
 			},
 		},
 		{
@@ -60,7 +60,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: true,
-				count: 20
+				count: 20,
 			},
 		},
 		{
@@ -200,6 +200,26 @@ const router = createRouter({
 			path: '/try1',
 			name: 'try1',
 			component: () => import('@/views/Try1.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 10,
+			},
+		},
+		{
+			path: '/dev',
+			name: 'dev',
+			component: () => import('@/views/Dev.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 10,
+			},
+		},
+		{
+			path: '/dev1',
+			name: 'dev1',
+			component: () => import('@/views/Dev1.vue'),
 			meta: {
 				toolbar: true,
 				back: true,

@@ -11,16 +11,16 @@ const handle = ref<HTMLElement | null>(null)
 
 const initial = computed(() => {
 	let xval = window.innerWidth / 2 - 600
-	let yval = window.innerHeight / 2 - 300
+	let yval = window.innerHeight / 2 - 200
 	return { x: xval, y: yval }
 })
 
 const el = useTemplateRef('el')
 const { height } = useElementSize(el)
 
-const close = (() => {
+const close = () => {
 	modelValue.value = false
-})
+}
 </script>
 
 <template lang="pug">
@@ -59,13 +59,12 @@ transition(name="slide-bottom")
 	right: 0;
 }
 
-
 .sec {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	cursor: move;
-	padding: .25rem;
+	padding: 0.25rem;
 	background: $secondary;
 	color: #ffffff;
 	border-bottom: 1px solid #ccc;
@@ -73,7 +72,7 @@ transition(name="slide-bottom")
 
 .fucker {
 	width: 1200px;
-	height: 600px;
+	height: 500px;
 	background: white;
 	box-shadow: var(--shad);
 	z-index: 6002;

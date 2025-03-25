@@ -57,70 +57,202 @@ import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import IconUpArrowCircleFill from '@/components/icons/IconUpArrowCircleFill.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
 import IconRocket from '@/components/icons/IconRocket.vue'
+import IconTableEdit from '@/components/icons/IconTableEdit.vue'
+import IconTableEdit1 from '@/components/icons/IconTableEdit1.vue'
+import IconTableColumns from '@/components/icons/IconTableColumns.vue'
+import IconPaint from '@/components/icons/IconPaint.vue'
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.zg Иконки
 	.grid
-		IconAa
-		IconApp
-		IconAttribute
-		IconBeach
-		IconBlock
-		IconBolt
-		IconClear
-		IconCommunity
-		IconCopy
-		IconDivider
-		IconDocumentation
-		IconDragHere
-		IconEcosystem
-		IconEntrance
-		IconEye
-		IconFaceMask
-		IconField
-		IconFlag
-		IconFolder
-		IconFolderSearch
-		IconForm
-		IconGroup
-		IconHeader
-		IconHome
-		IconLayout
-		IconLayout1
-		IconLayout2
-		IconLayout3
-		IconLayout4
-		IconLayout5
-		IconLayout6
-		IconLetter
-		IconLib
-		IconLogic
-		IconMicrophone
-		IconOpenAi
-		IconPallete
-		IconPersonNo
-		IconPic
-		IconPresentation
-		IconRedo
-		IconRelation
-		IconRun
-		IconSave
-		IconScript
-		IconSearch
-		IconSpacer
-		IconSupport
-		IconText
-		IconTextBlock
-		IconTooling
-		IconTrash
-		IconTravel
-		IconUndo
-		IconUpArrowCircle
-		IconUpArrowCircleFill
-		IconWizard
-		IconRocket
+		div
+			IconAa
+			q-tooltip IconAa
+		div
+			IconApp
+			q-tooltip IconApp
+		div
+			IconAttribute
+			q-tooltip IconAttribute
+		div
+			IconBeach
+			q-tooltip IconBeach
+		div
+			IconBlock
+			q-tooltip IconBlock
+		div
+			IconBolt
+			q-tooltip IconBolt
+		div
+			IconClear
+			q-tooltip IconClear
+		div
+			IconCommunity
+			q-tooltip IconCommunity
+		div
+			IconCopy
+			q-tooltip IconCopy
+		div
+			IconDivider
+			q-tooltip IconDivider
+		div
+			IconDocumentation
+			q-tooltip IconDocumentation
+		div
+			IconDragHere
+			q-tooltip IconDragHere
+		div
+			IconEcosystem
+			q-tooltip IconEcosystem
+		div
+			IconEntrance
+			q-tooltip IconEntrance
+		div
+			IconEye
+			q-tooltip IconEye
+		div
+			IconFaceMask
+			q-tooltip IconFaceMask
+		div
+			IconField
+			q-tooltip IconField
+		div
+			IconFlag
+			q-tooltip IconFlag
+		div
+			IconFolder
+			q-tooltip IconFolder
+		div
+			IconFolderSearch
+			q-tooltip IconFolderSearch
+		div
+			IconForm
+			q-tooltip IconForm
+		div
+			IconGroup
+			q-tooltip IconGroup
+		div
+			IconHeader
+			q-tooltip IconHeader
+		div
+			IconHome
+			q-tooltip IconHome
+		div
+			IconLayout
+			q-tooltip IconLayout
+		div
+			IconLayout1
+			q-tooltip IconLayout1
+		div
+			IconLayout2
+			q-tooltip IconLayout2
+		div
+			IconLayout3
+			q-tooltip IconLayout3
+		div
+			IconLayout4
+			q-tooltip IconLayout4
+		div
+			IconLayout5
+			q-tooltip IconLayout5
+		div
+			IconLayout6
+			q-tooltip IconLayout6
+		div
+			IconLetter
+			q-tooltip IconLetter
+		div
+			IconLib
+			q-tooltip IconLib
+		div
+			IconLogic
+			q-tooltip IconLogic
+		div
+			IconMicrophone
+			q-tooltip IconMicrophone
+		div
+			IconOpenAi
+			q-tooltip IconOpenAi
+		div
+			IconPallete
+			q-tooltip IconPallete
+		div
+			IconPersonNo
+			q-tooltip IconPersonNo
+		div
+			IconPic
+			q-tooltip IconPic
+		div
+			IconPresentation
+			q-tooltip IconPresentation
+		div
+			IconRedo
+			q-tooltip IconRedo
+		div
+			IconRelation
+			q-tooltip IconRelation
+		div
+			IconRun
+			q-tooltip IconRun
+		div
+			IconSave
+			q-tooltip IconSave
+		div
+			IconScript
+			q-tooltip IconScript
+		div
+			IconSearch
+			q-tooltip IconSearch
+		div
+			IconSpacer
+			q-tooltip IconSpacer
+		div
+			IconSupport
+			q-tooltip IconSupport
+		div
+			IconText
+			q-tooltip IconText
+		div
+			IconTextBlock
+			q-tooltip IconTextBlock
+		div
+			IconTooling
+			q-tooltip IconTooling
+		div
+			IconTrash
+			q-tooltip IconTrash
+		div
+			IconTravel
+			q-tooltip IconTravel
+		div
+			IconUndo
+			q-tooltip IconUndo
+		div
+			IconUpArrowCircle
+			q-tooltip IconUpArrowCircle
+		div
+			IconUpArrowCircleFill
+			q-tooltip IconUpArrowCircleFill
+		div
+			IconWizard
+			q-tooltip IconWizard
+		div
+			IconRocket
+			q-tooltip IconRocket
+		div
+			IconTableEdit
+			q-tooltip IconTableEdit
+		div
+			IconTableEdit1
+			q-tooltip IconTableEdit1
+		div
+			IconTableColumns
+			q-tooltip IconTableColumns
+		div
+			IconPaint
+			q-tooltip IconPaint
 </template>
 
 <style scoped lang="scss">
@@ -136,6 +268,6 @@ q-page(padding)
 	display: flex;
 	flex-wrap: wrap;
 	gap: 1rem;
-	font-size: 1.4rem;
+	font-size: 1.5rem;
 }
 </style>

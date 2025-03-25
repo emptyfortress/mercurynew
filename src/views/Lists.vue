@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, nextTick, onBeforeUnmount, } from 'vue'
-import { animations, state } from "@formkit/drag-and-drop"
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { ref, nextTick, onBeforeUnmount } from 'vue'
+import { animations, state } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
 import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
 import Trash from '@/components/common/Trash.vue'
-import { useRouter, } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useList } from '@/stores/list'
 import Empty from '@/components/Empty.vue'
 import Loading from '@/components/Loading.vue'
@@ -22,10 +22,10 @@ const list = useList()
 const $q = useQuasar()
 
 const dragStatus = ref(false)
-state.on("dragStarted", () => {
+state.on('dragStarted', () => {
 	dragStatus.value = true
 })
-state.on("dragEnded", () => {
+state.on('dragEnded', () => {
 	dragStatus.value = false
 })
 
@@ -66,7 +66,7 @@ const expand = (item: any) => {
 
 const draggedItem = ref(100)
 const config = {
-	plugins: [animations(),],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (el: any) => {
@@ -78,7 +78,7 @@ const config = {
 }
 const [parent, tapes] = useDragAndDrop(list.lists, config)
 
-const create = ((e: any) => {
+const create = (e: any) => {
 	let tmp = {
 		id: +new Date(),
 		label: e.label,
@@ -90,34 +90,40 @@ const create = ((e: any) => {
 		$q.notify({
 			icon: 'mdi-check-bold',
 			color: 'positive',
-			message: 'Добавлен список'
+			message: 'Добавлена папка',
 		})
 	}, 1200)
-})
+}
 
-const remove = (() => {
+const remove = () => {
 	tapes.value.splice(draggedItem.value, 1)
 	$q.notify({
-		message: 'Список удален',
+		message: 'Папка удалена',
 		color: 'negative',
 		icon: 'mdi-check-bold',
 		actions: [
-			{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
-		]
+			{
+				label: 'Отмена',
+				color: 'white',
+				handler: () => {
+					/* ... */
+				},
+			},
+		],
 	})
-})
+}
 
-const navigate = ((id: any) => {
+const navigate = (id: any) => {
 	router.push(`/request/${id}`)
-})
+}
 
-const navigate2 = ((id: any) => {
+const navigate2 = (id: any) => {
 	router.push(`/request1/${id}`)
-})
+}
 
-const navigate1 = ((id: any) => {
+const navigate1 = (id: any) => {
 	router.push(`/views/${id}`)
-})
+}
 
 onBeforeUnmount(() => {
 	expanded.value = false
@@ -125,18 +131,15 @@ onBeforeUnmount(() => {
 })
 
 const duple = ref(false)
-const onDragEnterPlus = (() => {
+const onDragEnterPlus = () => {
 	duple.value = true
-})
-const onDragLeavePlus = (() => {
+}
+const onDragLeavePlus = () => {
 	duple.value = false
-})
-const onDropPlus = (() => {
+}
+const onDropPlus = () => {
 	duple.value = false
-})
-
-
-
+}
 </script>
 
 <template lang="pug">
@@ -171,9 +174,10 @@ q-page(padding)
 
 				.text-center
 					.q-gutter-x-sm
-						q-btn(unelevated color="primary" label="Tree" @click.stop='navigate(item.id)') 
-						q-btn(unelevated color="primary" label="Grid" @click.stop='navigate2(item.id)') 
-						q-btn(unelevated color="primary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
+						q-btn(unelevated color="primary" label="Настроить папку" @click.stop='navigate1(item.id)') 
+						q-btn(unelevated color="primary" label="Редактор запросов (простой)" @click.stop='navigate2(item.id)') 
+						// q-btn(unelevated color="primary" label="Редактор запросов (сложный)" @click.stop='navigate(item.id)') 
+						// q-btn(unelevated color="primary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
 
 				Loading(v-if='expanded')
 
@@ -208,7 +212,6 @@ q-page(padding)
 		color: $primary;
 		border-bottom: 1px dotted $primary;
 		margin-right: 2rem;
-
 	}
 }
 
@@ -238,13 +241,12 @@ q-page(padding)
 	* {
 		display: none;
 	}
-
 }
 
 .item1 {
 	width: 150px;
 	height: 150px;
-	border-radius: .5rem;
+	border-radius: 0.5rem;
 	text-align: center;
 	margin: 0.5rem;
 	cursor: pointer;
@@ -290,7 +292,7 @@ q-page(padding)
 }
 
 .hg {
-	margin-top: .5rem;
+	margin-top: 0.5rem;
 	line-height: 100%;
 }
 

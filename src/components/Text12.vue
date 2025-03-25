@@ -11,14 +11,14 @@ import { zero } from '@/stores/options2'
 import { useTree } from '@/stores/tree12'
 import { Kind } from '@/types/enum'
 import { useQuasar } from 'quasar'
-import { computed, ref, } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
 	height: {
 		type: Number,
 		required: true,
-		default: 100
-	}
+		default: 100,
+	},
 })
 const mytree = useTree()
 const query = ref('')
@@ -48,13 +48,9 @@ const add1 = (e: Option) => {
 			selected: true,
 		})
 		keys.value.push(e)
-	}
-
-	else if (keys.value.length == 1 && keys.value.at(-1)?.text !== 'Автор') {
+	} else if (keys.value.length == 1 && keys.value.at(-1)?.text !== 'Автор') {
 		keys.value.push(e)
-	}
-
-	else if (keys.value.length == 2 && keys.value.at(-1)?.kind !== 11 && e.kind == 11) {
+	} else if (keys.value.length == 2 && keys.value.at(-1)?.kind !== 11 && e.kind == 11) {
 		keys.value.pop()
 		keys.value.push({
 			kind: Kind.Selector2,
@@ -64,31 +60,21 @@ const add1 = (e: Option) => {
 			selected: true,
 		})
 		keys.value.push(e)
-	}
-
-	else if (keys.value.length == 2 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
+	} else if (keys.value.length == 2 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
 		keys.value.pop()
 		keys.value.push(e)
-	}
-
-	else if (keys.value.length == 3 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
+	} else if (keys.value.length == 3 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
 		keys.value.length = 2
 		keys.value.pop()
 		keys.value.push(e)
-	}
-
-	else if (keys.value.length == 3 && keys.value.at(-1)?.kind == 11 && e.kind == 11) {
+	} else if (keys.value.length == 3 && keys.value.at(-1)?.kind == 11 && e.kind == 11) {
 		keys.value.pop()
 		keys.value.push(e)
-	}
-
-	else if (keys.value.length == 3 && keys.value.at(-1)?.kind == 11 && e.kind !== 11) {
+	} else if (keys.value.length == 3 && keys.value.at(-1)?.kind == 11 && e.kind !== 11) {
 		keys.value.pop()
 		keys.value.pop()
 		keys.value.push(e)
-	}
-
-	else if (keys.value.length == 3 && keys.value.at(-1)?.kind !== 11 && e.kind == 11) {
+	} else if (keys.value.length == 3 && keys.value.at(-1)?.kind !== 11 && e.kind == 11) {
 		keys.value.length = 1
 		keys.value.push({
 			kind: Kind.Selector2,
@@ -135,9 +121,9 @@ const addEtap = (e: any) => {
 	keys.value.push(e)
 }
 
-const changeOption = ((e: any) => {
+const changeOption = (e: any) => {
 	// keys.value.splice(1, 1, e)
-})
+}
 
 const reset = () => {
 	keys.value = []
@@ -145,22 +131,26 @@ const reset = () => {
 	query.value = ''
 }
 
-
 function convertArray(arrayOne: any) {
 	const result = []
 	let i = 0
 
 	while (i < arrayOne.length) {
-		if (i + 1 < arrayOne.length && 'kind' in arrayOne[i] && 'kind' in arrayOne[i + 1] &&
-			arrayOne[i].kind === 5 && (arrayOne[i + 1].kind === 1 || arrayOne[i + 1].kind == 2)) {
+		if (
+			i + 1 < arrayOne.length &&
+			'kind' in arrayOne[i] &&
+			'kind' in arrayOne[i + 1] &&
+			arrayOne[i].kind === 5 &&
+			(arrayOne[i + 1].kind === 1 || arrayOne[i + 1].kind == 2)
+		) {
 			result.push({
-				"text": `${arrayOne[i].text}.${arrayOne[i + 1].text}`,
-				"kind": arrayOne[i].kind, // Use kind from first element
-			});
-			i += 2; // Skip both merged elements
+				text: `${arrayOne[i].text}.${arrayOne[i + 1].text}`,
+				kind: arrayOne[i].kind, // Use kind from first element
+			})
+			i += 2 // Skip both merged elements
 		} else {
-			result.push(arrayOne[i]); // Add element unchanged if no merge condition is met
-			i++;
+			result.push(arrayOne[i]) // Add element unchanged if no merge condition is met
+			i++
 		}
 	}
 	const ind = result.findIndex((item) => item.kind == 11)
@@ -186,9 +176,9 @@ function convertArray1(array: any) {
 	while (i < array.length) {
 		if (i + 1 < array.length && 'exe' in array[i] && 'exe' in array[i + 1]) {
 			result.push({
-				"text": `${array[i].text}.${array[i + 1].text}`,
-				"kind": array[i].kind,
-				"exe": true,
+				text: `${array[i].text}.${array[i + 1].text}`,
+				kind: array[i].kind,
+				exe: true,
 			})
 			i += 2
 		} else {
@@ -207,16 +197,17 @@ const addCond = () => {
 	let tmp = convertArray(keys.value)
 	let newtmp = convertArray1(tmp)
 
-	mytree.addGridItem(newtmp)
-	// console.log(newtmp)
+	mytree.addItem({
+		id: +new Date(),
+		par: false,
+		data: newtmp,
+	})
 
-	// mytree.addFlag = true
-	// mytree.node = newtmp
 	reset()
 }
 
 const $q = useQuasar()
-const save = (() => {
+const save = () => {
 	addCond()
 	mytree.toggleDragWindow()
 	setTimeout(() => {
@@ -224,10 +215,10 @@ const save = (() => {
 			icon: 'mdi-check-bold',
 			color: 'positive',
 			message: 'Запрос сохранен',
-			position: 'top'
+			position: 'top',
 		})
 	}, 1000)
-})
+}
 
 const showFirst = ref(true)
 
@@ -238,13 +229,12 @@ const myhei = computed(() => {
 	return props.height - 125 + 'px'
 })
 
-const calcClass = ((key: any) => {
+const calcClass = (key: any) => {
 	if (key.kind == 11) return 'man'
 	if (key.dvalue) return 'man'
 	if (key.due) return 'due'
 	return ''
-})
-
+}
 </script>
 
 <template lang="pug">
@@ -332,7 +322,7 @@ div
 	gap: 0.5rem;
 	justify-content: start;
 	align-items: start;
-	margin-top: .5rem;
+	margin-top: 0.5rem;
 }
 
 .q-chip {
@@ -373,7 +363,7 @@ div
 	cursor: pointer;
 
 	&:hover {
-		box-shadow: 2px 2px 2px rgba(0, 0, 0, .3);
+		box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
 	}
 
 	&.and {
@@ -396,9 +386,9 @@ div
 	justify-items: start;
 	align-items: center;
 	column-gap: 1rem;
-	row-gap: .5rem;
+	row-gap: 0.5rem;
 	padding: 1rem;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .btt {
@@ -416,6 +406,6 @@ div
 }
 
 .btt .q-icon {
-	transition: transform .3s ease;
+	transition: transform 0.3s ease;
 }
 </style>

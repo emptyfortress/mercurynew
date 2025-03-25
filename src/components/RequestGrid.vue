@@ -2,53 +2,39 @@
 import { ref, computed, watch } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
-import { usePanels } from '@/stores/panels'
+import { animations, state } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useTree } from '@/stores/tree12'
-import { GridLayout, GridItem } from 'vue3-grid-layout-next'
 
 const mytree = useTree()
-// const panels = usePanels()
 
-interface GridItem {
-	x: number,
-	y: number,
-	w: number,
-	h: number,
-	i: string
+const config = {
+	plugins: [animations()],
+	dragPlaceholderClass: 'ghost',
+	sortable: true,
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains('condition')
+	},
+	// onDragstart: (e: any) => {
+	// 	draggedItem.value = e.draggedNode.data.index
+	// },
+}
+const [parent, tapes] = useDragAndDrop(mytree.layout, config)
+
+const removeItem = (ind: number): void => {
+	tapes.value.splice(ind, 1)
 }
 
-const colNum = ref<number>(12)
-const index = ref<number>(2)
-
-const addItem = (): void => {
-	mytree.layout.push({
-		x: 0, // Always starts at the leftmost position
-		y: mytree.layout.length + (colNum.value || 12), // Puts it at the bottom
-		w: 2,
-		h: 1,
-		i: index.value.toString(), // Convert number to string
-	})
-	index.value++ // Ensure key is always unique
-}
-
-const removeItem = (val: string): void => {
-	console.log(val)
-	const itemIndex = mytree.layout.findIndex((item) => item.i === val)
-	if (itemIndex !== -1) {
-		mytree.layout.splice(itemIndex, 1)
-	}
-}
-
-const clearAll = (() => {
+const clearAll = () => {
 	mytree.layout.length = 0
-})
+}
 
-const addTemp = (() => {
-	addItem()
-})
+const addTemp = () => {
+	let temp = { id: +new Date(), par: false }
+	mytree.addItem(temp)
+}
 
 const isGridEmpty = computed(() => mytree.layout.length === 0)
-
 </script>
 
 <template lang="pug">
@@ -60,30 +46,20 @@ div
 		q-btn.q-mt-md(unelevated color="primary" label="Настроить" @click="mytree.toggleDragWindow") 
 
 
-	.grid
-		grid-layout(v-if='!isGridEmpty'
-			:layout.sync="mytree.layout"
-			:col-num="12"
-			:row-height="40"
-			:is-draggable="true"
-			:is-resizable="true"
-			:is-mirrored="false"
-			:vertical-compact="true"
-			:margin="[4, 4]"
-			:use-css-transforms="true"
-		)
-			grid-item(
-				v-for="item in mytree.layout"
-				:x="item.x"
-				:y="item.y"
-				:w="item.w"
-				:h="item.h"
-				:i="item.i"
-				:key="item.i"
-			)
-				.remove(@click='removeItem(item.i)') &times;
-				div(v-if='item.data?.length') {{ item.data[0].text }} {{ item.data[1].text }} {{ item.data[2].text }}
-				div(v-else) {{ item.i }}
+	.grid(ref='parent')
+		.condition(v-for="(item, index) in tapes" :key="item.id")
+			input(v-model="item.par" type='checkbox')
+			template(v-if='item.data')
+				div {{ item.data[0].text }}
+				div {{ item.data[1].text }}
+				q-input(v-if='item.data[2].kind == 100' v-model="item.data[2].text" dense outlined)
+				div(v-else) {{ item.data[2].text }}
+			template(v-else)
+				div fuck
+				div fuck
+				div fuck
+			div
+			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
 
 	.text-center.q-mt-md(v-if='!isGridEmpty')
 		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Quick add" @click="addTemp") 
@@ -99,7 +75,7 @@ div
 	text-align: center;
 	margin: 1rem auto;
 	color: $secondary;
-	gap: .5rem;
+	gap: 0.5rem;
 }
 
 .big {
@@ -115,32 +91,44 @@ div
 	padding: 1rem;
 }
 
-// .q-card {
-// 	width: 150px;
-// 	text-align: center;
-// 	padding: .25rem;
-// }
-
-.vue-grid-item {
-	background: #ccc;
-	overflow: hidden;
-	font-size: .85rem;
-	line-height: 1;
+.condition {
+	padding: 0.5rem 0.5rem 0.5rem 1rem;
+	background: white;
 	display: flex;
-	justify-content: center;
+	justify-content: left;
 	align-items: center;
+	width: fit-content;
+	width: f;
+	gap: 0.5rem;
+
+	.remove {
+		cursor: pointer;
+		font-size: 0.9rem;
+		color: #666;
+		visibility: hidden;
+		margin-left: 2rem;
+	}
+
+	&:hover {
+		background: #efefef;
+
+		.remove {
+			visibility: visible;
+		}
+	}
 }
 
-:deep(.vue-grid-item.vue-grid-placeholder) {
-	background: green;
-}
+.ghost {
+	background: hsl(213 38% 91% / 1) !important;
+	box-shadow: none !important;
+	border: none !important;
+	min-height: 40px;
 
-.remove {
-	position: absolute;
-	top: 0px;
-	right: 2px;
-	cursor: pointer;
-	font-size: .9rem;
-	color: #666;
+	* {
+		visibility: hidden;
+	}
+}
+:deep(.q-field--dense .q-field__control) {
+	height: 28px;
 }
 </style>
