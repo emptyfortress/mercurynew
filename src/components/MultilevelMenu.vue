@@ -1,43 +1,6 @@
-<template lang="pug">
-.multi-level-menu
-  .selection-list(v-if="selectedItems.length > 0")
-    h3 Selected Items
-    ul
-      li(v-for="(item, index) in selectedItems" :key="index")
-        span {{ getItemPath(item) }}
-        button(@click="removeItem(index)") ×
-
-  .menu-levels
-    .level(
-      v-for="(level, index) in visibleLevels"
-      :key="index"
-      :class="{ active: currentLevelIndex === index, 'special-level': level.isSpecial }"
-    )
-      h3.level-title {{ level.title }}
-      ul.menu-items
-        li.menu-item(
-          v-for="item in level.items"
-          :key="item.id"
-          @click="selectItem(item, index)"
-          :class="{ selected: isItemSelected(item, index) }"
-        ) {{ item.label }}
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-
-interface MenuItem {
-	id: string | number
-	label: string
-	children?: MenuItem[]
-	isSpecial?: boolean
-}
-
-interface MenuLevel {
-	title: string
-	items: MenuItem[]
-	isSpecial: boolean
-}
+import RequestEditorInput from '@/components/RequestEditorInput.vue'
 
 const menuData: MenuItem[] = [
 	{
@@ -230,11 +193,40 @@ const removeItem = (index: number) => {
 	// Remove the item and all subsequent items
 	selectedItems.value = selectedItems.value.slice(0, index)
 	// Reset levels to match the new selection
-	currentLevelIndex.value = Math.max(0, selectedItems.value.length - 1)
+	currentLevelIndex.value = Math.max(0, selectedItems.value.length)
+	menuLevels.value = menuLevels.value.slice(0, currentLevelIndex.value + 1)
+}
+const reset = () => {
+	selectedItems.value = []
+	currentLevelIndex.value = 0
 	menuLevels.value = menuLevels.value.slice(0, currentLevelIndex.value + 1)
 }
 </script>
 
+<template lang="pug">
+.multi-level-menu
+
+	RequestEditorInput(
+		v-model:selectedItems="selectedItems",
+		@remove='removeItem',
+		@reset='reset'
+	)
+
+	.menu-levels
+		.level(
+			v-for="(level, index) in visibleLevels"
+			:key="index"
+			:class="{ active: currentLevelIndex === index, 'special-level': level.isSpecial }"
+		)
+			h3.level-title {{ level.title }}
+			ul.menu-items
+				li.menu-item(
+					v-for="item in level.items"
+					:key="item.id"
+					@click="selectItem(item, index)"
+					:class="{ selected: isItemSelected(item, index) }"
+				) {{ item.label }}
+</template>
 <style lang="scss">
 .multi-level-menu {
 	display: flex;

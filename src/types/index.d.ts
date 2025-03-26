@@ -86,3 +86,15 @@ interface Stat {
 	class: any // Customize node class name. Vue's class format.
 }
 
+interface MenuItem {
+	id: string | number
+	label: string
+	children?: MenuItem[]
+	isSpecial?: boolean
+}
+
+interface MenuLevel {
+	title: string
+	items: MenuItem[]
+	isSpecial: boolean
+}

@@ -45,12 +45,12 @@ const menuData = [
 
 <template lang="pug">
 div
-	.list
-		Div.box(@click='play' layout-id="underline" :initial="{ x: 0 }" :animate='{ x }')
-		// Div.box(drag="x" :style="{ x, background }")
-		// br
-	q-slider(v-model="x" :min="0" :max="500")
-	br
+	// .list
+	// 	Div.box(@click='play' layout-id="underline" :initial="{ x: 0 }" :animate='{ x }')
+	// 	// Div.box(drag="x" :style="{ x, background }")
+	// 	// br
+	// q-slider(v-model="x" :min="0" :max="500")
+	// br
 	MultilevelMenu()
 </template>
 
