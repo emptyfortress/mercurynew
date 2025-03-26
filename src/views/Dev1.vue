@@ -2,28 +2,23 @@
 import { motion, AnimatePresence } from 'motion-v'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useMotionValue, useTransform } from "motion-v"
+import { useMotionValue, useTransform } from 'motion-v'
 
 const router = useRouter()
 
 const Div = motion.div
 
-const play = (() => {
+const play = () => {
 	router.push('/dev')
-})
-
+}
 
 const x = useMotionValue(-200)
-const background = useTransform(
-	x,
-	[0, 500],
-	['red', 'blue']
-)
+const background = useTransform(x, [0, 500], ['red', 'blue'])
 </script>
 
 <template lang="pug">
 div
-	Div.list(:style='background')
+	Div.list()
 		Div.box1(@click='play' layout-id="underline")
 	br
 	Div.text-center(

@@ -60,7 +60,11 @@ const add1 = (e: Option) => {
 			selected: true,
 		})
 		keys.value.push(e)
-	} else if (keys.value.length == 2 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
+	}
+	// else if (keys.value.length == 2 && keys.value.at(-1)?.text == 'один из') {
+	// 	keys.value.push(e)
+	// }
+	else if (keys.value.length == 2 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
 		keys.value.pop()
 		keys.value.push(e)
 	} else if (keys.value.length == 3 && keys.value.at(-1)?.kind !== 11 && e.kind !== 11) {
@@ -123,6 +127,11 @@ const addEtap = (e: any) => {
 
 const changeOption = (e: any) => {
 	// keys.value.splice(1, 1, e)
+	// console.log(e)
+	// if (keys.value.length == 2 && keys.value.at(-1)?.text == 'Автор') {
+	// 	keys.value.splice(1, 1, e)
+	// 	console.log('fuck')
+	// }
 }
 
 const reset = () => {
