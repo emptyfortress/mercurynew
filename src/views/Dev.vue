@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'motion-v'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import MultilevelMenu from '@/components/MultilevelMenu.vue'
 // import { Motion, useMotionValue, useTransform } from 'motion-v'
 
 const router = useRouter()
@@ -12,13 +13,52 @@ const play = () => {
 	router.push('/dev1')
 }
 
-// const x = useMotionValue(0)
 const x = ref(0)
-// const x1 = x.get()
-// const xInput = [0, 500]
 
-// const xT = useMotionValue(x.value)
-// const background = useTransform(x, xInput, ['#ff0000', '#00FF00'])
+const menuData = [
+	{
+		id: 1,
+		label: 'Electronics',
+		children: [
+			{
+				id: 101,
+				label: 'Computers',
+				children: [
+					{
+						id: 1001,
+						label: 'Laptops',
+						children: [
+							{ id: 10001, label: 'Gaming Laptops' },
+							{ id: 10002, label: 'Ultrabooks' },
+						],
+					},
+					{
+						id: 1002,
+						label: 'Desktops',
+					},
+				],
+			},
+			{
+				id: 102,
+				label: 'Phones',
+			},
+		],
+	},
+	{
+		id: 2,
+		label: 'Clothing',
+		children: [
+			{
+				id: 201,
+				label: 'Men',
+				children: [
+					{ id: 2001, label: 'Shirts' },
+					{ id: 2002, label: 'Pants' },
+				],
+			},
+		],
+	},
+]
 </script>
 
 <template lang="pug">
@@ -28,6 +68,8 @@ div
 		// Div.box(drag="x" :style="{ x, background }")
 		// br
 	q-slider(v-model="x" :min="0" :max="500")
+	br
+	MultilevelMenu(:menu-data="menuData")
 </template>
 
 <style scoped lang="scss">
