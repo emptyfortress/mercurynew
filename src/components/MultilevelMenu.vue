@@ -122,12 +122,10 @@ const getItemPath = (item: MenuItem) => {
 }
 
 const selectItem = (item: MenuItem, levelIndex: number) => {
-	console.log(item, levelIndex)
 	const currentLevel = menuLevels.value[levelIndex]
 
 	// For special items
 	if (item.isSpecial) {
-		console.log('special')
 		// Update selection without clearing subsequent items
 		selectedItems.value[levelIndex] = item
 
@@ -201,6 +199,11 @@ const reset = () => {
 	currentLevelIndex.value = 0
 	menuLevels.value = menuLevels.value.slice(0, currentLevelIndex.value + 1)
 }
+
+const myhei = computed(() => {
+	return '300px'
+	// return props.height - 125 + 'px'
+})
 </script>
 
 <template lang="pug">
@@ -213,71 +216,27 @@ const reset = () => {
 	)
 
 	.menu-levels
-		.level(
-			v-for="(level, index) in visibleLevels"
-			:key="index"
-			:class="{ active: currentLevelIndex === index, 'special-level': level.isSpecial }"
-		)
-			h3.level-title {{ level.title }}
-			ul.menu-items
-				li.menu-item(
-					v-for="item in level.items"
-					:key="item.id"
-					@click="selectItem(item, index)"
-					:class="{ selected: isItemSelected(item, index) }"
-				) {{ item.label }}
+		transition-group(name="slide-right" mode="out-in")
+			.level(
+				v-for="(level, index) in visibleLevels"
+				:key="index"
+				:class="{ active: currentLevelIndex === index }"
+			)
+				ul.menu-items
+					li.menu-item(
+						v-for="item in level.items"
+						:key="item.id"
+						@click="selectItem(item, index)"
+						:class="{ selected: isItemSelected(item, index) }"
+					) {{ item.label }}
 </template>
 <style lang="scss">
 .multi-level-menu {
 	display: flex;
 	flex-direction: column;
-	gap: 2rem;
-	// max-width: 1200px;
+	max-width: 1200px;
 	margin: 0 auto;
 	padding: 2rem;
-	font-family: Arial, sans-serif;
-
-	.selection-list {
-		padding: 1.5rem;
-		background: #f8f9fa;
-		border-radius: 8px;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-		h3 {
-			margin: 0 0 1rem 0;
-			color: #333;
-			font-size: 1.2rem;
-		}
-
-		ul {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-			display: flex;
-			flex-direction: column;
-			gap: 0.5rem;
-
-			li {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				padding: 0.75rem;
-				background: white;
-				border-radius: 4px;
-				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-
-				button {
-					background: none;
-					border: none;
-					color: #ff4444;
-					cursor: pointer;
-					font-weight: bold;
-					font-size: 1.1rem;
-					padding: 0 0.5rem;
-				}
-			}
-		}
-	}
 
 	.menu-levels {
 		display: flex;
@@ -287,34 +246,15 @@ const reset = () => {
 
 		.level {
 			flex: 0 0 auto;
-			width: 250px;
-			border: 1px solid #ddd;
-			border-radius: 8px;
-			padding: 1.25rem;
-			background: white;
-			opacity: 0.85;
-			transition: all 0.2s ease;
+			padding: 0.25rem;
+			background: #fff;
+			height: v-bind(myhei);
+			overflow-y: auto;
+			overflow-x: hidden;
 
 			&.active {
-				opacity: 1;
-				border-color: #42b983;
-				box-shadow: 0 0 0 2px rgba(66, 185, 131, 0.2);
-			}
-
-			&.special-level {
-				border-color: #ff9800;
-
-				&.active {
-					box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
-				}
-			}
-
-			.level-title {
-				margin: 0 0 1rem 0;
-				font-size: 1.1rem;
-				color: #555;
-				padding-bottom: 0.5rem;
-				border-bottom: 1px solid #eee;
+				border: 1px solid #42b983;
+				box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 			}
 
 			.menu-items {
@@ -323,28 +263,19 @@ const reset = () => {
 				margin: 0;
 				display: flex;
 				flex-direction: column;
-				gap: 0.5rem;
 
 				.menu-item {
-					padding: 0.75rem;
+					padding: 8px 16px;
 					cursor: pointer;
-					border-radius: 4px;
-					transition: all 0.2s ease;
-
 					&:hover {
-						background-color: #f5f5f5;
+						background-color: #e6e6e6;
 					}
-
 					&.selected {
-						background-color: #42b983;
-						color: white;
+						background-color: $blue-2;
+						color: $primary;
 					}
 				}
 			}
-		}
-
-		.special-level .menu-item.selected {
-			background-color: #ff9800;
 		}
 	}
 }

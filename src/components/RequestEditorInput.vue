@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
+import IconSave from '@/components/icons/IconSave.vue'
 
 // const modelValue = defineModel<MenuItem[]>()
 const selectedItems = defineModel<MenuItem[]>('selectedItems')
@@ -50,5 +52,14 @@ q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?"
 }
 .special {
 	background: $purple-2;
+}
+.ic {
+	font-size: 1.5rem;
+}
+.q-input {
+	font-size: 1.2rem;
+}
+:deep(input::placeholder) {
+	opacity: 0.3;
 }
 </style>
