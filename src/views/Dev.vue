@@ -18,42 +18,24 @@ const x = ref(0)
 const menuData = [
 	{
 		id: 1,
-		label: 'Electronics',
+		label: 'Category A',
 		children: [
 			{
 				id: 101,
-				label: 'Computers',
+				label: 'Regular Subcategory',
 				children: [
-					{
-						id: 1001,
-						label: 'Laptops',
-						children: [
-							{ id: 10001, label: 'Gaming Laptops' },
-							{ id: 10002, label: 'Ultrabooks' },
-						],
-					},
-					{
-						id: 1002,
-						label: 'Desktops',
-					},
+					{ id: 1001, label: 'Item 1' },
+					{ id: 1002, label: 'Item 2' },
 				],
 			},
 			{
 				id: 102,
-				label: 'Phones',
-			},
-		],
-	},
-	{
-		id: 2,
-		label: 'Clothing',
-		children: [
-			{
-				id: 201,
-				label: 'Men',
+				label: 'Special Subcategory',
+				isSpecial: true, // Marks this as a special level
 				children: [
-					{ id: 2001, label: 'Shirts' },
-					{ id: 2002, label: 'Pants' },
+					{ id: 2001, label: 'Option 1' },
+					{ id: 2002, label: 'Option 2' },
+					{ id: 2003, label: 'Option 3' },
 				],
 			},
 		],
@@ -69,7 +51,7 @@ div
 		// br
 	q-slider(v-model="x" :min="0" :max="500")
 	br
-	MultilevelMenu(:menu-data="menuData")
+	MultilevelMenu()
 </template>
 
 <style scoped lang="scss">

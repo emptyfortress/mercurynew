@@ -1,10 +1,17 @@
 <template lang="pug">
 .multi-level-menu
+  .selection-list(v-if="selectedItems.length > 0")
+    h3 Selected Items
+    ul
+      li(v-for="(item, index) in selectedItems" :key="index")
+        span {{ getItemPath(item) }}
+        button(@click="removeItem(index)") ×
+
   .menu-levels
     .level(
       v-for="(level, index) in visibleLevels"
       :key="index"
-      :class="{ active: currentLevelIndex === index }"
+      :class="{ active: currentLevelIndex === index, 'special-level': level.isSpecial }"
     )
       h3.level-title {{ level.title }}
       ul.menu-items
@@ -14,13 +21,6 @@
           @click="selectItem(item, index)"
           :class="{ selected: isItemSelected(item, index) }"
         ) {{ item.label }}
-
-  .selected-items
-    h3 Selected Items
-    ul
-      li(v-for="(item, index) in selectedItems" :key="index")
-        | {{ getItemPath(item) }}
-        button(@click="removeItem(index)") ×
 </template>
 
 <script setup lang="ts">
@@ -30,25 +30,120 @@ interface MenuItem {
 	id: string | number
 	label: string
 	children?: MenuItem[]
+	isSpecial?: boolean
 }
 
-// Props definition
-const props = defineProps<{
-	menuData: MenuItem[]
-}>()
+interface MenuLevel {
+	title: string
+	items: MenuItem[]
+	isSpecial: boolean
+}
 
-// Reactive state
-const selectedItems = ref<{ item: MenuItem; levelIndex: number }[]>([])
-const currentLevelIndex = ref<number>(0)
-const menuLevels = ref<{ title: string; items: MenuItem[] }[]>([])
-
-// Initialize menu levels
-menuLevels.value = [
+const menuData: MenuItem[] = [
 	{
-		title: 'Level 1',
-		items: props.menuData,
+		id: 1,
+		label: 'Electronics',
+		children: [
+			{
+				id: 101,
+				label: 'Computers',
+				children: [
+					{
+						id: 1001,
+						label: 'Laptops',
+						children: [
+							{
+								id: 10001,
+								label: 'Gaming',
+								isSpecial: true,
+								children: [
+									{
+										id: 100011,
+										label: 'Brand',
+										children: [
+											{ id: 1000111, label: 'Asus' },
+											{ id: 1000112, label: 'MSI' },
+										],
+									},
+								],
+							},
+							{
+								id: 10002,
+								label: 'Business',
+								isSpecial: true,
+								children: [
+									{
+										id: 100011, // Same ID as Gaming's Brand
+										label: 'Brand',
+										children: [
+											{ id: 1000111, label: 'Asus' },
+											{ id: 1000112, label: 'MSI' },
+										],
+									},
+								],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 102,
+				label: 'Phones',
+				children: [
+					{
+						id: 10201,
+						label: 'Storage',
+						children: [
+							{
+								id: 102011,
+								label: '64GB',
+								isSpecial: true,
+								children: [
+									{
+										id: 1020111,
+										label: 'Nokia',
+										children: [
+											{ id: 55, label: 'label' },
+											{ id: 56, label: 'label' },
+										],
+									},
+									{
+										id: 1020112,
+										label: 'Asus',
+										children: [
+											{ id: 55, label: 'label' },
+											{ id: 56, label: 'label' },
+										],
+									},
+								],
+							},
+							{
+								id: 102012,
+								label: '128GB',
+								isSpecial: true,
+								children: [
+									{ id: 1020111, label: 'Nokia' },
+									{ id: 1020112, label: 'Asus' },
+								],
+							},
+						],
+					},
+				],
+			},
+		],
 	},
 ]
+
+// Reactive state
+const selectedItems = ref<MenuItem[]>([])
+const currentLevelIndex = ref<number>(0)
+const menuLevels = ref<MenuLevel[]>([
+	{
+		title: 'Main Categories',
+		items: menuData,
+		isSpecial: false,
+	},
+])
 
 // Computed properties
 const visibleLevels = computed(() => {
@@ -56,40 +151,78 @@ const visibleLevels = computed(() => {
 })
 
 const isItemSelected = (item: MenuItem, levelIndex: number) => {
-	return selectedItems.value[levelIndex]?.item.id === item.id
+	return selectedItems.value[levelIndex]?.id === item.id
 }
 
-// Methods
+const getItemPath = (item: MenuItem) => {
+	return item.label
+}
+
 const selectItem = (item: MenuItem, levelIndex: number) => {
-	// If clicking on a previous level, truncate the selection
-	if (levelIndex < currentLevelIndex.value) {
-		selectedItems.value = selectedItems.value.slice(0, levelIndex)
-		currentLevelIndex.value = levelIndex
-		menuLevels.value = menuLevels.value.slice(0, levelIndex + 1)
+	console.log(item, levelIndex)
+	const currentLevel = menuLevels.value[levelIndex]
+
+	// For special items
+	if (item.isSpecial) {
+		console.log('special')
+		// Update selection without clearing subsequent items
+		selectedItems.value[levelIndex] = item
+
+		// If we're changing between special items at this level
+		if (currentLevel.isSpecial) {
+			// Keep all existing levels below this one
+			return
+		}
+
+		// If this is the first selection of a special item
+		if (item.children && item.children.length > 0) {
+			const nextLevelIndex = levelIndex + 1
+			const nextLevel: MenuLevel = {
+				title: item.label,
+				items: item.children,
+				isSpecial: false,
+			}
+
+			if (menuLevels.value.length > nextLevelIndex) {
+				return
+				// menuLevels.value[nextLevelIndex] = nextLevel
+			} else {
+				menuLevels.value.push(nextLevel)
+			}
+
+			currentLevelIndex.value = nextLevelIndex
+		}
+		return
 	}
 
-	// Update or add the selection for this level
-	if (selectedItems.value[levelIndex]?.item.id !== item.id) {
-		// Remove all items after this level if changing selection
+	// For regular items
+	if (levelIndex < currentLevelIndex.value) {
+		// Changed selection in previous level - clear subsequent items and levels
 		selectedItems.value = selectedItems.value.slice(0, levelIndex)
-		selectedItems.value.push({ item, levelIndex })
+		menuLevels.value = menuLevels.value.slice(0, levelIndex + 1)
+		currentLevelIndex.value = levelIndex
 	}
+
+	// Update selection for current level
+	selectedItems.value[levelIndex] = item
 
 	// If item has children, add next level
-	if (item.children && item.children.length > 0 && levelIndex < 3) {
-		currentLevelIndex.value = levelIndex + 1
+	if (item.children && item.children.length > 0) {
+		const nextLevelIndex = levelIndex + 1
 
-		if (menuLevels.value.length <= currentLevelIndex.value) {
-			menuLevels.value.push({
-				title: `Level ${currentLevelIndex.value + 1}`,
-				items: item.children,
-			})
-		} else {
-			menuLevels.value[currentLevelIndex.value] = {
-				title: `Level ${currentLevelIndex.value + 1}`,
-				items: item.children,
-			}
+		const nextLevel: MenuLevel = {
+			title: item.label,
+			items: item.children,
+			isSpecial: item.isSpecial || false,
 		}
+
+		if (menuLevels.value.length > nextLevelIndex) {
+			menuLevels.value[nextLevelIndex] = nextLevel
+		} else {
+			menuLevels.value.push(nextLevel)
+		}
+
+		currentLevelIndex.value = nextLevelIndex
 	}
 }
 
@@ -100,96 +233,127 @@ const removeItem = (index: number) => {
 	currentLevelIndex.value = Math.max(0, selectedItems.value.length - 1)
 	menuLevels.value = menuLevels.value.slice(0, currentLevelIndex.value + 1)
 }
+</script>
 
-const getItemPath = (selected: { item: MenuItem; levelIndex: number }) => {
-	let path = selected.item.label
-	let currentItem = selected.item
+<style lang="scss">
+.multi-level-menu {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	// max-width: 1200px;
+	margin: 0 auto;
+	padding: 2rem;
+	font-family: Arial, sans-serif;
 
-	// Walk up the hierarchy to build the path
-	for (let i = selected.levelIndex - 1; i >= 0; i--) {
-		const parent = selectedItems.value[i]
-		if (parent) {
-			path = `${parent.item.label} > ${path}`
-			currentItem = parent.item
+	.selection-list {
+		padding: 1.5rem;
+		background: #f8f9fa;
+		border-radius: 8px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+		h3 {
+			margin: 0 0 1rem 0;
+			color: #333;
+			font-size: 1.2rem;
+		}
+
+		ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+
+			li {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0.75rem;
+				background: white;
+				border-radius: 4px;
+				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+				button {
+					background: none;
+					border: none;
+					color: #ff4444;
+					cursor: pointer;
+					font-weight: bold;
+					font-size: 1.1rem;
+					padding: 0 0.5rem;
+				}
+			}
 		}
 	}
 
-	return path
-}
-</script>
+	.menu-levels {
+		display: flex;
+		gap: 1rem;
+		overflow-x: auto;
+		padding: 1rem 0;
 
-<style scoped>
-.multi-level-menu {
-	display: flex;
-	gap: 2rem;
-}
+		.level {
+			flex: 0 0 auto;
+			width: 250px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			padding: 1.25rem;
+			background: white;
+			opacity: 0.85;
+			transition: all 0.2s ease;
 
-.menu-levels {
-	display: flex;
-	gap: 1rem;
-}
+			&.active {
+				opacity: 1;
+				border-color: #42b983;
+				box-shadow: 0 0 0 2px rgba(66, 185, 131, 0.2);
+			}
 
-.level {
-	border: 1px solid #ddd;
-	padding: 1rem;
-	min-width: 200px;
-	opacity: 0.7;
-	transition: opacity 0.2s;
-}
+			&.special-level {
+				border-color: #ff9800;
 
-.level.active {
-	opacity: 1;
-	border-color: #42b983;
-}
+				&.active {
+					box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
+				}
+			}
 
-.level-title {
-	margin-top: 0;
-	margin-bottom: 1rem;
-}
+			.level-title {
+				margin: 0 0 1rem 0;
+				font-size: 1.1rem;
+				color: #555;
+				padding-bottom: 0.5rem;
+				border-bottom: 1px solid #eee;
+			}
 
-.menu-items {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
+			.menu-items {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
 
-.menu-item {
-	padding: 0.5rem;
-	cursor: pointer;
-	border-radius: 4px;
-}
+				.menu-item {
+					padding: 0.75rem;
+					cursor: pointer;
+					border-radius: 4px;
+					transition: all 0.2s ease;
 
-.menu-item:hover {
-	background-color: #f0f0f0;
-}
+					&:hover {
+						background-color: #f5f5f5;
+					}
 
-.menu-item.selected {
-	background-color: #42b983;
-	color: white;
-}
+					&.selected {
+						background-color: #42b983;
+						color: white;
+					}
+				}
+			}
+		}
 
-.selected-items {
-	border: 1px solid #ddd;
-	padding: 1rem;
-	min-width: 300px;
-}
-
-.selected-items ul {
-	list-style: none;
-	padding: 0;
-}
-
-.selected-items li {
-	display: flex;
-	justify-content: space-between;
-	padding: 0.5rem;
-	border-bottom: 1px solid #eee;
-}
-
-.selected-items button {
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: #ff4444;
+		.special-level .menu-item.selected {
+			background-color: #ff9800;
+		}
+	}
 }
 </style>

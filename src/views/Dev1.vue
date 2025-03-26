@@ -1,58 +1,126 @@
 <script setup lang="ts">
-import { motion, AnimatePresence } from 'motion-v'
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useMotionValue, useTransform } from 'motion-v'
 
-const router = useRouter()
-
-const Div = motion.div
-
-const play = () => {
-	router.push('/dev')
+// Define menu item type
+interface MenuItem {
+	id: string
+	name: string
+	children?: MenuItem[]
+	type: 1 | 2
 }
 
-const x = useMotionValue(-200)
-const background = useTransform(x, [0, 500], ['red', 'blue'])
+// Mock data for menu structure
+const menuData: MenuItem[] = [
+	{
+		id: '1',
+		name: 'Level 1 - A',
+		type: 1,
+		children: [
+			{
+				id: '1.1',
+				name: 'Level 2 - A1',
+				type: 1,
+				children: [{ id: '1.1.1', name: 'Level 3 - A1-1', type: 1 }],
+			},
+			{
+				id: '1.2',
+				name: 'Level 2 - A2',
+				type: 2,
+				children: [{ id: 'shared', name: 'Shared Sublevel', type: 1 }],
+			},
+		],
+	},
+	{
+		id: '2',
+		name: 'Level 1 - B',
+		type: 1,
+		children: [{ id: '2.1', name: 'Level 2 - B1', type: 1 }],
+	},
+]
+
+// Store selected values for each level
+const selectedItems = ref<string[]>(['']) // Start with an empty selection
+
+// Computed property to display selected labels
+const selectedLabels = computed(() =>
+	selectedItems.value.filter((id) => id).map((id) => findItemById(menuData, id)?.name || '')
+)
+
+// Function to find a menu item by ID
+function findItemById(menu: MenuItem[], id: string): MenuItem | undefined {
+	for (const item of menu) {
+		if (item.id === id) return item
+		if (item.children) {
+			const found = findItemById(item.children, id)
+			if (found) return found
+		}
+	}
+	return undefined
+}
+
+// Function to handle menu selection
+function handleSelection(level: number, event: Event) {
+	const target = event.target as HTMLSelectElement
+	const id = target.value
+	const item = findItemById(menuData, id)
+
+	if (!item) return
+
+	selectedItems.value = selectedItems.value.slice(0, level) // Clear subsequent selections
+	selectedItems.value[level] = id
+
+	if (item.type === 1) {
+		selectedItems.value = selectedItems.value.slice(0, level + 1) // Clear deeper selections
+	} else if (item.type === 2) {
+		// If it's type 2, ensure the next level stays intact
+		if (!selectedItems.value[level + 1]) {
+			selectedItems.value.push('')
+		}
+	}
+}
+
+// Get children of the currently selected item at a given level
+function getChildren(level: number): MenuItem[] {
+	if (level === 0) return menuData // Root level
+	const parentItem = findItemById(menuData, selectedItems.value[level - 1])
+	return parentItem?.children || []
+}
 </script>
 
 <template lang="pug">
-div
-	Div.list()
-		Div.box1(@click='play' layout-id="underline")
-	br
-	Div.text-center(
-		:initial="{ opacity: 0, y: 200 }"
-		:animate="{ opacity: 1, y: 0, transition: { delay: .5 } }"
-		)
-		ul
-			li lajsdljalsdjlk
-			li lajsdljalsdjlk
-			li lajsdljalsdjlk
+.main-container
+  // Selected items display
+  .selected-items
+    span Selected: 
+    span(v-for="label in selectedLabels" :key="label") {{ label }}
 
+  // Dropdown menus for each level
+  .menu-level(v-for="(selected, level) in selectedItems" :key="level")
+    select(@change="(e) => handleSelection(level, e)")
+      option(value="") -- Select --
+      option(
+        v-for="item in getChildren(level)"
+        :key="item.id"
+        :value="item.id"
+        :selected="item.id === selected"
+      ) {{ item.name }}
 </template>
 
-<style scoped lang="scss">
-.list {
-	width: 600px;
-	margin: 2rem auto;
-	background: #ccc;
+<style lang="scss" scoped>
+.main-container {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 20px;
+	max-width: 400px;
 }
-
-.box {
-	width: 100px;
-	height: 100px;
-	background-color: $primary;
-	border-radius: 5px;
+.selected-items {
+	font-weight: bold;
 }
-
-.box1 {
-	width: 100px;
-	height: 100px;
-	background-color: $primary;
-	border-radius: 5px;
-	justify-self: end;
-	background: red;
-	// flex-grow: 1;
+.menu-level {
+	select {
+		width: 100%;
+		padding: 5px;
+	}
 }
 </style>

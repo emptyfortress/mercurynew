@@ -55,9 +55,9 @@ div
 				q-input(v-if='item.data[2].kind == 100' v-model="item.data[2].text" dense outlined)
 				div(v-else) {{ item.data[2].text }}
 			template(v-else)
-				div fuck
-				div fuck
-				div fuck
+				div first
+				div second
+				div third
 			div
 			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
 
