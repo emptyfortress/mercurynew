@@ -1,101 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import RequestEditorInput from '@/components/RequestEditorInput.vue'
-
-const menuData: MenuItem[] = [
-	{
-		id: 1,
-		label: 'Electronics',
-		children: [
-			{
-				id: 101,
-				label: 'Computers',
-				children: [
-					{
-						id: 1001,
-						label: 'Laptops',
-						children: [
-							{
-								id: 10001,
-								label: 'Gaming',
-								isSpecial: true,
-								children: [
-									{
-										id: 100011,
-										label: 'Brand',
-										children: [
-											{ id: 1000111, label: 'Asus' },
-											{ id: 1000112, label: 'MSI' },
-										],
-									},
-								],
-							},
-							{
-								id: 10002,
-								label: 'Business',
-								isSpecial: true,
-								children: [
-									{
-										id: 100011, // Same ID as Gaming's Brand
-										label: 'Brand',
-										children: [
-											{ id: 1000111, label: 'Asus' },
-											{ id: 1000112, label: 'MSI' },
-										],
-									},
-								],
-							},
-						],
-					},
-				],
-			},
-			{
-				id: 102,
-				label: 'Phones',
-				children: [
-					{
-						id: 10201,
-						label: 'Storage',
-						children: [
-							{
-								id: 102011,
-								label: '64GB',
-								isSpecial: true,
-								children: [
-									{
-										id: 1020111,
-										label: 'Nokia',
-										children: [
-											{ id: 55, label: 'label' },
-											{ id: 56, label: 'label' },
-										],
-									},
-									{
-										id: 1020112,
-										label: 'Asus',
-										children: [
-											{ id: 55, label: 'label' },
-											{ id: 56, label: 'label' },
-										],
-									},
-								],
-							},
-							{
-								id: 102012,
-								label: '128GB',
-								isSpecial: true,
-								children: [
-									{ id: 1020111, label: 'Nokia' },
-									{ id: 1020112, label: 'Asus' },
-								],
-							},
-						],
-					},
-				],
-			},
-		],
-	},
-]
+import LevelDateNew from '@/components/LevelDateNew.vue'
+import { zero } from '@/stores/menu'
 
 // Reactive state
 const selectedItems = ref<MenuItem[]>([])
@@ -103,7 +10,7 @@ const currentLevelIndex = ref<number>(0)
 const menuLevels = ref<MenuLevel[]>([
 	{
 		title: 'Main Categories',
-		items: menuData,
+		items: zero,
 		isSpecial: false,
 	},
 ])
@@ -201,9 +108,19 @@ const reset = () => {
 }
 
 const myhei = computed(() => {
-	return '300px'
+	return '600px'
 	// return props.height - 125 + 'px'
 })
+
+const isDate = computed(() => {
+	return selectedItems.value.at(-1)?.date
+})
+const calcClass = (item: MenuItem, index: number) => {
+	if (isItemSelected(item, index) && item.id == 'fio') return 'selfio'
+	if (isItemSelected(item, index)) return 'selected'
+	if (item.id == 'fio') return 'first'
+	else return ''
+}
 </script>
 
 <template lang="pug">
@@ -220,15 +137,22 @@ const myhei = computed(() => {
 			.level(
 				v-for="(level, index) in visibleLevels"
 				:key="index"
-				:class="{ active: currentLevelIndex === index }"
+				:class="{ active: currentLevelIndex === index && !isDate }"
 			)
 				ul.menu-items
 					li.menu-item(
 						v-for="item in level.items"
 						:key="item.id"
 						@click="selectItem(item, index)"
-						:class="{ selected: isItemSelected(item, index) }"
-					) {{ item.label }}
+						:class="calcClass(item, index)"
+					)
+						q-icon.q-mr-md(v-if='item.isKey' name="mdi-star" color="grey-7")
+						q-icon.q-mr-md(v-if='item.isPeople' name="mdi-account" color="grey-7")
+						span {{ item.label }}
+
+			.level(v-if='isDate' :class="{ active: isDate }")
+				LevelDateNew
+
 </template>
 <style lang="scss">
 .multi-level-menu {
@@ -240,7 +164,7 @@ const myhei = computed(() => {
 
 	.menu-levels {
 		display: flex;
-		gap: 1rem;
+		gap: 0.5rem;
 		overflow-x: auto;
 		padding: 1rem 0;
 
@@ -271,6 +195,16 @@ const myhei = computed(() => {
 						background-color: #e6e6e6;
 					}
 					&.selected {
+						background-color: $blue-2;
+						color: $primary;
+					}
+					&.first {
+						margin-top: 2rem;
+						border-top: 1px solid #ccc;
+					}
+					&.selfio {
+						margin-top: 2rem;
+						border-top: 1px solid #ccc;
 						background-color: $blue-2;
 						color: $primary;
 					}

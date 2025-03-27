@@ -89,8 +89,12 @@ interface Stat {
 interface MenuItem {
 	id: string | number
 	label: string
+	value?: string
 	children?: MenuItem[]
 	isSpecial?: boolean
+	isKey?: boolean
+	isPeople?: boolean
+	date?: boolean
 }
 
 interface MenuLevel {

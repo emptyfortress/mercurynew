@@ -30,6 +30,9 @@ q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?"
 			:key="item.id" removable,
 			@remove="removeItem(index)",
 			:class="calcClass(item)",
+			v-motion,
+			:initial='{ y: -20, opacity: 0 }'
+			:enter='{ y: 0, opacity: 1 }'
 		) {{ item.label }}
 
 
