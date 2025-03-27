@@ -121,6 +121,10 @@ const calcClass = (item: MenuItem, index: number) => {
 	if (item.id == 'fio') return 'first'
 	else return ''
 }
+const query = ref('')
+const isLast = computed(() => {
+	return selectedItems.value.at(-1)?.isLast
+})
 </script>
 
 <template lang="pug">
@@ -128,6 +132,8 @@ const calcClass = (item: MenuItem, index: number) => {
 
 	RequestEditorInput(
 		v-model:selectedItems="selectedItems",
+		v-model:query='query'
+		v-model:isLast='isLast'
 		@remove='removeItem',
 		@reset='reset'
 	)

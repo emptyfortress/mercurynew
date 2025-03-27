@@ -94,6 +94,8 @@ interface MenuItem {
 	isSpecial?: boolean
 	isKey?: boolean
 	isPeople?: boolean
+	isLast?: boolean
+	isInput?: boolean
 	date?: boolean
 }
 

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 
-// const modelValue = defineModel<MenuItem[]>()
 const selectedItems = defineModel<MenuItem[]>('selectedItems')
+const query = defineModel<string>('query')
+const isLast = defineModel<boolean>('isLast')
 
-const query = ref('')
 const calcClass = (key: any) => {
 	if (key.isSpecial) return 'special'
 	return ''
@@ -17,16 +17,32 @@ const removeItem = (index: number) => {
 	emit('remove', index)
 }
 const reset = () => {
+	query.value = ''
 	emit('reset')
 }
 
 const addCond = () => {
-	console.log(111)
+	let items = selectedItems.value.map((el: MenuItem) => ({
+		label: el.label,
+		isSpecial: el.isSpecial,
+		isLast: el.isLast,
+		isInput: el.isInput,
+	}))
+	if (items.at(-1).isInput) {
+		items.push({
+			isInput: true,
+			model: query.value,
+		})
+	}
+	console.table(items)
 }
 
 const save = () => {
 	console.log(111)
 }
+const isClearVisible = computed(() => {
+	return selectedItems.value.length || query.value.length
+})
 </script>
 
 <template lang="pug">
@@ -45,12 +61,32 @@ q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?"
 
 
 	template(v-slot:append)
-		q-btn(flat round icon="mdi-close-circle" color="negative" @click="reset" dense) 
+		q-btn(
+			v-if='isClearVisible',
+			flat,
+			round,
+			icon="mdi-close-circle",
+			color="negative",
+			@click="reset" dense
+			v-motion,
+			:initial='{ y: -20, opacity: 0 }'
+			:enter='{ y: 0, opacity: 1 }'
+		) 
 			q-tooltip Очистить
-		q-btn(flat round color="primary" @click="addCond" dense ) 
+		q-btn(
+			v-if='isLast' flat round,
+			color="primary",
+			@click="addCond" dense v-motion,
+			:initial='{ y: -20, opacity: 0 }' :enter='{ y: 0, opacity: 1 }'
+		) 
 			IconUpArrowCircle.ic
 			q-tooltip Добавить условие и продолжить
-		q-btn(flat round color="primary" @click="save" dense ) 
+		q-btn(
+			v-if='isLast' flat round,
+			color="primary",
+			@click="save" dense v-motion,
+			:initial='{ y: -20, opacity: 0 }' :enter='{ y: 0, opacity: 1 }'
+		) 
 			IconSave.ic
 			q-tooltip Сохранить
 </template>
