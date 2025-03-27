@@ -44,7 +44,7 @@ const menuData = [
 </script>
 
 <template lang="pug">
-div
+q-page(padding)
 	// .list
 	// 	Div.box(@click='play' layout-id="underline" :initial="{ x: 0 }" :animate='{ x }')
 	// 	// Div.box(drag="x" :style="{ x, background }")

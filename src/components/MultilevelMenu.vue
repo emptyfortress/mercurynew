@@ -133,7 +133,7 @@ const calcClass = (item: MenuItem, index: number) => {
 	)
 
 	.menu-levels
-		transition-group(name="slide-right" mode="out-in")
+		transition-group(name="slide-right")
 			.level(
 				v-for="(level, index) in visibleLevels"
 				:key="index"

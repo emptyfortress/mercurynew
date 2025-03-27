@@ -19,6 +19,14 @@ const removeItem = (index: number) => {
 const reset = () => {
 	emit('reset')
 }
+
+const addCond = () => {
+	console.log(111)
+}
+
+const save = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
