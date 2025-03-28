@@ -9,7 +9,7 @@ import { ref, reactive, watch, watchEffect } from 'vue'
 // 	}
 // })
 
-// const emit = defineEmits(['add'])
+const emit = defineEmits(['add'])
 
 const date = ref('')
 
@@ -27,30 +27,17 @@ const selected = ref<string>()
 const selectItem = (str: string) => {
 	selected.value = str
 	date.value = ''
+	emit('add', str)
 }
 
 const calcClass = (str: string) => {
 	return selected.value == str ? 'selected' : ''
 }
 
-// const add = (item: any) => {
-// 	date.value = ''
-// 	keywords.map((el) => el.selected = false)
-// 	item.selected = !item.selected
-// 	emit('add', item)
-// }
-
-// watchEffect(() => {
-// 	if (props.txt) {
-// 		date.value = ''
-// 		keywords.map((el) => el.selected = false)
-// 	}
-// })
-
 watch(date, (val) => {
 	if (val) {
 		selected.value = undefined
-		// emit('add', { text: val, dvalue: true, kind: 7 })
+		emit('add', val)
 	}
 })
 </script>
@@ -69,12 +56,6 @@ div
 			q-icon.q-mr-md(name="mdi-star" color="grey-7")
 			span {{ item.label }}
 
-// q-list
-// 	q-item(v-for="item in keywords" clickable :key="item.label" @click="add(item)" :class="{ selkey: item.selected }")
-// 		q-item-section(side)
-// 			q-icon(name="mdi-star" size="16px")
-// 		q-item-section
-// 			q-item-label {{ item.label }}
 </template>
 
 <style scoped lang="scss"></style>

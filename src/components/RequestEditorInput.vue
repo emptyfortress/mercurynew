@@ -1,11 +1,27 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
 import IconSave from '@/components/icons/IconSave.vue'
+import { useKeys } from '@/stores/keys'
+import { uid } from 'quasar'
+
+const props = defineProps({
+	par: {
+		type: Boolean,
+		required: true,
+		default: false,
+	},
+})
+const mykeys = useKeys()
 
 const selectedItems = defineModel<MenuItem[]>('selectedItems')
-const query = defineModel<string>('query')
+const queryModel = defineModel<string>('query')
 const isLast = defineModel<boolean>('isLast')
+
+const query = computed({
+	get: () => queryModel.value ?? '',
+	set: (val) => (queryModel.value = val),
+})
 
 const calcClass = (key: any) => {
 	if (key.isSpecial) return 'special'
@@ -22,26 +38,40 @@ const reset = () => {
 }
 
 const addCond = () => {
-	let items = selectedItems.value.map((el: MenuItem) => ({
-		label: el.label,
-		isSpecial: el.isSpecial,
-		isLast: el.isLast,
-		isInput: el.isInput,
-	}))
-	if (items.at(-1).isInput) {
+	if (selectedItems.value) {
+		const items = selectedItems.value.map((el: MenuItem) => ({
+			id: uid(),
+			label: el.label,
+			isSpecial: el.isSpecial,
+			isLast: el.isLast,
+			isInput: el.isInput,
+		}))
+
+		if (items.at(-1)?.isInput) {
+			items.push({
+				id: uid(),
+				label: query.value,
+				isSpecial: false,
+				isLast: true,
+				isPrompt: true,
+			})
+		}
 		items.push({
-			isInput: true,
-			model: query.value,
+			id: uid(),
+			label: '',
+			isPar: props.par,
 		})
+		mykeys.addItem(items)
+		reset()
 	}
-	console.table(items)
 }
 
 const save = () => {
-	console.log(111)
+	addCond()
+	mykeys.toggleDragWindow()
 }
 const isClearVisible = computed(() => {
-	return selectedItems.value.length || query.value.length
+	return selectedItems.value?.length || query.value?.length
 })
 </script>
 

@@ -87,7 +87,7 @@ interface Stat {
 }
 
 interface MenuItem {
-	id: string | number
+	id: string
 	label: string
 	value?: string
 	children?: MenuItem[]
@@ -97,6 +97,8 @@ interface MenuItem {
 	isLast?: boolean
 	isInput?: boolean
 	date?: boolean
+	isPrompt?: boolean
+	isPar?: boolean
 }
 
 interface MenuLevel {

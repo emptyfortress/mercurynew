@@ -4,6 +4,14 @@ import RequestEditorInput from '@/components/RequestEditorInput.vue'
 import LevelDateNew from '@/components/LevelDateNew.vue'
 import { zero } from '@/stores/menu'
 
+const props = defineProps({
+	height: {
+		type: Number,
+		required: true,
+		default: 100,
+	},
+})
+
 // Reactive state
 const selectedItems = ref<MenuItem[]>([])
 const currentLevelIndex = ref<number>(0)
@@ -15,6 +23,7 @@ const menuLevels = ref<MenuLevel[]>([
 	},
 ])
 
+const par = ref(false)
 // Computed properties
 const visibleLevels = computed(() => {
 	return menuLevels.value.slice(0, currentLevelIndex.value + 1)
@@ -24,9 +33,9 @@ const isItemSelected = (item: MenuItem, levelIndex: number) => {
 	return selectedItems.value[levelIndex]?.id === item.id
 }
 
-const getItemPath = (item: MenuItem) => {
-	return item.label
-}
+// const getItemPath = (item: MenuItem) => {
+// 	return item.label
+// }
 
 const selectItem = (item: MenuItem, levelIndex: number) => {
 	const currentLevel = menuLevels.value[levelIndex]
@@ -94,6 +103,19 @@ const selectItem = (item: MenuItem, levelIndex: number) => {
 	}
 }
 
+const addDate = (str: string) => {
+	let item = {
+		id: 'date',
+		label: str,
+		date: true,
+		isLast: true,
+	}
+	let length = selectedItems.value.length - 1
+	if (selectedItems.value.at(-1)?.isLast) {
+		selectedItems.value.splice(length, 1, item)
+	} else selectedItems.value.push(item)
+}
+
 const removeItem = (index: number) => {
 	// Remove the item and all subsequent items
 	selectedItems.value = selectedItems.value.slice(0, index)
@@ -108,8 +130,7 @@ const reset = () => {
 }
 
 const myhei = computed(() => {
-	return '600px'
-	// return props.height - 125 + 'px'
+	return props.height - 125 + 'px'
 })
 
 const isDate = computed(() => {
@@ -133,6 +154,7 @@ const isLast = computed(() => {
 	RequestEditorInput(
 		v-model:selectedItems="selectedItems",
 		v-model:query='query'
+		:par='par'
 		v-model:isLast='isLast'
 		@remove='removeItem',
 		@reset='reset'
@@ -157,16 +179,20 @@ const isLast = computed(() => {
 						span {{ item.label }}
 
 			.level(v-if='isDate' :class="{ active: isDate }")
-				LevelDateNew
+				LevelDateNew(@add='addDate')
+
+			.last(v-if='isLast')
+				q-checkbox(v-model="par" label='Параметр')
+				.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр
+				.text-caption.q-ml-sm Включите этот флаг, если, при входе в папку, вы хотите использовать данное условие, как изменяемый параметр.
 
 </template>
 <style lang="scss">
 .multi-level-menu {
 	display: flex;
 	flex-direction: column;
-	max-width: 1200px;
 	margin: 0 auto;
-	padding: 2rem;
+	// padding: 2rem;
 
 	.menu-levels {
 		display: flex;
@@ -218,5 +244,9 @@ const isLast = computed(() => {
 			}
 		}
 	}
+}
+.last {
+	margin-left: 1rem;
+	max-width: 250px;
 }
 </style>

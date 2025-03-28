@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { UseDraggable as Draggable } from '@vueuse/components'
-import Text12 from '@/components/Text12.vue'
+import MultilevelMenu from '@/components/MultilevelMenu.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
 
@@ -38,7 +38,8 @@ transition(name="slide-bottom")
 			q-btn(icon="mdi-close" flat round dense color="white" @click="modelValue = false")
 
 		q-card-section.scroll
-			Text12(:height="height" @close="close")
+			MultilevelMenu(:height="height")
+			// Text12(:height="height" @close="close")
 </template>
 
 <style scoped lang="scss">
@@ -72,7 +73,7 @@ transition(name="slide-bottom")
 
 .fucker {
 	width: 1200px;
-	height: 500px;
+	height: 600px;
 	background: white;
 	box-shadow: var(--shad);
 	z-index: 6002;

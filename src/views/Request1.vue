@@ -12,9 +12,9 @@ import PredButton from '@/components/PredButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
 import DragEditWindow1 from '@/components/DragEditWindow1.vue'
-import { useTree } from '@/stores/tree12'
+import { useKeys } from '@/stores/keys'
 
-const mytree = useTree()
+const mykeys = useKeys()
 
 const main = ref(true)
 const toggleMain = () => {
@@ -106,7 +106,7 @@ q-page(padding)
 		PreviewButton(@activate='startRight' @stop='stopRight')
 		PredButton(@activate='startLeft' @stop='stopLeft')
 
-	DragEditWindow1(v-model="mytree.isDragWindow")
+	DragEditWindow1(v-model="mykeys.isDragWindow")
 </template>
 
 <style scoped lang="scss">

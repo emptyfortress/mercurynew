@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
-export const useTree = defineStore('tree12', () => {
-	const layout = ref<any[]>([])
+export const useKeys = defineStore('mykeys', () => {
+	const keys = ref<MenuItem[][]>([])
 
 	const isDragWindow = ref(false)
 	const toggleDragWindow = () => {
 		isDragWindow.value = !isDragWindow.value
 	}
 
-	const addItem = (e: any): void => {
-		layout.value.push(e)
+	const addItem = (e: MenuItem[]): void => {
+		keys.value.push(e)
 	}
 
 	return {
-		layout,
+		keys,
 		isDragWindow,
 		toggleDragWindow,
 		addItem,
