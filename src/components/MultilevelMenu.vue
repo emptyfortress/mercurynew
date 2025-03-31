@@ -33,10 +33,6 @@ const isItemSelected = (item: MenuItem, levelIndex: number) => {
 	return selectedItems.value[levelIndex]?.id === item.id
 }
 
-// const getItemPath = (item: MenuItem) => {
-// 	return item.label
-// }
-
 const selectItem = (item: MenuItem, levelIndex: number) => {
 	const currentLevel = menuLevels.value[levelIndex]
 
@@ -146,6 +142,10 @@ const query = ref('')
 const isLast = computed(() => {
 	return selectedItems.value.at(-1)?.isLast
 })
+
+const showPar = computed(() => {
+	return isLast.value
+})
 </script>
 
 <template lang="pug">
@@ -154,7 +154,7 @@ const isLast = computed(() => {
 	RequestEditorInput(
 		v-model:selectedItems="selectedItems",
 		v-model:query='query'
-		:par='par'
+		v-model:par='par'
 		v-model:isLast='isLast'
 		@remove='removeItem',
 		@reset='reset'
@@ -181,7 +181,7 @@ const isLast = computed(() => {
 			.level(v-if='isDate' :class="{ active: isDate }")
 				LevelDateNew(@add='addDate')
 
-			.last(v-if='isLast')
+			.last(v-if='showPar')
 				q-checkbox(v-model="par" label='Параметр')
 				.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр
 				.text-caption.q-ml-sm Включите этот флаг, если, при входе в папку, вы хотите использовать данное условие, как изменяемый параметр.
@@ -198,7 +198,7 @@ const isLast = computed(() => {
 		display: flex;
 		gap: 0.5rem;
 		overflow-x: auto;
-		padding: 1rem 0;
+		padding: 0.25rem 0;
 
 		.level {
 			flex: 0 0 auto;

@@ -4,10 +4,8 @@ import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import { animations, state } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-// import { useTree } from '@/stores/tree12'
 import { useKeys } from '@/stores/keys'
 
-// const mytree = useTree()
 const mykeys = useKeys()
 
 const config = {
@@ -32,6 +30,9 @@ const clearAll = () => {
 }
 
 const isGridEmpty = computed(() => mykeys.keys.length === 0)
+const test = (e: any) => {
+	console.log(e)
+}
 </script>
 
 <template lang="pug">
@@ -43,9 +44,12 @@ div
 
 	.grid(ref='parent')
 		.condition(v-for="(group, index) in tapes" :key="group[0].id")
+			q-icon(name='mdi-drag-vertical' size='20px' color="grey")
 			div(v-for="item in group" :key="item.id")
 				q-input(v-if='item.isPrompt' v-model="item.label" dense outlined)
 				div(v-else) {{ item.label }}
+			q-checkbox(dense v-model="group.at(-1).isPar" color="secondary" size='xs' @update:model-value='test(group)')
+				q-tooltip Параметр
 			div
 			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
 
@@ -79,7 +83,7 @@ div
 }
 
 .condition {
-	padding: 0.5rem 0.5rem 0.5rem 1rem;
+	padding: 0.3rem 0.5rem 0.3rem 0;
 	background: white;
 	display: flex;
 	justify-content: left;

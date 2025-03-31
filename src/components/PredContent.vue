@@ -40,8 +40,6 @@ q-scroll-area(:style='hei')
 					IconPaint.ic
 				q-item-section.zg Подсветка
 			DrawBottom
-	q-card-section
-		q-btn(unelevated color="primary" label="Превью ?" ) 
 </template>
 
 <style scoped lang="scss">

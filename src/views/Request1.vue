@@ -6,6 +6,7 @@ import IconRedo from '@/components/icons/IconRedo.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
 import IconLogic from '@/components/icons/IconLogic.vue'
 import TextAi from '@/components/TextAi.vue'
+import Loading from '@/components/Loading.vue'
 import RequestGrid from '@/components/RequestGrid.vue'
 import PreviewButton from '@/components/PreviewButton.vue'
 import PredButton from '@/components/PredButton.vue'
@@ -102,6 +103,9 @@ q-page(padding)
 			transition(name="slide-bottom" mode="out-in")
 				RequestGrid(v-if='main' @button='startRight')
 				TextAi(v-else)
+
+			.q-mx-md
+				Loading
 
 		PreviewButton(@activate='startRight' @stop='stopRight')
 		PredButton(@activate='startLeft' @stop='stopLeft')

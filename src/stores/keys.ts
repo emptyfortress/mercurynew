@@ -9,6 +9,10 @@ export const useKeys = defineStore('mykeys', () => {
 		isDragWindow.value = !isDragWindow.value
 	}
 
+	const hasParameters = computed(() => {
+		return keys.value.filter((group) => group.some((item) => item.isPar === true))
+	})
+
 	const addItem = (e: MenuItem[]): void => {
 		keys.value.push(e)
 	}
@@ -16,6 +20,7 @@ export const useKeys = defineStore('mykeys', () => {
 	return {
 		keys,
 		isDragWindow,
+		hasParameters,
 		toggleDragWindow,
 		addItem,
 	}

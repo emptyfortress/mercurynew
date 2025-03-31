@@ -5,18 +5,12 @@ import IconSave from '@/components/icons/IconSave.vue'
 import { useKeys } from '@/stores/keys'
 import { uid } from 'quasar'
 
-const props = defineProps({
-	par: {
-		type: Boolean,
-		required: true,
-		default: false,
-	},
-})
 const mykeys = useKeys()
 
 const selectedItems = defineModel<MenuItem[]>('selectedItems')
 const queryModel = defineModel<string>('query')
 const isLast = defineModel<boolean>('isLast')
+const par = defineModel<boolean>('par')
 
 const query = computed({
 	get: () => queryModel.value ?? '',
@@ -34,12 +28,42 @@ const removeItem = (index: number) => {
 }
 const reset = () => {
 	query.value = ''
+	par.value = false
 	emit('reset')
 }
 
-const addCond = () => {
+const transformedData = computed(() => {
+	if (selectedItems.value?.length === 0) return []
+
 	if (selectedItems.value) {
-		const items = selectedItems.value.map((el: MenuItem) => ({
+		let concatenatedLabel = selectedItems.value[0].label
+		let stopIndex = 1
+
+		// Iterate over the array starting from the second element
+		for (let i = 1; i < selectedItems.value.length; i++) {
+			if (selectedItems.value[i].isSpecial === true) {
+				break
+			}
+			concatenatedLabel += '.' + selectedItems.value[i].label
+			stopIndex = i + 1
+		}
+
+		// Create the new first element
+		const newFirstElement = {
+			id: selectedItems.value[0].id,
+			label: concatenatedLabel,
+			isSpecial: false,
+			isLast: false,
+		}
+
+		// Return new array with transformed first element
+		return [newFirstElement, ...selectedItems.value.slice(stopIndex)]
+	}
+})
+
+const addCond = () => {
+	if (transformedData.value) {
+		const items: MenuItem[] = transformedData.value.map((el: MenuItem) => ({
 			id: uid(),
 			label: el.label,
 			isSpecial: el.isSpecial,
@@ -59,7 +83,7 @@ const addCond = () => {
 		items.push({
 			id: uid(),
 			label: '',
-			isPar: props.par,
+			isPar: par.value,
 		})
 		mykeys.addItem(items)
 		reset()

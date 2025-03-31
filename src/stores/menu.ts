@@ -1,10 +1,10 @@
 import { uid } from 'quasar'
 
 const mystatus = [
-	{ id: uid(), label: 'Подготовка', value: 'Подготовка', isLast: false },
-	{ id: uid(), label: 'На согласовании', value: 'На согласовании', isLast: false },
-	{ id: uid(), label: 'На доработке', value: 'На доработке', isLast: false },
-	{ id: uid(), label: 'Согласовано', value: 'Согласовано', isLast: false },
+	{ id: uid(), label: 'Подготовка', value: 'Подготовка', isLast: true },
+	{ id: uid(), label: 'На согласовании', value: 'На согласовании', isLast: true },
+	{ id: uid(), label: 'На доработке', value: 'На доработке', isLast: true },
+	{ id: uid(), label: 'Согласовано', value: 'Согласовано', isLast: true },
 ]
 const stat = [
 	{ id: uid(), label: 'равно', value: 'равно', isSpecial: true, children: mystatus },
@@ -90,9 +90,9 @@ const str = [
 ]
 
 const manDetails2 = [
-	{ id: uid(), label: 'Я', isKey: true, isLast: false },
-	{ id: uid(), label: 'Мои подчиненные', isKey: true, isLast: false },
-	{ id: uid(), label: 'Мой руководитель', isKey: true, isLast: false },
+	{ id: uid(), label: 'Я', isKey: true, isLast: true },
+	{ id: uid(), label: 'Мои подчиненные', isKey: true, isLast: true },
+	{ id: uid(), label: 'Мой руководитель', isKey: true, isLast: true },
 	{ id: 'fio', label: 'Иванов', isPeople: true, isLast: true },
 	{ id: '2', label: 'Петров', isPeople: true, isLast: true },
 	{ id: '3', label: 'Сидоров', isPeople: true, isLast: true },

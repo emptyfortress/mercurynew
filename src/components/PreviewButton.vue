@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import FormPreview from '@/components/FormPreview.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
+import TopButton1 from '@/components/panels/TopButton1.vue'
 import { usePanels } from '@/stores/panels'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
@@ -20,7 +21,7 @@ const animateFlip = (previewState: boolean) => {
 		Flip.from(state, {
 			duration: 0.4,
 			ease: 'power3.inOut',
-			delay: 0.2
+			delay: 0.2,
 		})
 	})
 }
@@ -36,7 +37,6 @@ const close = () => {
 	emit('stop')
 	animateFlip(false)
 }
-
 </script>
 
 <template lang="pug">
@@ -56,16 +56,7 @@ const close = () => {
 
 	CloseButton(v-model="panels.preview" @close="close")
 
-	.rrel(v-if='panels.preview'
-		v-motion
-		:initial='{ opacity: 0 }'
-		:enter='{ opacity: 1 }'
-		:delay='600'
-		)
-		.top.top1
-			.zg
-				q-icon.q-mr-sm(name="mdi-tune-vertical-variant" color="primary" size='24px')
-				|Параметры запроса
+	TopButton1(v-model="panels.preview")
 
 	FormPreview(v-if='panels.preview'
 		v-motion
@@ -108,7 +99,7 @@ const close = () => {
 
 .ic1 {
 	font-size: 1.3rem;
-	margin-right: .5rem;
+	margin-right: 0.5rem;
 }
 
 .zg {
