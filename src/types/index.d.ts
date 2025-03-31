@@ -92,6 +92,7 @@ interface MenuItem {
 	value?: string
 	children?: MenuItem[]
 	isSpecial?: boolean
+	isSpecial1?: boolean
 	isKey?: boolean
 	isPeople?: boolean
 	isLast?: boolean
@@ -99,6 +100,7 @@ interface MenuItem {
 	date?: boolean
 	isPrompt?: boolean
 	isPar?: boolean
+	isMulti?: boolean
 }
 
 interface MenuLevel {

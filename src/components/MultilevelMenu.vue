@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import RequestEditorInput from '@/components/RequestEditorInput.vue'
 import LevelDateNew from '@/components/LevelDateNew.vue'
 import { zero } from '@/stores/menu'
@@ -35,6 +35,31 @@ const isItemSelected = (item: MenuItem, levelIndex: number) => {
 
 const selectItem = (item: MenuItem, levelIndex: number) => {
 	const currentLevel = menuLevels.value[levelIndex]
+
+	// Logic to handle isMulti items
+	const multiIndex = selectedItems.value.findIndex((si: MenuItem) => si.isMulti)
+	if (multiIndex !== -1) {
+		const existingIndex = selectedItems.value.findIndex((si) => si.id === item.id)
+
+		if (existingIndex !== -1) {
+			selectedItems.value.splice(existingIndex, 1) // remove if already exists
+		} else if (item.isSpecial1) {
+			selectedItems.value.push(item)
+			selectedItems.value = selectedItems.value.slice(0, multiIndex)
+
+			currentLevelIndex.value = levelIndex
+			selectedItems.value[levelIndex] = item
+		} else {
+			selectedItems.value.push(item) // add if not exists
+		}
+
+		if (item.isSpecial) {
+			selectedItems.value = selectedItems.value.slice(0, multiIndex)
+			selectedItems.value[multiIndex] = item
+			currentLevelIndex.value = levelIndex
+		}
+		return // Exit early to avoid regular item selection logic
+	}
 
 	// For special items
 	if (item.isSpecial) {
@@ -107,7 +132,11 @@ const addDate = (str: string) => {
 		isLast: true,
 	}
 	let length = selectedItems.value.length - 1
-	if (selectedItems.value.at(-1)?.isLast) {
+
+	// Modified logic to handle "один из" case
+	if (selectedItems.value.at(-1)?.label === 'один из') {
+		selectedItems.value[length] = item // Replace the last item
+	} else if (selectedItems.value.at(-1)?.isLast) {
 		selectedItems.value.splice(length, 1, item)
 	} else selectedItems.value.push(item)
 }
@@ -132,12 +161,29 @@ const myhei = computed(() => {
 const isDate = computed(() => {
 	return selectedItems.value.at(-1)?.date
 })
+
+// const calcClass = (item: MenuItem, index: number) => {
+// 	if (isItemSelected(item, index) && item.id == 'fio') return 'selfio'
+// 	if (isItemSelected(item, index)) return 'selected'
+// 	if (item.id == 'fio') return 'first'
+// 	else return ''
+// }
+
 const calcClass = (item: MenuItem, index: number) => {
-	if (isItemSelected(item, index) && item.id == 'fio') return 'selfio'
-	if (isItemSelected(item, index)) return 'selected'
-	if (item.id == 'fio') return 'first'
-	else return ''
+	// Highlight selected items in the menu list
+	if (item.id === 'fio') {
+		return selectedItems.value.some((selectedItem) => selectedItem.id === 'fio')
+			? 'selfio'
+			: 'first'
+	}
+
+	if (selectedItems.value.some((selectedItem) => selectedItem.id === item.id)) {
+		return 'selected'
+	}
+
+	return ''
 }
+
 const query = ref('')
 const isLast = computed(() => {
 	return selectedItems.value.at(-1)?.isLast
