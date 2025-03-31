@@ -48,7 +48,7 @@ div
 			div(v-for="item in group" :key="item.id")
 				q-input(v-if='item.isPrompt' v-model="item.label" dense outlined)
 				div(v-else) {{ item.label }}
-			q-checkbox(dense v-model="group.at(-1).isPar" color="secondary" size='xs' @update:model-value='test(group)')
+			q-checkbox(dense v-model="group.at(-1)?.isPar" color="secondary" size='xs' @update:model-value='test(group)')
 				q-tooltip Параметр
 			div
 			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
