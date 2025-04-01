@@ -75,8 +75,8 @@ const stopLeft = async () => {
 	stop()
 }
 
-const shakeKey = ref(0)
 const isShaking = ref(false)
+const isShaking1 = ref(false)
 
 const startPred = () => {
 	if (!panels.pred) startLeft()
@@ -84,6 +84,15 @@ const startPred = () => {
 		isShaking.value = true
 		setTimeout(() => {
 			isShaking.value = false
+		}, 1000)
+	}
+}
+const startPrev = () => {
+	if (!panels.preview) startRight()
+	else {
+		isShaking1.value = true
+		setTimeout(() => {
+			isShaking1.value = false
 		}, 1000)
 	}
 }
@@ -109,7 +118,7 @@ q-page(padding)
 						template(v-else)
 							IconLogic.ic
 							q-tooltip Конструктор
-					q-btn(flat round dense color="primary" @click="startRight") 
+					q-btn(flat round dense color="primary" @click="startPrev") 
 						IconSearch.ic
 						q-tooltip Искать
 
@@ -119,10 +128,9 @@ q-page(padding)
 
 			.q-mx-md(v-if='main')
 				Loading(@startPred='startPred')
-				// Loading(@startPred='startLeft')
 
-		PreviewButton(@activate='startRight' @stop='stopRight')
-		PredButton(@activate='startPred' @stop='stopLeft' ref='pred' :class="{'shake-horizontal': isShaking}")
+		PreviewButton(@activate='startRight' @stop='stopRight' :class="{'shake-horizontal': isShaking1}")
+		PredButton(@activate='startLeft' @stop='stopLeft' :class="{'shake-horizontal': isShaking}")
 
 	DragEditWindow1(v-model="mykeys.isDragWindow")
 </template>
