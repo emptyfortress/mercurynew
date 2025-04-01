@@ -31,34 +31,59 @@ const isGridEmpty = computed(() => mykeys.keys.length === 0)
 const isPar = (group: any) => {
 	return group.at(-1).isPar
 }
+
+const formatGroup = (group: any) => {
+	const hasMulti = group.some((item: any) => item.isMulti)
+	if (!hasMulti) {
+		return group
+			.map((item: any) => {
+				if (item.isPrompt) {
+					return `<q-input v-model="item.label" dense outlined />`
+				} else if (item.isSpecial || item.isSpecial1) {
+					return `<q-chip dense color="purple-2">${item.label}</q-chip>`
+				} else {
+					return `<div>${item.label}</div>`
+				}
+			})
+			.join('')
+	} else {
+		return group
+			.map((item: any) => {
+				if (item.isPrompt) {
+					return `<q-input v-model="item.label" dense outlined />`
+				} else if (item.isSpecial || item.isSpecial1) {
+					return `<q-chip dense color="purple-2">${item.label}</q-chip>`
+				} else {
+					return `<div>${item.label}</div>`
+				}
+			})
+			.join(' | ')
+	}
+}
 </script>
 
 <template lang="pug">
 div
-	.empty(v-if='isGridEmpty')
-		IconFaceMask.big
-		div Запрос не настроен.
-		q-btn.q-mt-md(unelevated color="primary" label="Настроить" @click="mykeys.toggleDragWindow") 
+  .empty(v-if='isGridEmpty')
+    IconFaceMask.big
+    div Запрос не настроен.
+    q-btn.q-mt-md(unelevated color="primary" label="Настроить" @click="mykeys.toggleDragWindow")
 
-	.grid(ref='parent')
-		.condition(v-for="(group, index) in tapes" :key="group[0].id")
-			q-icon(name='mdi-drag-vertical' size='20px' color="grey")
-			div(v-for="(item,index) in group" :key="item.id")
-				q-input(v-if='item.isPrompt' v-model="item.label" dense outlined)
-				div(v-if='!item.isPrompt && !item.isSpecial && !item.isSpecial1') {{ item.label }}
-				q-chip(v-if='item.isSpecial || item.isSpecial1' dense color="purple-2") {{ item.label}}
+  .grid(ref='parent')
+    .condition(v-for="(group, index) in tapes" :key="group[0].id")
+      q-icon(name='mdi-drag-vertical' size='20px' color="grey")
+      .condition(v-html="formatGroup(group)")
 
-			q-checkbox(v-if='isPar(group)' dense :model-value="isPar(group)" color="secondary" size='xs')
-				q-tooltip Параметр
-			div
-			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
+      q-checkbox(v-if='isPar(group)' dense :model-value="isPar(group)" color="secondary" size='xs')
+        q-tooltip Параметр
+      div
+      q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
 
-	.text-center.q-mt-md(v-if='!isGridEmpty')
-		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mykeys.toggleDragWindow") 
-		q-btn.q-ml-sm(flat color="negative" @click="clearAll") 
-			IconClear.ic.q-mr-sm
-			.q-cursor Очистить все
-
+  .text-center.q-mt-md(v-if='!isGridEmpty')
+    q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mykeys.toggleDragWindow")
+    q-btn.q-ml-sm(flat color="negative" @click="clearAll")
+      IconClear.ic.q-mr-sm
+      .q-cursor Очистить все
 </template>
 
 <style scoped lang="scss">
