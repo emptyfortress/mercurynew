@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { computed } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import { animations, state } from '@formkit/drag-and-drop'
@@ -15,9 +15,6 @@ const config = {
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('condition')
 	},
-	// onDragstart: (e: any) => {
-	// 	draggedItem.value = e.draggedNode.data.index
-	// },
 }
 const [parent, tapes] = useDragAndDrop(mykeys.keys, config)
 
@@ -31,9 +28,6 @@ const clearAll = () => {
 
 const isGridEmpty = computed(() => mykeys.keys.length === 0)
 
-const updatePar = (group: any) => {
-	group.at(-1).isPar = !group.at(-1).isPar
-}
 const isPar = (group: any) => {
 	return group.at(-1).isPar
 }
@@ -49,10 +43,12 @@ div
 	.grid(ref='parent')
 		.condition(v-for="(group, index) in tapes" :key="group[0].id")
 			q-icon(name='mdi-drag-vertical' size='20px' color="grey")
-			div(v-for="item in group" :key="item.id")
+			div(v-for="(item,index) in group" :key="item.id")
 				q-input(v-if='item.isPrompt' v-model="item.label" dense outlined)
-				div(v-else) {{ item.label }}
-			q-checkbox(dense :model-value="isPar(group)" color="secondary" size='xs' @update:model-value='updatePar(group)')
+				div(v-if='!item.isPrompt && !item.isSpecial && !item.isSpecial1') {{ item.label }}
+				q-chip(v-if='item.isSpecial || item.isSpecial1' dense color="purple-2") {{ item.label}}
+
+			q-checkbox(v-if='isPar(group)' dense :model-value="isPar(group)" color="secondary" size='xs')
 				q-tooltip Параметр
 			div
 			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
@@ -125,4 +121,13 @@ div
 :deep(.q-field--dense .q-field__control) {
 	height: 28px;
 }
+// .last {
+// 	background: #dedede;
+// 	padding: 2px 6px;
+// }
+// .last::after {
+// 	content: '✓';
+// 	color: $primary;
+// 	right: 0.5rem;
+// }
 </style>

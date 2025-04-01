@@ -69,6 +69,7 @@ const addCond = () => {
 			isSpecial: el.isSpecial,
 			isLast: el.isLast,
 			isInput: el.isInput,
+			isMulti: el.isMulti,
 		}))
 
 		if (items.at(-1)?.isInput) {
