@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import type { QTableProps } from 'quasar'
+import { useKeys } from '@/stores/keys'
+
+const mykeys = useKeys()
 
 const isLoaded = ref(false)
 
@@ -15,12 +17,6 @@ onMounted(() => {
 		isLoaded.value = true
 	}, 1000)
 })
-const cols: QTableProps['columns'] = [
-	{ name: 'author', field: 'author', label: 'Автор', align: 'left', sortable: true },
-	{ name: 'date', field: 'date', label: 'Дата начала отпуска', align: 'left', sortable: true },
-	{ name: 'date1', field: 'date1', label: 'Дата окончания отпуска', align: 'left', sortable: true },
-	{ name: 'comment', field: 'comment', label: 'Комментарий', align: 'left', sortable: true },
-]
 
 const rows = [
 	{
@@ -64,7 +60,7 @@ const rows = [
 	.ready(v-if='isLoaded')
 		q-table(bordered
 			flat
-			:columns="cols"
+			:columns="mykeys.activeColumns"
 			:rows="rows"
 			hide-bottom
 		)

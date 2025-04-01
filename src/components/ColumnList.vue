@@ -1,37 +1,29 @@
 <script setup lang="ts">
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+import { useKeys } from '@/stores/keys'
 
-const cols = [
-	{ id: 0, vis: true, label: 'Автор' },
-	{ id: 1, vis: true, label: 'Дата начала отпуска' },
-	{ id: 2, vis: true, label: 'Дата окончания отпуска' },
-	{ id: 3, vis: true, label: 'Комментарий' },
-	{ id: 4, vis: false, label: 'Процесс завершен' },
-	{ id: 5, vis: false, label: 'Процесс не завершен' },
-	{ id: 6, vis: false, label: 'Планируемая дата завершения' },
-	{ id: 7, vis: false, label: 'Просрочено' },
-	{ id: 8, vis: false, label: 'Есть просроченный этап' },
-	{ id: 9, vis: false, label: 'Текущий этап обработки' },
-	{ id: 10, vis: false, label: 'Исполнитель текущего этапа' },
-]
+const mykeys = useKeys()
 
 const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
-	draggable: (el: any) => {
-		return el.id !== 'no-drag'
+	onSort: (event: any) => {
+		mykeys.updateCols(event.values)
 	},
 }
-const [parent, tapes] = useDragAndDrop(cols, config)
+
+const [parent, tapes] = useDragAndDrop(mykeys.columns, config)
 </script>
 
 <template lang="pug">
 q-list.pa(ref='parent' dense)
 	q-item(v-for="item in tapes" :key='item.id')
 		q-item-section(side)
-			q-checkbox(v-model="item.vis" dense size='sm')
+			.row.items-center
+				q-icon.q-mr-sm(name="mdi-drag-vertical" size='18px')
+				q-checkbox(v-model="item.active" dense size='sm')
 		q-item-section()
 			q-item-label {{ item.label }}
 </template>
@@ -41,7 +33,7 @@ q-list.pa(ref='parent' dense)
 	background: #fff;
 	cursor: move;
 	text-align: left;
-	margin-left: 0.5rem;
+	padding-left: 0.5rem;
 }
 
 .ghost {

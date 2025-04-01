@@ -108,3 +108,13 @@ interface MenuLevel {
 	items: MenuItem[]
 	isSpecial: boolean
 }
+
+interface PredCols {
+	id: number
+	active: boolean
+	label: string
+	name: string
+	field: string
+	align: left
+	sortable: boolean
+}

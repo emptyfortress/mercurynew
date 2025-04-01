@@ -174,8 +174,9 @@ q-page(padding)
 
 				.text-center
 					.q-gutter-x-sm
-						q-btn(unelevated color="primary" label="Настроить папку" @click.stop='navigate1(item.id)') 
-						q-btn(unelevated color="primary" label="Редактор запросов (простой)" @click.stop='navigate2(item.id)') 
+						q-btn(flat color="negative" label="Удалить" @click.stop='') 
+						q-btn(flat color="primary" label="Дублировать" @click.stop='') 
+						q-btn(unelevated color="primary" label="Настроить" @click.stop='navigate2(item.id)') 
 						// q-btn(unelevated color="primary" label="Редактор запросов (сложный)" @click.stop='navigate(item.id)') 
 						// q-btn(unelevated color="primary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
 

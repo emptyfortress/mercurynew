@@ -6,6 +6,9 @@ import ThemeList from '@/components/ThemeList.vue'
 import IconPallete from '@/components/icons/IconPallete.vue'
 import IconPaint from '@/components/icons/IconPaint.vue'
 import DrawBottom from '@/components/DrawBottom.vue'
+import { useKeys } from '@/stores/keys'
+
+const { columns } = useKeys()
 
 const item1 = ref(true)
 const item2 = ref(false)
@@ -25,7 +28,7 @@ q-scroll-area(:style='hei')
 				q-item-section(side)
 					IconTableColumns.ic
 				q-item-section.zg Колонки
-			ColumnList
+			ColumnList(:cols='columns')
 
 		q-expansion-item(v-model="item2")
 			template(v-slot:header)
