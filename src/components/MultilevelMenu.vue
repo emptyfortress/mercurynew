@@ -162,13 +162,6 @@ const isDate = computed(() => {
 	return selectedItems.value.at(-1)?.date
 })
 
-// const calcClass = (item: MenuItem, index: number) => {
-// 	if (isItemSelected(item, index) && item.id == 'fio') return 'selfio'
-// 	if (isItemSelected(item, index)) return 'selected'
-// 	if (item.id == 'fio') return 'first'
-// 	else return ''
-// }
-
 const calcClass = (item: MenuItem, index: number) => {
 	// Highlight selected items in the menu list
 	if (item.id === 'fio') {
@@ -213,7 +206,7 @@ const showPar = computed(() => {
 				:key="index"
 				:class="{ active: currentLevelIndex === index && !isDate }"
 			)
-				ul.menu-items
+				ul.menu-items()
 					li.menu-item(
 						v-for="item in level.items"
 						:key="item.id"
