@@ -10,7 +10,7 @@ const modelValue = defineModel()
 	:delay='600')
 	.zg
 		q-icon(name="mdi-tune-vertical-variant")
-		| Параметры запроса
+		| Форма запроса
 </template>
 
 <style scoped lang="scss">

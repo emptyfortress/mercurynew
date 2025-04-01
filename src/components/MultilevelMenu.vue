@@ -180,7 +180,7 @@ const isLast = computed(() => {
 })
 
 const showPar = computed(() => {
-	return isLast.value
+	return selectedItems.value.at(-1)?.isPar
 })
 </script>
 
@@ -218,9 +218,9 @@ const showPar = computed(() => {
 				LevelDateNew(@add='addDate')
 
 			.last(v-if='showPar')
-				q-checkbox(v-model="par" label='Параметр')
-				.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр
-				.text-caption.q-ml-sm Включите этот флаг, если, при входе в папку, вы хотите использовать данное условие, как изменяемый параметр.
+				q-checkbox(v-model="par" label='Изменяемый параметр')
+				.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр в форме запроса
+				.text-caption.q-ml-sm Включите этот флаг, если, при открытии папки, вы хотите показать ФОРМУ с данным условием, которое можно менять.
 
 </template>
 <style lang="scss">

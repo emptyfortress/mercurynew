@@ -39,6 +39,7 @@ const str = [
 		isSpecial: true,
 		isLast: true,
 		isInput: true,
+		isPar: true,
 	},
 	{
 		id: uid(),
@@ -47,6 +48,7 @@ const str = [
 		isSpecial: true,
 		isLast: true,
 		isInput: true,
+		isPar: true,
 	},
 	{
 		id: uid(),
@@ -55,6 +57,7 @@ const str = [
 		isSpecial: true,
 		isLast: true,
 		isInput: true,
+		isPar: true,
 	},
 	{
 		id: uid(),
@@ -63,6 +66,7 @@ const str = [
 		isSpecial: true,
 		isLast: true,
 		isInput: true,
+		isPar: true,
 	},
 	{
 		id: uid(),
@@ -71,6 +75,7 @@ const str = [
 		isSpecial: true,
 		isLast: true,
 		isInput: true,
+		isPar: true,
 	},
 	{
 		id: uid(),
@@ -79,6 +84,7 @@ const str = [
 		isSpecial: true,
 		isLast: true,
 		isInput: true,
+		isPar: true,
 	},
 	{
 		id: uid(),

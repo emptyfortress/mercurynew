@@ -24,7 +24,7 @@ const toggle = ref(true)
 		
 	.empty(v-if='!mykeys.hasParameters.length && !isKeyEmpty')
 		IconRocket.big
-		div Запрос не содержит параметров.
+		div Показ формы не требуется.
 
 
 	.action(v-if="!isKeyEmpty")
