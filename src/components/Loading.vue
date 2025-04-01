@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useKeys } from '@/stores/keys'
 
 const mykeys = useKeys()
 
 const isLoaded = ref(false)
 
-const load = () => {
-	setTimeout(() => {
-		isLoaded.value = true
-	}, 1500)
-}
+// const load = () => {
+// 	setTimeout(() => {
+// 		isLoaded.value = true
+// 	}, 1500)
+// }
 
 onMounted(() => {
 	setTimeout(() => {
@@ -53,6 +53,14 @@ const rows = [
 		author: 'Козлов Д.Д.',
 	},
 ]
+
+const calcClass = computed(() => {
+	if (mykeys.theme == 1) return 'contr'
+	if (mykeys.theme == 2) return 'mex'
+	if (mykeys.theme == 3) return 'mex1'
+	if (mykeys.theme == 4) return 'water'
+	return 'def'
+})
 </script>
 
 <template lang="pug">
@@ -63,6 +71,7 @@ const rows = [
 			:columns="mykeys.activeColumns"
 			:rows="rows"
 			hide-bottom
+			:table-header-class="calcClass"
 		)
 		.water Образец
 
@@ -119,6 +128,23 @@ const rows = [
 }
 :deep(.q-table thead tr) {
 	height: 28px;
-	background: #ebebebeb;
+}
+:deep(.q-table thead tr.def) {
+	background: #ccc;
+}
+:deep(.q-table thead tr.contr) {
+	background: #333;
+	color: #fff;
+}
+:deep(.q-table thead tr.mex1) {
+	background: orange;
+}
+:deep(.q-table thead tr.mex) {
+	background: $amber-10;
+	color: #fff;
+}
+:deep(.q-table thead tr.water) {
+	background: $blue-3;
+	color: $blue-10;
 }
 </style>

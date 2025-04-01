@@ -1,3 +1,4 @@
+import type { set } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
@@ -16,6 +17,7 @@ export const useKeys = defineStore('mykeys', () => {
 	const addItem = (e: MenuItem[]): void => {
 		keys.value.push(e)
 	}
+
 	const columns = ref<PredCols[]>([
 		{
 			id: 0,
@@ -117,6 +119,7 @@ export const useKeys = defineStore('mykeys', () => {
 			sortable: true,
 		},
 	])
+
 	// columns update
 	const updateCols = (list: PredCols[]) => {
 		columns.value = list
@@ -126,12 +129,15 @@ export const useKeys = defineStore('mykeys', () => {
 		return columns.value.filter((col) => col.active)
 	})
 
+	const theme = ref(0)
+
 	return {
 		keys,
 		isDragWindow,
 		hasParameters,
 		columns,
 		activeColumns,
+		theme,
 		toggleDragWindow,
 		addItem,
 		updateCols,
