@@ -49,6 +49,10 @@ const selectItem = (item: MenuItem, levelIndex: number) => {
 
 			currentLevelIndex.value = levelIndex
 			selectedItems.value[levelIndex] = item
+
+			// Clear subsequent levels and items
+			menuLevels.value = menuLevels.value.slice(0, levelIndex + 1)
+			currentLevelIndex.value = levelIndex
 		} else {
 			selectedItems.value.push(item) // add if not exists
 		}
@@ -66,13 +70,7 @@ const selectItem = (item: MenuItem, levelIndex: number) => {
 		// Update selection without clearing subsequent items
 		selectedItems.value[levelIndex] = item
 
-		// If we're changing between special items at this level
-		if (currentLevel.isSpecial) {
-			// Keep all existing levels below this one
-			return
-		}
-
-		// If this is the first selection of a special item
+		// Always update children items
 		if (item.children && item.children.length > 0) {
 			const nextLevelIndex = levelIndex + 1
 			const nextLevel: MenuLevel = {
@@ -82,8 +80,7 @@ const selectItem = (item: MenuItem, levelIndex: number) => {
 			}
 
 			if (menuLevels.value.length > nextLevelIndex) {
-				return
-				// menuLevels.value[nextLevelIndex] = nextLevel
+				menuLevels.value[nextLevelIndex] = nextLevel
 			} else {
 				menuLevels.value.push(nextLevel)
 			}
