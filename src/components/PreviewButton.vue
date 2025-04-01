@@ -6,6 +6,7 @@ import { usePanels } from '@/stores/panels'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { nextTick } from 'vue'
+import IconTableEdit from '@/components/icons/IconTableEdit.vue'
 
 const panels = usePanels()
 
@@ -45,14 +46,12 @@ const close = () => {
 	@click='expand'
 	)
 
-	q-icon(v-if='!panels.preview'
+	IconTableEdit.ic(
+		v-if='!panels.preview',
 		v-motion
-		:initial='{ opacity: 0, rotate: "0deg" }'
-		:enter='{ opacity: 1, rotate: "0deg", }'
-		:hovered='{ rotate: "90deg", }'
-		name="mdi-tune-vertical-variant"
-		color="primary"
-		size='24px')
+		:initial='{ rotate: "0deg" }'
+		:hovered='{ rotate: "90deg" }'
+	)
 
 	CloseButton(v-model="panels.preview" @close="close")
 
@@ -91,8 +90,8 @@ const close = () => {
 	}
 
 	.ic {
-		margin-top: 13px;
-		font-size: 1.4rem;
+		margin-top: 2px;
+		font-size: 1.5rem;
 		color: $primary;
 	}
 }

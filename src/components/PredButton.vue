@@ -44,12 +44,21 @@ const close = () => {
 	:class='{ expand: panels.pred }'
 	@click='expand'
 	)
-	IconTableEdit.ic(
-		v-if='!panels.pred',
+	q-icon(v-if='!panels.pred'
 		v-motion
-		:initial='{ rotate: "0deg" }'
-		:hovered='{ rotate: "90deg" }'
-	)
+		:initial='{ opacity: 0, rotate: "0deg" }'
+		:enter='{ opacity: 1, rotate: "0deg", }'
+		:hovered='{ rotate: "90deg", }'
+		name="mdi-tune-vertical-variant"
+		color="primary"
+		size='24px')
+
+	// IconTableEdit.ic(
+	// 	v-if='!panels.pred',
+	// 	v-motion
+	// 	:initial='{ rotate: "0deg" }'
+	// 	:hovered='{ rotate: "90deg" }'
+	// )
 
 	CloseButton(v-model="panels.pred" @close="close")
 
@@ -61,7 +70,7 @@ const close = () => {
 		)
 		.top
 			.zg
-				IconTableEdit.ico
+				q-icon.ico(name="mdi-tune-vertical-variant" color="primary")
 				|Представление
 		PredContent
 
@@ -76,7 +85,7 @@ const close = () => {
 .zg .ico {
 	font-size: 1.5rem;
 	margin-right: 0.5rem;
-	margin-bottom: -3px;
+	margin-bottom: 6px;
 }
 
 .button {
@@ -90,6 +99,7 @@ const close = () => {
 	left: -58px;
 	text-align: center;
 	cursor: pointer;
+	padding: 0.6rem;
 
 	.ic {
 		margin-top: 11px;
@@ -103,6 +113,7 @@ const close = () => {
 		left: -395px;
 		border-radius: 6px;
 		cursor: default;
+		padding: 0;
 	}
 }
 

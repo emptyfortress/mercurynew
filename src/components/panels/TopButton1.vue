@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import IconTableEdit from '@/components/icons/IconTableEdit.vue'
+
 const modelValue = defineModel()
 </script>
 
@@ -9,7 +11,7 @@ const modelValue = defineModel()
 	:enter='{ opacity: 1 }'
 	:delay='600')
 	.zg
-		q-icon(name="mdi-tune-vertical-variant")
+		IconTableEdit.ic()
 		| Форма запроса
 </template>
 
@@ -23,8 +25,10 @@ const modelValue = defineModel()
 	color: $primary;
 }
 
-.zg .q-icon {
-	font-size: 1.3rem;
+.ic {
+	font-size: 1.5rem;
+	color: $primary;
 	margin-right: 0.5rem;
+	margin-bottom: -4px;
 }
 </style>

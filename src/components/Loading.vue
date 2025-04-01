@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useKeys } from '@/stores/keys'
+import { usePanels } from '@/stores/panels'
+
+const panels = usePanels()
 
 const mykeys = useKeys()
 
 const isLoaded = ref(false)
-
-// const load = () => {
-// 	setTimeout(() => {
-// 		isLoaded.value = true
-// 	}, 1500)
-// }
 
 onMounted(() => {
 	setTimeout(() => {
@@ -61,11 +58,19 @@ const calcClass = computed(() => {
 	if (mykeys.theme == 4) return 'water'
 	return 'def'
 })
+
+const emit = defineEmits(['startPred'])
+const action = () => {
+	emit('startPred')
+}
 </script>
 
 <template lang="pug">
 .loading
 	.ready(v-if='isLoaded')
+		.flo
+			q-btn(flat round icon="mdi-tune-vertical-variant" color="primary" @click="action" size="12px") 
+				q-tooltip Настройки представления
 		q-table(bordered
 			flat
 			:columns="mykeys.activeColumns"
@@ -100,8 +105,9 @@ const calcClass = computed(() => {
 </template>
 
 <style scoped lang="scss">
-.loading {
-	margin-top: 1rem;
+.flo {
+	display: flex;
+	justify-content: flex-end;
 }
 
 .ready {
