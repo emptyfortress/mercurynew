@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, h } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import { animations, state } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useKeys } from '@/stores/keys'
+import { QInput, QChip } from 'quasar'
 
 const mykeys = useKeys()
 
@@ -33,31 +34,38 @@ const isPar = (group: any) => {
 }
 
 const formatGroup = (group: any) => {
-	const hasMulti = group.some((item: any) => item.isMulti)
-	if (!hasMulti) {
-		return group
-			.map((item: any) => {
-				if (item.isPrompt) {
-					return `<q-input v-model="item.label" dense outlined />`
-				} else if (item.isSpecial || item.isSpecial1) {
-					return `<q-chip dense color="purple-2">${item.label}</q-chip>`
-				} else {
-					return `<div>${item.label}</div>`
-				}
-			})
-			.join('')
+	let result: any = []
+	let multiFoundIndex = -1
+
+	for (let i = 0; i < group.length; i++) {
+		if (group[i].isMulti) {
+			multiFoundIndex = i
+			break
+		}
+	}
+
+	group.forEach((item: any, index: number) => {
+		result.push(formatItem(item))
+		if (multiFoundIndex !== -1 && index > multiFoundIndex && index < group.length - 2) {
+			result.push(' | ')
+		}
+	})
+
+	return result
+}
+
+const formatItem = (item: any) => {
+	if (item.isPrompt) {
+		return h(QInput, {
+			modelValue: item.label,
+			'onUpdate:modelValue': (value: any) => (item.label = value),
+			dense: true,
+			outlined: true,
+		})
+	} else if (item.isSpecial || item.isSpecial1) {
+		return h(QChip, { dense: true, color: 'purple-2' }, () => item.label)
 	} else {
-		return group
-			.map((item: any) => {
-				if (item.isPrompt) {
-					return `<q-input v-model="item.label" dense outlined />`
-				} else if (item.isSpecial || item.isSpecial1) {
-					return `<q-chip dense color="purple-2">${item.label}</q-chip>`
-				} else {
-					return `<div>${item.label}</div>`
-				}
-			})
-			.join(' | ')
+		return h('div', item.label)
 	}
 }
 </script>
@@ -72,7 +80,11 @@ div
   .grid(ref='parent')
     .condition(v-for="(group, index) in tapes" :key="group[0].id")
       q-icon(name='mdi-drag-vertical' size='20px' color="grey")
-      .condition(v-html="formatGroup(group)")
+      div(v-for="(element, index) in formatGroup(group)" :key="index")
+        template(v-if="typeof element === 'string'")
+          span {{ element }}
+        template(v-else)
+          component(:is="element")
 
       q-checkbox(v-if='isPar(group)' dense :model-value="isPar(group)" color="secondary" size='xs')
         q-tooltip Параметр

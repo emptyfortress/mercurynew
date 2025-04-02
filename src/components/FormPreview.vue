@@ -19,7 +19,7 @@ const toggle = ref(true)
 	.grid(v-if='mykeys.hasParameters.length')
 		template(v-for="(group, index) in mykeys.hasParameters" :key="group[0].id")
 			div {{ group[0].label }}:
-			q-input(v-model="group[2].label", filled, dense)
+			q-input(:model-value="group[2].label", filled, dense)
 			q-toggle(size="sm" v-model="toggle")
 		
 	.empty(v-if='!mykeys.hasParameters.length && !isKeyEmpty')
