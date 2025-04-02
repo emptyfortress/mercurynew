@@ -85,6 +85,7 @@ const addCond = () => {
 			id: uid(),
 			label: '',
 			isPar: par.value,
+			isActive: true,
 		})
 		mykeys.addItem(items)
 		reset()

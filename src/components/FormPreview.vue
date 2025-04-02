@@ -18,9 +18,11 @@ const toggle = ref(true)
 
 	.grid(v-if='mykeys.hasParameters.length')
 		template(v-for="(group, index) in mykeys.hasParameters" :key="group[0].id")
-			div {{ group[0].label }}:
-			q-input(:model-value="group[2].label", filled, dense)
-			q-toggle(size="sm" v-model="toggle")
+			.edit(:class="{'dis': !group[3].isActive}") {{ group[0].label }}:
+				q-popup-edit(v-model="group[0].label" auto-save v-slot="scope")
+					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+			q-input(:model-value="group[2].label", filled, dense, :disable="!group[3].isActive")
+			q-toggle(size="sm" v-model="group[3].isActive")
 		
 	.empty(v-if='!mykeys.hasParameters.length && !isKeyEmpty')
 		IconRocket.big
@@ -73,5 +75,12 @@ const toggle = ref(true)
 	align-items: center;
 	width: fit-content;
 	gap: 0.5rem;
+}
+.edit {
+	border-bottom: 1px dotted $primary;
+	cursor: pointer;
+}
+.dis {
+	opacity: 0.3;
 }
 </style>
