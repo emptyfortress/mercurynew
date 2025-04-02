@@ -2,7 +2,8 @@
 import { computed, h } from 'vue'
 import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconClear from '@/components/icons/IconClear.vue'
-import { animations, state } from '@formkit/drag-and-drop'
+import IconSearch from '@/components/icons/IconSearch.vue'
+import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useKeys } from '@/stores/keys'
 import { QInput, QChip } from 'quasar'
@@ -28,10 +29,6 @@ const clearAll = () => {
 }
 
 const isGridEmpty = computed(() => mykeys.keys.length === 0)
-
-const isPar = (group: any) => {
-	return group.at(-1).isPar
-}
 
 const formatGroup = (group: any) => {
 	let result: any = []
@@ -72,30 +69,33 @@ const formatItem = (item: any) => {
 
 <template lang="pug">
 div
-  .empty(v-if='isGridEmpty')
-    IconFaceMask.big
-    div Запрос не настроен.
-    q-btn.q-mt-md(unelevated color="primary" label="Настроить" @click="mykeys.toggleDragWindow")
+	.empty(v-if='isGridEmpty')
+		IconFaceMask.big
+		div Запрос не настроен.
+		q-btn.q-mt-md(unelevated color="primary" label="Настроить" @click="mykeys.toggleDragWindow")
 
-  .grid(ref='parent')
-    .condition(v-for="(group, index) in tapes" :key="group[0].id")
-      q-icon(name='mdi-drag-vertical' size='20px' color="grey")
-      div(v-for="(element, index) in formatGroup(group)" :key="index")
-        template(v-if="typeof element === 'string'")
-          span {{ element }}
-        template(v-else)
-          component(:is="element")
+	.grid(ref='parent')
+		.condition(v-for="(group, index) in tapes" :key="group[0].id")
+			q-icon(name='mdi-drag-vertical' size='20px' color="grey")
+			div(v-for="(element, index) in formatGroup(group)" :key="index")
+				template(v-if="typeof element === 'string'")
+					span {{ element }}
+				template(v-else)
+					component(:is="element")
 
-      q-checkbox(v-if='isPar(group)' dense :model-value="isPar(group)" color="secondary" size='xs')
-        q-tooltip Параметр
-      div
-      q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
+			q-checkbox(v-if='group[3].isVis' dense v-model="group[3].isPar" color="primary" size='xs')
+				q-tooltip Параметр
+			div
+			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
 
-  .text-center.q-mt-md(v-if='!isGridEmpty')
-    q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mykeys.toggleDragWindow")
-    q-btn.q-ml-sm(flat color="negative" @click="clearAll")
-      IconClear.ic.q-mr-sm
-      .q-cursor Очистить все
+		.text-center.q-mt-md(v-if='!isGridEmpty')
+			q-btn.q-ml-sm(flat color="negative" @click="clearAll")
+				IconClear.ic.q-mr-sm
+				.q-cursor Очистить все
+			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mykeys.toggleDragWindow")
+			q-btn(flat color="primary" @click="") 
+				IconSearch.ic.q-mr-sm
+				.q-cursor Выполнить запрос
 </template>
 
 <style scoped lang="scss">

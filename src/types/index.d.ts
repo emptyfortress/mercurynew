@@ -102,6 +102,7 @@ interface MenuItem {
 	isPar?: boolean
 	isMulti?: boolean
 	isActive?: boolean
+	isVis?: boolean
 }
 
 interface MenuLevel {

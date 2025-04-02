@@ -61,6 +61,10 @@ const transformedData = computed(() => {
 	}
 })
 
+const showPar = computed(() => {
+	return selectedItems.value?.at(-1)?.isPar || selectedItems.value?.at(-1)?.date
+})
+
 const addCond = () => {
 	if (transformedData.value) {
 		const items: MenuItem[] = transformedData.value.map((el: MenuItem) => ({
@@ -85,6 +89,7 @@ const addCond = () => {
 			id: uid(),
 			label: '',
 			isPar: par.value,
+			isVis: showPar.value,
 			isActive: true,
 		})
 		mykeys.addItem(items)

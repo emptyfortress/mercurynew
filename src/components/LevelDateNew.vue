@@ -1,13 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, watch, watchEffect } from 'vue'
-
-// const props = defineProps({
-// 	txt: {
-// 		type: String,
-// 		required: true,
-// 		default: ''
-// 	}
-// })
+import { ref, reactive, watch } from 'vue'
 
 const emit = defineEmits(['add'])
 

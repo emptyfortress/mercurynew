@@ -127,15 +127,11 @@ const addDate = (str: string) => {
 		label: str,
 		date: true,
 		isLast: true,
+		isVis: true,
+		isPar: par.value,
 	}
-	let length = selectedItems.value.length - 1
 
-	// Modified logic to handle "один из" case
-	if (selectedItems.value.at(-1)?.label === 'один из') {
-		selectedItems.value[length] = item // Replace the last item
-	} else if (selectedItems.value.at(-1)?.isLast) {
-		selectedItems.value.splice(length, 1, item)
-	} else selectedItems.value.push(item)
+	selectedItems.value.push(item)
 }
 
 const removeItem = (index: number) => {
@@ -181,6 +177,7 @@ const isLast = computed(() => {
 
 const showPar = computed(() => {
 	return selectedItems.value.at(-1)?.isPar
+	// return selectedItems.value.at(-1)?.isPar
 })
 </script>
 
@@ -217,7 +214,7 @@ const showPar = computed(() => {
 			.level(v-if='isDate' :class="{ active: isDate }")
 				LevelDateNew(@add='addDate')
 
-			.last(v-if='showPar')
+			.last(v-if='showPar || isDate')
 				q-checkbox(v-model="par" label='Изменяемый параметр')
 				.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр в форме запроса
 				.text-caption.q-ml-sm Включите этот флаг, если, при открытии папки, вы хотите показать ФОРМУ с данным условием, которое можно менять.
