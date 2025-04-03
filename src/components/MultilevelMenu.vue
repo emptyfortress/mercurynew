@@ -23,16 +23,29 @@ const menuLevels = ref<MenuLevel[]>([
 ])
 
 const par = ref(false)
-const visibleLevels = computed(() => {
-	return menuLevels.value.slice(0, currentLevelIndex.value + 1)
-})
+const query = ref('')
 
+const visibleLevels = computed(() => {
+	return menuLevels.value.slice(0, currentLevelIndex.value + 1).map((level, index) => {
+		if (index === currentLevelIndex.value) {
+			// Фильтрация только для последнего уровня
+			return {
+				...level,
+				items: level.items.filter((item) =>
+					item.label.toLowerCase().includes(query.value.toLowerCase())
+				),
+			}
+		}
+		return level // Остальные уровни без изменений
+	})
+})
 // const isItemSelected = (item: MenuItem, levelIndex: number) => {
-// 	return selectedItems.value[levelIndex]?.id === item.id
+//  return selectedItems.value[levelIndex]?.id === item.id
 // }
 
 const selectItem = (item: MenuItem, levelIndex: number) => {
-	// const currentLevel = menuLevels.value[levelIndex]
+	// clear query
+	query.value = ''
 
 	// Logic to handle isMulti items
 	const multiIndex = selectedItems.value.findIndex((si: MenuItem) => si.isMulti)
@@ -168,7 +181,6 @@ const calcClass = (item: MenuItem, index: number) => {
 	return ''
 }
 
-const query = ref('')
 const isLast = computed(() => {
 	return selectedItems.value.at(-1)?.isLast
 })
@@ -181,14 +193,13 @@ const showPar = computed(() => {
 
 <template lang="pug">
 .multi-level-menu
-
 	RequestEditorInput(
 		v-model:selectedItems="selectedItems",
-		v-model:query='query'
-		v-model:par='par'
-		v-model:isLast='isLast'
-		@remove='removeItem',
-		@reset='reset'
+		v-model:query="query"
+		v-model:par="par"
+		v-model:isLast="isLast"
+		@remove="removeItem",
+		@reset="reset"
 	)
 
 	.menu-levels
@@ -205,19 +216,18 @@ const showPar = computed(() => {
 						@click="selectItem(item, index)"
 						:class="calcClass(item, index)"
 					)
-						q-icon.q-mr-md(v-if='item.isKey' name="mdi-star" color="grey-7")
-						q-icon.q-mr-md(v-if='item.isPeople' name="mdi-account" color="grey-7")
+						q-icon.q-mr-md(v-if="item.isKey" name="mdi-star" color="grey-7")
+						q-icon.q-mr-md(v-if="item.isPeople" name="mdi-account" color="grey-7")
 						span {{ item.label }}
-
-			.level(v-if='isDate' :class="{ active: isDate }")
-				LevelDateNew(@add='addDate')
-
-			.last(v-if='showPar || isDate')
-				q-checkbox(v-model="par" label='Изменяемый параметр')
-				.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр в форме запроса
-				.text-caption.q-ml-sm Включите этот флаг, если, при открытии папки, вы хотите показать ФОРМУ с данным условием, которое можно менять.
+		.level(v-if="isDate" :class="{ active: isDate }")
+			LevelDateNew(@add="addDate")
+		.last(v-if="showPar || isDate")
+			q-checkbox(v-model="par" label="Изменяемый параметр")
+			.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр в форме запроса
+			.text-caption.q-ml-sm Включите этот флаг, если, при открытии папки, вы хотите показать ФОРМУ с данным условием, которое можно менять.
 
 </template>
+
 <style lang="scss">
 .multi-level-menu {
 	display: flex;
