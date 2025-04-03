@@ -73,9 +73,13 @@ const formatItem = (item: any) => {
 	}
 }
 
-const emit = defineEmits(['button'])
+const emit = defineEmits(['button', 'open'])
 const search = () => {
 	emit('button')
+}
+
+const open = (e: boolean) => {
+	if (e) emit('open')
 }
 </script>
 
@@ -101,7 +105,7 @@ div
 				template(v-else)
 					component(:is="element")
 
-			q-checkbox(v-if='group[3].isVis' dense v-model="group[3].isPar" color="primary" size='xs' )
+			q-checkbox(v-if='group[3].isVis' dense v-model="group[3].isPar" color="primary" size='xs' @update:modelValue="open")
 				q-tooltip Параметр
 			div
 			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')

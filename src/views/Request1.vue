@@ -134,7 +134,7 @@ q-page(padding)
 							q-tooltip Конструктор
 
 			transition(name="slide-bottom" mode="out-in")
-				RequestGrid(v-if='main' @button='checkStartSearch')
+				RequestGrid(v-if='main' @button='checkStartSearch' @open='startRight')
 
 				TextAi(v-else)
 
