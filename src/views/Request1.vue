@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import IconSearch from '@/components/icons/IconSearch.vue'
+// import IconSearch from '@/components/icons/IconSearch.vue'
 import IconUndo from '@/components/icons/IconUndo.vue'
 import IconRedo from '@/components/icons/IconRedo.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
@@ -14,6 +14,15 @@ import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
 import DragEditWindow1 from '@/components/DragEditWindow1.vue'
 import { useKeys } from '@/stores/keys'
+import { useRoute } from 'vue-router'
+import { useList } from '@/stores/list'
+
+const list = useList()
+const route = useRoute()
+
+const currentFolder = computed(() => {
+	return list.lists.find((item) => item.id === Number(route.params.id))
+})
 
 const mykeys = useKeys()
 
@@ -108,7 +117,7 @@ q-page(padding)
 	.edito(ref='editorPreview')
 		div
 			.top()
-				.zg Запрос "Все заявки"
+				.zg Папка "{{ currentFolder?.label }}"
 				.q-gutter-x-sm
 					q-btn(flat round dense color="primary" @click="") 
 						IconUndo.ic
@@ -126,8 +135,6 @@ q-page(padding)
 
 			transition(name="slide-bottom" mode="out-in")
 				RequestGrid(v-if='main' @button='checkStartSearch')
-				// RequestGrid(v-if='main' @button='startRight' @search="checkSearch")
-				// RequestGrid(v-if='main' @button='startRight' @search="isSearching = true")
 
 				TextAi(v-else)
 

@@ -34,7 +34,7 @@ transition(name="slide-bottom")
 		:handle="handle")
 		q-card-section.sec(ref="handle")
 			q-icon(name="mdi-drag-vertical" color="white" size="sm")
-			.hd Настройка запроса
+			.hd Условие фильтрации
 			q-btn(icon="mdi-close" flat round dense color="white" @click="modelValue = false")
 
 		q-card-section.scroll

@@ -18,9 +18,9 @@ const initial = computed(() => {
 const el = useTemplateRef('el')
 const { height } = useElementSize(el)
 
-const close = (() => {
+const close = () => {
 	modelValue.value = false
-})
+}
 </script>
 
 <template lang="pug">
@@ -59,13 +59,12 @@ transition(name="slide-bottom")
 	right: 0;
 }
 
-
 .sec {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	cursor: move;
-	padding: .25rem;
+	padding: 0.25rem;
 	background: $secondary;
 	color: #ffffff;
 	border-bottom: 1px solid #ccc;

@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { computed, h } from 'vue'
-import IconFaceMask from '@/components/icons/IconFaceMask.vue'
+import IconInfo from '@/components/icons/IconInfo.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import IconSearch from '@/components/icons/IconSearch.vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useKeys } from '@/stores/keys'
 import { QInput, QChip } from 'quasar'
+
+// const props = defineProps({
+// 	folder: {
+// 		type: String,
+// 		default: '',
+// 	},
+// })
 
 const mykeys = useKeys()
 
@@ -66,19 +73,24 @@ const formatItem = (item: any) => {
 	}
 }
 
-const emit = defineEmits(['button', 'search'])
+const emit = defineEmits(['button'])
 const search = () => {
 	emit('button')
-	// if (mykeys.hasParameters.length == 0) emit('search')
 }
 </script>
 
 <template lang="pug">
 div
 	.empty(v-if='isGridEmpty')
-		IconFaceMask.big
-		div Запрос не настроен.
-		q-btn.q-mt-md(unelevated color="primary" label="Настроить" @click="mykeys.toggleDragWindow")
+		IconInfo.big
+		div
+			|Папка 
+			// span.bold {{ props.folder }} 
+			span содержит
+			span.bold ВСЕ
+			span данные типа 
+			span.bold Заявка на отпуск
+		q-btn.q-mt-md(unelevated color="primary" icon='mdi-filter-plus' label="Настроить фильтр" @click="mykeys.toggleDragWindow")
 
 	.grid(ref='parent')
 		.condition(v-for="(group, index) in tapes" :key="group[0].id")
@@ -115,7 +127,7 @@ div
 
 .big {
 	font-size: 3rem;
-	color: $secondary;
+	// color: $secondary;
 }
 
 .ic {
@@ -165,13 +177,11 @@ div
 :deep(.q-field--dense .q-field__control) {
 	height: 28px;
 }
-// .last {
-// 	background: #dedede;
-// 	padding: 2px 6px;
-// }
-// .last::after {
-// 	content: '✓';
-// 	color: $primary;
-// 	right: 0.5rem;
-// }
+.bold {
+	font-weight: 600;
+	font-size: 1rem;
+	color: $primary;
+	margin-left: 0.3rem;
+	margin-right: 0.3rem;
+}
 </style>

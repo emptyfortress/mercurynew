@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import RequestEditorInput from '@/components/RequestEditorInput.vue'
 import LevelDateNew from '@/components/LevelDateNew.vue'
 import { zero } from '@/stores/menu'

@@ -1,12 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import IconFaceMask from '@/components/icons/IconFaceMask.vue'
 import IconRocket from '@/components/icons/IconRocket.vue'
 import { useKeys } from '@/stores/keys'
 
 const mykeys = useKeys()
-
-const isKeyEmpty = computed(() => mykeys.keys.length === 0)
 
 const emit = defineEmits(['search'])
 const startSearch = () => {
@@ -16,10 +13,6 @@ const startSearch = () => {
 
 <template lang="pug">
 .preview
-	.empty(v-if="isKeyEmpty")
-		IconFaceMask.big
-		div Запрос не настроен.
-
 	.grid(v-if='mykeys.hasParameters.length')
 		template(v-for="(group, index) in mykeys.hasParameters" :key="group[0].id")
 			.edit(:class="{'dis': !group[3].isActive}") {{ group[0].label }}:
@@ -28,12 +21,11 @@ const startSearch = () => {
 			q-input(:model-value="group[2].label", filled, dense, :disable="!group[3].isActive")
 			q-toggle(size="sm" v-model="group[3].isActive")
 		
-	.empty(v-if='!mykeys.hasParameters.length && !isKeyEmpty')
+	.empty(v-else)
 		IconRocket.big
-		div Показ формы не требуется.
+		div Параметры не заданы.<br />Показ формы не требуется.
 
-
-	.action(v-if="mykeys.hasParameters.length && !isKeyEmpty")
+	.action(v-if="mykeys.hasParameters.length")
 		q-btn(unelevated color="primary" label="Искать" @click="startSearch")
 </template>
 

@@ -134,22 +134,20 @@ q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?"
 			:enter='{ y: 0, opacity: 1 }'
 		) 
 			q-tooltip Очистить
+
 		q-btn(
-			v-if='isLast' flat round,
+			v-if='isLast',
+			unelevated,
 			color="primary",
-			@click="addCond" dense v-motion,
-			:initial='{ y: -20, opacity: 0 }' :enter='{ y: 0, opacity: 1 }'
+			label="Добавить условие",
+			@click="addCond",
+			size="sm"
+			dense,
+			v-motion,
+			:initial='{ y: -20, opacity: 0 }',
+			:enter='{ y: 0, opacity: 1 }'
 		) 
-			IconUpArrowCircle.ic
-			q-tooltip Добавить условие и продолжить
-		q-btn(
-			v-if='isLast' flat round,
-			color="primary",
-			@click="save" dense v-motion,
-			:initial='{ y: -20, opacity: 0 }' :enter='{ y: 0, opacity: 1 }'
-		) 
-			IconSave.ic
-			q-tooltip Сохранить
+
 </template>
 
 <style scoped lang="scss">
