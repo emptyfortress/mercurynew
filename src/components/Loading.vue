@@ -1,13 +1,29 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useKeys } from '@/stores/keys'
-import { usePanels } from '@/stores/panels'
+// import { usePanels } from '@/stores/panels'
 
-const panels = usePanels()
+// const panels = usePanels()
+
+const poisk = defineModel('poisk')
 
 const mykeys = useKeys()
 
 const isLoaded = ref(false)
+
+watch(poisk, (val) => {
+	if (val) {
+		refresh()
+	}
+})
+const refresh = () => {
+	isLoaded.value = false
+	setTimeout(() => {
+		isLoaded.value = true
+	}, 2000)
+	isFake.value = false
+	poisk.value = false
+}
 
 onMounted(() => {
 	setTimeout(() => {
@@ -63,6 +79,7 @@ const emit = defineEmits(['startPred'])
 const action = () => {
 	emit('startPred')
 }
+const isFake = ref(true)
 </script>
 
 <template lang="pug">
@@ -78,7 +95,7 @@ const action = () => {
 			hide-bottom
 			:table-header-class="calcClass"
 		)
-		.water Образец
+		.water(v-if='isFake') Образец
 
 	q-markup-table(v-else)
 		thead

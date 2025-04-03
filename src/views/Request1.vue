@@ -87,13 +87,18 @@ const startPred = () => {
 		}, 1000)
 	}
 }
-const startPrev = () => {
-	if (!panels.preview) startRight()
-	else {
-		isShaking1.value = true
-		setTimeout(() => {
-			isShaking1.value = false
-		}, 1000)
+const isSearching = ref(false)
+
+const checkStartSearch = () => {
+	if (mykeys.hasParameters.length == 0) {
+		isSearching.value = true
+	} else {
+		if (panels.preview) {
+			isShaking1.value = true
+			setTimeout(() => {
+				isShaking1.value = false
+			}, 1000)
+		} else startRight()
 	}
 }
 </script>
@@ -118,18 +123,18 @@ q-page(padding)
 						template(v-else)
 							IconLogic.ic
 							q-tooltip Конструктор
-					q-btn(flat round dense color="primary" @click="startPrev") 
-						IconSearch.ic
-						q-tooltip Искать
 
 			transition(name="slide-bottom" mode="out-in")
-				RequestGrid(v-if='main' @button='startRight')
+				RequestGrid(v-if='main' @button='checkStartSearch')
+				// RequestGrid(v-if='main' @button='startRight' @search="checkSearch")
+				// RequestGrid(v-if='main' @button='startRight' @search="isSearching = true")
+
 				TextAi(v-else)
 
 			.q-mx-md(v-if='main')
-				Loading(@startPred='startPred')
+				Loading(@startPred='startPred' v-model:poisk='isSearching')
 
-		PreviewButton(@activate='startRight' @stop='stopRight' :class="{'shake-horizontal': isShaking1}")
+		PreviewButton(@activate='startRight' @stop='stopRight' :class="{'shake-horizontal': isShaking1}" @search='isSearching = true')
 		PredButton(@activate='startLeft' @stop='stopLeft' :class="{'shake-horizontal': isShaking}")
 
 	DragEditWindow1(v-model="mykeys.isDragWindow")

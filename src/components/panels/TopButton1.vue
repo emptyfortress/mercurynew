@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import IconTableEdit from '@/components/icons/IconTableEdit.vue'
+import IconSearch from '@/components/icons/IconSearch.vue'
 
 const modelValue = defineModel()
 </script>
@@ -11,7 +11,7 @@ const modelValue = defineModel()
 	:enter='{ opacity: 1 }'
 	:delay='600')
 	.zg
-		IconTableEdit.ic()
+		IconSearch.ic()
 		| Форма запроса
 </template>
 

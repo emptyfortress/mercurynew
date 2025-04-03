@@ -65,6 +65,12 @@ const formatItem = (item: any) => {
 		return h('div', item.label)
 	}
 }
+
+const emit = defineEmits(['button', 'search'])
+const search = () => {
+	emit('button')
+	// if (mykeys.hasParameters.length == 0) emit('search')
+}
 </script>
 
 <template lang="pug">
@@ -83,7 +89,7 @@ div
 				template(v-else)
 					component(:is="element")
 
-			q-checkbox(v-if='group[3].isVis' dense v-model="group[3].isPar" color="primary" size='xs')
+			q-checkbox(v-if='group[3].isVis' dense v-model="group[3].isPar" color="primary" size='xs' )
 				q-tooltip Параметр
 			div
 			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
@@ -93,7 +99,8 @@ div
 				IconClear.ic.q-mr-sm
 				.q-cursor Очистить все
 			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mykeys.toggleDragWindow")
-			q-btn(flat color="primary" @click="") 
+
+			q-btn(flat color="primary" @click="search") 
 				IconSearch.ic.q-mr-sm
 				.q-cursor Выполнить запрос
 </template>

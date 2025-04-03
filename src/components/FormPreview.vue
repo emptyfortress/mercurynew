@@ -7,7 +7,11 @@ import { useKeys } from '@/stores/keys'
 const mykeys = useKeys()
 
 const isKeyEmpty = computed(() => mykeys.keys.length === 0)
-const toggle = ref(true)
+
+const emit = defineEmits(['search'])
+const startSearch = () => {
+	emit('search')
+}
 </script>
 
 <template lang="pug">
@@ -29,8 +33,8 @@ const toggle = ref(true)
 		div Показ формы не требуется.
 
 
-	.action(v-if="!isKeyEmpty")
-		q-btn(unelevated color="primary" label="Искать" @click="")
+	.action(v-if="mykeys.hasParameters.length && !isKeyEmpty")
+		q-btn(unelevated color="primary" label="Искать" @click="startSearch")
 </template>
 
 <style scoped lang="scss">

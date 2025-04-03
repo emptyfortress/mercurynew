@@ -6,13 +6,13 @@ import { usePanels } from '@/stores/panels'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { nextTick } from 'vue'
-import IconTableEdit from '@/components/icons/IconTableEdit.vue'
+import IconSearch from '@/components/icons/IconSearch.vue'
 
 const panels = usePanels()
 
 gsap.registerPlugin(Flip)
 
-const emit = defineEmits(['activate', 'stop'])
+const emit = defineEmits(['activate', 'stop', 'search'])
 
 // Function to animate Flip state transition
 const animateFlip = (previewState: boolean) => {
@@ -38,6 +38,10 @@ const close = () => {
 	emit('stop')
 	animateFlip(false)
 }
+
+const search = () => {
+	emit('search')
+}
 </script>
 
 <template lang="pug">
@@ -46,7 +50,7 @@ const close = () => {
 	@click='expand'
 	)
 
-	IconTableEdit.ic(
+	IconSearch.ic(
 		v-if='!panels.preview',
 		v-motion
 		:initial='{ rotate: "0deg" }'
@@ -62,6 +66,7 @@ const close = () => {
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
 		:delay='1000'
+		@search='search'
 		) 
 
 </template>
