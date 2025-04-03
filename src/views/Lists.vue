@@ -117,17 +117,28 @@ const remove = () => {
 	})
 }
 
-// const navigate = (id: any) => {
-// 	router.push(`/request/${id}`)
-// }
+const remove1 = (n: number) => {
+	tapes.value.splice(n, 1)
+	expanded.value = false
+	$q.notify({
+		message: 'Папка удалена',
+		color: 'negative',
+		icon: 'mdi-check-bold',
+		actions: [
+			{
+				label: 'Отмена',
+				color: 'white',
+				handler: () => {
+					/* ... */
+				},
+			},
+		],
+	})
+}
 
 const navigate2 = (id: any) => {
 	router.push(`/request1/${id}`)
 }
-
-// const navigate1 = (id: any) => {
-// 	router.push(`/views/${id}`)
-// }
 
 onBeforeUnmount(() => {
 	expanded.value = false
@@ -206,7 +217,7 @@ q-page(padding)
 
 				.text-center
 					.q-gutter-x-sm
-						q-btn(flat color="negative" label="Удалить" @click.stop='remove(item)') 
+						q-btn(flat color="negative" label="Удалить" @click.stop='remove1(index)') 
 						q-btn(unelevated color="primary" label="Настроить папку" @click.stop='navigate2(item.id)') 
 						q-btn(flat color="primary" label="Дублировать" @click.stop='duble(item, true)') 
 
