@@ -12,7 +12,6 @@ const props = defineProps({
 	},
 })
 
-// Reactive state
 const selectedItems = ref<MenuItem[]>([])
 const currentLevelIndex = ref<number>(0)
 const menuLevels = ref<MenuLevel[]>([
@@ -24,17 +23,16 @@ const menuLevels = ref<MenuLevel[]>([
 ])
 
 const par = ref(false)
-// Computed properties
 const visibleLevels = computed(() => {
 	return menuLevels.value.slice(0, currentLevelIndex.value + 1)
 })
 
-const isItemSelected = (item: MenuItem, levelIndex: number) => {
-	return selectedItems.value[levelIndex]?.id === item.id
-}
+// const isItemSelected = (item: MenuItem, levelIndex: number) => {
+// 	return selectedItems.value[levelIndex]?.id === item.id
+// }
 
 const selectItem = (item: MenuItem, levelIndex: number) => {
-	const currentLevel = menuLevels.value[levelIndex]
+	// const currentLevel = menuLevels.value[levelIndex]
 
 	// Logic to handle isMulti items
 	const multiIndex = selectedItems.value.findIndex((si: MenuItem) => si.isMulti)
