@@ -23,10 +23,9 @@ export const useList = defineStore('list', () => {
 		},
 	])
 
-	const reset = (() => {
-		lists.value.map((el) => el.expand = false)
-	})
-
+	const reset = () => {
+		lists.value.map((el) => (el.expand = false))
+	}
 
 	return {
 		lists,

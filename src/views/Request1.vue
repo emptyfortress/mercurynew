@@ -132,7 +132,7 @@ q-page(padding)
 				TextAi(v-else)
 
 			.q-mx-md(v-if='main')
-				Loading(@startPred='startPred' v-model:poisk='isSearching')
+				Loading(@startPred='startPred' v-model:poisk='isSearching' button)
 
 		PreviewButton(@activate='startRight' @stop='stopRight' :class="{'shake-horizontal': isShaking1}" @search='isSearching = true')
 		PredButton(@activate='startLeft' @stop='stopLeft' :class="{'shake-horizontal': isShaking}")

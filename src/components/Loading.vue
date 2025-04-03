@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import { useKeys } from '@/stores/keys'
-// import { usePanels } from '@/stores/panels'
 
-// const panels = usePanels()
+const props = defineProps({
+	button: {
+		type: Boolean,
+		default: false,
+	},
+})
 
 const poisk = defineModel('poisk')
 
@@ -83,10 +87,10 @@ const isFake = ref(true)
 </script>
 
 <template lang="pug">
-.loading
+.loading.q-mt-md
 	.ready(v-if='isLoaded')
 		.flo
-			q-btn(flat round icon="mdi-tune-vertical-variant" color="primary" @click="action" size="12px") 
+			q-btn(v-if='props.button' flat round icon="mdi-tune-vertical-variant" color="primary" @click="action" size="12px") 
 				q-tooltip Настройки представления
 		q-table(bordered
 			flat
@@ -111,13 +115,13 @@ const isFake = ref(true)
 		tbody
 			tr(v-for="n in 5" :key="n")
 				td.text-right
-					q-skeleton( type="text" width="50px")
+					q-skeleton( type="text" width="150px")
 				td.text-right
-					q-skeleton( type="text" width="35px")
+					q-skeleton( type="text" width="150px")
 				td.text-right
-					q-skeleton( type="text" width="65px")
+					q-skeleton( type="text" width="150px")
 				td.text-right
-					q-skeleton( type="text" width="25px")
+					q-skeleton( type="text" width="150px")
 
 </template>
 

@@ -22,6 +22,7 @@ const list = useList()
 const $q = useQuasar()
 
 const dragStatus = ref(false)
+
 state.on('dragStarted', () => {
 	dragStatus.value = true
 })
@@ -64,7 +65,9 @@ const expand = (item: any) => {
 	// load()
 }
 
-const draggedItem = ref(100)
+const draggedItem = ref()
+const draggedIndex = ref(100)
+
 const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
@@ -73,7 +76,8 @@ const config = {
 		return el.id !== 'no-drag'
 	},
 	onDragstart: (e: any) => {
-		draggedItem.value = e.draggedNode.data.index
+		draggedItem.value = e.draggedNode.data
+		draggedIndex.value = e.draggedNode.data.index
 	},
 }
 const [parent, tapes] = useDragAndDrop(list.lists, config)
@@ -113,17 +117,17 @@ const remove = () => {
 	})
 }
 
-const navigate = (id: any) => {
-	router.push(`/request/${id}`)
-}
+// const navigate = (id: any) => {
+// 	router.push(`/request/${id}`)
+// }
 
 const navigate2 = (id: any) => {
 	router.push(`/request1/${id}`)
 }
 
-const navigate1 = (id: any) => {
-	router.push(`/views/${id}`)
-}
+// const navigate1 = (id: any) => {
+// 	router.push(`/views/${id}`)
+// }
 
 onBeforeUnmount(() => {
 	expanded.value = false
@@ -137,8 +141,36 @@ const onDragEnterPlus = () => {
 const onDragLeavePlus = () => {
 	duple.value = false
 }
+
+const duble = (e: any, expand: boolean) => {
+	tapes.value.map((item) => (item.expand = false))
+
+	let item = {
+		id: tapes.value.length + 1,
+		label: 'Копия ' + e.label,
+		descr: e.descr,
+		expand: expand,
+	}
+	tapes.value.push(item)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Папка дублирована',
+		})
+	}, 1200)
+}
+
 const onDropPlus = () => {
 	duple.value = false
+	duble(draggedItem.value.value, false)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Папка дублирована',
+		})
+	}, 1200)
 }
 </script>
 
@@ -174,11 +206,9 @@ q-page(padding)
 
 				.text-center
 					.q-gutter-x-sm
-						q-btn(flat color="negative" label="Удалить" @click.stop='') 
-						q-btn(flat color="primary" label="Дублировать" @click.stop='') 
-						q-btn(unelevated color="primary" label="Настроить" @click.stop='navigate2(item.id)') 
-						// q-btn(unelevated color="primary" label="Редактор запросов (сложный)" @click.stop='navigate(item.id)') 
-						// q-btn(unelevated color="primary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
+						q-btn(flat color="negative" label="Удалить" @click.stop='remove(item)') 
+						q-btn(unelevated color="primary" label="Настроить папку" @click.stop='navigate2(item.id)') 
+						q-btn(flat color="primary" label="Дублировать" @click.stop='duble(item, true)') 
 
 				Loading(v-if='expanded')
 
