@@ -1,59 +1,74 @@
 <script setup lang="ts">
-import { motion, AnimatePresence } from 'motion-v'
-import { ref, computed } from 'vue'
+import { motion } from 'motion-v'
 import { useRouter } from 'vue-router'
-// import { Motion, useMotionValue, useTransform } from 'motion-v'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+import { animations, state } from '@formkit/drag-and-drop'
+import { useList } from '@/stores/list'
 
-const router = useRouter()
+const list = useList()
 
 const Div = motion.div
 
-const play = () => {
-	router.push('/dev1')
+const config = {
+	plugins: [animations()],
+	dragPlaceholderClass: 'ghost',
+	sortable: true,
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains('item1')
+	},
 }
-
-// const x = useMotionValue(0)
-const x = ref(0)
-// const x1 = x.get()
-// const xInput = [0, 500]
-
-// const xT = useMotionValue(x.value)
-// const background = useTransform(x, xInput, ['#ff0000', '#00FF00'])
+const [parent, tapes] = useDragAndDrop(list.lists, config)
 </script>
 
 <template lang="pug">
-div
-	.list
-		Div.box(@click='play' layout-id="underline" :initial="{ x: 0 }" :animate='{ x }')
-		// Div.box(drag="x" :style="{ x, background }")
-		// br
-	q-slider(v-model="x" :min="0" :max="500")
+q-page(padding)
+	.header Папки
+	.pa(ref='parent')
+		.item1(v-for="(item, index) in tapes" :key="item.id")
+			span {{ item.label }}
+
 </template>
 
 <style scoped lang="scss">
-.list {
-	width: 600px;
-	height: 100px;
-	margin: 2rem auto;
-	background: #ccc;
+.header {
+	font-size: 1.5rem;
+	text-align: center;
 }
-
-.box {
-	width: 100px;
-	height: 100px;
-	background-color: $primary;
-	border-radius: 5px;
+.pa {
+	display: grid;
+	grid-template-columns: repeat(5, 150px);
+	column-gap: 1rem;
+	align-items: center;
+	row-gap: 1rem;
+	margin: 0 auto;
+	width: 728px;
+	border: none;
+	outline: none;
 }
+.item1 {
+	width: 150px;
+	height: 150px;
+	border-radius: 0.5rem;
+	text-align: center;
+	margin: 0.5rem;
+	cursor: pointer;
+	padding: 1rem;
+	position: relative;
+	background: #fff;
+	border: 1px solid #fff;
 
-.box1 {
-	justify-self: end;
-	background: red;
-	// flex-grow: 1;
+	&:hover {
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+	}
 }
+.ghost {
+	background: hsl(213 38% 81% / 1) !important;
+	box-shadow: none !important;
+	border: none !important;
 
-.q-slider {
-	width: 200px;
-	margin: 1rem auto;
-	display: block;
+	* {
+		display: none;
+	}
 }
 </style>
