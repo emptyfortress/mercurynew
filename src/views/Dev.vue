@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { motion } from 'motion-v'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations, state } from '@formkit/drag-and-drop'
 import { useList } from '@/stores/list'
@@ -18,13 +19,29 @@ const config = {
 	},
 }
 const [parent, tapes] = useDragAndDrop(list.lists, config)
+
+const expanded = ref(true)
+const action = () => {
+	expanded.value = !expanded.value
+}
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.header Папки
-	.pa(ref='parent')
-		.item1(v-for="(item, index) in tapes" :key="item.id")
+	.pa(ref='parent'
+		layout
+		:class="['pa', expanded ? 'start' : 'end']"
+	)
+		Div.item(v-for="(item, index) in tapes" :key="item.id" @click='action'
+			:data-state="expanded"
+			layout
+			:transition=`{
+				type: 'spring',
+				visualDuration: 0.2,
+				bounce: 0.2
+			}`
+		)
 			span {{ item.label }}
 
 </template>
@@ -36,18 +53,24 @@ q-page(padding)
 }
 .pa {
 	display: grid;
-	grid-template-columns: repeat(5, 150px);
-	column-gap: 1rem;
+	// grid-template-columns: repeat(5, 150px);
+	gap: 1rem;
 	align-items: center;
-	row-gap: 1rem;
 	margin: 0 auto;
 	width: 728px;
 	border: none;
 	outline: none;
+	&.start {
+		grid-template-columns: repeat(5, 150px);
+	}
+	&.end {
+		grid-template-columns: repeat(1, 50px);
+		// grid-template-rows: repeat(5, 50px);
+	}
 }
-.item1 {
-	width: 150px;
-	height: 150px;
+.item {
+	// width: 150px;
+	// height: 150px;
 	border-radius: 0.5rem;
 	text-align: center;
 	margin: 0.5rem;
