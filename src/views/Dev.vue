@@ -2,7 +2,6 @@
 import { motion, AnimatePresence } from 'motion-v'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import MultilevelMenu from '@/components/MultilevelMenu.vue'
 // import { Motion, useMotionValue, useTransform } from 'motion-v'
 
 const router = useRouter()
@@ -13,45 +12,22 @@ const play = () => {
 	router.push('/dev1')
 }
 
+// const x = useMotionValue(0)
 const x = ref(0)
+// const x1 = x.get()
+// const xInput = [0, 500]
 
-const menuData = [
-	{
-		id: 1,
-		label: 'Category A',
-		children: [
-			{
-				id: 101,
-				label: 'Regular Subcategory',
-				children: [
-					{ id: 1001, label: 'Item 1' },
-					{ id: 1002, label: 'Item 2' },
-				],
-			},
-			{
-				id: 102,
-				label: 'Special Subcategory',
-				isSpecial: true, // Marks this as a special level
-				children: [
-					{ id: 2001, label: 'Option 1' },
-					{ id: 2002, label: 'Option 2' },
-					{ id: 2003, label: 'Option 3' },
-				],
-			},
-		],
-	},
-]
+// const xT = useMotionValue(x.value)
+// const background = useTransform(x, xInput, ['#ff0000', '#00FF00'])
 </script>
 
 <template lang="pug">
-q-page(padding)
-	// .list
-	// 	Div.box(@click='play' layout-id="underline" :initial="{ x: 0 }" :animate='{ x }')
-	// 	// Div.box(drag="x" :style="{ x, background }")
-	// 	// br
-	// q-slider(v-model="x" :min="0" :max="500")
-	// br
-	MultilevelMenu()
+div
+	.list
+		Div.box(@click='play' layout-id="underline" :initial="{ x: 0 }" :animate='{ x }')
+		// Div.box(drag="x" :style="{ x, background }")
+		// br
+	q-slider(v-model="x" :min="0" :max="500")
 </template>
 
 <style scoped lang="scss">
