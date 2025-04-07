@@ -53,8 +53,13 @@ const [parent, tapes] = useDragAndDrop(list.lists, config)
 const expanded = ref(false)
 
 const action = (id: number) => {
-	expanded.value = !expanded.value
-	activeItem.value = id
+	if (activeItem.value !== 0 && activeItem.value == id) {
+		expanded.value = false
+		activeItem.value = 0
+	} else {
+		expanded.value = true
+		activeItem.value = id
+	}
 }
 const back = () => {
 	router.push('/dev')
@@ -92,14 +97,14 @@ q-page(padding)
 		)
 			span {{ item.id }}
 
-		Div.plus(:data-state='expanded'
-			layout
-			:transition=`{
-				type: 'spring',
-				visualDuration: 0.4,
-				bounce: 0.2
-			}`
-		)
+		// Div.plus(:data-state='expanded'
+		// 	layout
+		// 	:transition=`{
+		// 		type: 'spring',
+		// 		visualDuration: 0.4,
+		// 		bounce: 0.2
+		// 	}`
+		// )
 
 </template>
 
@@ -110,8 +115,8 @@ q-page(padding)
 }
 .pa {
 	display: grid;
-	grid-template-columns: repeat(5, auto);
-	grid-template-rows: repeat(5, 150px);
+	grid-template-columns: repeat(5, 150px);
+	grid-template-rows: repeat(5, 100px);
 	gap: 1rem;
 	margin: 0 auto;
 	width: 814px;
@@ -119,7 +124,7 @@ q-page(padding)
 	outline: none;
 	background: #ccc;
 	&.end {
-		grid-template-columns: repeat(5, 50px);
+		// grid-template-rows: repeat(5, 150px);
 		// width: 1200px;
 		.it {
 			// width: 100px;
@@ -144,8 +149,8 @@ q-page(padding)
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	}
 	&.active {
-		grid-column: 2/-1;
-		// width: 880px;
+		grid-column: 2/6;
+		// width: 745px;
 		// height: 100%;
 		grid-row: 1/4;
 	}

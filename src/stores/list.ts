@@ -33,6 +33,18 @@ export const useList = defineStore('list', () => {
 			descr: 'Просроченные заявки',
 			expand: false,
 		},
+		{
+			id: 6,
+			label: 'Просроченные',
+			descr: 'Просроченные заявки',
+			expand: false,
+		},
+		{
+			id: 7,
+			label: 'Просроченные',
+			descr: 'Просроченные заявки',
+			expand: false,
+		},
 	])
 
 	const reset = () => {
