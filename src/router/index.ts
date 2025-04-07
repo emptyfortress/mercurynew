@@ -207,9 +207,10 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/dev',
+			path: '/dev/:id?',
 			name: 'dev',
 			component: () => import('@/views/Dev.vue'),
+			props: true,
 			meta: {
 				toolbar: true,
 				back: true,
