@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { motion, AnimatePresence } from 'motion-v'
+import { ref } from 'vue'
+import { motion, animate, stagger, AnimatePresence } from 'motion-v'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -9,21 +10,23 @@ const Div = motion.div
 const play = () => {
 	router.push('/dev')
 }
+
+const test = () => {
+	console.log(list.value)
+	animate('.che', { opacity: 0, y: -100 }, { delay: stagger(0.2) })
+}
+const list = ref()
 </script>
 
 <template lang="pug">
 div
 	Div.list()
-		Div.box1(@click='play' layout-id="underline")
+		Div.box1(@click='test' layout-id="underline")
 	br
-	Div.text-center(
-		:initial="{ opacity: 0, y: 200 }"
-		:animate="{ opacity: 1, y: 0, transition: { delay: .5 } }"
-		)
-		ul
-			li lajsdljalsdjlk
-			li lajsdljalsdjlk
-			li lajsdljalsdjlk
+	ul.text-center(ref='list')
+		.che lajsdljalsdjlk
+		.che lajsdljalsdjlk
+		.che lajsdljalsdjlk
 
 </template>
 

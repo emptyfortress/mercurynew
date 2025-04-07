@@ -53,6 +53,7 @@ const [parent, tapes] = useDragAndDrop(list.lists, config)
 const expanded = ref(false)
 
 const action = (id: number) => {
+	expanded.value = !expanded.value
 	if (activeItem.value !== 0 && activeItem.value == id) {
 		expanded.value = false
 		activeItem.value = 0
@@ -67,7 +68,20 @@ const back = () => {
 }
 
 const calcClass = (id: number) => {
-	if (activeItem.value == id) return 'active'
+	// switch (id) {
+	// 	case 1:
+	// 		return expanded.value ? 'inactive1' : 'start1'
+	// 	case 2:
+	// 		return expanded.value ? 'inactive2' : 'start2'
+	// 	case 3:
+	// 		return expanded.value ? 'inactive3' : 'start3'
+	// 	case 4:
+	// 		return expanded.value ? 'inactive4' : 'start4'
+	// 	default:
+	// 		return ''
+	// }
+	if (expanded.value) return 'inactive'
+	// if (expanded.value && activeItem.value == id) return 'active'
 	return ''
 }
 </script>
@@ -78,33 +92,18 @@ q-page(padding)
 	Div.pa(ref='parent'
 		layout
 		:class="{'end': expanded}"
-		:transition=`{
-			type: 'spring',
-			visualDuration: 0.4,
-			bounce: 0.2
-		}`
 		@click='back'
 	)
-		Div.it(v-for="(item, index) in tapes" :key="item.id" @click.stop='action(item.id)'
-			:data-state="expanded"
-			layout
-			:transition=`{
-				type: 'spring',
-				visualDuration: 0.4,
-				bounce: 0.2
-			}`
+		Div.it(
+			v-for="(item, index) in tapes",
+			:key="item.id",
+			@click.stop='action(item.id)',
+			:data-state="expanded",
+			layout,
 			:class='calcClass(item.id)'
+			:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.25 }"
 		)
 			span {{ item.id }}
-
-		// Div.plus(:data-state='expanded'
-		// 	layout
-		// 	:transition=`{
-		// 		type: 'spring',
-		// 		visualDuration: 0.4,
-		// 		bounce: 0.2
-		// 	}`
-		// )
 
 </template>
 
@@ -116,7 +115,7 @@ q-page(padding)
 .pa {
 	display: grid;
 	grid-template-columns: repeat(5, 150px);
-	grid-template-rows: repeat(5, 100px);
+	grid-template-rows: repeat(4, 150px);
 	gap: 1rem;
 	margin: 0 auto;
 	width: 814px;
@@ -124,13 +123,9 @@ q-page(padding)
 	outline: none;
 	background: #ccc;
 	&.end {
-		// grid-template-rows: repeat(5, 150px);
-		// width: 1200px;
+		grid-template-columns: repeat(1, 150px);
+		grid-template-rows: repeat(7, 80px);
 		.it {
-			// width: 100px;
-			// height: auto;
-			font-size: 0.8rem;
-			line-height: 1;
 		}
 	}
 }
@@ -150,11 +145,43 @@ q-page(padding)
 	}
 	&.active {
 		grid-column: 2/6;
-		// width: 745px;
-		// height: 100%;
 		grid-row: 1/4;
 	}
 }
+
+// .start1 {
+// 	grid-column: 1/2;
+// 	grid-row: 1/2;
+// }
+// .start2 {
+// 	grid-column: 2/3;
+// 	grid-row: 1/2;
+// }
+// .start3 {
+// 	grid-column: 3/4;
+// 	grid-row: 1/2;
+// }
+// .start4 {
+// 	grid-column: 4/5;
+// 	grid-row: 1/2;
+// }
+// .inactive1 {
+// 	grid-column: 1/2;
+// 	grid-row: 1/2;
+// }
+// .inactive2 {
+// 	grid-column: 1/2;
+// 	grid-row: 2/3;
+// }
+// .inactive3 {
+// 	grid-column: 1/2;
+// 	grid-row: 3/4;
+// }
+// .inactive4 {
+// 	grid-column: 1/2;
+// 	grid-row: 4/5;
+// }
+
 .ghost {
 	background: hsl(213 38% 81% / 1) !important;
 	box-shadow: none !important;
