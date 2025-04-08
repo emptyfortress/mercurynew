@@ -86,7 +86,7 @@ const addCond = () => {
 			})
 		}
 		if (items.length == 2) {
-			items.push({ id: uid(), label: '' })
+			items.push({ id: uid(), label: '', isPrompt: true })
 		}
 		items.push({
 			id: uid(),
