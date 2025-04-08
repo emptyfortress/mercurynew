@@ -184,12 +184,11 @@ const calcClass = (item: MenuItem, index: number) => {
 }
 
 const isLast = computed(() => {
-	return selectedItems.value.at(-1)?.isLast
+	return selectedItems.value.at(-1)?.isLast || par.value
 })
 
 const showPar = computed(() => {
 	return selectedItems.value.at(-1)?.isPar
-	// return selectedItems.value.at(-1)?.isPar
 })
 </script>
 
