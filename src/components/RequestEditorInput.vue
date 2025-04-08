@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
-import IconSave from '@/components/icons/IconSave.vue'
+// import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
+// import IconSave from '@/components/icons/IconSave.vue'
 import { useKeys } from '@/stores/keys'
 import { uid } from 'quasar'
 

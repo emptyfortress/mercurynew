@@ -4,12 +4,12 @@ import { ref, reactive } from 'vue'
 const emit = defineEmits(['add'])
 
 const keywords = reactive([
-	{ id: 0, label: 'сегодня' },
-	{ id: 1, label: 'сейчас' },
-	{ id: 2, label: 'текущая неделя' },
-	{ id: 3, label: 'текущий месяц' },
-	{ id: 4, label: 'текущий квартал' },
-	{ id: 5, label: 'текущий год' },
+	{ id: 0, isKey: true, isLast: true, label: 'сегодня' },
+	{ id: 1, isKey: true, isLast: true, label: 'сейчас' },
+	{ id: 2, isKey: true, isLast: true, label: 'текущая неделя' },
+	{ id: 3, isKey: true, isLast: true, label: 'текущий месяц' },
+	{ id: 4, isKey: true, isLast: true, label: 'текущий квартал' },
+	{ id: 5, isKey: true, isLast: true, label: 'текущий год' },
 ])
 
 const selected = ref<string>()

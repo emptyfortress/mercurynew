@@ -141,7 +141,9 @@ const addDate = (str: string) => {
 		isVis: true,
 		isPar: par.value,
 	}
-
+	if (!selectedItems.value.at(-1)?.isSpecial) {
+		selectedItems.value.pop()
+	}
 	selectedItems.value.push(item)
 }
 
