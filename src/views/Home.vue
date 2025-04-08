@@ -5,8 +5,10 @@ import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations, state } from '@formkit/drag-and-drop'
 import { useList } from '@/stores/list'
+import { useApps } from '@/stores/apps'
 
 const list = useList()
+const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
 const activeItem = ref(0)
@@ -48,7 +50,7 @@ const config = {
 		return child.classList.contains('it')
 	},
 }
-const [parent, tapes] = useDragAndDrop(list.lists, config)
+const [parent, tapes] = useDragAndDrop(myapps.apps, config)
 
 const expanded = ref(false)
 
@@ -63,7 +65,7 @@ const action = (id: number) => {
 	}
 }
 const back = () => {
-	router.push('/dev')
+	router.push('/')
 	expanded.value = false
 }
 
@@ -73,13 +75,13 @@ const calcClass = (id: number) => {
 }
 
 const navigate = () => {
-	router.push('/dev/folder/1')
+	router.push('/folder/1')
 }
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.header {{ activeItem }}
+	.header Мои приложения - {{ activeItem }}
 	Div.pa(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
@@ -93,9 +95,9 @@ q-page(padding)
 			:class='calcClass(item.id)'
 			:initial="{ opacity: 0, y: 20, scale: 0.5 }"
 			:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
-			:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.25 }"
+			:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.22 }"
 		)
-			span {{ item.id }}
+			span {{ item.label }}
 
 		Div.fold(@click.stop='navigate' layout-id="underline" layout)
 
@@ -108,24 +110,30 @@ q-page(padding)
 }
 .pa {
 	display: grid;
-	grid-template-columns: repeat(5, 150px);
-	grid-template-rows: repeat(4, 150px);
+	grid-template-columns: repeat(5, 170px);
+	grid-template-rows: repeat(4, 170px);
 	gap: 1rem;
 	margin: 0 auto;
-	width: 814px;
-	border: none;
-	outline: none;
+	margin-top: 0.5rem;
+	width: 914px;
 	&.end {
-		grid-template-columns: repeat(1, 150px);
+		grid-template-columns: repeat(1, 200px);
 		grid-template-rows: repeat(7, 80px);
-		width: 150px;
+		width: 200px;
 		margin: 0;
-		margin-left: 9rem;
+		margin-left: 200px;
+		.it {
+			padding: 0.5rem;
+			font-size: 0.85rem;
+			&.active {
+				padding: 1rem;
+				font-size: 1.2rem;
+			}
+		}
 	}
 }
 .it {
 	border-radius: 0.5rem;
-	text-align: center;
 	cursor: pointer;
 	padding: 1rem;
 	background: #fff;
@@ -139,8 +147,8 @@ q-page(padding)
 		width: 550px;
 		height: 250px;
 		position: fixed;
-		top: 11rem;
-		left: 40%;
+		top: 9rem;
+		left: calc(50% - 225px);
 		font-size: 2rem;
 	}
 }
