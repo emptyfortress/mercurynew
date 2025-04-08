@@ -148,6 +148,7 @@ const addDate = (str: string) => {
 }
 
 const removeItem = (index: number) => {
+	console.log(index)
 	// Remove the item and all subsequent items
 	selectedItems.value = selectedItems.value.slice(0, index)
 	// Reset levels to match the new selection
@@ -222,6 +223,7 @@ const showPar = computed(() => {
 						span {{ item.label }}
 		.level(v-if="isDate" :class="{ active: isDate }")
 			LevelDateNew(@add="addDate")
+
 		.last(v-if="showPar || isDate")
 			q-checkbox(v-model="par" label="Изменяемый параметр")
 			.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр в форме запроса
