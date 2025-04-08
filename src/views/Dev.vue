@@ -68,21 +68,12 @@ const back = () => {
 }
 
 const calcClass = (id: number) => {
-	// switch (id) {
-	// 	case 1:
-	// 		return expanded.value ? 'inactive1' : 'start1'
-	// 	case 2:
-	// 		return expanded.value ? 'inactive2' : 'start2'
-	// 	case 3:
-	// 		return expanded.value ? 'inactive3' : 'start3'
-	// 	case 4:
-	// 		return expanded.value ? 'inactive4' : 'start4'
-	// 	default:
-	// 		return ''
-	// }
-	if (expanded.value) return 'inactive'
-	// if (expanded.value && activeItem.value == id) return 'active'
+	if (expanded.value && activeItem.value == id) return 'active'
 	return ''
+}
+
+const navigate = () => {
+	router.push('/dev/folder/1')
 }
 </script>
 
@@ -90,9 +81,8 @@ const calcClass = (id: number) => {
 q-page(padding)
 	.header {{ activeItem }}
 	Div.pa(ref='parent'
-		layout
 		:class="{'end': expanded}"
-		@click='back'
+		@click.stop='back'
 	)
 		Div.it(
 			v-for="(item, index) in tapes",
@@ -104,6 +94,8 @@ q-page(padding)
 			:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.25 }"
 		)
 			span {{ item.id }}
+
+		Div.fold(@click.stop='navigate' layout-id="underline" layout)
 
 </template>
 
@@ -121,12 +113,12 @@ q-page(padding)
 	width: 814px;
 	border: none;
 	outline: none;
-	background: #ccc;
 	&.end {
 		grid-template-columns: repeat(1, 150px);
 		grid-template-rows: repeat(7, 80px);
-		.it {
-		}
+		width: 150px;
+		margin: 0;
+		margin-left: 9rem;
 	}
 }
 .it {
@@ -144,43 +136,14 @@ q-page(padding)
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	}
 	&.active {
-		grid-column: 2/6;
-		grid-row: 1/4;
+		width: 550px;
+		height: 250px;
+		position: fixed;
+		top: 11rem;
+		left: 40%;
+		font-size: 2rem;
 	}
 }
-
-// .start1 {
-// 	grid-column: 1/2;
-// 	grid-row: 1/2;
-// }
-// .start2 {
-// 	grid-column: 2/3;
-// 	grid-row: 1/2;
-// }
-// .start3 {
-// 	grid-column: 3/4;
-// 	grid-row: 1/2;
-// }
-// .start4 {
-// 	grid-column: 4/5;
-// 	grid-row: 1/2;
-// }
-// .inactive1 {
-// 	grid-column: 1/2;
-// 	grid-row: 1/2;
-// }
-// .inactive2 {
-// 	grid-column: 1/2;
-// 	grid-row: 2/3;
-// }
-// .inactive3 {
-// 	grid-column: 1/2;
-// 	grid-row: 3/4;
-// }
-// .inactive4 {
-// 	grid-column: 1/2;
-// 	grid-row: 4/5;
-// }
 
 .ghost {
 	background: hsl(213 38% 81% / 1) !important;
@@ -192,13 +155,15 @@ q-page(padding)
 	}
 }
 .plus {
-	// width: 100px;
-	// height: 100px;
-	// border-radius: 0.5rem;
 	text-align: center;
 	cursor: pointer;
 	padding: 1rem;
 	background: #fff;
 	border: 1px solid #fff;
+}
+.fold {
+	width: 100%;
+	height: 100%;
+	background: #fff;
 }
 </style>

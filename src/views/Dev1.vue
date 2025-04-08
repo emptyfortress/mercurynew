@@ -8,49 +8,31 @@ const router = useRouter()
 const Div = motion.div
 
 const play = () => {
-	router.push('/dev')
+	router.push('/dev/0')
 }
-
-const test = () => {
-	console.log(list.value)
-	animate('.che', { opacity: 0, y: -100 }, { delay: stagger(0.2) })
-}
-const list = ref()
 </script>
 
 <template lang="pug">
-div
-	Div.list()
-		Div.box1(@click='test' layout-id="underline")
-	br
-	ul.text-center(ref='list')
-		.che lajsdljalsdjlk
-		.che lajsdljalsdjlk
-		.che lajsdljalsdjlk
+q-page(padding)
+	.header Folder
+	.cont
+		Div.box(@click='play' layout-id="underline" layout)
 
 </template>
 
 <style scoped lang="scss">
-.list {
-	width: 600px;
-	margin: 2rem auto;
-	background: #ccc;
+.header {
+	font-size: 1.5rem;
+	text-align: center;
 }
-
+.cont {
+	width: 1000px;
+	margin: 0 auto;
+}
 .box {
-	width: 100px;
-	height: 100px;
-	background-color: $primary;
+	width: 100%;
+	height: 400px;
+	background-color: #fff;
 	border-radius: 5px;
-}
-
-.box1 {
-	width: 100px;
-	height: 100px;
-	background-color: $primary;
-	border-radius: 5px;
-	justify-self: end;
-	background: red;
-	// flex-grow: 1;
 }
 </style>
