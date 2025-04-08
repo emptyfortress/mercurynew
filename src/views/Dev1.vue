@@ -8,7 +8,7 @@ const router = useRouter()
 const Div = motion.div
 
 const play = () => {
-	router.push('/dev/0')
+	router.push('/dev')
 }
 </script>
 
