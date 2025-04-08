@@ -148,7 +148,6 @@ const addDate = (str: string) => {
 }
 
 const removeItem = (index: number) => {
-	console.log(index)
 	// Remove the item and all subsequent items
 	selectedItems.value = selectedItems.value.slice(0, index)
 	// Reset levels to match the new selection
@@ -189,7 +188,7 @@ const isLast = computed(() => {
 })
 
 const showPar = computed(() => {
-	return selectedItems.value.at(-1)?.isPar
+	return selectedItems.value.at(-1)?.isPar || selectedItems.value.at(2)?.isPar
 })
 </script>
 

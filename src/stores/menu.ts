@@ -7,8 +7,14 @@ const mystatus = [
 	{ id: uid(), label: 'Согласовано', value: 'Согласовано', isLast: true },
 ]
 const stat = [
-	{ id: uid(), label: 'равно', value: 'равно', isSpecial: true, children: mystatus },
-	{ id: uid(), label: 'не равно', value: 'не равно', isSpecial: true, children: mystatus },
+	{ id: uid(), label: 'равно', value: 'равно', isSpecial: true, hildren: mystatus },
+	{
+		id: uid(),
+		label: 'не равно',
+		value: 'не равно',
+		isSpecial: true,
+		children: mystatus,
+	},
 	{ id: uid(), label: 'задано', value: 'задано', isLast: true },
 	{ id: uid(), label: 'не задано', value: 'не задано', isLast: true },
 	{
@@ -140,14 +146,29 @@ const manDetails2 = [
 ]
 
 const manDetails1 = [
-	{ id: uid(), label: 'равно', value: 'равно', isSpecial: true, children: manDetails2 },
-	{ id: uid(), label: 'не равно', value: 'не равно', isSpecial: true, children: manDetails2 },
+	{
+		id: uid(),
+		label: 'равно',
+		value: 'равно',
+		isSpecial: true,
+		isPar: true,
+		children: manDetails2,
+	},
+	{
+		id: uid(),
+		label: 'не равно',
+		value: 'не равно',
+		isSpecial: true,
+		isPar: true,
+		children: manDetails2,
+	},
 	{
 		id: uid(),
 		label: 'один из',
 		value: 'один из',
 		isSpecial: true,
 		isMulti: true,
+		isPar: true,
 		children: manDetails2,
 	},
 	{ id: uid(), label: 'задано', value: 'задано', isLast: true, isSpecial: true },
