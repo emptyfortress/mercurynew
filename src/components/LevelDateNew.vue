@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive } from 'vue'
 
 const emit = defineEmits(['add'])
-
-const date = ref('')
 
 const keywords = reactive([
 	{ id: 0, label: 'сегодня' },
@@ -18,26 +16,16 @@ const selected = ref<string>()
 
 const selectItem = (str: string) => {
 	selected.value = str
-	date.value = ''
 	emit('add', str)
 }
 
 const calcClass = (str: string) => {
 	return selected.value == str ? 'selected' : ''
 }
-
-watch(date, (val) => {
-	if (val) {
-		selected.value = undefined
-		emit('add', val)
-	}
-})
 </script>
 
 <template lang="pug">
 div
-	q-date.q-mb-md(v-model="date" minimal)
-
 	ul.menu-items
 		li.menu-item(
 			v-for="item in keywords"
