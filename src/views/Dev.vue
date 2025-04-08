@@ -97,7 +97,12 @@ q-page(padding)
 		)
 			span {{ item.id }}
 
-		Div.fold(@click.stop='navigate' layout-id="underline" layout)
+		Div.fold(
+			@click.stop='navigate',
+			layout-id="underline",
+			layout
+			:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.25 }"
+		)
 
 </template>
 

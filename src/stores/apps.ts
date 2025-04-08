@@ -18,7 +18,7 @@ const app = useStorage('app', localStorage)
 export const useApps = defineStore('apps', () => {
 	const apps = ref<App[]>([
 		{
-			id: '1',
+			id: 1,
 			label: 'Управление командировками',
 			descr: 'Приложение для оформления командировок и отчетов сотрудников',
 			expand: false,
@@ -30,7 +30,7 @@ export const useApps = defineStore('apps', () => {
 			pic: IconTravel1,
 		},
 		{
-			id: '2',
+			id: 2,
 			label: 'Заявки на отпуск',
 			descr: 'Согласование и оформление отпусков сотрудников',
 			expand: false,
@@ -42,7 +42,7 @@ export const useApps = defineStore('apps', () => {
 			pic: IconBeach1,
 		},
 		{
-			id: '3',
+			id: 3,
 			label: 'Приложения отдела маркетинга',
 			descr: 'Это описание',
 			expand: false,
@@ -52,7 +52,7 @@ export const useApps = defineStore('apps', () => {
 			group: 2,
 			list: [
 				{
-					id: '6',
+					id: 6,
 					label: 'Подготовка публикации',
 					descr: 'Процесс подготовки и согласования публикации новостей на сайте',
 					expand: false,
@@ -64,7 +64,7 @@ export const useApps = defineStore('apps', () => {
 					pic: IconPresentation1,
 				},
 				{
-					id: '7',
+					id: 7,
 					label: 'Партнерский форум',
 					descr: 'Приложение для подготовки ежегодного партнерского форума',
 					expand: false,
@@ -78,7 +78,7 @@ export const useApps = defineStore('apps', () => {
 			],
 		},
 		{
-			id: '4',
+			id: 4,
 			label: 'Служебные записки',
 			descr: 'Оформление и обработка служебных записок',
 			expand: false,
@@ -90,7 +90,7 @@ export const useApps = defineStore('apps', () => {
 			pic: IconLetter1,
 		},
 		{
-			id: '5',
+			id: 5,
 			label: 'Служебные записки 1',
 			descr: 'Оформление и обработка служебных записок',
 			expand: false,

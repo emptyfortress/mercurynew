@@ -69,8 +69,9 @@ const back = () => {
 	expanded.value = false
 }
 
-const calcClass = (id: number) => {
-	if (expanded.value && activeItem.value == id) return 'active'
+const calcClass = (item: App) => {
+	// if ()
+	if (expanded.value && activeItem.value == item.id) return 'active'
 	return ''
 }
 
@@ -86,28 +87,28 @@ q-page(padding)
 		:class="{'end': expanded}"
 		@click.stop='back'
 	)
-		template(v-for="(item, index) in tapes", :key="item.id",)
-			Div.it(v-if='item.group == 1'
-				@click.stop='action(item.id)',
-				:data-state="expanded",
-				layout,
-				:class='calcClass(item.id)'
-				:initial="{ opacity: 0, y: 20, scale: 0.5 }"
-				:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
-				:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.2 }"
-			)
-				span {{ item.label }}
+		// template(v-for="(item, index) in tapes", :key="item.id",)
+		Div.it(v-for="(item, index) in tapes", :key="item.id",
+			@click.stop='action(item.id)',
+			:data-state="expanded",
+			layout,
+			:class='calcClass(item)'
+			:initial="{ opacity: 0, y: 20, scale: 0.5 }"
+			:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
+			:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.25 }"
+		)
+			span {{ item.label }}
 
-				.img(v-if='item.group == 1')
-					component(:is='item.pic')
+			.img(v-if='item.group == 1')
+				component(:is='item.pic')
 
-			Div.it.group1(v-if='item.group == 2'
-				@click.stop='navigate',
-				layout-id="underline",
-				:initial="{ opacity: 0, y: 20, scale: 0.5 }"
-				:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
-			) 
-				span {{ item.label }}
+			// Div.it.group1(v-if='item.group == 2'
+			// 	@click.stop='navigate',
+			// 	layout-id="underline",
+			// 	:initial="{ opacity: 0, y: 20, scale: 0.5 }"
+			// 	:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
+			// ) 
+			// 	span {{ item.label }}
 
 </template>
 
