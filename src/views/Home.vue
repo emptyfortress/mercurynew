@@ -75,7 +75,7 @@ const calcClass = (id: number) => {
 }
 
 const navigate = () => {
-	router.push('/folder/1')
+	router.push('/dev/folder/1')
 }
 </script>
 
@@ -86,49 +86,69 @@ q-page(padding)
 		:class="{'end': expanded}"
 		@click.stop='back'
 	)
-		Div.it(
-			v-for="(item, index) in tapes",
-			:key="item.id",
-			@click.stop='action(item.id)',
-			:data-state="expanded",
-			layout,
-			:class='calcClass(item.id)'
-			:initial="{ opacity: 0, y: 20, scale: 0.5 }"
-			:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
-			:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.22 }"
-		)
-			span {{ item.label }}
+		template(v-for="(item, index) in tapes", :key="item.id",)
+			Div.it(v-if='item.group == 1'
+				@click.stop='action(item.id)',
+				:data-state="expanded",
+				layout,
+				:class='calcClass(item.id)'
+				:initial="{ opacity: 0, y: 20, scale: 0.5 }"
+				:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
+				:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.2 }"
+			)
+				span {{ item.label }}
 
-		Div.fold(@click.stop='navigate' layout-id="underline" layout)
+				.img(v-if='item.group == 1')
+					component(:is='item.pic')
+
+			Div.it.group1(v-if='item.group == 2'
+				@click.stop='navigate',
+				layout-id="underline",
+				:initial="{ opacity: 0, y: 20, scale: 0.5 }"
+				:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
+			) 
+				span {{ item.label }}
 
 </template>
 
 <style scoped lang="scss">
+.q-page {
+	position: relative;
+}
 .header {
 	font-size: 1.5rem;
 	text-align: center;
 }
 .pa {
 	display: grid;
-	grid-template-columns: repeat(5, 170px);
+	grid-template-columns: repeat(4, 170px);
 	grid-template-rows: repeat(4, 170px);
 	gap: 1rem;
 	margin: 0 auto;
 	margin-top: 0.5rem;
-	width: 914px;
+	width: 728px;
+	background: #ccc;
 	&.end {
 		grid-template-columns: repeat(1, 200px);
 		grid-template-rows: repeat(7, 80px);
 		width: 200px;
 		margin: 0;
-		margin-left: 200px;
+		// margin-left: 200px;
+		margin-left: calc(50% - 500px);
 		.it {
 			padding: 0.5rem;
 			font-size: 0.85rem;
 			&.active {
 				padding: 1rem;
 				font-size: 1.2rem;
+				.img {
+					font-size: 4rem;
+				}
 			}
+		}
+		.img,
+		img1 {
+			font-size: 1.5rem;
 		}
 	}
 }
@@ -138,6 +158,7 @@ q-page(padding)
 	padding: 1rem;
 	background: #fff;
 	border: 1px solid #fff;
+	position: relative;
 
 	&:hover {
 		border: 1px solid #ccc;
@@ -150,6 +171,10 @@ q-page(padding)
 		top: 9rem;
 		left: calc(50% - 225px);
 		font-size: 2rem;
+	}
+	&.group1 {
+		background: hsl(213deg 83.95% 94.68%);
+		border: 2px solid var(--green);
 	}
 }
 
@@ -173,5 +198,14 @@ q-page(padding)
 	width: 100%;
 	height: 100%;
 	background: #fff;
+}
+.img,
+.img1 {
+	position: absolute;
+	bottom: 0;
+	left: 0.5rem;
+	font-size: 3rem;
+	line-height: 1;
+	color: hsl(199 23% 45% / 1);
 }
 </style>

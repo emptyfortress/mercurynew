@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
@@ -22,8 +22,8 @@ router.beforeEach((to, from, next) => {
 	if (from.meta.count !== undefined) {
 		cover.value = to.meta.count - from.meta.count
 		next()
-	}
-	else next()
+		console.log(cover.value)
+	} else next()
 })
 
 const calcLeave = computed(() => {
@@ -38,6 +38,9 @@ const calcLeave = computed(() => {
 	}
 	if (cover.value < 0) {
 		return 'fadeOutBottom'
+	}
+	if (cover.value == 0) {
+		return ''
 	}
 })
 
@@ -54,8 +57,10 @@ const calcEnter = computed(() => {
 	if (cover.value < 0) {
 		return 'fadeInTop'
 	}
+	if (cover.value == 0) {
+		return ''
+	}
 })
-
 </script>
 
 <template lang="pug">
@@ -133,11 +138,9 @@ nav a:first-of-type {
 }
 
 @media (min-width: 1024px) {
-
 	.logo {
 		margin: 0 2rem 0 0;
 	}
-
 
 	nav {
 		text-align: left;

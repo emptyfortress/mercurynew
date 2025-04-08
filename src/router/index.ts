@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Tmp1 from '../views/Tmp1.vue'
+import Dev1 from '../views/Dev1.vue'
 import Home from '../views/Home.vue'
 
 declare module 'vue-router' {
@@ -23,16 +23,16 @@ const router = createRouter({
 				count: 0,
 			},
 		},
-		{
-			path: '/tmp1',
-			name: 'tmp1',
-			component: Tmp1,
-			meta: {
-				toolbar: false,
-				back: false,
-				count: 0,
-			},
-		},
+		// {
+		// 	path: '/tmp1',
+		// 	name: 'tmp1',
+		// 	component: Tmp1,
+		// 	meta: {
+		// 		toolbar: false,
+		// 		back: false,
+		// 		count: 0,
+		// 	},
+		// },
 		{
 			path: '/spot',
 			name: 'spot',
@@ -220,12 +220,13 @@ const router = createRouter({
 		{
 			path: '/dev/folder/:id',
 			name: 'folder',
-			component: () => import('@/views/Dev1.vue'),
+			component: Dev1,
+			// component: () => import('@/views/Dev1.vue'),
 			props: true,
 			meta: {
 				toolbar: true,
 				back: true,
-				count: 10,
+				count: 0,
 			},
 		},
 		{
@@ -236,7 +237,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: true,
-				count: 10,
+				count: 0,
 			},
 		},
 		{
@@ -246,7 +247,7 @@ const router = createRouter({
 			meta: {
 				toolbar: true,
 				back: true,
-				count: 10,
+				count: 0,
 			},
 		},
 	],
