@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Dev1 from '../views/Dev1.vue'
-import Home from '../views/Home.vue'
+import Dev1 from '@/views/Dev1.vue'
+import Home from '@/views/Home.vue'
 
 declare module 'vue-router' {
 	interface RouteMeta {
@@ -221,10 +221,9 @@ const router = createRouter({
 			path: '/folder/:id',
 			name: 'folder',
 			component: Dev1,
-			// component: () => import('@/views/Dev1.vue'),
 			props: true,
 			meta: {
-				toolbar: true,
+				toolbar: false,
 				back: true,
 				count: 0,
 			},

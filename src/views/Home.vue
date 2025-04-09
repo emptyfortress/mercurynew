@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, reactive } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { animations, state } from '@formkit/drag-and-drop'
-import { useList } from '@/stores/list'
+import { animations } from '@formkit/drag-and-drop'
 import { useApps } from '@/stores/apps'
 
-const list = useList()
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
@@ -55,9 +53,8 @@ const [parent, tapes] = useDragAndDrop(myapps.apps, config)
 const expanded = ref(false)
 
 const action = (item: App) => {
-	// expanded.value = !expanded.value
 	if (item.group == 2) {
-		navigate()
+		navigate(item.id)
 	} else {
 		if (activeItem.value !== 0 && activeItem.value == item.id) {
 			expanded.value = false
@@ -79,8 +76,8 @@ const calcClass = (item: App) => {
 	return ''
 }
 
-const navigate = () => {
-	router.push('/folder/1')
+const navigate = (id: number) => {
+	router.push(`/folder/${id}`)
 }
 const calcId = (item: App) => {
 	if (item.group == 2) return 'underline'

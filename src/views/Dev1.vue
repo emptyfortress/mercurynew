@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { motion, animate, stagger, AnimatePresence } from 'motion-v'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import IconFolderOpen from '@/components/icons/IconFolderOpen.vue'
+import { useApps } from '@/stores/apps'
 
+const myapps = useApps()
 const router = useRouter()
+const route = useRoute()
+
+const list = computed(() => {
+	return myapps.apps.filter((item) => item.id == +route.params.id)[0].list
+})
 
 const Div = motion.div
 
@@ -20,6 +27,7 @@ q-page(padding)
 		|Приложения отдела маркетинга
 	.cont
 		Div.box(@click='play' layout-id="underline")
+			div {{ list }}
 
 </template>
 
