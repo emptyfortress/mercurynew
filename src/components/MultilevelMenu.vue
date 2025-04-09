@@ -28,20 +28,19 @@ const query = ref('')
 const visibleLevels = computed(() => {
 	return menuLevels.value.slice(0, currentLevelIndex.value + 1).map((level, index) => {
 		if (index === currentLevelIndex.value) {
-			// Фильтрация только для последнего уровня
-			return {
-				...level,
-				items: level.items.filter((item) =>
-					item.label.toLowerCase().includes(query.value.toLowerCase())
-				),
+			// Фильтрация только для последнего уровня, если нет выбранного элемента на этом уровне
+			if (!selectedItems.value[index]) {
+				return {
+					...level,
+					items: level.items.filter((item) =>
+						item.label.toLowerCase().includes(query.value.toLowerCase())
+					),
+				}
 			}
 		}
 		return level // Остальные уровни без изменений
 	})
 })
-// const isItemSelected = (item: MenuItem, levelIndex: number) => {
-//  return selectedItems.value[levelIndex]?.id === item.id
-// }
 
 const selectItem = (item: MenuItem, levelIndex: number) => {
 	// clear query

@@ -1,13 +1,40 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import IconRocket from '@/components/icons/IconRocket.vue'
 import { useKeys } from '@/stores/keys'
+import { ref, onMounted, watch } from 'vue'
+import IconRocket from '@/components/icons/IconRocket.vue'
 
 const mykeys = useKeys()
 
 const emit = defineEmits(['search'])
 const startSearch = () => {
 	emit('search')
+}
+
+// Ref to store the local input values
+const localInputValues = ref<{ [key: string]: string }>({})
+
+onMounted(() => {
+	// Initialize local input values from the store on component mount
+	mykeys.hasParameters.forEach((group) => {
+		localInputValues.value[group[2].id] = group[2].label
+	})
+})
+
+// Watch for changes in mykeys.hasParameters to update localInputValues
+watch(
+	() => mykeys.hasParameters,
+	(newParameters) => {
+		console.log('new')
+		newParameters.forEach((group) => {
+			localInputValues.value[group[2].id] = group[2].label
+		})
+	},
+	{ deep: true }
+)
+
+// Function to update the local input value
+const updateLocalInputValue = (id: string, newValue: string) => {
+	localInputValues.value[id] = newValue
 }
 </script>
 
@@ -18,9 +45,15 @@ const startSearch = () => {
 			.edit(:class="{'dis': !group[3].isActive}") {{ group[0].label }}:
 				q-popup-edit(v-model="group[0].label" auto-save v-slot="scope")
 					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
-			q-input(:model-value="group[2].label", filled, dense, :disable="!group[3].isActive")
+			q-input(
+				:model-value="localInputValues[group[2].id]"
+				@update:model-value="updateLocalInputValue(group[2].id, $event)"
+				filled
+				dense
+				:disable="!group[3].isActive"
+			)
 			q-toggle(size="sm" v-model="group[3].isActive")
-		
+
 	.empty(v-else)
 		IconRocket.big
 		div Параметры не заданы.<br />Показ формы не требуется.
