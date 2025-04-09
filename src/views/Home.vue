@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, reactive } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
@@ -54,14 +54,18 @@ const [parent, tapes] = useDragAndDrop(myapps.apps, config)
 
 const expanded = ref(false)
 
-const action = (id: number) => {
-	expanded.value = !expanded.value
-	if (activeItem.value !== 0 && activeItem.value == id) {
-		expanded.value = false
-		activeItem.value = 0
+const action = (item: App) => {
+	// expanded.value = !expanded.value
+	if (item.group == 2) {
+		navigate()
 	} else {
-		expanded.value = true
-		activeItem.value = id
+		if (activeItem.value !== 0 && activeItem.value == item.id) {
+			expanded.value = false
+			activeItem.value = 0
+		} else {
+			expanded.value = true
+			activeItem.value = item.id
+		}
 	}
 }
 const back = () => {
@@ -70,45 +74,62 @@ const back = () => {
 }
 
 const calcClass = (item: App) => {
-	// if ()
+	if (item.group == 2) return 'group1'
 	if (expanded.value && activeItem.value == item.id) return 'active'
 	return ''
 }
 
 const navigate = () => {
-	router.push('/dev/folder/1')
+	router.push('/folder/1')
+}
+const calcId = (item: App) => {
+	if (item.group == 2) return 'underline'
+}
+
+const initial = {
+	opacity: 0,
+	y: 20,
+}
+
+const animate = (index: number) => ({
+	opacity: 1,
+	y: 0,
+	transition: { delay: index * 0.05 },
+})
+
+const spring = {
+	type: 'spring',
+	visualDuration: 0.3,
+	bounce: 0.25,
 }
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.header Мои приложения - {{ activeItem }}
+	Div.header(
+		:initial='{opacity: 0, y: 50}'
+		:animate='{opacity: 1, y: 0, transition: {delay: 0.4}}'
+	) Мои приложения
+
 	Div.pa(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
 	)
-		// template(v-for="(item, index) in tapes", :key="item.id",)
 		Div.it(v-for="(item, index) in tapes", :key="item.id",
-			@click.stop='action(item.id)',
+			@click.stop='action(item)',
 			:data-state="expanded",
 			layout,
+			:layout-id="calcId(item)"
 			:class='calcClass(item)'
-			:initial="{ opacity: 0, y: 20, scale: 0.5 }"
-			:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
-			:transition="{ type: 'spring', visualDuration: 0.3, bounce: 0.25 }"
+			:initial="initial"
+			:animate="animate(index)"
+			:transition="spring"
 		)
-			span {{ item.label }}
+			Div(layout-id='zag' v-if='item.group == 2') {{ item.label }}
+			span(v-else) {{ item.label }}
 
 			.img(v-if='item.group == 1')
 				component(:is='item.pic')
-
-			// Div.it.group1(v-if='item.group == 2'
-			// 	@click.stop='navigate',
-			// 	layout-id="underline",
-			// 	:initial="{ opacity: 0, y: 20, scale: 0.5 }"
-			// 	:animate="{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.05 }} "
-			// ) 
-			// 	span {{ item.label }}
 
 </template>
 
@@ -128,7 +149,7 @@ q-page(padding)
 	margin: 0 auto;
 	margin-top: 0.5rem;
 	width: 728px;
-	background: #ccc;
+	// background: #ccc;
 	&.end {
 		grid-template-columns: repeat(1, 200px);
 		grid-template-rows: repeat(7, 80px);
@@ -176,6 +197,7 @@ q-page(padding)
 	&.group1 {
 		background: hsl(213deg 83.95% 94.68%);
 		border: 2px solid var(--green);
+		z-index: 10;
 	}
 }
 
@@ -194,11 +216,6 @@ q-page(padding)
 	padding: 1rem;
 	background: #fff;
 	border: 1px solid #fff;
-}
-.fold {
-	width: 100%;
-	height: 100%;
-	background: #fff;
 }
 .img,
 .img1 {

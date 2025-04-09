@@ -22,7 +22,6 @@ router.beforeEach((to, from, next) => {
 	if (from.meta.count !== undefined) {
 		cover.value = to.meta.count - from.meta.count
 		next()
-		console.log(cover.value)
 	} else next()
 })
 

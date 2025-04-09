@@ -218,7 +218,7 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/dev/folder/:id',
+			path: '/folder/:id',
 			name: 'folder',
 			component: Dev1,
 			// component: () => import('@/views/Dev1.vue'),
