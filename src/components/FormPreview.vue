@@ -33,7 +33,7 @@ watch(
 )
 
 // Function to update the local input value
-const updateLocalInputValue = (id: string, newValue: string) => {
+const updateLocalInputValue = (id: string, newValue: any) => {
 	localInputValues.value[id] = newValue
 }
 </script>
