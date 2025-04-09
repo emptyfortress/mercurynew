@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import { useKeys } from '@/stores/keys'
+import { useQuasar } from 'quasar'
 
 const props = defineProps({
 	button: {
@@ -10,6 +11,7 @@ const props = defineProps({
 })
 
 const poisk = defineModel('poisk')
+const $q = useQuasar()
 
 const mykeys = useKeys()
 
@@ -25,6 +27,16 @@ const refresh = () => {
 	setTimeout(() => {
 		isLoaded.value = true
 	}, 2000)
+
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Запрос выполнен, данные обновлены',
+			position: 'center',
+		})
+	}, 2100)
+
 	isFake.value = false
 	poisk.value = false
 }
