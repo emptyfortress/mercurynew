@@ -117,7 +117,7 @@ q-page(padding)
 	.edito(ref='editorPreview')
 		div
 			.top()
-				.zg Папка "{{ currentFolder?.label }}"
+				.zg Настройка папки "{{ currentFolder?.label }}"
 				.q-gutter-x-sm
 					q-btn(flat round dense color="primary" @click="") 
 						IconUndo.ic

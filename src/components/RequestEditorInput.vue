@@ -74,6 +74,7 @@ const addCond = () => {
 			isLast: el.isLast,
 			isInput: el.isInput,
 			isMulti: el.isMulti,
+			isPar: el.isPar,
 		}))
 
 		if (items.at(-1)?.isInput) {
@@ -85,7 +86,14 @@ const addCond = () => {
 				isPrompt: true,
 			})
 		}
-		if (items.length == 2) {
+
+		if (items.at(-1)?.label == 'задано' || items.at(-1)?.label == 'не задано') {
+			items.push({ id: uid(), label: '', isPrompt: false })
+		}
+		if (
+			items.length == 2 &&
+			(items.at(-1)?.label !== 'задано' || items.at(-1)?.label !== 'не задано')
+		) {
 			items.push({ id: uid(), label: '', isPrompt: true })
 		}
 		items.push({
@@ -100,10 +108,6 @@ const addCond = () => {
 	}
 }
 
-const save = () => {
-	addCond()
-	mykeys.toggleDragWindow()
-}
 const isClearVisible = computed(() => {
 	return selectedItems.value?.length || query.value?.length
 })

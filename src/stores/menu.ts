@@ -7,7 +7,7 @@ const mystatus = [
 	{ id: uid(), label: 'Согласовано', value: 'Согласовано', isLast: true },
 ]
 const stat = [
-	{ id: uid(), label: 'равно', value: 'равно', isSpecial: true, hildren: mystatus },
+	{ id: uid(), label: 'равно', value: 'равно', isSpecial: true, children: mystatus },
 	{
 		id: uid(),
 		label: 'не равно',
@@ -15,8 +15,6 @@ const stat = [
 		isSpecial: true,
 		children: mystatus,
 	},
-	{ id: uid(), label: 'задано', value: 'задано', isLast: true },
-	{ id: uid(), label: 'не задано', value: 'не задано', isLast: true },
 	{
 		id: uid(),
 		label: 'один из',
@@ -25,17 +23,20 @@ const stat = [
 		isMulti: true,
 		children: mystatus,
 	},
+	{ id: uid(), label: 'задано', value: 'задано', isSpecial: true, isLast: true },
+	{ id: uid(), label: 'не задано', value: 'не задано', isSpecial: true, isLast: true },
 ]
 const datee = [
+	{ date: true, id: uid(), isSpecial: true, label: 'равно', value: 'равно' },
+	{ date: true, id: uid(), isSpecial: true, label: 'не равно', value: 'не равно' },
 	{ date: true, id: uid(), isSpecial: true, label: 'диапазон', value: 'диапазон' },
 	{ date: true, id: uid(), isSpecial: true, label: 'позже', value: 'позже' },
 	{ date: true, id: uid(), isSpecial: true, label: 'позже или равно', value: 'позже или равно' },
 	{ date: true, id: uid(), isSpecial: true, label: 'раньше', value: 'раньше' },
 	{ date: true, id: uid(), isSpecial: true, label: 'раньше или равно', value: 'раньше или равно' },
-	{ date: true, id: uid(), isSpecial: true, label: 'равно', value: 'равно' },
-	{ date: true, id: uid(), isSpecial: true, label: 'не равно', value: 'не равно' },
-	{ date: true, id: uid(), isSpecial: true, label: 'задано', value: 'задано' },
-	{ date: true, id: uid(), isSpecial: true, label: 'не задано', value: 'не задано' },
+
+	{ date: false, id: uid(), isSpecial: true, isLast: true, label: 'задано', value: 'задано' },
+	{ date: false, id: uid(), isSpecial: true, isLast: true, label: 'не задано', value: 'не задано' },
 ]
 const str = [
 	{
@@ -200,7 +201,7 @@ const exec = [
 const execute = [
 	{ id: uid(), label: 'Срок', value: 'Срок', children: datee },
 	{ id: uid(), label: 'Исполнитель', value: 'Исполнитель', children: manDetails1 },
-	{ id: uid(), label: 'Состояние ?', value: 'Состояние ?', children: exec },
+	{ id: uid(), label: 'Состояние', value: 'Состояние', children: exec },
 	{ id: uid(), label: 'Текущий этап', value: 'Текущий этап', isLast: true },
 ]
 const zero = [
@@ -211,7 +212,7 @@ const zero = [
 	{ id: uid(), label: 'Дата окончания отпуска', children: datee },
 	{ id: uid(), label: 'Комментарий', children: str },
 	{ id: uid(), label: 'Статус', children: stat },
-	{ id: uid(), label: 'Исполнение', children: execute },
+	{ id: uid(), label: 'Исполнение процесса', children: execute },
 ]
 
 export { zero }

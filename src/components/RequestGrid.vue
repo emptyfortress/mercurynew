@@ -81,6 +81,11 @@ const search = () => {
 const open = (e: boolean) => {
 	if (e) emit('open')
 }
+
+const calcCheckbox = (group: any) => {
+	if (group[3] && group[3].isVis) return true
+	return false
+}
 </script>
 
 <template lang="pug">
@@ -89,7 +94,6 @@ div
 		IconInfo.big
 		div
 			|Папка 
-			// span.bold {{ props.folder }} 
 			span содержит
 			span.bold ВСЕ
 			span данные типа 
@@ -105,7 +109,7 @@ div
 				template(v-else)
 					component(:is="element")
 
-			q-checkbox(v-if='group[3].isVis' dense v-model="group[3].isPar" color="primary" size='xs' @update:modelValue="open")
+			q-checkbox(v-if='calcCheckbox(group)' dense v-model="group[3].isPar" color="primary" size='xs' @update:modelValue="open")
 				q-tooltip Параметр
 			div
 			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')

@@ -219,7 +219,9 @@ const showPar = computed(() => {
 					)
 						q-icon.q-mr-md(v-if="item.isKey" name="mdi-star" color="grey-7")
 						q-icon.q-mr-md(v-if="item.isPeople" name="mdi-account" color="grey-7")
+						q-icon.q-mr-sm(v-if="item.label == 'Исполнение процесса'" name="mdi-shuffle-variant" color="primary" size='17px')
 						span {{ item.label }}
+
 		.level(v-if="isDate" :class="{ active: isDate }")
 			LevelDateNew(@add="addDate")
 
