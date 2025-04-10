@@ -17,8 +17,8 @@ const list = computed(() => {
 
 const Div = motion.div
 
-const play = () => {
-	router.push('/')
+const back = () => {
+	router.back()
 }
 
 const config = {
@@ -40,14 +40,14 @@ q-page(padding)
 		IconFolderOpen.ic
 		|Маркетинг
 	.cont
-		Div.box(@click='play' layout-id="underline")
+		Div.box(@click='back' layout-id="underline")
 			Div.pa(ref='parent'
 				:class="{'end': expanded}"
 			)
-				Div.it(v-for="(item, index) in tapes", :key="item.id",
-					:data-state="expanded",
-					layout,
-				)
+				// Div.it(v-for="(item, index) in tapes", :key="item.id",
+				// 	:data-state="expanded",
+				// 	layout,
+				// )
 
 </template>
 
