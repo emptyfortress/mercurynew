@@ -164,8 +164,10 @@ const isLast = computed(() => {
 })
 
 const showPar = computed(() => {
-	if (selectedItems.value.filter((el: any) => el.isLast).length > 1) return false
-	return selectedItems.value.at(-1)?.isPar || selectedItems.value.at(2)?.isPar
+	return (
+		(selectedItems.value.at(-1)?.isPar || selectedItems.value.at(2)?.isPar) &&
+		!(selectedItems.value.at(-1)?.isKey && selectedItems.value.at(-2)?.isKey)
+	)
 })
 
 watch(selectedItems, (newSelectedItems) => {
