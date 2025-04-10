@@ -65,12 +65,7 @@ const navigate = (id: number) => {
 
 <template lang="pug">
 q-page(padding)
-	Div.header(
-		:initial='{opacity: 0, y: -20}'
-		:animate='{opacity: 1, y: 0, transition: {delay: 0.45}}'
-	) Мои приложения
-
-	Div.pa(ref='parent'
+	Div.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
 	)
@@ -91,36 +86,5 @@ q-page(padding)
 .header {
 	font-size: 1.5rem;
 	text-align: center;
-}
-.pa {
-	display: grid;
-	grid-template-columns: repeat(4, 170px);
-	grid-template-rows: repeat(4, 170px);
-	gap: 1rem;
-	margin: 0 auto;
-	margin-top: 0.5rem;
-	width: 728px;
-	&.end {
-		grid-template-columns: repeat(1, 200px);
-		grid-template-rows: repeat(7, 80px);
-		width: 200px;
-		margin: 0;
-		margin-left: calc(50% - 500px);
-		.it {
-			padding: 0.5rem;
-			font-size: 0.85rem;
-			&.active {
-				padding: 1rem;
-				font-size: 1.2rem;
-				.img {
-					font-size: 4rem;
-				}
-			}
-		}
-		.img,
-		img1 {
-			font-size: 1.5rem;
-		}
-	}
 }
 </style>
