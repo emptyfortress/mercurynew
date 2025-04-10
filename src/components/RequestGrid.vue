@@ -137,7 +137,6 @@ div
 
 .big {
 	font-size: 3rem;
-	// color: $secondary;
 }
 
 .ic {

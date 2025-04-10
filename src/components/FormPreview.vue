@@ -132,13 +132,13 @@ const [parent, tapes] = useDragAndDrop(mykeys.hasParameters, config)
 		background: #efefef;
 	}
 }
-.fill {
-	width: 100%;
-}
 
 .edit {
 	cursor: pointer;
 	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 100%;
 	span {
 		border-bottom: 1px dotted $primary;
 	}
