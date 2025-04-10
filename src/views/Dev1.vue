@@ -36,43 +36,52 @@ const expanded = ref(false)
 
 <template lang="pug">
 q-page(padding)
-	.cont
-		Div.box(@click='back' layout-id="underline")
-			.header
-				IconFolderOpen.ic
-				|Маркетинг
-			Div.pa(ref='parent'
-				:class="{'end': expanded}"
-			)
-				// Div.it(v-for="(item, index) in tapes", :key="item.id",
-				// 	:data-state="expanded",
-				// 	layout,
-				// )
+	Div.box(@click='back' layout-id="underline")
+		.header
+			span Маркетинг
+		Div.parent(ref='parent'
+			:class="{'end': expanded}"
+		)
+			Div.it(v-for="(item, index) in tapes", :key="item.id",)
 
 </template>
 
 <style scoped lang="scss">
 .header {
-	font-size: 1.5rem;
 	text-align: center;
-	vertical-align: bottom;
+	color: $primary;
+	margin-bottom: 0.8rem;
+	span {
+		font-size: 1.2rem;
+		border-bottom: 1px dotted $primary;
+	}
 }
 .ic {
 	font-size: 1.9rem;
 	margin-bottom: -5px;
 	margin-right: 0.5rem;
 }
-.cont {
-	width: 728px;
-	margin: 0 auto;
-	margin-bottom: 0.5rem;
+.parent {
+	width: initial;
+	display: flex;
+	margin: 0.5rem;
+	&:hover {
+		box-shadow: none;
+	}
 }
 .box {
-	width: 100%;
-	height: 400px;
+	margin: 0 auto;
+	margin-top: 1rem;
+	width: 860px;
+	padding: 0.5rem;
 	background: hsl(213deg 83.95% 94.68%);
 	border: 2px solid var(--green);
 	border-radius: 0.5rem;
 	z-index: 10;
+}
+.it {
+	width: 170px;
+	height: 170px;
+	border: 1px solid $secondary;
 }
 </style>

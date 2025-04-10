@@ -65,6 +65,16 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 
 	.img(v-if='item.group == 1')
 		component(:is='item.pic')
+
+	template(v-if='item.group == 2')
+		.img1
+			component(:is='el.pic' v-for="el in item.list" :key="el.id")
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.img1 {
+	bottom: 0.5rem;
+	left: 0.8rem;
+	font-size: 1.5rem;
+}
+</style>
