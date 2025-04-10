@@ -157,7 +157,7 @@ div
 	width: fit-content;
 	gap: 0.5rem;
 	&.active {
-		background: hsl(241 94% 95% / 1);
+		background: hsl(241 94% 93% / 1);
 	}
 
 	.remove {
