@@ -131,6 +131,12 @@ export const useKeys = defineStore('mykeys', () => {
 
 	const theme = ref(0)
 
+	const hoverItem = ref<string | null>(null)
+
+	const setHover = (e: null | string) => {
+		hoverItem.value = e
+	}
+
 	return {
 		keys,
 		isDragWindow,
@@ -138,6 +144,8 @@ export const useKeys = defineStore('mykeys', () => {
 		columns,
 		activeColumns,
 		theme,
+		hoverItem,
+		setHover,
 		toggleDragWindow,
 		addItem,
 		updateCols,

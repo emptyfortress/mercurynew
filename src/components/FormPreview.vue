@@ -42,24 +42,39 @@ const updateLocalLabelValue = (id: string, newValue: any, scope: any) => {
 	scope.set()
 	localLabelValues.value[id] = newValue
 }
+
+const enter = (e: Event, id: string) => {
+	mykeys.setHover(id)
+}
+const leave = () => {
+	mykeys.setHover(null)
+}
 </script>
 
 <template lang="pug">
 .preview
 	.grid(v-if='mykeys.hasParameters.length')
-		template(v-for="(group, index) in mykeys.hasParameters" :key="group[0].id")
-			.edit(:class="{'dis': !group[3].isActive}") {{ localLabelValues[group[0].id] }}:
+		template(v-for="(group, index) in mykeys.hasParameters", :key="group[0].id")
+			.edit(
+				:class="{'dis': !group[3].isActive}",
+				@mouseenter='enter($event, group[0].id)',
+				@mouseleave='leave',
+			) {{ localLabelValues[group[0].id] }}:
 				q-popup-edit(v-model="localLabelValues[group[0].id]" auto-save v-slot="scope")
 					.small {{group[0].label}} {{ group[1].label}}
 					q-input(v-model="scope.value" dense filled autofocus counter @keyup.enter="updateLocalLabelValue(group[0].id, scope.value, scope)")
 
-			q-input(
-				:model-value="localInputValues[group[2].id]"
-				@update:model-value="updateLocalInputValue(group[2].id, $event)"
-				filled
-				dense
-				:disable="!group[3].isActive"
+			div(
+				@mouseenter='enter($event, group[0].id)',
+				@mouseleave='leave',
 			)
+				q-input(
+					:model-value="localInputValues[group[2].id]"
+					@update:model-value="updateLocalInputValue(group[2].id, $event)"
+					filled
+					dense
+					:disable="!group[3].isActive"
+				)
 			q-toggle(size="sm" v-model="group[3].isActive")
 
 	.empty(v-else)

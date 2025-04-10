@@ -8,13 +8,6 @@ import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useKeys } from '@/stores/keys'
 import { QInput, QChip } from 'quasar'
 
-// const props = defineProps({
-// 	folder: {
-// 		type: String,
-// 		default: '',
-// 	},
-// })
-
 const mykeys = useKeys()
 
 const config = {
@@ -65,6 +58,7 @@ const formatItem = (item: any) => {
 			'onUpdate:modelValue': (value: any) => (item.label = value),
 			dense: true,
 			outlined: true,
+			bgColor: 'white',
 		})
 	} else if (item.isSpecial || item.isSpecial1) {
 		return h(QChip, { dense: true, color: 'purple-2' }, () => item.label)
@@ -86,6 +80,10 @@ const calcCheckbox = (group: any) => {
 	if (group[3] && group[3].isVis) return true
 	return false
 }
+
+const currentId = computed(() => {
+	return mykeys.hoverItem
+})
 </script>
 
 <template lang="pug">
@@ -101,7 +99,11 @@ div
 		q-btn.q-mt-md(unelevated color="primary" icon='mdi-filter-plus' label="Настроить фильтр" @click="mykeys.toggleDragWindow")
 
 	.grid(ref='parent')
-		.condition(v-for="(group, index) in tapes" :key="group[0].id")
+		.condition(
+			v-for="(group, index) in tapes",
+			:key="group[0].id"
+			:class='{active: currentId == group[0].id}'
+		)
 			q-icon(name='mdi-drag-vertical' size='20px' color="grey")
 			div(v-for="(element, index) in formatGroup(group)" :key="index")
 				template(v-if="typeof element === 'string'")
@@ -154,6 +156,9 @@ div
 	align-items: center;
 	width: fit-content;
 	gap: 0.5rem;
+	&.active {
+		background: hsl(241 94% 95% / 1);
+	}
 
 	.remove {
 		cursor: pointer;
