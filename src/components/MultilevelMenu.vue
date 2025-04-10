@@ -42,6 +42,7 @@ const visibleLevels = computed(() => {
 	})
 })
 
+// some comments
 const selectItem = (item: MenuItem, levelIndex: number) => {
 	// clear query
 	query.value = ''
