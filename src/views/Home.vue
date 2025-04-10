@@ -104,8 +104,8 @@ const spring = {
 <template lang="pug">
 q-page(padding)
 	Div.header(
-		:initial='{opacity: 0, y: 50}'
-		:animate='{opacity: 1, y: 0, transition: {delay: 0.4}}'
+		:initial='{opacity: 0, y: -20}'
+		:animate='{opacity: 1, y: 0, transition: {delay: 0.3}}'
 	) Мои приложения
 
 	Div.pa(ref='parent'

@@ -43,7 +43,7 @@ export const useApps = defineStore('apps', () => {
 		},
 		{
 			id: 3,
-			label: 'Приложения отдела маркетинга',
+			label: 'Маркетинг',
 			descr: 'Это описание',
 			expand: false,
 			version: '0.0.0',
