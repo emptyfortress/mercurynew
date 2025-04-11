@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import RequestEditorInput from '@/components/RequestEditorInput.vue'
 import LevelDateNew from '@/components/LevelDateNew.vue'
 import { zero } from '@/stores/menu'
@@ -28,8 +28,9 @@ const query = ref('')
 const visibleLevels = computed(() => {
 	return menuLevels.value.slice(0, currentLevelIndex.value + 1).map((level, index) => {
 		if (index === currentLevelIndex.value) {
-			// Фильтрация только для последнего уровня, если нет выбранного элемента на этом уровне
-			if (!selectedItems.value[index]) {
+			// Фильтрация только для последнего уровня, если нет выбранного элемента на этом уровне (или if the current level's parent was not multi)
+			const parentItem = selectedItems.value[index - 1]
+			if (!selectedItems.value[index] || (parentItem && !parentItem.isMulti)) {
 				return {
 					...level,
 					items: level.items.filter((item) =>
@@ -42,93 +43,74 @@ const visibleLevels = computed(() => {
 	})
 })
 
-// some comments
 const selectItem = (item: MenuItem, levelIndex: number) => {
-	// clear query
 	query.value = ''
 
-	// Logic to handle isMulti items
-	const multiIndex = selectedItems.value.findIndex((si: MenuItem) => si.isMulti)
-	if (multiIndex !== -1) {
-		const existingIndex = selectedItems.value.findIndex((si) => si.id === item.id)
+	const parentItem = selectedItems.value[levelIndex - 1]
+	const isMultiParent = parentItem?.isMulti
+	const currentLevel = menuLevels.value[levelIndex]
 
-		if (existingIndex !== -1) {
-			selectedItems.value.splice(existingIndex, 1) // remove if already exists
-		} else if (item.isSpecial1) {
-			selectedItems.value.push(item)
-			selectedItems.value = selectedItems.value.slice(0, multiIndex)
-
-			currentLevelIndex.value = levelIndex
-			selectedItems.value[levelIndex] = item
-
-			// Clear subsequent levels and items
-			menuLevels.value = menuLevels.value.slice(0, levelIndex + 1)
-			currentLevelIndex.value = levelIndex
+	if (isMultiParent && currentLevel) {
+		// Logic for multi-select children
+		const existingIndex =
+			selectedItems.value.slice(levelIndex).findIndex((si) => si?.id === item.id) + levelIndex
+		if (existingIndex !== levelIndex - 1) {
+			// Deselect item
+			selectedItems.value = selectedItems.value.filter((_, index) => index !== existingIndex)
 		} else {
-			selectedItems.value.push(item) // add if not exists
+			// Select item
+			selectedItems.value.push(item)
+			// deselect checkbox if multi
+			if (selectedItems.value.filter((el: any) => el.isLast).length > 1) {
+				par.value = false
+			}
 		}
 
-		if (item.isSpecial) {
-			selectedItems.value = selectedItems.value.slice(0, multiIndex)
-			selectedItems.value[multiIndex] = item
-			currentLevelIndex.value = levelIndex
-		}
-		return // Exit early to avoid regular item selection logic
-	}
-
-	// For special items
-	if (item.isSpecial) {
-		// Update selection without clearing subsequent items
-		selectedItems.value[levelIndex] = item
-
-		// Always update children items
 		if (item.children && item.children.length > 0) {
 			const nextLevelIndex = levelIndex + 1
 			const nextLevel: MenuLevel = {
 				title: item.label,
 				items: item.children,
-				isSpecial: false,
+				isSpecial: item.isSpecial || false,
 			}
-
 			if (menuLevels.value.length > nextLevelIndex) {
 				menuLevels.value[nextLevelIndex] = nextLevel
 			} else {
 				menuLevels.value.push(nextLevel)
 			}
-
 			currentLevelIndex.value = nextLevelIndex
+		} else if (levelIndex >= currentLevelIndex.value) {
+			currentLevelIndex.value = levelIndex
 		}
 		return
 	}
 
-	// For regular items
+	// Logic for single select
 	if (levelIndex < currentLevelIndex.value) {
-		// Changed selection in previous level - clear subsequent items and levels
 		selectedItems.value = selectedItems.value.slice(0, levelIndex)
 		menuLevels.value = menuLevels.value.slice(0, levelIndex + 1)
 		currentLevelIndex.value = levelIndex
 	}
 
-	// Update selection for current level
-	selectedItems.value[levelIndex] = item
+	const newSelectedItems = [...selectedItems.value]
+	newSelectedItems[levelIndex] = item
+	selectedItems.value = newSelectedItems
 
-	// If item has children, add next level
 	if (item.children && item.children.length > 0) {
 		const nextLevelIndex = levelIndex + 1
-
 		const nextLevel: MenuLevel = {
 			title: item.label,
 			items: item.children,
 			isSpecial: item.isSpecial || false,
 		}
-
 		if (menuLevels.value.length > nextLevelIndex) {
 			menuLevels.value[nextLevelIndex] = nextLevel
 		} else {
 			menuLevels.value.push(nextLevel)
 		}
-
 		currentLevelIndex.value = nextLevelIndex
+	} else {
+		currentLevelIndex.value = levelIndex
 	}
 }
 
@@ -140,7 +122,7 @@ const addDate = (str: string) => {
 		isLast: true,
 		isVis: true,
 		isPar: par.value,
-	}
+	} as MenuItem
 	if (!selectedItems.value.at(-1)?.isSpecial) {
 		selectedItems.value.pop()
 	}
@@ -148,9 +130,7 @@ const addDate = (str: string) => {
 }
 
 const removeItem = (index: number) => {
-	// Remove the item and all subsequent items
 	selectedItems.value = selectedItems.value.slice(0, index)
-	// Reset levels to match the new selection
 	currentLevelIndex.value = Math.max(0, selectedItems.value.length)
 	menuLevels.value = menuLevels.value.slice(0, currentLevelIndex.value + 1)
 }
@@ -169,17 +149,14 @@ const isDate = computed(() => {
 })
 
 const calcClass = (item: MenuItem, index: number) => {
-	// Highlight selected items in the menu list
 	if (item.id === 'fio') {
 		return selectedItems.value.some((selectedItem) => selectedItem.id === 'fio')
 			? 'selfio'
 			: 'first'
 	}
-
 	if (selectedItems.value.some((selectedItem) => selectedItem.id === item.id)) {
 		return 'selected'
 	}
-
 	return ''
 }
 
@@ -188,7 +165,15 @@ const isLast = computed(() => {
 })
 
 const showPar = computed(() => {
+	if (selectedItems.value.filter((el: any) => el.isLast).length > 1) return false
 	return selectedItems.value.at(-1)?.isPar || selectedItems.value.at(2)?.isPar
+})
+
+watch(selectedItems, (newSelectedItems) => {
+	if (newSelectedItems.length < currentLevelIndex.value) {
+		menuLevels.value = menuLevels.value.slice(0, newSelectedItems.length + 1)
+		currentLevelIndex.value = newSelectedItems.length
+	}
 })
 </script>
 
@@ -229,7 +214,6 @@ const showPar = computed(() => {
 			q-checkbox(v-model="par" label="Изменяемый параметр")
 			.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр в форме запроса
 			.text-caption.q-ml-sm Включите этот флаг, если, при открытии папки, вы хотите показать ФОРМУ с данным условием, которое можно менять.
-
 </template>
 
 <style lang="scss">
