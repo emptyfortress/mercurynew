@@ -44,7 +44,7 @@ const formatGroup = (group: any) => {
 	group.forEach((item: any, index: number) => {
 		result.push(formatItem(item))
 		if (multiFoundIndex !== -1 && index > multiFoundIndex && index < group.length - 2) {
-			result.push(' || ')
+			result.push(' ИЛИ ')
 		}
 	})
 

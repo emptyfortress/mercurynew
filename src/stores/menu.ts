@@ -1,10 +1,10 @@
 import { uid } from 'quasar'
 
 const mystatus = [
-	{ id: uid(), label: 'Подготовка', value: 'Подготовка', isLast: true },
-	{ id: uid(), label: 'На согласовании', value: 'На согласовании', isLast: true },
-	{ id: uid(), label: 'На доработке', value: 'На доработке', isLast: true },
-	{ id: uid(), label: 'Согласовано', value: 'Согласовано', isLast: true },
+	{ id: uid(), label: 'Подготовка', value: 'Подготовка', isLast: true, isPar: true },
+	{ id: uid(), label: 'На согласовании', value: 'На согласовании', isLast: true, isPar: true },
+	{ id: uid(), label: 'На доработке', value: 'На доработке', isLast: true, isPar: true },
+	{ id: uid(), label: 'Согласовано', value: 'Согласовано', isLast: true, isPar: true },
 ]
 const stat = [
 	{ id: uid(), label: 'равно', value: 'равно', isSpecial: true, children: mystatus },
@@ -196,15 +196,15 @@ const manDetails1 = [
 ]
 
 const exec = [
-	{ value: 'Все', isLast: true, id: uid(), label: 'Все' },
-	{ value: 'Незавершено', isLast: true, id: uid(), label: 'Незавершено' },
-	{ value: 'Завершено', isLast: true, id: uid(), label: 'Завершено' },
+	{ value: 'Все', isLast: true, id: uid(), label: 'Все', isPar: true },
+	{ value: 'Незавершено', isLast: true, id: uid(), label: 'Незавершено', isPar: true },
+	{ value: 'Завершено', isLast: true, id: uid(), label: 'Завершено', isPar: true },
 ]
 const execute = [
 	{ id: uid(), label: 'Срок', value: 'Срок', children: datee },
 	{ id: uid(), label: 'Исполнитель', value: 'Исполнитель', children: manDetails1 },
 	{ id: uid(), label: 'Состояние', value: 'Состояние', children: exec },
-	{ id: uid(), label: 'Текущий этап', value: 'Текущий этап', isLast: true },
+	{ id: uid(), label: 'Текущий этап', value: 'Текущий этап', isLast: true, isPar: true },
 ]
 const zero = [
 	{ id: uid(), label: 'Автор', children: manDetails1 },

@@ -15,6 +15,8 @@ const startSearch = () => {
 // Ref to store the local input values
 const localInputValues = ref<{ [key: string]: string }>({})
 const localLabelValues = ref<{ [key: string]: string }>({})
+// const localToggleValues = ref<{ [key: string]: boolean }>({})
+const toggle = ref<boolean[]>([])
 
 onMounted(() => {
 	// Initialize local input values from the store on component mount
@@ -33,13 +35,21 @@ watch(
 			localLabelValues.value[group[0].id] = group[0].label
 		})
 		tapes.value = newParameters
+		toggle.value = new Array(mykeys.hasParameters.length).fill(false)
 	},
 	{ deep: true }
 )
 
+watch(localInputValues, (val) => {
+	if (val) {
+		console.log('fuck')
+	}
+})
+
 // Function to update the local input value
-const updateLocalInputValue = (id: string, newValue: any) => {
+const updateLocalInputValue = (id: string, index: number, newValue: any) => {
 	localInputValues.value[id] = newValue
+	toggle.value[index] = true
 }
 const updateLocalLabelValue = (id: string, newValue: any, scope: any) => {
 	scope.set()
@@ -74,9 +84,7 @@ const [parent, tapes] = useDragAndDrop(mykeys.hasParameters, config)
 			@mouseleave='leave',
 		)
 			q-icon.q-mr-sm(name='mdi-drag-vertical' size='20px' color="grey")
-			.edit(
-				:class="{'dis': !group[3].isActive}",
-			)
+			.edit()
 				span {{ localLabelValues[group[0].id] }}:
 					q-popup-edit(v-model="localLabelValues[group[0].id]" auto-save v-slot="scope")
 						.small {{group[0].label}} {{ group[1].label}}
@@ -84,12 +92,11 @@ const [parent, tapes] = useDragAndDrop(mykeys.hasParameters, config)
 
 			q-input(
 				:model-value="localInputValues[group[2].id]"
-				@update:model-value="updateLocalInputValue(group[2].id, $event)"
+				@update:model-value="updateLocalInputValue(group[2].id, index, $event)"
 				filled
 				dense
-				:disable="!group[3].isActive"
 			)
-			q-toggle(size="sm" v-model="group[3].isActive")
+			q-toggle(size="sm" v-model="toggle[index]")
 
 	.empty(v-else)
 		IconRocket.big

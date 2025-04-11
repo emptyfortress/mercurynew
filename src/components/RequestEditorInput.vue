@@ -100,7 +100,7 @@ const addCond = () => {
 			label: '',
 			isPar: par.value,
 			isVis: showPar.value,
-			isActive: true,
+			// isActive: false,
 		})
 		mykeys.addItem(items)
 		reset()
