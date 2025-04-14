@@ -64,6 +64,12 @@ const navigate = (id: number) => {
 onUpdated(() => {
 	myapps.setPath('/' + route.params.id)
 })
+
+const spring = {
+	type: 'spring',
+	visualDuration: 0.3,
+	bounce: 0.25,
+}
 </script>
 
 <template lang="pug">
@@ -79,6 +85,13 @@ q-page(padding)
 			@navigate="navigate"
 		)
 
+		Div.plus(
+			@click.stop
+			layout
+			:transition='spring'
+		)
+			q-btn(unelevated round color="primary" icon='mdi-plus') 
+
 
 </template>
 
@@ -89,5 +102,13 @@ q-page(padding)
 .header {
 	font-size: 1.5rem;
 	text-align: center;
+}
+.plus {
+	width: 100%;
+	height: 100%;
+	// background: #ccc;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 </style>

@@ -61,7 +61,7 @@ const initial = {
 const anim = {
 	opacity: 1,
 	y: 0,
-	transition: { duration: 0.2, delay: 0.3 },
+	transition: { duration: 0.3, delay: 0.4 },
 }
 // copy code
 // Функция для обновления URL при изменении состояния
