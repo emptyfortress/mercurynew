@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { motion, animate, stagger, AnimatePresence } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
-import IconFolderOpen from '@/components/icons/IconFolderOpen.vue'
 import { useApps } from '@/stores/apps'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
@@ -31,7 +30,24 @@ const config = {
 }
 const [parent, tapes] = useDragAndDrop(list.value, config)
 
+// expand item
 const expanded = ref(false)
+const activeItem = ref(0)
+
+const action = (item: App) => {
+	if (activeItem.value !== 0 && activeItem.value == item.id) {
+		expanded.value = false
+		activeItem.value = 0
+	} else {
+		expanded.value = true
+		activeItem.value = item.id
+	}
+}
+
+const calcClass = (item: App) => {
+	if (expanded.value && activeItem.value == item.id) return 'active'
+	return ''
+}
 </script>
 
 <template lang="pug">
@@ -39,10 +55,21 @@ q-page(padding)
 	Div.box(@click='back' layout-id="underline")
 		.header
 			span Маркетинг
-		Div.parent(ref='parent'
-			:class="{'end': expanded}"
+		Div.parent(ref='parent',
+			:class="{'end': expanded}",
+			layout,
 		)
-			Div.it(v-for="(item, index) in tapes", :key="item.id",)
+
+			Div.it(
+				v-for="(item, index) in tapes",
+				:key="item.id",
+				:class='calcClass(item)'
+				layout,
+				@click.stop='action(item)'
+			)
+				span {{ item.label }} - {{ expanded }}
+				.img
+					component(:is='item.pic')
 
 </template>
 
@@ -61,14 +88,6 @@ q-page(padding)
 	margin-bottom: -5px;
 	margin-right: 0.5rem;
 }
-.parent {
-	width: initial;
-	display: flex;
-	margin: 0.5rem;
-	&:hover {
-		box-shadow: none;
-	}
-}
 .box {
 	margin: 0 auto;
 	margin-top: 1rem;
@@ -83,5 +102,41 @@ q-page(padding)
 	width: 170px;
 	height: 170px;
 	border: 1px solid $secondary;
+}
+.parent {
+	width: initial;
+	display: flex;
+	margin: 0.5rem;
+	&:hover {
+		box-shadow: none;
+	}
+	&.end {
+		display: grid;
+		grid-template-columns: repeat(1, 200px);
+		grid-template-rows: repeat(4, 80px);
+		width: 200px;
+		margin: 0;
+		// margin-left: calc(50% - 500px);
+		margin-top: 1rem;
+		.it {
+			padding: 0.5rem;
+			font-size: 0.85rem;
+			width: 100%;
+			height: initial;
+			&.active {
+				padding: 1rem;
+				font-size: 1.2rem;
+				width: 550px;
+				height: 350px;
+				position: fixed;
+				top: 145px;
+				left: calc(50% - 160px);
+				// font-size: 2rem;
+				.img {
+					font-size: 4rem;
+				}
+			}
+		}
+	}
 }
 </style>
