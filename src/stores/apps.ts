@@ -5,6 +5,7 @@ import IconBeach from '@/components/icons/IconBeach.vue'
 import IconLetter from '@/components/icons/IconLetter.vue'
 import IconPresentation from '@/components/icons/IconPresentation.vue'
 import IconMicrophone from '@/components/icons/IconMicrophone.vue'
+import IconPrinter from '@/components/icons/IconPrinter.vue'
 import { useStorage } from '@vueuse/core'
 
 const IconTravel1 = markRaw(IconTravel)
@@ -61,7 +62,7 @@ export const useApps = defineStore('apps', () => {
 					created: '22.10.24 14:00',
 					group: 1,
 					list: [],
-					pic: IconPresentation1,
+					pic: IconPrinter,
 				},
 				{
 					id: 7,
@@ -74,6 +75,18 @@ export const useApps = defineStore('apps', () => {
 					group: 1,
 					list: [],
 					pic: IconMicrophone1,
+				},
+				{
+					id: 8,
+					label: 'Квартальный отчет',
+					descr: 'Процесс подготовки и согласования отчета',
+					expand: false,
+					version: '0.0.0',
+					author: 'Орлов П.С.',
+					created: '22.09.24 05:34',
+					group: 1,
+					list: [],
+					pic: IconPresentation1,
 				},
 			],
 		},
@@ -119,6 +132,11 @@ export const useApps = defineStore('apps', () => {
 		grouping.value = e
 	}
 
+	const path = ref('/')
+	const setPath = (e: string) => {
+		path.value = e
+	}
+
 	return {
 		apps,
 		createApp,
@@ -128,5 +146,8 @@ export const useApps = defineStore('apps', () => {
 
 		grouping,
 		setGrouping,
+
+		path,
+		setPath,
 	}
 })

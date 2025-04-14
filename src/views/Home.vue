@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, onUpdated } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
@@ -61,6 +61,9 @@ const back = () => {
 const navigate = (id: number) => {
 	router.push(`/folder/${id}`)
 }
+onUpdated(() => {
+	myapps.setPath('/' + route.params.id)
+})
 </script>
 
 <template lang="pug">

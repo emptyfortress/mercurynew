@@ -218,7 +218,7 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/folder/:id',
+			path: '/folder/:id/:item?',
 			name: 'folder',
 			component: Dev1,
 			props: true,
