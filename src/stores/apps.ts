@@ -13,13 +13,14 @@ const IconBeach1 = markRaw(IconBeach)
 const IconLetter1 = markRaw(IconLetter)
 const IconPresentation1 = markRaw(IconPresentation)
 const IconMicrophone1 = markRaw(IconMicrophone)
+const IconPrinter1 = markRaw(IconPrinter)
 
 const app = useStorage('app', localStorage)
 
 export const useApps = defineStore('apps', () => {
 	const apps = ref<App[]>([
 		{
-			id: 1,
+			id: '1',
 			label: 'Управление командировками',
 			descr: 'Приложение для оформления командировок и отчетов сотрудников',
 			expand: false,
@@ -31,7 +32,7 @@ export const useApps = defineStore('apps', () => {
 			pic: IconTravel1,
 		},
 		{
-			id: 2,
+			id: '2',
 			label: 'Заявки на отпуск',
 			descr: 'Согласование и оформление отпусков сотрудников',
 			expand: false,
@@ -43,7 +44,7 @@ export const useApps = defineStore('apps', () => {
 			pic: IconBeach1,
 		},
 		{
-			id: 3,
+			id: '3',
 			label: 'Маркетинг',
 			descr: 'Это описание',
 			expand: false,
@@ -53,7 +54,7 @@ export const useApps = defineStore('apps', () => {
 			group: 2,
 			list: [
 				{
-					id: 6,
+					id: '6',
 					label: 'Подготовка публикации',
 					descr: 'Процесс подготовки и согласования публикации новостей на сайте',
 					expand: false,
@@ -62,10 +63,10 @@ export const useApps = defineStore('apps', () => {
 					created: '22.10.24 14:00',
 					group: 1,
 					list: [],
-					pic: IconPrinter,
+					pic: IconPrinter1,
 				},
 				{
-					id: 7,
+					id: '7',
 					label: 'Партнерский форум',
 					descr: 'Приложение для подготовки ежегодного партнерского форума',
 					expand: false,
@@ -77,7 +78,7 @@ export const useApps = defineStore('apps', () => {
 					pic: IconMicrophone1,
 				},
 				{
-					id: 8,
+					id: '8',
 					label: 'Квартальный отчет',
 					descr: 'Процесс подготовки и согласования отчета',
 					expand: false,
@@ -91,7 +92,7 @@ export const useApps = defineStore('apps', () => {
 			],
 		},
 		{
-			id: 4,
+			id: '4',
 			label: 'Служебные записки',
 			descr: 'Оформление и обработка служебных записок',
 			expand: false,
@@ -103,7 +104,7 @@ export const useApps = defineStore('apps', () => {
 			pic: IconLetter1,
 		},
 		{
-			id: 5,
+			id: '5',
 			label: 'Служебные записки 1',
 			descr: 'Оформление и обработка служебных записок',
 			expand: false,

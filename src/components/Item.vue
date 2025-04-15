@@ -1,10 +1,10 @@
 <script setup lang="ts">
-// import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
-const activeItem = defineModel<number>('activeItem')
+const activeItem = defineModel<string>('activeItem')
 
 const Div = motion.div
 
@@ -14,9 +14,9 @@ const action = (item: App) => {
 	if (item.group == 2) {
 		emit('navigate', item.id)
 	} else {
-		if (activeItem.value !== 0 && activeItem.value == item.id) {
+		if (activeItem.value !== '' && activeItem.value == item.id) {
 			expanded.value = false
-			activeItem.value = 0
+			activeItem.value = ''
 		} else {
 			expanded.value = true
 			activeItem.value = item.id
@@ -32,6 +32,7 @@ const calcClass = (item: App) => {
 const calcId = (item: App) => {
 	if (item.group == 2) return 'underline'
 }
+
 const initial = {
 	opacity: 0,
 	y: 20,

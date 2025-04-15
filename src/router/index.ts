@@ -23,16 +23,16 @@ const router = createRouter({
 				count: 0,
 			},
 		},
-		// {
-		// 	path: '/tmp1',
-		// 	name: 'tmp1',
-		// 	component: Tmp1,
-		// 	meta: {
-		// 		toolbar: false,
-		// 		back: false,
-		// 		count: 0,
-		// 	},
-		// },
+		{
+			path: '/tmp1',
+			name: 'tmp1',
+			component: () => import('@/views/Tmp1.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+			},
+		},
 		{
 			path: '/spot',
 			name: 'spot',

@@ -11,7 +11,7 @@ const router = useRouter()
 const route = useRoute()
 
 const list = computed(() => {
-	return myapps.apps.filter((item) => item.id == +route.params.id)[0].list
+	return myapps.apps.filter((item) => item.id == route.params.id)[0].list
 })
 
 const Div = motion.div
@@ -32,12 +32,12 @@ const [parent, tapes] = useDragAndDrop(list.value, config)
 
 // expand item
 const expanded = ref(false)
-const activeItem = ref(0)
+const activeItem = ref('')
 
 const action = (item: App) => {
-	if (activeItem.value !== 0 && activeItem.value == item.id) {
+	if (activeItem.value !== '' && activeItem.value == item.id) {
 		expanded.value = false
-		activeItem.value = 0
+		activeItem.value = ''
 	} else {
 		expanded.value = true
 		activeItem.value = item.id
@@ -61,14 +61,14 @@ const initial = {
 const anim = {
 	opacity: 1,
 	y: 0,
-	transition: { duration: 0.3, delay: 0.4 },
+	transition: { duration: 0.1, delay: 0.4 },
 }
 // copy code
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
 	router.push({
 		params: {
-			item: activeItem.value?.toString(),
+			item: activeItem.value,
 		},
 	})
 }
@@ -76,11 +76,11 @@ watch(activeItem, updateRouteParams)
 
 // Функция для загрузки состояния из параметров маршрута
 const loadStateFromRoute = () => {
-	if (+route.params.item !== 0) {
-		activeItem.value = parseInt(route.params.item as string, 10)
+	if (route.params.item !== '') {
+		activeItem.value = route.params.item[0]
 		expanded.value = true
 	} else {
-		activeItem.value = 0
+		activeItem.value = ''
 		expanded.value = false
 	}
 }
@@ -93,7 +93,12 @@ watch(() => route.params.item, loadStateFromRoute)
 
 <template lang="pug">
 q-page(padding)
-	Div.box(@click.stop='back', layout-id="underline")
+	Div.box(
+		@click.stop='back',
+		layout-id="underline"
+		:transition='spring'
+		:class='{big: expanded}'
+	)
 		.header
 			span Маркетинг
 
@@ -168,7 +173,7 @@ q-page(padding)
 
 	&.end {
 		grid-template-columns: repeat(1, 200px);
-		grid-template-rows: repeat(4, 80px);
+		grid-template-rows: repeat(5, 80px);
 		.it1 {
 			padding: 0.5rem;
 			font-size: 0.85rem;
@@ -178,7 +183,7 @@ q-page(padding)
 			}
 			&.active {
 				grid-column: 2/4;
-				grid-row: 1/4;
+				grid-row: 1/5;
 				padding: 1rem;
 				font-size: 1.2rem;
 				.img {

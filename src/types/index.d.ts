@@ -1,5 +1,5 @@
 interface App {
-	id: number
+	id: string
 	label: string
 	descr: string
 	expand: boolean

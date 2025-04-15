@@ -1,34 +1,44 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUpdated } from 'vue'
+import { ref, computed, watch, onMounted, onUpdated, markRaw } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { animations } from '@formkit/drag-and-drop'
+import { animations, state } from '@formkit/drag-and-drop'
 import { useApps } from '@/stores/apps'
 import Item from '@/components/Item.vue'
+import AddButtonNew from '@/components/common/AddButtonNew.vue'
+import { uid, useQuasar } from 'quasar'
+import IconApp from '@/components/icons/IconApp.vue'
+import Trash from '@/components/common/Trash.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import { useKeyModifier } from '@vueuse/core'
 
+const IconApp1 = markRaw(IconApp)
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
-const activeItem = ref(0)
+const activeItem = ref('')
 
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
 	router.push({
 		params: {
-			id: activeItem.value?.toString(),
+			id: activeItem.value,
 		},
 	})
 }
 watch(activeItem, updateRouteParams)
+const hoverItem = ref(100)
+const draggedItem = ref(100)
+const shift = useKeyModifier('Shift')
 
 // Функция для загрузки состояния из параметров маршрута
 const loadStateFromRoute = () => {
-	if (+route.params.id !== 0) {
-		activeItem.value = parseInt(route.params.id as string, 10)
+	if (route.params.id !== '') {
+		activeItem.value = route.params.id[0]
 		expanded.value = true
 	} else {
-		activeItem.value = 0
+		activeItem.value = ''
 		expanded.value = false
 	}
 }
@@ -48,8 +58,31 @@ const config = {
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
+	onDragstart: (e: any) => {
+		draggedItem.value = e.draggedNode.data.index
+	},
 }
-const [parent, tapes] = useDragAndDrop(myapps.apps, config)
+const config1 = {
+	// plugins: [animations()],
+	dragPlaceholderClass: 'ghost',
+	sortable: false,
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains('it')
+	},
+	onDragstart: (e: any) => {
+		draggedItem.value = e.draggedNode.data.index
+	},
+}
+
+const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
+
+watch(shift, (val) => {
+	if (val) {
+		updateConfig(config1)
+	} else {
+		updateConfig(config)
+	}
+})
 
 const expanded = ref(false)
 
@@ -70,6 +103,76 @@ const spring = {
 	visualDuration: 0.3,
 	bounce: 0.25,
 }
+
+const $q = useQuasar()
+const create = (e: any) => {
+	let tmp = {
+		id: uid(),
+		label: e.label,
+		descr: e.description,
+		expand: false,
+		over: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.09.2022',
+		group: 1,
+		list: [],
+		pic: IconApp1,
+	}
+	tapes.value?.push(tmp)
+	// myapps.createApp(tmp)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Добавлено новое приложение',
+		})
+	}, 1200)
+}
+
+// trash code
+const dragStatus = ref(false)
+const confirm = ref(false)
+
+state.on('dragStarted', () => {
+	dragStatus.value = true
+})
+
+state.on('dragEnded', () => {
+	dragStatus.value = false
+})
+const removeGroup = () => {
+	tapes.value.splice(draggedItem.value, 1)
+	$q.notify({
+		icon: 'mdi-check-bold',
+		color: 'negative',
+		message: 'Группа удалена',
+	})
+}
+
+const remove = () => {
+	if (tapes.value[draggedItem.value].group > 1) {
+		confirm.value = true
+	} else {
+		tapes.value.splice(draggedItem.value, 1)
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'negative',
+			message: 'Приложение удалено',
+			actions: [
+				{
+					label: 'Отмена',
+					color: 'white',
+					handler: () => {
+						/* ... */
+					},
+				},
+			],
+		})
+	}
+}
+
+const duple = ref(false)
 </script>
 
 <template lang="pug">
@@ -78,6 +181,7 @@ q-page(padding)
 		:class="{'end': expanded}"
 		@click.stop='back'
 	)
+
 		Item(
 			v-model:expanded="expanded",
 			v-model:tapes='tapes',
@@ -90,9 +194,10 @@ q-page(padding)
 			layout
 			:transition='spring'
 		)
-			q-btn(unelevated round color="primary" icon='mdi-plus') 
+			AddButtonNew(mode='app' @create='create')
 
-
+	Trash(v-model="dragStatus" @remove="remove" :group='expanded' :duple='duple')
+	ConfirmDialog(v-model="confirm" @remove="removeGroup")
 </template>
 
 <style scoped lang="scss">
