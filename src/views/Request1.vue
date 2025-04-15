@@ -115,7 +115,7 @@ const checkStartSearch = () => {
 <template lang="pug">
 q-page(padding)
 	.edito(ref='editorPreview')
-		div
+		.first
 			.top()
 				.zg Настройка папки "{{ currentFolder?.label }}"
 				.q-gutter-x-sm
@@ -138,8 +138,8 @@ q-page(padding)
 
 				TextAi(v-else)
 
-			.q-mx-md(v-if='main')
-				Loading(@startPred='startPred' v-model:poisk='isSearching' button)
+		template(v-if='main')
+			Loading(@startPred='startPred' v-model:poisk='isSearching' button :folder='currentFolder?.label')
 
 		PreviewButton(@activate='startRight' @stop='stopRight' :class="{'shake-horizontal': isShaking1}" @search='isSearching = true')
 		PredButton(@activate='startLeft' @stop='stopLeft' :class="{'shake-horizontal': isShaking}")
@@ -160,8 +160,16 @@ q-page(padding)
 	height: calc(100vh - 120px);
 	border-radius: 0.4rem;
 	position: relative;
-	background: white;
+}
+.first {
+	background: #fff;
+	border-radius: 0.4rem;
 	box-shadow: var(--shad0);
+	min-height: calc(100vh - 120px - 330px);
+}
+.setup {
+	height: 300px;
+	background: white;
 }
 
 .top {

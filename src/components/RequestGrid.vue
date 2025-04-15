@@ -124,7 +124,7 @@ div
 
 			q-btn(flat color="primary" @click="search") 
 				IconSearch.ic.q-mr-sm
-				.q-cursor Выполнить запрос
+				.q-cursor Проверить запрос
 </template>
 
 <style scoped lang="scss">

@@ -4,9 +4,14 @@ import { useKeys } from '@/stores/keys'
 import { useQuasar } from 'quasar'
 
 const props = defineProps({
-	button: {
-		type: Boolean,
-		default: false,
+	// button: {
+	// 	type: Boolean,
+	// 	default: false,
+	// },
+	folder: {
+		type: String,
+		required: true,
+		default: '',
 	},
 })
 
@@ -33,7 +38,7 @@ const refresh = () => {
 			icon: 'mdi-check-bold',
 			color: 'positive',
 			message: 'Запрос выполнен, данные обновлены',
-			position: 'center',
+			position: 'bottom',
 		})
 	}, 2100)
 
@@ -105,10 +110,12 @@ const isFake = ref(true)
 
 <template lang="pug">
 .loading.q-mt-md
+	.flo
+		.inf Предпросмотр папки "{{ props.folder }}"
+		q-btn(flat round icon="mdi-tune-vertical-variant" color="primary" @click="action" size="12px") 
+			q-tooltip Настройки представления
+
 	.ready(v-if='isLoaded')
-		.flo
-			q-btn(v-if='props.button' flat round icon="mdi-tune-vertical-variant" color="primary" @click="action" size="12px") 
-				q-tooltip Настройки представления
 		q-table(bordered
 			flat
 			:columns="mykeys.activeColumns"
@@ -145,7 +152,10 @@ const isFake = ref(true)
 <style scoped lang="scss">
 .flo {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
+	align-items: center;
+	padding-left: 0.5rem;
+	font-size: 1.1rem;
 }
 
 .ready {
