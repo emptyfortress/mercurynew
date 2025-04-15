@@ -220,6 +220,7 @@ q-page(padding)
 							q-popup-edit(v-model="desc" auto-save v-slot="scope")
 								q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
+				br
 				.text-center
 					.q-gutter-x-sm
 						q-btn(flat color="negative" label="Удалить" @click.stop='remove1(index)') 
@@ -309,8 +310,8 @@ q-page(padding)
 
 	&.active {
 		position: absolute;
-		height: 60vh;
-		width: 900px;
+		height: 300px;
+		width: 700px;
 		margin: 0 auto;
 		left: 0;
 		right: 0;
