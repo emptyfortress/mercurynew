@@ -57,7 +57,7 @@ export const useKeys = defineStore('mykeys', () => {
 		},
 		{
 			id: 11,
-			active: true,
+			active: false,
 			label: 'Состояние заявки',
 			name: 'status',
 			field: 'status',
