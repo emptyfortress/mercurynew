@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useWindowSize } from '@vueuse/core'
@@ -8,7 +8,7 @@ const props = defineProps({
 	mode: {
 		type: String,
 		required: true,
-		default: 'app'
+		default: 'app',
 	},
 })
 
@@ -19,7 +19,7 @@ const header = computed(() => {
 		case 'form':
 			return 'Новая форма'
 		case 'list':
-			return 'Новый список'
+			return 'Новая папка'
 		default:
 			return 'Новое приложение'
 	}
@@ -32,7 +32,7 @@ const form = ref()
 
 const adding = ref(false)
 
-const add = (() => {
+const add = () => {
 	trans.value = false
 	const state = Flip.getState('.button, .dialog')
 	adding.value = !adding.value
@@ -51,7 +51,7 @@ const add = (() => {
 			input.value.focus()
 		}
 	})
-})
+}
 
 const { width, height } = useWindowSize()
 
@@ -59,7 +59,7 @@ const left = computed(() => {
 	return width.value / 2 - 270 + 64 + 'px'
 })
 const top = computed(() => {
-	if (props.mode == "app") return height.value / 2 - 300 + 'px'
+	if (props.mode == 'app') return height.value / 2 - 300 + 'px'
 	return height.value / 2 - 200 + 'px'
 })
 
@@ -67,16 +67,14 @@ const emit = defineEmits(['create'])
 const model = ref(null)
 const model1 = ref(null)
 
-
-const resetForm = (() => {
+const resetForm = () => {
 	nextTick(() => {
 		input.value.resetValidation()
 	})
 	model.value = null
 	pic.value = false
-
-})
-const submitForm = (() => {
+}
+const submitForm = () => {
 	emit('create', {
 		label: model.value,
 		description: model1.value,
@@ -84,24 +82,24 @@ const submitForm = (() => {
 	resetForm()
 	add()
 	input.value.resetValidation()
-})
+}
 
-const otmena = (() => {
+const otmena = () => {
 	pic.value = false
 	add()
 	resetForm()
 	input.value.resetValidation()
-})
+}
 
 const trans = ref(true)
-const start = { opacity: 0, rotate: -720, scale: .5 }
+const start = { opacity: 0, rotate: -720, scale: 0.5 }
 const second = { opacity: 1, rotate: 0, scale: 1, transition: { delay: 800 } }
 
 const calcStart = computed(() => {
-	return trans.value ? start : { opacity: 1, rotate: 0, scale: 1, }
+	return trans.value ? start : { opacity: 1, rotate: 0, scale: 1 }
 })
 const calcFinish = computed(() => {
-	return trans.value ? second : { opacity: 1, rotate: 0, scale: 1, }
+	return trans.value ? second : { opacity: 1, rotate: 0, scale: 1 }
 })
 
 const pic = ref(false)
@@ -161,7 +159,7 @@ const pic = ref(false)
 							hint='Описание не обязательно'
 							)
 
-					q-checkbox(v-model="pic" label="Иконка")
+					q-checkbox(v-if='props.mode == "app"' v-model="pic" label="Иконка")
 
 					.section(v-if='pic'
 						v-motion
@@ -200,7 +198,6 @@ const pic = ref(false)
 	cursor: pointer;
 }
 
-
 .dialog {
 	width: 400px;
 	// height: 200px;
@@ -208,7 +205,7 @@ const pic = ref(false)
 	position: fixed;
 	left: v-bind(left);
 	top: v-bind(top);
-	border-radius: .5rem;
+	border-radius: 0.5rem;
 	box-shadow: var(--shad0);
 	display: none;
 	padding: 1rem;
@@ -245,8 +242,8 @@ const pic = ref(false)
 .section {
 	margin-top: 1rem;
 	margin-bottom: 1rem;
-	margin-left: .5rem;
-	margin-right: .5rem;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
 }
 
 label {
@@ -266,4 +263,5 @@ label {
 // 		box-shadow: none;
 // 	}
 //
-// }</style>
+// }
+</style>
