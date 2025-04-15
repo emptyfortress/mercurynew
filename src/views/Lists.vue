@@ -183,6 +183,7 @@ const onDropPlus = () => {
 		})
 	}, 1200)
 }
+const desc = ref('Здесь описание папки')
 </script>
 
 <template lang="pug">
@@ -203,8 +204,10 @@ q-page(padding)
 			:class="calcClass(item)"
 			)
 			IconFolderSearch.img
-			.hg
-				span(@click.stop) {{ item.label }}
+			.hg(@click.stop)
+				span {{ item.label }}
+					q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope")
+						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 			.content(v-if='item.expand'
 				v-motion
@@ -213,7 +216,9 @@ q-page(padding)
 				.grid
 					label Описание:
 					.val(@click.stop)
-						span Здесь описание папки
+						span {{ desc }}
+							q-popup-edit(v-model="desc" auto-save v-slot="scope")
+								q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 				.text-center
 					.q-gutter-x-sm
@@ -221,7 +226,7 @@ q-page(padding)
 						q-btn(unelevated color="primary" label="Настроить папку" @click.stop='navigate2(item.id)') 
 						q-btn(flat color="primary" label="Дублировать" @click.stop='duble(item, true)') 
 
-				Loading(v-if='expanded')
+				// Loading(v-if='expanded')
 
 		.plusCont(id="no-drag"
 			@dragover.prevent="onDragEnterPlus"
