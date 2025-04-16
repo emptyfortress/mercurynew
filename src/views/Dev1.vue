@@ -5,6 +5,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
+import AddButtonNew from '@/components/common/AddButtonNew.vue'
 
 const myapps = useApps()
 const router = useRouter()
@@ -19,6 +20,17 @@ const Div = motion.div
 const back = () => {
 	router.push(myapps.path)
 }
+
+const currentItem = computed({
+	get() {
+		let tmp = myapps.apps.find((el) => el.id == calcId.value)
+		return tmp ? tmp.label : 'ufck'
+	},
+	set(val) {
+		let tmp = myapps.apps.find((el) => el.id == calcId.value)
+		if (tmp) tmp.label = val
+	},
+})
 
 const config = {
 	plugins: [animations()],
@@ -103,8 +115,10 @@ q-page(padding)
 		:transition='spring'
 		:class='{big: expanded}'
 	)
-		.header
-			span Маркетинг
+		.header(@click.stop)
+			span {{ currentItem }}
+				q-popup-edit(v-model="currentItem" auto-save v-slot="scope")
+					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 		Div.parent1(ref='parent',
 			:class="{'end': expanded}",
@@ -123,6 +137,13 @@ q-page(padding)
 				span {{ item.label }}
 				.img
 					component(:is='item.pic')
+
+			Div.plus(
+				layout
+				:transition='spring'
+				@click.stop
+			)
+				AddButtonNew(mode='app' @create='')
 
 </template>
 
@@ -204,5 +225,11 @@ q-page(padding)
 	font-size: 3rem;
 	line-height: 1;
 	color: hsl(199 23% 45% / 1);
+}
+.plus {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	margin-left: 1rem;
 }
 </style>

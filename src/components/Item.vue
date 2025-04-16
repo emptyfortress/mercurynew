@@ -17,7 +17,8 @@ const Div = motion.div
 const emit = defineEmits(['navigate'])
 
 const action = (item: App) => {
-	if (item.group == 2) {
+	console.log(activeItem.value)
+	if (item.group >= 2) {
 		emit('navigate', item.id)
 	} else {
 		if (activeItem.value !== '' && activeItem.value == item.id) {
@@ -30,13 +31,17 @@ const action = (item: App) => {
 	}
 }
 
-const calcClass = (item: App) => {
-	if (item.group >= 2) return 'group1'
+const calcClass = (item: App, index: number) => {
 	if (expanded.value && activeItem.value == item.id) return 'active'
+	if (hoverItem.value == index && index !== draggedItem.value) return 'over'
+	if (item.group > 1 && hoverItem.value == index && index !== draggedItem.value)
+		return 'group1 over'
+	if (item.group > 1) return 'group1'
 	return ''
 }
+
 const calcId = (item: App) => {
-	if (item.group == 2) return item.id
+	if (item.group >= 1) return item.id
 }
 
 const initial = {
@@ -73,7 +78,7 @@ const onDrop1 = () => {
 	if (shift.value && tapes.value) {
 		let tmp = {} as App
 		if (tapes.value[hoverItem.value].group == 1) {
-			tmp.id = uid()
+			tmp.id = tapes.value[draggedItem.value].id
 			tmp.label = 'Группа'
 			tmp.descr = ''
 			tmp.expand = false
@@ -102,7 +107,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:data-state="expanded",
 	layout,
 	:layout-id="calcId(item)"
-	:class='calcClass(item)'
+	:class='calcClass(item, index)'
 	:initial="initial"
 	:animate="animate"
 	:transition="spring"
@@ -117,7 +122,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	.img(v-if='item.group == 1')
 		component(:is='item.pic')
 
-	template(v-if='item.group >= 2')
+	template(v-if='item.group > 1')
 		.img1
 			component(:is='el.pic' v-for="el in item.list" :key="el.id")
 	

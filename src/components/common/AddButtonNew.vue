@@ -93,7 +93,7 @@ const otmena = () => {
 
 const trans = ref(true)
 const start = { opacity: 0, rotate: -720, scale: 0.5 }
-const second = { opacity: 1, rotate: 0, scale: 1, transition: { delay: 800 } }
+const second = { opacity: 1, rotate: 0, scale: 1, transition: { delay: 500 } }
 
 const calcStart = computed(() => {
 	return trans.value ? start : { opacity: 1, rotate: 0, scale: 1 }

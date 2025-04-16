@@ -275,10 +275,16 @@
 		left: calc(50% - 225px);
 		font-size: 2rem;
 	}
+	&.over {
+		background: #a8d7a8;
+	}
 	&.group1 {
 		background: hsl(213deg 83.95% 94.68%);
 		border: 2px solid var(--green);
 		z-index: 9;
+		&.over {
+			background: #a8d7a8;
+		}
 	}
 	.img,
 	.img1 {

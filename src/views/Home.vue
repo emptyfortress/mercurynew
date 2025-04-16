@@ -28,14 +28,12 @@ const updateRouteParams = () => {
 	})
 }
 watch(activeItem, updateRouteParams)
-// const hoverItem = ref(100)
-// const draggedItem = ref(100)
 const shift = useKeyModifier('Shift')
 
 // Функция для загрузки состояния из параметров маршрута
 const loadStateFromRoute = () => {
 	if (route.params.id !== '') {
-		activeItem.value = route.params.id[0]
+		activeItem.value = route.params.id.toString()
 		expanded.value = true
 	} else {
 		activeItem.value = ''
@@ -95,7 +93,7 @@ const navigate = (id: number) => {
 	router.push(`/folder/${id}`)
 }
 onUpdated(() => {
-	myapps.setPath('/' + route.params.id)
+	myapps.setPath('/' + route.params.id.toString())
 })
 
 const spring = {
@@ -190,9 +188,9 @@ q-page(padding)
 		)
 
 		Div.plus(
-			@click.stop
 			layout
 			:transition='spring'
+			@click.stop
 		)
 			AddButtonNew(mode='app' @create='create')
 
