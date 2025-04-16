@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
 import { useKeyModifier } from '@vueuse/core'
-import { uid, useQuasar } from 'quasar'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
@@ -14,10 +13,9 @@ const draggedItem = ref(100)
 
 const Div = motion.div
 
-const emit = defineEmits(['navigate'])
+const emit = defineEmits(['navigate', 'dragged'])
 
 const action = (item: App) => {
-	console.log(activeItem.value)
 	if (item.group >= 2) {
 		emit('navigate', item.id)
 	} else {
@@ -63,6 +61,7 @@ const spring = {
 
 const onDragStart = (n: number) => {
 	draggedItem.value = n
+	emit('dragged', n)
 }
 
 const onDragEnter = (index: number) => {

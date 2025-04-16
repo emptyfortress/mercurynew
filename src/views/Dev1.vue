@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, markRaw } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { animations } from '@formkit/drag-and-drop'
+import { animations, state } from '@formkit/drag-and-drop'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
+import Trash from '@/components/common/Trash.vue'
+import { uid, useQuasar } from 'quasar'
+import IconApp from '@/components/icons/IconApp.vue'
 
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
+const IconApp1 = markRaw(IconApp)
 
 const list = computed(() => {
 	return myapps.apps.filter((item) => item.id == route.params.id)[0].list
@@ -24,7 +28,7 @@ const back = () => {
 const currentItem = computed({
 	get() {
 		let tmp = myapps.apps.find((el) => el.id == calcId.value)
-		return tmp ? tmp.label : 'ufck'
+		return tmp ? tmp.label : 'Label'
 	},
 	set(val) {
 		let tmp = myapps.apps.find((el) => el.id == calcId.value)
@@ -105,6 +109,107 @@ watch(() => route.params.item, loadStateFromRoute)
 const calcId = computed(() => {
 	return route.params.id.toString()
 })
+
+// trash code
+const dragStatus = ref(false)
+const confirm = ref(false)
+
+state.on('dragStarted', () => {
+	dragStatus.value = true
+})
+
+state.on('dragEnded', () => {
+	dragStatus.value = false
+})
+
+const duple = ref(false)
+const onDragEnterPlus = () => {
+	duple.value = true
+}
+const onDragLeavePlus = () => {
+	duple.value = false
+}
+
+const $q = useQuasar()
+const onDropPlus = () => {
+	duple.value = false
+	let tmp = {
+		id: uid(),
+		label: 'Копия названия',
+		descr: 'Копия описания',
+		expand: false,
+		over: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.09.2022',
+		group: 1,
+		list: [],
+		pic: IconApp1,
+	}
+	tapes.value?.push(tmp)
+
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Приложение дублировано',
+		})
+	}, 1200)
+}
+
+const draggedItem = ref(100)
+const setDragged = (n: number) => {
+	draggedItem.value = n
+}
+const remove = () => {
+	tapes.value.splice(draggedItem.value, 1)
+	$q.notify({
+		icon: 'mdi-check-bold',
+		color: 'negative',
+		message: 'Приложение удалено',
+		actions: [
+			{
+				label: 'Отмена',
+				color: 'white',
+				handler: () => {
+					/* ... */
+				},
+			},
+		],
+	})
+}
+
+const create = (e: any) => {
+	let tmp = {
+		id: uid(),
+		label: e.label,
+		descr: e.description,
+		expand: false,
+		over: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.09.2022',
+		group: 1,
+		list: [],
+		pic: IconApp1,
+	}
+	list.value?.push(tmp)
+	// myapps.createApp(tmp)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Добавлено новое приложение',
+		})
+	}, 1200)
+}
+
+const row = computed(() => {
+	return Math.floor(list.value.length / 4 + 1)
+})
+const row1 = computed(() => {
+	return list.value.length + 1
+})
 </script>
 
 <template lang="pug">
@@ -115,8 +220,8 @@ q-page(padding)
 		:transition='spring'
 		:class='{big: expanded}'
 	)
-		.header(@click.stop)
-			span {{ currentItem }}
+		.header
+			span(@click.stop) {{ currentItem }}
 				q-popup-edit(v-model="currentItem" auto-save v-slot="scope")
 					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
@@ -130,6 +235,7 @@ q-page(padding)
 				:class='calcClass(item)'
 				layout
 				@click.stop='action(item)'
+				@dragstart='setDragged(index)'
 				:transition="spring"
 				:initial="initial"
 				:animate="anim"
@@ -141,9 +247,15 @@ q-page(padding)
 			Div.plus(
 				layout
 				:transition='spring'
-				@click.stop
+				@dragover.prevent="onDragEnterPlus"
+				@dragenter.prevent
+				@dragleave="onDragLeavePlus"
+				@drop='onDropPlus'
+				:class="{ duplicate: duple }"
 			)
-				AddButtonNew(mode='app' @create='')
+				AddButtonNew(mode='app' @create='create')
+
+	Trash(v-model="dragStatus" @remove="remove" :group='true' :duple='duple')
 
 </template>
 
@@ -165,7 +277,7 @@ q-page(padding)
 .box {
 	margin: 0 auto;
 	margin-top: 1rem;
-	width: 860px;
+	width: 750px;
 	padding: 0.5rem;
 	background: hsl(213deg 83.95% 94.68%);
 	border: 2px solid var(--green);
@@ -191,14 +303,14 @@ q-page(padding)
 .parent1 {
 	display: grid;
 	grid-template-columns: repeat(4, 170px);
-	grid-template-rows: repeat(1, 170px);
+	grid-template-rows: repeat(v-bind(row), 170px);
 	gap: 1rem;
 	margin: 0 auto;
 	margin-top: 1rem;
 
 	&.end {
 		grid-template-columns: repeat(1, 200px);
-		grid-template-rows: repeat(5, 80px);
+		grid-template-rows: repeat(v-bind(row1), 80px);
 		.it1 {
 			padding: 0.5rem;
 			font-size: 0.85rem;
@@ -228,8 +340,14 @@ q-page(padding)
 }
 .plus {
 	display: flex;
-	justify-content: start;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
 	align-items: center;
-	margin-left: 1rem;
+	&.duplicate {
+		background: hsl(213 38% 81% / 1) !important;
+		border: 2px dashed $primary;
+		border-radius: 0.5rem;
+	}
 }
 </style>

@@ -109,7 +109,7 @@ const pic = ref(false)
 .fucking
 	.button(v-if='!adding'
 		data-flip-id='fuck'
-		@click="add"
+		@click.stop="add"
 		v-motion
 		:initial="calcStart"
 		:enter='calcFinish')
