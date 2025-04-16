@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Dev1 from '@/views/Dev1.vue'
+import Group from '@/views/Group.vue'
 import Home from '@/views/Home.vue'
 
 declare module 'vue-router' {
@@ -220,7 +220,7 @@ const router = createRouter({
 		{
 			path: '/folder/:id/:item?',
 			name: 'folder',
-			component: Dev1,
+			component: Group,
 			props: true,
 			meta: {
 				toolbar: false,
@@ -228,27 +228,27 @@ const router = createRouter({
 				count: 0,
 			},
 		},
-		{
-			path: '/dev/:id?',
-			name: 'dev',
-			component: () => import('@/views/Dev.vue'),
-			props: true,
-			meta: {
-				toolbar: true,
-				back: true,
-				count: 0,
-			},
-		},
-		{
-			path: '/dev1',
-			name: 'dev1',
-			component: () => import('@/views/Dev1.vue'),
-			meta: {
-				toolbar: true,
-				back: true,
-				count: 0,
-			},
-		},
+		// {
+		// 	path: '/dev/:id?',
+		// 	name: 'dev',
+		// 	component: () => import('@/views/Dev.vue'),
+		// 	props: true,
+		// 	meta: {
+		// 		toolbar: true,
+		// 		back: true,
+		// 		count: 0,
+		// 	},
+		// },
+		// {
+		// 	path: '/dev1',
+		// 	name: 'dev1',
+		// 	component: () => import('@/views/Dev1.vue'),
+		// 	meta: {
+		// 		toolbar: true,
+		// 		back: true,
+		// 		count: 0,
+		// 	},
+		// },
 	],
 })
 
