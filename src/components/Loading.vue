@@ -42,7 +42,7 @@ const refresh = () => {
 		})
 	}, 2100)
 
-	isFake.value = false
+	// isFake.value = false
 	poisk.value = false
 }
 
@@ -105,7 +105,7 @@ const emit = defineEmits(['startPred'])
 const action = () => {
 	emit('startPred')
 }
-const isFake = ref(true)
+// const isFake = ref(true)
 </script>
 
 <template lang="pug">
@@ -123,7 +123,7 @@ const isFake = ref(true)
 			hide-bottom
 			:table-header-class="calcClass"
 		)
-		.water(v-if='isFake') Образец
+		// .water(v-if='isFake') Образец
 
 	q-markup-table(v-else)
 		thead
