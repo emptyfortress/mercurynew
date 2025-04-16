@@ -89,13 +89,17 @@ onMounted(loadStateFromRoute)
 //
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
 watch(() => route.params.item, loadStateFromRoute)
+
+const calcId = computed(() => {
+	return route.params.id.toString()
+})
 </script>
 
 <template lang="pug">
 q-page(padding)
 	Div.box(
 		@click.stop='back',
-		layout-id="underline"
+		:layout-id="calcId"
 		:transition='spring'
 		:class='{big: expanded}'
 	)

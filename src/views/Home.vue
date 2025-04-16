@@ -28,8 +28,8 @@ const updateRouteParams = () => {
 	})
 }
 watch(activeItem, updateRouteParams)
-const hoverItem = ref(100)
-const draggedItem = ref(100)
+// const hoverItem = ref(100)
+// const draggedItem = ref(100)
 const shift = useKeyModifier('Shift')
 
 // Функция для загрузки состояния из параметров маршрута
@@ -58,20 +58,20 @@ const config = {
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
-	onDragstart: (e: any) => {
-		draggedItem.value = e.draggedNode.data.index
-	},
+	// onDragstart: (e: any) => {
+	// 	draggedItem.value = e.draggedNode.data.index
+	// },
 }
 const config1 = {
-	// plugins: [animations()],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: false,
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
-	onDragstart: (e: any) => {
-		draggedItem.value = e.draggedNode.data.index
-	},
+	// onDragstart: (e: any) => {
+	// 	draggedItem.value = e.draggedNode.data.index
+	// },
 }
 
 const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
@@ -142,7 +142,7 @@ state.on('dragEnded', () => {
 	dragStatus.value = false
 })
 const removeGroup = () => {
-	tapes.value.splice(draggedItem.value, 1)
+	// tapes.value.splice(draggedItem.value, 1)
 	$q.notify({
 		icon: 'mdi-check-bold',
 		color: 'negative',
@@ -151,25 +151,25 @@ const removeGroup = () => {
 }
 
 const remove = () => {
-	if (tapes.value[draggedItem.value].group > 1) {
-		confirm.value = true
-	} else {
-		tapes.value.splice(draggedItem.value, 1)
-		$q.notify({
-			icon: 'mdi-check-bold',
-			color: 'negative',
-			message: 'Приложение удалено',
-			actions: [
-				{
-					label: 'Отмена',
-					color: 'white',
-					handler: () => {
-						/* ... */
-					},
-				},
-			],
-		})
-	}
+	// if (tapes.value[draggedItem.value].group > 1) {
+	// 	confirm.value = true
+	// } else {
+	// 	tapes.value.splice(draggedItem.value, 1)
+	// 	$q.notify({
+	// 		icon: 'mdi-check-bold',
+	// 		color: 'negative',
+	// 		message: 'Приложение удалено',
+	// 		actions: [
+	// 			{
+	// 				label: 'Отмена',
+	// 				color: 'white',
+	// 				handler: () => {
+	// 					/* ... */
+	// 				},
+	// 			},
+	// 		],
+	// 	})
+	// }
 }
 
 const duple = ref(false)
@@ -177,7 +177,7 @@ const duple = ref(false)
 
 <template lang="pug">
 q-page(padding)
-	Div.parent(ref='parent'
+	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
 	)
