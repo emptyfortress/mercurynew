@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
 import { useKeyModifier } from '@vueuse/core'
+import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
@@ -97,6 +98,13 @@ const onDrop1 = () => {
 		hoverItem.value = 100
 	}
 }
+
+const remove = (el: App) => {
+	console.log(el)
+	const ind = tapes.value.findIndex((item) => item.id == el.id)
+	tapes.value.splice(ind, 1)
+	expanded.value = false
+}
 </script>
 
 <template lang="pug">
@@ -116,6 +124,12 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@drop='onDrop1'
 )
 	span {{ item.label }}
+
+	AppPreviewNew(
+		v-if='activeItem == item.id'
+		:item='item',
+		@remove='remove'
+	)
 
 	.img(v-if='item.group == 1')
 		component(:is='item.pic')

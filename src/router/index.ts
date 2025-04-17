@@ -228,27 +228,6 @@ const router = createRouter({
 				count: 0,
 			},
 		},
-		// {
-		// 	path: '/dev/:id?',
-		// 	name: 'dev',
-		// 	component: () => import('@/views/Dev.vue'),
-		// 	props: true,
-		// 	meta: {
-		// 		toolbar: true,
-		// 		back: true,
-		// 		count: 0,
-		// 	},
-		// },
-		// {
-		// 	path: '/dev1',
-		// 	name: 'dev1',
-		// 	component: () => import('@/views/Dev1.vue'),
-		// 	meta: {
-		// 		toolbar: true,
-		// 		back: true,
-		// 		count: 0,
-		// 	},
-		// },
 	],
 })
 
