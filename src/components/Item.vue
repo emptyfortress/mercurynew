@@ -50,7 +50,6 @@ const initial = {
 const animate = {
 	opacity: 1,
 	y: 0,
-	// transition: { delay: 0.4 + index * 0.1 },
 }
 
 const spring = {
