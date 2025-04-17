@@ -56,9 +56,6 @@ const config = {
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
-	// onDragstart: (e: any) => {
-	// 	draggedItem.value = e.draggedNode.data.index
-	// },
 }
 const config1 = {
 	plugins: [animations()],
@@ -67,9 +64,6 @@ const config1 = {
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
-	// onDragstart: (e: any) => {
-	// 	draggedItem.value = e.draggedNode.data.index
-	// },
 }
 
 const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
@@ -133,7 +127,9 @@ const dragStatus = ref(false)
 const confirm = ref(false)
 
 state.on('dragStarted', () => {
-	dragStatus.value = true
+	if (!expanded.value) {
+		dragStatus.value = true
+	}
 })
 
 state.on('dragEnded', () => {
