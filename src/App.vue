@@ -69,7 +69,9 @@ const nav = () => {
 		myapps.setGroupPath('')
 	} else if (myapps.groupPath.length > 0) {
 		router.push(myapps.groupPath)
-	} else {
+	} else if (myapps.path == route.fullPath.toString()) {
+		router.push('/')
+	} else if (myapps.groupPath.length == 0) {
 		router.push(myapps.path)
 	}
 }

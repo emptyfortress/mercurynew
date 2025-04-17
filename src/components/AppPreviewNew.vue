@@ -163,13 +163,13 @@ const remove = (item: App) => {
 
 .bt {
 	padding: 1rem;
-	border: 1px solid $secondary;
+	border: 1px solid $primary;
 	border-radius: var(--rad);
 	text-align: center;
 	display: flex;
 	justify-content: center;
 	align-items: start;
-	color: $secondary;
+	color: $primary;
 	font-weight: 600;
 	cursor: pointer;
 	&.red {
@@ -178,8 +178,8 @@ const remove = (item: App) => {
 	}
 
 	&:hover {
-		background: $secondary;
-		color: white;
+		// background: $secondary;
+		background: var(--selection);
 		&.red {
 			background: pink;
 			color: $negative;
