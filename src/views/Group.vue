@@ -9,6 +9,7 @@ import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import Trash from '@/components/common/Trash.vue'
 import { uid, useQuasar } from 'quasar'
 import IconApp from '@/components/icons/IconApp.vue'
+import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
 const myapps = useApps()
 const router = useRouter()
@@ -241,6 +242,13 @@ q-page(padding)
 				:animate="anim"
 			)
 				span {{ item.label }}
+
+				AppPreviewNew(
+					v-if='activeItem == item.id'
+					:item='item',
+					@remove='remove'
+				)
+
 				.img
 					component(:is='item.pic')
 
@@ -277,7 +285,7 @@ q-page(padding)
 .box {
 	margin: 0 auto;
 	margin-top: 1rem;
-	width: 750px;
+	width: 850px;
 	padding: 0.5rem;
 	background: hsl(213deg 83.95% 94.68%);
 	border: 2px solid var(--green);
@@ -320,7 +328,7 @@ q-page(padding)
 			}
 			&.active {
 				grid-column: 2/4;
-				grid-row: 1/5;
+				grid-row: 1/6;
 				padding: 1rem;
 				font-size: 1.2rem;
 				.img {
