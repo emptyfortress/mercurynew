@@ -22,24 +22,24 @@ const group = computed(() => {
 })
 
 const navigate = () => {
-	// if (group.value) {
-	// 	myapps.setGroupPath(route.fullPath.toString())
-	// } else {
-	// 	myapps.setGroupPath('')
-	// 	myapps.setPath(route.fullPath.toString())
-	// }
+	if (group.value) {
+		myapps.setGroupPath(route.fullPath.toString())
+	} else {
+		myapps.setGroupPath('')
+		myapps.setPath(route.fullPath.toString())
+	}
 	router.push('/assistent')
 	myapps.setCurrentApp(props.item)
 }
 
 const navigate1 = () => {
-	// myapps.setCurrentApp(props.item)
-	// if (group.value) {
-	// 	myapps.setGroupPath(route.fullPath.toString())
-	// } else {
-	// 	myapps.setGroupPath('')
-	// 	myapps.setPath(route.fullPath.toString())
-	// }
+	myapps.setCurrentApp(props.item)
+	if (group.value) {
+		myapps.setGroupPath(route.fullPath.toString())
+	} else {
+		myapps.setGroupPath('')
+		myapps.setPath(route.fullPath.toString())
+	}
 	router.push('/process')
 }
 

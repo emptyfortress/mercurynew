@@ -5,9 +5,11 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import IconHome from '@/components/icons/IconHome.vue'
+import { useApps } from '@/stores/apps'
 
 const route = useRoute()
 const router = useRouter()
+const myapps = useApps()
 
 const rightDrawer = ref(false)
 const toggleRightDrawer = () => {
@@ -60,6 +62,17 @@ const calcEnter = computed(() => {
 		return ''
 	}
 })
+
+const nav = () => {
+	if (myapps.groupPath.length > 0 && myapps.groupPath == route.fullPath.toString()) {
+		router.push(myapps.path)
+		myapps.setGroupPath('')
+	} else if (myapps.groupPath.length > 0) {
+		router.push(myapps.groupPath)
+	} else {
+		router.push(myapps.path)
+	}
+}
 </script>
 
 <template lang="pug">
@@ -67,7 +80,7 @@ const calcEnter = computed(() => {
 q-layout(view='hHh LpR fFf')
 	q-header(elevated)
 		q-toolbar
-			q-btn(dense flat round @click='$router.push("/")')
+			q-btn(dense flat round @click='nav')
 				IconHome.home
 			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
