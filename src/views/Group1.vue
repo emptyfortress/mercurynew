@@ -3,26 +3,26 @@ import { ref, computed, onMounted, watch, markRaw } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
-import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { animations, state } from '@formkit/drag-and-drop'
-import AddButtonNew from '@/components/common/AddButtonNew.vue'
-import Trash from '@/components/common/Trash.vue'
-import { uid, useQuasar } from 'quasar'
-import IconApp from '@/components/icons/IconApp.vue'
-import AppPreviewNew from '@/components/AppPreviewNew.vue'
+// import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+// import { animations, state } from '@formkit/drag-and-drop'
+// import AddButtonNew from '@/components/common/AddButtonNew.vue'
+// import Trash from '@/components/common/Trash.vue'
+// import { uid, useQuasar } from 'quasar'
+// import IconApp from '@/components/icons/IconApp.vue'
+// import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
 const props = defineProps(['id', 'item'])
 
 const myapps = useApps()
 const router = useRouter()
-const route = useRoute()
-const IconApp1 = markRaw(IconApp)
+// const route = useRoute()
+// const IconApp1 = markRaw(IconApp)
 
 const Div = motion.div
 
 const spring = {
 	type: 'spring',
-	visualDuration: 0.8,
+	visualDuration: 0.3,
 	bounce: 0.25,
 }
 
@@ -96,8 +96,8 @@ q-page(padding)
 .box {
 	margin: 0 auto;
 	margin-top: 1rem;
-	width: 850px;
-	height: 450px;
+	width: 950px;
+	height: 500px;
 	padding: 1rem;
 	background: hsl(213deg 83.95% 94.68%);
 	border: 2px solid var(--green);
@@ -117,9 +117,14 @@ q-page(padding)
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	}
 	&.big {
-		font-size: 1.2rem;
 		grid-column: 2/3;
 		grid-row: 1/5;
+		font-size: 1.2rem;
+		// position: fixed;
+		// width: 690px;
+		// height: 400px;
+		// top: 154px;
+		// left: calc(50% - 210px);
 		padding: 1rem;
 		.img {
 			font-size: 4rem;
@@ -134,8 +139,10 @@ q-page(padding)
 }
 .parent1 {
 	display: grid;
-	grid-template-columns: 200px 1fr;
-	grid-template-rows: repeat(v-bind(row), 80px);
+	// grid-template-columns: 200px 1fr;
+	// grid-template-rows: repeat(v-bind(row), 80px);
+	grid-template-columns: repeat(1, 200px);
+	grid-template-rows: repeat(7, 80px);
 	gap: 1rem;
 	margin: 1rem auto;
 
