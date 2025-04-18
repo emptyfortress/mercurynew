@@ -120,11 +120,6 @@ q-page(padding)
 		grid-column: 2/3;
 		grid-row: 1/5;
 		font-size: 1.2rem;
-		// position: fixed;
-		// width: 690px;
-		// height: 400px;
-		// top: 154px;
-		// left: calc(50% - 210px);
 		padding: 1rem;
 		.img {
 			font-size: 4rem;
@@ -139,34 +134,10 @@ q-page(padding)
 }
 .parent1 {
 	display: grid;
-	// grid-template-columns: 200px 1fr;
-	// grid-template-rows: repeat(v-bind(row), 80px);
 	grid-template-columns: repeat(1, 200px);
 	grid-template-rows: repeat(7, 80px);
 	gap: 1rem;
 	margin: 1rem auto;
-
-	// &.end {
-	// 	grid-template-columns: repeat(1, 200px);
-	// 	grid-template-rows: repeat(v-bind(row1), 80px);
-	// 	.it1 {
-	// 		padding: 0.5rem;
-	// 		font-size: 0.85rem;
-	// 		grid-column: 1/2;
-	// 		.img {
-	// 			font-size: 1.2rem;
-	// 		}
-	// 		&.active {
-	// 			grid-column: 2/4;
-	// 			grid-row: 1/6;
-	// 			padding: 1rem;
-	// 			font-size: 1.2rem;
-	// 			.img {
-	// 				font-size: 4rem;
-	// 			}
-	// 		}
-	// 	}
-	// }
 }
 .img {
 	position: absolute;
