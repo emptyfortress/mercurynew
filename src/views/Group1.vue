@@ -11,25 +11,48 @@ import { uid, useQuasar } from 'quasar'
 import IconApp from '@/components/icons/IconApp.vue'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
+const props = defineProps(['id', 'item'])
+
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
 const IconApp1 = markRaw(IconApp)
 
 const Div = motion.div
+
 const spring = {
 	type: 'spring',
-	visualDuration: 0.3,
+	visualDuration: 0.8,
 	bounce: 0.25,
 }
 
-const calcId = computed(() => {
-	return route.params.id.toString()
-	// return 'list'
-})
-
 const back = () => {
 	router.push('/3')
+}
+
+const group = computed(() => {
+	return myapps.apps.find((el: App) => el.id == props.id) || ({} as App)
+})
+
+const tapes = computed(() => {
+	if (group.value) return group.value.list || []
+})
+
+const row = computed(() => {
+	return (tapes.value?.length || 1) + 1
+})
+
+const calcClass = (str: string) => {
+	if (str == props.item) return 'big'
+	return ''
+}
+
+const action = (item: App) => {
+	router.push({
+		params: {
+			item: item.id,
+		},
+	})
 }
 </script>
 
@@ -37,10 +60,22 @@ const back = () => {
 q-page(padding)
 	Div.box(
 		@click='back'
-		:layout-id="calcId"
+		layout-id="gr"
 		:transition='spring'
 	)
-		div fuck
+		Div.hd(layout-id='hd') {{ group.label }}
+		.parent1(ref='parent')
+
+			Div.it(v-for="(item, index) in tapes", :key="item.id",
+				:layout-id='item.id'
+				:transition="spring"
+				:class='calcClass(item.id)'
+				@click.stop='action(item)',
+			)
+				span {{ item.label }} - {{ item.id }}
+
+				.img()
+					component(:is='item.pic')
 </template>
 
 <style scoped lang="scss">
@@ -62,17 +97,17 @@ q-page(padding)
 	margin: 0 auto;
 	margin-top: 1rem;
 	width: 850px;
-	height: 400px;
-	padding: 0.5rem;
+	height: 450px;
+	padding: 1rem;
 	background: hsl(213deg 83.95% 94.68%);
 	border: 2px solid var(--green);
 	border-radius: 0.5rem;
 	z-index: 10;
 }
-.it1 {
+.it {
 	border-radius: 0.5rem;
 	cursor: pointer;
-	padding: 1rem;
+	padding: 0.5rem;
 	background: #fff;
 	border: 1px solid #fff;
 	position: relative;
@@ -81,39 +116,50 @@ q-page(padding)
 		border: 1px solid #ccc;
 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
 	}
-	&.active {
+	&.big {
 		font-size: 1.2rem;
+		grid-column: 2/3;
+		grid-row: 1/5;
+		padding: 1rem;
+		.img {
+			font-size: 4rem;
+		}
 	}
+	.img {
+		font-size: 1.5rem;
+	}
+}
+.hd {
+	font-size: 1.2rem;
 }
 .parent1 {
 	display: grid;
-	grid-template-columns: repeat(4, 170px);
-	grid-template-rows: repeat(v-bind(row), 170px);
+	grid-template-columns: 200px 1fr;
+	grid-template-rows: repeat(v-bind(row), 80px);
 	gap: 1rem;
-	margin: 0 auto;
-	margin-top: 1rem;
+	margin: 1rem auto;
 
-	&.end {
-		grid-template-columns: repeat(1, 200px);
-		grid-template-rows: repeat(v-bind(row1), 80px);
-		.it1 {
-			padding: 0.5rem;
-			font-size: 0.85rem;
-			grid-column: 1/2;
-			.img {
-				font-size: 1.2rem;
-			}
-			&.active {
-				grid-column: 2/4;
-				grid-row: 1/6;
-				padding: 1rem;
-				font-size: 1.2rem;
-				.img {
-					font-size: 4rem;
-				}
-			}
-		}
-	}
+	// &.end {
+	// 	grid-template-columns: repeat(1, 200px);
+	// 	grid-template-rows: repeat(v-bind(row1), 80px);
+	// 	.it1 {
+	// 		padding: 0.5rem;
+	// 		font-size: 0.85rem;
+	// 		grid-column: 1/2;
+	// 		.img {
+	// 			font-size: 1.2rem;
+	// 		}
+	// 		&.active {
+	// 			grid-column: 2/4;
+	// 			grid-row: 1/6;
+	// 			padding: 1rem;
+	// 			font-size: 1.2rem;
+	// 			.img {
+	// 				font-size: 4rem;
+	// 			}
+	// 		}
+	// 	}
+	// }
 }
 .img {
 	position: absolute;

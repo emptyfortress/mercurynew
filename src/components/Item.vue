@@ -18,7 +18,6 @@ const Div = motion.div
 const emit = defineEmits(['navigate', 'dragged'])
 
 const action = (item: App) => {
-	console.log('lajsdlkajs', item.id)
 	// if (item.group >= 2) {
 	// 	emit('navigate', item.id)
 	// } else {
@@ -43,8 +42,8 @@ const calcClass = (item: App, index: number) => {
 }
 
 const calcId = (item: App) => {
-	return item.id
-	// if (item.group >= 1) return item.id
+	if (item.group > 1) return 'gr'
+	else return item.id
 }
 
 const initial = {

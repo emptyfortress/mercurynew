@@ -221,7 +221,11 @@ const router = createRouter({
 			path: '/folder/:id/:item?',
 			name: 'folder',
 			component: Group1,
-			props: true,
+			props: (route) => ({
+				id: route.params.id,
+				item: route.params.item,
+			}),
+
 			meta: {
 				toolbar: false,
 				back: true,

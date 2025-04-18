@@ -2,6 +2,7 @@
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations, state } from '@formkit/drag-and-drop'
 import { useRouter, useRoute } from 'vue-router'
+import { motion } from 'motion-v'
 
 // const list = defineModel<App[] | undefined>('list')
 const props = defineProps<{
@@ -19,22 +20,22 @@ const config = {
 	},
 }
 
+const Div = motion.div
 const [parent, tapes] = useDragAndDrop(props.list, config)
 
 const navigate = (id: string) => {
 	router.push(`/folder/${route.params.id}/${id}`)
 }
 
-// const calcId = computed(() => {
-// 	return route.params.id.toString()
-// 	// return 'list'
-// })
+const calcIdNew = (item: App) => {
+	return item.id
+}
 </script>
 
 <template lang="pug">
 .parent(ref='parent')
-	.it(v-for="(item, index) in tapes", :key="item.id",
-		layout,
+	Div.it(v-for="(item, index) in tapes", :key="item.id",
+		:layout-id='calcIdNew(item)'
 		@click.stop='navigate(item.id)',
 	)
 		span {{ item.label }}
