@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
 import { useKeyModifier } from '@vueuse/core'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
+import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
@@ -17,20 +18,22 @@ const Div = motion.div
 const emit = defineEmits(['navigate', 'dragged'])
 
 const action = (item: App) => {
-	if (item.group >= 2) {
-		emit('navigate', item.id)
+	console.log('lajsdlkajs', item.id)
+	// if (item.group >= 2) {
+	// 	emit('navigate', item.id)
+	// } else {
+	if (activeItem.value !== '' && activeItem.value == item.id) {
+		expanded.value = false
+		activeItem.value = ''
 	} else {
-		if (activeItem.value !== '' && activeItem.value == item.id) {
-			expanded.value = false
-			activeItem.value = ''
-		} else {
-			expanded.value = true
-			activeItem.value = item.id
-		}
+		expanded.value = true
+		activeItem.value = item.id
 	}
+	// }
 }
 
 const calcClass = (item: App, index: number) => {
+	if (expanded.value && activeItem.value == item.id && item.group > 1) return 'active group'
 	if (expanded.value && activeItem.value == item.id) return 'active'
 	if (hoverItem.value == index && index !== draggedItem.value) return 'over'
 	if (item.group > 1 && hoverItem.value == index && index !== draggedItem.value)
@@ -40,7 +43,8 @@ const calcClass = (item: App, index: number) => {
 }
 
 const calcId = (item: App) => {
-	if (item.group >= 1) return item.id
+	return item.id
+	// if (item.group >= 1) return item.id
 }
 
 const initial = {
@@ -128,15 +132,20 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	span {{ item.label }}
 
 	AppPreviewNew(
-		v-if='activeItem == item.id'
+		v-if='activeItem == item.id && item.group == 1'
 		:item='item',
 		@remove='remove'
+	)
+	
+	GroupInsidePreview(
+		v-if='activeItem == item.id && item.group > 1'
+		:list="item.list"
 	)
 
 	.img(v-if='item.group == 1')
 		component(:is='item.pic')
 
-	template(v-if='item.group > 1')
+	template(v-if='item.group > 1 && activeItem !== item.id')
 		.img1
 			component(:is='el.pic' v-for="el in item.list" :key="el.id")
 	

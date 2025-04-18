@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Group from '@/views/Group.vue'
+import Group1 from '@/views/Group1.vue'
 import Home from '@/views/Home.vue'
 
 declare module 'vue-router' {
@@ -220,7 +220,7 @@ const router = createRouter({
 		{
 			path: '/folder/:id/:item?',
 			name: 'folder',
-			component: Group,
+			component: Group1,
 			props: true,
 			meta: {
 				toolbar: false,
