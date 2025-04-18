@@ -100,10 +100,12 @@ const onDrop1 = () => {
 }
 
 const remove = (el: App) => {
-	console.log(el)
-	const ind = tapes.value.findIndex((item) => item.id == el.id)
-	tapes.value.splice(ind, 1)
-	expanded.value = false
+	// console.log(el)
+	const ind = tapes.value?.findIndex((item) => item.id == el.id)
+	if (ind) {
+		tapes.value?.splice(ind, 1)
+		expanded.value = false
+	}
 }
 </script>
 
