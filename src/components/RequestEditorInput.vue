@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-// import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
-// import IconSave from '@/components/icons/IconSave.vue'
 import { useKeys } from '@/stores/keys'
 import { uid } from 'quasar'
 
@@ -104,6 +102,10 @@ const addCond = () => {
 		})
 		mykeys.addItem(items)
 		reset()
+		if (mykeys.counter == 0) {
+			mykeys.toggleDragWindow()
+			mykeys.increment()
+		}
 	}
 }
 

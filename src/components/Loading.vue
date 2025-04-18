@@ -19,6 +19,7 @@ const poisk = defineModel('poisk')
 const $q = useQuasar()
 
 const mykeys = useKeys()
+const isFake = ref(true)
 
 const isLoaded = ref(false)
 
@@ -27,6 +28,7 @@ watch(poisk, (val) => {
 		refresh()
 	}
 })
+
 const refresh = () => {
 	isLoaded.value = false
 	setTimeout(() => {
@@ -42,7 +44,7 @@ const refresh = () => {
 		})
 	}, 2100)
 
-	// isFake.value = false
+	isFake.value = false
 	poisk.value = false
 }
 
@@ -93,6 +95,49 @@ const rows = [
 	},
 ]
 
+const newRows = [
+	{
+		id: 100,
+		date: '2025-03-01',
+		date1: '2025-04-15',
+		author: 'Я',
+		comment: 'Учебный',
+		status: 'Завершено',
+	},
+	{
+		id: 101,
+		date: '2025-03-05',
+		date1: '2025-04-20',
+		author: 'Кузнецов В.А.',
+		comment: '',
+		status: 'Согласовано',
+	},
+	{
+		id: 102,
+		date: '2025-03-10',
+		date1: '2025-04-25',
+		author: 'Я',
+		comment: 'Уточнить даты',
+		status: 'Подготовка',
+	},
+	{
+		id: 103,
+		date: '2025-03-12',
+		date1: '2025-04-28',
+		author: 'Я',
+		comment: 'Срочно!',
+		status: 'На согласовании',
+	},
+	{
+		id: 104,
+		date: '2025-03-15',
+		date1: '2025-05-01',
+		author: 'Михайлов С.В.',
+		comment: 'По болезни',
+		status: 'На доработке',
+	},
+]
+
 const calcClass = computed(() => {
 	if (mykeys.theme == 1) return 'contr'
 	if (mykeys.theme == 2) return 'mex'
@@ -105,7 +150,10 @@ const emit = defineEmits(['startPred'])
 const action = () => {
 	emit('startPred')
 }
-// const isFake = ref(true)
+
+const myrows = computed(() => {
+	return isFake.value ? rows : newRows
+})
 </script>
 
 <template lang="pug">
@@ -119,11 +167,10 @@ const action = () => {
 		q-table(bordered
 			flat
 			:columns="mykeys.activeColumns"
-			:rows="rows"
+			:rows="myrows"
 			hide-bottom
 			:table-header-class="calcClass"
 		)
-		// .water(v-if='isFake') Образец
 
 	q-markup-table(v-else)
 		thead

@@ -39,7 +39,6 @@ transition(name="slide-bottom")
 
 		q-card-section.scroll
 			MultilevelMenu(:height="height")
-			// Text12(:height="height" @close="close")
 </template>
 
 <style scoped lang="scss">

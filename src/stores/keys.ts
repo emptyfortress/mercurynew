@@ -146,6 +146,11 @@ export const useKeys = defineStore('mykeys', () => {
 		hoverItem.value = e
 	}
 
+	const counter = ref(0)
+	const increment = () => {
+		counter.value += 1
+	}
+
 	return {
 		keys,
 		isDragWindow,
@@ -154,6 +159,8 @@ export const useKeys = defineStore('mykeys', () => {
 		activeColumns,
 		theme,
 		hoverItem,
+		counter,
+		increment,
 		setHover,
 		toggleDragWindow,
 		addItem,
