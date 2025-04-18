@@ -115,8 +115,6 @@ const remove = (el: App) => {
 <template lang="pug">
 Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@click.stop='action(item)',
-	:data-state="expanded",
-	layout,
 	:layout-id="calcId(item)"
 	:class='calcClass(item, index)'
 	:initial="initial"
