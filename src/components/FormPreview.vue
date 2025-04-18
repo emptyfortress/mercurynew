@@ -102,7 +102,7 @@ const [parent, tapes] = useDragAndDrop(mykeys.hasParameters, config)
 		IconRocket.big
 		div Параметры не заданы.<br />Показ формы не требуется.
 
-	.action(v-if="mykeys.hasParameters.length")
+	.action()
 		q-btn(unelevated color="primary" label="Искать" @click="startSearch")
 </template>
 
@@ -135,19 +135,20 @@ const [parent, tapes] = useDragAndDrop(mykeys.hasParameters, config)
 	column-gap: 0.25rem;
 	background: #fff;
 	margin-bottom: 0.25rem;
+	cursor: move;
 	&:hover {
 		background: #efefef;
 	}
 }
 
 .edit {
-	cursor: pointer;
 	text-align: left;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	width: 100%;
 	span {
 		border-bottom: 1px dotted $primary;
+		cursor: pointer;
 	}
 }
 .dis {
