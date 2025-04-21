@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, markRaw } from 'vue'
+import { ref, computed, nextTick, onMounted, watch, markRaw } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
@@ -9,7 +9,7 @@ import { useApps } from '@/stores/apps'
 // import Trash from '@/components/common/Trash.vue'
 // import { uid, useQuasar } from 'quasar'
 // import IconApp from '@/components/icons/IconApp.vue'
-// import AppPreviewNew from '@/components/AppPreviewNew.vue'
+import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
 const props = defineProps(['id', 'item'])
 
@@ -59,6 +59,21 @@ const action = (item: App) => {
 		},
 	})
 }
+
+const remove = (el: App) => {
+	const ind = tapes.value?.findIndex((item) => item.id == el.id)
+	if (ind !== undefined) {
+		tapes.value?.splice(ind, 1)
+	}
+	const last = tapes.value?.at(-1)
+	if (last) {
+		router.push({
+			params: {
+				item: last.id,
+			},
+		})
+	}
+}
 </script>
 
 <template lang="pug">
@@ -78,6 +93,12 @@ q-page(padding)
 				@click.stop='action(item)',
 			)
 				span {{ item.label }} - {{ item.id }}
+
+				AppPreviewNew(
+					v-if='route.params.item == item.id'
+					:item='item',
+					@remove='remove(item)'
+				)
 
 				.img()
 					component(:is='item.pic')
@@ -140,7 +161,7 @@ q-page(padding)
 .parent1 {
 	display: grid;
 	grid-template-columns: repeat(1, 200px);
-	grid-template-rows: repeat(7, 80px);
+	grid-template-rows: repeat(5, 80px);
 	gap: 1rem;
 	margin: 1rem auto;
 }
