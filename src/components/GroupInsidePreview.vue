@@ -66,7 +66,6 @@ onDropOutside(parent, (event) => {
 
 <style scoped lang="scss">
 .parent {
-	// background: red;
 	width: 615px;
 }
 </style>

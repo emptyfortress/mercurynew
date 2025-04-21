@@ -112,7 +112,6 @@ const create = (e: any) => {
 		pic: IconApp1,
 	}
 	tapes.value?.push(tmp)
-	// myapps.createApp(tmp)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
@@ -211,19 +210,10 @@ const row = computed(() => {
 const row1 = computed(() => {
 	return tapes.value.length + 1
 })
-
-const onDrop = (event: Event) => {
-	event.preventDefault()
-	console.log(111)
-	console.log(draggedItem.value)
-}
 </script>
 
 <template lang="pug">
-q-page(padding,
-	@dragover.prevent
-	@drop='onDrop'
-)
+q-page(padding)
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'

@@ -77,6 +77,7 @@ const onDragLeave = () => {
 }
 
 const onDrop1 = () => {
+	console.log('fuck')
 	if (shift.value && tapes.value) {
 		let tmp = {} as App
 		if (tapes.value[hoverItem.value].group == 1) {
