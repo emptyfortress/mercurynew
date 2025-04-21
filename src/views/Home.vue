@@ -145,9 +145,11 @@ const removeGroup = () => {
 }
 
 const draggedItem = ref(100)
+
 const setDragged = (n: number) => {
 	draggedItem.value = n
 }
+
 const remove = () => {
 	if (tapes.value[draggedItem.value].group > 1) {
 		confirm.value = true
@@ -209,10 +211,19 @@ const row = computed(() => {
 const row1 = computed(() => {
 	return tapes.value.length + 1
 })
+
+const onDrop = (event: Event) => {
+	event.preventDefault()
+	console.log(111)
+	console.log(draggedItem.value)
+}
 </script>
 
 <template lang="pug">
-q-page(padding)
+q-page(padding,
+	@dragover.prevent
+	@drop='onDrop'
+)
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
@@ -224,6 +235,7 @@ q-page(padding)
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
 			@dragged='setDragged'
+
 		)
 
 		Div.plus(

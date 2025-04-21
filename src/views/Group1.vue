@@ -3,9 +3,9 @@ import { ref, computed, nextTick, onMounted, watch, markRaw } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
-// import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-// import { animations, state } from '@formkit/drag-and-drop'
-// import AddButtonNew from '@/components/common/AddButtonNew.vue'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+import { animations, state } from '@formkit/drag-and-drop'
+import AddButtonNew from '@/components/common/AddButtonNew.vue'
 // import Trash from '@/components/common/Trash.vue'
 // import { uid, useQuasar } from 'quasar'
 // import IconApp from '@/components/icons/IconApp.vue'
@@ -39,9 +39,19 @@ const group = computed(() => {
 	return myapps.apps.find((el: App) => el.id == props.id) || ({} as App)
 })
 
-const tapes = computed(() => {
-	if (group.value) return group.value.list || []
-})
+const config = {
+	plugins: [animations()],
+	dragPlaceholderClass: 'ghost',
+	sortable: true,
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains('it')
+	},
+}
+const [parent, tapes] = useDragAndDrop(group.value.list, config)
+
+// const tapes = computed(() => {
+// 	if (group.value) return group.value.list || []
+// })
 
 const row = computed(() => {
 	return (tapes.value?.length || 1) + 1
