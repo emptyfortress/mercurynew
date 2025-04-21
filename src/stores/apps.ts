@@ -135,11 +135,15 @@ export const useApps = defineStore('apps', () => {
 
 	const path = ref('/')
 	const groupPath = ref('')
+	const groupPathBig = ref('')
 	const setPath = (e: string) => {
 		path.value = e
 	}
 	const setGroupPath = (e: string) => {
 		groupPath.value = e
+	}
+	const setGroupPathBig = (e: string) => {
+		groupPathBig.value = e
 	}
 
 	return {
@@ -154,7 +158,9 @@ export const useApps = defineStore('apps', () => {
 
 		path,
 		groupPath,
+		groupPathBig,
 		setPath,
 		setGroupPath,
+		setGroupPathBig,
 	}
 })

@@ -15,7 +15,7 @@ const props = defineProps(['id', 'item'])
 
 const myapps = useApps()
 const router = useRouter()
-// const route = useRoute()
+const route = useRoute()
 // const IconApp1 = markRaw(IconApp)
 
 const Div = motion.div
@@ -27,7 +27,12 @@ const spring = {
 }
 
 const back = () => {
-	router.push('/3')
+	const path = route.fullPath
+	const parts = path.split('/')
+	parts.pop()
+	parts.splice(0, 2)
+	const newUrl = '/' + parts
+	router.push(newUrl)
 }
 
 const group = computed(() => {
