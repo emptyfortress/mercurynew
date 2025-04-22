@@ -167,6 +167,44 @@ const row = computed(() => {
 const row1 = computed(() => {
 	return tapes.value.length + 1
 })
+
+const createGroup = (one: App, two: App) => {
+	const tmp = {
+		id: uid(),
+		label: one.label,
+		descr: one.descr,
+		version: one.version,
+		expand: false,
+		author: one.author,
+		created: one.created,
+		group: 1,
+		pic: one.pic,
+		list: [],
+	}
+	const tmp1 = {
+		id: uid(),
+		label: two.label,
+		descr: two.descr,
+		version: two.version,
+		expand: false,
+		author: two.author,
+		created: two.created,
+		group: 1,
+		pic: two.pic,
+		list: [],
+	}
+
+	const ind = tapes.value.findIndex((el) => el.id == two.id)
+
+	if (ind) {
+		tapes.value.splice(ind, 1)
+	}
+
+	one.group = 2
+	one.label = 'Группа'
+	tmp.id = uid()
+	one.list = [tmp, tmp1]
+}
 </script>
 
 <template lang="pug">
@@ -181,8 +219,8 @@ q-page(padding)
 			v-model:tapes='tapes',
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
+			@createGroup='createGroup'
 		)
-		// @dragged='setDragged'
 
 		Div.plus(
 			layout

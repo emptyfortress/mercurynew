@@ -90,7 +90,7 @@ const remove = (el: App) => {
 q-page(padding)
 	Div.box(
 		@click='back'
-		layout-id="gr"
+		:layout-id="id"
 		:transition='spring'
 	)
 		Div.hd(layout-id='hd') {{ group.label }}
@@ -102,7 +102,7 @@ q-page(padding)
 				:class='calcClass(item.id)'
 				@click.stop='action(item)',
 			)
-				span {{ item.label }} - {{ item.id }}
+				span {{ item.label }}
 
 				AppPreviewNew(
 					v-if='route.params.item == item.id'

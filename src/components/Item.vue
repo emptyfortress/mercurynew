@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, nextTick } from 'vue'
 import { motion } from 'motion-v'
 // import { useKeyModifier } from '@vueuse/core'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
+import { uid } from 'quasar'
+import { useRouter, useRoute } from 'vue-router'
+import { useApps } from '@/stores/apps'
+
+const router = useRouter()
+const route = useRoute()
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
+const myapps = useApps()
 // const shift = useKeyModifier('Shift')
 
 // const hoverItem = ref(100)
@@ -15,7 +22,7 @@ const activeItem = defineModel<string>('activeItem')
 
 const Div = motion.div
 
-const emit = defineEmits(['navigate', 'dragged'])
+const emit = defineEmits(['navigate', 'createGroup'])
 
 const action = (item: App) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
@@ -30,13 +37,14 @@ const action = (item: App) => {
 const calcClass = (item: App, index: number) => {
 	if (expanded.value && activeItem.value == item.id && item.group > 1) return 'active group'
 	if (expanded.value && activeItem.value == item.id) return 'active'
-	if (item.group > 1) return 'group1'
+	if (item.group > 1) return 'group'
 	return ''
 }
 
 const calcId = (item: App) => {
-	if (item.group > 1) return 'gr'
-	else return item.id
+	return item.id
+	// if (item.group > 1) return 'gr'
+	// else return item.id
 }
 
 const initial = {
@@ -58,11 +66,11 @@ const spring = {
 const overGroup = ref(false)
 
 const draggedItem = ref()
+const dragIndex = ref<number | null>(null)
 
 const onDragStart = (item: App, n: number) => {
-	// console.log(n)
-	draggedItem.value = n
-	// console.log(draggedItem.value)
+	draggedItem.value = item
+	dragIndex.value = n
 }
 
 const onDragEnter = (app: App) => {
@@ -72,37 +80,13 @@ const onDragEnter = (app: App) => {
 }
 const onDragLeave = () => {
 	overGroup.value = false
+	// dragIndex.value = null
 }
 
 const onDrop1 = (el: App, n: number) => {
-	// el.group += 1
-
-	// console.log(draggedItem.value)
-	// tapes.value?.splice(draggedItem.value, 1)
+	emit('createGroup', el, draggedItem.value)
 	overGroup.value = false
-	// if (shift.value && tapes.value) {
-	// 	let tmp = {} as App
-	// 	if (tapes.value[hoverItem.value].group == 1) {
-	// 		tmp.id = tapes.value[draggedItem.value].id
-	// 		tmp.label = 'Группа'
-	// 		tmp.descr = ''
-	// 		tmp.expand = false
-	// 		tmp.version = ''
-	// 		tmp.author = ''
-	// 		tmp.group = 1
-	// 		tmp.list = []
-	// 	} else tmp = tapes.value[hoverItem.value]
-	//
-	// 	tmp.group += 1
-	// 	tmp.list.push(tapes.value[hoverItem.value])
-	// 	tmp.list.push(tapes.value[draggedItem.value])
-	//
-	// 	tapes.value.splice(hoverItem.value, 1, tmp)
-	// 	tapes.value.splice(draggedItem.value, 1)
-	//
-	// 	draggedItem.value = 100
-	// 	hoverItem.value = 100
-	// }
+	draggedItem.value = null
 }
 
 const remove = (el: App) => {
@@ -126,19 +110,20 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@dragenter='onDragEnter(item)'
 	@dragover.prevent
 	@dragleave='onDragLeave'
-	@drop='onDrop1(item, index)'
+	@drop='onDrop1(item, draggedItem)'
 )
 	.createGroup(v-if='item.group < 2 && activeItem == item.id && overGroup')
 		div Создать группу приложений
+
 	template(v-else)
-		span {{ item.label }} - {{ index }}
+		span {{ item.label }}
 
 		AppPreviewNew(
 			v-if='activeItem == item.id && item.group == 1'
 			:item='item',
 			@remove='remove'
 		)
-		
+
 		GroupInsidePreview(
 			v-if='activeItem == item.id && item.group > 1'
 			v-model:list="item.list"
