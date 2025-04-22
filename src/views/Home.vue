@@ -9,9 +9,6 @@ import Item from '@/components/Item.vue'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import { uid, useQuasar } from 'quasar'
 import IconApp from '@/components/icons/IconApp.vue'
-import Trash from '@/components/common/Trash.vue'
-import ConfirmDialog from '@/components/ConfirmDialog.vue'
-import { useKeyModifier } from '@vueuse/core'
 
 const IconApp1 = markRaw(IconApp)
 const myapps = useApps()
@@ -28,7 +25,6 @@ const updateRouteParams = () => {
 	})
 }
 watch(activeItem, updateRouteParams)
-const shift = useKeyModifier('Shift')
 
 // Функция для загрузки состояния из параметров маршрута
 const loadStateFromRoute = () => {
@@ -53,28 +49,13 @@ const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
+	group: 'items',
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains('it')
-	},
-}
-const config1 = {
-	plugins: [animations()],
-	dragPlaceholderClass: 'ghost',
-	sortable: false,
-	draggable: (child: HTMLElement) => {
-		return child.classList.contains('it')
+		return child.classList.contains('it') && !child.classList.contains('active')
 	},
 }
 
-const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
-
-watch(shift, (val) => {
-	if (val) {
-		updateConfig(config1)
-	} else {
-		updateConfig(config)
-	}
-})
+const [parent, tapes] = useDragAndDrop(myapps.apps, config)
 
 const expanded = ref(false)
 
@@ -134,41 +115,11 @@ state.on('dragStarted', () => {
 state.on('dragEnded', () => {
 	dragStatus.value = false
 })
-const removeGroup = () => {
-	tapes.value.splice(draggedItem.value, 1)
-	$q.notify({
-		icon: 'mdi-check-bold',
-		color: 'negative',
-		message: 'Группа удалена',
-	})
-}
 
 const draggedItem = ref(100)
 
 const setDragged = (n: number) => {
 	draggedItem.value = n
-}
-
-const remove = () => {
-	if (tapes.value[draggedItem.value].group > 1) {
-		confirm.value = true
-	} else {
-		tapes.value.splice(draggedItem.value, 1)
-		$q.notify({
-			icon: 'mdi-check-bold',
-			color: 'negative',
-			message: 'Приложение удалено',
-			actions: [
-				{
-					label: 'Отмена',
-					color: 'white',
-					handler: () => {
-						/* ... */
-					},
-				},
-			],
-		})
-	}
 }
 
 const duple = ref(false)
@@ -225,7 +176,6 @@ q-page(padding)
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
 			@dragged='setDragged'
-
 		)
 
 		Div.plus(
@@ -240,8 +190,6 @@ q-page(padding)
 		)
 			AddButtonNew(mode='app' @create='create')
 
-	Trash(v-model="dragStatus" @remove="remove" :duple='duple')
-	ConfirmDialog(v-model="confirm" @remove="removeGroup")
 </template>
 
 <style scoped lang="scss">
@@ -261,7 +209,6 @@ q-page(padding)
 .plus {
 	width: 100%;
 	height: 100%;
-	// background: #ccc;
 	display: flex;
 	justify-content: center;
 	align-items: center;

@@ -19,6 +19,7 @@ const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
+	group: 'items',
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},

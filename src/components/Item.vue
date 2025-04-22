@@ -62,7 +62,7 @@ const spring = {
 	bounce: 0.25,
 }
 
-const onDragStart = (n: number) => {
+const onDragStart = (item: App, n: number) => {
 	draggedItem.value = n
 	emit('dragged', n)
 }
@@ -77,7 +77,7 @@ const onDragLeave = () => {
 }
 
 const onDrop1 = () => {
-	console.log('fuck')
+	console.log(draggedItem.value)
 	if (shift.value && tapes.value) {
 		let tmp = {} as App
 		if (tapes.value[hoverItem.value].group == 1) {
@@ -105,7 +105,7 @@ const onDrop1 = () => {
 
 const remove = (el: App) => {
 	const ind = tapes.value?.findIndex((item) => item.id == el.id)
-	if (ind) {
+	if (ind !== undefined) {
 		tapes.value?.splice(ind, 1)
 		expanded.value = false
 	}
@@ -120,7 +120,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:initial="initial"
 	:animate="animate"
 	:transition="spring"
-	@dragstart='onDragStart(index)'
+	@dragstart='onDragStart(item, index)'
 	@dragover.prevent="onDragEnter(index)"
 	@dragenter.prevent
 	@dragleave="onDragLeave"
