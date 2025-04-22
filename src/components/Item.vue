@@ -74,16 +74,16 @@ const onDragStart = (item: App, n: number) => {
 }
 
 const onDragEnter = (app: App) => {
-	if (activeItem.value == app.id) {
+	if (activeItem.value == app.id && draggedItem.value.group == 1) {
 		overGroup.value = true
 	}
 }
 const onDragLeave = () => {
 	overGroup.value = false
-	// dragIndex.value = null
 }
 
 const onDrop1 = (el: App, n: number) => {
+	if (el.id == draggedItem.value.id || draggedItem.value.group > 1) return
 	emit('createGroup', el, draggedItem.value)
 	overGroup.value = false
 	draggedItem.value = null
