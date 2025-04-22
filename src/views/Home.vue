@@ -51,7 +51,7 @@ const config = {
 	sortable: true,
 	group: 'items',
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains('it') && !child.classList.contains('active')
+		return child.classList.contains('it')
 	},
 }
 
@@ -107,26 +107,6 @@ const create = (e: any) => {
 		})
 	}, 1200)
 }
-
-// trash code
-// const dragStatus = ref(false)
-// const confirm = ref(false)
-
-// state.on('dragStarted', () => {
-// 	if (!expanded.value) {
-// 		dragStatus.value = true
-// 	}
-// })
-//
-// state.on('dragEnded', () => {
-// 	dragStatus.value = false
-// })
-
-// const draggedItem = ref(100)
-
-// const setDragged = (n: number) => {
-// 	draggedItem.value = n
-// }
 
 const duple = ref(false)
 const onDragEnterPlus = () => {

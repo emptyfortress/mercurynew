@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, watch, markRaw } from 'vue'
+import { computed } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { animations, state } from '@formkit/drag-and-drop'
-// import AddButtonNew from '@/components/common/AddButtonNew.vue'
-// import Trash from '@/components/common/Trash.vue'
-// import { uid, useQuasar } from 'quasar'
-// import IconApp from '@/components/icons/IconApp.vue'
+import { animations } from '@formkit/drag-and-drop'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
 const props = defineProps(['id', 'item'])
@@ -16,7 +12,6 @@ const props = defineProps(['id', 'item'])
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
-// const IconApp1 = markRaw(IconApp)
 
 const Div = motion.div
 
@@ -43,15 +38,12 @@ const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
+	group: 'items',
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
 }
 const [parent, tapes] = useDragAndDrop(group.value.list, config)
-
-// const row = computed(() => {
-// 	return (tapes.value?.length || 1) + 1
-// })
 
 const calcClass = (str: string) => {
 	if (str == props.item) return 'big'

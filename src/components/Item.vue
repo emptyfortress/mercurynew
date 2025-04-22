@@ -1,24 +1,12 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
 import { motion } from 'motion-v'
-// import { useKeyModifier } from '@vueuse/core'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
-import { uid } from 'quasar'
-import { useRouter, useRoute } from 'vue-router'
-import { useApps } from '@/stores/apps'
-
-const router = useRouter()
-const route = useRoute()
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
-const myapps = useApps()
-// const shift = useKeyModifier('Shift')
-
-// const hoverItem = ref(100)
-// const draggedItem = ref(100)
 
 const Div = motion.div
 
@@ -39,12 +27,6 @@ const calcClass = (item: App, index: number) => {
 	if (expanded.value && activeItem.value == item.id) return 'active'
 	if (item.group > 1) return 'group'
 	return ''
-}
-
-const calcId = (item: App) => {
-	return item.id
-	// if (item.group > 1) return 'gr'
-	// else return item.id
 }
 
 const initial = {
@@ -84,6 +66,7 @@ const onDragLeave = () => {
 
 const onDrop1 = (el: App, n: number) => {
 	if (el.id == draggedItem.value.id || draggedItem.value.group > 1) return
+	if (el.id !== activeItem.value) return
 	emit('createGroup', el, draggedItem.value)
 	overGroup.value = false
 	draggedItem.value = null
@@ -101,7 +84,7 @@ const remove = (el: App) => {
 <template lang="pug">
 Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@click.stop='action(item)',
-	:layout-id="calcId(item)"
+	:layout-id="item.id"
 	:class='calcClass(item, index)'
 	:initial="initial"
 	:animate="animate"

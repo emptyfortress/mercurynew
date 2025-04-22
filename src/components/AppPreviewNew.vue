@@ -178,7 +178,6 @@ const remove = (item: App) => {
 	}
 
 	&:hover {
-		// background: $secondary;
 		background: var(--selection);
 		&.red {
 			background: pink;
