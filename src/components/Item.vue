@@ -136,7 +136,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	
 	GroupInsidePreview(
 		v-if='activeItem == item.id && item.group > 1'
-		:list="item.list"
+		v-model:list="item.list"
 	)
 
 	.img(v-if='item.group == 1')

@@ -57,6 +57,12 @@ const config = {
 
 const [parent, tapes] = useDragAndDrop(myapps.apps, config)
 
+watch(tapes, (val) => {
+	if (val) {
+		myapps.apps = tapes.value
+	}
+})
+
 const expanded = ref(false)
 
 const back = () => {

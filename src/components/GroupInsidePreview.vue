@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations, state } from '@formkit/drag-and-drop'
 import { useRouter, useRoute } from 'vue-router'
@@ -7,10 +7,7 @@ import { motion } from 'motion-v'
 import { onDropOutside } from '@/utils/useDropOutside'
 import { useApps } from '@/stores/apps'
 
-// const list = defineModel<App[] | undefined>('list')
-const props = defineProps<{
-	list: App[]
-}>()
+const list = defineModel<App[]>('list')
 
 const myapps = useApps()
 const router = useRouter()
@@ -26,7 +23,14 @@ const config = {
 }
 
 const Div = motion.div
-const [parent, tapes] = useDragAndDrop(props.list, config)
+
+const [parent, tapes] = useDragAndDrop(list.value!, config)
+
+watch(tapes, (val) => {
+	if (val) {
+		list.value = tapes.value
+	}
+})
 
 const navigate = (id: string) => {
 	router.push(`/folder/${route.params.id}/${id}`)
