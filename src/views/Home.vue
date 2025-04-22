@@ -109,24 +109,24 @@ const create = (e: any) => {
 }
 
 // trash code
-const dragStatus = ref(false)
-const confirm = ref(false)
+// const dragStatus = ref(false)
+// const confirm = ref(false)
 
-state.on('dragStarted', () => {
-	if (!expanded.value) {
-		dragStatus.value = true
-	}
-})
+// state.on('dragStarted', () => {
+// 	if (!expanded.value) {
+// 		dragStatus.value = true
+// 	}
+// })
+//
+// state.on('dragEnded', () => {
+// 	dragStatus.value = false
+// })
 
-state.on('dragEnded', () => {
-	dragStatus.value = false
-})
+// const draggedItem = ref(100)
 
-const draggedItem = ref(100)
-
-const setDragged = (n: number) => {
-	draggedItem.value = n
-}
+// const setDragged = (n: number) => {
+// 	draggedItem.value = n
+// }
 
 const duple = ref(false)
 const onDragEnterPlus = () => {
@@ -181,8 +181,8 @@ q-page(padding)
 			v-model:tapes='tapes',
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
-			@dragged='setDragged'
 		)
+		// @dragged='setDragged'
 
 		Div.plus(
 			layout

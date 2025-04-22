@@ -270,7 +270,7 @@
 	}
 	&.active {
 		width: 650px;
-		height: 400px;
+		min-height: 400px;
 		position: fixed;
 		top: 88px;
 		left: calc(50% - 225px);
