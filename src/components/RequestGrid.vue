@@ -43,8 +43,11 @@ const formatGroup = (group: any) => {
 
 	group.forEach((item: any, index: number) => {
 		result.push(formatItem(item))
+		// if (multiFoundIndex !== -1 && index > multiFoundIndex && index < group.length - 2) {
+		// 	result.push(' ИЛИ ')
+		// }
 		if (multiFoundIndex !== -1 && index > multiFoundIndex && index < group.length - 2) {
-			result.push(' ИЛИ ')
+			result.push({ isOr: true }) // Заменяем строку на объект
 		}
 	})
 
@@ -108,6 +111,8 @@ const currentId = computed(() => {
 			div(v-for="(element, index) in formatGroup(group)" :key="index")
 				template(v-if="typeof element === 'string'")
 					span {{ element }}
+				template(v-else-if="element?.isOr")
+					q-chip(dense color="purple-2") или
 				template(v-else)
 					component(:is="element")
 

@@ -143,8 +143,7 @@ q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?"
 				v-motion,
 				:initial='{ y: -20, opacity: 0 }' :enter='{ y: 0, opacity: 1 }'
 			) {{ item.label }}
-			q-chip(v-if='calcOr(item, index)' color="purple-2") ИЛИ
-
+			q-chip(v-if='calcOr(item, index)' color="purple-2") или
 
 	template(v-slot:append)
 		q-btn(
@@ -179,7 +178,6 @@ q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?"
 .q-chip {
 	padding: 2px 8px;
 	background: $blue-2;
-	min-width: 50px;
 }
 .special {
 	background: $purple-2;
