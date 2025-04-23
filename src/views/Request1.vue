@@ -109,6 +109,7 @@ const checkStartSearch = () => {
 			}, 1000)
 		} else startRight()
 	}
+	mykeys.removeDragWindow()
 }
 </script>
 
