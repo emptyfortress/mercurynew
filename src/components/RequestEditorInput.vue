@@ -124,6 +124,37 @@ const calcOr = (item: any, index: number) => {
 	) {
 		return true
 	}
+	if (
+		selectedItems.value &&
+		item.label == 'Мой руководитель' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
+	if (selectedItems.value && item.label == 'Подготовка' && selectedItems.value.length > index + 1) {
+		return true
+	}
+	if (
+		selectedItems.value &&
+		item.label == 'На согласовании' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
+	if (
+		selectedItems.value &&
+		item.label == 'На доработке' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
+	if (
+		selectedItems.value &&
+		item.label == 'Согласовано' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
 	return false
 }
 </script>
