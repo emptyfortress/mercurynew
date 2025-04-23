@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, h } from 'vue'
-import IconInfo from '@/components/icons/IconInfo.vue'
+import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
 import IconClear from '@/components/icons/IconClear.vue'
 import IconSearch from '@/components/icons/IconSearch.vue'
 import { animations } from '@formkit/drag-and-drop'
@@ -43,8 +43,11 @@ const formatGroup = (group: any) => {
 
 	group.forEach((item: any, index: number) => {
 		result.push(formatItem(item))
+		// if (multiFoundIndex !== -1 && index > multiFoundIndex && index < group.length - 2) {
+		// 	result.push(' ИЛИ ')
+		// }
 		if (multiFoundIndex !== -1 && index > multiFoundIndex && index < group.length - 2) {
-			result.push(' ИЛИ ')
+			result.push({ isOr: true }) // Заменяем строку на объект
 		}
 	})
 
@@ -87,16 +90,16 @@ const currentId = computed(() => {
 </script>
 
 <template lang="pug">
-div
-	.empty(v-if='isGridEmpty')
-		IconInfo.big
-		div
-			|Папка 
-			span содержит
-			span.bold ВСЕ
-			span данные типа 
-			span.bold Заявка на отпуск
-		q-btn.q-mt-md(unelevated color="primary" icon='mdi-filter-plus' label="Настроить фильтр" @click="mykeys.toggleDragWindow")
+.q-px-md
+	.empty
+		.big
+			IconFolderSearch
+			span Все заявки
+			span(v-if='!isGridEmpty') ,
+
+			span.if(v-if='!isGridEmpty') удовлетворяющие условиям:
+		div(v-if='isGridEmpty')
+			q-btn.q-mt-md(unelevated color="primary" icon='mdi-filter-plus' label="Настроить фильтр" @click="mykeys.toggleDragWindow")
 
 	.grid(ref='parent')
 		.condition(
@@ -108,6 +111,8 @@ div
 			div(v-for="(element, index) in formatGroup(group)" :key="index")
 				template(v-if="typeof element === 'string'")
 					span {{ element }}
+				template(v-else-if="element?.isOr")
+					q-chip(dense color="purple-2") или
 				template(v-else)
 					component(:is="element")
 
@@ -129,14 +134,24 @@ div
 
 <style scoped lang="scss">
 .empty {
-	text-align: center;
-	margin: 1rem auto;
+	margin: 1rem auto 0;
 	color: $secondary;
 	gap: 0.5rem;
 }
 
 .big {
-	font-size: 3rem;
+	font-size: 1.5rem;
+	svg {
+		vertical-align: middle;
+		margin-bottom: 4px;
+		margin-right: 0.5rem;
+	}
+	span {
+		font-size: 1.1rem;
+	}
+	span.if {
+		margin-left: 0.5rem;
+	}
 }
 
 .ic {
@@ -144,7 +159,7 @@ div
 }
 
 .grid {
-	padding: 1rem;
+	margin-left: 1rem;
 }
 
 .condition {

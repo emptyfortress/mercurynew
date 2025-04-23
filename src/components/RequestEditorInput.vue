@@ -112,22 +112,69 @@ const addCond = () => {
 const isClearVisible = computed(() => {
 	return selectedItems.value?.length || query.value?.length
 })
+
+const calcOr = (item: any, index: number) => {
+	if (selectedItems.value && item.label == 'Я' && selectedItems.value.length > index + 1) {
+		return true
+	}
+	if (
+		selectedItems.value &&
+		item.label == 'Мои подчиненные' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
+	if (
+		selectedItems.value &&
+		item.label == 'Мой руководитель' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
+	if (selectedItems.value && item.label == 'Подготовка' && selectedItems.value.length > index + 1) {
+		return true
+	}
+	if (
+		selectedItems.value &&
+		item.label == 'На согласовании' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
+	if (
+		selectedItems.value &&
+		item.label == 'На доработке' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
+	if (
+		selectedItems.value &&
+		item.label == 'Согласовано' &&
+		selectedItems.value.length > index + 1
+	) {
+		return true
+	}
+	return false
+}
 </script>
 
 <template lang="pug">
 q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?")
 	template(v-slot:prepend)
 		q-chip Заявка
-		q-chip(
+		template(
 			v-for="(item, index) in selectedItems",
-			:key="item.id" removable,
-			@remove="removeItem(index)",
-			:class="calcClass(item)",
-			v-motion,
-			:initial='{ y: -20, opacity: 0 }'
-			:enter='{ y: 0, opacity: 1 }'
-		) {{ item.label }}
-
+			:key="item.id",
+		)
+			q-chip(
+				removable,
+				@remove="removeItem(index)",
+				:class="calcClass(item)",
+				v-motion,
+				:initial='{ y: -20, opacity: 0 }' :enter='{ y: 0, opacity: 1 }'
+			) {{ item.label }}
+			q-chip(v-if='calcOr(item, index)' color="purple-2") или
 
 	template(v-slot:append)
 		q-btn(
@@ -162,7 +209,6 @@ q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?"
 .q-chip {
 	padding: 2px 8px;
 	background: $blue-2;
-	min-width: 50px;
 }
 .special {
 	background: $purple-2;

@@ -9,6 +9,9 @@ export const useKeys = defineStore('mykeys', () => {
 	const toggleDragWindow = () => {
 		isDragWindow.value = !isDragWindow.value
 	}
+	const removeDragWindow = () => {
+		isDragWindow.value = false
+	}
 
 	const hasParameters = computed(() => {
 		return keys.value.filter((group) => group.some((item) => item.isPar === true))
@@ -163,6 +166,7 @@ export const useKeys = defineStore('mykeys', () => {
 		increment,
 		setHover,
 		toggleDragWindow,
+		removeDragWindow,
 		addItem,
 		updateCols,
 	}

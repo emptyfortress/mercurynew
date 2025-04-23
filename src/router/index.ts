@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Tmp1 from '../views/Tmp1.vue'
+import Group1 from '@/views/Group1.vue'
+import Home from '@/views/Home.vue'
 
 declare module 'vue-router' {
 	interface RouteMeta {
@@ -13,9 +14,19 @@ const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
-			path: '/',
+			path: '/:id?',
 			name: 'home',
-			component: Tmp1,
+			component: Home,
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+			},
+		},
+		{
+			path: '/tmp1',
+			name: 'tmp1',
+			component: () => import('@/views/Tmp1.vue'),
 			meta: {
 				toolbar: false,
 				back: false,
@@ -207,23 +218,18 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/dev',
-			name: 'dev',
-			component: () => import('@/views/Dev.vue'),
+			path: '/folder/:id/:item?',
+			name: 'folder',
+			component: Group1,
+			props: (route) => ({
+				id: route.params.id,
+				item: route.params.item,
+			}),
+
 			meta: {
-				toolbar: true,
+				toolbar: false,
 				back: true,
-				count: 10,
-			},
-		},
-		{
-			path: '/dev1',
-			name: 'dev1',
-			component: () => import('@/views/Dev1.vue'),
-			meta: {
-				toolbar: true,
-				back: true,
-				count: 10,
+				count: 0,
 			},
 		},
 	],

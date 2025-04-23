@@ -19,10 +19,10 @@
 }
 
 .q-page {
-  // width: 100%;
-  // position: absolute;
-  // top: 0;
-  // background: green;
+	// width: 100%;
+	// position: absolute;
+	// top: 0;
+	// background: green;
 }
 .q-splitter__separator {
 	&:hover,
@@ -72,8 +72,8 @@
 	cursor: pointer;
 	padding: 1rem;
 	position: relative;
-  border-radius: var(--rad);
-  margin: .5rem;
+	border-radius: var(--rad);
+	margin: 0.5rem;
 
 	&:hover {
 		border: 1px solid #ccc;
@@ -85,7 +85,7 @@
 		height: 70vh;
 		width: 900px;
 		margin: 0 auto;
-    top: 150px;
+		top: 150px;
 		left: 0;
 		right: 0;
 		border: 1px solid #ccc;
@@ -99,55 +99,55 @@
 	&.green {
 		background: #a8d7a8;
 	}
-  .img {
-    position: absolute;
-    bottom: 0.5rem;
-    left: 0.5rem;
-    font-size: 3rem;
-    line-height: 0;
-    color: $secondary;
-  }
+	.img {
+		position: absolute;
+		bottom: 0.5rem;
+		left: 0.5rem;
+		font-size: 3rem;
+		line-height: 0;
+		color: $secondary;
+	}
 }
 
-.group {
-	width: 170px;
-	height: 170px;
-	position: relative;
-	cursor: pointer;
-	padding: 1rem;
-  background: var(--middle);
-  border: 2px solid var(--green);
-  border-radius: var(--rad);
-  margin: .5rem;
-
-	&:hover {
-		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.3);
-	}
-
-	&.active {
-		position: fixed;
-		padding: 1rem;
-		height: auto;
-		// height: 221px;
-		width: 1200px;
-		margin: 0 auto;
-		top: 150px;
-		left: 0;
-		right: 0;
-		box-shadow: none;
-		background: var(--middle);
-		border: 2px solid var(--green);
-	}
-
-	&.inactive {
-		display: none;
-	}
-
-  .img {
-    position: absolute;
-    bottom: 1rem;
-  }
-}
+// .group {
+// 	width: 170px;
+// 	height: 170px;
+// 	position: relative;
+// 	cursor: pointer;
+// 	padding: 1rem;
+// 	background: var(--middle);
+// 	border: 2px solid var(--green);
+// 	border-radius: var(--rad);
+// 	margin: 0.5rem;
+//
+// 	&:hover {
+// 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.3);
+// 	}
+//
+// 	&.active {
+// 		position: fixed;
+// 		padding: 1rem;
+// 		height: auto;
+// 		// height: 221px;
+// 		width: 1200px;
+// 		margin: 0 auto;
+// 		top: 150px;
+// 		left: 0;
+// 		right: 0;
+// 		box-shadow: none;
+// 		background: var(--middle);
+// 		border: 2px solid var(--green);
+// 	}
+//
+// 	&.inactive {
+// 		display: none;
+// 	}
+//
+// 	.img {
+// 		position: absolute;
+// 		bottom: 1rem;
+// 	}
+// }
 
 .editor {
 	width: 1500px;
@@ -167,46 +167,46 @@
 }
 .top {
 	// padding: 0 1rem;
-	padding: .5rem 1rem;
-	border-radius: .4rem .4rem 0 0;
+	padding: 0.5rem 1rem;
+	border-radius: 0.4rem 0.4rem 0 0;
 	background: var(--bgLight);
 	box-shadow: inset 0 -2px 3px rgba($color: #000000, $alpha: 0.1);
 	display: flex;
 	justify-content: space-between;
 	color: $primary;
-  min-height: 50px;
-  line-height: 50px;
+	min-height: 50px;
+	line-height: 50px;
 }
 
 .fuck {
-  position: absolute;
-  background-color: var(--drag);
-  z-index: 1000;
-  border-radius: 9999px;
-  transition-duration: 5ms;
+	position: absolute;
+	background-color: var(--drag);
+	z-index: 1000;
+	border-radius: 9999px;
+	transition-duration: 5ms;
 
-  &::before {
-    display: block;
-    content: "Вставить";
-    white-space: nowrap;
-    background-color: var(--drag);
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-  }
+	&::before {
+		display: block;
+		content: 'Вставить';
+		white-space: nowrap;
+		background-color: var(--drag);
+		padding-top: 0.25rem;
+		padding-bottom: 0.25rem;
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+		border-radius: 9999px;
+		font-size: 0.75rem;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		color: white;
+	}
 }
 
 .q-card__actions {
-  margin-right: 1rem;
-  margin-bottom: 1rem;
+	margin-right: 1rem;
+	margin-bottom: 1rem;
 }
 
 .hand {
@@ -214,9 +214,97 @@
 	height: 100%;
 	background-color: red;
 	color: red;
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAAXNSR0IArs4c6QAAADJJREFUGFdjtG76/v9YPScjAwMjA8N/MMnAwAgmQXxGEITwrJu+/j9Wyw2Tg4r//88AALy6DAxZ0IuxAAAAAElFTkSuQmCC) repeat;
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAAXNSR0IArs4c6QAAADJJREFUGFdjtG76/v9YPScjAwMjA8N/MMnAwAgmQXxGEITwrJu+/j9Wyw2Tg4r//88AALy6DAxZ0IuxAAAAAElFTkSuQmCC)
+		repeat;
 	cursor: move;
 }
 .move {
 	cursor: move;
+}
+// styles for new motion-v items
+.parent {
+	display: grid;
+	grid-template-columns: repeat(4, 170px);
+	grid-template-rows: repeat(4, 170px);
+	gap: 1rem;
+	margin: 0 auto;
+	margin-top: 1rem;
+	width: 728px;
+	// background: #ccc;
+	&.end {
+		grid-template-columns: repeat(1, 200px);
+		grid-template-rows: repeat(7, 80px);
+		width: 200px;
+		margin: 0;
+		margin-left: calc(50% - 500px);
+		margin-top: 1rem;
+		.it {
+			padding: 0.5rem;
+			font-size: 0.85rem;
+			&.active {
+				padding: 1rem;
+				font-size: 1.2rem;
+				.img {
+					font-size: 4rem;
+				}
+			}
+		}
+		.img,
+		img1 {
+			font-size: 1.5rem;
+		}
+	}
+}
+
+.it {
+	border-radius: 0.5rem;
+	cursor: pointer;
+	padding: 1rem;
+	background: #fff;
+	border: 1px solid #fff;
+	position: relative;
+
+	&:hover {
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.2);
+	}
+	&.active {
+		width: 650px;
+		min-height: 400px;
+		position: fixed;
+		top: 88px;
+		left: calc(50% - 225px);
+		font-size: 2rem;
+		&.group {
+			background: hsl(213, 83.95%, 94.68%);
+			border: 2px solid var(--green);
+			.parent {
+				grid-template-columns: repeat(3, 170px);
+				grid-template-rows: repeat(2, 170px);
+			}
+		}
+	}
+	&.group {
+		background: hsl(213deg 83.95% 94.68%);
+		border: 2px solid var(--green);
+		z-index: 9;
+	}
+	.img,
+	.img1 {
+		position: absolute;
+		bottom: 0;
+		left: 0.5rem;
+		font-size: 3rem;
+		line-height: 1;
+		color: hsl(199 23% 45% / 1);
+	}
+}
+
+.ghost {
+	background: hsl(213 38% 81% / 1) !important;
+	box-shadow: none !important;
+	border: none !important;
+	* {
+		display: none;
+	}
 }

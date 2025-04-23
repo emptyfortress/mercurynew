@@ -28,8 +28,9 @@ const query = ref('')
 const visibleLevels = computed(() => {
 	return menuLevels.value.slice(0, currentLevelIndex.value + 1).map((level, index) => {
 		if (index === currentLevelIndex.value) {
-			// Фильтрация только для последнего уровня, если нет выбранного элемента на этом уровне
-			if (!selectedItems.value[index]) {
+			// Фильтрация только для последнего уровня, если нет выбранного элемента на этом уровне (или if the current level's parent was not multi)
+			const parentItem = selectedItems.value[index - 1]
+			if (!selectedItems.value[index] || (parentItem && !parentItem.isMulti)) {
 				return {
 					...level,
 					items: level.items.filter((item) =>
@@ -164,8 +165,10 @@ const isLast = computed(() => {
 })
 
 const showPar = computed(() => {
-	if (selectedItems.value.filter((el: any) => el.isLast).length > 1) return false
-	return selectedItems.value.at(-1)?.isPar || selectedItems.value.at(2)?.isPar
+	return (
+		(selectedItems.value.at(-1)?.isPar || selectedItems.value.at(2)?.isPar) &&
+		!(selectedItems.value.at(-1)?.isKey && selectedItems.value.at(-2)?.isKey)
+	)
 })
 
 watch(selectedItems, (newSelectedItems) => {

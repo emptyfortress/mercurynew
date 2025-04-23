@@ -93,7 +93,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 .mini {
 	position: fixed;
 	bottom: 4rem;
-	left: .5rem;
+	left: 0.5rem;
 }
 
 :deep(.q-drawer__content) {

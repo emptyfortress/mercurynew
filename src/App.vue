@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import IconHome from '@/components/icons/IconHome.vue'
+import { useApps } from '@/stores/apps'
 
 const route = useRoute()
 const router = useRouter()
+const myapps = useApps()
 
 const rightDrawer = ref(false)
 const toggleRightDrawer = () => {
@@ -22,8 +24,7 @@ router.beforeEach((to, from, next) => {
 	if (from.meta.count !== undefined) {
 		cover.value = to.meta.count - from.meta.count
 		next()
-	}
-	else next()
+	} else next()
 })
 
 const calcLeave = computed(() => {
@@ -38,6 +39,9 @@ const calcLeave = computed(() => {
 	}
 	if (cover.value < 0) {
 		return 'fadeOutBottom'
+	}
+	if (cover.value == 0) {
+		return ''
 	}
 })
 
@@ -54,8 +58,23 @@ const calcEnter = computed(() => {
 	if (cover.value < 0) {
 		return 'fadeInTop'
 	}
+	if (cover.value == 0) {
+		return ''
+	}
 })
 
+const nav = () => {
+	if (myapps.groupPath.length > 0 && myapps.groupPath == route.fullPath.toString()) {
+		router.push(myapps.path)
+		myapps.setGroupPath('')
+	} else if (myapps.groupPath.length > 0) {
+		router.push(myapps.groupPath)
+	} else if (myapps.path == route.fullPath.toString()) {
+		router.push('/')
+	} else if (myapps.groupPath.length == 0) {
+		router.push(myapps.path)
+	}
+}
 </script>
 
 <template lang="pug">
@@ -63,7 +82,7 @@ const calcEnter = computed(() => {
 q-layout(view='hHh LpR fFf')
 	q-header(elevated)
 		q-toolbar
-			q-btn(dense flat round @click='$router.push("/")')
+			q-btn(dense flat round @click='nav')
 				IconHome.home
 			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
@@ -133,11 +152,9 @@ nav a:first-of-type {
 }
 
 @media (min-width: 1024px) {
-
 	.logo {
 		margin: 0 2rem 0 0;
 	}
-
 
 	nav {
 		text-align: left;

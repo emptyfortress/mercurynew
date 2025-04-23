@@ -11,7 +11,7 @@ import Trash from '@/components/common/Trash.vue'
 import { useRouter } from 'vue-router'
 import { useList } from '@/stores/list'
 import Empty from '@/components/Empty.vue'
-import Loading from '@/components/Loading.vue'
+// import Loading from '@/components/Loading.vue'
 
 const router = useRouter()
 
