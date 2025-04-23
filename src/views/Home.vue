@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted, onUpdated, markRaw } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { animations, state } from '@formkit/drag-and-drop'
+// import { animations, state } from '@formkit/drag-and-drop'
 import { useApps } from '@/stores/apps'
 import Item from '@/components/Item.vue'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
@@ -46,7 +46,7 @@ watch(() => route.params.id, loadStateFromRoute)
 const Div = motion.div
 
 const config = {
-	plugins: [animations()],
+	// plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	group: 'items',

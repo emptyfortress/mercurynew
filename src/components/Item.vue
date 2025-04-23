@@ -56,7 +56,7 @@ const onDragStart = (item: App, n: number) => {
 }
 
 const onDragEnter = (app: App) => {
-	if (activeItem.value == app.id && draggedItem.value.group == 1) {
+	if (activeItem.value == app.id && draggedItem.value?.group == 1) {
 		overGroup.value = true
 	}
 }
@@ -65,7 +65,10 @@ const onDragLeave = () => {
 }
 
 const onDrop1 = (el: App, n: number) => {
-	if (el.id == draggedItem.value.id || draggedItem.value.group > 1) return
+	if (el.id == draggedItem.value?.id || draggedItem.value?.group > 1) return
+	if (el.group > 1) {
+		el.list.push(draggedItem.value)
+	}
 	if (el.id !== activeItem.value) return
 	emit('createGroup', el, draggedItem.value)
 	overGroup.value = false
@@ -110,6 +113,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		GroupInsidePreview(
 			v-if='activeItem == item.id && item.group > 1'
 			v-model:list="item.list"
+			@removeGroup='remove(item)'
 		)
 
 		.img(v-if='item.group == 1')

@@ -4,7 +4,7 @@ import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { animations } from '@formkit/drag-and-drop'
+// import { animations } from '@formkit/drag-and-drop'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
 const props = defineProps(['id', 'item'])
@@ -35,7 +35,7 @@ const group = computed(() => {
 })
 
 const config = {
-	plugins: [animations()],
+	// plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	group: 'items',
@@ -87,7 +87,6 @@ q-page(padding)
 	)
 		Div.hd(layout-id='hd') {{ group.label }}
 		.parent1(ref='parent')
-
 			Div.it(v-for="(item, index) in tapes", :key="item.id",
 				:layout-id='item.id'
 				:transition="spring"
