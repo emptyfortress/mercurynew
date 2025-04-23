@@ -30,7 +30,10 @@ const visibleLevels = computed(() => {
 		if (index === currentLevelIndex.value) {
 			// Фильтрация только для последнего уровня, если нет выбранного элемента на этом уровне (или if the current level's parent was not multi)
 			const parentItem = selectedItems.value[index - 1]
-			if (!selectedItems.value[index] || (parentItem && !parentItem.isMulti)) {
+			if (
+				!selectedItems.value[index] ||
+				(parentItem && !parentItem.isMulti && !selectedItems.value[index].isInput)
+			) {
 				return {
 					...level,
 					items: level.items.filter((item) =>
@@ -216,8 +219,8 @@ watch(selectedItems, (newSelectedItems) => {
 
 		.last(v-if="showPar || isDate")
 			q-checkbox(v-model="par" label="Изменяемый параметр")
-			.text-subtitle2.q-mt-sm.q-ml-sm Использовать как параметр в форме запроса
-			.text-caption.q-ml-sm Включите этот флаг, если, при открытии папки, вы хотите показать ФОРМУ с данным условием, которое можно менять.
+			.text-subtitle2.q-mt-sm.q-ml-sm Можно изменять при открытии папки
+			.caption Включите этот флаг, если, при открытии папки, вы хотите показать ФОРМУ с данным условием, которое можно менять.
 </template>
 
 <style lang="scss">
@@ -281,5 +284,11 @@ watch(selectedItems, (newSelectedItems) => {
 .last {
 	margin-left: 1rem;
 	max-width: 250px;
+}
+.caption {
+	font-size: 0.7rem;
+	margin-left: 0.5rem;
+	margin-top: 0.5rem;
+	color: $grey-8;
 }
 </style>

@@ -63,8 +63,10 @@ const formatItem = (item: any) => {
 			outlined: true,
 			bgColor: 'white',
 		})
-	} else if (item.isSpecial || item.isSpecial1) {
-		return h(QChip, { dense: true, color: 'purple-2' }, () => item.label)
+	} else if (item.isKey || (item.isLast && !item.isInput)) {
+		return h(QChip, { dense: true, color: 'blue-2' }, () => item.label)
+		// } else if (item.isSpecial || item.isSpecial1) {
+		// 	return h(QChip, { dense: true, color: 'purple-2' }, () => item.label)
 	} else {
 		return h('div', item.label)
 	}
@@ -112,14 +114,21 @@ const currentId = computed(() => {
 				template(v-if="typeof element === 'string'")
 					span {{ element }}
 				template(v-else-if="element?.isOr")
-					q-chip(dense color="purple-2") или
+					div или
+					// q-chip(dense color="purple-2") или
 				template(v-else)
 					component(:is="element")
 
 			q-checkbox(v-if='calcCheckbox(group)' dense v-model="group[3].isPar" color="primary" size='xs' @update:modelValue="open")
 				q-tooltip Параметр
 			div
-			q-btn.remove(flat dense round icon="mdi-close" @click="removeItem(index)" size='xs')
+			q-btn.remove.space(flat dense round icon="mdi-pencil" size='xs')
+				q-tooltip Редактирование пока недоступно
+			q-btn.remove(flat dense round icon="mdi-close" size='xs')
+				q-menu
+					q-list
+						q-item(clickable @click="removeItem(index)" ).pink
+							q-item-section Удалить
 
 		.text-center.q-mt-md(v-if='!isGridEmpty')
 			q-btn.q-ml-sm(flat color="negative" @click="clearAll")
@@ -179,7 +188,9 @@ const currentId = computed(() => {
 		font-size: 0.9rem;
 		color: #666;
 		visibility: hidden;
-		margin-left: 2rem;
+		&.space {
+			margin-left: 2rem;
+		}
 	}
 
 	&:hover {

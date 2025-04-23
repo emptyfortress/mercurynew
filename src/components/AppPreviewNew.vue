@@ -97,11 +97,13 @@ const remove = (item: App) => {
 				div
 					IconEntrance.ic
 					div Перейти к приложению
-			.bt.red(@click.stop='remove(props.item)')
+			.bt(@click.stop)
 				div
 					IconTrash.ic
 					div Удалить приложение
-
+				q-menu(cover anchor="bottom middle")
+					q-item(clickable @click.stop='remove(props.item)').pink
+						q-item-section Удалить!
 
 	div(
 		v-else,
@@ -172,18 +174,18 @@ const remove = (item: App) => {
 	color: $primary;
 	font-weight: 600;
 	cursor: pointer;
-	&.red {
-		border-color: $negative;
-		color: $negative;
-	}
+	// &.red {
+	// 	border-color: $negative;
+	// 	color: $negative;
+	// }
 
-	&:hover {
-		background: var(--selection);
-		&.red {
-			background: pink;
-			color: $negative;
-		}
-	}
+	// &:hover {
+	// 	background: var(--selection);
+	// 	&.red {
+	// 		background: pink;
+	// 		color: $negative;
+	// 	}
+	// }
 }
 
 .ic {
