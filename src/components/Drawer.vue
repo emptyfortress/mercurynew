@@ -52,7 +52,7 @@ const tool = computed(() => {
 })
 
 const calcWidth = computed(() => {
-	return mini.value ? 60 : 120
+	return mini.value ? 60 : 130
 })
 // TODO: move back batton in !mini mode
 </script>
@@ -105,8 +105,9 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 }
 
 .toolbar {
+	width: calc(100% - 5px);
 	background: #fff;
-	box-shadow: var(--shad0);
+	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
 	margin-top: 150px;
 }
 
