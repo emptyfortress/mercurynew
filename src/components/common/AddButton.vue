@@ -59,7 +59,7 @@ const left = computed(() => {
 	return width.value / 2 - 270 + 64 + 'px'
 })
 const top = computed(() => {
-	if (props.mode == 'app') return height.value / 2 - 300 + 'px'
+	// if (props.mode == 'app') return height.value / 2 - 300 + 'px'
 	return height.value / 2 - 200 + 'px'
 })
 

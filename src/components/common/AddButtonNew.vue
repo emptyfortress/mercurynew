@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, markRaw } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { useWindowSize } from '@vueuse/core'
+import IconList from '@/components/IconList.vue'
 
 const props = defineProps({
 	mode: {
@@ -53,14 +53,11 @@ const add = () => {
 	})
 }
 
-const { width, height } = useWindowSize()
-
 const left = computed(() => {
-	return width.value / 2 - 270 + 64 + 'px'
+	return window.innerWidth / 2 - 270 + 64 + 'px'
 })
 const top = computed(() => {
-	if (props.mode == 'app') return height.value / 2 - 300 + 'px'
-	return height.value / 2 - 200 + 'px'
+	return window.innerHeight / 2 - 200 + 'px'
 })
 
 const emit = defineEmits(['create'])
@@ -72,7 +69,6 @@ const resetForm = () => {
 		input.value.resetValidation()
 	})
 	model.value = null
-	pic.value = false
 }
 const submitForm = () => {
 	emit('create', {
@@ -85,7 +81,6 @@ const submitForm = () => {
 }
 
 const otmena = () => {
-	pic.value = false
 	add()
 	resetForm()
 	input.value.resetValidation()
@@ -101,8 +96,6 @@ const calcStart = computed(() => {
 const calcFinish = computed(() => {
 	return trans.value ? second : { opacity: 1, rotate: 0, scale: 1 }
 })
-
-const pic = ref(false)
 </script>
 
 <template lang="pug">
@@ -159,21 +152,7 @@ const pic = ref(false)
 							hint='Описание не обязательно'
 							)
 
-					q-checkbox(v-model="pic" label="Иконка")
-
-					.section(v-if='pic'
-						v-motion
-						:initial="{ y: 20, opacity: 0 }"
-						:enter='{ y: 0, opacity: 1, transition: { delay: 200 } }'
-						)
-						label Иконка (png, jpg, webp, gif):
-						q-uploader(
-						url="http://localhost:4444/upload"
-						label="Загрузить картинку"
-						color="secondary"
-						flat
-						bordered
-						)
+					IconList
 
 				q-card-actions(align="right" v-if='adding'
 					v-motion
@@ -252,18 +231,24 @@ label {
 	font-weight: 600;
 }
 
-// .fucking {
-// 	width: 100px;
-// 	background: transparent;
-// 	display: flex;
-// 	justify-content: center;
-// 	align-items: center;
-// 	cursor: default;
-//
-// 	&:hover {
-// 		border: none;
-// 		box-shadow: none;
-// 	}
-//
-// }
+.icon {
+	margin-left: 0.5rem;
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	.ic {
+		font-size: 1.7rem;
+		color: var(--icon);
+		cursor: pointer;
+	}
+}
+.ii {
+	display: grid;
+	grid-template-columns: repeat(4, auto);
+	font-size: 1.8rem;
+	color: var(--icon);
+	.selected {
+		background: var(--selection);
+	}
+}
 </style>
