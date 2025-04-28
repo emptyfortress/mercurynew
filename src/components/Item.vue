@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import { motion } from 'motion-v'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
+import { onClickOutside } from '@vueuse/core'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
@@ -11,14 +12,32 @@ const activeItem = defineModel<string>('activeItem')
 const Div = motion.div
 
 const emit = defineEmits(['navigate', 'createGroup'])
+//
+// click outside
+// const activeElementRef = ref<HTMLElement | null>(null)
+// onMounted(() => {
+// 	onClickOutside(activeElementRef, () => {
+// 		if (activeItem.value) {
+// 			expanded.value = false
+// 			nextTick(() => {
+// 				activeItem.value = ''
+// 				activeElementRef.value = null
+// 			})
+// 		}
+// 	})
+// })
 
 const action = (item: App) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
 		expanded.value = false
 		activeItem.value = ''
+		// activeElementRef.value = null
 	} else {
 		expanded.value = true
 		activeItem.value = item.id
+		// nextTick(() => {
+		// 	activeElementRef.value = document.querySelector('.it.active')
+		// })
 	}
 }
 
