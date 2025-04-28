@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-// import { animations } from '@formkit/drag-and-drop'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
+import { useQuasar } from 'quasar'
 
 const props = defineProps(['id', 'item'])
 
@@ -35,7 +35,6 @@ const group = computed(() => {
 })
 
 const config = {
-	// plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	group: 'items',
@@ -62,11 +61,27 @@ const action = (item: App) => {
 	}
 }
 
+const $q = useQuasar()
 const remove = (el: App) => {
 	const ind = tapes.value?.findIndex((item) => item.id == el.id)
 	if (ind !== undefined) {
 		tapes.value?.splice(ind, 1)
 	}
+	$q.notify({
+		icon: 'mdi-check-bold',
+		color: 'negative',
+		message: 'Приложение удалено',
+		actions: [
+			{
+				label: 'Отмена',
+				color: 'white',
+				handler: () => {
+					/* ... */
+				},
+			},
+		],
+	})
+
 	const last = tapes.value?.at(-1)
 	if (last) {
 		router.push({
@@ -76,6 +91,12 @@ const remove = (el: App) => {
 		})
 	}
 }
+
+watch(tapes.value, (val: any) => {
+	if (val.length == 0) {
+		router.push(myapps.path)
+	}
+})
 </script>
 
 <template lang="pug">

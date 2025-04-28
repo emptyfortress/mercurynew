@@ -77,4 +77,7 @@ q-btn(v-if='tapes.length == 0' unelevated color="primary" label="Удалить 
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
+.parent {
+	min-height: 150px;
+}
 </style>

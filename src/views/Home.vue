@@ -8,6 +8,7 @@ import Item from '@/components/Item.vue'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import { uid, useQuasar } from 'quasar'
 import IconApp from '@/components/icons/IconApp.vue'
+import Empty from '@/components/Empty.vue'
 
 const IconApp1 = markRaw(IconApp)
 const myapps = useApps()
@@ -118,7 +119,7 @@ const onDropPlus = () => {
 	duple.value = false
 	let tmp = {
 		id: uid(),
-		label: 'Копия названия',
+		label: 'Копия приложения',
 		descr: 'Копия описания',
 		expand: false,
 		over: false,
@@ -193,6 +194,9 @@ q-page(padding)
 		@click.stop='back'
 	)
 
+		.cen( v-if='tapes.length == 0')
+			Empty(mode='app')
+
 		Item(
 			v-model:expanded="expanded",
 			v-model:tapes='tapes',
@@ -241,5 +245,11 @@ q-page(padding)
 		border: 2px dashed $primary;
 		border-radius: 0.5rem;
 	}
+}
+.cen {
+	height: 170px;
+	width: 170px;
+	display: flex;
+	align-items: center;
 }
 </style>
