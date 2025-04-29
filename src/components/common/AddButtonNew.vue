@@ -74,6 +74,7 @@ const submitForm = () => {
 	emit('create', {
 		label: model.value,
 		description: model1.value,
+		pic: icon.value,
 	})
 	resetForm()
 	add()
@@ -96,6 +97,11 @@ const calcStart = computed(() => {
 const calcFinish = computed(() => {
 	return trans.value ? second : { opacity: 1, rotate: 0, scale: 1 }
 })
+
+const icon = ref()
+const setIcon = (e: any) => {
+	icon.value = e
+}
 </script>
 
 <template lang="pug">
@@ -152,7 +158,7 @@ const calcFinish = computed(() => {
 							hint='Описание не обязательно'
 							)
 
-					IconList
+					IconList(@select='setIcon')
 
 				q-card-actions(align="right" v-if='adding'
 					v-motion

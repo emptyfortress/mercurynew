@@ -97,6 +97,23 @@ watch(tapes.value, (val: any) => {
 		router.push(myapps.path)
 	}
 })
+
+const activeIndex = computed(() => {
+	return tapes.value.findIndex((el) => el.id == route.params.item)
+})
+
+const calcGhost = computed(() => {
+	if (activeIndex.value > -1) {
+		return `cl-${activeIndex.value}`
+	}
+	return ''
+})
+
+const label = computed(() => {
+	let item = tapes.value?.find((el) => el.id == route.params.item)
+	if (item) return item.label
+	return ''
+})
 </script>
 
 <template lang="pug">
@@ -124,6 +141,10 @@ q-page(padding)
 
 				.img()
 					component(:is='item.pic')
+
+			.ghostItem(:class='calcGhost')
+				div {{ label }}
+
 </template>
 
 <style scoped lang="scss">
@@ -206,5 +227,16 @@ q-page(padding)
 		border: 2px dashed $primary;
 		border-radius: 0.5rem;
 	}
+}
+.ghostItem {
+	height: 100%;
+	background: hsl(211 74% 89% / 1);
+	border-radius: 0.5rem;
+	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.15);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.7rem;
+	color: hsl(212 38% 55% / 1);
 }
 </style>

@@ -108,7 +108,7 @@ const create = (e: any) => {
 		created: '22.09.2022',
 		group: 1,
 		list: [],
-		pic: IconApp1,
+		pic: e.pic,
 	}
 	tapes.value?.push(tmp)
 	setTimeout(() => {
@@ -203,10 +203,17 @@ const calcPlusClass = computed(() => {
 	if (expanded.value) return `cl-${tapes.value.length}`
 	return ''
 })
+
+const action = () => {
+	if (expanded.value) {
+		expanded.value = false
+		activeItem.value = ''
+	}
+}
 </script>
 
 <template lang="pug">
-q-page(padding)
+q-page(padding, @click='action')
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'

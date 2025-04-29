@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
+import IconMenu from '@/components/IconMenu.vue'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
@@ -97,6 +98,13 @@ const label = computed(() => {
 	if (item) return item.label
 	return ''
 })
+
+const setIcon = (icon: any) => {
+	let item = tapes.value?.find((el) => el.id == activeItem.value)
+	if (item) {
+		item.pic = icon
+	}
+}
 </script>
 
 <template lang="pug">
@@ -131,8 +139,9 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			@removeGroup='remove(item)'
 		)
 
-		.img(v-if='item.group == 1')
+		.img(v-if='item.group == 1' @click.stop)
 			component(:is='item.pic')
+			IconMenu(@select='setIcon')
 
 		template(v-if='item.group > 1 && activeItem !== item.id')
 			.img1
@@ -177,6 +186,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	align-items: center;
 	justify-content: center;
 	font-size: 0.7rem;
-	color: hsl(212 38% 61% / 1);
+	color: hsl(212 38% 53% / 1);
 }
 </style>
