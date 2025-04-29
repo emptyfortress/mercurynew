@@ -124,8 +124,15 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	.createGroup(v-if='item.group < 2 && activeItem == item.id && overGroup')
 		div Создать группу приложений
 
+
 	template(v-else)
-		span {{ item.label }}
+		template(v-if='expanded && item.id == activeItem')
+			.head
+				span(@click.stop) {{ item.label }}
+					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
+						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+		template(v-if='item.id !== activeItem')
+			span {{ item.label }}
 
 		AppPreviewNew(
 			v-if='activeItem == item.id && item.group == 1'
@@ -187,5 +194,10 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	justify-content: center;
 	font-size: 0.7rem;
 	color: hsl(212 38% 53% / 1);
+}
+.head span {
+	color: $primary;
+	border-bottom: 1px dotted $primary;
+	cursor: pointer;
 }
 </style>
