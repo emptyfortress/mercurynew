@@ -45,14 +45,20 @@ watch(() => route.params.id, loadStateFromRoute)
 // other code
 const Div = motion.div
 
+const dragStatus = ref(false)
+const setDragStatus = (e: boolean) => {
+	dragStatus.value = e
+}
+
 const config = {
-	// plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	group: 'items',
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
+	onDragstart: () => setDragStatus(true),
+	onDragend: () => setDragStatus(false),
 }
 
 const [parent, tapes] = useDragAndDrop(myapps.apps, config)
@@ -185,6 +191,12 @@ const createGroup = (one: App, two: App) => {
 	tmp.id = uid()
 	one.list = [tmp, tmp1]
 }
+
+const calcPlusClass = computed(() => {
+	if (duple.value) return 'duplicate'
+	if (expanded.value) return 'cl-5'
+	return ''
+})
 </script>
 
 <template lang="pug">
@@ -202,20 +214,21 @@ q-page(padding)
 			v-model:tapes='tapes',
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
+			:dragStatus='dragStatus'
 			@createGroup='createGroup'
 		)
 
-		Div.plus(
-			layout
-			:transition='spring'
-			@click.stop
-			@dragover.prevent="onDragEnterPlus"
-			@dragenter.prevent
-			@dragleave="onDragLeavePlus"
-			@drop='onDropPlus'
-			:class="{ duplicate: duple }"
-		)
-			AddButtonNew(mode='app' @create='create')
+		// Div.plus(
+		// 	layout
+		// 	:transition='spring'
+		// 	@click.stop
+		// 	@dragover.prevent="onDragEnterPlus"
+		// 	@dragenter.prevent
+		// 	@dragleave="onDragLeavePlus"
+		// 	@drop='onDropPlus'
+		// 	:class="calcPlusClass"
+		// )
+		// 	AddButtonNew(mode='app' @create='create')
 
 </template>
 

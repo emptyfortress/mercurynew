@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
-import { onClickOutside } from '@vueuse/core'
 
+const props = defineProps({
+	dragStatus: {
+		type: Boolean,
+		default: false,
+	},
+})
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
@@ -12,41 +17,32 @@ const activeItem = defineModel<string>('activeItem')
 const Div = motion.div
 
 const emit = defineEmits(['navigate', 'createGroup'])
-//
-// click outside
-// const activeElementRef = ref<HTMLElement | null>(null)
-// onMounted(() => {
-// 	onClickOutside(activeElementRef, () => {
-// 		if (activeItem.value) {
-// 			expanded.value = false
-// 			nextTick(() => {
-// 				activeItem.value = ''
-// 				activeElementRef.value = null
-// 			})
-// 		}
-// 	})
-// })
 
 const action = (item: App) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
 		expanded.value = false
 		activeItem.value = ''
-		// activeElementRef.value = null
 	} else {
 		expanded.value = true
 		activeItem.value = item.id
-		// nextTick(() => {
-		// 	activeElementRef.value = document.querySelector('.it.active')
-		// })
 	}
 }
 
 const calcClass = (item: App, index: number) => {
+	if (expanded.value && !props.dragStatus && activeItem.value !== item.id) return `cl-${index}`
 	if (expanded.value && activeItem.value == item.id && item.group > 1) return 'active group'
 	if (expanded.value && activeItem.value == item.id) return 'active'
 	if (item.group > 1) return 'group'
 	return ''
 }
+
+// const calcClass = (item: App, index: number) => {
+// 	let arr: string[] = []
+// 	if (item.group > 1) arr.push('group')
+// 	if (expanded.value && activeItem.value == item.id) arr.push('active')
+// 	if (expanded.value && activeItem.value !== item.id) arr.push(`cl-${index}`)
+// 	return arr
+// }
 
 const initial = {
 	opacity: 0,
@@ -101,6 +97,14 @@ const remove = (el: App) => {
 		expanded.value = false
 	}
 }
+
+const calcGhost = computed(() => {
+	if (activeItem.value) {
+		let num = parseInt(activeItem.value) - 1
+		return `cl-${num}`
+	}
+	return ''
+})
 </script>
 
 <template lang="pug">
@@ -142,6 +146,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			.img1
 				component(:is='el.pic' v-for="el in item.list" :key="el.id")
 
+.ghostItem(v-if='expanded' :class='calcGhost')
 	
 </template>
 
@@ -166,5 +171,11 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	align-items: center;
 	font-size: 1.3rem;
 	color: $primary;
+}
+.ghostItem {
+	// width: 100px;
+	height: 100%;
+	background: var(--ghost);
+	border-radius: 0.5rem;
 }
 </style>
