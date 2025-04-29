@@ -4,12 +4,6 @@ import { motion } from 'motion-v'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 
-const props = defineProps({
-	dragStatus: {
-		type: Boolean,
-		default: false,
-	},
-})
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
@@ -29,20 +23,11 @@ const action = (item: App) => {
 }
 
 const calcClass = (item: App, index: number) => {
-	if (expanded.value && !props.dragStatus && activeItem.value !== item.id) return `cl-${index}`
 	if (expanded.value && activeItem.value == item.id && item.group > 1) return 'active group'
 	if (expanded.value && activeItem.value == item.id) return 'active'
 	if (item.group > 1) return 'group'
 	return ''
 }
-
-// const calcClass = (item: App, index: number) => {
-// 	let arr: string[] = []
-// 	if (item.group > 1) arr.push('group')
-// 	if (expanded.value && activeItem.value == item.id) arr.push('active')
-// 	if (expanded.value && activeItem.value !== item.id) arr.push(`cl-${index}`)
-// 	return arr
-// }
 
 const initial = {
 	opacity: 0,
@@ -99,10 +84,17 @@ const remove = (el: App) => {
 }
 
 const calcGhost = computed(() => {
-	if (activeItem.value) {
-		let num = parseInt(activeItem.value) - 1
-		return `cl-${num}`
+	let ind = tapes.value?.findIndex((item) => item.id == activeItem.value)
+
+	if (ind !== -1) {
+		return `cl-${ind}`
 	}
+	return ''
+})
+
+const label = computed(() => {
+	let item = tapes.value?.find((el) => el.id == activeItem.value)
+	if (item) return item.label
 	return ''
 })
 </script>
@@ -146,7 +138,11 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			.img1
 				component(:is='el.pic' v-for="el in item.list" :key="el.id")
 
-.ghostItem(v-if='expanded' :class='calcGhost')
+.ghostItem(
+	v-if='expanded',
+	:class='calcGhost'
+)
+	div {{ label }}
 	
 </template>
 
@@ -173,9 +169,14 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	color: $primary;
 }
 .ghostItem {
-	// width: 100px;
 	height: 100%;
 	background: var(--ghost);
 	border-radius: 0.5rem;
+	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.15);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.7rem;
+	color: hsl(212 38% 61% / 1);
 }
 </style>

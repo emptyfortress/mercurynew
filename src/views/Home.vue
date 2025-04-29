@@ -57,19 +57,25 @@ const config = {
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
-	onDragstart: () => setDragStatus(true),
-	onDragend: () => setDragStatus(false),
 }
 
-const [parent, tapes] = useDragAndDrop(myapps.apps, config)
+const config1 = {
+	dragPlaceholderClass: 'ghost',
+	sortable: false,
+	group: 'items',
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains('it')
+	},
+}
+
+const expanded = ref(false)
+const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
 
 watch(tapes, (val) => {
 	if (val) {
 		myapps.apps = tapes.value
 	}
 })
-
-const expanded = ref(false)
 
 const back = () => {
 	router.push('/')
@@ -194,7 +200,7 @@ const createGroup = (one: App, two: App) => {
 
 const calcPlusClass = computed(() => {
 	if (duple.value) return 'duplicate'
-	if (expanded.value) return 'cl-5'
+	if (expanded.value) return `cl-${tapes.value.length}`
 	return ''
 })
 </script>
@@ -214,21 +220,20 @@ q-page(padding)
 			v-model:tapes='tapes',
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
-			:dragStatus='dragStatus'
 			@createGroup='createGroup'
 		)
 
-		// Div.plus(
-		// 	layout
-		// 	:transition='spring'
-		// 	@click.stop
-		// 	@dragover.prevent="onDragEnterPlus"
-		// 	@dragenter.prevent
-		// 	@dragleave="onDragLeavePlus"
-		// 	@drop='onDropPlus'
-		// 	:class="calcPlusClass"
-		// )
-		// 	AddButtonNew(mode='app' @create='create')
+		Div.plus(
+			layout
+			:transition='spring'
+			@click.stop
+			@dragover.prevent="onDragEnterPlus"
+			@dragenter.prevent
+			@dragleave="onDragLeavePlus"
+			@drop='onDropPlus'
+			:class="calcPlusClass"
+		)
+			AddButtonNew(mode='app' @create='create')
 
 </template>
 
