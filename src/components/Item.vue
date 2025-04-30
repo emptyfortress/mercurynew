@@ -166,6 +166,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 .ghostItem(
 	v-if='expanded',
 	:class='calcGhost'
+	@click.stop
 )
 	div {{ label }}
 	
