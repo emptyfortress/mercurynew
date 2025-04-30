@@ -12,4 +12,5 @@ export const allIcons = Object.values(modules).map((component: any) => ({
 	id: idCounter++,
 	selected: false,
 	pic: markRaw(component),
+	name: component.name || `icon-${idCounter}`,
 }))

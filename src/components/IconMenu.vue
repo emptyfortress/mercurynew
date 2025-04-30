@@ -2,10 +2,6 @@
 import { ref } from 'vue'
 import { allIcons } from '@/utils/icons'
 
-const props = defineProps<{
-	icon: any
-}>()
-
 const icons = ref(allIcons)
 
 const emit = defineEmits(['select'])

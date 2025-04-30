@@ -145,7 +145,6 @@ q-page(padding)
 				:class='calcClass(item.id)'
 				@click.stop='action(item)',
 			)
-				// span {{ item.label }}
 				template(v-if='item.id == route.params.item')
 					.head
 						span(@click.stop) {{ item.label }}
@@ -163,9 +162,6 @@ q-page(padding)
 				.img(@click='stopClick(item, $event)')
 					component(:is='item.pic')
 					IconMenu(v-if='item.id == route.params.item' @select='setIcon')
-
-				// .img()
-				// 	component(:is='item.pic')
 
 			.ghostItem(:class='calcGhost')
 				div {{ label }}
