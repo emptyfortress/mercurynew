@@ -22,24 +22,18 @@ const group = computed(() => {
 })
 
 const navigate = () => {
-	if (group.value) {
-		myapps.setGroupPath(route.fullPath.toString())
-	} else {
-		myapps.setGroupPath('')
-		myapps.setPath(route.fullPath.toString())
-	}
+	const path = route.fullPath.toString()
+	myapps.setGroupPath(group.value ? path : '')
+	myapps.setPath(group.value ? '' : path)
 	router.push('/assistent')
 	myapps.setCurrentApp(props.item)
 }
 
 const navigate1 = () => {
+	const path = route.fullPath.toString()
 	myapps.setCurrentApp(props.item)
-	if (group.value) {
-		myapps.setGroupPath(route.fullPath.toString())
-	} else {
-		myapps.setGroupPath('')
-		myapps.setPath(route.fullPath.toString())
-	}
+	myapps.setGroupPath(group.value ? path : '')
+	myapps.setPath(group.value ? '' : path)
 	router.push('/process')
 }
 

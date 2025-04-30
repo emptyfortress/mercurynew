@@ -105,6 +105,12 @@ const setIcon = (icon: any) => {
 		item.pic = icon
 	}
 }
+
+function stopClick(item: App, event: MouseEvent) {
+	if (item.id === activeItem.value) {
+		event.stopPropagation()
+	}
+}
 </script>
 
 <template lang="pug">
@@ -126,13 +132,15 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 
 
 	template(v-else)
+
 		template(v-if='expanded && item.id == activeItem')
 			.head
 				span(@click.stop) {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
-		template(v-if='item.id !== activeItem')
+		template(v-else)
 			span {{ item.label }}
+
 
 		AppPreviewNew(
 			v-if='activeItem == item.id && item.group == 1'
@@ -146,9 +154,10 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			@removeGroup='remove(item)'
 		)
 
-		.img(v-if='item.group == 1' @click.stop)
+		.img(v-if='item.group == 1' @click='stopClick(item, $event)')
 			component(:is='item.pic')
-			IconMenu(@select='setIcon')
+			IconMenu(@select='setIcon' :icon='item.pic')
+
 
 		template(v-if='item.group > 1 && activeItem !== item.id')
 			.img1

@@ -6,6 +6,7 @@ import { useApps } from '@/stores/apps'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import { useQuasar } from 'quasar'
+import IconMenu from '@/components/IconMenu.vue'
 
 const props = defineProps(['id', 'item'])
 
@@ -114,6 +115,19 @@ const label = computed(() => {
 	if (item) return item.label
 	return ''
 })
+
+function stopClick(item: App, event: MouseEvent) {
+	if (item.id === route.params.item) {
+		event.stopPropagation()
+	}
+}
+
+const setIcon = (icon: any) => {
+	let item = tapes.value?.find((el) => el.id == route.params.item)
+	if (item) {
+		item.pic = icon
+	}
+}
 </script>
 
 <template lang="pug">
@@ -131,7 +145,14 @@ q-page(padding)
 				:class='calcClass(item.id)'
 				@click.stop='action(item)',
 			)
-				span {{ item.label }}
+				// span {{ item.label }}
+				template(v-if='item.id == route.params.item')
+					.head
+						span(@click.stop) {{ item.label }}
+							q-popup-edit(v-model="item.label" auto-save v-slot="scope")
+								q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+				template(v-else)
+					span {{ item.label }}
 
 				AppPreviewNew(
 					v-if='route.params.item == item.id'
@@ -139,8 +160,12 @@ q-page(padding)
 					@remove='remove(item)'
 				)
 
-				.img()
+				.img(@click='stopClick(item, $event)')
 					component(:is='item.pic')
+					IconMenu(v-if='item.id == route.params.item' @select='setIcon')
+
+				// .img()
+				// 	component(:is='item.pic')
 
 			.ghostItem(:class='calcGhost')
 				div {{ label }}
@@ -238,5 +263,10 @@ q-page(padding)
 	justify-content: center;
 	font-size: 0.7rem;
 	color: hsl(212 38% 55% / 1);
+}
+.head span {
+	color: $primary;
+	border-bottom: 1px dotted $primary;
+	cursor: pointer;
 }
 </style>
