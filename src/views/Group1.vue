@@ -161,7 +161,7 @@ q-page(padding)
 
 				.img(@click='stopClick(item, $event)')
 					component(:is='item.pic')
-					IconMenu(v-if='item.id == route.params.item' @select='setIcon')
+					IconMenu(v-if='item.id == route.params.item' @select='setIcon' :icon='item.pic.name')
 
 			.ghostItem(:class='calcGhost')
 				div {{ label }}
