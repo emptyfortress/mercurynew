@@ -12,13 +12,14 @@ const select = (icon: any) => {
 	emit('select', icon)
 }
 const selectedIcon = ref(IconApp1)
+const temp = ref('IconApp')
 </script>
 
 <template lang="pug">
 .icon
 	label Иконка:
 	component.ic(:is='selectedIcon')
-	IconMenu(@select='select')
+	IconMenu(@select='select' :icon='temp')
 
 </template>
 
