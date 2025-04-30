@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { motion } from 'motion-v'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
@@ -13,13 +13,16 @@ const Div = motion.div
 
 const emit = defineEmits(['navigate', 'createGroup'])
 
-const action = (item: App) => {
+const action = async (item: App) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
 		expanded.value = false
 		activeItem.value = ''
 	} else {
 		expanded.value = true
 		activeItem.value = item.id
+
+		await nextTick()
+		ghostItem.value.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 	}
 }
 
@@ -111,6 +114,8 @@ function stopClick(item: App, event: MouseEvent) {
 		event.stopPropagation()
 	}
 }
+
+const ghostItem = ref()
 </script>
 
 <template lang="pug">
@@ -163,7 +168,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			.img1
 				component(:is='el.pic' v-for="el in item.list" :key="el.id")
 
-.ghostItem(
+.ghostItem(ref='ghostItem'
 	v-if='expanded',
 	:class='calcGhost'
 	@click.stop
