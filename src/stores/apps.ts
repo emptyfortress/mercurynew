@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, markRaw } from 'vue'
-import IconTravel from '@/components/icons/IconTravel.vue'
-import IconBeach from '@/components/icons/IconBeach.vue'
-import IconLetter from '@/components/icons/IconLetter.vue'
-import IconPresentation from '@/components/icons/IconPresentation.vue'
-import IconMicrophone from '@/components/icons/IconMicrophone.vue'
-import IconPrinter from '@/components/icons/IconPrinter.vue'
+import IconTravel from '@/components/icons/list/IconTravel.vue'
+import IconBeach from '@/components/icons/list/IconBeach.vue'
+import IconLetter from '@/components/icons/list/IconLetter.vue'
+import IconPresentation from '@/components/icons/list/IconPresentation.vue'
+import IconMicrophone from '@/components/icons/list/IconMicrophone.vue'
+import IconPrinter from '@/components/icons/list/IconPrinter.vue'
 import { useStorage } from '@vueuse/core'
 
 const IconTravel1 = markRaw(IconTravel)

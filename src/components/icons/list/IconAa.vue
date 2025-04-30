@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'PhTextAaBold'
+	name: 'IconAa'
 }
 </script>

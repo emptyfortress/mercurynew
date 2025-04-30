@@ -156,7 +156,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 
 		.img(v-if='item.group == 1' @click='stopClick(item, $event)')
 			component(:is='item.pic')
-			IconMenu(@select='setIcon')
+			IconMenu(@select='setIcon' :icon='item.pic.name')
 
 
 		template(v-if='item.group > 1 && activeItem !== item.id')

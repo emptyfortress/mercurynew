@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'LineiconsFlag2'
+	name: 'IconFlag'
 }
 </script>

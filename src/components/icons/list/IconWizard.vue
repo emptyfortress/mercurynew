@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'MdiWizardHat'
+	name: 'IconWizard'
 }
 </script>

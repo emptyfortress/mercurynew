@@ -6,6 +6,6 @@
 
 <script>
 export default {
-	name: 'LsiconClearOutline'
+	name: 'IconClear'
 }
 </script>

@@ -12,6 +12,6 @@
 
 <script>
 export default {
-	name: 'IonIosRocket'
+	name: 'IconRocket'
 }
 </script>

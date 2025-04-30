@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'MaterialSymbolsTravelLuggageAndBags'
+	name: 'IconTravel'
 }
 </script>

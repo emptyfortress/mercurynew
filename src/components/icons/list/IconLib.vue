@@ -11,3 +11,9 @@
 		></path>
 	</svg>
 </template>
+
+<script>
+export default {
+	name: 'IconLib',
+}
+</script>

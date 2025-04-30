@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'PhMicrophoneStageFill'
+	name: 'IconMicrophone'
 }
 </script>

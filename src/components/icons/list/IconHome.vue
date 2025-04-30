@@ -14,6 +14,6 @@
 
 <script>
 export default {
-	name: 'MaterialSymbolsHomeAppLogo',
+	name: 'IconHome',
 }
 </script>

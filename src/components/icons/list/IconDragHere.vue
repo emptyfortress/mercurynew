@@ -15,6 +15,6 @@
 
 <script>
 export default {
-	name: 'IconParkOutlineHandDrag'
+	name: 'IconDragHere'
 }
 </script>

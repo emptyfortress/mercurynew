@@ -13,6 +13,6 @@
 
 <script>
 export default {
-	name: 'MingcutePresentation3Fill'
+	name: 'IconPresentation'
 }
 </script>

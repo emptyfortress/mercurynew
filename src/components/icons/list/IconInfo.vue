@@ -15,6 +15,6 @@
 
 <script>
 export default {
-	name: 'UilCommentInfoAlt',
+	name: 'IconInfo',
 }
 </script>

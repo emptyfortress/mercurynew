@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'MaterialSymbolsLightLabProfile'
+	name: 'IconLetter'
 }
 </script>

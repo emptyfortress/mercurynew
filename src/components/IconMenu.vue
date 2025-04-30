@@ -2,6 +2,14 @@
 import { ref } from 'vue'
 import { allIcons } from '@/utils/icons'
 
+const props = defineProps({
+	icon: {
+		type: String,
+		required: true,
+		default: '',
+	},
+})
+
 const icons = ref(allIcons)
 
 const emit = defineEmits(['select'])
@@ -14,6 +22,7 @@ const select = (icon: any) => {
 
 <template lang="pug">
 q-menu
+	div {{ props.icon}}
 	q-list.ii
 		q-item(clickable,
 			v-for="icon in icons",

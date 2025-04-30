@@ -13,6 +13,6 @@
 
 <script>
 export default {
-	name: 'SolarPallete2Linear'
+	name: 'IconPallete'
 }
 </script>

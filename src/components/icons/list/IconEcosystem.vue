@@ -5,6 +5,6 @@
 
 <script>
 export default {
-  name: 'TablerCube3dSphere'
+  name: 'IconEcosystem'
 }
 </script>

@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'MaterialSymbolsFolderOpen'
+	name: 'IconFolder'
 }
 </script>

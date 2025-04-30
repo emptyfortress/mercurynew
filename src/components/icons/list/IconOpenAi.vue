@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'SimpleIconsOpenai'
+	name: 'IconOpenAi'
 }
 </script>

@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'IcBaselineDriveFileRenameOutline'
+	name: 'IconAttribute'
 }
 </script>

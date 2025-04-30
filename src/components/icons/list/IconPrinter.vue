@@ -15,6 +15,6 @@
 
 <script>
 export default {
-	name: 'MaterialSymbolsPrint',
+	name: 'IconPrinter',
 }
 </script>

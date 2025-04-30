@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'MakiEntranceAlt111'
+	name: 'IconEntrance'
 }
 </script>

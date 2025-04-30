@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'MdiFolderSearchOutline'
+	name: 'IconFolderSearch'
 }
 </script>

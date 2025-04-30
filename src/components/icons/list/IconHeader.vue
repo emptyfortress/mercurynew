@@ -6,6 +6,6 @@
 
 <script>
 export default {
-	name: 'GridiconsHeadingH1'
+	name: 'IconHeader'
 }
 </script>

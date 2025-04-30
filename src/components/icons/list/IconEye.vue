@@ -11,6 +11,6 @@
 
 <script>
 export default {
-	name: 'FluentEyeShow12Filled'
+	name: 'IconEye'
 }
 </script>
