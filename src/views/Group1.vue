@@ -42,6 +42,9 @@ const config = {
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
+	accept: (draggedElement: HTMLElement) => {
+		return !draggedElement.classList.contains('group')
+	},
 }
 const [parent, tapes] = useDragAndDrop(group.value.list, config)
 

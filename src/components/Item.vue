@@ -126,6 +126,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:initial="initial"
 	:animate="animate"
 	:transition="spring"
+	:data-group="item.group > 1 ? 'true' : 'false'"
 	@dragstart='onDragStart(item, index)'
 	@dragenter='onDragEnter(item)'
 	@dragover.prevent

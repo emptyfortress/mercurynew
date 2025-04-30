@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-// import { animations } from '@formkit/drag-and-drop'
 import { useRouter, useRoute } from 'vue-router'
 import { motion } from 'motion-v'
 
@@ -10,12 +9,14 @@ const list = defineModel<App[]>('list')
 const router = useRouter()
 const route = useRoute()
 const config = {
-	// plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	group: 'items',
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
+	},
+	accepts: (targetParentData: any, initialParentData: any, currentParentData: any, state: any) => {
+		return state.draggedNode.data.value.group == 1
 	},
 }
 

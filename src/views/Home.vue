@@ -57,19 +57,13 @@ const config = {
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
-}
-
-const config1 = {
-	dragPlaceholderClass: 'ghost',
-	sortable: false,
-	group: 'items',
-	draggable: (child: HTMLElement) => {
-		return child.classList.contains('it')
+	accept: (draggedElement: HTMLElement) => {
+		return !draggedElement.classList.contains('group')
 	},
 }
 
 const expanded = ref(false)
-const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
+const [parent, tapes] = useDragAndDrop(myapps.apps, config)
 
 watch(tapes, (val) => {
 	if (val) {
