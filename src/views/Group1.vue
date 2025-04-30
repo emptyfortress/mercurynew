@@ -131,7 +131,7 @@ const setIcon = (icon: any) => {
 </script>
 
 <template lang="pug">
-q-page(padding)
+q-page(padding, @click='back')
 	Div.box(
 		@click='back'
 		:layout-id="id"
