@@ -60,7 +60,11 @@ const onDragStart = (item: App, n: number) => {
 }
 
 const onDragEnter = (app: App) => {
-	if (activeItem.value == app.id && draggedItem.value?.group == 1) {
+	if (
+		activeItem.value == app.id &&
+		draggedItem.value?.group == 1 &&
+		draggedItem.value?.id !== app.id
+	) {
 		overGroup.value = true
 	}
 }
@@ -116,6 +120,10 @@ function stopClick(item: App, event: MouseEvent) {
 }
 
 const ghostItem = ref()
+
+const isOver = (item: App) => {
+	return overGroup.value
+}
 </script>
 
 <template lang="pug">
@@ -135,7 +143,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 )
 	.createGroup(v-if='item.group < 2 && activeItem == item.id && overGroup')
 		div Создать группу приложений
-
 
 	template(v-else)
 
