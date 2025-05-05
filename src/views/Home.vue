@@ -45,10 +45,10 @@ watch(() => route.params.id, loadStateFromRoute)
 // other code
 const Div = motion.div
 
-const dragStatus = ref(false)
-const setDragStatus = (e: boolean) => {
-	dragStatus.value = e
-}
+// const dragStatus = ref(false)
+// const setDragStatus = (e: boolean) => {
+// 	dragStatus.value = e
+// }
 
 const config = {
 	dragPlaceholderClass: 'ghost',
