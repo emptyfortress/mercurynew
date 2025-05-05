@@ -122,7 +122,7 @@ function stopClick(item: App, event: MouseEvent) {
 const ghostItem = ref()
 
 const isOver = (item: App) => {
-	return overGroup.value
+	return overGroup.value && activeItem.value == item.id && item.group == 1
 }
 </script>
 
@@ -134,6 +134,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:initial="initial"
 	:animate="animate"
 	:transition="spring"
+	:draggable='false'
 	:data-group="item.group > 1 ? 'true' : 'false'"
 	@dragstart='onDragStart(item, index)'
 	@dragenter='onDragEnter(item)'
@@ -141,19 +142,16 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@dragleave='onDragLeave'
 	@drop='onDrop1(item, draggedItem)'
 )
-	.createGroup(v-if='item.group < 2 && activeItem == item.id && overGroup')
-		div Создать группу приложений
 
-	template(v-else)
-
+	.ttt(v-if='!isOver(item)')
 		template(v-if='expanded && item.id == activeItem')
 			.head
 				span(@click.stop) {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+
 		template(v-else)
 			span {{ item.label }}
-
 
 		AppPreviewNew(
 			v-if='activeItem == item.id && item.group == 1'
@@ -176,6 +174,9 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			.img1
 				component(:is='el.pic' v-for="el in item.list" :key="el.id")
 
+	.createGroup(v-if='isOver(item)')
+		div Создать группу приложений
+
 .ghostItem(ref='ghostItem'
 	v-if='expanded',
 	:class='calcGhost'
@@ -191,6 +192,18 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	left: 0.8rem;
 	font-size: 1.5rem;
 }
+
+.parent.end .it.active {
+	width: 650px;
+	height: 400px;
+	padding: 0;
+	.ttt {
+		width: 100%;
+		height: 100%;
+		padding: 1rem;
+	}
+}
+
 .createGroup {
 	position: absolute;
 	top: 0;
@@ -218,9 +231,16 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	font-size: 0.7rem;
 	color: hsl(212 38% 53% / 1);
 }
-.head span {
-	color: $primary;
-	border-bottom: 1px dotted $primary;
-	cursor: pointer;
+.head {
+	span {
+		color: $primary;
+		border-bottom: 1px dotted $primary;
+		cursor: pointer;
+	}
+}
+.fuc {
+	width: 100%;
+	height: 100%;
+	background: #ccc;
 }
 </style>
