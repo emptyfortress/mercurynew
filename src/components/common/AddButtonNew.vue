@@ -24,6 +24,7 @@ const header = computed(() => {
 		case 'list':
 			return 'Новый список'
 		default:
+			if (group.value) return 'Новая группа'
 			return 'Новое приложение'
 	}
 })
@@ -34,6 +35,7 @@ const input = ref()
 const form = ref()
 
 const adding = ref(false)
+const group = ref(false)
 
 const add = () => {
 	trans.value = false
@@ -72,6 +74,8 @@ const resetForm = () => {
 		input.value.resetValidation()
 	})
 	model.value = null
+	group.value = false
+	cancelPress()
 }
 const submitForm = () => {
 	emit('create', {
@@ -105,17 +109,96 @@ const icon = ref(IconApp1)
 const setIcon = (e: any) => {
 	icon.value = e
 }
+
+const holdTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
+const wasLongPress = ref(false)
+const HOLD_DELAY = 700 // длительность удержания в мс
+const intervalStep = 10
+const progress = ref(0)
+
+let holdTimer: ReturnType<typeof setTimeout> | null = null
+let progressInterval: ReturnType<typeof setInterval> | null = null
+
+// SVG circle calculations
+const radius = 18
+const circumference = 2 * Math.PI * radius
+
+const progressOffset = computed(() => {
+	return circumference - (progress.value / 100) * circumference
+})
+
+function startPress(): void {
+	wasLongPress.value = false
+	progress.value = 0
+	let steps = HOLD_DELAY / intervalStep
+	let currentStep = 0
+
+	progressInterval = setInterval(() => {
+		currentStep++
+		progress.value = (currentStep / steps) * 100
+	}, intervalStep)
+
+	holdTimer = setTimeout(() => {
+		wasLongPress.value = true
+		createGroup()
+		cancelPress()
+	}, HOLD_DELAY)
+}
+
+function endPress(): void {
+	if (!wasLongPress.value) {
+		cancelPress()
+		createApplication()
+	}
+}
+
+function cancelPress(): void {
+	if (holdTimer) {
+		clearTimeout(holdTimer)
+		holdTimer = null
+	}
+	if (progressInterval) {
+		clearInterval(progressInterval)
+		progressInterval = null
+	}
+	progress.value = 0
+}
+
+function createApplication(): void {
+	add()
+}
+
+function createGroup(): void {
+	group.value = true
+	add()
+}
 </script>
 
 <template lang="pug">
 .fucking
 	.button(v-if='!adding'
 		data-flip-id='fuck'
-		@click.stop="add"
+		@mousedown="startPress"
+    @mouseup="endPress"
+    @mouseleave="cancelPress"
+    @touchstart="startPress"
+    @touchend="endPress"
 		v-motion
 		:initial="calcStart"
 		:enter='calcFinish')
 		q-icon(name="mdi-plus" color="white" size="24px")
+
+		svg(class="progress-ring" width="41" height="41")
+			circle(
+        class="progress-ring__circle"
+        :stroke-dasharray="circumference"
+        :stroke-dashoffset="progressOffset"
+        stroke="#a6a5fc"
+        stroke-width="4"
+        fill="transparent"
+        r="18"
+        cx="20"
+        cy="21")
 
 	Teleport(to='body')
 		.backdrop(v-if='adding'
@@ -150,7 +233,7 @@ const setIcon = (e: any) => {
 						)
 
 
-				div(v-if='props.mode == "app" || props.mode == "list"')
+				div(v-if='!group && props.mode == "app" || props.mode == "list"')
 					.section
 						label Описание:
 						q-input(
@@ -184,6 +267,18 @@ const setIcon = (e: any) => {
 	align-items: center;
 	// margin-left: 2rem;
 	cursor: pointer;
+	position: relative;
+}
+.progress-ring {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: rotate(-90deg); /* начинать с верха */
+	z-index: 1;
+}
+
+.progress-ring__circle {
+	transition: stroke-dashoffset 0.1s linear;
 }
 
 .dialog {
