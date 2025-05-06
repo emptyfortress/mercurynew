@@ -125,6 +125,24 @@ const create = (e: any) => {
 	}
 }
 
+const duble = (e: any) => {
+	let tmp = {
+		id: uid(),
+		label: 'Копия приложения',
+		descr: e.description,
+		expand: false,
+		over: false,
+		version: '0.0.0',
+		author: 'Орлов П.С.',
+		created: '22.09.2022',
+		group: e.group,
+		list: [],
+		pic: e.pic,
+	}
+	tapes.value?.unshift(tmp)
+	console.log(e)
+}
+
 const duple = ref(false)
 const onDragEnterPlus = () => {
 	duple.value = true
@@ -247,6 +265,7 @@ q-page(padding, @click='action')
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
 			@createGroup='createGroup'
+			@duplicate='duble'
 		)
 
 </template>

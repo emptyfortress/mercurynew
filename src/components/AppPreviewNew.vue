@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter, useRoute } from 'vue-router'
 import IconFlag from '@/components/icons/IconFlag.vue'
+import IconCopy from '@/components/icons/IconCopy.vue'
 import IconEntrance from '@/components/icons/IconEntrance.vue'
 import IconTrash from '@/components/icons/IconTrash.vue'
 import VersionTable from '@/components/VersionTable.vue'
@@ -15,7 +16,7 @@ const props = defineProps<{
 	item: App
 }>()
 
-const emit = defineEmits(['close', 'remove'])
+const emit = defineEmits(['close', 'remove', 'duplicate'])
 
 const group = computed(() => {
 	return route.fullPath.toString().split('/')[1] == 'folder' ? true : false
@@ -52,6 +53,10 @@ onMounted(() => (initial.value = move))
 const remove = (item: App) => {
 	emit('remove', item)
 }
+
+const duble = (item: App) => {
+	emit('duplicate', item)
+}
 </script>
 
 <template lang="pug">
@@ -84,21 +89,21 @@ const remove = (item: App) => {
 				.val.link(@click.stop='toggleVersion') {{ props.item.created }}
 
 		.myrow
-			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
-				div
-					IconFlag.ic
-					div Помощник по настройке
-			.bt(@click.stop='navigate1')
-				div
-					IconEntrance.ic
-					div Перейти к приложению
+			.bt(@click.stop='duble(props.item)')
+				IconCopy.ic
+				span Дублировать приложение
 			.bt(@click.stop)
-				div
-					IconTrash.ic
-					div Удалить приложение
+				IconTrash.ic
+				span Удалить приложение
 				q-menu(cover anchor="bottom middle")
 					q-item(clickable @click.stop='remove(props.item)').pink
 						q-item-section Удалить!
+			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
+				IconFlag.ic
+				span Помощник по настройке
+			.bt.to(@click.stop='navigate1')
+				IconEntrance.ic
+				span К приложению
 
 	div(
 		v-else,
@@ -151,46 +156,37 @@ const remove = (item: App) => {
 }
 
 .myrow {
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(2, 210px);
 	justify-content: center;
-	align-items: center;
 	gap: 0.5rem;
 	margin-top: 2rem;
 }
 
 .bt {
-	padding: 1rem;
-	border: 1px solid $primary;
+	padding: 0.5rem;
+	border: 1px solid var(--selection);
 	border-radius: var(--rad);
+	background: hsl(241 94% 97% / 1);
 	text-align: center;
 	display: flex;
 	justify-content: center;
-	align-items: start;
+	align-items: center;
 	color: $primary;
 	font-weight: 600;
 	cursor: pointer;
-	// &.red {
-	// 	border-color: $negative;
-	// 	color: $negative;
-	// }
+	&.to {
+		grid-column: 2/3;
+	}
 
-	// &:hover {
-	// 	background: var(--selection);
-	// 	&.red {
-	// 		background: pink;
-	// 		color: $negative;
-	// 	}
-	// }
+	&:hover {
+		background: var(--selection);
+		border: 1px solid $primary;
+	}
 }
 
 .ic {
-	font-size: 2rem;
-}
-
-.rectangle {
-	width: 100px;
-	height: 100px;
-	background-color: blue;
-	cursor: pointer;
+	font-size: 1.5rem;
+	margin-right: 0.5rem;
 }
 </style>

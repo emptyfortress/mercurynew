@@ -263,7 +263,7 @@ function createGroup(): void {
 	width: 100%;
 	height: 100%;
 	border-radius: 0.5rem;
-	background: #ffffff44;
+	background: rgb(255 255 255 / 40%);
 	display: flex;
 	justify-content: center;
 	align-items: center;

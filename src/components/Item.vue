@@ -11,7 +11,7 @@ const activeItem = defineModel<string>('activeItem')
 
 const Div = motion.div
 
-const emit = defineEmits(['navigate', 'createGroup'])
+const emit = defineEmits(['navigate', 'createGroup', 'duplicate'])
 
 const action = async (item: App) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
@@ -124,6 +124,9 @@ const ghostItem = ref()
 const isOver = (item: App) => {
 	return overGroup.value && activeItem.value == item.id && item.group == 1
 }
+const duble = (e: App) => {
+	emit('duplicate', e)
+}
 </script>
 
 <template lang="pug">
@@ -157,6 +160,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			v-if='activeItem == item.id && item.group == 1'
 			:item='item',
 			@remove='remove'
+			@duplicate='duble'
 		)
 
 		GroupInsidePreview(
