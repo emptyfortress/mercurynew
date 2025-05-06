@@ -106,13 +106,23 @@ const create = (e: any) => {
 	}
 	tapes.value?.unshift(tmp)
 
-	setTimeout(() => {
-		$q.notify({
-			icon: 'mdi-check-bold',
-			color: 'positive',
-			message: 'Добавлено новое приложение',
-		})
-	}, 1200)
+	if (e.group == 1) {
+		setTimeout(() => {
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'positive',
+				message: 'Добавлено приложение',
+			})
+		}, 1200)
+	} else {
+		setTimeout(() => {
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'positive',
+				message: 'Добавлена группа',
+			})
+		}, 1200)
+	}
 }
 
 const duple = ref(false)
@@ -137,7 +147,8 @@ const onDropPlus = () => {
 		list: [],
 		pic: IconApp1,
 	}
-	tapes.value?.push(tmp)
+	tapes.value?.unshift(tmp)
+	// tapes.value?.push(tmp)
 
 	setTimeout(() => {
 		$q.notify({
@@ -215,9 +226,6 @@ q-page(padding, @click='action')
 		@click.stop='back'
 	)
 
-		.cen( v-if='tapes.length == 0')
-			Empty(mode='app')
-
 		Div.plus(
 			layout
 			:transition='spring'
@@ -229,6 +237,9 @@ q-page(padding, @click='action')
 			:class="calcPlusClass"
 		)
 			AddButtonNew(mode='app' @create='create')
+
+		.cen( v-if='tapes.length == 0')
+			Empty(mode='app')
 
 		Item(
 			v-model:expanded="expanded",

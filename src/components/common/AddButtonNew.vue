@@ -176,14 +176,15 @@ function createGroup(): void {
 </script>
 
 <template lang="pug">
-.fucking
+.fucking(
+	@mousedown="startPress"
+	@mouseup="endPress"
+	@mouseleave="cancelPress"
+	@touchstart="startPress"
+	@touchend="endPress"
+)
 	.button(v-if='!adding'
 		data-flip-id='fuck'
-		@mousedown="startPress"
-    @mouseup="endPress"
-    @mouseleave="cancelPress"
-    @touchstart="startPress"
-    @touchend="endPress"
 		v-motion
 		:initial="calcStart"
 		:enter='calcFinish')
@@ -258,6 +259,19 @@ function createGroup(): void {
 </template>
 
 <style scoped lang="scss">
+.fucking {
+	width: 100%;
+	height: 100%;
+	border-radius: 0.5rem;
+	background: #ffffff44;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	&:hover {
+		box-shadow: var(--shad0);
+	}
+}
 .button {
 	background: $primary;
 	width: 42px;

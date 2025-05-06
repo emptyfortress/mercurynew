@@ -35,7 +35,7 @@ const calcClass = (item: App, index: number) => {
 
 const initial = {
 	opacity: 0,
-	y: 20,
+	y: -20,
 }
 
 const animate = {
