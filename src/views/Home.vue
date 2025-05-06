@@ -100,7 +100,7 @@ const create = (e: any) => {
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
-		group: 1,
+		group: e.group,
 		list: [],
 		pic: e.pic,
 	}

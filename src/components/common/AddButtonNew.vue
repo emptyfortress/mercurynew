@@ -82,6 +82,7 @@ const submitForm = () => {
 		label: model.value,
 		description: model1.value,
 		pic: icon.value,
+		group: group.value == true ? 2 : 1,
 	})
 	resetForm()
 	add()
