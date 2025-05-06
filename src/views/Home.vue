@@ -104,7 +104,8 @@ const create = (e: any) => {
 		list: [],
 		pic: e.pic,
 	}
-	tapes.value?.push(tmp)
+	tapes.value?.unshift(tmp)
+
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
@@ -194,7 +195,8 @@ const createGroup = (one: App, two: App) => {
 
 const calcPlusClass = computed(() => {
 	if (duple.value) return 'duplicate'
-	if (expanded.value) return `cl-${tapes.value.length}`
+	if (expanded.value) return 'cl-0'
+	// if (expanded.value) return `cl-${tapes.value.length}`
 	return ''
 })
 
@@ -216,14 +218,6 @@ q-page(padding, @click='action')
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='app')
 
-		Item(
-			v-model:expanded="expanded",
-			v-model:tapes='tapes',
-			v-model:activeItem="activeItem",
-			@navigate="navigate"
-			@createGroup='createGroup'
-		)
-
 		Div.plus(
 			layout
 			:transition='spring'
@@ -235,6 +229,14 @@ q-page(padding, @click='action')
 			:class="calcPlusClass"
 		)
 			AddButtonNew(mode='app' @create='create')
+
+		Item(
+			v-model:expanded="expanded",
+			v-model:tapes='tapes',
+			v-model:activeItem="activeItem",
+			@navigate="navigate"
+			@createGroup='createGroup'
+		)
 
 </template>
 

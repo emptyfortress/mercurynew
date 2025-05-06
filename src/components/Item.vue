@@ -95,7 +95,7 @@ const calcGhost = computed(() => {
 	let ind = tapes.value?.findIndex((item) => item.id == activeItem.value)
 
 	if (ind !== -1) {
-		return `cl-${ind}`
+		return `cl-${ind! + 1}`
 	}
 	return ''
 })
