@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
+import RDrawer from '@/components/RDrawer.vue'
 import IconHome from '@/components/icons/IconHome.vue'
 import { useApps } from '@/stores/apps'
+import { useIdle, useCounter } from '@vueuse/core'
+import { useMotion } from '@vueuse/motion'
 
 const route = useRoute()
 const router = useRouter()
 const myapps = useApps()
 
 const rightDrawer = ref(false)
-const toggleRightDrawer = () => {
-	rightDrawer.value = !rightDrawer.value
-}
 
 const app = useStorage('app', localStorage)
 
@@ -75,10 +75,85 @@ const nav = () => {
 		router.push(myapps.path)
 	}
 }
+
+const helpMode = ref(true)
+const toggleBug = () => {
+	helpMode.value = false
+	rightDrawer.value = !rightDrawer.value
+}
+const toggleHelp = () => {
+	helpMode.value = true
+	rightDrawer.value = !rightDrawer.value
+}
+
+const buttonRef = ref<HTMLButtonElement | null>(null)
+const isAnimating = ref(true)
+
+const { idle, reset } = useIdle(3000)
+const { inc, count } = useCounter()
+
+const attention = computed(() => {
+	return isAnimating.value && idle.value
+})
+
+watch(idle, async (idleValue) => {
+	if (idleValue) {
+		inc()
+		setTimeout(() => {
+			reset()
+		}, 3000)
+
+		if (count.value == 3) {
+			count.value = 0
+			reset()
+			jump()
+		}
+	}
+})
+
+const { apply } = useMotion(buttonRef, {
+	enter: {
+		x: 0,
+		rotate: 0,
+		scale: 1,
+	},
+	fly1: {
+		x: -600,
+		scale: 1,
+		rotate: 0,
+	},
+	fly2: {
+		scale: 2,
+		rotate: 0,
+	},
+	fly3: {
+		scale: 1,
+		rotate: 0,
+	},
+	fly4: {
+		rotate: 720,
+		duration: 1000,
+	},
+	fly5: {
+		x: 0,
+		rotate: 0,
+	},
+})
+
+const off = () => {
+	isAnimating.value = false
+}
+const jump = async () => {
+	await apply('fly1')
+	await apply('fly2')
+	await apply('fly3')
+	await apply('fly4')
+	await apply('fly5')
+	reset()
+}
 </script>
 
 <template lang="pug">
-// StagePlaySpotlight
 q-layout(view='hHh LpR fFf')
 	q-header(elevated)
 		q-toolbar
@@ -87,22 +162,12 @@ q-layout(view='hHh LpR fFf')
 			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
-			q-btn(dense flat round icon='mdi-information-outline' @click='toggleRightDrawer')
+
+			q-btn(dense flat round icon='mdi-information-outline' @click='toggleBug')
+			q-btn.fuu(ref='buttonRef' dense flat round icon='mdi-creation' @click='off' :class='{bounce: attention}')
 
 	Drawer
-
-	q-drawer(v-model='rightDrawer' side='right' overlay bordered behavior="desktop")
-		q-list.q-mt-lg
-			q-item(clickable to='/bugs')
-				q-item-section(avatar)
-					q-icon(name="mdi-bug" color="primary")
-				q-item-section
-					q-item-label Баги
-			q-item(clickable to='/vars')
-				q-item-section(avatar)
-					q-icon(name="mdi-puzzle-outline" color="primary")
-				q-item-section
-					q-item-label Общие компоненты
+	RDrawer(v-model="rightDrawer" :help='helpMode')
 
 	q-page-container
 		#cont
@@ -168,5 +233,35 @@ nav a:first-of-type {
 
 #cont {
 	position: relative;
+}
+.bounce {
+	animation: bounce-alt 1s linear 3;
+	animation-fill-mode: none;
+}
+@keyframes bounce-alt {
+	from,
+	20%,
+	53%,
+	80%,
+	to {
+		animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+		transform: translate3d(0, 0, 0);
+	}
+	40%,
+	43% {
+		animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+		transform: translate3d(0, -30px, 0);
+	}
+	70% {
+		animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+		transform: translate3d(0, -15px, 0);
+	}
+	90% {
+		transform: translate3d(0, -4px, 0);
+	}
+}
+.animate-bounce-alt {
+	animation: bounce-alt 1s linear infinite;
+	transform-origin: center bottom;
 }
 </style>

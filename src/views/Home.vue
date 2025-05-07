@@ -140,7 +140,6 @@ const duble = (e: any) => {
 		pic: e.pic,
 	}
 	tapes.value?.unshift(tmp)
-	console.log(e)
 }
 
 const duple = ref(false)
