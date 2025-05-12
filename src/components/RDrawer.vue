@@ -11,12 +11,28 @@ const props = defineProps({
 	},
 })
 
+const copy = () => {
+	console.log(111)
+}
+const group = () => {
+	console.log(111)
+}
+const group0 = () => {
+	console.log(111)
+}
+const add = () => {
+	console.log(111)
+}
+const remove = () => {
+	console.log(111)
+}
+
 const hints = [
-	{ id: 0, label: 'Как скопировать приложение?', action: null },
-	{ id: 1, label: 'Как создать группу приложений?', action: null },
-	{ id: 2, label: 'Как создать пустую группу приложений?', action: null },
-	{ id: 3, label: 'Как добавить приложение в группу?', action: null },
-	{ id: 4, label: 'Как удалить приложение из группы?', action: null },
+	{ id: 0, label: 'Как скопировать приложение?', action: copy },
+	{ id: 1, label: 'Как создать группу приложений?', action: group },
+	{ id: 2, label: 'Как создать пустую группу приложений?', action: group0 },
+	{ id: 3, label: 'Как добавить приложение в группу?', action: add },
+	{ id: 4, label: 'Как удалить приложение из группы?', action: remove },
 ]
 </script>
 
