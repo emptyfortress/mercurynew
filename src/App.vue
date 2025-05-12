@@ -103,7 +103,7 @@ watch(idle, async (idleValue) => {
 			reset()
 		}, 3000)
 
-		if (count.value == 3) {
+		if (count.value == 3 && isAnimating.value) {
 			count.value = 0
 			reset()
 			jump()
@@ -142,6 +142,7 @@ const { apply } = useMotion(buttonRef, {
 
 const off = () => {
 	isAnimating.value = false
+	toggleHelp()
 }
 const jump = async () => {
 	await apply('fly1')
@@ -164,7 +165,7 @@ q-layout(view='hHh LpR fFf')
 				span(v-else) Настройка приложения "{{ app.label }}"
 
 			q-btn(dense flat round icon='mdi-information-outline' @click='toggleBug')
-			q-btn.fuu(ref='buttonRef' dense flat round icon='mdi-creation' @click='off' :class='{bounce: attention}')
+			q-btn(ref='buttonRef' dense flat round icon='mdi-creation' @click='off' :class='{bounce: attention}')
 
 	Drawer
 	RDrawer(v-model="rightDrawer" :help='helpMode')
