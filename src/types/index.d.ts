@@ -120,3 +120,5 @@ interface PredCols {
 	align: left
 	sortable: boolean
 }
+
+type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'
