@@ -239,7 +239,12 @@
 		font-size: 2rem;
 		&.group {
 			background: hsl(213, 83.95%, 94.68%);
+			box-shadow: none;
 			border: 2px solid var(--green);
+			&:hover {
+				box-shadow: var(--shad0);
+				border: 2px solid var(--green);
+			}
 			&:before,
 			&:after {
 				display: none;
