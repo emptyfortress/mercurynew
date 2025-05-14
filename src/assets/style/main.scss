@@ -109,46 +109,6 @@
 	}
 }
 
-// .group {
-// 	width: 170px;
-// 	height: 170px;
-// 	position: relative;
-// 	cursor: pointer;
-// 	padding: 1rem;
-// 	background: var(--middle);
-// 	border: 2px solid var(--green);
-// 	border-radius: var(--rad);
-// 	margin: 0.5rem;
-//
-// 	&:hover {
-// 		box-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.3);
-// 	}
-//
-// 	&.active {
-// 		position: fixed;
-// 		padding: 1rem;
-// 		height: auto;
-// 		// height: 221px;
-// 		width: 1200px;
-// 		margin: 0 auto;
-// 		top: 150px;
-// 		left: 0;
-// 		right: 0;
-// 		box-shadow: none;
-// 		background: var(--middle);
-// 		border: 2px solid var(--green);
-// 	}
-//
-// 	&.inactive {
-// 		display: none;
-// 	}
-//
-// 	.img {
-// 		position: absolute;
-// 		bottom: 1rem;
-// 	}
-// }
-
 .editor {
 	width: 1500px;
 	height: calc(100vh - 120px);

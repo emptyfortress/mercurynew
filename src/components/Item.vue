@@ -193,7 +193,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 .img1 {
 	bottom: 0.5rem;
 	left: 0.8rem;
-	font-size: 1.5rem;
+	// font-size: 1.5rem;
 }
 
 .parent.end .it.active {
