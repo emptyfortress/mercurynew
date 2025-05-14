@@ -225,9 +225,8 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 }
 .ghostItem {
 	height: 100%;
-	background: var(--ghost);
 	border-radius: 0.5rem;
-	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.15);
+	border: 1px dashed $secondary;
 	display: flex;
 	align-items: center;
 	justify-content: center;
