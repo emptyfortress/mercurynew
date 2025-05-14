@@ -146,6 +146,11 @@ export const useApps = defineStore('apps', () => {
 		groupPathBig.value = e
 	}
 
+	const groupDrag = ref(false)
+	const setGroupDrag = (e: boolean) => {
+		groupDrag.value = e
+	}
+
 	return {
 		apps,
 		createApp,
@@ -162,5 +167,8 @@ export const useApps = defineStore('apps', () => {
 		setPath,
 		setGroupPath,
 		setGroupPathBig,
+
+		groupDrag,
+		setGroupDrag,
 	}
 })

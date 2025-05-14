@@ -234,6 +234,9 @@ const action = () => {
 		activeItem.value = ''
 	}
 }
+const calcStyle = computed(() => {
+	return myapps.groupDrag ? 'outline: 3px dotted #3b82f6;' : ''
+})
 </script>
 
 <template lang="pug">
@@ -241,6 +244,7 @@ q-page(padding, @click='action')
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
+		:style='calcStyle'
 	)
 
 		Div.plus(

@@ -89,7 +89,7 @@ const toggleHelp = () => {
 const buttonRef = ref<HTMLButtonElement | null>(null)
 const isAnimating = ref(true)
 
-const { idle, reset } = useIdle(3000)
+const { idle, reset } = useIdle(5000)
 const { inc, count } = useCounter()
 
 const attention = computed(() => {
@@ -101,7 +101,7 @@ watch(idle, async (idleValue) => {
 		inc()
 		setTimeout(() => {
 			reset()
-		}, 3000)
+		}, 5000)
 
 		if (count.value == 3 && isAnimating.value) {
 			count.value = 0
@@ -164,8 +164,8 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
-			q-btn(dense flat round icon='mdi-information-outline' @click='toggleBug')
-			q-btn(ref='buttonRef' dense flat round icon='mdi-creation' @click='off' :class='{bounce: attention}')
+			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
+			q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
 
 	Drawer
 	RDrawer(v-model="rightDrawer" :help='helpMode')

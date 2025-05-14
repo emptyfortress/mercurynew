@@ -163,6 +163,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			@duplicate='duble'
 		)
 
+		q-btn.addAbs(v-if='activeItem == item.id && item.group > 1' flat round icon="mdi-plus-circle" color="primary" @click.stop) 
 		GroupInsidePreview(
 			v-if='activeItem == item.id && item.group > 1'
 			v-model:list="item.list"
@@ -199,7 +200,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 
 .parent.end .it.active {
 	width: 650px;
-	height: 400px;
+	min-height: 400px;
 	padding: 0;
 	.ttt {
 		width: 100%;
@@ -246,5 +247,10 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	width: 100%;
 	height: 100%;
 	background: #ccc;
+}
+.addAbs {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
 }
 </style>

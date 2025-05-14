@@ -97,7 +97,7 @@ const duble = (item: App) => {
 				span Удалить приложение
 				q-menu(cover anchor="bottom middle")
 					q-item(clickable @click.stop='remove(props.item)').pink
-						q-item-section Удалить!
+						q-item-section.text-center Удалить
 			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
 				IconFlag.ic
 				span Помощник по настройке

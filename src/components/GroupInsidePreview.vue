@@ -3,9 +3,11 @@ import { computed, watch } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useRouter, useRoute } from 'vue-router'
 import { motion } from 'motion-v'
+import { useApps } from '@/stores/apps'
 
 const list = defineModel<App[]>('list')
 
+const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
 const config = {
@@ -48,14 +50,23 @@ const emit = defineEmits(['removeGroup'])
 const remove = () => {
 	emit('removeGroup')
 }
+
+const onDragStart = () => {
+	myapps.setGroupDrag(true)
+}
+const onDragEnd = () => {
+	myapps.setGroupDrag(false)
+}
 </script>
 
 <template lang="pug">
-q-btn(v-if='tapes.length == 0' unelevated color="primary" label="Удалить группу" @click.stop="remove") 
+q-btn.remBt(v-if='tapes.length == 0' unelevated color="primary" label="Удалить группу" @click.stop="remove") 
 .parent(ref='parent')
 	Div.it(v-for="(item, index) in tapes", :key="item.id",
 		:layout-id='calcIdNew(item)'
 		@click.stop='navigate(item.id)',
+		@dragstart='onDragStart'
+		@dragend='onDragEnd'
 	)
 		span {{ item.label }}
 
@@ -71,7 +82,7 @@ q-btn(v-if='tapes.length == 0' unelevated color="primary" label="Удалить 
 .it.active.group .it {
 	border: 1px solid $secondary;
 }
-.q-btn {
+.remBt {
 	display: block;
 	position: absolute;
 	top: 50%;

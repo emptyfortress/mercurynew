@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 
+// Чтобы все работало надо расскоментировать vue-drap-select in main.ts
+
 const selection = ref([])
 const options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 

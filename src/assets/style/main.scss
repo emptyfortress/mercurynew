@@ -237,6 +237,9 @@
 		margin: 0;
 		margin-left: calc(50% - 500px);
 		margin-top: 1rem;
+		&:focus {
+			outline: none;
+		}
 		.it {
 			padding: 0.5rem;
 			font-size: 0.85rem;
