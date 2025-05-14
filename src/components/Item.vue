@@ -137,7 +137,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:initial="initial"
 	:animate="animate"
 	:transition="spring"
-	:draggable='false'
 	:data-group="item.group > 1 ? 'true' : 'false'"
 	@dragstart='onDragStart(item, index)'
 	@dragenter='onDragEnter(item)'
@@ -145,7 +144,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@dragleave='onDragLeave'
 	@drop='onDrop1(item, draggedItem)'
 )
-
 	.ttt(v-if='!isOver(item)')
 		template(v-if='expanded && item.id == activeItem')
 			.head

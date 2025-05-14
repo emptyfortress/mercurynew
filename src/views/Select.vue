@@ -1,41 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-
-// Чтобы все работало надо расскоментировать vue-drap-select in main.ts
-
-const selection = ref([])
-const options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-
-const config = {
-	dragPlaceholderClass: 'ghost',
-	sortable: true,
-	draggable: (child: HTMLElement) => {
-		return child.classList.contains('drag-select-option')
-	},
-	accept: (draggedElement: HTMLElement) => {
-		return !draggedElement.classList.contains('group')
-	},
-}
-
-const [parent, tapes] = useDragAndDrop(options, config)
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.zg Selection {{ selection}}
-	drag-select(
-		v-model="selection",
-		:clickOptionToSelect="true",
-		:draggableOnOption='true'
-	)
-		.container(ref='parent')
-				drag-select-option(
-					v-for="item in tapes",
-					:value="item",
-					:key="item",
-				)
-					span {{item}}
+	.zg Selection
+	.card-stack
 </template>
 
 <style scoped lang="scss">
@@ -45,31 +15,62 @@ q-page(padding)
 	text-align: center;
 }
 
-.container {
-	max-width: 800px;
-	margin: 0 auto;
-	display: grid;
-	grid-template-columns: repeat(6, 100px);
-	gap: 1rem;
-	&:focus {
-		outline: none;
-	}
-}
-:deep(.drag-select) {
-	// background: #ccc;
-	height: 800px;
-	padding-top: 3rem;
-}
-.drag-select-option {
-	width: 100px;
-	height: 100px;
-	background: #fff;
-	color: #000;
-	font-size: 1rem;
+.card-stack {
+	position: relative;
+	width: 200px; /* Ширина карточки */
+	height: 300px; /* Высота карточки */
+	background: white;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	transition:
+		transform 0.3s ease,
+		box-shadow 0.3s ease;
 }
 
-.drag-select-option--selected {
-	color: #000000;
-	background: hsl(241 94% 81% / 1);
+/* Псевдоэлемент для имитации второй карточки */
+.card-stack::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: white;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	transform: translate(5px, 5px) rotate(2deg);
+	z-index: -1; /* Помещаем под основной карточкой */
 }
+
+/* Псевдоэлемент для имитации третьей карточки */
+.card-stack::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: white;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	transform: translate(10px, 10px) rotate(-2deg);
+	z-index: -2; /* Помещаем под второй карточкой */
+}
+
+/* Эффект при наведении */
+.card-stack:hover {
+	transform: translate(0, -10px);
+	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-stack:hover::before {
+	transform: translate(5px, 0) rotate(2deg);
+}
+//
+// .card-stack:hover::after {
+// 	transform: translate(10px, 5px) rotate(-2deg);
+// }
 </style>
