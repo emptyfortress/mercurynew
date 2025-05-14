@@ -11,6 +11,7 @@
 		"type-check": "vue-tsc --build --force"
 	},
 	"dependencies": {
+		"@coleqiu/vue-drag-select": "^2.0.6-beta.1",
 		"@formkit/drag-and-drop": "^0.2.6",
 		"@formkit/vue": "^1.6.7",
 		"@he-tree/vue": "^2.8.7",

@@ -14,6 +14,7 @@ import router from './router'
 
 import { plugin, defaultConfig } from '@formkit/vue'
 import '@formkit/themes/genesis'
+import VueDragSelect from '@coleqiu/vue-drag-select'
 
 const app = createApp(App)
 
@@ -36,5 +37,6 @@ app.use(Quasar, {
 	},
 })
 app.use(MotionPlugin)
+app.use(VueDragSelect)
 
 app.mount('#app')

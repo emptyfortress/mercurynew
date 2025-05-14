@@ -24,6 +24,16 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/sel',
+			name: 'select',
+			component: () => import('@/views/Select.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 0,
+			},
+		},
+		{
 			path: '/tmp1',
 			name: 'tmp1',
 			component: () => import('@/views/Tmp1.vue'),
