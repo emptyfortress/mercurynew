@@ -11,10 +11,10 @@ export const useScene = defineStore('scene', () => {
 	}
 
 	return {
-		copy,
-		group,
-		group0,
-		add,
-		remove,
+		// copy,
+		// group,
+		// group0,
+		// add,
+		// remove,
 	}
 })

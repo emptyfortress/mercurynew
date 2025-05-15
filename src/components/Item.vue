@@ -4,10 +4,19 @@ import { motion } from 'motion-v'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 import IconMenu from '@/components/IconMenu.vue'
+import { uid, useQuasar } from 'quasar'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
+
+const props = defineProps({
+	shift: {
+		type: Boolean,
+		required: true,
+		default: false,
+	},
+})
 
 const Div = motion.div
 
@@ -29,7 +38,16 @@ const action = async (item: App) => {
 const calcClass = (item: App, index: number) => {
 	if (expanded.value && activeItem.value == item.id && item.group > 1) return 'active group'
 	if (expanded.value && activeItem.value == item.id) return 'active'
+	if (
+		item.group > 1 &&
+		overItem.value &&
+		hoverIndex.value !== dragIndex.value &&
+		hoverIndex.value == index
+	)
+		return 'drop'
 	if (item.group > 1) return 'group'
+	if (overItem.value && hoverIndex.value !== dragIndex.value && hoverIndex.value == index)
+		return 'drop'
 	return ''
 }
 
@@ -52,14 +70,23 @@ const spring = {
 const overGroup = ref(false)
 
 const draggedItem = ref()
-const dragIndex = ref<number | null>(null)
+const dragIndex = ref<number>(100)
+const overItem = ref(false)
+
+const hoverItem = ref()
+const hoverIndex = ref<number>(100)
 
 const onDragStart = (item: App, n: number) => {
 	draggedItem.value = item
 	dragIndex.value = n
 }
 
-const onDragEnter = (app: App) => {
+const onDragEnter = (app: App, index: number) => {
+	if (props.shift) {
+		hoverItem.value = app
+		hoverIndex.value = index
+		overItem.value = true
+	}
 	if (
 		activeItem.value == app.id &&
 		draggedItem.value?.group == 1 &&
@@ -70,9 +97,44 @@ const onDragEnter = (app: App) => {
 }
 const onDragLeave = () => {
 	overGroup.value = false
+	hoverIndex.value = 100
 }
 
+const $q = useQuasar()
 const onDrop1 = (el: App, n: number) => {
+	if (hoverIndex.value == dragIndex.value) return
+	if (props.shift == true) {
+		let tmp = {} as App
+		if (hoverItem.value.group == 1) {
+			tmp.id = uid()
+			tmp.label = 'Группа'
+			tmp.descr = ''
+			tmp.expand = false
+			tmp.version = ''
+			tmp.author = ''
+			tmp.group = 1
+			tmp.list = []
+		} else tmp = hoverItem.value
+
+		tmp.group = 2
+		tmp.list.push(hoverItem.value)
+		tmp.list.push(draggedItem.value)
+
+		tapes.value?.splice(hoverIndex.value, 1, tmp)
+		tapes.value?.splice(dragIndex.value, 1)
+
+		draggedItem.value = 100
+		hoverItem.value = 100
+		overItem.value = false
+		setTimeout(() => {
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'positive',
+				message: 'Создана группа приложений',
+			})
+		}, 1200)
+	}
+
 	if (el.id == draggedItem.value?.id || draggedItem.value?.group > 1) return
 	if (el.group > 1) {
 		el.list.push(draggedItem.value)
@@ -133,14 +195,14 @@ const duble = (e: App) => {
 Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@click.stop='action(item)',
 	:layout-id="item.id"
-	:class='calcClass(item, index)'
 	:initial="initial"
 	:animate="animate"
 	:transition="spring"
 	:data-group="item.group > 1 ? 'true' : 'false'"
+	:class='calcClass(item, index)'
 	@dragstart='onDragStart(item, index)'
-	@dragenter='onDragEnter(item)'
-	@dragover.prevent
+	@dragenter.prevent
+	@dragover.prevent='onDragEnter(item, index)'
 	@dragleave='onDragLeave'
 	@drop='onDrop1(item, draggedItem)'
 )
@@ -249,5 +311,12 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	position: absolute;
 	top: 0.5rem;
 	right: 0.5rem;
+}
+
+.drop {
+	outline: 3px dashed $primary;
+}
+.dropGroup {
+	outline: 3px dashed $primary;
 }
 </style>

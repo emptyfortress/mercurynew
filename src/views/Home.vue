@@ -9,12 +9,14 @@ import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import { uid, useQuasar } from 'quasar'
 import IconApp from '@/components/icons/IconApp.vue'
 import Empty from '@/components/Empty.vue'
+import { useKeyModifier } from '@vueuse/core'
 
 const IconApp1 = markRaw(IconApp)
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
 const activeItem = ref('')
+const shift = useKeyModifier('Shift', { initial: false })
 
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
@@ -26,6 +28,13 @@ const updateRouteParams = () => {
 }
 watch(activeItem, updateRouteParams)
 
+watch(shift, (val) => {
+	if (val) {
+		updateConfig(config1)
+	} else {
+		updateConfig(config)
+	}
+})
 // Функция для загрузки состояния из параметров маршрута
 const loadStateFromRoute = () => {
 	if (route.params.id !== '') {
@@ -61,9 +70,19 @@ const config = {
 		return !draggedElement.classList.contains('group')
 	},
 }
+const config1 = {
+	dragPlaceholderClass: 'ghost',
+	sortable: false,
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains('it')
+	},
+	accept: (draggedElement: HTMLElement) => {
+		return !draggedElement.classList.contains('group')
+	},
+}
 
 const expanded = ref(false)
-const [parent, tapes] = useDragAndDrop(myapps.apps, config)
+const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
 
 watch(tapes, (val) => {
 	if (val) {
@@ -235,7 +254,7 @@ const action = () => {
 	}
 }
 const calcStyle = computed(() => {
-	return myapps.groupDrag ? 'outline: 3px dotted #3b82f6;' : ''
+	return myapps.groupDrag ? 'outline: 3px dotted #143c5f;' : ''
 })
 </script>
 
@@ -269,6 +288,7 @@ q-page(padding, @click='action')
 			@navigate="navigate"
 			@createGroup='createGroup'
 			@duplicate='duble'
+			:shift="shift"
 		)
 
 </template>
