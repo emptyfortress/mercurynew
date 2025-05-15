@@ -210,12 +210,23 @@
 					font-size: 4rem;
 				}
 			}
+			&.group {
+				.img {
+					font-size: 1rem;
+				}
+			}
 		}
 		.img,
 		img1 {
 			font-size: 1.5rem;
 		}
 	}
+}
+.end .it.group .img1 {
+	font-size: 1.5rem;
+}
+.end .it.group.active .img {
+	font-size: 4rem;
 }
 
 .it {
