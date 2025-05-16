@@ -78,6 +78,8 @@ q-page(padding)
 						@done="scopedProps.cut()"
 					)
 
+	img(src="@/assets/img/page.svg", alt="" width="100")
+
 </template>
 
 <style lang="scss">
