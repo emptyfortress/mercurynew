@@ -90,7 +90,7 @@ const router = createRouter({
 			component: () => import('@/views/Process.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 2,
 			},
 		},
@@ -110,7 +110,7 @@ const router = createRouter({
 			component: () => import('@/views/Forms.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 3,
 			},
 		},
@@ -120,7 +120,7 @@ const router = createRouter({
 			component: () => import('@/views/Roles.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 4,
 			},
 		},
@@ -130,7 +130,7 @@ const router = createRouter({
 			component: () => import('@/views/Fields.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 5,
 			},
 		},
@@ -150,7 +150,7 @@ const router = createRouter({
 			component: () => import('@/views/Lists.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 6,
 			},
 		},

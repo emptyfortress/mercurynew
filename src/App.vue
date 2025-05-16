@@ -64,16 +64,17 @@ const calcEnter = computed(() => {
 })
 
 const nav = () => {
-	if (myapps.groupPath.length > 0 && myapps.groupPath == route.fullPath.toString()) {
-		router.push(myapps.path)
-		myapps.setGroupPath('')
-	} else if (myapps.groupPath.length > 0) {
-		router.push(myapps.groupPath)
-	} else if (myapps.path == route.fullPath.toString()) {
-		router.push('/')
-	} else if (myapps.groupPath.length == 0) {
-		router.push(myapps.path)
-	}
+	router.push('/')
+	// if (myapps.groupPath.length > 0 && myapps.groupPath == route.fullPath.toString()) {
+	// 	router.push(myapps.path)
+	// 	myapps.setGroupPath('')
+	// } else if (myapps.groupPath.length > 0) {
+	// 	router.push(myapps.groupPath)
+	// } else if (myapps.path == route.fullPath.toString()) {
+	// 	router.push('/')
+	// } else if (myapps.groupPath.length == 0) {
+	// 	router.push(myapps.path)
+	// }
 }
 
 const helpMode = ref(true)

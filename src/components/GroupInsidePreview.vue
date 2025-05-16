@@ -90,6 +90,6 @@ q-btn.remBt(v-if='tapes.length == 0' unelevated color="primary" label="Удал�
 	transform: translate(-50%, -50%);
 }
 .parent {
-	min-height: 150px;
+	min-height: 350px;
 }
 </style>
