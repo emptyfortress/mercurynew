@@ -87,7 +87,7 @@ const toggleHelp = () => {
 }
 
 const buttonRef = ref<HTMLButtonElement | null>(null)
-const isAnimating = ref(true)
+const isAnimating = ref(false)
 
 const { idle, reset } = useIdle(5000)
 const { inc, count } = useCounter()
