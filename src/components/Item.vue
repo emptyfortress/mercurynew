@@ -114,17 +114,22 @@ const onDrop1 = (el: App, n: number) => {
 			tmp.author = ''
 			tmp.group = 1
 			tmp.list = []
-		} else tmp = hoverItem.value
 
-		tmp.group = 2
-		tmp.list.push(hoverItem.value)
-		tmp.list.push(draggedItem.value)
+			tmp.group = 2
+			tmp.list.push(draggedItem.value)
+			tmp.list.push(hoverItem.value)
 
-		tapes.value?.splice(hoverIndex.value, 1, tmp)
-		tapes.value?.splice(dragIndex.value, 1)
+			tapes.value?.splice(hoverIndex.value, 1, tmp)
+			tapes.value?.splice(dragIndex.value, 1)
+		}
 
-		draggedItem.value = 100
-		hoverItem.value = 100
+		if (el.group > 1) {
+			el.list.push(draggedItem.value)
+			tapes.value?.splice(dragIndex.value, 1)
+		}
+
+		dragIndex.value = 100
+		hoverIndex.value = 100
 		overItem.value = false
 		setTimeout(() => {
 			$q.notify({
@@ -136,9 +141,7 @@ const onDrop1 = (el: App, n: number) => {
 	}
 
 	if (el.id == draggedItem.value?.id || draggedItem.value?.group > 1) return
-	if (el.group > 1) {
-		el.list.push(draggedItem.value)
-	}
+
 	if (el.id !== activeItem.value) return
 	emit('createGroup', el, draggedItem.value)
 	overGroup.value = false
