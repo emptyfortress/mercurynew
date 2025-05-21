@@ -192,6 +192,9 @@ const isOver = (item: App) => {
 const duble = (e: App) => {
 	emit('duplicate', e)
 }
+const calcIcon = (e: string) => {
+	return `mdi-numeric-${e}-circle-outline`
+}
 </script>
 
 <template lang="pug">
@@ -237,10 +240,13 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			component(:is='item.pic')
 			IconMenu(@select='setIcon' :icon='item.pic.name')
 
-
 		template(v-if='item.group > 1 && activeItem !== item.id')
 			.img1
 				component(:is='el.pic' v-for="el in item.list" :key="el.id")
+
+		.version(v-if='activeItem == item.id')
+			span ver.
+			q-icon(:name='calcIcon(item.version)')
 
 	.createGroup(v-if='isOver(item)')
 		div Создать группу приложений
@@ -321,5 +327,21 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 }
 .dropGroup {
 	outline: 3px dashed $primary;
+}
+.version {
+	position: absolute;
+	bottom: 0.25rem;
+	right: 0.5rem;
+	font-size: 2.5rem;
+	color: var(--icon);
+	span {
+		font-size: 1.1rem;
+	}
+}
+.to {
+	position: absolute;
+	bottom: 1rem;
+	left: 50%;
+	transform: translateX(-50%);
 }
 </style>

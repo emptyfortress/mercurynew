@@ -4,9 +4,8 @@ import { useApps } from '@/stores/apps'
 import { useRouter, useRoute } from 'vue-router'
 import IconFlag from '@/components/icons/IconFlag.vue'
 import IconCopy from '@/components/icons/IconCopy.vue'
-import IconEntrance from '@/components/icons/IconEntrance.vue'
 import IconTrash from '@/components/icons/IconTrash.vue'
-import VersionTable from '@/components/VersionTable.vue'
+import MdiSourceBranch from '@/components/icons/MdiSourceBranch.vue'
 
 const myapps = useApps()
 const router = useRouter()
@@ -87,33 +86,28 @@ const duble = (item: App) => {
 			template(v-else)
 				label Опубликовано:
 				.val.link(@click.stop='toggleVersion') {{ props.item.created }}
+			.allbt
+				div Инфа о публикации???
 
 		.myrow
-			.bt(@click.stop='duble(props.item)')
+			.bt(@click.stop='navigate')
+				IconFlag.ic
+				span Помощник по настройке
+			.bt(@click.stop='')
+				MdiSourceBranch.ic
+				span Управление версиями
+			.bt(@click.stop='duble(item)')
 				IconCopy.ic
 				span Дублировать приложение
 			.bt(@click.stop)
 				IconTrash.ic
 				span Удалить приложение
-				q-menu(cover anchor="bottom middle")
-					q-item(clickable @click.stop='remove(props.item)').pink
-						q-item-section.text-center Удалить
-			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
-				IconFlag.ic
-				span Помощник по настройке
-			.bt.to(@click.stop='navigate1')
-				IconEntrance.ic
-				span К приложению
+					q-menu()
+						q-item(clickable @click.stop='remove(props.item)').pink
+							q-item-section.text-center Да, удалить!
 
-	div(
-		v-else,
-		v-motion
-		:initial="{ x: 20, opacity: 0 }"
-		:enter='{ x: 0, opacity: 1 }'
-		:delay='200'
-	)
-		q-btn(flat icon="mdi-arrow-left-circle-outline" label='Назад' color="primary" @click.stop="toggleVersion") 
-		VersionTable
+		.to
+			q-btn(unelevated color="primary" label="К приложению" @click.stop="navigate1" icon='mdi-pencil-outline') 
 
 </template>
 
@@ -149,10 +143,17 @@ const duble = (item: App) => {
 .mygrid {
 	margin-top: 1rem;
 	display: grid;
-	grid-template-columns: auto 1fr;
+	grid-template-columns: auto 1fr 1fr;
 	justify-items: start;
 	align-items: start;
 	column-gap: 2rem;
+	// background: #ccc;
+}
+.allbt {
+	grid-column: 3/-1;
+	grid-row: 1/5;
+	// justify-self: end;
+	align-self: center;
 }
 
 .myrow {
@@ -188,5 +189,11 @@ const duble = (item: App) => {
 .ic {
 	font-size: 1.5rem;
 	margin-right: 0.5rem;
+}
+.to {
+	position: absolute;
+	bottom: -5rem;
+	left: 50%;
+	transform: translateX(-50%);
 }
 </style>

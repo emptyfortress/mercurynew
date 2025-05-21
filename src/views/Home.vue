@@ -151,7 +151,7 @@ const duble = (e: any) => {
 		descr: e.description,
 		expand: false,
 		over: false,
-		version: '0.0.0',
+		version: '0',
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
 		group: e.group,
