@@ -165,7 +165,8 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
-			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
+			// q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
+			q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
 			q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
 
 	Drawer
