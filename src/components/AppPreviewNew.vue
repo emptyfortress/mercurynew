@@ -29,6 +29,10 @@ const navigate = () => {
 	myapps.setCurrentApp(props.item)
 }
 
+const navToVer = () => {
+	router.push('/version')
+}
+
 const navigate1 = () => {
 	const path = route.fullPath.toString()
 	myapps.setCurrentApp(props.item)
@@ -93,7 +97,7 @@ const duble = (item: App) => {
 			.bt(@click.stop='navigate')
 				IconFlag.ic
 				span Помощник по настройке
-			.bt(@click.stop='')
+			.bt(@click.stop='navToVer')
 				MdiSourceBranch.ic
 				span Управление версиями
 			.bt(@click.stop='duble(item)')

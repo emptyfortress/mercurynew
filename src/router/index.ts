@@ -75,6 +75,16 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/version',
+			name: 'version',
+			component: () => import('@/views/Version.vue'),
+			meta: {
+				toolbar: false,
+				back: true,
+				count: 1,
+			},
+		},
+		{
 			path: '/ai',
 			name: 'ai',
 			component: () => import('@/views/Ai.vue'),
