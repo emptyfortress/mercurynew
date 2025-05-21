@@ -130,15 +130,16 @@ const currentId = computed(() => {
 						q-item(clickable @click="removeItem(index)" ).pink
 							q-item-section Удалить
 
-		.text-center.q-mt-md(v-if='!isGridEmpty')
+		.buttons(v-if='!isGridEmpty')
+			div
+				q-btn(unelevated color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mykeys.toggleDragWindow")
+				q-btn(flat color="primary" @click="search") 
+					IconSearch.ic.q-mr-sm
+					.q-cursor Проверить запрос
+
 			q-btn.q-ml-sm(flat color="negative" @click="clearAll")
 				IconClear.ic.q-mr-sm
 				.q-cursor Очистить все
-			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mykeys.toggleDragWindow")
-
-			q-btn(flat color="primary" @click="search") 
-				IconSearch.ic.q-mr-sm
-				.q-cursor Проверить запрос
 </template>
 
 <style scoped lang="scss">
@@ -221,5 +222,11 @@ const currentId = computed(() => {
 	color: $primary;
 	margin-left: 0.3rem;
 	margin-right: 0.3rem;
+}
+.buttons {
+	margin-top: 2rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 </style>

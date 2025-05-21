@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-// import IconSearch from '@/components/icons/IconSearch.vue'
 import IconUndo from '@/components/icons/IconUndo.vue'
 import IconRedo from '@/components/icons/IconRedo.vue'
 import IconWizard from '@/components/icons/IconWizard.vue'
@@ -16,6 +15,7 @@ import DragEditWindow1 from '@/components/DragEditWindow1.vue'
 import { useKeys } from '@/stores/keys'
 import { useRoute } from 'vue-router'
 import { useList } from '@/stores/list'
+import { useQuasar } from 'quasar'
 
 const list = useList()
 const route = useRoute()
@@ -98,6 +98,7 @@ const startPred = () => {
 }
 const isSearching = ref(false)
 
+const $q = useQuasar()
 const checkStartSearch = () => {
 	if (mykeys.hasParameters.length == 0) {
 		isSearching.value = true
@@ -106,6 +107,11 @@ const checkStartSearch = () => {
 			isShaking1.value = true
 			setTimeout(() => {
 				isShaking1.value = false
+				$q.notify({
+					icon: 'mdi-check-bold',
+					color: 'positive',
+					message: 'Заполните форму запроса справа',
+				})
 			}, 1000)
 		} else startRight()
 	}

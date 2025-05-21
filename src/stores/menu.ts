@@ -7,12 +7,13 @@ const mystatus = [
 	{ id: uid(), label: 'Согласовано', value: 'Согласовано', isLast: true, isPar: true },
 ]
 const stat = [
-	{ id: uid(), label: 'равно', value: 'равно', isSpecial: true, children: mystatus },
+	{ id: uid(), label: 'равно', value: 'равно', isPar: true, isSpecial: true, children: mystatus },
 	{
 		id: uid(),
 		label: 'не равно',
 		value: 'не равно',
 		isSpecial: true,
+		isPar: true,
 		children: mystatus,
 	},
 	{
@@ -21,6 +22,7 @@ const stat = [
 		value: 'один из',
 		isSpecial: true,
 		isMulti: true,
+		isPar: true,
 		children: mystatus,
 	},
 	{ id: uid(), label: 'задано', value: 'задано', isSpecial: true, isLast: true },
