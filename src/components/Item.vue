@@ -195,6 +195,11 @@ const duble = (e: App) => {
 const calcIcon = (e: string) => {
 	return `mdi-numeric-${e}-circle-outline`
 }
+
+const visibleItems = (items: any) => {
+	return items.length <= 4 ? items : items.slice(0, 3)
+}
+const hasOverflow = (items: any) => items.length > 4
 </script>
 
 <template lang="pug">
@@ -240,9 +245,15 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			component(:is='item.pic')
 			IconMenu(@select='setIcon' :icon='item.pic.name')
 
-		template(v-if='item.group > 1 && activeItem !== item.id')
-			.img1
-				component(:is='el.pic' v-for="el in item.list" :key="el.id")
+		.groupGrid(v-if='!activeItem && item.group > 1 && activeItem !== item.id')
+			// .ima( v-for="el in item.list" :key="el.id")
+			.ima( v-for="el in visibleItems(item.list)" :key="el.id")
+				component(:is='el.pic')
+			.grid-item(v-if='hasOverflow(item.list)')
+				q-icon(name="mdi-dots-horizontal" color="primary")
+
+		.groupList(v-if='activeItem && item.group > 1 && activeItem !== item.id')
+			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
 
 		.version(v-if='activeItem == item.id')
 			span ver.
@@ -261,10 +272,40 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 </template>
 
 <style scoped lang="scss">
-.img1 {
-	bottom: 0.5rem;
-	left: 0.8rem;
-	// font-size: 1.5rem;
+.groupGrid {
+	margin-top: 0.5rem;
+	display: grid;
+	grid-template-columns: repeat(2, 55px);
+	grid-template-rows: repeat(2, 55px);
+	gap: 0.5rem;
+	.ima {
+		height: 55px;
+		background: #fff;
+		font-size: 2rem;
+		border: 1px solid $secondary;
+		border-radius: 0.25rem;
+		color: var(--icon);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}
+.grid-item {
+	height: 55px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2rem;
+	color: var(--icon);
+}
+.groupList {
+	display: flex;
+	color: var(--icon);
+	margin-top: 1.5rem;
+	gap: 0.5rem;
+	.im {
+		font-size: 1.2rem;
+	}
 }
 
 .parent.end .it.active {
