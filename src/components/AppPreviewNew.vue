@@ -5,7 +5,7 @@ import { useRouter, useRoute } from 'vue-router'
 import IconFlag from '@/components/icons/IconFlag.vue'
 import IconCopy from '@/components/icons/IconCopy.vue'
 import IconTrash from '@/components/icons/IconTrash.vue'
-import MdiSourceBranch from '@/components/icons/MdiSourceBranch.vue'
+import { useQuasar } from 'quasar'
 
 const myapps = useApps()
 const router = useRouter()
@@ -29,9 +29,9 @@ const navigate = () => {
 	myapps.setCurrentApp(props.item)
 }
 
-const navToVer = () => {
-	router.push('/version')
-}
+// const navToVer = () => {
+// 	router.push('/version')
+// }
 
 const navigate1 = () => {
 	const path = route.fullPath.toString()
@@ -60,6 +60,24 @@ const remove = (item: App) => {
 const duble = (item: App) => {
 	emit('duplicate', item)
 }
+
+const $q = useQuasar()
+const uploaded = ref(false)
+const loading = ref(false)
+
+const toggleUpload = () => {
+	loading.value = true
+	setTimeout(() => {
+		loading.value = false
+		uploaded.value = !uploaded.value
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Приложение опубликовано!',
+			position: 'top',
+		})
+	}, 2000)
+}
 </script>
 
 <template lang="pug">
@@ -76,6 +94,7 @@ const duble = (item: App) => {
 			q-popup-edit(v-model="props.item.descr" auto-save v-slot="scope")
 				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
+
 		.mygrid
 			label Автор:
 			.val {{ props.item.author }}
@@ -84,22 +103,17 @@ const duble = (item: App) => {
 			label Изменено:
 			.val {{ props.item.created }}
 			label Версия:
-			.val.link(@click.stop='toggleVersion') {{ props.item.version }}
-			template(v-if='props.item.version == "0.0.0"')
-				.publ(@click.stop='toggleVersion') Версия не опубликована
-			template(v-else)
-				label Опубликовано:
-				.val.link(@click.stop='toggleVersion') {{ props.item.created }}
-			.allbt
-				div Инфа о публикации???
+			.val(@click.stop='toggleVersion') {{ props.item.version }}
 
-		.myrow
+			.allbt
+				q-btn(v-if='uploaded' flat color="negative" :loading='loading' label="Отменить публикацию" @click.stop="toggleUpload" icon='mdi-upload-off-outline') 
+				q-btn(v-else flat color="negative" :loading='loading' label="Опубликовать" @click.stop="toggleUpload" icon='mdi-upload-outline') 
+
+
+		.myrow(v-if='!uploaded')
 			.bt(@click.stop='navigate')
 				IconFlag.ic
 				span Помощник по настройке
-			.bt(@click.stop='navToVer')
-				MdiSourceBranch.ic
-				span Управление версиями
 			.bt(@click.stop='duble(item)')
 				IconCopy.ic
 				span Дублировать приложение
@@ -110,8 +124,13 @@ const duble = (item: App) => {
 						q-item(clickable @click.stop='remove(props.item)').pink
 							q-item-section.text-center Да, удалить!
 
-		.to
-			q-btn(unelevated color="primary" label="К приложению" @click.stop="navigate1" icon='mdi-pencil-outline') 
+			.to
+				q-btn(unelevated color="primary" label="К приложению" @click.stop="navigate1" icon='mdi-pencil-outline') 
+				// q-btn(flat color="negative" label="Опубликовать" @click.stop="navigate1" icon='mdi-pencil-outline') 
+
+		.caution(v-else)
+			div Версия приложения опубликована в базе данных <strong>DV-PROD</strong>. Вы не можете больше вносить изменения.
+			div Чтобы изменить настройки, сначала отмените публикацию.
 
 </template>
 
@@ -145,13 +164,12 @@ const duble = (item: App) => {
 }
 
 .mygrid {
-	margin-top: 1rem;
+	margin-top: 2rem;
 	display: grid;
 	grid-template-columns: auto 1fr 1fr;
 	justify-items: start;
 	align-items: start;
 	column-gap: 2rem;
-	// background: #ccc;
 }
 .allbt {
 	grid-column: 3/-1;
@@ -162,16 +180,21 @@ const duble = (item: App) => {
 
 .myrow {
 	display: grid;
-	grid-template-columns: repeat(2, 210px);
+	grid-template-columns: repeat(3, 1fr);
 	justify-content: center;
 	gap: 0.5rem;
-	margin-top: 2rem;
+	margin-top: 4rem;
+	.to {
+		margin-top: 0.5rem;
+		grid-column: 1/-1;
+		justify-self: center;
+	}
 }
 
 .bt {
 	padding: 0.5rem;
 	border: 1px solid var(--selection);
-	border-radius: var(--rad);
+	border-radius: 0.25rem;
 	background: hsl(241 94% 97% / 1);
 	text-align: center;
 	display: flex;
@@ -180,10 +203,6 @@ const duble = (item: App) => {
 	color: $primary;
 	font-weight: 600;
 	cursor: pointer;
-	&.to {
-		grid-column: 2/3;
-	}
-
 	&:hover {
 		background: var(--selection);
 		border: 1px solid $primary;
@@ -194,10 +213,11 @@ const duble = (item: App) => {
 	font-size: 1.5rem;
 	margin-right: 0.5rem;
 }
-.to {
-	position: absolute;
-	bottom: -5rem;
-	left: 50%;
-	transform: translateX(-50%);
+.caution {
+	margin-top: 2rem;
+	color: $negative;
+	text-align: center;
+	border: 1px solid $negative;
+	padding: 0.5rem;
 }
 </style>

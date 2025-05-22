@@ -246,7 +246,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			IconMenu(@select='setIcon' :icon='item.pic.name')
 
 		.groupGrid(v-if='!activeItem && item.group > 1 && activeItem !== item.id')
-			// .ima( v-for="el in item.list" :key="el.id")
 			.ima( v-for="el in visibleItems(item.list)" :key="el.id")
 				component(:is='el.pic')
 			.grid-item(v-if='hasOverflow(item.list)')
@@ -309,8 +308,8 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 }
 
 .parent.end .it.active {
-	width: 650px;
-	min-height: 400px;
+	width: 680px;
+	min-height: 380px;
 	padding: 0;
 	.ttt {
 		width: 100%;
