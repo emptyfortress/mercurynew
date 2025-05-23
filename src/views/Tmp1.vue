@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onBeforeUnmount, onMounted } from 'vue'
-import { animations, state } from "@formkit/drag-and-drop"
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { animations, state } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useKeyModifier } from '@vueuse/core'
@@ -28,11 +28,11 @@ const shift = useKeyModifier('Shift')
 const expanded = ref<boolean>(false)
 const dragStatus = ref(false)
 
-state.on("dragStarted", () => {
+state.on('dragStarted', () => {
 	dragStatus.value = true
 })
 
-state.on("dragEnded", () => {
+state.on('dragEnded', () => {
 	dragStatus.value = false
 })
 
@@ -74,6 +74,7 @@ const onDrop1 = () => {
 			tmp.version = ''
 			tmp.author = ''
 			tmp.group = 1
+			tmp.published = false
 			tmp.list = []
 		} else tmp = tapes.value[hoverItem.value]
 
@@ -90,22 +91,22 @@ const onDrop1 = () => {
 }
 
 const config = {
-	plugins: [animations(),],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains("chil");
+		return child.classList.contains('chil')
 	},
 	onDragstart: (e: any) => {
 		draggedItem.value = e.draggedNode.data.index
 	},
 }
 const config1 = {
-	plugins: [animations(),],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: false,
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains("chil");
+		return child.classList.contains('chil')
 	},
 	onDragstart: (e: any) => {
 		draggedItem.value = e.draggedNode.data.index
@@ -117,37 +118,36 @@ const myapps = useApps()
 const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
 
 onMounted(() => {
-	tapes.value.map((item: any) => item.expand = false)
-
+	tapes.value.map((item: any) => (item.expand = false))
 })
 
-const calcClass = ((item: any, index: number) => {
+const calcClass = (item: any, index: number) => {
 	if (item.group > 1 && expanded.value && item.expand) return 'group1 active'
 	if (expanded.value && item.expand) return 'active'
 	if (expanded.value && !item.expand) return 'inactive'
-	if (item.group > 1 && hoverItem.value == index && index !== draggedItem.value) return 'group1 over'
+	if (item.group > 1 && hoverItem.value == index && index !== draggedItem.value)
+		return 'group1 over'
 	if (item.group > 1) return 'group1'
 	if (draggedItem.value == hoverItem.value) return ''
 	if (hoverItem.value == index && index !== draggedItem.value) return 'over'
 	else return ''
+}
 
-})
-
-const preexpand = ((item: App) => {
+const preexpand = (item: App) => {
 	if (item.expand && expanded) return
 	else expand(item)
-})
+}
 
 // const app = useStorage('app', localStorage)
 
-const close = ((item: App) => {
+const close = (item: App) => {
 	expanded.value = false
 	item.expand = false
-	item.list.map((el) => el.expand = false)
+	item.list.map((el) => (el.expand = false))
 	// tapes.value.map((el) => el.expand = false)
-})
+}
 
-const expand = ((item: App) => {
+const expand = (item: App) => {
 	const state = Flip.getState('.chil')
 	expanded.value = !expanded.value
 	item.expand = !item.expand
@@ -170,7 +170,7 @@ const expand = ((item: App) => {
 				gsap.fromTo(elements, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: 'linear' }),
 		})
 	})
-})
+}
 
 const $q = useQuasar()
 const create = (e: any) => {
@@ -183,6 +183,7 @@ const create = (e: any) => {
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
+		published: false,
 		group: 1,
 		list: [],
 		pic: IconApp,
@@ -194,28 +195,28 @@ const create = (e: any) => {
 		$q.notify({
 			icon: 'mdi-check-bold',
 			color: 'positive',
-			message: 'Добавлено новое приложение'
+			message: 'Добавлено новое приложение',
 		})
 	}, 1200)
 }
 
-const showGroup = ((item: any) => {
+const showGroup = (item: any) => {
 	if (item.group > 1 && item.expand == true) return false
 	return true
-})
+}
 
 const confirm = ref(false)
 
-const removeGroup = (() => {
+const removeGroup = () => {
 	tapes.value.splice(draggedItem.value, 1)
 	$q.notify({
 		icon: 'mdi-check-bold',
 		color: 'negative',
 		message: 'Группа удалена',
 	})
-})
+}
 
-const remove = (() => {
+const remove = () => {
 	if (tapes.value[draggedItem.value].group > 1) {
 		confirm.value = true
 	} else {
@@ -225,22 +226,28 @@ const remove = (() => {
 			color: 'negative',
 			message: 'Приложение удалено',
 			actions: [
-				{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
-			]
+				{
+					label: 'Отмена',
+					color: 'white',
+					handler: () => {
+						/* ... */
+					},
+				},
+			],
 		})
 	}
-})
+}
 
 const duple = ref(false)
-const onDragEnterPlus = (() => {
+const onDragEnterPlus = () => {
 	duple.value = true
-})
-const onDragLeavePlus = (() => {
+}
+const onDragLeavePlus = () => {
 	duple.value = false
-})
-const onDropPlus = (() => {
+}
+const onDropPlus = () => {
 	duple.value = false
-})
+}
 </script>
 
 <template lang="pug">
@@ -394,7 +401,6 @@ q-page(padding)
 			width: 850px;
 			padding: 1rem;
 		}
-
 	}
 
 	&.over {
@@ -413,7 +419,7 @@ q-page(padding)
 .active .con {
 	font-size: 1.2rem;
 	color: $primary;
-	margin-bottom: .5rem;
+	margin-bottom: 0.5rem;
 
 	span {
 		border-bottom: 1px dotted $primary;
@@ -431,7 +437,6 @@ q-page(padding)
 	.img1 {
 		display: none;
 	}
-
 }
 
 .con1 {
@@ -475,7 +480,7 @@ q-page(padding)
 	font-size: 5rem;
 
 	.edit1 {
-		font-size: .9rem;
+		font-size: 0.9rem;
 		position: absolute;
 		top: 0;
 		right: 0;
@@ -490,8 +495,8 @@ q-page(padding)
 }
 
 .img1 {
-	bottom: .5rem;
-	left: .8rem;
+	bottom: 0.5rem;
+	left: 0.8rem;
 	font-size: 1.5rem;
 }
 

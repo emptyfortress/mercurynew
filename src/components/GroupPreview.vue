@@ -29,6 +29,7 @@ const arr = ref([
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
+		published: false,
 		group: 1,
 		pic: IconPresentation,
 		list: [],
@@ -41,6 +42,7 @@ const arr = ref([
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.10.24 14:00',
+		published: false,
 		group: 1,
 		pic: IconMicrophone,
 		list: [],
@@ -49,12 +51,12 @@ const arr = ref([
 
 const dragging = ref(false)
 
-const onDragLeave = (() => {
+const onDragLeave = () => {
 	dragging.value = true
-})
-const onDragEnter = (() => {
+}
+const onDragEnter = () => {
 	dragging.value = false
-})
+}
 const onDrop = (dropResult: number) => {
 	arr.value = applyDrag(arr.value, dropResult)
 	dragging.value = false
@@ -66,7 +68,7 @@ const expand1 = (item: any) => {
 	item.expand = !item.expand
 	nextTick(() => {
 		Flip.from(state, {
-			duration: .4,
+			duration: 0.4,
 			ease: 'power3.inOut',
 			// targets: '.item',
 			absolute: true,
@@ -120,7 +122,6 @@ const expand1 = (item: any) => {
 }
 
 .item {
-
 	&.act {
 		position: fixed;
 		height: 70vh;
@@ -136,7 +137,6 @@ const expand1 = (item: any) => {
 	&.inact {
 		display: none;
 	}
-
 }
 
 .zag {
@@ -153,6 +153,6 @@ const expand1 = (item: any) => {
 .myicon {
 	position: absolute;
 	bottom: 0;
-	left: .5rem;
+	left: 0.5rem;
 }
 </style>
