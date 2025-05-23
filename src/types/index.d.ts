@@ -7,6 +7,7 @@ interface App {
 	author: string
 	created: string
 	group: number
+	published: boolean
 	list: App[]
 	pic?: any
 }

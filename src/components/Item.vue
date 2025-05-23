@@ -200,6 +200,19 @@ const visibleItems = (items: any) => {
 	return items.length <= 4 ? items : items.slice(0, 3)
 }
 const hasOverflow = (items: any) => items.length > 4
+
+const options = [
+	{ id: 3, label: 'v. 3', pub: false },
+	{ id: 2, label: 'v. 2', pub: true },
+	{ id: 1, label: 'v. 1', pub: true },
+]
+const setVer = (item: App, el: number, pub: boolean) => {
+	item.version = el.toString()
+	item.published = pub
+}
+const calcItemClass = (item: App, id: number) => {
+	return item.version == id.toString() ? 'selected' : ''
+}
 </script>
 
 <template lang="pug">
@@ -254,9 +267,34 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		.groupList(v-if='activeItem && item.group > 1 && activeItem !== item.id')
 			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
 
-		.version(v-if='activeItem == item.id')
+		.version(v-if='activeItem == item.id' @click.stop :class='{pub: item.published}')
 			span ver.
-			q-icon(:name='calcIcon(item.version)')
+			span.num {{ item.version }}
+			q-menu
+				q-list
+					q-item(
+						clickable,
+						v-for="el in options",
+						:key='el.id',
+						@click='setVer(item, el.id, el.pub)'
+						:class='calcItemClass(item, el.id)'
+						v-close-popup
+					)
+						q-item-section(side)
+							q-icon(v-if='el.pub' name="mdi-check-bold" color="positive")
+							q-icon(v-else name="mdi-pencil-outline")
+						q-item-section
+							q-item-label {{ el.label }}
+						q-item-section(side)
+							q-item-label(v-if='el.pub' caption) опубликовано
+							q-item-label(v-else caption) текущая
+					q-separator
+					q-item(clickable)
+						q-item-section(side)
+							q-icon(name="mdi-plus-circle-outline")
+						q-item-section
+							q-item-label Создать версию
+
 
 	.createGroup(v-if='isOver(item)')
 		div Создать группу приложений
@@ -345,6 +383,9 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	color: hsl(212 38% 53% / 1);
 }
 .head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	span {
 		color: $primary;
 		border-bottom: 1px dotted $primary;
@@ -370,18 +411,34 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 }
 .version {
 	position: absolute;
-	bottom: 0.25rem;
-	right: 0.5rem;
+	top: -0.3rem;
+	right: 0.8rem;
 	font-size: 2.5rem;
-	color: var(--icon);
 	span {
-		font-size: 1.1rem;
+		font-size: 0.9rem;
+		color: $secondary;
 	}
+	.num {
+		color: $secondary;
+		font-size: 1.5rem;
+		padding: 0.1rem 0.6rem;
+		border-radius: 50%;
+		margin-left: 0.25rem;
+		border: 2px solid $secondary;
+	}
+}
+.version.pub .num {
+	background: $positive;
+	color: #fff;
+	border: 2px solid $positive;
 }
 .to {
 	position: absolute;
 	bottom: 1rem;
 	left: 50%;
 	transform: translateX(-50%);
+}
+.selected {
+	background: var(--selection);
 }
 </style>

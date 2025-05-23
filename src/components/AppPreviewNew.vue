@@ -62,20 +62,29 @@ const duble = (item: App) => {
 }
 
 const $q = useQuasar()
-const uploaded = ref(false)
+// const uploaded = ref(false)
 const loading = ref(false)
 
-const toggleUpload = () => {
+const toggleUpload = (item: App) => {
 	loading.value = true
 	setTimeout(() => {
 		loading.value = false
-		uploaded.value = !uploaded.value
-		$q.notify({
-			icon: 'mdi-check-bold',
-			color: 'positive',
-			message: 'Приложение опубликовано!',
-			position: 'top',
-		})
+		item.published = !item.published
+		if (item.published) {
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'positive',
+				message: 'Приложение опубликовано!',
+				position: 'top',
+			})
+		} else {
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'orange',
+				message: 'Публикация отозвана!',
+				position: 'top',
+			})
+		}
 	}, 2000)
 }
 </script>
@@ -106,11 +115,11 @@ const toggleUpload = () => {
 			.val(@click.stop='toggleVersion') {{ props.item.version }}
 
 			.allbt
-				q-btn(v-if='uploaded' flat color="negative" :loading='loading' label="Отменить публикацию" @click.stop="toggleUpload" icon='mdi-upload-off-outline') 
-				q-btn(v-else flat color="negative" :loading='loading' label="Опубликовать" @click.stop="toggleUpload" icon='mdi-upload-outline') 
+				q-btn(v-if='item.published' flat color="primary" :loading='loading' label="Отменить публикацию" @click.stop="toggleUpload(item)" icon='mdi-upload-off-outline') 
+				q-btn(v-else flat color="primary" :loading='loading' label="Опубликовать" @click.stop="toggleUpload(item)" icon='mdi-upload-outline') 
 
 
-		.myrow(v-if='!uploaded')
+		.myrow(v-if='!item.published')
 			.bt(@click.stop='navigate')
 				IconFlag.ic
 				span Помощник по настройке
@@ -126,11 +135,10 @@ const toggleUpload = () => {
 
 			.to
 				q-btn(unelevated color="primary" label="К приложению" @click.stop="navigate1" icon='mdi-pencil-outline') 
-				// q-btn(flat color="negative" label="Опубликовать" @click.stop="navigate1" icon='mdi-pencil-outline') 
 
 		.caution(v-else)
-			div Версия приложения опубликована в базе данных <strong>DV-PROD</strong>. Вы не можете больше вносить изменения.
-			div Чтобы изменить настройки, сначала отмените публикацию.
+			div Данная версия приложения опубликована в базе данных <strong>DV-PROD</strong>.<br />Вы не можете больше вносить изменения.
+			q-btn(unelevated color="secondary" label="Открыть на просмотр" @click.stop="navigate1" size='sm') 
 
 </template>
 
@@ -219,5 +227,10 @@ const toggleUpload = () => {
 	text-align: center;
 	border: 1px solid $negative;
 	padding: 0.5rem;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	// justify-items: start;
+	// align-items: stretch;
+	column-gap: 1rem;
 }
 </style>
