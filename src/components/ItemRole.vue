@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, nextTick } from 'vue'
 import { motion } from 'motion-v'
-import IconMenu from '@/components/IconMenu.vue'
-import { uid, useQuasar } from 'quasar'
+import IconMenuRole from '@/components/IconMenuRole.vue'
+import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+import RoleRulesDialog from '@/components/RoleRulesDialog.vue'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<any[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
+const router = useRouter()
 
 const Div = motion.div
 
@@ -26,19 +29,8 @@ const action = async (item: App) => {
 	}
 }
 
-const calcClass = (item: App, index: number) => {
-	// if (expanded.value && activeItem.value == item.id && item.group > 1) return 'active group'
+const calcClass = (item: any, index: number) => {
 	if (expanded.value && activeItem.value == item.id) return 'active'
-	// if (
-	// 	item.group > 1 &&
-	// 	overItem.value &&
-	// 	hoverIndex.value !== dragIndex.value &&
-	// 	hoverIndex.value == index
-	// )
-	// 	return 'drop'
-	// if (item.group > 1) return 'group'
-	// if (overItem.value && hoverIndex.value !== dragIndex.value && hoverIndex.value == index)
-	// 	return 'drop'
 	return ''
 }
 
@@ -58,20 +50,6 @@ const spring = {
 	bounce: 0.25,
 }
 
-// const overGroup = ref(false)
-//
-// const draggedItem = ref()
-// const dragIndex = ref<number>(100)
-// const overItem = ref(false)
-//
-// const hoverItem = ref()
-// const hoverIndex = ref<number>(100)
-//
-// const onDragStart = (item: App, n: number) => {
-// 	draggedItem.value = item
-// 	dragIndex.value = n
-// }
-
 const $q = useQuasar()
 
 const calcGhost = computed(() => {
@@ -89,14 +67,21 @@ const label = computed(() => {
 	return ''
 })
 
-const setIcon = (icon: any) => {
+// const setIcon = (icon: any) => {
+// 	let item = tapes.value?.find((el) => el.id == activeItem.value)
+// 	if (item) {
+// 		item.pic = icon
+// 	}
+// }
+
+const setIcon = (icon: string) => {
 	let item = tapes.value?.find((el) => el.id == activeItem.value)
 	if (item) {
-		item.pic = icon
+		item.avatar = icon // теперь это строка — либо svg-name, либо url
 	}
 }
 
-function stopClick(item: App, event: MouseEvent) {
+function stopClick(item: any, event: MouseEvent) {
 	if (item.id === activeItem.value) {
 		event.stopPropagation()
 	}
@@ -107,19 +92,29 @@ const ghostItem = ref()
 const duble = (e: App) => {
 	emit('duplicate', e)
 }
-const calcIcon = (e: string) => {
-	return `mdi-numeric-${e}-circle-outline`
+// const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
+
+const getImageUrl = (src?: string) => {
+	if (!src) return ''
+	if (src.includes('/avatar/')) return src
+	return new URL(`../assets/img/${src}.svg`, import.meta.url).href
 }
 
-const visibleItems = (items: any) => {
-	return items.length <= 4 ? items : items.slice(0, 3)
-}
-const hasOverflow = (items: any) => items.length > 4
+const form = ref('Просмотр')
+const options = ['Создание', 'Просмотр', 'Редактирование']
+const dialog = ref(false)
 
-const calcItemClass = (item: App, id: number) => {
-	return item.version == id.toString() ? 'selected' : ''
+const toggleDialog = () => {
+	dialog.value = !dialog.value
 }
-const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
+const goto = () => {
+	router.push('/form')
+}
+
+const role = ref()
+const setRole = (e: string) => {
+	role.value = e
+}
 </script>
 
 <template lang="pug">
@@ -132,28 +127,38 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:data-group="item.group > 1 ? 'true' : 'false'"
 	:class='calcClass(item, index)'
 )
+	.img(@click='stopClick(item, $event)')
+		q-img.av(:src='getImageUrl(item.avatar)')
+		IconMenuRole(@select='setIcon' :avatar='item.avatar')
+
 	.ttt()
-		template(v-if='expanded && item.id == activeItem')
-			.head
-				span(@click.stop) {{ item.label }}
-					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
-						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+		.head
+			span(@click.stop) {{ item.label }}
+				q-popup-edit(v-if='expanded && activeItem == item.id' v-model="item.label" auto-save v-slot="scope")
+					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
-		.myrow(v-else)
-			.img
-				q-img(:src='getImageUrl(item.avatar)')
-			div {{ item.label }}
+		.content(v-if='expanded && item.id == activeItem')
+			.grid
+				label Правила определения роли:
+				.val(v-if='role' @click.stop="toggleDialog")
+					span {{ role }}
+				q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog" size='sm') 
 
-		// AppPreviewNew(
-			v-if='activeItem == item.id && item.group == 1'
-			:item='item',
-			@remove='remove'
-			@duplicate='duble'
-			)
+			.hr Форма для показа в папках
+			.grid(@click.stop)
+				label Форма:
+				.row.items-center
+					q-select(filled dense v-model="form" :options="options" )
+						template(v-slot:after)
+							q-btn(flat icon="mdi-arrow-right-circle-outline" label='Перейти' color="primary" @click="goto" dense) 
+						template(v-slot:after-options)
+							q-separator
+							q-item
+								q-item-section
+									q-btn(flat color="primary" label="Создать форму" icon="mdi-plus-circle" @click="dialog = true" size='sm' v-close-popup) 
 
-		// .img(v-if='item.group == 1' @click='stopClick(item, $event)')
-		// 	component(:is='item.pic')
-		// 	IconMenu(@select='setIcon' :icon='item.pic.name')
+
+	RoleRulesDialog(v-model="dialog" v-model:role='item.label' @set='setRole')
 
 .ghostItem(ref='ghostItem'
 	v-if='expanded',
@@ -170,18 +175,30 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	min-height: 380px;
 	padding: 0;
 	top: 125px;
+	display: block;
 	.ttt {
 		width: 100%;
 		height: 100%;
 		padding: 1rem;
 	}
+	.img {
+		width: 140px;
+		height: 140px;
+		position: absolute;
+		bottom: 1rem;
+		left: 1rem;
+	}
+}
+.av {
+	border-radius: 1rem;
 }
 
 .img {
 	width: 80px;
 	height: 80px;
 }
-.parent.end .myrow {
+
+.parent.end .it {
 	display: flex;
 	justify-content: start;
 	align-items: center;
@@ -202,18 +219,39 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	font-size: 0.7rem;
 	color: hsl(212 38% 53% / 1);
 }
-.head {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	span {
-		color: $primary;
-		border-bottom: 1px dotted $primary;
-		cursor: pointer;
-	}
+.active .head span {
+	color: $primary;
+	border-bottom: 1px dotted $primary;
+	cursor: pointer;
 }
 
 .selected {
 	background: var(--selection);
+}
+.content {
+	font-size: 0.8rem;
+}
+.grid {
+	width: 400px;
+	margin: 1rem auto 0;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	justify-items: start;
+	align-items: center;
+	column-gap: 1rem;
+	row-gap: 0.5rem;
+	justify-content: center;
+}
+.hr {
+	width: 400px;
+	margin: 0.5rem auto;
+	border-top: 1px solid #dedede;
+	text-align: left;
+	padding-top: 1rem;
+	// grid-column: 1/-1;
+}
+.val span {
+	color: $primary;
+	border-bottom: 1px dotted $primary;
 }
 </style>

@@ -3,12 +3,11 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { motion } from 'motion-v'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { useQuasar } from 'quasar'
+import { uid, useQuasar } from 'quasar'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import ItemRole from '@/components/ItemRole.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
-import RoleRulesDialog from '@/components/RoleRulesDialog.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -16,19 +15,19 @@ const activeItem = ref('')
 
 const roles = ref([
 	{
-		id: 1,
+		id: '1',
 		label: 'Инициатор',
 		expand: false,
 		avatar: 'avatar1',
 	},
 	{
-		id: 2,
+		id: '2',
 		label: 'Руководитель',
 		expand: false,
 		avatar: 'avatar2',
 	},
 	{
-		id: 3,
+		id: '3',
 		label: 'Кадровик',
 		expand: false,
 		avatar: 'avatar3',
@@ -68,7 +67,7 @@ const expanded = ref<boolean>(false)
 
 const create = (e: any) => {
 	let tmp = {
-		id: +new Date(),
+		id: uid(),
 		label: e.label,
 		expand: false,
 		avatar: 'avatar1',
@@ -103,7 +102,7 @@ const onDragLeavePlus = () => {
 const onDropPlus = () => {
 	duple.value = false
 	let tmp = {
-		id: +new Date(),
+		id: uid(),
 		label: 'Копия роли',
 		expand: false,
 		avatar: 'avatar1',
@@ -119,22 +118,8 @@ const onDropPlus = () => {
 		})
 	}, 1200)
 }
-const form = ref('Просмотр')
-const options = ['Создание', 'Просмотр', 'Редактирование']
-
-const dialog = ref(false)
-
-const toggleDialog = () => {
-	dialog.value = !dialog.value
-}
-const goto = () => {
-	router.push('/form')
-}
 
 const role = ref()
-const setRole = (e: string) => {
-	role.value = e
-}
 
 // new code **************************************
 const Div = motion.div
@@ -201,65 +186,6 @@ q-page(padding, @click='action')
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
 		)
-
-	// 	div(v-if='tapes.length == 0' id="no-drag"
-	// 		v-motion
-	// 		:initial="{ y: 40, opacity: 0 }"
-	// 		:enter='{ y: 0, opacity: 1, transition: { delay: 400 } }'
-	// 		)
-	// 		Empty(mode='role')
-	// 	.item1(v-else v-for="(item, index) in tapes" :key="item.id"
-	// 		v-motion
-	// 		:initial="{ y: 40, opacity: 0 }"
-	// 		:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
-	// 		@click.stop='expand(item)'
-	// 		:class="calcClass(item)"
-	// 		)
-	// 		q-img.img(:src='getImageUrl(item.avatar)')
-	// 		.hg {{ item.label }}
-	//
-	// 		.content(v-if='item.expand'
-	// 			v-motion
-	// 			:initial="{ x: 100, opacity: 0 }"
-	// 			:enter="{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 30, delay: 300 } }")
-	// 			br
-	// 			.grid
-	// 				label Название роли:
-	// 				.val()
-	// 					span(@click.stop) {{ item.label }}
-	// 						q-popup-edit(v-model="item.label" auto-save v-slot="scope")
-	// 							q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
-	//
-	// 				label Правила определения роли:
-	// 				.val(v-if='role' @click.stop="toggleDialog")
-	// 					span {{ role }}
-	// 				q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog" size='sm') 
-	//
-	// 			.hr Форма для показа в папках
-	// 			.grid(@click.stop)
-	// 				label Форма:
-	// 				.row.items-center
-	// 					q-select(filled dense v-model="form" :options="options" )
-	// 						template(v-slot:after)
-	// 							q-btn(flat icon="mdi-arrow-right-circle-outline" label='Перейти' color="primary" @click="goto" dense) 
-	// 						template(v-slot:after-options)
-	// 							q-separator
-	// 							q-item
-	// 								q-item-section
-	// 									q-btn(flat color="primary" label="Создать форму" icon="mdi-plus-circle" @click="dialog = true" size='sm' v-close-popup) 
-	//
-	// 			RoleRulesDialog(v-model="dialog" v-model:role='item.label' @set='setRole')
-	//
-	// 	.plusCont(id="no-drag"
-	// 		@dragover.prevent="onDragEnterPlus"
-	// 		@dragenter.prevent
-	// 		@dragleave="onDragLeavePlus"
-	// 		@drop='onDropPlus'
-	// 		:class="{ duplicate: duple }"
-	// 		)
-	// 		AddButton(v-if='!expanded' @create='create' mode="list")
-	//
-	// Trash(v-model="dragStatus" @remove="remove" :group='expanded' :duple='duple')
 
 </template>
 
