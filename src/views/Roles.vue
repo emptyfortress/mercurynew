@@ -63,8 +63,6 @@ const $q = useQuasar()
 
 const expanded = ref<boolean>(false)
 
-// const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
-
 const create = (e: any) => {
 	let tmp = {
 		id: uid(),
@@ -81,6 +79,29 @@ const create = (e: any) => {
 		})
 	}, 1200)
 }
+
+const duble = (e: any) => {
+	let tmp = {
+		id: uid(),
+		label: e.label + '-copy',
+		expand: false,
+		avatar: e.avatar,
+	}
+	tapes.value?.unshift(tmp)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Роль дублирована',
+		})
+	}, 1200)
+}
+
+const remove = (e: number) => {
+	expanded.value = false
+	tapes.value?.splice(e, 1)
+}
+
 const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
@@ -185,6 +206,8 @@ q-page(padding, @click='action')
 			v-model:tapes='tapes',
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
+			@duplicate="duble"
+			@remove="remove"
 		)
 
 </template>

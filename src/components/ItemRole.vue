@@ -10,10 +10,11 @@ const expanded = defineModel('expanded')
 const tapes = defineModel<any[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
 const router = useRouter()
+const selectedItem = ref<any>(null)
 
 const Div = motion.div
 
-const emit = defineEmits(['navigate', 'createGroup', 'duplicate'])
+const emit = defineEmits(['navigate', 'duplicate', 'remove'])
 
 const action = async (item: App) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
@@ -67,13 +68,6 @@ const label = computed(() => {
 	return ''
 })
 
-// const setIcon = (icon: any) => {
-// 	let item = tapes.value?.find((el) => el.id == activeItem.value)
-// 	if (item) {
-// 		item.pic = icon
-// 	}
-// }
-
 const setIcon = (icon: string) => {
 	let item = tapes.value?.find((el) => el.id == activeItem.value)
 	if (item) {
@@ -89,10 +83,13 @@ function stopClick(item: any, event: MouseEvent) {
 
 const ghostItem = ref()
 
-const duble = (e: App) => {
+const duble = (e: any) => {
 	emit('duplicate', e)
 }
-// const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
+
+const remove = (e: any) => {
+	emit('remove', e)
+}
 
 const getImageUrl = (src?: string) => {
 	if (!src) return ''
@@ -104,14 +101,17 @@ const form = ref('Просмотр')
 const options = ['Создание', 'Просмотр', 'Редактирование']
 const dialog = ref(false)
 
-const toggleDialog = () => {
+const toggleDialog = (item: any) => {
+	selectedItem.value = item
 	dialog.value = !dialog.value
 }
+
 const goto = () => {
 	router.push('/form')
 }
 
 const role = ref()
+
 const setRole = (e: string) => {
 	role.value = e
 }
@@ -140,9 +140,9 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		.content(v-if='expanded && item.id == activeItem')
 			.grid
 				label Правила определения роли:
-				.val(v-if='role' @click.stop="toggleDialog")
+				.val(v-if='role' @click.stop="toggleDialog(item)")
 					span {{ role }}
-				q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog" size='sm') 
+				q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog(item)" size='sm') 
 
 			.hr Форма для показа в папках
 			.grid(@click.stop)
@@ -157,8 +157,11 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 								q-item-section
 									q-btn(flat color="primary" label="Создать форму" icon="mdi-plus-circle" @click="dialog = true" size='sm' v-close-popup) 
 
+			.bt
+				q-btn(flat color="primary" label="Дублировать" @click.stop="duble(item)") 
+				q-btn(flat color="negative" label="Удалить" @click.stop="remove(index)") 
 
-	RoleRulesDialog(v-model="dialog" v-model:role='item.label' @set='setRole')
+
 
 .ghostItem(ref='ghostItem'
 	v-if='expanded',
@@ -167,6 +170,12 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 )
 	div {{ label }}
 	
+RoleRulesDialog(
+	v-if="dialog"
+	v-model="dialog"
+	:role="selectedItem?.label"
+	@set="setRole"
+)
 </template>
 
 <style scoped lang="scss">
@@ -196,6 +205,12 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 .img {
 	width: 80px;
 	height: 80px;
+}
+
+.bt {
+	position: absolute;
+	bottom: 1rem;
+	right: 1rem;
 }
 
 .parent.end .it {
