@@ -125,7 +125,7 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/roles',
+			path: '/roles/:id?',
 			name: 'roles',
 			component: () => import('@/views/Roles.vue'),
 			meta: {

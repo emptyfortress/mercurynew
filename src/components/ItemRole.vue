@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, nextTick } from 'vue'
 import { motion } from 'motion-v'
-// import AppPreviewNew from '@/components/AppPreviewNew.vue'
-// import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 import IconMenu from '@/components/IconMenu.vue'
 import { uid, useQuasar } from 'quasar'
 
@@ -21,6 +19,7 @@ const action = async (item: App) => {
 	} else {
 		expanded.value = true
 		activeItem.value = item.id
+		emit('navigate', item.id)
 
 		await nextTick()
 		ghostItem.value.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
@@ -28,18 +27,18 @@ const action = async (item: App) => {
 }
 
 const calcClass = (item: App, index: number) => {
-	if (expanded.value && activeItem.value == item.id && item.group > 1) return 'active group'
+	// if (expanded.value && activeItem.value == item.id && item.group > 1) return 'active group'
 	if (expanded.value && activeItem.value == item.id) return 'active'
-	if (
-		item.group > 1 &&
-		overItem.value &&
-		hoverIndex.value !== dragIndex.value &&
-		hoverIndex.value == index
-	)
-		return 'drop'
-	if (item.group > 1) return 'group'
-	if (overItem.value && hoverIndex.value !== dragIndex.value && hoverIndex.value == index)
-		return 'drop'
+	// if (
+	// 	item.group > 1 &&
+	// 	overItem.value &&
+	// 	hoverIndex.value !== dragIndex.value &&
+	// 	hoverIndex.value == index
+	// )
+	// 	return 'drop'
+	// if (item.group > 1) return 'group'
+	// if (overItem.value && hoverIndex.value !== dragIndex.value && hoverIndex.value == index)
+	// 	return 'drop'
 	return ''
 }
 
@@ -59,19 +58,19 @@ const spring = {
 	bounce: 0.25,
 }
 
-const overGroup = ref(false)
-
-const draggedItem = ref()
-const dragIndex = ref<number>(100)
-const overItem = ref(false)
-
-const hoverItem = ref()
-const hoverIndex = ref<number>(100)
-
-const onDragStart = (item: App, n: number) => {
-	draggedItem.value = item
-	dragIndex.value = n
-}
+// const overGroup = ref(false)
+//
+// const draggedItem = ref()
+// const dragIndex = ref<number>(100)
+// const overItem = ref(false)
+//
+// const hoverItem = ref()
+// const hoverIndex = ref<number>(100)
+//
+// const onDragStart = (item: App, n: number) => {
+// 	draggedItem.value = item
+// 	dragIndex.value = n
+// }
 
 const $q = useQuasar()
 
@@ -105,9 +104,6 @@ function stopClick(item: App, event: MouseEvent) {
 
 const ghostItem = ref()
 
-const isOver = (item: App) => {
-	return overGroup.value && activeItem.value == item.id && item.group == 1
-}
 const duble = (e: App) => {
 	emit('duplicate', e)
 }
@@ -123,6 +119,7 @@ const hasOverflow = (items: any) => items.length > 4
 const calcItemClass = (item: App, id: number) => {
 	return item.version == id.toString() ? 'selected' : ''
 }
+const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
 </script>
 
 <template lang="pug">
@@ -135,15 +132,17 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:data-group="item.group > 1 ? 'true' : 'false'"
 	:class='calcClass(item, index)'
 )
-	.ttt(v-if='!isOver(item)')
+	.ttt()
 		template(v-if='expanded && item.id == activeItem')
 			.head
 				span(@click.stop) {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
-		template(v-else)
-			span {{ item.label }}
+		.myrow(v-else)
+			.img
+				q-img(:src='getImageUrl(item.avatar)')
+			div {{ item.label }}
 
 		// AppPreviewNew(
 			v-if='activeItem == item.id && item.group == 1'
@@ -152,9 +151,9 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			@duplicate='duble'
 			)
 
-		.img(v-if='item.group == 1' @click='stopClick(item, $event)')
-			component(:is='item.pic')
-			IconMenu(@select='setIcon' :icon='item.pic.name')
+		// .img(v-if='item.group == 1' @click='stopClick(item, $event)')
+		// 	component(:is='item.pic')
+		// 	IconMenu(@select='setIcon' :icon='item.pic.name')
 
 .ghostItem(ref='ghostItem'
 	v-if='expanded',
@@ -166,15 +165,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 </template>
 
 <style scoped lang="scss">
-.grid-item {
-	height: 55px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 2rem;
-	color: var(--icon);
-}
-
 .parent.end .it.active {
 	width: 680px;
 	min-height: 380px;
@@ -187,6 +177,21 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	}
 }
 
+.img {
+	width: 80px;
+	height: 80px;
+}
+.parent.end .myrow {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	gap: 0.5rem;
+	.img {
+		position: static;
+		width: 48px;
+		height: 48px;
+	}
+}
 .ghostItem {
 	height: 100%;
 	border-radius: 0.5rem;
@@ -207,18 +212,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		cursor: pointer;
 	}
 }
-.fuc {
-	width: 100%;
-	height: 100%;
-	background: #ccc;
-}
 
-.to {
-	position: absolute;
-	bottom: 1rem;
-	left: 50%;
-	transform: translateX(-50%);
-}
 .selected {
 	background: var(--selection);
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUpdated, markRaw } from 'vue'
 import { motion } from 'motion-v'
+import { animations } from '@formkit/drag-and-drop'
 import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useApps } from '@/stores/apps'
@@ -60,6 +61,7 @@ const Div = motion.div
 // }
 
 const config = {
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	group: 'items',
@@ -71,6 +73,7 @@ const config = {
 	},
 }
 const config1 = {
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: false,
 	draggable: (child: HTMLElement) => {
