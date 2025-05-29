@@ -4,24 +4,19 @@ import IconMenuRole from '@/components/IconMenuRole.vue'
 
 const emit = defineEmits(['select'])
 
-const avatar = ref('avatar1')
+const avatar = ref('src/assets/img/avatar/avatar5.svg')
 const select = (icon: any) => {
 	avatar.value = icon
 	emit('select', icon)
-}
-
-const getImageUrl = (src?: string) => {
-	if (!src) return ''
-	if (src.includes('/avatar/')) return src
-	return new URL(`../assets/img/${src}.svg`, import.meta.url).href
 }
 </script>
 
 <template lang="pug">
 .icon
 	label Иконка:
-	q-img.av(:src='getImageUrl(avatar)')
-	IconMenuRole(@select='select' :avatar='avatar')
+	.av
+		img(:src='avatar')
+		IconMenuRole(@select='select' :avatar='avatar')
 
 </template>
 
@@ -33,9 +28,9 @@ const getImageUrl = (src?: string) => {
 	align-items: center;
 	.av {
 		cursor: pointer;
-		width: 50px;
-		height: 50px;
-		border-radius: 0.5rem;
+		img {
+			width: 48px;
+		}
 	}
 }
 </style>

@@ -14,7 +14,7 @@ const selectedItem = ref<any>(null)
 
 const Div = motion.div
 
-const emit = defineEmits(['navigate', 'duplicate', 'remove'])
+const emit = defineEmits(['navigate', 'duplicate', 'remove', 'drag'])
 
 const action = async (item: App) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
@@ -71,7 +71,7 @@ const label = computed(() => {
 const setIcon = (icon: string) => {
 	let item = tapes.value?.find((el) => el.id == activeItem.value)
 	if (item) {
-		item.avatar = icon // теперь это строка — либо svg-name, либо url
+		item.avatar = icon
 	}
 }
 
@@ -91,11 +91,7 @@ const remove = (e: any) => {
 	emit('remove', e)
 }
 
-const getImageUrl = (src?: string) => {
-	if (!src) return ''
-	if (src.includes('/avatar/')) return src
-	return new URL(`../assets/img/${src}.svg`, import.meta.url).href
-}
+const getImageUrl = (src?: string) => src || ''
 
 const form = ref('Просмотр')
 const options = ['Создание', 'Просмотр', 'Редактирование']
@@ -115,11 +111,15 @@ const role = ref()
 const setRole = (e: string) => {
 	role.value = e
 }
+const ondragStart = (e: any) => {
+	emit('drag', e)
+}
 </script>
 
 <template lang="pug">
 Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@click.stop='action(item)',
+	@dragstart='ondragStart(item)'
 	:layout-id="item.id"
 	:initial="initial"
 	:animate="animate"
@@ -127,39 +127,39 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:data-group="item.group > 1 ? 'true' : 'false'"
 	:class='calcClass(item, index)'
 )
-	.img(@click='stopClick(item, $event)')
-		q-img.av(:src='getImageUrl(item.avatar)')
-		IconMenuRole(@select='setIcon' :avatar='item.avatar')
+	.av
+		span(@click='stopClick(item, $event)')
+			img(:src='getImageUrl(item.avatar)')
+			IconMenuRole(@select='setIcon' :avatar='item.avatar')
 
-	.ttt()
 		.head
-			span(@click.stop) {{ item.label }}
+			span(@click='stopClick(item, $event)') {{ item.label }}
 				q-popup-edit(v-if='expanded && activeItem == item.id' v-model="item.label" auto-save v-slot="scope")
 					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
-		.content(v-if='expanded && item.id == activeItem')
-			.grid
-				label Правила определения роли:
-				.val(v-if='role' @click.stop="toggleDialog(item)")
-					span {{ role }}
-				q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog(item)" size='sm') 
+	.content(v-if='expanded && item.id == activeItem')
+		.grid
+			label Правила определения роли:
+			.val(v-if='role' @click.stop="toggleDialog(item)")
+				span {{ role }}
+			q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog(item)" size='sm') 
 
-			.hr Форма для показа в папках
-			.grid(@click.stop)
-				label Форма:
-				.row.items-center
-					q-select(filled dense v-model="form" :options="options" )
-						template(v-slot:after)
-							q-btn(flat icon="mdi-arrow-right-circle-outline" label='Перейти' color="primary" @click="goto" dense) 
-						template(v-slot:after-options)
-							q-separator
-							q-item
-								q-item-section
-									q-btn(flat color="primary" label="Создать форму" icon="mdi-plus-circle" @click="dialog = true" size='sm' v-close-popup) 
+		.hr Форма для показа в папках
+		.grid(@click.stop)
+			label Форма:
+			.row.items-center
+				q-select(filled dense v-model="form" :options="options" )
+					template(v-slot:after)
+						q-btn(flat icon="mdi-arrow-right-circle-outline" label='Перейти' color="primary" @click="goto" dense) 
+					template(v-slot:after-options)
+						q-separator
+						q-item
+							q-item-section
+								q-btn(flat color="primary" label="Создать форму" icon="mdi-plus-circle" @click="dialog = true" size='sm' v-close-popup) 
 
-			.bt
-				q-btn(flat color="primary" label="Дублировать" @click.stop="duble(item)") 
-				q-btn(flat color="negative" label="Удалить" @click.stop="remove(index)") 
+		.bt
+			q-btn(flat color="primary" label="Дублировать" @click.stop="duble(item)") 
+			q-btn(flat color="negative" label="Удалить" @click.stop="remove(index)") 
 
 
 
@@ -179,32 +179,31 @@ RoleRulesDialog(
 </template>
 
 <style scoped lang="scss">
+.parent .it {
+	text-align: center;
+	.av {
+		img {
+			height: 90px;
+			width: 90px;
+		}
+	}
+}
 .parent.end .it.active {
 	width: 680px;
 	min-height: 380px;
-	padding: 0;
+	padding: 1rem;
 	top: 125px;
 	display: block;
-	.ttt {
-		width: 100%;
-		height: 100%;
-		padding: 1rem;
+	.av {
+		display: flex;
+		gap: 1rem;
+		justify-content: start;
+		align-items: center;
+		img {
+			height: 90px;
+			width: 90px;
+		}
 	}
-	.img {
-		width: 140px;
-		height: 140px;
-		position: absolute;
-		bottom: 1rem;
-		left: 1rem;
-	}
-}
-.av {
-	border-radius: 1rem;
-}
-
-.img {
-	width: 80px;
-	height: 80px;
 }
 
 .bt {
@@ -218,10 +217,15 @@ RoleRulesDialog(
 	justify-content: start;
 	align-items: center;
 	gap: 0.5rem;
-	.img {
-		position: static;
-		width: 48px;
-		height: 48px;
+	.av {
+		display: flex;
+		gap: 1rem;
+		justify-content: start;
+		align-items: center;
+		img {
+			width: 36px;
+			height: 36px;
+		}
 	}
 }
 .ghostItem {

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, markRaw } from 'vue'
-import IconApp from '@/components/icons/list/IconApp.vue'
 import IconMenu from '@/components/IconMenu.vue'
 
 const IconApp1 = markRaw(IconApp)
@@ -9,16 +8,16 @@ const emit = defineEmits(['select'])
 
 const select = (icon: any) => {
 	selectedIcon.value = icon
-	emit('select', icon)
+	emit('select', selectedIcon.value)
 }
-const selectedIcon = ref(IconApp1)
-const temp = ref('IconApp')
+const selectedIcon = ref('src/assets/img/avatar/avatar5.svg')
+const temp = ref('src/assets/img/avatar/avatar5.svg')
 </script>
 
 <template lang="pug">
 .icon
 	label Иконка:
-	component.ic(:is='selectedIcon')
+	img.ic(:src='selectedIcon')
 	IconMenu(@select='select' :icon='temp')
 
 </template>

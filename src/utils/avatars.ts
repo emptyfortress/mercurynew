@@ -1,9 +1,9 @@
-const iconModules = import.meta.glob('@/assets/img/avatar/*.png', {
+const svgModules = import.meta.glob('@/assets/img/avatar/*.svg', {
 	eager: true,
 	import: 'default',
 }) as Record<string, string>
 
-export const allIcons = Object.entries(iconModules).map(([path, pic], index) => {
-	const name = path.split('/').pop()?.replace('.png', '') || `icon${index}`
-	return { id: index, name, pic }
+export const allAvatars = Object.entries(svgModules).map(([path, url], index) => {
+	const name = path.split('/').pop()?.replace('.svg', '') || `avatar${index}`
+	return { id: index, name, pic: url }
 })

@@ -18,19 +18,19 @@ const roles = ref([
 		id: '1',
 		label: 'Инициатор',
 		expand: false,
-		avatar: 'avatar1',
+		avatar: '/src/assets/img/avatar/avatar2.svg',
 	},
 	{
 		id: '2',
 		label: 'Руководитель',
 		expand: false,
-		avatar: 'avatar2',
+		avatar: '/src/assets/img/avatar/avatar1.svg',
 	},
 	{
 		id: '3',
 		label: 'Кадровик',
 		expand: false,
-		avatar: 'avatar3',
+		avatar: '/src/assets/img/avatar/avatar5.svg',
 	},
 ])
 // Функция для обновления URL при изменении состояния
@@ -63,19 +63,12 @@ const $q = useQuasar()
 
 const expanded = ref<boolean>(false)
 
-// const getImageUrl = (src?: string) => {
-// 	if (!src) return ''
-// 	if (src.includes('/avatar/')) return src
-// 	return new URL(`../assets/img/${src}.svg`, import.meta.url).href
-// }
-
 const create = (e: any) => {
-	console.log(e)
 	let tmp = {
 		id: uid(),
 		label: e.label,
 		expand: false,
-		avatar: 'avatar1',
+		avatar: e.avatar,
 	}
 	tapes.value?.unshift(tmp)
 	setTimeout(() => {
@@ -121,6 +114,7 @@ const config = {
 const [parent, tapes] = useDragAndDrop(roles.value, config)
 
 const duple = ref(false)
+
 const onDragEnterPlus = () => {
 	duple.value = true
 }
@@ -131,9 +125,9 @@ const onDropPlus = () => {
 	duple.value = false
 	let tmp = {
 		id: uid(),
-		label: 'Копия роли',
+		label: draggedItem.value.label + '-copy',
 		expand: false,
-		avatar: 'avatar1',
+		avatar: draggedItem.value.avatar,
 	}
 	tapes.value?.unshift(tmp)
 	// tapes.value?.push(tmp)
@@ -183,6 +177,11 @@ const action = () => {
 		activeItem.value = ''
 	}
 }
+
+const draggedItem = ref()
+const setDragged = (e: any) => {
+	draggedItem.value = e
+}
 </script>
 
 <template lang="pug">
@@ -215,6 +214,7 @@ q-page(padding, @click='action')
 			@navigate="navigate"
 			@duplicate="duble"
 			@remove="remove"
+			@drag='setDragged'
 		)
 
 </template>

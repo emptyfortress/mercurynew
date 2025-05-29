@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { allIcons } from '@/utils/avatars'
+import { allAvatars } from '@/utils/avatars'
 
 const props = defineProps({
 	icon: {
@@ -9,7 +9,7 @@ const props = defineProps({
 	},
 })
 
-const icons = ref(allIcons)
+const icons = ref(allAvatars)
 const emit = defineEmits(['select'])
 const selectedIcon = ref<string>('')
 
@@ -25,7 +25,7 @@ watch(
 
 const select = (icon: any) => {
 	selectedIcon.value = icon.name
-	emit('select', icon.pic) // Emit URL to PNG
+	emit('select', icon.pic) // передаём URL svg
 }
 </script>
 
@@ -41,13 +41,13 @@ q-menu
 			:class="{ selected: isSelected(icon.name) }"
 		)
 			q-item-section
-				q-img.ava(:src="icon.pic", :alt="icon.name",)
+				q-img.ava(:src="icon.pic", :alt="icon.name")
 </template>
 
 <style scoped lang="scss">
 .ii {
 	display: grid;
-	grid-template-columns: repeat(8, auto);
+	grid-template-columns: repeat(4, auto);
 	font-size: 1.8rem;
 	color: var(--icon);
 	.selected {
@@ -61,6 +61,6 @@ q-menu
 	width: 48px;
 	height: 48px;
 	object-fit: contain;
-	border-radius: 1rem;
+	border-radius: 50%;
 }
 </style>

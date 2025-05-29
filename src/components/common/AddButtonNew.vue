@@ -84,6 +84,7 @@ const submitForm = () => {
 		description: model1.value,
 		pic: icon.value,
 		group: group.value == true ? 2 : 1,
+		avatar: avatar.value,
 	})
 	resetForm()
 	add()
@@ -108,8 +109,13 @@ const calcFinish = computed(() => {
 })
 
 const icon = ref(IconApp1)
+const avatar = ref('src/assets/img/avatar/avatar1.svg')
 const setIcon = (e: any) => {
 	icon.value = e
+}
+
+const setRoleIcon = (e: string) => {
+	avatar.value = e
 }
 
 const holdTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
