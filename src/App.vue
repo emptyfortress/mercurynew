@@ -5,7 +5,7 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
-import IconHome from '@/components/icons/IconHome.vue'
+// import IconHome from '@/components/icons/IconHome.vue'
 import { useApps } from '@/stores/apps'
 import { useIdle, useCounter } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
@@ -160,7 +160,7 @@ q-layout(view='hHh LpR fFf')
 	q-header(elevated)
 		q-toolbar
 			q-btn(dense flat round @click='nav')
-				IconHome.home
+				img(src='@/assets/img/kp_logo.svg')
 			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"

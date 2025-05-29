@@ -63,7 +63,14 @@ const $q = useQuasar()
 
 const expanded = ref<boolean>(false)
 
+// const getImageUrl = (src?: string) => {
+// 	if (!src) return ''
+// 	if (src.includes('/avatar/')) return src
+// 	return new URL(`../assets/img/${src}.svg`, import.meta.url).href
+// }
+
 const create = (e: any) => {
+	console.log(e)
 	let tmp = {
 		id: uid(),
 		label: e.label,

@@ -3,6 +3,7 @@ import { ref, computed, nextTick, markRaw } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import IconList from '@/components/IconList.vue'
+import IconRoleList from '@/components/IconRoleList.vue'
 import IconApp from '@/components/icons/list/IconApp.vue'
 
 const props = defineProps({
@@ -247,6 +248,9 @@ function createGroup(): void {
 							)
 
 					IconList(@select='setIcon')
+
+				div(v-if="props.mode == 'role'")
+					IconRoleList(@select='setIcon')
 
 				q-card-actions(align="right" v-if='adding'
 					v-motion
