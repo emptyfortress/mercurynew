@@ -13,7 +13,6 @@ const icons = ref(allAvatars)
 const emit = defineEmits(['select'])
 
 const isSelected = (url: string) => {
-	console.log('compare:', url, '===', props.avatar)
 	return props.avatar === url ? 'selected' : ''
 }
 
