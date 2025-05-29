@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { allAvatars } from '@/utils/avatars'
 
 const props = defineProps({
-	icon: {
+	avatar: {
 		type: String,
 		default: '',
 	},
@@ -11,20 +11,13 @@ const props = defineProps({
 
 const icons = ref(allAvatars)
 const emit = defineEmits(['select'])
-const selectedIcon = ref<string>('')
 
-const isSelected = (e: string) => {
-	return selectedIcon.value === e ? 'selected' : ''
+const isSelected = (url: string) => {
+	console.log('compare:', url, '===', props.avatar)
+	return props.avatar === url ? 'selected' : ''
 }
 
-watch(
-	() => props.icon,
-	(val) => (selectedIcon.value = val),
-	{ immediate: true }
-)
-
 const select = (icon: any) => {
-	selectedIcon.value = icon.name
 	emit('select', icon.pic) // передаём URL svg
 }
 </script>
@@ -34,14 +27,14 @@ q-menu
 	q-list.ii
 		q-item(
 			clickable
-			v-for="icon in icons"
-			:key="icon.id"
-			@click="select(icon)"
+			v-for="item in icons"
+			:key="item.id"
+			@click="select(item)"
 			v-close-popup
-			:class="{ selected: isSelected(icon.name) }"
+			:class="{ selected: isSelected(item.pic) }"
 		)
 			q-item-section
-				q-img.ava(:src="icon.pic", :alt="icon.name")
+				q-img.ava(:src="item.pic")
 </template>
 
 <style scoped lang="scss">
