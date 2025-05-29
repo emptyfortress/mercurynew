@@ -256,7 +256,7 @@ function createGroup(): void {
 					IconList(@select='setIcon')
 
 				div(v-if="props.mode == 'role'")
-					IconRoleList(@select='setIcon')
+					IconRoleList(@select='setRoleIcon')
 
 				q-card-actions(align="right" v-if='adding'
 					v-motion

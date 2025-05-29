@@ -159,7 +159,11 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 
 		.bt
 			q-btn(flat color="primary" label="Дублировать" @click.stop="duble(item)") 
-			q-btn(flat color="negative" label="Удалить" @click.stop="remove(index)") 
+			q-btn(flat color="primary" label="Удалить" @click.stop) 
+				q-menu
+					q-list
+						q-item(clickable @click.stop="remove(index)").pink
+							q-item-section Да, удалить!
 
 
 
