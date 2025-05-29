@@ -18,21 +18,21 @@ const roles = ref([
 		id: '1',
 		label: 'Инициатор',
 		expand: false,
-		avatar: '/src/assets/img/avatar/avatar2.svg',
+		avatar: 'src/assets/img/avatar/avatar2.svg',
 		active: true,
 	},
 	{
 		id: '2',
 		label: 'Руководитель',
 		expand: false,
-		avatar: '/src/assets/img/avatar/avatar1.svg',
+		avatar: 'src/assets/img/avatar/avatar1.svg',
 		active: true,
 	},
 	{
 		id: '3',
 		label: 'Кадровик',
 		expand: false,
-		avatar: '/src/assets/img/avatar/avatar5.svg',
+		avatar: 'src/assets/img/avatar/avatar5.svg',
 	},
 ])
 // Функция для обновления URL при изменении состояния
