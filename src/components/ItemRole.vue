@@ -128,9 +128,11 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:class='calcClass(item, index)'
 )
 	.av
-		span(@click='stopClick(item, $event)')
+		.conteiner(@click='stopClick(item, $event)')
 			img(:src='getImageUrl(item.avatar)')
 			IconMenuRole(@select='setIcon' :avatar='item.avatar')
+			q-icon.pro(v-if='item.active' name="mdi-shuffle-variant" size='12px')
+				q-tooltip Используется в процессе
 
 		.head
 			span(@click='stopClick(item, $event)') {{ item.label }}
@@ -207,6 +209,10 @@ RoleRulesDialog(
 			height: 90px;
 			width: 90px;
 		}
+		.pro {
+			right: 0.1rem;
+			bottom: 0.8rem;
+		}
 	}
 }
 
@@ -229,6 +235,11 @@ RoleRulesDialog(
 		img {
 			width: 36px;
 			height: 36px;
+		}
+
+		.pro {
+			right: -5px;
+			bottom: 0rem;
 		}
 	}
 }
@@ -271,10 +282,23 @@ RoleRulesDialog(
 	border-top: 1px solid #dedede;
 	text-align: left;
 	padding-top: 1rem;
-	// grid-column: 1/-1;
 }
 .val span {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
+}
+.conteiner {
+	position: relative;
+	.pro {
+		position: absolute;
+		right: 1.7rem;
+		bottom: 0.8rem;
+		background: $primary;
+		background: $positive;
+		color: white;
+		border-radius: 50%;
+		padding: 2px;
+		border: 1px solid white;
+	}
 }
 </style>

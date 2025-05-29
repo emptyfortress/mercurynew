@@ -19,12 +19,14 @@ const roles = ref([
 		label: 'Инициатор',
 		expand: false,
 		avatar: '/src/assets/img/avatar/avatar2.svg',
+		active: true,
 	},
 	{
 		id: '2',
 		label: 'Руководитель',
 		expand: false,
 		avatar: '/src/assets/img/avatar/avatar1.svg',
+		active: true,
 	},
 	{
 		id: '3',
