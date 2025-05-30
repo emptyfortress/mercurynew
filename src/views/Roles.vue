@@ -8,6 +8,7 @@ import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import ItemRole from '@/components/ItemRole.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
+import TrashSimple from '@/components/common/TrashSimple.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -181,8 +182,15 @@ const action = () => {
 }
 
 const draggedItem = ref()
+const dragStatus = ref(false)
+
 const setDragged = (e: any) => {
 	draggedItem.value = e
+	dragStatus.value = true
+}
+const unsetDragged = () => {
+	console.log(1111)
+	dragStatus.value = false
 }
 </script>
 
@@ -217,8 +225,10 @@ q-page(padding, @click='action')
 			@duplicate="duble"
 			@remove="remove"
 			@drag='setDragged'
+			@undrag="unsetDragged"
 		)
 
+	TrashSimple(v-model="dragStatus" @remove="remove")
 </template>
 
 <style scoped lang="scss">

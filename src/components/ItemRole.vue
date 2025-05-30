@@ -14,7 +14,7 @@ const selectedItem = ref<any>(null)
 
 const Div = motion.div
 
-const emit = defineEmits(['navigate', 'duplicate', 'remove', 'drag'])
+const emit = defineEmits(['navigate', 'duplicate', 'remove', 'drag', 'undrag'])
 
 const action = async (item: App) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
@@ -91,12 +91,6 @@ const remove = (e: any) => {
 	emit('remove', e)
 }
 
-// const getImageUrl = (src?: string) => src || ''
-
-// const getImageUrl = (name?: string): string => {
-// 	return '@/assets/img/avatar/' + name + '.svg'
-// }
-
 const getImageUrl = (name?: string): string => {
 	if (!name) return new URL('../assets/img/avatar/avatar12.svg', import.meta.url).href
 	return new URL(`../assets/img/avatar/${name}.svg`, import.meta.url).href
@@ -123,12 +117,16 @@ const setRole = (e: string) => {
 const ondragStart = (e: any) => {
 	emit('drag', e)
 }
+const ondragEnd = () => {
+	emit('undrag')
+}
 </script>
 
 <template lang="pug">
 Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@click.stop='action(item)',
 	@dragstart='ondragStart(item)'
+	@dragend='ondragEnd'
 	:layout-id="item.id"
 	:initial="initial"
 	:animate="animate"
