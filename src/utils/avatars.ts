@@ -5,5 +5,5 @@ const svgModules = import.meta.glob('@/assets/img/avatar/*.svg', {
 
 export const allAvatars = Object.entries(svgModules).map(([path, url], index) => {
 	const name = path.split('/').pop()?.replace('.svg', '') || `avatar${index}`
-	return { id: index, name, pic: url }
+	return { id: index, name, url }
 })

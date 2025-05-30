@@ -3,21 +3,27 @@ import { ref } from 'vue'
 import IconMenuRole from '@/components/IconMenuRole.vue'
 
 const emit = defineEmits(['select'])
+const avatar = ref('avatar5')
 
-const avatar = ref('/src/assets/img/avatar/avatar5.svg')
-const select = (icon: any) => {
-	avatar.value = icon
-	emit('select', icon)
+const getImageUrl = (name?: string): string => {
+	if (!name) {
+		return new URL('../assets/img/avatar/default.svg', import.meta.url).href
+	}
+	return new URL(`../assets/img/avatar/${name}.svg`, import.meta.url).href
+}
+
+const select = (name: string) => {
+	avatar.value = name
+	emit('select', name)
 }
 </script>
 
 <template lang="pug">
 .icon
-	label Иконка:
-	.av
-		img(:src='avatar')
-		IconMenuRole(@select='select' :avatar='avatar')
-
+  label Иконка:
+  .av
+    img(:src='getImageUrl(avatar)')
+    IconMenuRole(@select='select' :avatar='avatar')
 </template>
 
 <style scoped lang="scss">

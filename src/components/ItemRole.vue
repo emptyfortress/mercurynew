@@ -51,7 +51,7 @@ const spring = {
 	bounce: 0.25,
 }
 
-const $q = useQuasar()
+// const $q = useQuasar()
 
 const calcGhost = computed(() => {
 	let ind = tapes.value?.findIndex((item) => item.id == activeItem.value)
@@ -91,7 +91,16 @@ const remove = (e: any) => {
 	emit('remove', e)
 }
 
-const getImageUrl = (src?: string) => src || ''
+// const getImageUrl = (src?: string) => src || ''
+
+// const getImageUrl = (name?: string): string => {
+// 	return '@/assets/img/avatar/' + name + '.svg'
+// }
+
+const getImageUrl = (name?: string): string => {
+	if (!name) return new URL('../assets/img/avatar/avatar12.svg', import.meta.url).href
+	return new URL(`../assets/img/avatar/${name}.svg`, import.meta.url).href
+}
 
 const form = ref('Просмотр')
 const options = ['Создание', 'Просмотр', 'Редактирование']
