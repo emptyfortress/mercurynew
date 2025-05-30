@@ -267,7 +267,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		.groupList(v-if='activeItem && item.group > 1 && activeItem !== item.id')
 			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
 
-		.version(v-if='activeItem == item.id' @click.stop :class='{pub: item.published}')
+		.version(v-if='activeItem == item.id && item.group == 1' @click.stop :class='{pub: item.published}')
 			span ver.
 			span.num {{ item.version }}
 			q-menu
