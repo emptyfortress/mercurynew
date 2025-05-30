@@ -195,7 +195,7 @@ q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?"
 			v-if='isLast',
 			unelevated,
 			color="primary",
-			label="Добавить условие",
+			label="Сохранить",
 			@click="addCond",
 			size="sm"
 			dense,

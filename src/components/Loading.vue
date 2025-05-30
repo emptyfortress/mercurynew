@@ -160,7 +160,7 @@ const myrows = computed(() => {
 .loading.q-mt-md
 	.flo
 		.inf Предпросмотр папки "{{ props.folder }}"
-		q-btn(flat round icon="mdi-tune-vertical-variant" color="primary" @click="action" size="12px") 
+		q-btn(round icon="mdi-tune-vertical-variant" color="primary" @click="action" size="12px") 
 			q-tooltip Настройки представления
 
 	.ready(v-if='isLoaded')
