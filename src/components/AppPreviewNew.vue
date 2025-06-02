@@ -114,18 +114,19 @@ const toggleUpload = (item: App) => {
 			label Версия:
 			.val(@click.stop='toggleVersion') {{ props.item.version }}
 
-			.allbt
-				q-btn(v-if='item.published' flat color="primary" :loading='loading' label="Отменить публикацию" @click.stop="toggleUpload(item)" icon='mdi-upload-off-outline') 
-				q-btn(v-else flat color="primary" :loading='loading' label="Опубликовать" @click.stop="toggleUpload(item)" icon='mdi-upload-outline') 
+			.pub
+				q-btn(v-if='item.published' flat color="primary" :loading='loading' label="Отменить изменения" @click.stop="toggleUpload(item)") 
+				q-btn(v-else flat color="primary" :loading='loading' label="Сохранить изменения" @click.stop="toggleUpload(item)" ) 
+				q-btn(v-if='item.published' flat color="primary" label="Проверить" @click.stop) 
 
-
-		.myrow(v-if='!item.published')
+		.myrow
 			.bt(@click.stop='navigate')
 				IconFlag.ic
 				span Помощник по настройке
-			.bt(@click.stop='duble(item)')
-				IconCopy.ic
-				span Дублировать приложение
+			// .bt(@click.stop='duble(item)')
+			// 	IconCopy.ic
+			// 	span Дублировать приложение
+			q-btn(unelevated color="primary" label="К приложению" @click.stop="navigate1" icon='mdi-pencil-outline') 
 			.bt(@click.stop)
 				IconTrash.ic
 				span Удалить приложение
@@ -133,12 +134,12 @@ const toggleUpload = (item: App) => {
 						q-item(clickable @click.stop='remove(props.item)').pink
 							q-item-section.text-center Да, удалить!
 
-			.to
-				q-btn(unelevated color="primary" label="К приложению" @click.stop="navigate1" icon='mdi-pencil-outline') 
+			// .to
+			// 	q-btn(unelevated color="primary" label="К приложению" @click.stop="navigate1" icon='mdi-pencil-outline') 
 
-		.caution(v-else)
-			div Данная версия приложения опубликована в базе данных <strong>DV-PROD</strong>.<br />Вы не можете больше вносить изменения.
-			q-btn(unelevated color="secondary" label="Открыть на просмотр" @click.stop="navigate1" size='sm') 
+		// .caution(v-else)
+		// 	div Данная версия приложения опубликована в базе данных <strong>DV-PROD</strong>.<br />Вы не можете больше вносить изменения.
+		// 	q-btn(unelevated color="secondary" label="Открыть на просмотр" @click.stop="navigate1" size='sm') 
 
 </template>
 
@@ -174,18 +175,25 @@ const toggleUpload = (item: App) => {
 .mygrid {
 	margin-top: 2rem;
 	display: grid;
-	grid-template-columns: auto 1fr 1fr;
+	grid-template-columns: auto auto 1fr 1fr;
 	justify-items: start;
 	align-items: start;
-	column-gap: 2rem;
-}
-.allbt {
-	grid-column: 3/-1;
-	grid-row: 1/5;
-	// justify-self: end;
-	align-self: center;
+	column-gap: 1rem;
 }
 
+.pub {
+	grid-column: 3/-1;
+	grid-row: 1/5;
+	align-self: center;
+	justify-self: center;
+}
+
+.pub1 {
+	grid-column: 4/5;
+	grid-row: 1/5;
+	align-self: center;
+	justify-self: center;
+}
 .myrow {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);

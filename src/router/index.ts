@@ -24,6 +24,16 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/history',
+			name: 'history',
+			component: () => import('@/views/History.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 0,
+			},
+		},
+		{
 			path: '/sel',
 			name: 'select',
 			component: () => import('@/views/Select.vue'),
