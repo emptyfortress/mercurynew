@@ -6,6 +6,7 @@ import IconFlag from '@/components/icons/IconFlag.vue'
 import IconCopy from '@/components/icons/IconCopy.vue'
 import IconTrash from '@/components/icons/IconTrash.vue'
 import { useQuasar } from 'quasar'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const myapps = useApps()
 const router = useRouter()
@@ -87,6 +88,13 @@ const toggleUpload = (item: App) => {
 		}
 	}, 2000)
 }
+
+const dialog = ref(false)
+const handleRemove = () => {
+	if (props.item.published) {
+		dialog.value = true
+	}
+}
 </script>
 
 <template lang="pug">
@@ -110,56 +118,29 @@ const toggleUpload = (item: App) => {
 			label Создано:
 			.val {{ props.item.created }}
 			label Изменено:
-			.val {{ props.item.created }}
-			label Версия:
-			.val(@click.stop='toggleVersion') {{ props.item.version }}
+			.val {{ props.item.modify }}
+			label Опубликовано:
+			.val(v-if='item.published') {{ props.item.created }}
+			.to(v-if='item.published' @click.stop) DV-test
+			.to.star(v-if='item.published' @click.stop) DV-prod
+				q-tooltip Последние изменения не опубликованы
+			template(v-else)
+				.val --''--
 
-			.allbt
-				q-btn(v-if='item.published' flat color="primary" :loading='loading' label="Отменить публикацию" @click.stop="toggleUpload(item)" icon='mdi-upload-off-outline') 
-				q-btn(v-else flat color="primary" :loading='loading' label="Опубликовать" @click.stop="toggleUpload(item)" icon='mdi-upload-outline') 
-
-
-		.myrow(v-if='!item.published')
-			.bt(@click.stop='navigate')
-				IconFlag.ic
-				span Помощник по настройке
-			.bt(@click.stop='duble(item)')
-				IconCopy.ic
-				span Дублировать приложение
-			.bt(@click.stop)
-				IconTrash.ic
-				span Удалить приложение
-					q-menu()
-						q-item(clickable @click.stop='remove(props.item)').pink
-							q-item-section.text-center Да, удалить!
-
-			.to
-				q-btn(unelevated color="primary" label="К приложению" @click.stop="navigate1" icon='mdi-pencil-outline') 
-
-		.caution(v-else)
-			div Данная версия приложения опубликована в базе данных <strong>DV-PROD</strong>.<br />Вы не можете больше вносить изменения.
-			q-btn(unelevated color="secondary" label="Открыть на просмотр" @click.stop="navigate1" size='sm') 
-
+		.myrow
+			q-btn(flat color="primary" label='Помощник' icon='mdi-lightbulb-outline' @click.stop="navigate" ) 
+			q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click.stop="navigate1" ) 
+			q-btn(flat color="primary" icon='mdi-delete-empty-outline' label='Удалить приложение' @click.stop='handleRemove') 
+				q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
+					q-item(clickable @click.stop='remove(props.item)').pink
+						q-item-section.text-center Да, удалить!
+			
+	ConfirmDialog(v-model="dialog")
 </template>
 
 <style scoped lang="scss">
 .fill {
 	font-size: 0.8rem;
-}
-.link {
-	color: $primary;
-	font-weight: 600;
-	border-bottom: 1px dotted $primary;
-	cursor: pointer;
-}
-
-.publ {
-	grid-column: 1/-1;
-	font-weight: 600;
-	color: darkred;
-	cursor: pointer;
-	// margin-top: 1rem;
-	border-bottom: 1px dotted darkred;
 }
 
 .descr {
@@ -174,29 +155,39 @@ const toggleUpload = (item: App) => {
 .mygrid {
 	margin-top: 2rem;
 	display: grid;
-	grid-template-columns: auto 1fr 1fr;
+	grid-template-columns: auto auto auto 1fr;
 	justify-items: start;
 	align-items: start;
 	column-gap: 2rem;
-}
-.allbt {
-	grid-column: 3/-1;
-	grid-row: 1/5;
-	// justify-self: end;
-	align-self: center;
+	label {
+		grid-column: 1/2;
+	}
+	.val {
+		grid-column: 2/3;
+	}
+	.to {
+		color: $primary;
+		text-decoration: underline;
+	}
+	.star {
+		position: relative;
+	}
+	.star::after {
+		content: '*';
+		color: darkred;
+		font-size: 1.5rem;
+		position: absolute;
+		top: -13px;
+		right: -10px;
+	}
 }
 
 .myrow {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: repeat(3, auto);
 	justify-content: center;
 	gap: 0.5rem;
 	margin-top: 4rem;
-	.to {
-		margin-top: 0.5rem;
-		grid-column: 1/-1;
-		justify-self: center;
-	}
 }
 
 .bt {

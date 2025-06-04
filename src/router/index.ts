@@ -77,11 +77,11 @@ const router = createRouter({
 		{
 			path: '/version',
 			name: 'version',
-			component: () => import('@/views/Version.vue'),
+			component: () => import('@/views/VersionHistory.vue'),
 			meta: {
 				toolbar: false,
 				back: true,
-				count: 1,
+				count: 19,
 			},
 		},
 		{

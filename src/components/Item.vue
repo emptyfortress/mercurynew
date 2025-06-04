@@ -5,6 +5,9 @@ import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 import IconMenu from '@/components/IconMenu.vue'
 import { uid, useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
@@ -213,6 +216,10 @@ const setVer = (item: App, el: number, pub: boolean) => {
 const calcItemClass = (item: App, id: number) => {
 	return item.version == id.toString() ? 'selected' : ''
 }
+
+const toVersion = () => {
+	router.push('/version')
+}
 </script>
 
 <template lang="pug">
@@ -268,32 +275,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
 
 		.version(v-if='activeItem == item.id && item.group == 1' @click.stop :class='{pub: item.published}')
-			span ver.
-			span.num {{ item.version }}
-			q-menu
-				q-list
-					q-item(
-						clickable,
-						v-for="el in options",
-						:key='el.id',
-						@click='setVer(item, el.id, el.pub)'
-						:class='calcItemClass(item, el.id)'
-						v-close-popup
-					)
-						q-item-section(side)
-							q-icon(v-if='el.pub' name="mdi-check-bold" color="positive")
-							q-icon(v-else name="mdi-pencil-outline")
-						q-item-section
-							q-item-label {{ el.label }}
-						q-item-section(side)
-							q-item-label(v-if='el.pub' caption) опубликовано
-							q-item-label(v-else caption) текущая
-					q-separator
-					q-item(clickable)
-						q-item-section(side)
-							q-icon(name="mdi-plus-circle-outline")
-						q-item-section
-							q-item-label Создать версию
+			q-btn(flat icon="mdi-history" label="История" @click.stop="toVersion") 
 
 
 	.createGroup(v-if='isOver(item)')
@@ -411,26 +393,10 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 }
 .version {
 	position: absolute;
-	top: -0.3rem;
+	bottom: 0.3rem;
 	right: 0.8rem;
 	font-size: 2.5rem;
-	span {
-		font-size: 0.9rem;
-		color: $secondary;
-	}
-	.num {
-		color: $secondary;
-		font-size: 1.5rem;
-		padding: 0.1rem 0.6rem;
-		border-radius: 50%;
-		margin-left: 0.25rem;
-		border: 2px solid $secondary;
-	}
-}
-.version.pub .num {
-	background: $positive;
-	color: #fff;
-	border: 2px solid $positive;
+	color: var(--icon);
 }
 .to {
 	position: absolute;

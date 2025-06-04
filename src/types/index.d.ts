@@ -6,6 +6,8 @@ interface App {
 	version: string
 	author: string
 	created: string
+	modify?: string
+	uploaded?: string
 	group: number
 	published: boolean
 	list: App[]
