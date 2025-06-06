@@ -174,11 +174,10 @@ const handleRemove = () => {
 	}
 	.star::after {
 		content: '*';
-		color: darkred;
-		font-size: 1.5rem;
+		font-size: 1.1rem;
 		position: absolute;
-		top: -13px;
-		right: -10px;
+		top: -9px;
+		right: -9px;
 	}
 }
 
