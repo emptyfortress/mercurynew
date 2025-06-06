@@ -54,6 +54,7 @@ const onDrop = () => {
 		} else {
 			list2.value.map((el) => (el.current = false))
 			list2.value.unshift(pendingClone.value)
+			list2.value[0].current = true
 		}
 
 		pendingClone.value = null
