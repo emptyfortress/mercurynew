@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 
@@ -13,6 +13,8 @@ const list2 = ref([
 	{ id: 1, label: 'Версия 2', current: true },
 	{ id: 0, label: 'Версия 1', current: false },
 ])
+
+const list3 = ref([{ id: 0, label: 'Версия 1', current: true }])
 
 const dragCounter = ref(0)
 const isDraggingOverServer = ref(false)
@@ -72,11 +74,61 @@ const options = [
 ]
 
 const prod = ref('DV-test')
+
 const setSer = (e: string) => {
 	prod.value = e
 }
 const calcClass = (e: string) => {
 	return prod.value == e ? 'selected' : ''
+}
+
+const calcList = computed(() => {
+	return prod.value == 'DV-test' ? list2.value : list3.value
+})
+
+// const last = computed(() => {
+// 	return list2.value.length == 1 ? true : false
+// })
+
+const remove2 = (e: number) => {
+	// if (list2.value.length == 1) return
+	list2.value.splice(e, 1)
+	if (list2.value.length) {
+		list2.value[0].current = true
+	}
+}
+const remove1 = (e: number) => {
+	// if (list2.value.length == 1) return
+	list1.value.splice(e, 1)
+	if (list1.value.length) {
+		list1.value[0].current = true
+	}
+}
+
+const add = () => {
+	list1.value.map((el) => (el.current = false))
+	list1.value.unshift({
+		id: list1.value.length,
+		label: `Версия ${list1.value.length + 1}`,
+		current: true,
+	})
+}
+
+const used = (label: string): string => {
+	const usedIn: string[] = []
+
+	if (list2.value.some((item) => item.label === label)) {
+		usedIn.push('DV-test')
+	}
+	if (list3.value.some((item) => item.label === label)) {
+		usedIn.push('DV-prod')
+	}
+
+	if (usedIn.length) {
+		return `${usedIn.join(', ')}`
+	}
+
+	return ''
 }
 </script>
 
@@ -96,18 +148,19 @@ q-page(padding)
 					item-key="id"
 					:sort='false'
 				)
-					template(#item="{ element }")
+					template(#item="{ element, index }")
 						.myitem(clickable)
 							q-item-section(side)
 								q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
 								q-icon(v-else name="mdi-circle-outline" color="secondary")
 							q-item-section {{ element.label }}
+							.text-secondary {{ used(element.label) }}
 							.text-secondary
 								q-btn(v-if='element.current' flat round dense icon="mdi-cloud-upload-outline" @click="move(element)" size='md') 
 								q-btn(flat round dense icon="mdi-pencil-outline" @click="" size='md') 
-								q-btn(flat round dense @click="" size='md') 
+								q-btn(flat round dense @click="add" size='md') 
 									TablerCopyPlus.ic
-								q-btn(flat round dense icon="mdi-delete-outline" @click="" size='md') 
+								q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
 			.server(
 				:class="{ 'drag-over': isDraggingOverServer }"
 				@dragenter.prevent="onDragEnter"
@@ -135,18 +188,19 @@ q-page(padding)
 										q-item-label {{ el.label }}
 
 				draggable.dr.list(
-					:list="list2"
+					:list="calcList"
 					:group="{ name: 'items', pull: false, put: false }"
 					item-key="id"
 				)
-					template(#item="{ element }")
+					template(#item="{ element, index }")
 						.myitem(clickable)
 							q-item-section(side)
 								q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
 								q-icon(v-else name="mdi-circle-outline" color="secondary")
 							q-item-section {{ element.label }}
+							div
 							.text-secondary(v-if='element.current')
-								q-btn(flat round dense icon="mdi-delete-outline" @click="" size='md') 
+								q-btn(flat round dense icon="mdi-delete-outline" @click="remove2(index)" size='md') 
 
 </template>
 
@@ -182,7 +236,7 @@ q-page(padding)
 .grid {
 	margin-top: 1rem;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 3fr 2fr;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
 	.server,
@@ -206,7 +260,7 @@ q-page(padding)
 .myitem {
 	display: grid;
 	align-items: center;
-	grid-template-columns: auto 1fr auto;
+	grid-template-columns: auto 250px 1fr auto;
 	// min-height: 48px;
 	cursor: pointer;
 	padding: 0.5rem;
