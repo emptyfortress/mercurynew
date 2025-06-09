@@ -162,46 +162,47 @@ q-page(padding)
 								q-btn(flat round dense @click="add" size='md') 
 									TablerCopyPlus.ic
 								q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
-			.server(
-				:class="{ 'drag-over': isDraggingOverServer }"
-				@dragenter.prevent="onDragEnter"
-				@dragleave.prevent="onDragLeave"
-				@drop.prevent="onDrop"
-			)
-				.hd1
-					.lin
-						q-icon.ic(name="mdi-server-network-outline")
-						|{{ prod }}
-						q-icon.q-ml-sm(name="mdi-chevron-down" color="primary")
-						q-menu()
-							q-list
-								q-item(
-									clickable,
-									v-for="el in options",
-									:key='el.id',
-									@click='setSer(el.label)'
-									:class='calcClass(el.label)'
-									v-close-popup
-								)
-									q-item-section(side)
-										q-icon.ic(name="mdi-server-network-outline" color="primary")
-									q-item-section
-										q-item-label {{ el.label }}
-
-				draggable.dr.list(
-					:list="calcList"
-					:group="{ name: 'items', pull: false, put: false }"
-					item-key="id"
+			div
+				.server(v-for="n in 3" :key="n"
+					:class="{ 'drag-over': isDraggingOverServer }"
+					@dragenter.prevent="onDragEnter"
+					@dragleave.prevent="onDragLeave"
+					@drop.prevent="onDrop"
 				)
-					template(#item="{ element, index }")
-						.myitem(clickable)
-							q-item-section(side)
-								q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
-								q-icon(v-else name="mdi-circle-outline" color="secondary")
-							q-item-section {{ element.label }}
-							div
-							.text-secondary(v-if='element.current')
-								q-btn(flat round dense icon="mdi-delete-outline" @click="remove2(index)" size='md') 
+					.hd1
+						.lin
+							q-icon.ic(name="mdi-server-network-outline")
+							|{{ prod }}
+							q-icon.q-ml-sm(name="mdi-chevron-down" color="primary")
+							q-menu()
+								q-list
+									q-item(
+										clickable,
+										v-for="el in options",
+										:key='el.id',
+										@click='setSer(el.label)'
+										:class='calcClass(el.label)'
+										v-close-popup
+									)
+										q-item-section(side)
+											q-icon.ic(name="mdi-server-network-outline" color="primary")
+										q-item-section
+											q-item-label {{ el.label }}
+
+					draggable.dr.list(
+						:list="calcList"
+						:group="{ name: 'items', pull: false, put: false }"
+						item-key="id"
+					)
+						template(#item="{ element, index }")
+							.myitem(clickable)
+								q-item-section(side)
+									q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
+									q-icon(v-else name="mdi-circle-outline" color="secondary")
+								q-item-section {{ element.label }}
+								div
+								.text-secondary(v-if='element.current')
+									q-btn(flat round dense icon="mdi-delete-outline" @click="remove2(index)" size='md') 
 
 </template>
 
@@ -238,6 +239,7 @@ q-page(padding)
 	margin-top: 1rem;
 	display: grid;
 	grid-template-columns: 3fr 2fr;
+	align-items: start;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
 	.server,
@@ -246,6 +248,7 @@ q-page(padding)
 		background: #ffffff77;
 		border-radius: 0.5rem;
 		border: 1px solid white;
+		margin-bottom: 0.5rem;
 	}
 }
 .server.drag-over {
@@ -278,5 +281,8 @@ q-page(padding)
 }
 .selected {
 	background: var(--selection);
+}
+.plu {
+	grid-column: 2/3;
 }
 </style>
