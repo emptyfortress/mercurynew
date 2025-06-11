@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 
-const list1 = ref([
+const source = ref([
 	{ id: 2, label: 'Версия 3', current: true },
 	{ id: 1, label: 'Версия 2', current: false },
 	{ id: 0, label: 'Версия 1', current: false },
@@ -13,8 +13,6 @@ const list2 = ref([
 	{ id: 1, label: 'Версия 2', current: true },
 	{ id: 0, label: 'Версия 1', current: false },
 ])
-
-const list3 = ref([{ id: 0, label: 'Версия 1', current: true }])
 
 const servers = ref([
 	{
@@ -32,6 +30,10 @@ const servers = ref([
 	},
 ])
 
+const dragCounters = ref<Record<number, number>>({})
+
+const isDraggingOver = (id: number) => dragCounters.value[id] > 0
+
 const dragCounter = ref(0)
 const isDraggingOverServer1 = ref(false)
 const isDraggingOverServer2 = ref(false)
@@ -46,24 +48,16 @@ const onClone = (original: any) => {
 }
 
 const onDragEnter = (id: number) => {
-	dragCounter.value++
-	if (id == 0) {
-		isDraggingOverServer1.value = true
-	}
-	if (id == 1) {
-		isDraggingOverServer2.value = true
-	}
+	if (!dragCounters.value[id]) dragCounters.value[id] = 0
+	dragCounters.value[id]++
 }
 
 const onDragLeave = (id: number) => {
-	dragCounter.value--
-	if (dragCounter.value <= 0 && id == 0) {
-		isDraggingOverServer1.value = false
-		dragCounter.value = 0
-	}
-	if (dragCounter.value <= 0 && id == 1) {
-		isDraggingOverServer2.value = false
-		dragCounter.value = 0
+	if (dragCounters.value[id]) {
+		dragCounters.value[id]--
+		if (dragCounters.value[id] < 0) {
+			dragCounters.value[id] = 0
+		}
 	}
 }
 
@@ -71,23 +65,29 @@ const notifyDuplicate = (item: { label: string }) => {
 	console.log(`❗ Элемент с label "${item.label}" уже существует в list2`)
 }
 
-const onDrop = () => {
+const onDrop = (serverId: number) => {
 	if (pendingClone.value) {
-		const exists = list2.value.some((item) => item.label === pendingClone.value.label)
+		const server = servers.value.find((s) => s.id === serverId)
+		if (!server) return
+
+		const exists = server.list.some((item) => item.label === pendingClone.value.label)
 
 		if (exists) {
 			notifyDuplicate(pendingClone.value)
 		} else {
-			list2.value.map((el) => (el.current = false))
-			list2.value.unshift(pendingClone.value)
-			list2.value[0].current = true
+			server.list.forEach((el) => (el.current = false))
+			server.list.unshift(pendingClone.value)
+			server.list[0].current = true
 		}
 
 		pendingClone.value = null
 	}
 
-	isDraggingOverServer1.value = false
+	if (serverId === 0) isDraggingOverServer1.value = false
+	if (serverId === 1) isDraggingOverServer2.value = false
+
 	dragCounter.value = 0
+	dragCounters.value[serverId] = 0 // очистка при drop
 }
 
 const move = (e: any) => {
@@ -95,67 +95,32 @@ const move = (e: any) => {
 	list2.value.unshift(e)
 }
 
-const options = [
-	{ id: 1, label: 'DV-test' },
-	{ id: 2, label: 'DV-prod' },
-]
+const removeFromServer = (serverId: number, index: number) => {
+	const server = servers.value.find((s) => s.id === serverId)
+	if (!server) return
 
-const prod = ref('DV-test')
+	server.list.splice(index, 1)
 
-const setSer = (e: string) => {
-	prod.value = e
-}
-const calcClass = (e: string) => {
-	return prod.value == e ? 'selected' : ''
-}
-
-const calcList = computed(() => {
-	return prod.value == 'DV-test' ? list2.value : list3.value
-})
-
-// const last = computed(() => {
-// 	return list2.value.length == 1 ? true : false
-// })
-
-const remove2 = (e: number) => {
-	// if (list2.value.length == 1) return
-	list2.value.splice(e, 1)
-	if (list2.value.length) {
-		list2.value[0].current = true
+	// Переназначить current, если список не пуст
+	if (server.list.length) {
+		server.list[0].current = true
 	}
 }
+
 const remove1 = (e: number) => {
-	// if (list2.value.length == 1) return
-	list1.value.splice(e, 1)
-	if (list1.value.length) {
-		list1.value[0].current = true
+	source.value.splice(e, 1)
+	if (source.value.length) {
+		source.value[0].current = true
 	}
 }
 
 const add = () => {
-	list1.value.map((el) => (el.current = false))
-	list1.value.unshift({
-		id: list1.value.length,
-		label: `Версия ${list1.value.length + 1}`,
+	source.value.map((el) => (el.current = false))
+	source.value.unshift({
+		id: source.value.length,
+		label: `Версия ${source.value.length + 1}`,
 		current: true,
 	})
-}
-
-const used = (label: string): string => {
-	const usedIn: string[] = []
-
-	if (list2.value.some((item) => item.label === label)) {
-		usedIn.push('DV-test')
-	}
-	if (list3.value.some((item) => item.label === label)) {
-		usedIn.push('DV-prod')
-	}
-
-	if (usedIn.length) {
-		return `${usedIn.join(', ')}`
-	}
-
-	return ''
 }
 </script>
 
@@ -169,7 +134,7 @@ q-page(padding)
 					img.q-mr-sm(src="@/assets/img/kp-favicon.svg", width="18" height="18")
 					|Конструктор
 				draggable.list(
-					:list="list1"
+					:list="source"
 					:group="{ name: 'items', pull: 'clone', put: false }"
 					:clone="onClone"
 					item-key="id"
@@ -182,18 +147,18 @@ q-page(padding)
 								q-icon(v-else name="mdi-circle-outline" color="secondary")
 							q-item-section {{ element.label }}
 							.text-secondary
-								// q-btn(v-if='element.current' flat round dense icon="mdi-cloud-upload-outline" @click="move(element)" size='md') 
 								q-btn(flat round dense icon="mdi-eye-outline" @click="" size='md') 
 								q-btn(flat round dense @click="add" size='md') 
 									TablerCopyPlus.ic
 								q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
 			div
 				.server(v-for="server in servers" :key="server.id"
-					:class="{ 'drag-over': isDraggingOverServer1 }"
+					:class="{ 'drag-over': isDraggingOver(server.id) }"
 					@dragenter.prevent="onDragEnter(server.id)"
 					@dragleave.prevent="onDragLeave(server.id)"
-					@drop.prevent="onDrop"
+					@drop.prevent="onDrop(server.id)"
 				)
+
 					.hd1
 						.lin
 							q-icon.ic(name="mdi-server-network-outline")
@@ -211,7 +176,12 @@ q-page(padding)
 									q-icon(v-else name="mdi-circle-outline" color="secondary")
 								q-item-section {{ element.label }}
 								.text-secondary(v-if='element.current')
-									q-btn(flat round dense icon="mdi-delete-outline" @click="remove2(index)" size='md') 
+									q-btn(
+										flat round dense,
+										icon="mdi-delete-outline",
+										@click="removeFromServer(server.id, index)"
+										size='md'
+									) 
 
 </template>
 
