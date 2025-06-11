@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useQuasar } from 'quasar'
+import TotalHistory from '@/components/TotalHistory.vue'
 
 const $q = useQuasar()
 
@@ -113,7 +114,7 @@ const add = () => {
 <template lang="pug">
 q-page(padding)
 	.cont
-		.hd История изменений приложения
+		.hd Версии приложения
 		.grid
 			.constructor
 				.hd1
@@ -168,6 +169,11 @@ q-page(padding)
 										@click="removeFromServer(server.id, index)"
 										size='md'
 									) 
+
+		br
+		br
+		.hd История изменений
+		TotalHistory
 
 </template>
 
