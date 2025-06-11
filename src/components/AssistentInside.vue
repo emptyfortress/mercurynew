@@ -17,9 +17,9 @@ const setBt = () => {
 	button.value.select()
 }
 const temp = ref('')
-const navigate = (() => {
+const navigate = () => {
 	router.push('/process')
-})
+}
 </script>
 
 <template lang="pug">
@@ -28,6 +28,8 @@ const navigate = (() => {
 		v-model="step"
 		vertical
 		color="primary"
+		inactive-color="secondary"
+		done-color="primary"
 		header-nav
 		animated)
 

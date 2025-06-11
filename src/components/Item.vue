@@ -281,7 +281,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
 
 		.version(v-if='activeItem == item.id && item.group == 1' @click.stop :class='{pub: item.published}')
-			q-btn(flat icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="showDialog") 
 			q-btn(flat icon="mdi-history" label="История" @click.stop="toVersion") 
 
 

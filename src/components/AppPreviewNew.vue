@@ -2,9 +2,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter, useRoute } from 'vue-router'
-import IconFlag from '@/components/icons/IconFlag.vue'
-import IconCopy from '@/components/icons/IconCopy.vue'
-import IconTrash from '@/components/icons/IconTrash.vue'
 import { useQuasar } from 'quasar'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
@@ -30,10 +27,6 @@ const navigate = () => {
 	myapps.setCurrentApp(props.item)
 }
 
-// const navToVer = () => {
-// 	router.push('/version')
-// }
-
 const navigate1 = () => {
 	const path = route.fullPath.toString()
 	myapps.setCurrentApp(props.item)
@@ -43,9 +36,9 @@ const navigate1 = () => {
 }
 
 const version = ref(false)
-const toggleVersion = () => {
-	version.value = !version.value
-}
+// const toggleVersion = () => {
+// 	version.value = !version.value
+// }
 
 const move = { x: 20, opacity: 0 }
 const non = { x: 0, opacity: 1 }
@@ -89,11 +82,17 @@ const toggleUpload = (item: App) => {
 	}, 2000)
 }
 
+const mode = ref('version')
 const dialog = ref(false)
 const handleRemove = () => {
 	if (props.item.published) {
+		mode.value = 'version'
 		dialog.value = true
 	}
+}
+const handlePub = () => {
+	mode.value = 'publ'
+	dialog.value = true
 }
 </script>
 
@@ -121,21 +120,19 @@ const handleRemove = () => {
 			.val {{ props.item.modify }}
 			label Опубликовано:
 			.val(v-if='item.published') {{ props.item.created }}
-			.to(v-if='item.published' @click.stop) DV-test
-			.to.star(v-if='item.published' @click.stop) DV-prod
-				q-tooltip Последние изменения не опубликованы
-			template(v-else)
-				.val --''--
+			.val(v-else) --''--
+			.to.star(v-if='item.published' @click.stop) DV-test
+			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub") 
 
 		.myrow
-			q-btn(flat color="primary" label='Помощник' icon='mdi-lightbulb-outline' @click.stop="navigate" ) 
+			q-btn(outline color="primary" label='Помощник' icon='mdi-lightbulb-outline' @click.stop="navigate" ) 
 			q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click.stop="navigate1" ) 
-			q-btn(flat color="primary" icon='mdi-delete-empty-outline' label='Удалить приложение' @click.stop='handleRemove') 
+			q-btn(outline olor="primary" icon='mdi-delete-empty-outline' label='Удалить приложение' @click.stop='handleRemove') 
 				q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
 					q-item(clickable @click.stop='remove(props.item)').pink
 						q-item-section.text-center Да, удалить!
 			
-	ConfirmDialog(v-model="dialog")
+	ConfirmDialog(v-model="dialog" :mode='mode')
 </template>
 
 <style scoped lang="scss">
@@ -157,7 +154,7 @@ const handleRemove = () => {
 	display: grid;
 	grid-template-columns: auto auto auto 1fr;
 	justify-items: start;
-	align-items: start;
+	align-items: center;
 	column-gap: 2rem;
 	label {
 		grid-column: 1/2;
@@ -184,9 +181,10 @@ const handleRemove = () => {
 .myrow {
 	display: grid;
 	grid-template-columns: repeat(3, auto);
-	justify-content: center;
+	// justify-content: center;
 	gap: 0.5rem;
-	margin-top: 4rem;
+	margin-top: 2rem;
+	// background: #ccc;
 }
 
 .bt {

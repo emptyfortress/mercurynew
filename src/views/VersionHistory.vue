@@ -16,8 +16,25 @@ const list2 = ref([
 
 const list3 = ref([{ id: 0, label: 'Версия 1', current: true }])
 
+const servers = ref([
+	{
+		id: 0,
+		nick: 'DV-test',
+		list: [
+			{ id: 1, label: 'Версия 2', current: true },
+			{ id: 0, label: 'Версия 1', current: false },
+		],
+	},
+	{
+		id: 1,
+		nick: 'DV-prod',
+		list: [{ id: 0, label: 'Версия 1', current: true }],
+	},
+])
+
 const dragCounter = ref(0)
-const isDraggingOverServer = ref(false)
+const isDraggingOverServer1 = ref(false)
+const isDraggingOverServer2 = ref(false)
 const pendingClone = ref<any | null>(null)
 
 // Клонируем вручную
@@ -28,15 +45,24 @@ const onClone = (original: any) => {
 	}
 }
 
-const onDragEnter = () => {
+const onDragEnter = (id: number) => {
 	dragCounter.value++
-	isDraggingOverServer.value = true
+	if (id == 0) {
+		isDraggingOverServer1.value = true
+	}
+	if (id == 1) {
+		isDraggingOverServer2.value = true
+	}
 }
 
-const onDragLeave = () => {
+const onDragLeave = (id: number) => {
 	dragCounter.value--
-	if (dragCounter.value <= 0) {
-		isDraggingOverServer.value = false
+	if (dragCounter.value <= 0 && id == 0) {
+		isDraggingOverServer1.value = false
+		dragCounter.value = 0
+	}
+	if (dragCounter.value <= 0 && id == 1) {
+		isDraggingOverServer2.value = false
 		dragCounter.value = 0
 	}
 }
@@ -60,7 +86,7 @@ const onDrop = () => {
 		pendingClone.value = null
 	}
 
-	isDraggingOverServer.value = false
+	isDraggingOverServer1.value = false
 	dragCounter.value = 0
 }
 
@@ -155,42 +181,26 @@ q-page(padding)
 								q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
 								q-icon(v-else name="mdi-circle-outline" color="secondary")
 							q-item-section {{ element.label }}
-							.text-secondary {{ used(element.label) }}
 							.text-secondary
-								q-btn(v-if='element.current' flat round dense icon="mdi-cloud-upload-outline" @click="move(element)" size='md') 
-								q-btn(flat round dense icon="mdi-pencil-outline" @click="" size='md') 
+								// q-btn(v-if='element.current' flat round dense icon="mdi-cloud-upload-outline" @click="move(element)" size='md') 
+								q-btn(flat round dense icon="mdi-eye-outline" @click="" size='md') 
 								q-btn(flat round dense @click="add" size='md') 
 									TablerCopyPlus.ic
 								q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
 			div
-				.server(v-for="n in 3" :key="n"
-					:class="{ 'drag-over': isDraggingOverServer }"
-					@dragenter.prevent="onDragEnter"
-					@dragleave.prevent="onDragLeave"
+				.server(v-for="server in servers" :key="server.id"
+					:class="{ 'drag-over': isDraggingOverServer1 }"
+					@dragenter.prevent="onDragEnter(server.id)"
+					@dragleave.prevent="onDragLeave(server.id)"
 					@drop.prevent="onDrop"
 				)
 					.hd1
 						.lin
 							q-icon.ic(name="mdi-server-network-outline")
-							|{{ prod }}
-							q-icon.q-ml-sm(name="mdi-chevron-down" color="primary")
-							q-menu()
-								q-list
-									q-item(
-										clickable,
-										v-for="el in options",
-										:key='el.id',
-										@click='setSer(el.label)'
-										:class='calcClass(el.label)'
-										v-close-popup
-									)
-										q-item-section(side)
-											q-icon.ic(name="mdi-server-network-outline" color="primary")
-										q-item-section
-											q-item-label {{ el.label }}
+							|{{ server.nick }}
 
 					draggable.dr.list(
-						:list="calcList"
+						:list="server.list"
 						:group="{ name: 'items', pull: false, put: false }"
 						item-key="id"
 					)
@@ -200,7 +210,6 @@ q-page(padding)
 									q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
 									q-icon(v-else name="mdi-circle-outline" color="secondary")
 								q-item-section {{ element.label }}
-								div
 								.text-secondary(v-if='element.current')
 									q-btn(flat round dense icon="mdi-delete-outline" @click="remove2(index)" size='md') 
 
@@ -238,7 +247,7 @@ q-page(padding)
 .grid {
 	margin-top: 1rem;
 	display: grid;
-	grid-template-columns: 3fr 2fr;
+	grid-template-columns: 1fr 1fr;
 	align-items: start;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
@@ -264,7 +273,7 @@ q-page(padding)
 .myitem {
 	display: grid;
 	align-items: center;
-	grid-template-columns: auto 250px 1fr auto;
+	grid-template-columns: auto 1fr auto;
 	// min-height: 48px;
 	cursor: pointer;
 	padding: 0.5rem;
