@@ -2,15 +2,13 @@
 import { ref } from 'vue'
 import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
 
 const source = ref([
 	{ id: 2, label: 'Версия 3', current: true },
 	{ id: 1, label: 'Версия 2', current: false },
-	{ id: 0, label: 'Версия 1', current: false },
-])
-
-const list2 = ref([
-	{ id: 1, label: 'Версия 2', current: true },
 	{ id: 0, label: 'Версия 1', current: false },
 ])
 
@@ -31,15 +29,9 @@ const servers = ref([
 ])
 
 const dragCounters = ref<Record<number, number>>({})
-
 const isDraggingOver = (id: number) => dragCounters.value[id] > 0
-
-const dragCounter = ref(0)
-const isDraggingOverServer1 = ref(false)
-const isDraggingOverServer2 = ref(false)
 const pendingClone = ref<any | null>(null)
 
-// Клонируем вручную
 const onClone = (original: any) => {
 	pendingClone.value = {
 		...original,
@@ -61,38 +53,34 @@ const onDragLeave = (id: number) => {
 	}
 }
 
-const notifyDuplicate = (item: { label: string }) => {
-	console.log(`❗ Элемент с label "${item.label}" уже существует в list2`)
-}
-
 const onDrop = (serverId: number) => {
 	if (pendingClone.value) {
 		const server = servers.value.find((s) => s.id === serverId)
 		if (!server) return
 
 		const exists = server.list.some((item) => item.label === pendingClone.value.label)
-
 		if (exists) {
-			notifyDuplicate(pendingClone.value)
+			$q.notify({
+				type: 'negative',
+				message: `Элемент "${pendingClone.value.label}" уже существует в "${server.nick}"`,
+				position: 'top-right',
+			})
 		} else {
 			server.list.forEach((el) => (el.current = false))
 			server.list.unshift(pendingClone.value)
 			server.list[0].current = true
+
+			$q.notify({
+				type: 'positive',
+				message: `Элемент "${pendingClone.value.label}" успешно добавлен в "${server.nick}"`,
+				position: 'top-right',
+			})
 		}
 
 		pendingClone.value = null
 	}
 
-	if (serverId === 0) isDraggingOverServer1.value = false
-	if (serverId === 1) isDraggingOverServer2.value = false
-
-	dragCounter.value = 0
-	dragCounters.value[serverId] = 0 // очистка при drop
-}
-
-const move = (e: any) => {
-	list2.value.map((el) => (el.current = false))
-	list2.value.unshift(e)
+	dragCounters.value[serverId] = 0
 }
 
 const removeFromServer = (serverId: number, index: number) => {
@@ -100,8 +88,6 @@ const removeFromServer = (serverId: number, index: number) => {
 	if (!server) return
 
 	server.list.splice(index, 1)
-
-	// Переназначить current, если список не пуст
 	if (server.list.length) {
 		server.list[0].current = true
 	}
@@ -115,9 +101,9 @@ const remove1 = (e: number) => {
 }
 
 const add = () => {
-	source.value.map((el) => (el.current = false))
+	source.value.forEach((el) => (el.current = false))
 	source.value.unshift({
-		id: source.value.length,
+		id: Date.now(), // Лучше Date.now() вместо index
 		label: `Версия ${source.value.length + 1}`,
 		current: true,
 	})
