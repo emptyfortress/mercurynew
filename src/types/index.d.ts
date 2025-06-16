@@ -6,7 +6,10 @@ interface App {
 	version: string
 	author: string
 	created: string
+	modify?: string
+	uploaded?: string
 	group: number
+	published: boolean
 	list: App[]
 	pic?: any
 }
@@ -71,3 +74,54 @@ type Condition = {
 	newstatus: string
 	// role: string | string[]
 }
+interface Stat {
+	data: NodeData
+	open: boolean // Is opened.
+	parent: Stat<T> | null // Parent stat.
+	children: Stat<T>[] // Children stats.
+	level: number // Level start from 1.
+	isStat: boolean // Detect if is stat object.
+	hidden: boolean // If hidden.
+	checked: boolean | null // If checked. null mean just some children checked.
+	draggable: boolean | null // null means inherit parent.
+	droppable: boolean | null // null means inherit parent.
+	style: any // Customize node style. Vue's style format.
+	class: any // Customize node class name. Vue's class format.
+}
+
+interface MenuItem {
+	id: string
+	label: string
+	value?: string
+	children?: MenuItem[]
+	isSpecial?: boolean
+	isSpecial1?: boolean
+	isKey?: boolean
+	isPeople?: boolean
+	isLast?: boolean
+	isInput?: boolean
+	date?: boolean
+	isPrompt?: boolean
+	isPar?: boolean
+	isMulti?: boolean
+	isActive?: boolean
+	isVis?: boolean
+}
+
+interface MenuLevel {
+	title: string
+	items: MenuItem[]
+	isSpecial: boolean
+}
+
+interface PredCols {
+	id: number
+	active: boolean
+	label: string
+	name: string
+	field: string
+	align: left
+	sortable: boolean
+}
+
+type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'

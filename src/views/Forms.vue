@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, nextTick, } from 'vue'
-import { animations, state } from "@formkit/drag-and-drop"
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { ref, nextTick } from 'vue'
+import { animations, state } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
 import Trash from '@/components/common/Trash.vue'
-import { useRouter, } from 'vue-router'
+import { useRouter } from 'vue-router'
 import Empty from '@/components/Empty.vue'
 
 const router = useRouter()
@@ -19,31 +19,30 @@ const forms = ref([
 		id: 1,
 		label: 'Создание',
 		expand: false,
-		avatar: 'create'
+		avatar: 'create',
 	},
 	{
 		id: 2,
 		label: 'Редактирование',
 		expand: false,
-		avatar: 'edit'
+		avatar: 'edit',
 	},
 	{
 		id: 3,
 		label: 'Просмотр',
 		expand: false,
-		avatar: 'view'
+		avatar: 'view',
 	},
-
 ])
 
 const $q = useQuasar()
 
 const dragStatus = ref(false)
-state.on("dragStarted", () => {
+state.on('dragStarted', () => {
 	dragStatus.value = true
 })
 
-state.on("dragEnded", () => {
+state.on('dragEnded', () => {
 	dragStatus.value = false
 })
 
@@ -82,35 +81,35 @@ const calcClass = (item: any) => {
 
 const getImageUrl = (name: string) => new URL(`../assets/img/${name}.svg`, import.meta.url).href
 
-const create = ((e: any) => {
+const create = (e: any) => {
 	let tmp = {
 		id: +new Date(),
 		label: e.label,
 		expand: false,
-		avatar: 'edit'
+		avatar: 'edit',
 	}
 	tapes.value.push(tmp)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
 			color: 'positive',
-			message: 'Добавлена форма'
+			message: 'Добавлена форма',
 		})
 	}, 1200)
-})
+}
 
-const navigate = (() => {
+const navigate = () => {
 	router.push('/form')
-})
+}
 
 const draggedItem = ref(100)
 
 const config = {
-	plugins: [animations(),],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains("item1");
+		return child.classList.contains('item1')
 	},
 	onDragstart: (e: any) => {
 		draggedItem.value = e.draggedNode.data.index
@@ -118,17 +117,23 @@ const config = {
 }
 const [parent, tapes] = useDragAndDrop(forms.value, config)
 
-const remove = (() => {
+const remove = () => {
 	tapes.value.splice(draggedItem.value, 1)
 	$q.notify({
 		message: 'Форма удалена',
 		color: 'negative',
 		icon: 'mdi-check-bold',
 		actions: [
-			{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
-		]
+			{
+				label: 'Отмена',
+				color: 'white',
+				handler: () => {
+					/* ... */
+				},
+			},
+		],
 	})
-})
+}
 </script>
 
 <template lang="pug">
@@ -195,7 +200,6 @@ q-page(padding)
 	* {
 		display: none;
 	}
-
 }
 
 .header {
@@ -221,7 +225,7 @@ q-page(padding)
 
 	.img {
 		width: 120px;
-		margin-bottom: .5rem;
+		margin-bottom: 0.5rem;
 	}
 
 	&:hover {
@@ -278,12 +282,11 @@ q-page(padding)
 	transform: translateX(-50%);
 	vertical-align: middle;
 	text-align: center;
-	line-height: 1.0;
+	line-height: 1;
 
 	label {
 		display: block;
 		font-size: 1rem;
 	}
-
 }
 </style>

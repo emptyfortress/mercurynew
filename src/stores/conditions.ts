@@ -2,25 +2,144 @@ import { uid } from 'quasar'
 import { Kind } from '@/types/enum'
 
 const str = [
-	{ kind: Kind.Selector, word: true, text: 'содержит', value: 'содержит', label: 'содержит', selected: false },
-	{ kind: Kind.Selector, word: true, text: 'не содержит', value: 'не содержит', label: 'не содержит', selected: false },
-	{ kind: Kind.Selector, word: true, text: 'начинается', value: 'начинается', label: 'начинается', selected: false },
-	{ kind: Kind.Selector, word: true, text: 'оканчивается', value: 'оканчивается', label: 'оканчивается', selected: false },
-	{ kind: Kind.Selector, word: true, text: 'равно', value: 'равно', label: 'равно', selected: false },
-	{ kind: Kind.Selector, word: true, text: 'не равно', value: 'не равно', label: 'не равно', selected: false },
-	{ kind: Kind.Selector, word: true, text: 'задано', value: 'задано', label: 'задано', selected: false },
-	{ kind: Kind.Selector, word: true, text: 'не задано', value: 'не задано', label: 'не задано', selected: false },
+	{
+		kind: Kind.Selector,
+		word: true,
+		text: 'содержит',
+		value: 'содержит',
+		label: 'содержит',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		word: true,
+		text: 'не содержит',
+		value: 'не содержит',
+		label: 'не содержит',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		word: true,
+		text: 'начинается',
+		value: 'начинается',
+		label: 'начинается',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		word: true,
+		text: 'оканчивается',
+		value: 'оканчивается',
+		label: 'оканчивается',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		word: true,
+		text: 'равно',
+		value: 'равно',
+		label: 'равно',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		word: true,
+		text: 'не равно',
+		value: 'не равно',
+		label: 'не равно',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		word: true,
+		text: 'задано',
+		value: 'задано',
+		label: 'задано',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		word: true,
+		text: 'не задано',
+		value: 'не задано',
+		label: 'не задано',
+		selected: false,
+	},
 ]
 const datee = [
-	{ kind: Kind.Selector, date: true, label: 'диапазон', value: 'диапазон', text: 'диапазон', selected: false },
-	{ kind: Kind.Selector, date: true, label: 'позже', value: 'позже', text: 'позже', selected: false },
-	{ kind: Kind.Selector, date: true, label: 'позже или равно', value: 'позже или равно', text: 'позже или равно', selected: false },
-	{ kind: Kind.Selector, date: true, label: 'раньше', value: 'раньше', text: 'раньше', selected: false },
-	{ kind: Kind.Selector, date: true, label: 'раньше или равно', value: 'раньше или равно', text: 'раньше или равно', selected: false },
-	{ kind: Kind.Selector, date: true, label: 'равно', value: 'равно', text: 'равно', selected: false },
-	{ kind: Kind.Selector, date: true, label: 'не равно', value: 'не равно', text: 'не равно', selected: false },
-	{ kind: Kind.Selector, date: true, label: 'задано', value: 'задано', text: 'задано', selected: false },
-	{ kind: Kind.Selector, date: true, label: 'не задано', value: 'не задано', text: 'не задано', selected: false },
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'диапазон',
+		value: 'диапазон',
+		text: 'диапазон',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'позже',
+		value: 'позже',
+		text: 'позже',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'позже или равно',
+		value: 'позже или равно',
+		text: 'позже или равно',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'раньше',
+		value: 'раньше',
+		text: 'раньше',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'раньше или равно',
+		value: 'раньше или равно',
+		text: 'раньше или равно',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'равно',
+		value: 'равно',
+		text: 'равно',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'не равно',
+		value: 'не равно',
+		text: 'не равно',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'задано',
+		value: 'задано',
+		text: 'задано',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector,
+		date: true,
+		label: 'не задано',
+		value: 'не задано',
+		text: 'не задано',
+		selected: false,
+	},
 ]
 const dWords = [
 	{ text: 'сегодня', selected: false, plus: true, day: 'дн.' },
@@ -32,31 +151,119 @@ const dWords = [
 ]
 
 const mystatus = [
-	{ kind: Kind.Selector1, label: 'Подготовка', value: 'Подготовка', text: 'Подготовка', selected: false },
-	{ kind: Kind.Selector1, label: 'На согласовании', value: 'На согласовании', text: 'На согласовании', selected: false },
-	{ kind: Kind.Selector1, label: 'На доработке', value: 'На доработке', text: 'На доработке', selected: false },
-	{ kind: Kind.Selector1, label: 'Согласовано', value: 'Согласовано', text: 'Согласовано', selected: false },
+	{
+		kind: Kind.Selector1,
+		label: 'Подготовка',
+		value: 'Подготовка',
+		text: 'Подготовка',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector1,
+		label: 'На согласовании',
+		value: 'На согласовании',
+		text: 'На согласовании',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector1,
+		label: 'На доработке',
+		value: 'На доработке',
+		text: 'На доработке',
+		selected: false,
+	},
+	{
+		kind: Kind.Selector1,
+		label: 'Согласовано',
+		value: 'Согласовано',
+		text: 'Согласовано',
+		selected: false,
+	},
 ]
 
 const stat = [
-	{ kind: Kind.Selector2, label: 'равно', value: 'равно', text: 'равно', selected: true, children: mystatus },
-	{ kind: Kind.Selector2, label: 'не равно', value: 'не равно', text: 'не равно', selected: false, children: mystatus },
-	{ kind: Kind.Selector2, label: 'задано', value: 'задано', text: 'задано', selected: false, children: mystatus },
-	{ kind: Kind.Selector2, label: 'не задано', value: 'не задано', text: 'не задано', selected: false, children: mystatus },
+	{
+		kind: Kind.Selector2,
+		label: 'равно',
+		value: 'равно',
+		text: 'равно',
+		selected: true,
+		children: mystatus,
+	},
+	{
+		kind: Kind.Selector2,
+		label: 'не равно',
+		value: 'не равно',
+		text: 'не равно',
+		selected: false,
+		children: mystatus,
+	},
+	{
+		kind: Kind.Selector2,
+		label: 'задано',
+		value: 'задано',
+		text: 'задано',
+		selected: false,
+		children: mystatus,
+	},
+	{
+		kind: Kind.Selector2,
+		label: 'не задано',
+		value: 'не задано',
+		text: 'не задано',
+		selected: false,
+		children: mystatus,
+	},
+	{
+		kind: Kind.Selector2,
+		label: 'один из',
+		value: 'один из',
+		text: 'один из',
+		selected: false,
+		children: mystatus,
+	},
 ]
 
-
 const deadline = [
-	{ kind: Kind.Text, exe: true, due: true, label: 'Просрочено', value: 'Просрочено', text: 'Просрочено', selected: false },
-	{ kind: Kind.Text, exe: true, due: true, label: 'Есть просроченные этапы', value: 'Есть просроченные этапы', text: 'Есть просроченные этапы', selected: false },
+	{
+		kind: Kind.Text,
+		exe: true,
+		due: true,
+		label: 'Просрочено',
+		value: 'Просрочено',
+		text: 'Просрочено',
+		selected: false,
+	},
+	{
+		kind: Kind.Text,
+		exe: true,
+		due: true,
+		label: 'Есть просроченные этапы',
+		value: 'Есть просроченные этапы',
+		text: 'Есть просроченные этапы',
+		selected: false,
+	},
 ]
 
 const exec = [
-	{ kind: Kind.Text, exe: true, value: 'Все', label: 'Все', text: 'Все', selected: false, },
-	{ kind: Kind.Text, exe: true, value: 'Незавершено', label: 'Незавершено', text: 'Незавершено', selected: false, },
-	{ kind: Kind.Text, exe: true, value: 'Завершено', label: 'Завершено', text: 'Завершено', selected: false, },
+	{ kind: Kind.Text, exe: true, value: 'Все', label: 'Все', text: 'Все', selected: false },
+	{
+		kind: Kind.Text,
+		exe: true,
+		value: 'Незавершено',
+		label: 'Незавершено',
+		text: 'Незавершено',
+		selected: false,
+	},
+	{
+		kind: Kind.Text,
+		exe: true,
+		value: 'Завершено',
+		label: 'Завершено',
+		text: 'Завершено',
+		selected: false,
+	},
 ]
-
 
 const manDetails = [
 	{
@@ -248,9 +455,30 @@ const manKeys = [
 
 const execute = [
 	{ kind: Kind.Text, label: 'Срок', value: 'Срок', text: 'Срок', selected: false, children: datee },
-	{ kind: Kind.Man, label: 'Исполнитель', value: 'Исполнитель', text: 'Исполнитель', selected: false, children: manDetails },
-	{ kind: Kind.Text, label: 'Состояние ?', value: 'Состояние ?', text: 'Состояние ?', selected: false, children: exec },
-	{ kind: Kind.Text, execute: true, label: 'Текущий этап', value: 'Текущий этап', text: 'Текущий этап', selected: false },
+	{
+		kind: Kind.Man,
+		label: 'Исполнитель',
+		value: 'Исполнитель',
+		text: 'Исполнитель',
+		selected: false,
+		children: manDetails,
+	},
+	{
+		kind: Kind.Text,
+		label: 'Состояние ?',
+		value: 'Состояние ?',
+		text: 'Состояние ?',
+		selected: false,
+		children: exec,
+	},
+	{
+		kind: Kind.Text,
+		execute: true,
+		label: 'Текущий этап',
+		value: 'Текущий этап',
+		text: 'Текущий этап',
+		selected: false,
+	},
 ]
 
 export { str, datee, dWords, manDetails, manKeys, stat, mystatus, exec, execute, deadline }

@@ -7,8 +7,6 @@ import { useTemplateRef } from 'vue'
 
 const modelValue = defineModel()
 
-// const el = ref<HTMLElement | null>(null)
-
 const handle = ref<HTMLElement | null>(null)
 
 const initial = computed(() => {
@@ -20,14 +18,9 @@ const initial = computed(() => {
 const el = useTemplateRef('el')
 const { height } = useElementSize(el)
 
-const emit = defineEmits(['addCond'])
-const addCond = ((e: any) => {
-	emit('addCond', e)
-})
-
-const close = (() => {
+const close = () => {
 	modelValue.value = false
-})
+}
 </script>
 
 <template lang="pug">
@@ -44,9 +37,8 @@ transition(name="slide-bottom")
 			.hd Настройка запроса
 			q-btn(icon="mdi-close" flat round dense color="white" @click="modelValue = false")
 
-
 		q-card-section.scroll
-			Text11(:height="height" @addCond="addCond" @close="close")
+			Text11(:height="height" @close="close")
 </template>
 
 <style scoped lang="scss">
@@ -67,13 +59,12 @@ transition(name="slide-bottom")
 	right: 0;
 }
 
-
 .sec {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	cursor: move;
-	padding: .25rem;
+	padding: 0.25rem;
 	background: $secondary;
 	color: #ffffff;
 	border-bottom: 1px solid #ccc;

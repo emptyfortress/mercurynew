@@ -22,21 +22,20 @@ const set = (item: any, e: string) => {
 </script>
 
 <template lang="pug">
-div
-	q-list(dense)
-		q-item(v-ripple v-for="item in options" :key='item.id' )
-			q-item-section(side)
-				q-checkbox(v-model="group" :val='item.value' dense)
-			q-item-section
-				q-item-label(:class='item.color') {{ item.label }}
-			q-item-section(side)
-				.square(:class="item.color" @click.stop)
-					q-menu
-						q-list
-							q-item(clickable v-for="el in option2" :key="el.color" @click="set(item, el.color)" v-close-popup)
-								q-item-section(side)
-									.square(:class="el.color")
-								q-item-section {{ el.label }}
+q-list(dense)
+	q-item(v-ripple v-for="item in options" :key='item.id' )
+		q-item-section(side)
+			q-checkbox(v-model="group" :val='item.value' dense size="sm")
+		q-item-section
+			q-item-label(:class='item.color') {{ item.label }}
+		q-item-section(side)
+			.square(:class="item.color" @click.stop)
+				q-menu
+					q-list
+						q-item(clickable v-for="el in option2" :key="el.color" @click="set(item, el.color)" v-close-popup)
+							q-item-section(side)
+								.square(:class="el.color")
+							q-item-section {{ el.label }}
 
 </template>
 
@@ -45,6 +44,10 @@ div
 	width: 20px;
 	height: 20px;
 	border: 1px solid #aaa;
+}
+.q-item {
+	text-align: left;
+	margin-left: 0.5rem;
 }
 
 .square {
@@ -71,7 +74,6 @@ div
 	}
 }
 .q-item__label {
-
 	&.red {
 		color: red;
 		font-weight: 600;
@@ -86,6 +88,5 @@ div
 	&.green {
 		color: $teal-7;
 	}
-
 }
 </style>

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, nextTick, onBeforeUnmount, } from 'vue'
-import { animations, state } from "@formkit/drag-and-drop"
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { ref, nextTick, onBeforeUnmount } from 'vue'
+import { animations, state } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
 import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
 import Trash from '@/components/common/Trash.vue'
-import { useRouter, } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useList } from '@/stores/list'
 import Empty from '@/components/Empty.vue'
-import Loading from '@/components/Loading.vue'
+// import Loading from '@/components/Loading.vue'
 
 const router = useRouter()
 
@@ -22,10 +22,11 @@ const list = useList()
 const $q = useQuasar()
 
 const dragStatus = ref(false)
-state.on("dragStarted", () => {
+
+state.on('dragStarted', () => {
 	dragStatus.value = true
 })
-state.on("dragEnded", () => {
+state.on('dragEnded', () => {
 	dragStatus.value = false
 })
 
@@ -64,21 +65,24 @@ const expand = (item: any) => {
 	// load()
 }
 
-const draggedItem = ref(100)
+const draggedItem = ref()
+const draggedIndex = ref(100)
+
 const config = {
-	plugins: [animations(),],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (el: any) => {
 		return el.id !== 'no-drag'
 	},
 	onDragstart: (e: any) => {
-		draggedItem.value = e.draggedNode.data.index
+		draggedItem.value = e.draggedNode.data
+		draggedIndex.value = e.draggedNode.data.index
 	},
 }
 const [parent, tapes] = useDragAndDrop(list.lists, config)
 
-const create = ((e: any) => {
+const create = (e: any) => {
 	let tmp = {
 		id: +new Date(),
 		label: e.label,
@@ -90,30 +94,51 @@ const create = ((e: any) => {
 		$q.notify({
 			icon: 'mdi-check-bold',
 			color: 'positive',
-			message: 'Добавлен список'
+			message: 'Добавлена папка',
 		})
 	}, 1200)
-})
+}
 
-const remove = (() => {
+const remove = () => {
 	tapes.value.splice(draggedItem.value, 1)
 	$q.notify({
-		message: 'Список удален',
+		message: 'Папка удалена',
 		color: 'negative',
 		icon: 'mdi-check-bold',
 		actions: [
-			{ label: 'Отмена', color: 'white', handler: () => { /* ... */ } }
-		]
+			{
+				label: 'Отмена',
+				color: 'white',
+				handler: () => {
+					/* ... */
+				},
+			},
+		],
 	})
-})
+}
 
-const navigate = ((id: any) => {
-	router.push(`/request/${id}`)
-})
+const remove1 = (n: number) => {
+	tapes.value.splice(n, 1)
+	expanded.value = false
+	$q.notify({
+		message: 'Папка удалена',
+		color: 'negative',
+		icon: 'mdi-check-bold',
+		actions: [
+			{
+				label: 'Отмена',
+				color: 'white',
+				handler: () => {
+					/* ... */
+				},
+			},
+		],
+	})
+}
 
-const navigate1 = ((id: any) => {
-	router.push(`/views/${id}`)
-})
+const navigate2 = (id: any) => {
+	router.push(`/request1/${id}`)
+}
 
 onBeforeUnmount(() => {
 	expanded.value = false
@@ -121,18 +146,44 @@ onBeforeUnmount(() => {
 })
 
 const duple = ref(false)
-const onDragEnterPlus = (() => {
+const onDragEnterPlus = () => {
 	duple.value = true
-})
-const onDragLeavePlus = (() => {
+}
+const onDragLeavePlus = () => {
 	duple.value = false
-})
-const onDropPlus = (() => {
+}
+
+const duble = (e: any, expand: boolean) => {
+	tapes.value.map((item) => (item.expand = false))
+
+	let item = {
+		id: tapes.value.length + 1,
+		label: 'Копия ' + e.label,
+		descr: e.descr,
+		expand: expand,
+	}
+	tapes.value.push(item)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Папка дублирована',
+		})
+	}, 1200)
+}
+
+const onDropPlus = () => {
 	duple.value = false
-})
-
-
-	 
+	duble(draggedItem.value.value, false)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Папка дублирована',
+		})
+	}, 1200)
+}
+const desc = ref('Здесь описание папки')
 </script>
 
 <template lang="pug">
@@ -153,8 +204,10 @@ q-page(padding)
 			:class="calcClass(item)"
 			)
 			IconFolderSearch.img
-			.hg
-				span(@click.stop) {{ item.label }}
+			.hg(@click.stop)
+				span {{ item.label }}
+					q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope")
+						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 			.content(v-if='item.expand'
 				v-motion
@@ -163,14 +216,18 @@ q-page(padding)
 				.grid
 					label Описание:
 					.val(@click.stop)
-						span Здесь описание папки
+						span {{ desc }}
+							q-popup-edit(v-model="desc" auto-save v-slot="scope")
+								q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
+				br
 				.text-center
 					.q-gutter-x-sm
-						q-btn(unelevated color="primary" label="Редактировать запрос" @click.stop='navigate(item.id)') 
-						q-btn(unelevated color="primary" label="Редактировать представление" @click.stop='navigate1(item.id)') 
+						q-btn(flat color="negative" label="Удалить" @click.stop='remove1(index)') 
+						q-btn(unelevated color="primary" label="Настроить папку" @click.stop='navigate2(item.id)') 
+						q-btn(flat color="primary" label="Дублировать" @click.stop='duble(item, true)') 
 
-				Loading(v-if='expanded')
+				// Loading(v-if='expanded')
 
 		.plusCont(id="no-drag"
 			@dragover.prevent="onDragEnterPlus"
@@ -203,7 +260,6 @@ q-page(padding)
 		color: $primary;
 		border-bottom: 1px dotted $primary;
 		margin-right: 2rem;
-
 	}
 }
 
@@ -233,13 +289,12 @@ q-page(padding)
 	* {
 		display: none;
 	}
-
 }
 
 .item1 {
 	width: 150px;
 	height: 150px;
-	border-radius: .5rem;
+	border-radius: 0.5rem;
 	text-align: center;
 	margin: 0.5rem;
 	cursor: pointer;
@@ -255,8 +310,8 @@ q-page(padding)
 
 	&.active {
 		position: absolute;
-		height: 60vh;
-		width: 900px;
+		height: 300px;
+		width: 700px;
 		margin: 0 auto;
 		left: 0;
 		right: 0;
@@ -285,7 +340,7 @@ q-page(padding)
 }
 
 .hg {
-	margin-top: .5rem;
+	margin-top: 0.5rem;
 	line-height: 100%;
 }
 

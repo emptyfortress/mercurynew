@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Tmp1 from '../views/Tmp1.vue'
+import Group1 from '@/views/Group1.vue'
+import Home from '@/views/Home.vue'
 
 declare module 'vue-router' {
 	interface RouteMeta {
-		toolbar: boolean,
-		back: boolean,
+		toolbar: boolean
+		back: boolean
 		count: number
 	}
 }
@@ -13,15 +14,56 @@ const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
-			path: '/',
+			path: '/:id?',
 			name: 'home',
-			component: Tmp1,
+			component: Home,
 			meta: {
 				toolbar: false,
 				back: false,
-				count: 0
+				count: 0,
 			},
 		},
+		{
+			path: '/sel',
+			name: 'select',
+			component: () => import('@/views/Select.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 0,
+			},
+		},
+		{
+			path: '/tmp1',
+			name: 'tmp1',
+			component: () => import('@/views/Tmp1.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+			},
+		},
+		{
+			path: '/spot',
+			name: 'spot',
+			component: () => import('@/views/Spotlight.vue'),
+			meta: {
+				toolbar: true,
+				back: false,
+				count: 0,
+			},
+		},
+		{
+			path: '/icons',
+			name: 'icons',
+			component: () => import('@/views/Icons.vue'),
+			meta: {
+				toolbar: true,
+				back: false,
+				count: 0,
+			},
+		},
+
 		{
 			path: '/assistent',
 			name: 'assistent',
@@ -29,7 +71,17 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: true,
-				count: 1
+				count: 1,
+			},
+		},
+		{
+			path: '/version',
+			name: 'version',
+			component: () => import('@/views/VersionHistory.vue'),
+			meta: {
+				toolbar: false,
+				back: true,
+				count: 19,
 			},
 		},
 		{
@@ -39,7 +91,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: true,
-				count: 20
+				count: 20,
 			},
 		},
 		{
@@ -48,7 +100,7 @@ const router = createRouter({
 			component: () => import('@/views/Process.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 2,
 			},
 		},
@@ -68,17 +120,17 @@ const router = createRouter({
 			component: () => import('@/views/Forms.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 3,
 			},
 		},
 		{
-			path: '/roles',
+			path: '/roles/:id?',
 			name: 'roles',
 			component: () => import('@/views/Roles.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 4,
 			},
 		},
@@ -88,7 +140,7 @@ const router = createRouter({
 			component: () => import('@/views/Fields.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 5,
 			},
 		},
@@ -108,7 +160,7 @@ const router = createRouter({
 			component: () => import('@/views/Lists.vue'),
 			meta: {
 				toolbar: true,
-				back: false,
+				back: true,
 				count: 6,
 			},
 		},
@@ -116,6 +168,17 @@ const router = createRouter({
 			path: '/request/:id',
 			name: 'request',
 			component: () => import('@/views/Request.vue'),
+			props: true,
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 25,
+			},
+		},
+		{
+			path: '/request1/:id',
+			name: 'request1',
+			component: () => import('@/views/Request1.vue'),
 			props: true,
 			meta: {
 				toolbar: true,
@@ -174,8 +237,22 @@ const router = createRouter({
 				count: 10,
 			},
 		},
+		{
+			path: '/folder/:id/:item?',
+			name: 'folder',
+			component: Group1,
+			props: (route) => ({
+				id: route.params.id,
+				item: route.params.item,
+			}),
+
+			meta: {
+				toolbar: false,
+				back: true,
+				count: 0,
+			},
+		},
 	],
 })
-
 
 export default router

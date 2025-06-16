@@ -12,7 +12,6 @@ const tapes = ref([...myapps.apps])
 
 const shift = useKeyModifier('Shift')
 
-
 const type = computed(() => {
 	return shift.value ? 1 : 0
 })
@@ -27,6 +26,7 @@ const create = (e: string) => {
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
+		published: false,
 		group: 1,
 		list: [],
 		pic: '',
@@ -37,12 +37,11 @@ const create = (e: string) => {
 		$q.notify({
 			icon: 'mdi-check-bold',
 			color: 'positive',
-			message: 'Добавлено приложение'
+			message: 'Добавлено приложение',
 		})
 	}, 1200)
 	myapps.createApp(tmp)
 }
-
 </script>
 
 <template lang="pug">

@@ -8,7 +8,6 @@ import FormEditor from '@/components/FormEditor.vue'
 import { useControl } from '@/stores/controls'
 import Toolbar from '@/components/common/Toolbar.vue'
 
-
 const control = useControl()
 const panels = usePanels()
 const editor = ref<HTMLElement>()
@@ -64,7 +63,7 @@ const stopLeft = async () => {
 }
 
 const fullscreen = ref(false)
-const toggleFull = (() => {
+const toggleFull = () => {
 	if (fullscreen.value == false) {
 		panels.setRight(false)
 		stopRight()
@@ -77,14 +76,14 @@ const toggleFull = (() => {
 		startLeft()
 	}
 	fullscreen.value = !fullscreen.value
-})
+}
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.editor(ref='editor')
 		.top(@click='control.deselect')
-			.zg Форма "Создание"
+			.zg Форма "Просмотр"
 			div
 				q-btn(flat round dense icon="mdi-undo" color="primary" @click="") 
 				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
@@ -111,7 +110,6 @@ q-page(padding)
 	position: relative;
 	// top: 0;
 }
-
 
 .editor {
 	display: block;
