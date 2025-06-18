@@ -9,6 +9,7 @@ import RDrawer from '@/components/RDrawer.vue'
 import { useApps } from '@/stores/apps'
 import { useIdle, useCounter } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
+import { useQuasar } from 'quasar'
 
 const route = useRoute()
 const router = useRouter()
@@ -141,10 +142,10 @@ const { apply } = useMotion(buttonRef, {
 	},
 })
 
-const off = () => {
-	isAnimating.value = false
-	toggleHelp()
-}
+// const off = () => {
+// 	isAnimating.value = false
+// 	// toggleHelp()
+// }
 const jump = async () => {
 	await apply('fly1')
 	await apply('fly2')
@@ -152,6 +153,17 @@ const jump = async () => {
 	await apply('fly4')
 	await apply('fly5')
 	reset()
+}
+
+const $q = useQuasar()
+const refresh = () => {
+	$q.notify({
+		icon: 'mdi-alert',
+		color: 'warning',
+		message: 'Страница изменена другим пользователем и будет обновлена',
+		position: 'top',
+		progress: true,
+	})
 }
 </script>
 
@@ -165,9 +177,16 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
-			// q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
-			q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
-			q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
+			.q-mr-md.q-gutter-x-sm
+				q-avatar(size='md' color="positive" text-color="white" @click='refresh') РЛ
+					q-tooltip Роза Львовна
+				q-avatar(size='md' color="warning" text-color="black" @click='refresh') СК
+					q-tooltip Сирень Крокодиловна
+				q-avatar(size='md')
+					img(src="https://cdn.quasar.dev/img/avatar.png")
+			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
+			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
+			// q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
 
 	Drawer
 	RDrawer(v-model="rightDrawer" :help='helpMode')
