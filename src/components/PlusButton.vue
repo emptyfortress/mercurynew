@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
 import { usePanels } from '@/stores/panels'
 import DiagProps from '@/components/panels/DiagProps.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
+import TopButton from '@/components/panels/TopButton.vue'
 
 const router = useRouter()
 const panels = usePanels()
@@ -52,7 +53,7 @@ const next = () => {
 	@click='expand'
 	)
 
-	q-icon(v-if='!panels.right0'
+	q-icon.ic(v-if='!panels.right0'
 		v-motion
 		:initial='{ opacity: 0, rotate: "0deg" }'
 		:enter='{ opacity: 1, rotate: "0deg", }'
@@ -63,6 +64,7 @@ const next = () => {
 
 	CloseButton(v-model="panels.right0" @close="close")
 
+	TopButton(v-model="panels.right0")
 	DiagProps(v-if='panels.right0'
 		v-motion
 		:initial='{ opacity: 0 }'
@@ -83,8 +85,10 @@ const next = () => {
 	top: 0;
 	right: -58px;
 	text-align: center;
-	padding: 0.6rem;
 	cursor: pointer;
+	.ic {
+		margin-top: 11px;
+	}
 
 	&.expand {
 		width: 350px;

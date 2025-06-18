@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, nextTick, } from 'vue'
+import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
 import PropertyPanel from '@/components/panels/PropertyPanel.vue'
-
 
 const panels = usePanels()
 

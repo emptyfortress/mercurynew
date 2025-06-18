@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, nextTick } from 'vue'
 import { motion } from 'motion-v'
-// import IconMenuRole from '@/components/IconMenuRole.vue'
-// import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
-// import RoleRulesDialog from '@/components/RoleRulesDialog.vue'
-// import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
 import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<any[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
 const router = useRouter()
-const selectedItem = ref<any>(null)
+// const selectedItem = ref<any>(null)
 
 const Div = motion.div
 
@@ -88,9 +84,8 @@ const remove = (e: any) => {
 	emit('remove', e)
 }
 
-const navigate2 = (id: any) => {
-	console.log(id)
-	router.push(`/request1/${id}`)
+const navigate = () => {
+	router.push('/form')
 }
 
 const ondragStart = (e: any) => {
@@ -114,8 +109,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 )
 
 	AntDesignFormOutlined.im
-	// q-icon.im(name="mdi-form-dropdown")
-	// q-icon.im(name="mdi-list-box-outline")
 	.hg
 		span(@click='stopClick(item, $event)') {{ item.label }}
 			q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope")
@@ -137,7 +130,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 					q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
 						q-item(clickable @click.stop='remove(index)').pink
 							q-item-section.text-center Да, удалить!
-				q-btn(unelevated color="primary" label="Настроить форму" @click.stop='navigate2(item.id)') 
+				q-btn(unelevated color="primary" label="Настроить форму" @click.stop='navigate') 
 				q-btn(flat color="primary" label="Дублировать" @click.stop='duble(item)') 
 
 .ghostItem(ref='ghostItem'

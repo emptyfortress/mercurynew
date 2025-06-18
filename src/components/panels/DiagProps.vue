@@ -13,10 +13,13 @@ const next = () => {
 const emit = defineEmits(['next'])
 
 const showEtap = computed(() => {
-	if (mydiagram.selection == 'Создание заявления' ||
+	if (
+		mydiagram.selection == 'Создание заявления' ||
 		mydiagram.selection == 'Согласование' ||
 		mydiagram.selection == 'Доработка' ||
-		mydiagram.selection == 'Завершение') return true
+		mydiagram.selection == 'Завершение'
+	)
+		return true
 })
 
 const showRoot = computed(() => {
@@ -24,16 +27,17 @@ const showRoot = computed(() => {
 })
 
 const showRole = computed(() => {
-	if (mydiagram.selection == 'Инициатор' ||
+	if (
+		mydiagram.selection == 'Инициатор' ||
 		mydiagram.selection == 'Руководитель' ||
-		mydiagram.selection == 'Кадровик') return true
+		mydiagram.selection == 'Кадровик'
+	)
+		return true
 })
-
 </script>
 
 <template lang="pug">
 div
-	div Свойства
 	template(v-if='showRoot')
 		.text-h6 Процесс: Заявление на отпуск 
 		.q-mt-md.text-bold Длительность: 63ч.
