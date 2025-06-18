@@ -23,7 +23,7 @@ const header = computed(() => {
 		case 'form':
 			return 'Новая форма'
 		case 'list':
-			return 'Новый список'
+			return 'Новая папка'
 		default:
 			if (group.value) return 'Новая группа'
 			return 'Новое приложение'
@@ -253,7 +253,7 @@ function createGroup(): void {
 							hint='Описание не обязательно'
 							)
 
-					IconList(@select='setIcon')
+					IconList(v-if="props.mode == 'app'" @select='setIcon')
 
 				div(v-if="props.mode == 'role'")
 					IconRoleList(@select='setRoleIcon')

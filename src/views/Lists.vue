@@ -89,7 +89,7 @@ const create = (e: any) => {
 		descr: e.description,
 		expand: false,
 	}
-	tapes.value.push(tmp)
+	// tapes.value.push(tmp)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
@@ -162,7 +162,7 @@ const duble = (e: any, expand: boolean) => {
 		descr: e.descr,
 		expand: expand,
 	}
-	tapes.value.push(item)
+	// tapes.value.push(item)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',

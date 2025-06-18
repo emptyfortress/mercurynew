@@ -6,7 +6,6 @@ import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 import IconMenu from '@/components/IconMenu.vue'
 import { uid, useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
-import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const router = useRouter()
 
@@ -295,8 +294,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 )
 	div {{ label }}
 
-ConfirmDialog(v-model="dialog")
-	
 </template>
 
 <style scoped lang="scss">

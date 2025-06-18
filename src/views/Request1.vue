@@ -21,7 +21,8 @@ const list = useList()
 const route = useRoute()
 
 const currentFolder = computed(() => {
-	return list.lists.find((item) => item.id === Number(route.params.id))
+	return list.lists.find((item) => item.id === route.params.id)
+	// return list.lists.find((item) => item.id === Number(route.params.id))
 })
 
 const mykeys = useKeys()

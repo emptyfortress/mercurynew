@@ -155,9 +155,9 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/lists',
+			path: '/lists/:id?',
 			name: 'lists',
-			component: () => import('@/views/Lists.vue'),
+			component: () => import('@/views/ListsNew.vue'),
 			meta: {
 				toolbar: true,
 				back: true,
