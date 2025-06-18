@@ -78,7 +78,8 @@ const nav = () => {
 	// }
 }
 
-const helpMode = ref(true)
+const helpMode = ref(false)
+
 const toggleBug = () => {
 	helpMode.value = false
 	rightDrawer.value = !rightDrawer.value

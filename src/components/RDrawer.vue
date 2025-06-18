@@ -46,7 +46,7 @@ const hints = [
 						IconoirSpark
 					q-item-section
 						q-item-label {{ item.label }}
-		BugsList(v-else)
+		BugsList()
 
 </template>
 
