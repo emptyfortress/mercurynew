@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
 import { useStorage } from '@vueuse/core'
+import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
 
 const mini = useStorage('mini', true)
 
@@ -25,7 +26,7 @@ const pages = [
 	{
 		id: 3,
 		title: 'Роли',
-		icon: 'mdi-account',
+		icon: 'mdi-account-tie',
 		url: '/roles',
 	},
 	{
@@ -74,7 +75,8 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 			RouterLink(v-for="page in pages" :key="page.id" :to="page.url")
 				q-item(clickable v-ripple )
 					q-item-section(:side="!mini")
-						q-icon(:name="page.icon" color="primary" size="22px")
+						AntDesignFormOutlined.ic(v-if='page.id == 2')
+						q-icon(v-else :name="page.icon" color="primary" size="22px")
 					q-tooltip(v-if='mini' anchor="center end" self="center start") {{ page.title }}
 					q-item-section(v-if='!mini')
 						q-item-label {{ page.title }}
@@ -126,5 +128,9 @@ a.router-link-active .q-item {
 	background: #fff;
 	color: $primary;
 	min-height: 48px;
+}
+.ic {
+	width: 24px;
+	height: 24px;
 }
 </style>

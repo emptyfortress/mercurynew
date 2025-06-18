@@ -115,9 +115,10 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/forms',
+			// path: '/forms',
+			path: '/forms/:id?',
 			name: 'forms',
-			component: () => import('@/views/Forms.vue'),
+			component: () => import('@/views/FormsNew.vue'),
 			meta: {
 				toolbar: true,
 				back: true,

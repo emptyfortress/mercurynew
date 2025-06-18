@@ -5,17 +5,43 @@ import { motion } from 'motion-v'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { uid, useQuasar } from 'quasar'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
-import ItemFolder from '@/components/ItemFolder.vue'
+import ItemForm from '@/components/ItemForm.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
 import TrashSimple from '@/components/common/TrashSimple.vue'
-import { useList } from '@/stores/list'
+// import { useList } from '@/stores/list'
 
 const router = useRouter()
 const route = useRoute()
 const activeItem = ref('')
-const list = useList()
+// const list = useList()
 
+const forms = ref([
+	{
+		id: '1',
+		label: 'Создание',
+		expand: false,
+		// avatar: 'create',
+		descr: 'Здесь описание формы',
+		active: false,
+	},
+	{
+		id: '2',
+		label: 'Редактирование',
+		expand: false,
+		// avatar: 'edit',
+		descr: 'Здесь описание формы',
+		active: false,
+	},
+	{
+		id: '3',
+		label: 'Просмотр',
+		expand: false,
+		// avatar: 'view',
+		descr: 'Здесь описание формы',
+		active: false,
+	},
+])
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
 	router.push({
@@ -51,7 +77,7 @@ const create = (e: any) => {
 		id: uid(),
 		label: e.label,
 		expand: false,
-		descr: e.descr,
+		descr: e.description,
 		active: e.active,
 	}
 	tapes.value?.unshift(tmp)
@@ -96,7 +122,7 @@ const config = {
 	},
 }
 
-const [parent, tapes] = useDragAndDrop(list.lists, config)
+const [parent, tapes] = useDragAndDrop(forms.value, config)
 
 const duple = ref(false)
 
@@ -169,14 +195,13 @@ const setDragged = (e: any) => {
 	dragStatus.value = true
 }
 const unsetDragged = () => {
-	console.log(1111)
 	dragStatus.value = false
 }
 </script>
 
 <template lang="pug">
 q-page(padding, @click='action')
-	.header Папки
+	.header Формы
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
@@ -192,12 +217,12 @@ q-page(padding, @click='action')
 			@drop='onDropPlus'
 			:class="calcPlusClass"
 		)
-			AddButtonNew(mode='list' @create='create')
+			AddButtonNew(mode='form' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='role')
 
-		ItemFolder(
+		ItemForm(
 			v-model:expanded="expanded",
 			v-model:tapes='tapes',
 			v-model:activeItem="activeItem",

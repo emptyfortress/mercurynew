@@ -242,7 +242,7 @@ function createGroup(): void {
 						)
 
 
-				div(v-if='!group && props.mode == "app" || props.mode == "list"')
+				div(v-if='!group && props.mode == "app" || props.mode == "list" || props.mode == "form"')
 					.section
 						label Описание:
 						q-input(
