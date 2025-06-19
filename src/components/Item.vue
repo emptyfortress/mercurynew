@@ -248,6 +248,11 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 				span(@click.stop) {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+			.user
+				q-avatar(size='24px' color="positive" text-color="white") РЛ
+					q-tooltip Роза Львовна
+				q-avatar(size='24px' color="warning" text-color="black") СК
+					q-tooltip Сирень Крокодиловна
 
 		template(v-else)
 			span {{ item.label }}
@@ -412,5 +417,12 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 }
 .selected {
 	background: var(--selection);
+}
+.user {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	display: flex;
+	gap: 0.25rem;
 }
 </style>

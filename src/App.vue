@@ -160,9 +160,9 @@ const $q = useQuasar()
 const refresh = () => {
 	$q.notify({
 		icon: 'mdi-alert',
-		color: 'warning',
-		message: 'Страница изменена другим пользователем и будет обновлена',
-		position: 'top',
+		color: 'negative',
+		message: 'Страница изменена другим пользователем. Ваши изменения не сохранены.',
+		position: 'center',
 		progress: true,
 	})
 }
@@ -178,13 +178,15 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
-			.q-mr-md.q-gutter-x-sm
-				q-avatar(size='md' color="positive" text-color="white" @click='refresh') РЛ
+			.group(v-if='route.name !== "home"')
+				q-avatar(size='24px' color="positive" text-color="white" @click='refresh') РЛ
 					q-tooltip Роза Львовна
-				q-avatar(size='md' color="warning" text-color="black" @click='refresh') СК
+				q-avatar(size='24px' color="warning" text-color="black" @click='refresh') СК
 					q-tooltip Сирень Крокодиловна
-				q-avatar(size='md')
-					img(src="https://cdn.quasar.dev/img/avatar.png")
+				.save Сохранение...
+
+			q-avatar(size='md')
+				img(src="https://cdn.quasar.dev/img/avatar.png")
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
 			// q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
@@ -286,5 +288,16 @@ nav a:first-of-type {
 .animate-bounce-alt {
 	animation: bounce-alt 1s linear infinite;
 	transform-origin: center bottom;
+}
+.group {
+	font-size: 0.7rem;
+	display: flex;
+	gap: 0.5rem;
+	justify-content: start;
+	align-items: center;
+	margin-right: 5rem;
+	.q-avatar {
+		cursor: pointer;
+	}
 }
 </style>
