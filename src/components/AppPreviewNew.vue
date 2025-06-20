@@ -116,13 +116,21 @@ const handlePub = () => {
 			.val {{ props.item.author }}
 			label Создано:
 			.val {{ props.item.created }}
-			label Изменено:
-			.val {{ props.item.modify }}
+
 			label Опубликовано:
 			.val(v-if='item.published') {{ props.item.created }}
 			.val(v-else) --''--
 			.to.star(v-if='item.published' @click.stop) DV-test
-			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub") 
+			div(v-else)
+			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+
+			label Изменено:
+			.val {{ props.item.modify }}
+
+			div(v-if='props.item.id !== "1"')
+				|Орлов П.С.
+			div(v-else style='font-weight: bold; color: darkred')
+				|Роза Львовна
 
 		.myrow
 			q-btn(outline color="primary" label='Помощник' icon='mdi-lightbulb-outline' @click.stop="navigate" ) 
@@ -156,6 +164,7 @@ const handlePub = () => {
 	justify-items: start;
 	align-items: center;
 	column-gap: 2rem;
+	// row-gap: 0.5rem;
 	label {
 		grid-column: 1/2;
 	}
