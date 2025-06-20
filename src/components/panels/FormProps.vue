@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import IconAttribute from '@/components/icons/IconAttribute.vue'
-import IconRelation from '@/components/icons/IconRelation.vue'
+// import IconRelation from '@/components/icons/IconRelation.vue'
 import FormPropsMain from '@/components/panels/FormPropsMain.vue'
 
 const item1 = ref(true)
@@ -30,7 +30,7 @@ q-list(separator)
 <style scoped lang="scss">
 .ic {
 	font-size: 1.5rem;
-	margin-right: .5rem;
+	margin-right: 0.5rem;
 	color: $secondary;
 }
 
