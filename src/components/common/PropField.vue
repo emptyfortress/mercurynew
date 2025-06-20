@@ -45,7 +45,6 @@ const rasp = ref(props.startValue)
 
 const main = defineModel<string>('main')
 const check = defineModel<boolean>('check')
-
 </script>
 
 <template lang="pug">
@@ -86,8 +85,8 @@ q-separator(v-if='props.radio')
 
 <style scoped lang="scss">
 .q-separator {
-	margin-top: .5rem;
-	margin-bottom: .5rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
 	margin-left: -1rem;
 	margin-right: -1rem;
 	background: hsl(217 40% 92% / 1);
@@ -99,7 +98,7 @@ q-separator(v-if='props.radio')
 	justify-items: start;
 	align-items: center;
 	gap: 1rem;
-	margin-bottom: .5rem;
+	margin-bottom: 0.5rem;
 }
 
 .q-input,
@@ -120,5 +119,25 @@ label {
 	&.start {
 		align-self: start;
 	}
+}
+:deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
+	height: 32px;
+}
+
+:deep(.q-field--auto-height.q-field--dense .q-field__native) {
+	min-height: 32px;
+}
+
+:deep(.q-field--auto-height.q-field--dense .q-field__native) {
+	min-height: 32px;
+}
+:deep(
+	.q-field--auto-height.q-field--dense .q-field__control,
+	.q-field--auto-height.q-field--dense .q-field__native
+) {
+	min-height: 32px;
+}
+:deep(.q-field--dense .q-field__marginal) {
+	height: 32px;
 }
 </style>
