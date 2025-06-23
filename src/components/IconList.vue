@@ -19,7 +19,7 @@ const temp = ref('IconApp')
 .icon
 	label Иконка:
 	component.ic(:is='selectedIcon')
-	IconMenu(@select='select' :icon='temp')
+	// IconMenu(@select='select' :icon='temp')
 
 </template>
 
