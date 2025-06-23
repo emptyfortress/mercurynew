@@ -135,7 +135,7 @@ const handlePub = () => {
 		.myrow
 			q-btn(outline color="primary" label='Помощник' icon='mdi-lightbulb-outline' @click.stop="navigate" ) 
 			q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click.stop="navigate1" ) 
-			q-btn(outline olor="primary" icon='mdi-delete-empty-outline' label='Удалить приложение' @click.stop='handleRemove') 
+			q-btn(outline color="primary" icon='mdi-delete-empty-outline' label='Удалить приложение' @click.stop='handleRemove') 
 				q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
 					q-item(clickable @click.stop='remove(props.item)').pink
 						q-item-section.text-center Да, удалить!
