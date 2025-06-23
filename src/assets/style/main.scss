@@ -376,3 +376,10 @@
 		display: none;
 	}
 }
+.ddis {
+	opacity: 0.3;
+	cursor: not-allowed;
+	.q-btn {
+		cursor: not-allowed;
+	}
+}
