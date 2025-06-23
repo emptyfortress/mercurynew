@@ -4,7 +4,7 @@ import { animations } from '@formkit/drag-and-drop'
 import { motion } from 'motion-v'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { uid, useQuasar } from 'quasar'
-import AddButtonNew from '@/components/common/AddButtonNew.vue'
+// import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import ItemFolder from '@/components/ItemFolder.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -192,7 +192,17 @@ q-page(padding, @click='action')
 			@drop='onDropPlus'
 			:class="calcPlusClass"
 		)
-			AddButtonNew(mode='list' @create='create')
+			.temp
+				q-btn(
+					round,
+					icon="mdi-plus",
+					color="primary"
+					v-motion
+					:initial="{opacity: 0, rotate: -720, scale: .5}"
+					:enter='{opacity: 1, rotate: 0, scale: 1}'
+					:delay='500'
+				) 
+			// AddButtonNew(mode='list' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='role')
@@ -299,5 +309,14 @@ q-page(padding, @click='action')
 .val span {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
+}
+.temp {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	border-radius: 0.5rem;
+	background: #ffffff55;
 }
 </style>

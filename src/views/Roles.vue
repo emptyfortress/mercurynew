@@ -22,19 +22,19 @@ const roles = ref([
 		avatar: 'avatar2',
 		active: true,
 	},
-	{
-		id: '2',
-		label: 'Руководитель',
-		expand: false,
-		avatar: 'avatar1',
-		active: true,
-	},
-	{
-		id: '3',
-		label: 'Кадровик',
-		expand: false,
-		avatar: 'avatar5',
-	},
+	// {
+	// 	id: '2',
+	// 	label: 'Руководитель',
+	// 	expand: false,
+	// 	avatar: 'avatar1',
+	// 	active: true,
+	// },
+	// {
+	// 	id: '3',
+	// 	label: 'Кадровик',
+	// 	expand: false,
+	// 	avatar: 'avatar5',
+	// },
 ])
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
@@ -72,6 +72,7 @@ const create = (e: any) => {
 		label: e.label,
 		expand: false,
 		avatar: e.avatar,
+		active: false,
 	}
 	tapes.value?.unshift(tmp)
 	setTimeout(() => {
@@ -89,6 +90,7 @@ const duble = (e: any) => {
 		label: e.label + '-copy',
 		expand: false,
 		avatar: e.avatar,
+		active: false,
 	}
 	tapes.value?.unshift(tmp)
 	setTimeout(() => {
@@ -131,6 +133,7 @@ const onDropPlus = () => {
 		label: draggedItem.value.label + '-copy',
 		expand: false,
 		avatar: draggedItem.value.avatar,
+		active: false,
 	}
 	tapes.value?.unshift(tmp)
 	// tapes.value?.push(tmp)
@@ -212,7 +215,17 @@ q-page(padding, @click='action')
 			@drop='onDropPlus'
 			:class="calcPlusClass"
 		)
-			AddButtonNew(mode='role' @create='create')
+			.temp
+				q-btn(
+					round,
+					icon="mdi-plus",
+					color="primary"
+					v-motion
+					:initial="{opacity: 0, rotate: -720, scale: .5}"
+					:enter='{opacity: 1, rotate: 0, scale: 1}'
+					:delay='500'
+				) 
+			// AddButtonNew(mode='role' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='role')
@@ -319,5 +332,14 @@ q-page(padding, @click='action')
 .val span {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
+}
+.temp {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	border-radius: 0.5rem;
+	background: #ffffff55;
 }
 </style>
