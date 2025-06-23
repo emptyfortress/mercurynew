@@ -253,7 +253,7 @@ function createGroup(): void {
 							hint='Описание не обязательно'
 							)
 
-					IconList(v-if="props.mode == 'app'" @select='setIcon')
+					IconList.ddis(v-if="props.mode == 'app'" @select='setIcon')
 
 				div(v-if="props.mode == 'role'")
 					IconRoleList(@select='setRoleIcon')
