@@ -8,7 +8,7 @@ import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import ItemForm from '@/components/ItemForm.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
-import TrashSimple from '@/components/common/TrashSimple.vue'
+// import TrashSimple from '@/components/common/TrashSimple.vue'
 // import { useList } from '@/stores/list'
 
 const router = useRouter()
@@ -233,7 +233,7 @@ q-page(padding, @click='action')
 			@undrag="unsetDragged"
 		)
 
-	TrashSimple(v-model="dragStatus" @remove="remove")
+	// TrashSimple(v-model="dragStatus" @remove="remove")
 </template>
 
 <style scoped lang="scss">
