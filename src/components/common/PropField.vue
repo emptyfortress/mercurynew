@@ -26,6 +26,7 @@ interface Props {
 	button?: boolean
 	btLabel?: string
 	check?: boolean
+	after?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -38,6 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 	textarea: false,
 	toggle: false,
 	radio: false,
+	after: false,
 	// group: [{ label: 'one', val: 'one' }],
 })
 
@@ -50,7 +52,7 @@ const check = defineModel<boolean>('check')
 <template lang="pug">
 q-separator(v-if='props.radio')
 .dat
-	label(v-if='props.label' :class='{ start: props.radio }') {{ props.label }} 
+	label(v-if='props.label' :class='{ start: props.radio }') {{ props.label }}:
 
 	q-checkbox(v-if="props.checkbox" v-model="check" dense :label="props.descr" :disable="props.disable")
 	q-toggle(v-if="props.toggle" v-model="check" size="sm")
@@ -68,6 +70,8 @@ q-separator(v-if='props.radio')
 		:disable="props.disable"
 		:readonly="props.readonly"
 		)
+		template(v-slot:after v-if='props.after' )
+			q-btn(flat round dense icon="mdi-arrow-right-circle-outline" color="primary") 
 
 	q-input(v-model="main" v-if='props.textarea' outlined autogrow :disable="props.disable")
 
@@ -79,6 +83,7 @@ q-separator(v-if='props.radio')
 		:type="props.type"
 		:disable="props.disable"
 		:readonly="props.readonly")
+
 q-separator(v-if='props.radio')
 
 </template>
@@ -94,16 +99,18 @@ q-separator(v-if='props.radio')
 
 .dat {
 	display: grid;
-	grid-template-columns: 130px 1fr;
+	grid-template-columns: 110px 1fr;
 	justify-items: start;
 	align-items: center;
-	gap: 1rem;
+	gap: 0.5rem;
 	margin-bottom: 0.5rem;
 }
 
 .q-input,
 .q-select {
 	width: 100%;
+}
+:deep(.q-field__control:before) {
 	background: var(--bgLight);
 }
 
@@ -120,6 +127,7 @@ label {
 		align-self: start;
 	}
 }
+
 :deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
 	height: 32px;
 }
@@ -128,15 +136,13 @@ label {
 	min-height: 32px;
 }
 
-:deep(.q-field--auto-height.q-field--dense .q-field__native) {
-	min-height: 32px;
-}
 :deep(
 	.q-field--auto-height.q-field--dense .q-field__control,
 	.q-field--auto-height.q-field--dense .q-field__native
 ) {
 	min-height: 32px;
 }
+
 :deep(.q-field--dense .q-field__marginal) {
 	height: 32px;
 }

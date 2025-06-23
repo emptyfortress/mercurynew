@@ -4,9 +4,10 @@ import { ref, computed } from 'vue'
 // import roleProps from '@/assets/img/role.png'
 import { useDiagram } from '@/stores/diagram'
 import IconAttribute from '@/components/icons/IconAttribute.vue'
-import IconRelation from '@/components/icons/IconRelation.vue'
+import IconFlag from '@/components/icons/IconFlag.vue'
 // import Empty1 from '@/components/Empty1.vue'
 import PropField from '@/components/common/PropField.vue'
+import MySelect from '@/components/common/MySelect.vue'
 
 const mydiagram = useDiagram()
 
@@ -18,6 +19,7 @@ const emit = defineEmits(['next'])
 
 const showEtap = computed(() => {
 	if (
+		mydiagram.selection == 'Старт' ||
 		mydiagram.selection == 'Создание заявления' ||
 		mydiagram.selection == 'Согласование' ||
 		mydiagram.selection == 'Доработка' ||
@@ -44,20 +46,30 @@ const item2 = ref(true)
 const list = [
 	{
 		id: 0,
-		label: 'Метка',
-		main: '',
+		label: 'Название',
+		main: 'Создание заявления',
 	},
 	{
 		id: 1,
-		label: 'Подсказка',
-		main: '',
+		label: 'Исполнитель',
+		main: 'Инициатор',
+		select: true,
 	},
 	{
 		id: 2,
-		label: 'Текст-заполнитель',
-		main: '',
+		label: 'Форма',
+		main: 'Создание',
+		select: true,
+		after: true,
+	},
+	{
+		id: 2,
+		label: 'Текущий статус',
+		main: 'Подготовка',
+		select: true,
 	},
 ]
+const main = ref('Подготовка')
 </script>
 
 <template lang="pug">
@@ -80,17 +92,34 @@ div
 				q-item-section.zg Атрибуты
 
 			q-list.prop
-				PropField(v-for="item in list" :key='item.id'
-					:label='item.label'
-					v-model:main="item.main"
-					)
+				PropField(
+					v-for="item in list",
+					:key='item.id',
+					:label='item.label',
+					:select="item.select"
+					v-model:main="item.main",
+					:after='item.after'
+				)
 
 
 		q-expansion-item(v-model="item2")
 			template(v-slot:header)
 				q-item-section(side)
-					IconRelation.ic
-				q-item-section.zg Дополнительно
+					IconFlag.ic
+				q-item-section.zg Варианты завершения
+
+			q-markup-table.tbl(flat)
+				thead
+					tr
+						th.text-left Вариант завершения
+						th.text-left Статус по завершению
+				tbody
+					tr
+						td
+							.link Кнопка
+						td
+							MySelect(v-model:main="main")
+
 
 	// div
 	// 	template(v-if='showRoot')
@@ -126,5 +155,21 @@ div
 .prop {
 	margin-left: 0.5rem;
 	margin-right: 0.5rem;
+	margin-top: 1rem;
+}
+
+.tbl {
+	margin-left: 1rem;
+	margin-right: 1rem;
+	td,
+	th {
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+		text-align: left;
+	}
+}
+.link {
+	color: $primary;
+	text-decoration: underline;
 }
 </style>

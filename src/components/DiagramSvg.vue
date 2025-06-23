@@ -147,6 +147,18 @@ const test = () => {
 						Завершение
 					</tspan>
 				</text>
+
+				<circle
+					id="Start"
+					cx="122.5"
+					cy="103.5"
+					r="17.5"
+					fill="white"
+					stroke="black"
+					stroke-width="2"
+					@click.stop="select('Старт')"
+					:class="calcClass('Старт')"
+				/>
 				<text
 					id="start"
 					fill="black"
@@ -200,17 +212,6 @@ const test = () => {
 					</tspan>
 				</text>
 			</g>
-			<circle
-				id="Start"
-				cx="122.5"
-				cy="103.5"
-				r="17.5"
-				fill="white"
-				stroke="black"
-				stroke-width="2"
-				@click.stop="select('Старт')"
-				:class="calcClass('Старт')"
-			/>
 		</g>
 	</svg>
 </template>
