@@ -88,7 +88,7 @@ const [parent, tapes] = useDragAndDrop(mykeys.hasParameters, config)
 				span {{ localLabelValues[group[0].id] }}:
 					q-popup-edit(v-model="localLabelValues[group[0].id]" auto-save v-slot="scope")
 						.small {{group[0].label}} {{ group[1].label}}
-						q-input(v-model="scope.value" dense filled autofocus counter @keyup.enter="updateLocalLabelValue(group[0].id, scope.value, scope)")
+						q-input(v-model="scope.value" dense filled autofocus @keyup.enter="updateLocalLabelValue(group[0].id, scope.value, scope)")
 
 			q-input(
 				:model-value="localInputValues[group[2].id]"
