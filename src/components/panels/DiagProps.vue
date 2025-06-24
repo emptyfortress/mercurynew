@@ -45,18 +45,18 @@ const item2 = ref(true)
 
 <template lang="pug">
 div
-	q-list
+	q-list(v-if='mydiagram.selection')
 		q-expansion-item(v-model="item1")
 			template(v-slot:header)
 				q-item-section(side)
 					IconAttribute.ic
 				q-item-section.zg Атрибуты
 
-			DiagRootProps(v-if='mydiagram.selection && showRoot' separator)
+			DiagRootProps(v-if='showRoot' separator)
 
-			DiagRoleProps(v-if='mydiagram.selection && showRole' separator)
+			DiagRoleProps(v-if='showRole' separator)
 
-			DiagEtapProps(v-if='mydiagram.selection && showEtap' separator)
+			DiagEtapProps(v-if='showEtap' separator)
 
 		q-expansion-item.q-mt-md(v-model="item2" v-if='mydiagram.selection && showEtap')
 			template(v-slot:header)
