@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-// import etapProps from '@/assets/img/etap.png'
-// import roleProps from '@/assets/img/role.png'
 import { useDiagram } from '@/stores/diagram'
 import IconAttribute from '@/components/icons/IconAttribute.vue'
 import IconFlag from '@/components/icons/IconFlag.vue'
-// import Empty1 from '@/components/Empty1.vue'
-import PropField from '@/components/common/PropField.vue'
-import MySelect from '@/components/common/MySelect.vue'
+import DiagRootProps from '@/components/panels/DiagRootProps.vue'
+import DiagRoleProps from '@/components/panels/DiagRoleProps.vue'
+import DiagEtapProps from '@/components/panels/DiagEtapProps.vue'
+import DiagVariantProps from '@/components/panels/DiagVariantProps.vue'
 
 const mydiagram = useDiagram()
 
@@ -42,102 +41,29 @@ const showRole = computed(() => {
 })
 const item1 = ref(true)
 const item2 = ref(true)
-
-const list = [
-	{
-		id: 0,
-		label: 'Название',
-		main: 'Создание заявления',
-	},
-	{
-		id: 1,
-		label: 'Исполнитель',
-		main: 'Инициатор',
-		select: true,
-	},
-	{
-		id: 2,
-		label: 'Форма',
-		main: 'Создание',
-		select: true,
-		after: true,
-	},
-	{
-		id: 2,
-		label: 'Текущий статус',
-		main: 'Подготовка',
-		select: true,
-	},
-]
-const main = ref('Подготовка')
 </script>
 
 <template lang="pug">
 div
-	// Empty1(v-if='!mydiagram.selection')
-
-	template(v-if='mydiagram.selection && showRoot')
-		.text-h6 Процесс: Заявление на отпуск 
-		.q-mt-md.text-bold Длительность: 63ч.
-
-	template(v-if='mydiagram.selection && showRole')
-		.text-h6 Роль: название роли
-		.q-mt-md.text-bold Правила выбора
-
-	q-list(v-if='mydiagram.selection && showEtap' separator)
+	q-list
 		q-expansion-item(v-model="item1")
 			template(v-slot:header)
 				q-item-section(side)
 					IconAttribute.ic
 				q-item-section.zg Атрибуты
 
-			q-list.prop
-				.dat
-					label Тип:
-					.val Этап
-				PropField(
-					v-for="item in list",
-					:key='item.id',
-					:label='item.label',
-					:select="item.select"
-					v-model:main="item.main",
-					:after='item.after'
-				)
+			DiagRootProps(v-if='mydiagram.selection && showRoot' separator)
 
+			DiagRoleProps(v-if='mydiagram.selection && showRole' separator)
 
-		q-expansion-item(v-model="item2")
+			DiagEtapProps(v-if='mydiagram.selection && showEtap' separator)
+
+		q-expansion-item.q-mt-md(v-model="item2" v-if='mydiagram.selection && showEtap')
 			template(v-slot:header)
 				q-item-section(side)
 					IconFlag.ic
 				q-item-section.zg Варианты завершения
-
-			q-markup-table.tbl(flat)
-				thead
-					tr
-						th.text-left Вариант завершения
-						th.text-left Статус по завершению
-				tbody
-					tr
-						td
-							.link Кнопка
-						td
-							MySelect(v-model:main="main")
-
-
-	// div
-	// 	template(v-if='showRoot')
-	// 		.text-h6 Процесс: Заявление на отпуск 
-	// 		.q-mt-md.text-bold Длительность: 63ч.
-
-		// template(v-if='showEtap')
-		// 	img(:src="etapProps" usemap="#image-map" width="335")
-		// 	map(name="image-map")
-		// 		area(target="_self" alt="next" title="next" @click="next" coords="299,154,346,197" shape="rect")
-
-		// template(v-if='showRole')
-		// 	img(:src="roleProps" usemap="#image-map" width="335")
-		// 	map(name="image-map")
-		// 		area(target="_self" alt="next" title="next" @click="next" coords="275,209,330,248" shape="rect")
+			DiagVariantProps(separator)
 
 </template>
 
@@ -154,34 +80,5 @@ div
 	text-transform: uppercase;
 	color: $secondary;
 	text-align: left;
-}
-.prop {
-	margin-left: 0.5rem;
-	margin-right: 0.5rem;
-	margin-top: 1rem;
-}
-
-.tbl {
-	margin-left: 1rem;
-	margin-right: 1rem;
-	td,
-	th {
-		padding-left: 0.5rem;
-		padding-right: 0.5rem;
-		text-align: left;
-	}
-}
-.link {
-	color: $primary;
-	text-decoration: underline;
-}
-
-.dat {
-	display: grid;
-	grid-template-columns: 110px 1fr;
-	justify-items: start;
-	align-items: center;
-	gap: 0.5rem;
-	margin-bottom: 0.5rem;
 }
 </style>
