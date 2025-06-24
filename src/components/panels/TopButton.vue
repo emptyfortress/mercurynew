@@ -1,11 +1,16 @@
 <script setup lang="ts">
 const modelValue = defineModel()
 
+const emit = defineEmits(['close'])
 
+const close = () => {
+	emit('close')
+}
 </script>
 
 <template lang="pug">
 .top(v-if='modelValue'
+	@click.stop='close'
 	v-motion
 	:initial='{ opacity: 0 }'
 	:enter='{ opacity: 1 }'
@@ -18,6 +23,7 @@ const modelValue = defineModel()
 <style scoped lang="scss">
 .top {
 	display: block;
+	cursor: pointer;
 }
 
 .zg {
@@ -27,6 +33,6 @@ const modelValue = defineModel()
 
 .zg .q-icon {
 	font-size: 1.3rem;
-	margin-right: .5rem;
+	margin-right: 0.5rem;
 }
 </style>

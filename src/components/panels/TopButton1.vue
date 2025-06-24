@@ -2,10 +2,15 @@
 import IconSearch from '@/components/icons/IconSearch.vue'
 
 const modelValue = defineModel()
+
+const emit = defineEmits(['close'])
+const close = () => {
+	emit('close')
+}
 </script>
 
 <template lang="pug">
-.top(v-if='modelValue'
+.top(v-if='modelValue' @click.stop='close'
 	v-motion
 	:initial='{ opacity: 0 }'
 	:enter='{ opacity: 1 }'
@@ -18,6 +23,7 @@ const modelValue = defineModel()
 <style scoped lang="scss">
 .top {
 	display: block;
+	cursor: pointer;
 }
 
 .zg {

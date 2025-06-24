@@ -59,7 +59,7 @@ const search = () => {
 
 	CloseButton(v-model="panels.preview" @close="close")
 
-	TopButton1(v-model="panels.preview")
+	TopButton1(v-model="panels.preview" @close="close")
 
 	FormPreview(v-if='panels.preview'
 		v-motion

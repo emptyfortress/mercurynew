@@ -68,7 +68,7 @@ const close = () => {
 		:enter='{ opacity: 1 }'
 		:delay='600'
 		)
-		.top
+		.top(@click.stop='close')
 			.zg
 				q-icon.ico(name="mdi-tune-vertical-variant" color="primary")
 				|Представление
@@ -119,6 +119,7 @@ const close = () => {
 
 .top {
 	display: block;
+	cursor: pointer;
 }
 
 .zg {
