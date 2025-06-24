@@ -116,7 +116,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	.hg
 		span(@click='stopClick(item, $event)') {{ item.label }}
 			q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope")
-				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+				q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
 	.content(v-if='expanded && item.id == activeItem')
 		label
@@ -124,7 +124,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			span.val(@click='stopClick(item, $event)')
 				span {{ item.descr }}
 					q-popup-edit(v-model="item.descr" auto-save v-slot="scope")
-						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+						q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
 		br
 		br

@@ -108,7 +108,7 @@ const handlePub = () => {
 		.descr(@click.stop)
 			span {{ props.item.descr }}
 			q-popup-edit(v-model="props.item.descr" auto-save v-slot="scope")
-				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+				q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
 
 		.mygrid
