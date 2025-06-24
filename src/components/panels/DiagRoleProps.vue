@@ -1,47 +1,47 @@
 <script setup lang="ts">
 import PropField from '@/components/common/PropField.vue'
 
-const list = [
+const rootlist = [
 	{
 		id: 0,
 		label: 'Название',
-		main: 'Создание заявления',
+		main: 'Заявление на отпуск',
+	},
+]
+
+const rolelist = [
+	{
+		id: 0,
+		label: 'Название',
+		main: 'Инициатор',
 	},
 	{
 		id: 1,
-		label: 'Исполнитель',
-		main: 'Инициатор',
-		select: true,
-	},
-	{
-		id: 2,
 		label: 'Форма',
-		main: 'Создание',
+		main: 'Просмотр',
 		select: true,
 		after: true,
-	},
-	{
-		id: 2,
-		label: 'Текущий статус',
-		main: 'Подготовка',
-		select: true,
 	},
 ]
 </script>
 
 <template lang="pug">
-q-list.prop(separator)
-	.dat
-		label Тип:
-		.val Этап
-	PropField(
-		v-for="item in list",
-		:key='item.id',
-		:label='item.label',
-		:select="item.select"
-		v-model:main="item.main",
-		:after='item.after'
-	)
+			q-list.prop(separator)
+				.dat
+					label Тип:
+					.val Роль
+
+				PropField(
+					v-for="item in rolelist",
+					:key='item.id',
+					:label='item.label',
+					:select='item.select'
+					:after="item.after"
+					v-model:main="item.main",
+				)
+				.dat
+					label Правила определения:
+					q-btn(unelevated color="primary" label="Задать" size='sm') 
 
 </template>
 

@@ -1,30 +1,11 @@
 <script setup lang="ts">
 import PropField from '@/components/common/PropField.vue'
 
-const list = [
+const rootlist = [
 	{
 		id: 0,
 		label: 'Название',
-		main: 'Создание заявления',
-	},
-	{
-		id: 1,
-		label: 'Исполнитель',
-		main: 'Инициатор',
-		select: true,
-	},
-	{
-		id: 2,
-		label: 'Форма',
-		main: 'Создание',
-		select: true,
-		after: true,
-	},
-	{
-		id: 2,
-		label: 'Текущий статус',
-		main: 'Подготовка',
-		select: true,
+		main: 'Заявление на отпуск',
 	},
 ]
 </script>
@@ -33,16 +14,17 @@ const list = [
 q-list.prop(separator)
 	.dat
 		label Тип:
-		.val Этап
+		.val Процесс
+		label Длительность:
+		.val 63 ч.
+		label Автор:
+		.val Орлов П.С.
 	PropField(
-		v-for="item in list",
+		v-for="item in rootlist",
 		:key='item.id',
 		:label='item.label',
-		:select="item.select"
 		v-model:main="item.main",
-		:after='item.after'
 	)
-
 </template>
 
 <style scoped lang="scss">
