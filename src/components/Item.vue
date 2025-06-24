@@ -247,7 +247,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			.head
 				span(@click.stop) {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
-						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+						q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 			.user.ddis
 				q-avatar(size='24px' color="positive" text-color="white") РЛ
 					q-tooltip Роза Львовна
