@@ -29,12 +29,12 @@ const pages = [
 		icon: 'mdi-account-tie',
 		url: '/roles',
 	},
-	{
-		id: 5,
-		title: 'Поля, статусы',
-		icon: 'mdi-nut',
-		url: '/fields',
-	},
+	// {
+	// 	id: 5,
+	// 	title: 'Поля, статусы',
+	// 	icon: 'mdi-nut',
+	// 	url: '/fields',
+	// },
 	{
 		id: 4,
 		title: 'Папки',

@@ -178,14 +178,14 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
-			.group(v-if='route.name !== "home"')
+			.group.ddis(v-if='route.name !== "home"')
 				q-avatar(size='24px' color="positive" text-color="white" @click='refresh') РЛ
 					q-tooltip Роза Львовна
 				q-avatar(size='24px' color="warning" text-color="black" @click='refresh') СК
 					q-tooltip Сирень Крокодиловна
 				.save Сохранение...
 
-			q-avatar(size='md')
+			q-avatar.ddis(size='md')
 				img(src="https://cdn.quasar.dev/img/avatar.png")
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')

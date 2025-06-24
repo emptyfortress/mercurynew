@@ -4,7 +4,7 @@ import PlusButton from '@/components/PlusButton.vue'
 import { useMotion } from '@vueuse/motion'
 import { usePanels } from '@/stores/panels'
 import DiagramSvg from '@/components/DiagramSvg.vue'
-import Look from '@/components/Look.vue'
+// import Look from '@/components/Look.vue'
 
 const editor1 = ref<HTMLElement>()
 
@@ -45,7 +45,7 @@ q-page(padding)
 	.editor(ref='editor1')
 		.center
 			DiagramSvg
-			Look
+			// Look
 
 
 		PlusButton(@activate='startRight0' @stop='stopRight0')
