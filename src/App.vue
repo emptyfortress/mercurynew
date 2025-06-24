@@ -174,7 +174,7 @@ q-layout(view='hHh LpR fFf')
 		q-toolbar
 			q-btn(dense flat round @click='nav')
 				img(src='@/assets/img/kp_logo.svg')
-			q-toolbar-title
+			q-toolbar-title( @click='nav')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
@@ -299,5 +299,8 @@ nav a:first-of-type {
 	.q-avatar {
 		cursor: pointer;
 	}
+}
+.q-toolbar__title {
+	cursor: pointer;
 }
 </style>
