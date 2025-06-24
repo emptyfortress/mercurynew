@@ -129,7 +129,7 @@ const handlePub = () => {
 
 			div(v-if='props.item.id !== "1"')
 				|Орлов П.С.
-			div(v-else style='font-weight: bold; color: darkred')
+			div(v-else style='font-weight: bold;')
 				|Роза Львовна
 
 		.myrow

@@ -92,6 +92,9 @@ div
 				q-item-section.zg Атрибуты
 
 			q-list.prop
+				.dat
+					label Тип:
+					.val Этап
 				PropField(
 					v-for="item in list",
 					:key='item.id',
@@ -171,5 +174,14 @@ div
 .link {
 	color: $primary;
 	text-decoration: underline;
+}
+
+.dat {
+	display: grid;
+	grid-template-columns: 110px 1fr;
+	justify-items: start;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 </style>
