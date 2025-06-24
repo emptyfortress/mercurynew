@@ -43,9 +43,10 @@ const stopRight0 = async () => {
 q-page(padding)
 
 	.editor(ref='editor1')
+		.zg Процесс
 		.center
 			DiagramSvg
-			// Look
+		// Look
 
 
 		PlusButton(@activate='startRight0' @stop='stopRight0')
@@ -71,5 +72,11 @@ q-page(padding)
 	// flex-direction: column;
 	align-items: start;
 	position: relative;
+}
+.zg {
+	font-size: 1.3rem;
+	font-weight: 500;
+	position: absolute;
+	top: 0.5rem;
 }
 </style>
