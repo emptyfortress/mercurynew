@@ -295,12 +295,15 @@ nav a:first-of-type {
 	gap: 0.5rem;
 	justify-content: start;
 	align-items: center;
-	margin-right: 5rem;
+	margin-right: 3rem;
 	.q-avatar {
 		cursor: pointer;
 	}
 }
 .q-toolbar__title {
 	cursor: pointer;
+}
+.save {
+	margin-left: 3rem;
 }
 </style>
