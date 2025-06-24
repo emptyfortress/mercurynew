@@ -55,7 +55,7 @@ const close = () => {
 
 	CloseButton(v-model="panels.right" @close="close")
 
-	TopButton(v-model="panels.right")
+	TopButton(v-model="panels.right" @close="close")
 	PropertyPanel(v-model="panels.right")
 
 </template>

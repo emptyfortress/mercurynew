@@ -59,7 +59,7 @@ const close = () => {
 		:enter='{ opacity: 1 }'
 		:delay='600'
 		)
-		.top
+		.top(@click.stop='close')
 			.zg
 				q-icon(name="mdi-book-open-page-variant-outline")
 				|Библиотека
@@ -78,14 +78,14 @@ const close = () => {
 
 .zg .q-icon {
 	font-size: 1.5rem;
-	margin-right: .5rem;
+	margin-right: 0.5rem;
 }
 
 .info {
 	position: absolute;
 	bottom: 0;
-	padding: .5rem;
-	font-size: .8rem;
+	padding: 0.5rem;
+	font-size: 0.8rem;
 	vertical-align: bottom;
 	color: $secondary;
 
@@ -121,6 +121,7 @@ const close = () => {
 
 .top {
 	display: block;
+	cursor: pointer;
 }
 
 .zg {
