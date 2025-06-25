@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useWindowSize } from '@vueuse/core'
+import CarbonStringText from '@/components/icons/CarbonStringText.vue'
+import CarbonStringInteger from '@/components/icons/CarbonStringInteger.vue'
+import IconText from '@/components/icons/IconText.vue'
+import MdiCalendar from '@/components/icons/MdiCalendar.vue'
+import MaterialSymbolsAccountCircle from '@/components/icons/MaterialSymbolsAccountCircle.vue'
+import { Kind } from '@/types/enum'
 
 gsap.registerPlugin(Flip)
 
@@ -11,7 +17,7 @@ const form = ref()
 
 const adding = ref(false)
 
-const add = (() => {
+const add = () => {
 	const state = Flip.getState('.button1, .dialog1')
 	adding.value = !adding.value
 	nextTick(() => {
@@ -29,7 +35,7 @@ const add = (() => {
 			input.value.focus()
 		}
 	})
-})
+}
 
 const { width, height } = useWindowSize()
 
@@ -42,44 +48,56 @@ const top = computed(() => {
 
 const emit = defineEmits(['create'])
 const model = ref(null)
-const model2 = ref('Строка')
 const model1 = ref(null)
+const typeModel = ref({
+	type: Kind.String,
+	pic: CarbonStringText,
+	value: 'Строка',
+	label: 'Строка',
+})
 const options = [
-	'Строка', 'Число', 'Текст', 'Дата', 'Ссылка на справочник',
+	{ type: Kind.String, pic: CarbonStringText, value: 'Строка', label: 'Строка' },
+	{ type: Kind.Num, pic: CarbonStringInteger, value: 'Число', label: 'Число' },
+	{ type: Kind.Text, pic: IconText, value: 'Текст', label: 'Текст' },
+	{ type: Kind.Date, pic: MdiCalendar, value: 'Дата', label: 'Дата' },
+	{
+		type: Kind.Man,
+		pic: MaterialSymbolsAccountCircle,
+		value: 'Ссылка на справочник',
+		label: 'Ссылка на справочник',
+	},
 ]
 
-
-const resetForm = (() => {
+const resetForm = () => {
 	nextTick(() => {
 		input.value.resetValidation()
 	})
 	model.value = null
 	model1.value = null
-	model2.value = 'Строка'
-	pic.value = false
-
-})
-const submitForm = (() => {
+	typeModel.value = { type: Kind.String, pic: CarbonStringText, value: 'Строка', label: 'Строка' }
+}
+const submitForm = () => {
 	emit('create', {
-		id: + Date.now(),
+		id: +Date.now(),
 		label: model.value,
 		caption: model1.value,
-		selected: false
+		selected: false,
+		type: typeModel.value.type,
+		pic: typeModel.value.pic,
 	})
 	resetForm()
 	add()
 	input.value.resetValidation()
-})
+}
 
-const otmena = (() => {
+const otmena = () => {
 	pic.value = false
 	add()
 	resetForm()
 	input.value.resetValidation()
-})
+}
 
-
-const pic = ref(false)
+// const pic = ref(false)
 </script>
 
 <template lang="pug">
@@ -126,7 +144,7 @@ Teleport(to="body")
 			.section
 				label Тип поля:
 				q-select(
-					v-model="model2"
+					v-model="typeModel"
 					:options='options'
 					dense
 					filled
@@ -144,21 +162,21 @@ Teleport(to="body")
 					)
 
 
-				q-checkbox(v-model="pic" label="Иконка")
+				// q-checkbox(v-model="pic" label="Иконка")
 
-			.section(v-if='pic'
-				v-motion
-				:initial="{ y: 20, opacity: 0 }"
-				:enter='{ y: 0, opacity: 1, transition: { delay: 200 } }'
-				)
-				label Иконка (png, jpg, webp, gif):
-				q-uploader(
-				url="http://localhost:4444/upload"
-				label="Загрузить картинку"
-				color="secondary"
-				flat
-				bordered
-					)
+			// .section(v-if='pic'
+			// 	v-motion
+			// 	:initial="{ y: 20, opacity: 0 }"
+			// 	:enter='{ y: 0, opacity: 1, transition: { delay: 200 } }'
+			// 	)
+			// 	label Иконка (png, jpg, webp, gif):
+			// 	q-uploader(
+			// 	url="http://localhost:4444/upload"
+			// 	label="Загрузить картинку"
+			// 	color="secondary"
+			// 	flat
+			// 	bordered
+			// 		)
 
 			q-card-actions(align="right" v-if='adding'
 				v-motion
@@ -183,14 +201,13 @@ Teleport(to="body")
 	cursor: pointer;
 }
 
-
 .dialog1 {
 	width: 400px;
 	background: #fff;
 	position: fixed;
 	left: v-bind(left);
 	top: v-bind(top);
-	border-radius: .5rem;
+	border-radius: 0.5rem;
 	box-shadow: var(--shad0);
 	display: none;
 	padding: 1rem;
@@ -227,8 +244,8 @@ Teleport(to="body")
 .section {
 	margin-top: 1rem;
 	margin-bottom: 1rem;
-	margin-left: .5rem;
-	margin-right: .5rem;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
 }
 
 label {
@@ -247,6 +264,5 @@ label {
 		border: none;
 		box-shadow: none;
 	}
-
 }
 </style>

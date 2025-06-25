@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
-import { state } from "@formkit/drag-and-drop"
+import { state } from '@formkit/drag-and-drop'
 import { Kind } from '@/types/enum'
+import CarbonStringText from '@/components/icons/CarbonStringText.vue'
+import IconText from '@/components/icons/IconText.vue'
+import MdiCalendar from '@/components/icons/MdiCalendar.vue'
+import MaterialSymbolsAccountCircle from '@/components/icons/MaterialSymbolsAccountCircle.vue'
 
 const elements = ref([
 	{
@@ -13,6 +17,7 @@ const elements = ref([
 		caption: 'Кто создал заявку',
 		selected: false,
 		type: Kind.Man,
+		pic: MaterialSymbolsAccountCircle,
 	},
 	{
 		id: 1,
@@ -20,6 +25,7 @@ const elements = ref([
 		caption: 'Планируемая дата старта',
 		selected: false,
 		type: Kind.Date,
+		pic: MdiCalendar,
 	},
 	{
 		id: 2,
@@ -27,6 +33,7 @@ const elements = ref([
 		caption: 'Планируемая дата завершения',
 		selected: false,
 		type: Kind.String,
+		pic: MdiCalendar,
 	},
 	{
 		id: 3,
@@ -34,6 +41,7 @@ const elements = ref([
 		caption: 'Свободный комментарий',
 		selected: false,
 		type: Kind.Text,
+		pic: IconText,
 	},
 ])
 
@@ -45,18 +53,17 @@ state.on('dragStarted', () => {
 	tmp.value = [...libitems.value]
 })
 
-state.on("dragEnded", () => {
+state.on('dragEnded', () => {
 	libitems.value = tmp.value
 })
 
-const create = ((e: Control) => {
+const create = (e: Control) => {
 	libitems.value.push(e)
-})
+}
 
-const remove = ((ind: number) => {
+const remove = (ind: number) => {
 	libitems.value.splice(ind, 1)
-})
-
+}
 </script>
 
 <template lang="pug">
@@ -64,7 +71,7 @@ q-list.list(bordered separator ref="lib")
 	q-item.drag(v-for="(item, index) in libitems" :key="item.id")
 		q-item-section(avatar)
 			.big
-				IconBlock
+				component(:is='item.pic')
 		q-item-section
 			q-item-label.text-bold {{ item.label }}
 			q-item-label.grey(caption) {{ item.caption }}
@@ -103,7 +110,6 @@ AddFormButton(@create='create')
 			display: block;
 		}
 	}
-
 }
 
 .big {
@@ -121,7 +127,6 @@ AddFormButton(@create='create')
 	.img {
 		display: none;
 	}
-
 }
 
 // .ghost {
@@ -140,4 +145,5 @@ AddFormButton(@create='create')
 // 		visibility: hidden;
 // 	}
 //
-// }</style>
+// }
+</style>
