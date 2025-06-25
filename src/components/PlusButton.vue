@@ -64,7 +64,7 @@ const next = () => {
 
 	CloseButton(v-model="panels.right0" @close="close")
 
-	TopButton(v-model="panels.right0")
+	TopButton(v-model="panels.right0" @close='close')
 	DiagProps(v-if='panels.right0'
 		v-motion
 		:initial='{ opacity: 0 }'
