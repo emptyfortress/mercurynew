@@ -95,8 +95,6 @@ const otmena = () => {
 	resetForm()
 	input.value.resetValidation()
 }
-
-// const pic = ref(false)
 </script>
 
 <template lang="pug">

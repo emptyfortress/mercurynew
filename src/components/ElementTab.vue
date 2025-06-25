@@ -38,7 +38,8 @@ const remove = (ind: number) => {
 </script>
 
 <template lang="pug">
-q-list.list(bordered separator ref="lib")
+.grey(v-if='libitems.length == 0') Поля отсутствуют
+q-list.list(v-else bordered separator ref="lib")
 	q-item.drag(v-for="(item, index) in libitems" :key="item.id")
 		q-item-section(avatar)
 			.big
