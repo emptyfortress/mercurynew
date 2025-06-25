@@ -58,7 +58,7 @@ div
 
 			DiagEtapProps(v-if='showEtap' separator)
 
-		q-expansion-item.q-mt-md(v-model="item2" v-if='mydiagram.selection && showEtap')
+		q-expansion-item.q-mt-md.ddis(v-model="item2" v-if='mydiagram.selection && showEtap')
 			template(v-slot:header)
 				q-item-section(side)
 					IconFlag.ic

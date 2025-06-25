@@ -25,6 +25,7 @@ const list = [
 		label: 'Текущий статус',
 		main: 'Подготовка',
 		select: true,
+		disable: true,
 	},
 ]
 </script>
@@ -39,6 +40,7 @@ q-list.prop(separator)
 		:key='item.id',
 		:label='item.label',
 		:select="item.select"
+		:disable='item.disable'
 		v-model:main="item.main",
 		:after='item.after'
 	)
