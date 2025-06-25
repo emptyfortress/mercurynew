@@ -43,6 +43,10 @@ const stopRight0 = async () => {
 q-page(padding)
 
 	.editor(ref='editor1')
+		.zg Процесс
+		.bt
+			q-btn(flat round dense icon="mdi-undo" color="primary") 
+			q-btn(flat round dense icon="mdi-redo" color="primary") 
 		.center
 			DiagramSvg
 			Look
@@ -71,5 +75,16 @@ q-page(padding)
 	// flex-direction: column;
 	align-items: start;
 	position: relative;
+}
+.zg {
+	font-size: 1.3rem;
+	font-weight: 500;
+	position: absolute;
+	top: 0.5rem;
+}
+.bt {
+	position: absolute;
+	top: 0.25rem;
+	right: 0.5rem;
 }
 </style>
