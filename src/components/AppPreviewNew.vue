@@ -122,7 +122,7 @@ const handlePub = () => {
 			.val(v-else) --''--
 			.to.star(v-if='item.published' @click.stop) DV-test
 			div(v-else)
-			q-btn.ddis(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
 
 			label Изменено:
 			.val {{ props.item.modify }}
