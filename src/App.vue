@@ -179,7 +179,7 @@ q-layout(view='hHh LpR fFf')
 				span(v-else) Настройка приложения "{{ app.label }}"
 
 			.group.ddis(v-if='route.name !== "home"')
-				q-avatar(size='24px' color="positive" text-color="white" @click='refresh') РЛ
+				q-avatar(size='28px' color="positive" text-color="white" @click='refresh') РЛ
 					q-tooltip Роза Львовна
 				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК
 					q-tooltip Сирень Крокодиловна
