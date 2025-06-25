@@ -130,12 +130,12 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		br
 		.text-center
 			.q-gutter-x-sm
-				q-btn(flat color="negative" label="Удалить папку" @click.stop) 
-					q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
-						q-item(clickable @click.stop='remove(index)').pink
-							q-item-section.text-center Да, удалить!
-				q-btn(unelevated color="primary" label="Настроить папку" @click.stop='navigate2(item.id)') 
-				q-btn(flat color="primary" label="Дублировать" @click.stop='duble(item)') 
+				q-btn.ddis(flat color="negative" label="Удалить папку" @click.stop) 
+					// q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
+					// 	q-item(clickable @click.stop='remove(index)').pink
+					// 		q-item-section.text-center Да, удалить!
+				q-btn.ddis(unelevated color="primary" label="Настроить папку" @click.stop='') 
+				q-btn.ddis(flat color="primary" label="Дублировать" @click.stop='') 
 
 .ghostItem(ref='ghostItem'
 	v-if='expanded',
