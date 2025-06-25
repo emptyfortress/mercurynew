@@ -4,7 +4,6 @@ import PlusButton from '@/components/PlusButton.vue'
 import { useMotion } from '@vueuse/motion'
 import { usePanels } from '@/stores/panels'
 import DiagramSvg from '@/components/DiagramSvg.vue'
-// import Look from '@/components/Look.vue'
 
 const editor1 = ref<HTMLElement>()
 
@@ -45,12 +44,10 @@ q-page(padding)
 	.editor(ref='editor1')
 		.zg Процесс
 		.bt
-			q-btn(flat round dense icon="mdi-undo" color="primary") 
-			q-btn(flat round dense icon="mdi-redo" color="primary") 
+			q-btn.ddis(flat round dense icon="mdi-undo" color="primary") 
+			q-btn.ddis(flat round dense icon="mdi-redo" color="primary") 
 		.center
 			DiagramSvg
-		// Look
-
 
 		PlusButton(@activate='startRight0' @stop='stopRight0')
 
