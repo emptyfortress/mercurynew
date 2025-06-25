@@ -5,7 +5,7 @@ import roleProps from '@/assets/img/role.png'
 import { useDiagram } from '@/stores/diagram'
 import IconAttribute from '@/components/icons/IconAttribute.vue'
 import IconRelation from '@/components/icons/IconRelation.vue'
-import Empty1 from '@/components/Empty1.vue'
+// import Empty1 from '@/components/Empty1.vue'
 import PropField from '@/components/common/PropField.vue'
 
 const mydiagram = useDiagram()
@@ -61,7 +61,7 @@ const list = [
 </script>
 
 <template lang="pug">
-Empty1(v-if='!mydiagram.selection')
+// Empty1(v-if='!mydiagram.selection')
 
 template(v-if='mydiagram.selection && showRoot')
 	.text-h6 Процесс: Заявление на отпуск 
