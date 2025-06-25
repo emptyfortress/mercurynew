@@ -6,20 +6,19 @@ import DateProp from '@/components/panels/DateProp.vue'
 import ManProp from '@/components/panels/ManProp.vue'
 
 const control = useControl()
-
 </script>
 
 <template lang="pug">
 div
-	StringProp(v-if='control.selectedControl?.type == 0')
-	TextProp(v-if='control.selectedControl?.type == 1')
-	DateProp(v-if='control.selectedControl?.type == 2')
-	ManProp(v-if='control.selectedControl?.type == 5')
+	StringProp()
+	// TextProp(v-if='control.selectedControl?.type == 1')
+	// DateProp(v-if='control.selectedControl?.type == 2')
+	// ManProp(v-if='control.selectedControl?.type == 5')
 </template>
 
 <style scoped lang="scss">
 .prop {
 	margin: 1rem;
-	font-size: .8rem;
+	font-size: 0.8rem;
 }
 </style>

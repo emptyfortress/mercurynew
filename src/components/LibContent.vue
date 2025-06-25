@@ -11,13 +11,13 @@ const item2 = ref(true)
 
 <template lang="pug">
 q-list(separator)
-	q-expansion-item(v-model="item1")
-		template(v-slot:header)
-			q-item-section(side)
-				IconPallete.ic
-			q-item-section.zg Оформление
 
-		CommonElements
+	// q-expansion-item(v-model="item1")
+	// 	template(v-slot:header)
+	// 		q-item-section(side)
+	// 			IconPallete.ic
+	// 		q-item-section.zg Оформление
+	// 	CommonElements
 
 	q-expansion-item(v-model="item2")
 		template(v-slot:header)
@@ -32,7 +32,7 @@ q-list(separator)
 <style scoped lang="scss">
 .ic {
 	font-size: 1.5rem;
-	margin-right: .5rem;
+	margin-right: 0.5rem;
 	color: $secondary;
 }
 
@@ -47,9 +47,7 @@ q-list(separator)
 	bottom: 0;
 }
 
-
 .q-tab {
-
 	label {
 		text-transform: capitalize;
 		cursor: pointer;

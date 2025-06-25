@@ -1,40 +1,48 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
-import { state } from "@formkit/drag-and-drop"
+import { state } from '@formkit/drag-and-drop'
 import { Kind } from '@/types/enum'
 
-const elements = ref([
-	{
-		id: 0,
-		label: 'Автор',
-		caption: 'Кто создал заявку',
-		selected: false,
-		type: Kind.Man,
-	},
-	{
-		id: 1,
-		label: 'Дата начала отпуска',
-		caption: 'Планируемая дата старта',
-		selected: false,
-		type: Kind.Date,
-	},
-	{
-		id: 2,
-		label: 'Дата окончания отпуска',
-		caption: 'Планируемая дата завершения',
-		selected: false,
-		type: Kind.String,
-	},
-	{
-		id: 3,
-		label: 'Комментарий',
-		caption: 'Свободный комментарий',
-		selected: false,
-		type: Kind.Text,
-	},
+interface Field {
+	id: number
+	label: string
+	caption: string
+	selected: boolean
+	type: Kind.Man
+}
+
+const elements = ref<Field[]>([
+	// {
+	// 	id: 0,
+	// 	label: 'Автор',
+	// 	caption: 'Кто создал заявку',
+	// 	selected: false,
+	// 	type: Kind.Man,
+	// },
+	// {
+	// 	id: 1,
+	// 	label: 'Дата начала отпуска',
+	// 	caption: 'Планируемая дата старта',
+	// 	selected: false,
+	// 	type: Kind.Date,
+	// },
+	// {
+	// 	id: 2,
+	// 	label: 'Дата окончания отпуска',
+	// 	caption: 'Планируемая дата завершения',
+	// 	selected: false,
+	// 	type: Kind.String,
+	// },
+	// {
+	// 	id: 3,
+	// 	label: 'Комментарий',
+	// 	caption: 'Свободный комментарий',
+	// 	selected: false,
+	// 	type: Kind.Text,
+	// },
 ])
 
 const [lib, libitems] = useDragAndDrop(elements.value, { sortable: false, group: 'one' })
@@ -45,18 +53,17 @@ state.on('dragStarted', () => {
 	tmp.value = [...libitems.value]
 })
 
-state.on("dragEnded", () => {
+state.on('dragEnded', () => {
 	libitems.value = tmp.value
 })
 
-const create = ((e: Control) => {
+const create = (e: Control) => {
 	libitems.value.push(e)
-})
+}
 
-const remove = ((ind: number) => {
+const remove = (ind: number) => {
 	libitems.value.splice(ind, 1)
-})
-
+}
 </script>
 
 <template lang="pug">
@@ -103,7 +110,6 @@ AddFormButton(@create='create')
 			display: block;
 		}
 	}
-
 }
 
 .big {
@@ -121,7 +127,6 @@ AddFormButton(@create='create')
 	.img {
 		display: none;
 	}
-
 }
 
 // .ghost {
@@ -140,4 +145,5 @@ AddFormButton(@create='create')
 // 		visibility: hidden;
 // 	}
 //
-// }</style>
+// }
+</style>
