@@ -97,7 +97,7 @@ const getImageUrl = (name?: string): string => {
 }
 
 const form = ref('Просмотр')
-const options = ['Создание', 'Просмотр', 'Редактирование']
+const options = ['Создание', 'Просмотр']
 const dialog = ref(false)
 
 const toggleDialog = (item: any) => {
@@ -137,7 +137,8 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	.av
 		.conteiner(@click='stopClick(item, $event)')
 			img(:src='getImageUrl(item.avatar)')
-			IconMenuRole(@select='setIcon' :avatar='item.avatar')
+
+			// IconMenuRole(@select='setIcon' :avatar='item.avatar')
 			q-icon.pro(v-if='item.active' name="mdi-shuffle-variant" size='12px')
 				q-tooltip Используется в процессе
 
@@ -151,7 +152,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			label Правила определения роли:
 			.val(v-if='role' @click.stop="toggleDialog(item)")
 				span {{ role }}
-			q-btn(v-else unelevated color="primary" label="Задать" @click.stop="toggleDialog(item)" size='sm') 
+			q-btn.ddis(v-else unelevated color="primary" label="Задать" @click.stop="" size='sm') 
 
 		.hr Форма для показа в папках
 		.grid(@click.stop)
@@ -164,15 +165,15 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 						q-separator
 						q-item
 							q-item-section
-								q-btn(flat color="primary" label="Создать форму" icon="mdi-plus-circle" @click="dialog = true" size='sm' v-close-popup) 
+								q-btn.ddis(flat color="primary" label="Создать форму" icon="mdi-plus-circle" @click="" size='sm' v-close-popup) 
 
 		.bt
-			q-btn(flat color="primary" label="Дублировать" @click.stop="duble(item)") 
-			q-btn(flat color="primary" label="Удалить" @click.stop) 
-				q-menu
-					q-list
-						q-item(clickable @click.stop="remove(index)").pink
-							q-item-section Да, удалить!
+			q-btn.ddis(flat color="primary" label="Дублировать" @click.stop="") 
+			q-btn.ddis(flat color="primary" label="Удалить" @click.stop) 
+				// q-menu
+				// 	q-list
+				// 		q-item(clickable @click.stop="remove(index)").pink
+				// 			q-item-section Да, удалить!
 
 
 
