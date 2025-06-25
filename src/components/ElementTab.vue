@@ -5,6 +5,10 @@ import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
 import { state } from '@formkit/drag-and-drop'
 import { Kind } from '@/types/enum'
+import CarbonStringText from '@/components/icons/CarbonStringText.vue'
+import IconText from '@/components/icons/IconText.vue'
+import MdiCalendar from '@/components/icons/MdiCalendar.vue'
+import MaterialSymbolsAccountCircle from '@/components/icons/MaterialSymbolsAccountCircle.vue'
 
 interface Field {
 	id: number
@@ -12,42 +16,14 @@ interface Field {
 	caption: string
 	selected: boolean
 	type: Kind.Man
+	pic: any
 }
 
-const elements = ref<Field[]>([
-	// {
-	// 	id: 0,
-	// 	label: 'Автор',
-	// 	caption: 'Кто создал заявку',
-	// 	selected: false,
-	// 	type: Kind.Man,
-	// },
-	// {
-	// 	id: 1,
-	// 	label: 'Дата начала отпуска',
-	// 	caption: 'Планируемая дата старта',
-	// 	selected: false,
-	// 	type: Kind.Date,
-	// },
-	// {
-	// 	id: 2,
-	// 	label: 'Дата окончания отпуска',
-	// 	caption: 'Планируемая дата завершения',
-	// 	selected: false,
-	// 	type: Kind.String,
-	// },
-	// {
-	// 	id: 3,
-	// 	label: 'Комментарий',
-	// 	caption: 'Свободный комментарий',
-	// 	selected: false,
-	// 	type: Kind.Text,
-	// },
-])
+const elements = ref<Field[]>([])
 
 const [lib, libitems] = useDragAndDrop(elements.value, { sortable: false, group: 'one' })
 
-const tmp = ref<Control[]>([])
+const tmp = ref<Field[]>([])
 
 state.on('dragStarted', () => {
 	tmp.value = [...libitems.value]
@@ -57,7 +33,7 @@ state.on('dragEnded', () => {
 	libitems.value = tmp.value
 })
 
-const create = (e: Control) => {
+const create = (e: Field) => {
 	libitems.value.push(e)
 }
 
@@ -71,7 +47,7 @@ q-list.list(bordered separator ref="lib")
 	q-item.drag(v-for="(item, index) in libitems" :key="item.id")
 		q-item-section(avatar)
 			.big
-				IconBlock
+				component(:is='item.pic')
 		q-item-section
 			q-item-label.text-bold {{ item.label }}
 			q-item-label.grey(caption) {{ item.caption }}

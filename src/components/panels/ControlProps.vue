@@ -4,16 +4,17 @@ import StringProp from '@/components/panels/StringProp.vue'
 import TextProp from '@/components/panels/TextProp.vue'
 import DateProp from '@/components/panels/DateProp.vue'
 import ManProp from '@/components/panels/ManProp.vue'
+import { Kind } from '@/types/enum'
 
 const control = useControl()
 </script>
 
 <template lang="pug">
 div
-	StringProp()
-	// TextProp(v-if='control.selectedControl?.type == 1')
-	// DateProp(v-if='control.selectedControl?.type == 2')
-	// ManProp(v-if='control.selectedControl?.type == 5')
+	StringProp(v-if='control.selectedControl?.type == Kind.String')
+	TextProp(v-if='control.selectedControl?.type == Kind.Text')
+	DateProp(v-if='control.selectedControl?.type == Kind.Date')
+	ManProp(v-if='control.selectedControl?.type == Kind.Man')
 </template>
 
 <style scoped lang="scss">
