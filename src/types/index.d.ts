@@ -20,6 +20,7 @@ type Control = {
 	caption: string
 	selected: boolean
 	type: Kind
+	pic: any
 }
 
 interface Version {
