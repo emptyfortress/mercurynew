@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
 import { state } from '@formkit/drag-and-drop'
 import { Kind } from '@/types/enum'
-import CarbonStringText from '@/components/icons/CarbonStringText.vue'
 import IconText from '@/components/icons/IconText.vue'
 import MdiCalendar from '@/components/icons/MdiCalendar.vue'
 import MaterialSymbolsAccountCircle from '@/components/icons/MaterialSymbolsAccountCircle.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 
 const elements = ref([
 	{
@@ -61,8 +60,17 @@ const create = (e: Control) => {
 	libitems.value.push(e)
 }
 
-const remove = (ind: number) => {
-	libitems.value.splice(ind, 1)
+const remove = () => {
+	libitems.value.splice(removedIndex.value, 1)
+}
+const dialog = ref(false)
+const removedItem = ref('')
+const removedIndex = ref(0)
+
+const confirm = (e: string, num: number) => {
+	removedItem.value = e
+	removedIndex.value = num
+	dialog.value = true
 }
 </script>
 
@@ -78,14 +86,16 @@ q-list.list(v-else bordered separator ref="lib")
 			q-item-label.grey(caption) {{ item.caption }}
 
 		q-item-section(side)
-			q-btn.remove(flat round icon="mdi-trash-can-outline" color="secondary" dense size="sm") 
-				q-menu
-					q-list(dense)
-						q-item.pink(clickable @click="remove(index)")
-							q-item-section Удалить
+			q-btn.remove(flat round icon="mdi-delete-outline" color="secondary" dense size="sm" @click='confirm(item.label, index)') 
+
+				// q-menu
+				// 	q-list(dense)
+				// 		q-item.pink(clickable @click="remove(index)")
+				// 			q-item-section Да, удалить!
 
 br
 AddFormButton(@create='create')
+DeleteDialog(v-model="dialog" :field='removedItem' @remove="remove")
 // Trash(:dragging='true')
 </template>
 
