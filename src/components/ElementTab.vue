@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import IconBlock from '@/components/icons/IconBlock.vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
 import { state } from '@formkit/drag-and-drop'
 import { Kind } from '@/types/enum'
-import CarbonStringText from '@/components/icons/CarbonStringText.vue'
-import IconText from '@/components/icons/IconText.vue'
-import MdiCalendar from '@/components/icons/MdiCalendar.vue'
-import MaterialSymbolsAccountCircle from '@/components/icons/MaterialSymbolsAccountCircle.vue'
 
 interface Field {
 	id: number
@@ -61,7 +56,6 @@ q-list.list(bordered separator ref="lib")
 
 br
 AddFormButton(@create='create')
-// Trash(:dragging='true')
 </template>
 
 <style scoped lang="scss">

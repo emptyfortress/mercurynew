@@ -91,7 +91,6 @@ const submitForm = () => {
 }
 
 const otmena = () => {
-	pic.value = false
 	add()
 	resetForm()
 	input.value.resetValidation()
