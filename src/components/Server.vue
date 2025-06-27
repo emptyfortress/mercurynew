@@ -36,13 +36,15 @@ const spring = {
 	bounce: 0.25,
 }
 
-const emit = defineEmits(['navigate'])
+const emit = defineEmits(['navigate', 'back'])
 const activeItem = ref()
 const action = async (item: any) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
 		expanded.value = false
 		activeItem.value = ''
 		item.expand = false
+		emit('back')
+		await nextTick()
 	} else {
 		expanded.value = true
 		activeItem.value = item.id

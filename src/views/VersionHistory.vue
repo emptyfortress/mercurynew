@@ -100,6 +100,9 @@ const add = () => {
 const navigate = (id: number) => {
 	router.push(`/version/${id}`)
 }
+const back = () => {
+	router.push('/version')
+}
 </script>
 
 <template lang="pug">
@@ -130,7 +133,8 @@ q-page(padding)
 									q-btn(flat round dense @click="add" size='md') 
 										TablerCopyPlus.ic
 									q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
-			Server(@navigate='navigate')
+
+			Server(@navigate='navigate' @back='back')
 
 
 
