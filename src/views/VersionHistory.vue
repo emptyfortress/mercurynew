@@ -3,7 +3,8 @@ import { ref } from 'vue'
 import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useQuasar } from 'quasar'
-import TotalHistory from '@/components/TotalHistory.vue'
+import Server from '@/components/Server.vue'
+import { servers } from '@/stores/servers'
 
 const $q = useQuasar()
 
@@ -11,22 +12,6 @@ const source = ref([
 	{ id: 2, label: 'Версия 3', current: true },
 	{ id: 1, label: 'Версия 2', current: false },
 	{ id: 0, label: 'Версия 1', current: false },
-])
-
-const servers = ref([
-	{
-		id: 0,
-		nick: 'DV-test',
-		list: [
-			{ id: 1, label: 'Версия 2', current: true },
-			{ id: 0, label: 'Версия 1', current: false },
-		],
-	},
-	{
-		id: 1,
-		nick: 'DV-prod',
-		list: [{ id: 0, label: 'Версия 1', current: true }],
-	},
 ])
 
 const dragCounters = ref<Record<number, number>>({})
@@ -116,46 +101,47 @@ q-page(padding)
 	.cont
 		.hd Версии приложения
 		.grid
-			.constructor
-				.hd1
-					img.q-mr-sm(src="@/assets/img/kp-favicon.svg", width="18" height="18")
-					|Конструктор
-				draggable.list(
-					:list="source"
-					:group="{ name: 'items', pull: 'clone', put: false }"
-					:clone="onClone"
-					item-key="id"
-					:sort='false'
-				)
-					template(#item="{ element, index }")
-						.myitem(clickable)
-							q-item-section(side)
-								q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
-								q-icon(v-else name="mdi-circle-outline" color="secondary")
-							q-item-section {{ element.label }}
-							.text-secondary
-								q-btn(flat round dense icon="mdi-eye-outline" @click="" size='md') 
-								q-btn(flat round dense @click="add" size='md') 
-									TablerCopyPlus.ic
-								q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
 			div
-				.server(v-for="server in servers" :key="server.id"
+				.hd1
+					img.q-mr-sm(src="@/assets/img/kp-favicon.svg", width="16" height="16")
+					|Конструктор
+				.constructor
+					draggable.list(
+						:list="source"
+						:group="{ name: 'items', pull: 'clone', put: false }"
+						:clone="onClone"
+						item-key="id"
+						:sort='false'
+					)
+						template(#item="{ element, index }")
+							.myitem(clickable)
+								q-item-section(side)
+									q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
+									q-icon(v-else name="mdi-circle-outline" color="secondary")
+								q-item-section {{ element.label }}
+								.text-secondary
+									q-btn(flat round dense icon="mdi-eye-outline" @click="" size='md') 
+									q-btn(flat round dense @click="add" size='md') 
+										TablerCopyPlus.ic
+									q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
+			Server
+
+
+
+			
+				// .server(v-for="server in servers" :key="server.id"
 					:class="{ 'drag-over': isDraggingOver(server.id) }"
 					@dragenter.prevent="onDragEnter(server.id)"
 					@dragleave.prevent="onDragLeave(server.id)"
-					@drop.prevent="onDrop(server.id)"
-				)
-
+					@drop.prevent="onDrop(server.id)")
 					.hd1
 						.lin
 							q-icon.ic(name="mdi-server-network-outline")
 							|{{ server.nick }}
-
 					draggable.dr.list(
 						:list="server.list"
 						:group="{ name: 'items', pull: false, put: false }"
-						item-key="id"
-					)
+						item-key="id")
 						template(#item="{ element, index }")
 							.myitem(clickable)
 								q-item-section(side)
@@ -167,13 +153,7 @@ q-page(padding)
 										flat round dense,
 										icon="mdi-delete-outline",
 										@click="removeFromServer(server.id, index)"
-										size='md'
-									) 
-
-		br
-		br
-		.hd История изменений
-		TotalHistory
+										size='md') 
 
 </template>
 
@@ -191,19 +171,11 @@ q-page(padding)
 	text-align: center;
 }
 .hd1 {
-	font-size: 1.1rem;
+	font-size: 1rem;
 	text-align: center;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	.lin {
-		color: $primary;
-		cursor: pointer;
-		.ic {
-			font-size: 1.6rem;
-			margin-right: 0.5rem;
-			color: $primary;
-		}
+	margin-bottom: 0.5rem;
+	img {
+		margin-bottom: -2px;
 	}
 }
 .grid {
@@ -213,7 +185,6 @@ q-page(padding)
 	align-items: start;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
-	.server,
 	.constructor {
 		padding: 1rem;
 		background: #ffffff77;
@@ -228,9 +199,6 @@ q-page(padding)
 }
 .dr {
 	height: 100%;
-}
-.list {
-	margin-top: 1rem;
 }
 .myitem {
 	display: grid;
@@ -256,4 +224,12 @@ q-page(padding)
 .plu {
 	grid-column: 2/3;
 }
+// .pare {
+// 	display: grid;
+// 	grid-template-columns: repeat(3, 1fr);
+// 	// justify-items: start;
+// 	// align-items: stretch;
+// 	column-gap: 0.5rem;
+// 	row-gap: 0.5rem;
+// }
 </style>

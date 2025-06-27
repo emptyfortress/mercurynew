@@ -178,7 +178,7 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
-			.group(v-if='route.name !== "home"')
+			.group(v-if='route.name !== "home" && route.name !== "version"')
 				q-avatar(size='28px' color="positive" text-color="white" @click='refresh') РЛ
 					q-tooltip Роза Львовна
 				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК
