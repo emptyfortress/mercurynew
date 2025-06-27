@@ -42,43 +42,43 @@ const onDragLeave = (id: number) => {
 }
 
 const onDrop = (serverId: number) => {
-	if (pendingClone.value) {
-		const server = servers.value.find((s) => s.id === serverId)
-		if (!server) return
-
-		const exists = server.list.some((item) => item.label === pendingClone.value.label)
-		if (exists) {
-			$q.notify({
-				type: 'negative',
-				message: `Элемент "${pendingClone.value.label}" уже существует в "${server.nick}"`,
-				position: 'top-right',
-			})
-		} else {
-			server.list.forEach((el) => (el.current = false))
-			server.list.unshift(pendingClone.value)
-			server.list[0].current = true
-
-			$q.notify({
-				type: 'positive',
-				message: `Элемент "${pendingClone.value.label}" успешно добавлен в "${server.nick}"`,
-				position: 'top-right',
-			})
-		}
-
-		pendingClone.value = null
-	}
+	// if (pendingClone.value) {
+	// 	const server = servers.value.find((s) => s.id === serverId)
+	// 	if (!server) return
+	//
+	// 	const exists = server.list.some((item) => item.label === pendingClone.value.label)
+	// 	if (exists) {
+	// 		$q.notify({
+	// 			type: 'negative',
+	// 			message: `Элемент "${pendingClone.value.label}" уже существует в "${server.nick}"`,
+	// 			position: 'top-right',
+	// 		})
+	// 	} else {
+	// 		server.list.forEach((el) => (el.current = false))
+	// 		server.list.unshift(pendingClone.value)
+	// 		server.list[0].current = true
+	//
+	// 		$q.notify({
+	// 			type: 'positive',
+	// 			message: `Элемент "${pendingClone.value.label}" успешно добавлен в "${server.nick}"`,
+	// 			position: 'top-right',
+	// 		})
+	// 	}
+	//
+	// 	pendingClone.value = null
+	// }
 
 	dragCounters.value[serverId] = 0
 }
 
 const removeFromServer = (serverId: number, index: number) => {
-	const server = servers.value.find((s) => s.id === serverId)
-	if (!server) return
-
-	server.list.splice(index, 1)
-	if (server.list.length) {
-		server.list[0].current = true
-	}
+	// const server = servers.value.find((s) => s.id === serverId)
+	// if (!server) return
+	//
+	// server.list.splice(index, 1)
+	// if (server.list.length) {
+	// 	server.list[0].current = true
+	// }
 }
 
 const remove1 = (e: number) => {
