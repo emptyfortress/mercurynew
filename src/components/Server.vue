@@ -59,6 +59,22 @@ const calcClass = (item: any, index: number) => {
 	else if (expanded.value && activeItem.value == item.id) return 'active'
 	else return `im-${index! + 1}`
 }
+
+const plusPosition = computed(() => {
+	const index = tapes.value.length
+	const col = (index % 3) + 1
+	let row = Math.floor(index / 3) + 1
+
+	// Если expanded включён — сместить на одну строку ниже
+	if (expanded.value) {
+		row += 1
+	}
+
+	return {
+		gridColumn: `${col} / ${col + 1}`,
+		gridRow: `${row} / ${row + 1}`,
+	}
+})
 </script>
 
 <template lang="pug">
@@ -82,6 +98,14 @@ div
 				q-btn(flat round dense color="primary") 
 					IcOutlineDesktopWindows
 
+		Div.plus(:style='plusPosition'
+			layout
+			:initial="initial"
+			:animate="animate"
+			:transition="spring"
+			)
+			q-btn(unelevated round color="primary" icon='mdi-plus') 
+
 </template>
 
 <style scoped lang="scss">
@@ -99,7 +123,6 @@ div
 	background: #ffffff77;
 	border-radius: 0.5rem;
 	border: 1px solid white;
-	order: 0;
 	&.active {
 		height: 170px;
 		grid-column: 1/-1;
@@ -125,6 +148,16 @@ div
 	&.end {
 		grid-template-rows: 200px auto;
 	}
+}
+.plus {
+	width: 100%;
+	height: 100px;
+	background: #ffffff44;
+	border-radius: 0.5rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	// border: 1px solid white;
 }
 
 .im-1 {
