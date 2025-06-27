@@ -75,7 +75,7 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/version',
+			path: '/version/:id?',
 			name: 'version',
 			component: () => import('@/views/VersionHistory.vue'),
 			meta: {

@@ -5,7 +5,9 @@ import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useQuasar } from 'quasar'
 import Server from '@/components/Server.vue'
 import { servers } from '@/stores/servers'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const $q = useQuasar()
 
 const source = ref([
@@ -94,6 +96,10 @@ const add = () => {
 		current: true,
 	})
 }
+
+const navigate = (id: number) => {
+	router.push(`/version/${id}`)
+}
 </script>
 
 <template lang="pug">
@@ -124,7 +130,7 @@ q-page(padding)
 									q-btn(flat round dense @click="add" size='md') 
 										TablerCopyPlus.ic
 									q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
-			Server
+			Server(@navigate='navigate')
 
 
 

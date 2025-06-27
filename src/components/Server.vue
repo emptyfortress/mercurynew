@@ -36,6 +36,7 @@ const spring = {
 	bounce: 0.25,
 }
 
+const emit = defineEmits(['navigate'])
 const activeItem = ref()
 const action = async (item: any) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
@@ -46,7 +47,7 @@ const action = async (item: any) => {
 		expanded.value = true
 		activeItem.value = item.id
 		item.expand = true
-		// emit('navigate', item.id)
+		emit('navigate', item.id)
 		await nextTick()
 	}
 }
@@ -60,7 +61,7 @@ const calcGhost = computed(() => {
 	let ind = tapes.value?.findIndex((item) => item.id == activeItem.value)
 
 	if (ind !== -1) {
-		return `cl-${ind! + 1}`
+		return `em-${ind! + 1}`
 	}
 	return ''
 })
@@ -87,12 +88,11 @@ div
 				q-btn(flat round dense color="primary") 
 					IcOutlineDesktopWindows
 
-		// .ghostItem(ref='ghostItem'
-		// 	v-if='expanded',
-		// 	:class='calcGhost'
-		// 	@click.stop
-		// )
-		// 	div {{ label }}
+		.ghostItem(ref='ghostItem'
+			v-if='expanded',
+			:class='calcGhost'
+			@click.stop
+		)
 
 </template>
 
@@ -106,20 +106,16 @@ div
 	}
 }
 .server {
-	// width: 100%;
+	width: 100%;
 	height: 100px;
-	width: 225px;
-	// padding: 1rem;
 	background: #ffffff77;
 	border-radius: 0.5rem;
 	border: 1px solid white;
 	order: 0;
 	&.active {
-		height: 200px;
-		width: 100%;
-		order: -1;
-		// grid-column: 1/-1;
-		// grid-row: 1/2;
+		height: 150px;
+		grid-column: 1/-1;
+		grid-row: 1/2;
 	}
 }
 .server.drag-over {
@@ -134,16 +130,15 @@ div
 }
 .pare {
 	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
-	// display: grid;
-	// grid-template-columns: repeat(3, 1fr);
-	// justify-items: start;
-	// align-items: stretch;
+	// display: flex;
+	// flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	// grid-template-rows: 100px;
 	column-gap: 0.5rem;
 	row-gap: 0.5rem;
-	// &.end {
-	// 	grid-template-rows: 200px auto;
-	// }
+	&.end {
+		grid-template-rows: 200px auto;
+	}
 }
 </style>
