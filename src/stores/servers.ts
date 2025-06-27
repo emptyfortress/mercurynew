@@ -56,33 +56,33 @@ const servers = ref([
 			{ id: 0, label: 'Версия 1', current: false },
 		],
 	},
-	{
-		id: '6',
-		nick: 'Pre-prod',
-		prod: false,
-		expand: false,
-		list: [
-			{ id: 2, label: 'Версия 3', current: true },
-			{ id: 1, label: 'Версия 2', current: false },
-		],
-	},
-	{
-		id: '7',
-		nick: 'Archive-1',
-		prod: false,
-		expand: false,
-		list: [{ id: 0, label: 'Версия 1', current: true }],
-	},
-	{
-		id: '8',
-		nick: 'Legacy-node',
-		prod: false,
-		expand: false,
-		list: [
-			{ id: 2, label: 'Версия 3', current: false },
-			{ id: 1, label: 'Версия 2', current: true },
-		],
-	},
+	// {
+	// 	id: '6',
+	// 	nick: 'Pre-prod',
+	// 	prod: false,
+	// 	expand: false,
+	// 	list: [
+	// 		{ id: 2, label: 'Версия 3', current: true },
+	// 		{ id: 1, label: 'Версия 2', current: false },
+	// 	],
+	// },
+	// {
+	// 	id: '7',
+	// 	nick: 'Archive-1',
+	// 	prod: false,
+	// 	expand: false,
+	// 	list: [{ id: 0, label: 'Версия 1', current: true }],
+	// },
+	// {
+	// 	id: '8',
+	// 	nick: 'Legacy-node',
+	// 	prod: false,
+	// 	expand: false,
+	// 	list: [
+	// 		{ id: 2, label: 'Версия 3', current: false },
+	// 		{ id: 1, label: 'Версия 2', current: true },
+	// 	],
+	// },
 ])
 
 export { servers }
