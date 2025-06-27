@@ -53,25 +53,17 @@ const action = async (item: any) => {
 }
 
 const calcClass = (item: any, index: number) => {
-	if (expanded.value && activeItem.value == item.id) return 'active'
-	return ''
+	if (expanded.value && activeItem.value !== item.id) return `em-${index! + 1}`
+	else if (expanded.value && activeItem.value == item.id) return 'active'
+	else return `im-${index! + 1}`
 }
-
-const calcGhost = computed(() => {
-	let ind = tapes.value?.findIndex((item) => item.id == activeItem.value)
-
-	if (ind !== -1) {
-		return `em-${ind! + 1}`
-	}
-	return ''
-})
 </script>
 
 <template lang="pug">
 div
 	.hd1
-		q-icon.q-mr-sm(name="mdi-server-network-outline" size="24px") 
-		|Серверы
+		q-icon.q-mr-sm(name="mdi-database-outline" size="24px") 
+		|Базы данных
 	Div.pare(ref='pare',
 		:class="{'end': expanded}"
 	)
@@ -87,12 +79,6 @@ div
 				div {{ item.nick }}
 				q-btn(flat round dense color="primary") 
 					IcOutlineDesktopWindows
-
-		.ghostItem(ref='ghostItem'
-			v-if='expanded',
-			:class='calcGhost'
-			@click.stop
-		)
 
 </template>
 
@@ -113,7 +99,7 @@ div
 	border: 1px solid white;
 	order: 0;
 	&.active {
-		height: 150px;
+		height: 170px;
 		grid-column: 1/-1;
 		grid-row: 1/2;
 	}
@@ -130,15 +116,86 @@ div
 }
 .pare {
 	width: 100%;
-	// display: flex;
-	// flex-wrap: wrap;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	// grid-template-rows: 100px;
 	column-gap: 0.5rem;
 	row-gap: 0.5rem;
 	&.end {
 		grid-template-rows: 200px auto;
 	}
+}
+
+.im-1 {
+	grid-column: 1/2;
+	grid-row: 1/2;
+}
+.im-2 {
+	grid-column: 2/3;
+	grid-row: 1/2;
+}
+.im-3 {
+	grid-column: 3/4;
+	grid-row: 1/2;
+}
+.im-4 {
+	grid-column: 1/2;
+	grid-row: 2/3;
+}
+.im-5 {
+	grid-column: 2/3;
+	grid-row: 2/3;
+}
+.im-6 {
+	grid-column: 3/4;
+	grid-row: 2/3;
+}
+.im-7 {
+	grid-column: 1/2;
+	grid-row: 3/4;
+}
+.im-8 {
+	grid-column: 2/3;
+	grid-row: 3/4;
+}
+.im-9 {
+	grid-column: 3/4;
+	grid-row: 3/4;
+}
+
+.em-1 {
+	grid-column: 1/2;
+	grid-row: 2/3;
+}
+.em-2 {
+	grid-column: 2/3;
+	grid-row: 2/3;
+}
+.em-3 {
+	grid-column: 3/4;
+	grid-row: 2/3;
+}
+.em-4 {
+	grid-column: 1/2;
+	grid-row: 3/4;
+}
+.em-5 {
+	grid-column: 2/3;
+	grid-row: 3/4;
+}
+.em-6 {
+	grid-column: 3/4;
+	grid-row: 3/4;
+}
+.em-7 {
+	grid-column: 1/2;
+	grid-row: 4/5;
+}
+.em-8 {
+	grid-column: 2/3;
+	grid-row: 4/5;
+}
+.em-9 {
+	grid-column: 3/4;
+	grid-row: 4/5;
 }
 </style>
