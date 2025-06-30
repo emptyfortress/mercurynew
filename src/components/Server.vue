@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, onMounted, watch } from 'vue'
 import { motion } from 'motion-v'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import IcOutlineDesktopWindows from '@/components/icons/IcOutlineDesktopWindows.vue'
 import { servers } from '@/stores/servers'
+import { useRouter, useRoute } from 'vue-router'
+import AddButtonServer from '@/components/common/AddButtonServer.vue'
 
+const router = useRouter()
+const route = useRoute()
+
+const activeItem = ref('')
 const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
@@ -36,20 +42,20 @@ const spring = {
 	bounce: 0.25,
 }
 
-const emit = defineEmits(['navigate', 'back'])
-const activeItem = ref()
 const action = async (item: any) => {
 	if (activeItem.value !== '' && activeItem.value == item.id) {
 		expanded.value = false
 		activeItem.value = ''
 		item.expand = false
-		emit('back')
+		// emit('back')
+		back()
 		await nextTick()
 	} else {
 		expanded.value = true
 		activeItem.value = item.id
 		item.expand = true
-		emit('navigate', item.id)
+		// emit('navigate', item.id)
+		navigate(item.id)
 		await nextTick()
 	}
 }
@@ -75,6 +81,45 @@ const plusPosition = computed(() => {
 		gridRow: `${row} / ${row + 1}`,
 	}
 })
+
+const calcColor = (item: any) => {
+	return item.prod ? 'red' : 'positive'
+}
+
+const navigate = (id: string) => {
+	router.push(`/version/${id}`)
+	activeItem.value = id
+}
+const back = () => {
+	router.push('/version')
+	activeItem.value = ''
+}
+
+// Функция для обновления URL при изменении состояния
+const updateRouteParams = () => {
+	router.push({
+		params: {
+			id: activeItem.value,
+		},
+	})
+}
+watch(activeItem, updateRouteParams)
+
+// Функция для загрузки состояния из параметров маршрута
+const loadStateFromRoute = () => {
+	if (route.params.id !== '') {
+		activeItem.value = route.params.id.toString()
+		expanded.value = true
+	} else {
+		activeItem.value = ''
+		expanded.value = false
+	}
+}
+// Загружаем состояние при монтировании компонента
+onMounted(loadStateFromRoute)
+//
+// Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
+watch(() => route.params.id, loadStateFromRoute)
 </script>
 
 <template lang="pug">
@@ -94,9 +139,14 @@ div
 			:class='calcClass(item, index)'
 		)
 			.toprow
+				q-icon.q-mr-sm(name="mdi-circle-slice-8" :color="calcColor(item)")
+					q-tooltip(v-if='item.prod') Production environment
+					q-tooltip(v-else) Test environment
 				div {{ item.nick }}
+				q-space
 				q-btn(flat round dense color="primary") 
 					IcOutlineDesktopWindows
+			.text-center(v-if='!item.expand') {{ item.list[0].label}}
 
 		Div.plus(:style='plusPosition'
 			layout
@@ -104,7 +154,8 @@ div
 			:animate="animate"
 			:transition="spring"
 			)
-			q-btn(unelevated round color="primary" icon='mdi-plus') 
+			AddButtonServer
+			// q-btn(unelevated round color="primary" icon='mdi-plus') 
 
 </template>
 
@@ -123,10 +174,14 @@ div
 	background: #ffffff77;
 	border-radius: 0.5rem;
 	border: 1px solid white;
+	cursor: pointer;
 	&.active {
 		height: 170px;
 		grid-column: 1/-1;
 		grid-row: 1/2;
+	}
+	&:hover {
+		box-shadow: var(--shad0);
 	}
 }
 .server.drag-over {

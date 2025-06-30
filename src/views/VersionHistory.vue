@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useQuasar } from 'quasar'
 import Server from '@/components/Server.vue'
 import { servers } from '@/stores/servers'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 const $q = useQuasar()
 
 const source = ref([
@@ -96,13 +97,6 @@ const add = () => {
 		current: true,
 	})
 }
-
-const navigate = (id: number) => {
-	router.push(`/version/${id}`)
-}
-const back = () => {
-	router.push('/version')
-}
 </script>
 
 <template lang="pug">
@@ -134,7 +128,7 @@ q-page(padding)
 										TablerCopyPlus.ic
 									q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
 
-			Server(@navigate='navigate' @back='back')
+			Server()
 
 
 
