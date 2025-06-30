@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 interface Rad {
 	label: string
@@ -26,6 +29,9 @@ interface Props {
 	button?: boolean
 	btLabel?: string
 	check?: boolean
+	after?: boolean
+	navigate?: string
+	text?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -38,6 +44,9 @@ const props = withDefaults(defineProps<Props>(), {
 	textarea: false,
 	toggle: false,
 	radio: false,
+	after: false,
+	navigate: '',
+	text: '',
 	// group: [{ label: 'one', val: 'one' }],
 })
 
@@ -45,6 +54,10 @@ const rasp = ref(props.startValue)
 
 const main = defineModel<string>('main')
 const check = defineModel<boolean>('check')
+
+const navigate = () => {
+	router.push(props.navigate)
+}
 </script>
 
 <template lang="pug">
@@ -61,6 +74,8 @@ q-separator(v-if='props.radio')
 				q-radio(v-model="rasp" :val="item.val" dense :label="item.label")
 
 
+	.text-bold(v-if='props.text') {{props.text}}
+
 	q-select(v-if="props.select"
 		v-model="main"
 		:options="props.options"
@@ -68,10 +83,12 @@ q-separator(v-if='props.radio')
 		:disable="props.disable"
 		:readonly="props.readonly"
 		)
+		template(v-slot:after v-if='props.after' )
+			q-btn(flat round dense icon="mdi-arrow-right-circle-outline" color="primary" @click='navigate') 
 
 	q-input(v-model="main" v-if='props.textarea' outlined autogrow :disable="props.disable")
 
-	q-input(v-if='!props.select && !props.textarea && !props.toggle && !props.checkbox && !props.radio'
+	q-input(v-if='!props.text && !props.select && !props.textarea && !props.toggle && !props.checkbox && !props.radio'
 		v-model="main"
 		dense
 		outlined
