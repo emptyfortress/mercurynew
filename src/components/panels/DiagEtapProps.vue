@@ -19,6 +19,7 @@ const list = [
 		main: 'Создание',
 		select: true,
 		after: true,
+		navigate: '/form',
 	},
 	{
 		id: 2,
@@ -43,6 +44,7 @@ q-list.prop(separator)
 		:disable='item.disable'
 		v-model:main="item.main",
 		:after='item.after'
+		:navigate='item.navigate'
 	)
 
 </template>

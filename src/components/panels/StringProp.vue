@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import PropField from '@/components/common/PropField.vue'
 
 const list = [
@@ -30,10 +31,15 @@ const list = [
 		check: false,
 	},
 ]
+const nname = ref('Строка')
 </script>
 
 <template lang="pug">
 q-list.prop
+	PropField(
+		label='Название'
+		text='Строка'
+	)
 	PropField(v-for="item in list" :key='item.id'
 		:label='item.label'
 		v-model:main="item.main"
