@@ -111,7 +111,7 @@ q-separator(v-if='props.radio')
 
 .dat {
 	display: grid;
-	grid-template-columns: 130px 1fr;
+	grid-template-columns: 110px 1fr;
 	justify-items: start;
 	align-items: center;
 	gap: 1rem;
