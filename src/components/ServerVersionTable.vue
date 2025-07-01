@@ -85,7 +85,7 @@ q-table(flat, dense,
 
 	template(v-slot:body-cell-action="props")
 		q-td.text-right
-			q-btn(flat round dense icon="mdi-delete-outline" color="negative" @click.stop="destroy(props.row)" size='sm') 
+			q-btn(flat round dense icon="mdi-delete-outline" color="negative" @click.stop="" size='sm') 
 </template>
 
 <style scoped lang="scss"></style>
