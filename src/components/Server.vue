@@ -5,6 +5,7 @@ import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useServers } from '@/stores/servers'
 import { useRouter, useRoute } from 'vue-router'
 import AddButtonServer from '@/components/common/AddButtonServer.vue'
+import ServerVersionTable from '@/components/ServerVersionTable.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -45,14 +46,12 @@ const action = async (item: any) => {
 		expanded.value = false
 		activeItem.value = ''
 		item.expand = false
-		// emit('back')
 		back()
 		await nextTick()
 	} else {
 		expanded.value = true
 		activeItem.value = item.id
 		item.expand = true
-		// emit('navigate', item.id)
 		navigate(item.id)
 		await nextTick()
 	}
@@ -156,8 +155,10 @@ div
 				div {{ item.nick }}
 				q-space
 				q-btn(flat round dense color="grey" icon="mdi-close" size='sm' @click.stop='remove(item, index)') 
-			.text-center(v-if='!item.expand')
+			.text-center.q-mt-md(v-if='!item.expand')
 				span.link(@click.stop) {{ item.list[0].label}}
+
+			ServerVersionTable(v-if='expanded && activeItem == item.id')
 
 		Div.plus(:style='plusPosition'
 			layout
@@ -214,7 +215,7 @@ div
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin: 0 0 1rem 0.5rem;
+	margin: 0 0.5rem 0 1rem;
 }
 .pare {
 	width: 100%;

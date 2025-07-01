@@ -130,8 +130,6 @@ q-page(padding)
 
 			Server()
 
-
-
 			
 				// .server(v-for="server in servers" :key="server.id"
 					:class="{ 'drag-over': isDraggingOver(server.id) }"
