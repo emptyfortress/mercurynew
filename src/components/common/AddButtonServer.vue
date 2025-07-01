@@ -2,12 +2,18 @@
 import { ref, nextTick, computed } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
+import AddServerList from '@/components/AddServerList.vue'
+import { useServers } from '@/stores/servers'
 
 gsap.registerPlugin(Flip)
 const adding = ref(false)
 
+const snapshot = ref([])
+const server = useServers()
+
 const add = () => {
 	// trans.value = false
+	snapshot.value = JSON.parse(JSON.stringify(server.servers))
 	const state = Flip.getState('.button, .dialog')
 	adding.value = !adding.value
 	nextTick(() => {
@@ -22,16 +28,21 @@ const add = () => {
 }
 
 const otmena = () => {
+	server.setItems(JSON.parse(JSON.stringify(snapshot.value)))
 	add()
-	// resetForm()
-	// input.value.resetValidation()
+}
+
+const emit = defineEmits(['apply'])
+const apply = () => {
+	emit('apply')
+	add()
 }
 
 const left = computed(() => {
 	return window.innerWidth / 2 - 270 + 64 + 'px'
 })
 const top = computed(() => {
-	return window.innerHeight / 2 - 200 + 'px'
+	return window.innerHeight / 2 - 280 + 'px'
 })
 </script>
 
@@ -53,33 +64,27 @@ Teleport(to='body')
 		)
 
 Teleport(to='body')
-	.dialog(
-		:class="{ active: adding }"
+	.dialog(v-show='adding'
 		data-flip-id='fock'
 		)
 		q-btn.close(round icon="mdi-close"
 			v-if="adding"
 			color='negative' @click="otmena"
-				) 
+		) 
+		AddServerList(:adding='adding' @close="otmena" @apply="apply")
 </template>
 
 <style scoped lang="scss">
 .dialog {
-	width: 400px;
-	// height: 200px;
+	width: 500px;
 	background: #fff;
 	position: fixed;
 	left: v-bind(left);
 	top: v-bind(top);
 	border-radius: 0.5rem;
 	box-shadow: var(--shad0);
-	display: none;
 	padding: 1rem;
 	z-index: 20;
-
-	&.active {
-		display: block;
-	}
 }
 
 .backdrop {

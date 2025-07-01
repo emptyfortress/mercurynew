@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, watch } from 'vue'
 import { motion } from 'motion-v'
-import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import IcOutlineDesktopWindows from '@/components/icons/IcOutlineDesktopWindows.vue'
-import { servers } from '@/stores/servers'
+import { useServers } from '@/stores/servers'
 import { useRouter, useRoute } from 'vue-router'
 import AddButtonServer from '@/components/common/AddButtonServer.vue'
 
 const router = useRouter()
 const route = useRoute()
+const server = useServers()
 
 const activeItem = ref('')
 const config = {
-	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
@@ -21,7 +19,7 @@ const config = {
 	},
 }
 
-const [pare, tapes] = useDragAndDrop(servers.value, config)
+const [pare, tapes] = useDragAndDrop(server.visibleServers, config)
 
 const Div = motion.div
 
@@ -120,6 +118,20 @@ onMounted(loadStateFromRoute)
 //
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
 watch(() => route.params.id, loadStateFromRoute)
+
+const apply = () => {
+	tapes.value = [...server.visibleServers]
+}
+
+const remove = (item: any, ind: number) => {
+	tapes.value.splice(ind, 1)
+	let tmp = server.servers.find((el) => el.id == item.id)
+	if (tmp) {
+		tmp.vis = false
+		tmp.expand = false
+		expanded.value = false
+	}
+}
 </script>
 
 <template lang="pug">
@@ -131,22 +143,21 @@ div
 		:class="{'end': expanded}"
 	)
 		Div.server(v-for="(item, index) in tapes", :key="item.id",
-			@click.stop='action(item)',
+			@click='action(item)',
 			:layout-id="item.id"
 			:initial="initial"
 			:animate="animate"
 			:transition="spring"
-			:class='calcClass(item, index)'
+			:class="calcClass(item, index) + (item.def ? ' is-default' : '')"
 		)
 			.toprow
-				q-icon.q-mr-sm(name="mdi-circle-slice-8" :color="calcColor(item)")
+				q-icon.q-mr-sm(v-if='item.prod' name="mdi-access-point" color="red" size='sm')
 					q-tooltip(v-if='item.prod') Production environment
-					q-tooltip(v-else) Test environment
 				div {{ item.nick }}
 				q-space
-				q-btn(flat round dense color="primary") 
-					IcOutlineDesktopWindows
-			.text-center(v-if='!item.expand') {{ item.list[0].label}}
+				q-btn(flat round dense color="grey" icon="mdi-close" size='sm' @click.stop='remove(item, index)') 
+			.text-center(v-if='!item.expand')
+				span.link(@click.stop) {{ item.list[0].label}}
 
 		Div.plus(:style='plusPosition'
 			layout
@@ -154,8 +165,7 @@ div
 			:animate="animate"
 			:transition="spring"
 			)
-			AddButtonServer
-			// q-btn(unelevated round color="primary" icon='mdi-plus') 
+			AddButtonServer(@apply='apply')
 
 </template>
 
@@ -168,10 +178,18 @@ div
 		margin-bottom: -2px;
 	}
 }
+.link {
+	font-weight: 600;
+	color: $primary;
+	text-decoration: underline;
+	&:hover {
+		text-decoration: none;
+	}
+}
 .server {
 	width: 100%;
 	height: 100px;
-	background: #ffffff77;
+	background: #e1e8ef;
 	border-radius: 0.5rem;
 	border: 1px solid white;
 	cursor: pointer;
@@ -183,6 +201,10 @@ div
 	&:hover {
 		box-shadow: var(--shad0);
 	}
+}
+.is-default {
+	background: #fff !important;
+	border: 1px solid $primary;
 }
 .server.drag-over {
 	border: 2px dashed $primary;
@@ -205,7 +227,7 @@ div
 	}
 }
 .plus {
-	width: 100%;
+	width: 50%;
 	height: 100px;
 	background: #ffffff44;
 	border-radius: 0.5rem;

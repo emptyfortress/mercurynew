@@ -253,6 +253,16 @@ const router = createRouter({
 				count: 0,
 			},
 		},
+		{
+			path: '/sortable',
+			name: 'sortable',
+			component: () => import('@/components/SortableList.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 10,
+			},
+		},
 	],
 })
 

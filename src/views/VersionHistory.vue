@@ -4,7 +4,7 @@ import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useQuasar } from 'quasar'
 import Server from '@/components/Server.vue'
-import { servers } from '@/stores/servers'
+// import { servers } from '@/stores/servers'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
