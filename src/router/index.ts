@@ -85,6 +85,16 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/access',
+			name: 'access',
+			component: () => import('@/views/Access.vue'),
+			meta: {
+				toolbar: false,
+				back: true,
+				count: 19,
+			},
+		},
+		{
 			path: '/ai',
 			name: 'ai',
 			component: () => import('@/views/Ai.vue'),
@@ -251,16 +261,6 @@ const router = createRouter({
 				toolbar: false,
 				back: true,
 				count: 0,
-			},
-		},
-		{
-			path: '/sortable',
-			name: 'sortable',
-			component: () => import('@/components/SortableList.vue'),
-			meta: {
-				toolbar: true,
-				back: true,
-				count: 10,
 			},
 		},
 	],

@@ -195,7 +195,7 @@ div
 	border: 1px solid white;
 	cursor: pointer;
 	&.active {
-		height: 170px;
+		height: 200px;
 		grid-column: 1/-1;
 		grid-row: 1/2;
 	}
@@ -224,7 +224,7 @@ div
 	column-gap: 0.5rem;
 	row-gap: 0.5rem;
 	&.end {
-		grid-template-rows: 200px auto;
+		grid-template-rows: 220px auto;
 	}
 }
 .plus {

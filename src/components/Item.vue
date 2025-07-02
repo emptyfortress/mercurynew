@@ -225,6 +225,13 @@ const dialog = ref(false)
 const showDialog = () => {
 	dialog.value = !dialog.value
 }
+
+const list = [
+	{ id: 0, icon: 'mdi-database-outline', label: 'Настройка баз данных', to: '' },
+	{ id: 2, icon: 'mdi-source-branch', label: 'Управление версиями', to: '/version' },
+	{ id: 1, icon: 'mdi-account-key', label: 'Права на публикацию', to: '/access' },
+	{ id: 3, icon: 'mdi-script-text-outline', label: 'Журнал публикаций', to: '/log' },
+]
 </script>
 
 <template lang="pug">
@@ -284,9 +291,15 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		.groupList(v-if='activeItem && item.group > 1 && activeItem !== item.id')
 			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
 
-		.version(v-if='activeItem == item.id && item.group == 1' @click.stop :class='{pub: item.published}')
-			q-btn(flat icon="mdi-source-branch" label="Версии" @click.stop="toVersion") 
-			q-btn(flat icon="mdi-history" label="История" @click.stop="toVersion") 
+		.version(v-if='activeItem == item.id && item.group == 1' @click.stop)
+			q-btn(flat round dense icon="mdi-cog" @click.stop) 
+				q-menu
+					q-list
+						q-item(clickable, v-for="item in list", :key='item.id' :to='item.to')
+							q-item-section(avatar)
+								q-icon(:name="item.icon" color="primary")
+							q-item-section
+								q-item-label {{ item.label }}
 
 
 	.createGroup(v-if='isOver(item)')
