@@ -3,7 +3,7 @@ import { ref, watch, onMounted } from 'vue'
 import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useQuasar } from 'quasar'
-import Server from '@/components/Server.vue'
+import Server1 from '@/components/Server1.vue'
 // import { servers } from '@/stores/servers'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -102,43 +102,40 @@ const add = () => {
 </script>
 
 <template lang="pug">
-q-page(padding)
-	.cont
-		.hd Версии приложения
-		.grid
-			div
-				.hd1
-					img.q-mr-sm(src="@/assets/img/kp-favicon.svg", width="16" height="16")
-					|Конструктор
-				.constructor
+.grid
+	div
+		.hd1
+			img.q-mr-sm(src="@/assets/img/kp-favicon.svg", width="16" height="16")
+			|Конструктор
+		.constructor
 
-					draggable.list(
-						:list="source"
-						:group="{ name: 'items', pull: 'clone', put: false }"
-						:clone="onClone"
-						item-key="id"
-						:sort='false'
-					)
-						template(#item="{ element, index }")
-							.myitem(clickable)
-								// q-item-section(side)
-								// 	q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
-								// 	q-icon(v-else name="mdi-circle-outline" color="secondary")
-								q-item-section
-									q-item-label.link {{ element.label }}
-								q-item-section
-									q-item-label() {{ element.author }}
-								q-item-section.row.align-center
-									q-item-label() {{ element.mod }}
-										span.q-ml-sm
-											q-btn(v-if='index == 0' flat round dense icon="mdi-cloud-upload-outline" color="primary") 
-								.text-secondary
-									// q-btn(flat round dense icon="mdi-eye-outline" @click="" size='md') 
-									q-btn(flat round dense @click="add" size='md') 
-										TablerCopyPlus.ic
-									q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
+			draggable.list(
+				:list="source"
+				:group="{ name: 'items', pull: 'clone', put: false }"
+				:clone="onClone"
+				item-key="id"
+				:sort='false'
+			)
+				template(#item="{ element, index }")
+					.myitem(clickable)
+						// q-item-section(side)
+						// 	q-icon(v-if='element.current' color="deep-purple-11" name="mdi-circle-slice-8")
+						// 	q-icon(v-else name="mdi-circle-outline" color="secondary")
+						q-item-section
+							q-item-label.link {{ element.label }}
+						q-item-section
+							q-item-label() {{ element.author }}
+						q-item-section.row.align-center
+							q-item-label() {{ element.mod }}
+								span.q-ml-sm
+									q-btn(v-if='index == 0' flat round dense icon="mdi-cloud-upload-outline" color="primary") 
+						.text-secondary
+							// q-btn(flat round dense icon="mdi-eye-outline" @click="" size='md') 
+							q-btn(flat round dense @click="add" size='md') 
+								TablerCopyPlus.ic
+							q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(index)" size='md') 
 
-			Server()
+	Server1()
 
 </template>
 

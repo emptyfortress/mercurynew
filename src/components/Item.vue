@@ -231,6 +231,7 @@ const list = [
 	{ id: 2, icon: 'mdi-source-branch', label: 'Управление версиями', to: '/version' },
 	{ id: 1, icon: 'mdi-account-key', label: 'Права на публикацию', to: '/access' },
 	{ id: 3, icon: 'mdi-script-text-outline', label: 'Журнал публикаций', to: '/log' },
+	{ id: 4, icon: 'mdi-cog-outline', label: 'Все', to: '/setup' },
 ]
 </script>
 

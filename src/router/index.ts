@@ -24,16 +24,6 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/sel',
-			name: 'select',
-			component: () => import('@/views/Select.vue'),
-			meta: {
-				toolbar: true,
-				back: true,
-				count: 0,
-			},
-		},
-		{
 			path: '/tmp1',
 			name: 'tmp1',
 			component: () => import('@/views/Tmp1.vue'),
@@ -261,6 +251,16 @@ const router = createRouter({
 				toolbar: false,
 				back: true,
 				count: 0,
+			},
+		},
+		{
+			path: '/setup',
+			name: 'allsetup',
+			component: () => import('@/views/Allsetup.vue'),
+			meta: {
+				toolbar: false,
+				back: true,
+				count: 10,
 			},
 		},
 	],

@@ -8,6 +8,7 @@ interface Props {
 	disable?: boolean
 	readonly?: boolean
 	after?: boolean
+	prepend?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -30,6 +31,8 @@ div
 		:disable="props.disable"
 		:readonly="props.readonly"
 	)
+		template(v-slot:prepend v-if='prepend')
+			q-icon(name="mdi-book-open-variant-outline")
 </template>
 
 <style scoped lang="scss">

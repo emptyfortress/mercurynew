@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import MySelect from '@/components/common/MySelect.vue'
 
 const props = defineProps({
 	mode: {
@@ -17,6 +18,13 @@ const remove = () => {
 	modelValue.value = false
 }
 const serv = ref('1')
+
+const editors = ref([
+	{ id: 1, name: 'Лебедев С.С.', author: false },
+	{ id: 2, name: 'Соловьева И.К.', author: false },
+	{ id: 3, name: 'Воробьев А.А.', author: false },
+])
+const user = ref('')
 </script>
 
 <template lang="pug">
@@ -26,9 +34,32 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 		q-card-section.row.items-center.q-pb-none
 			.text-h6(v-if='props.mode == "version"') Приложение опубликовано
 			.text-h6(v-if='props.mode == "publ"') Опубликовать приложение
+			.text-h6(v-if='props.mode == "editors"') Редакторы приложения
 			// .text-h6(v-else) Вы уверены?
 
 		q-card-section
+			div(v-if='props.mode == "editors"')
+				div Выберите, кто может редактировать и публиковать приложение.
+				q-list(dense).q-mt-md
+					q-item(clickable )
+						q-item-section(side)
+							q-icon(name="mdi-account-circle" color="primary")
+						q-item-section
+							q-item-label Орлов П.С.
+						q-item-section(side)
+							q-item-label(caption) Автор
+					q-item(clickable v-for="item in editors" :key='item.id')
+						q-item-section(side)
+							q-icon(name="mdi-account-circle" color="primary")
+						q-item-section
+							q-item-label {{ item.name }}
+						q-item-section(side)
+							q-btn(flat round dense icon="mdi-close" color="secondary"  size="sm") 
+
+				.add
+					MySelect(v-model="user" prepend)
+					q-btn(flat round dense color="primary" icon='mdi-plus-circle-outline') 
+
 			div(v-if='props.mode == "publ"')
 				div Выберите сервер для публикации:
 				.column
@@ -46,6 +77,19 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 		q-card-actions(align="right")
 			q-btn(flat color="primary" label="Отмена" v-close-popup) 
 			q-btn(v-if='props.mode == "publ"' unelevated color="primary" label="Опубликовать" v-close-popup) 
+			q-btn(v-if='props.mode == "editors"' unelevated color="primary" label="Применить" v-close-popup) 
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.add {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 1rem;
+	margin-left: 1rem;
+	:deep(.q-field--dense) {
+		width: 250px;
+	}
+}
+</style>

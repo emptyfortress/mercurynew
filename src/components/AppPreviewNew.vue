@@ -94,6 +94,11 @@ const handlePub = () => {
 	mode.value = 'publ'
 	dialog.value = true
 }
+
+const handleEditors = () => {
+	mode.value = 'editors'
+	dialog.value = true
+}
 </script>
 
 <template lang="pug">
@@ -116,21 +121,19 @@ const handlePub = () => {
 			.val {{ props.item.author }}
 			label Создано:
 			.val {{ props.item.created }}
-
-			label Опубликовано:
-			.val(v-if='item.published') {{ props.item.created }}
-			.val(v-else) --''--
-			.to.star(v-if='item.published' @click.stop) DV-test
-			div(v-else)
-			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+			label Редакторы:
+			.val
+				div Лебедев С.С., Соловьева И.К., Воробьев А.А.
+				.link(@click.stop='handleEditors') + 3
+				q-btn(flat round dense color="primary" icon="mdi-plus-circle-outline" size='sm' @click.stop='handleEditors') 
 
 			label Изменено:
-			.val {{ props.item.modify }}
-
-			div(v-if='props.item.id !== "1"')
-				|Орлов П.С.
-			div(v-else style='font-weight: bold;')
-				|Роза Львовна
+			.val
+				div {{ props.item.modify }}
+				div(v-if='props.item.id !== "1"')
+					|Орлов П.С.
+				div(v-else style='font-weight: bold;')
+					|Роза Львовна
 
 		.myrow
 			q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click.stop="navigate" ) 
@@ -139,6 +142,14 @@ const handlePub = () => {
 				q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
 					q-item(clickable @click.stop='remove(props.item)').pink
 						q-item-section.text-center Да, удалить!
+
+		.publ
+			label Опубликовано:
+			.row.align-center
+				.val(v-if='item.published') {{ props.item.created }}
+				.val(v-else) --''--
+			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+			.to.star(v-if='item.published' @click.stop) Проверить на DV-test
 			
 	ConfirmDialog(v-model="dialog" :mode='mode')
 </template>
@@ -156,11 +167,15 @@ const handlePub = () => {
 		cursor: pointer;
 	}
 }
+.link {
+	color: $primary;
+	text-decoration: underline;
+}
 
 .mygrid {
-	margin-top: 2rem;
+	margin-top: 1rem;
 	display: grid;
-	grid-template-columns: auto auto auto 1fr;
+	grid-template-columns: auto 1fr;
 	justify-items: start;
 	align-items: center;
 	column-gap: 2rem;
@@ -170,21 +185,25 @@ const handlePub = () => {
 	}
 	.val {
 		grid-column: 2/3;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
 	}
-	.to {
-		color: $primary;
-		text-decoration: underline;
-	}
-	.star {
-		position: relative;
-	}
-	.star::after {
-		content: '*';
-		font-size: 1.1rem;
-		position: absolute;
-		top: -9px;
-		right: -9px;
-	}
+}
+.to {
+	color: $primary;
+	font-size: 0.9rem;
+	text-decoration: underline;
+}
+.star {
+	position: relative;
+}
+.star::after {
+	content: '*';
+	font-size: 1.1rem;
+	position: absolute;
+	top: -9px;
+	right: -9px;
 }
 
 .myrow {
@@ -192,8 +211,17 @@ const handlePub = () => {
 	grid-template-columns: repeat(3, auto);
 	// justify-content: center;
 	gap: 0.5rem;
-	margin-top: 2rem;
-	// background: #ccc;
+	margin-top: 1rem;
+}
+
+.publ {
+	// display: grid;
+	// grid-template-columns: auto auto 1fr;
+	margin-top: 1rem;
+	display: flex;
+	justify-items: start;
+	align-items: center;
+	column-gap: 2rem;
 }
 
 .bt {
