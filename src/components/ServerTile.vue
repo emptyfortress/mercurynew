@@ -14,7 +14,7 @@ const config = {
 		return child.classList.contains('server')
 	},
 }
-const [pare, tapes] = useDragAndDrop(server.servers, config)
+const [pare, tapes] = useDragAndDrop(server.visibleServers, config)
 
 const Div = motion.div
 const expanded = ref<boolean>(false)

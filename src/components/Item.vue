@@ -292,15 +292,18 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		.groupList(v-if='activeItem && item.group > 1 && activeItem !== item.id')
 			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
 
-		.version(v-if='activeItem == item.id && item.group == 1' @click.stop)
-			q-btn(flat round dense icon="mdi-cog" @click.stop) 
-				q-menu
-					q-list
-						q-item(clickable, v-for="item in list", :key='item.id' :to='item.to')
-							q-item-section(avatar)
-								q-icon(:name="item.icon" color="primary")
-							q-item-section
-								q-item-label {{ item.label }}
+
+		q-btn.cog(v-if='activeItem == item.id && item.group == 1' flat round dense icon="mdi-cloud-cog-outline" @click='$router.push("/setup")') 
+
+		// .version(v-if='activeItem == item.id && item.group == 1' @click.stop)
+		// 	q-btn(flat round dense icon="mdi-cog" @click.stop) 
+		// 		q-menu
+		// 			q-list
+		// 				q-item(clickable, v-for="item in list", :key='item.id' :to='item.to')
+		// 					q-item-section(avatar)
+		// 						q-icon(:name="item.icon" color="primary")
+		// 					q-item-section
+		// 						q-item-label {{ item.label }}
 
 
 	.createGroup(v-if='isOver(item)')
@@ -416,11 +419,11 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 .dropGroup {
 	outline: 3px dashed $primary;
 }
-.version {
+.cog {
 	position: absolute;
 	bottom: 0.3rem;
-	right: 0.8rem;
-	font-size: 2.5rem;
+	right: 0.5rem;
+	font-size: 1.2rem;
 	color: var(--icon);
 }
 .to {
