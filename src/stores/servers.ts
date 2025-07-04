@@ -105,6 +105,13 @@ export const useServers = defineStore('servers', () => {
 		},
 	])
 
+	const editors = ref([
+		{ id: 0, name: 'Орлов П.С.', author: true },
+		{ id: 1, name: 'Лебедев С.С.', author: false },
+		{ id: 2, name: 'Соловьева И.К.', author: false },
+		{ id: 3, name: 'Воробьев А.А.', author: false },
+	])
+
 	const visibleServers = computed(() => {
 		return servers.value.filter((item) => item.vis)
 	})
@@ -125,13 +132,20 @@ export const useServers = defineStore('servers', () => {
 		servers.value.map((el) => (el.vis = true))
 	}
 
+	const toggleUsed = (id: string) => {
+		const srv = servers.value.find((s) => s.id === id)
+		if (srv) srv.vis = !srv.vis
+	}
+
 	return {
 		servers,
+		editors,
 		visibleServers,
 		def: false,
 		testservers,
 		prodservers,
 		setItems,
 		selectAll,
+		toggleUsed,
 	}
 })

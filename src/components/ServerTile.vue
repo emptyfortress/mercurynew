@@ -59,9 +59,9 @@ const calcClass = (item: any, index: number) => {
 
 <template lang="pug">
 div
-	.hd1
-	q-icon.q-mr-sm(name="mdi-database-outline" size="24px") 
-	|Базы данных
+	.hd1.text-center
+		q-icon.q-mr-sm(name="mdi-database-outline" size="24px") 
+		|Базы данных
 	Div.pare(ref='pare',
 		:class="{'end': expanded}"
 	)
@@ -78,13 +78,16 @@ div
 					q-tooltip(v-if='item.prod') Production environment
 				div {{ item.nick }}
 			.text-center.q-mt-md(v-if='!item.expand')
-				q-icon(name="mdi-account-circle" color="primary")
-				span.q-ml-sm(v-if='item.prod') Никто
-				span.q-ml-sm(v-else) Все
+				// q-icon(name="mdi-account-circle" color="primary")
+				span.dont Не настроено
 
 </template>
 
 <style scoped lang="scss">
+.dont {
+	font-size: 0.8rem;
+	color: #888;
+}
 .pare {
 	margin-top: 1rem;
 	width: 100%;

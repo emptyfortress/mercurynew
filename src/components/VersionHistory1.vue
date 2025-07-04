@@ -161,7 +161,8 @@ const add = () => {
 	}
 }
 .grid {
-	margin-top: 1rem;
+	max-width: 1300px;
+	margin: 1rem auto;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	align-items: start;

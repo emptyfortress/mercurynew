@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import MySelect from '@/components/common/MySelect.vue'
+import { useServers } from '@/stores/servers'
 
 const props = defineProps({
 	mode: {
@@ -11,6 +12,7 @@ const props = defineProps({
 })
 const modelValue = defineModel<boolean>()
 
+const server = useServers()
 const emit = defineEmits(['remove'])
 
 const remove = () => {
@@ -19,11 +21,6 @@ const remove = () => {
 }
 const serv = ref('1')
 
-const editors = ref([
-	{ id: 1, name: 'Лебедев С.С.', author: false },
-	{ id: 2, name: 'Соловьева И.К.', author: false },
-	{ id: 3, name: 'Воробьев А.А.', author: false },
-])
 const user = ref('')
 </script>
 
@@ -41,20 +38,14 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 			div(v-if='props.mode == "editors"')
 				div Выберите, кто может редактировать и публиковать приложение.
 				q-list(dense).q-mt-md
-					q-item(clickable )
-						q-item-section(side)
-							q-icon(name="mdi-account-circle" color="primary")
-						q-item-section
-							q-item-label Орлов П.С.
-						q-item-section(side)
-							q-item-label(caption) Автор
-					q-item(clickable v-for="item in editors" :key='item.id')
+					q-item(clickable v-for="item in server.editors" :key='item.id')
 						q-item-section(side)
 							q-icon(name="mdi-account-circle" color="primary")
 						q-item-section
 							q-item-label {{ item.name }}
 						q-item-section(side)
-							q-btn(flat round dense icon="mdi-close" color="secondary"  size="sm") 
+							span(v-if='item.author') Автор
+							q-btn(v-else flat round dense icon="mdi-close" color="secondary"  size="sm") 
 
 				.add
 					MySelect(v-model="user" prepend)
