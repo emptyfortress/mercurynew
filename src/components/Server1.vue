@@ -154,19 +154,19 @@ div
 					q-tooltip(v-if='item.prod') Production environment
 				div {{ item.nick }}
 				q-space
-				q-btn(flat round dense color="grey" icon="mdi-close" size='sm' @click.stop='remove(item, index)') 
+				// q-btn(flat round dense color="grey" icon="mdi-close" size='sm' @click.stop='remove(item, index)') 
 			.text-center.q-mt-md(v-if='!item.expand')
 				span.link(@click.stop) {{ item.list[0].label}}
 
 			ServerVersionTable(v-if='expanded && activeItem == item.id')
 
-		Div.plus(:style='plusPosition'
-			layout
-			:initial="initial"
-			:animate="animate"
-			:transition="spring"
-			)
-			AddButtonServer(@apply='apply')
+		// Div.plus(:style='plusPosition'
+		// 	layout
+		// 	:initial="initial"
+		// 	:animate="animate"
+		// 	:transition="spring"
+		// 	)
+		// 	AddButtonServer(@apply='apply')
 
 </template>
 
