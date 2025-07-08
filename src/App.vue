@@ -185,8 +185,6 @@ q-layout(view='hHh LpR fFf')
 					q-tooltip Сирень Крокодиловна
 				.save Сохранение...
 
-			q-avatar.ddis(size='md')
-				img(src="https://cdn.quasar.dev/img/avatar.png")
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
 			// q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
