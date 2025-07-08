@@ -15,19 +15,22 @@ const Div = motion.div
 const emit = defineEmits(['navigate', 'duplicate', 'remove', 'drag', 'undrag'])
 
 const action = async (item: App) => {
-	if (activeItem.value !== '' && activeItem.value == item.id) {
-		expanded.value = false
-		activeItem.value = ''
-		item.expand = false
-	} else {
-		expanded.value = true
-		activeItem.value = item.id
-		item.expand = true
-		emit('navigate', item.id)
-
-		await nextTick()
-		ghostItem.value.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-	}
+	// if (activeItem.value !== '' && activeItem.value == item.id) {
+	// 	expanded.value = false
+	// 	activeItem.value = ''
+	// 	item.expand = false
+	// } else {
+	// 	expanded.value = true
+	// 	activeItem.value = item.id
+	// 	item.expand = true
+	// 	emit('navigate', item.id)
+	//
+	// 	await nextTick()
+	// 	ghostItem.value.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+	// }
+	expanded.value = true
+	activeItem.value = item.id
+	item.expand = true
 }
 
 const calcClass = (item: any, index: number) => {
@@ -110,8 +113,8 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 
 	AntDesignFormOutlined.im
 	.hg
-		span(@click='stopClick(item, $event)') {{ item.label }}
-			q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope")
+		span {{ item.label }}
+			q-popup-edit(v-if='item.expand && expanded' v-model="item.label" auto-save v-slot="scope")
 				q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
 	.content(v-if='expanded && item.id == activeItem')
