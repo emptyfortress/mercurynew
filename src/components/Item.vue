@@ -26,16 +26,8 @@ const Div = motion.div
 const emit = defineEmits(['navigate', 'createGroup', 'duplicate'])
 
 const action = async (item: App) => {
-	if (activeItem.value !== '' && activeItem.value == item.id) {
-		expanded.value = false
-		activeItem.value = ''
-	} else {
-		expanded.value = true
-		activeItem.value = item.id
-
-		await nextTick()
-		ghostItem.value.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-	}
+	expanded.value = true
+	activeItem.value = item.id
 }
 
 const calcClass = (item: App, index: number) => {
@@ -341,6 +333,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	width: 680px;
 	min-height: 380px;
 	padding: 0;
+	cursor: default;
 	.ttt {
 		width: 100%;
 		height: 100%;
