@@ -133,7 +133,7 @@ const handlePub = () => {
 				|Роза Львовна
 
 		.myrow
-			q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click.stop="" ) 
+			q-btn.ddis(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click.stop="" ) 
 			q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click.stop="navigate1" ) 
 			q-btn(outline color="primary" icon='mdi-delete-empty-outline' label='Удалить приложение' @click.stop='handleRemove') 
 				q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
