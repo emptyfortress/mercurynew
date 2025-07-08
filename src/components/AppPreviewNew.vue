@@ -90,9 +90,20 @@ const handleRemove = () => {
 		dialog.value = true
 	}
 }
-const handlePub = () => {
-	mode.value = 'publ'
-	dialog.value = true
+const handlePub = (item: App) => {
+	loading.value = true
+	setTimeout(() => {
+		loading.value = false
+		item.published = true
+		if (item.published) {
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'positive',
+				message: 'Приложение опубликовано!',
+				position: 'top',
+			})
+		}
+	}, 2000)
 }
 </script>
 
@@ -139,7 +150,7 @@ const handlePub = () => {
 			.row.align-center
 				.val(v-if='item.published') {{ props.item.created }}
 				.val(v-else) --''--
-			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" :loading='loading' @click.stop="handlePub(props.item)" size='md') 
 			.to.star(v-if='item.published' @click.stop) Проверить на DV-test
 			
 	ConfirmDialog(v-model="dialog" :mode='mode')
