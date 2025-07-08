@@ -22,19 +22,6 @@ const roles = ref([
 		avatar: 'avatar2',
 		active: true,
 	},
-	// {
-	// 	id: '2',
-	// 	label: 'Руководитель',
-	// 	expand: false,
-	// 	avatar: 'avatar1',
-	// 	active: true,
-	// },
-	// {
-	// 	id: '3',
-	// 	label: 'Кадровик',
-	// 	expand: false,
-	// 	avatar: 'avatar5',
-	// },
 ])
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {

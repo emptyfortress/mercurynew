@@ -18,19 +18,9 @@ const Div = motion.div
 const emit = defineEmits(['navigate', 'duplicate', 'remove', 'drag', 'undrag'])
 
 const action = async (item: App) => {
-	if (activeItem.value !== '' && activeItem.value == item.id) {
-		expanded.value = false
-		activeItem.value = ''
-		item.expand = false
-	} else {
-		expanded.value = true
-		activeItem.value = item.id
-		item.expand = true
-		emit('navigate', item.id)
-
-		await nextTick()
-		ghostItem.value.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-	}
+	expanded.value = true
+	activeItem.value = item.id
+	item.expand = true
 }
 
 const calcClass = (item: any, index: number) => {
