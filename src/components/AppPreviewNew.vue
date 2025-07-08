@@ -117,12 +117,6 @@ const handlePub = () => {
 			label Создано:
 			.val {{ props.item.created }}
 
-			label Опубликовано:
-			.val(v-if='item.published') {{ props.item.created }}
-			.val(v-else) --''--
-			.to.star(v-if='item.published' @click.stop) DV-test
-			div(v-else)
-			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
 
 			label Изменено:
 			.val {{ props.item.modify }}
@@ -139,6 +133,14 @@ const handlePub = () => {
 				q-menu(v-if='!item.published' anchor="bottom middle" self="top middle")
 					q-item(clickable @click.stop='remove(props.item)').pink
 						q-item-section.text-center Да, удалить!
+
+		.publ
+			label Опубликовано:
+			.row.align-center
+				.val(v-if='item.published') {{ props.item.created }}
+				.val(v-else) --''--
+			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+			.to.star(v-if='item.published' @click.stop) Проверить на DV-test
 			
 	ConfirmDialog(v-model="dialog" :mode='mode')
 </template>
@@ -229,5 +231,29 @@ const handlePub = () => {
 	// justify-items: start;
 	// align-items: stretch;
 	column-gap: 1rem;
+}
+.publ {
+	// display: grid;
+	// grid-template-columns: auto auto 1fr;
+	margin-top: 1rem;
+	display: flex;
+	justify-items: start;
+	align-items: center;
+	column-gap: 2rem;
+}
+.to {
+	color: $primary;
+	font-size: 0.9rem;
+	text-decoration: underline;
+}
+.star {
+	position: relative;
+}
+.star::after {
+	content: '*';
+	font-size: 1.1rem;
+	position: absolute;
+	top: -9px;
+	right: -9px;
 }
 </style>

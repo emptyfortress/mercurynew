@@ -240,11 +240,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 				span(@click.stop) {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
-			.user.ddis
-				q-avatar(size='24px' color="positive" text-color="white") РЛ
-					q-tooltip Роза Львовна
-				q-avatar(size='24px' color="warning" text-color="black") СК
-					q-tooltip Сирень Крокодиловна
 
 		template(v-else)
 			span {{ item.label }}
@@ -263,10 +258,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			@removeGroup='remove(item)'
 		)
 
-		.img.ddis(v-if='item.group == 1' @click='stopClick(item, $event)')
-			component(:is='item.pic')
-			IconMenu(@select='setIcon' :icon='item.pic.name')
-
 		.groupGrid(v-if='!activeItem && item.group > 1 && activeItem !== item.id')
 			.ima( v-for="el in visibleItems(item.list)" :key="el.id")
 				component(:is='el.pic')
@@ -275,10 +266,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 
 		.groupList(v-if='activeItem && item.group > 1 && activeItem !== item.id')
 			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
-
-		.version.ddis(v-if='activeItem == item.id && item.group == 1' @click.stop :class='{pub: item.published}')
-			q-btn(flat icon="mdi-source-branch" label="Версии" @click.stop="") 
-			q-btn(flat icon="mdi-history" label="История" @click.stop="") 
 
 	.createGroup(v-if='isOver(item)')
 		div Создать группу приложений
