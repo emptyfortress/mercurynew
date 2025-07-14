@@ -74,7 +74,7 @@ const onDrop1 = () => {
 			tmp.version = ''
 			tmp.author = ''
 			tmp.group = 1
-			tmp.published = false
+			tmp.published = 0
 			tmp.list = []
 		} else tmp = tapes.value[hoverItem.value]
 
@@ -183,7 +183,7 @@ const create = (e: any) => {
 		version: '0.0.0',
 		author: 'Орлов П.С.',
 		created: '22.09.2022',
-		published: false,
+		published: 0,
 		group: 1,
 		list: [],
 		pic: IconApp,
