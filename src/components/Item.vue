@@ -6,6 +6,7 @@ import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 import IconMenu from '@/components/IconMenu.vue'
 import { uid, useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const router = useRouter()
 
@@ -151,11 +152,20 @@ const onDrop1 = (el: App, n: number) => {
 	draggedItem.value = null
 }
 
+const mode = ref('version')
 const remove = (el: App) => {
 	const ind = tapes.value?.findIndex((item) => item.id == el.id)
-	if (ind !== undefined) {
+	if (ind !== undefined && el.published == 0) {
 		tapes.value?.splice(ind, 1)
 		expanded.value = false
+	}
+	if (ind !== undefined && el.published == 2) {
+		mode.value = 'version'
+		showDialog()
+	}
+	if (ind !== undefined && el.published == 1) {
+		mode.value = 'version1'
+		showDialog()
 	}
 }
 
@@ -209,10 +219,12 @@ const options = [
 	{ id: 2, label: 'v. 2', pub: true },
 	{ id: 1, label: 'v. 1', pub: true },
 ]
-const setVer = (item: App, el: number, pub: boolean) => {
-	item.version = el.toString()
-	item.published = pub
-}
+
+// const setVer = (item: App, el: number, pub: boolean) => {
+// 	item.version = el.toString()
+// 	item.published = pub
+// }
+
 const calcItemClass = (item: App, id: number) => {
 	return item.version == id.toString() ? 'selected' : ''
 }
@@ -226,13 +238,13 @@ const showDialog = () => {
 	dialog.value = !dialog.value
 }
 
-const list = [
-	{ id: 0, icon: 'mdi-database-outline', label: 'Настройка баз данных', to: '' },
-	{ id: 2, icon: 'mdi-source-branch', label: 'Управление версиями', to: '/version' },
-	{ id: 1, icon: 'mdi-account-key', label: 'Права на публикацию', to: '/access' },
-	{ id: 3, icon: 'mdi-script-text-outline', label: 'Журнал публикаций', to: '/log' },
-	{ id: 4, icon: 'mdi-cog-outline', label: 'Все', to: '/setup' },
-]
+// const list = [
+// 	{ id: 0, icon: 'mdi-database-outline', label: 'Настройка баз данных', to: '' },
+// 	{ id: 2, icon: 'mdi-source-branch', label: 'Управление версиями', to: '/version' },
+// 	{ id: 1, icon: 'mdi-account-key', label: 'Права на публикацию', to: '/access' },
+// 	{ id: 3, icon: 'mdi-script-text-outline', label: 'Журнал публикаций', to: '/log' },
+// 	{ id: 4, icon: 'mdi-cog-outline', label: 'Все', to: '/setup' },
+// ]
 </script>
 
 <template lang="pug">
@@ -316,6 +328,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 )
 	div {{ label }}
 
+ConfirmDialog(v-model="dialog" :mode='mode')
 </template>
 
 <style scoped lang="scss">

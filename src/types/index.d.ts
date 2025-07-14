@@ -9,7 +9,7 @@ interface App {
 	modify?: string
 	uploaded?: string
 	group: number
-	published: boolean
+	published: number
 	list: App[]
 	pic?: any
 }

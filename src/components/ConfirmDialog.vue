@@ -13,7 +13,7 @@ const props = defineProps({
 const modelValue = defineModel<boolean>()
 
 const server = useServers()
-const emit = defineEmits(['remove'])
+const emit = defineEmits(['remove', 'publish'])
 
 const remove = () => {
 	emit('remove')
@@ -22,6 +22,18 @@ const remove = () => {
 const serv = ref('1')
 
 const user = ref('')
+
+const loading = ref(false)
+
+const publish = () => {
+	loading.value = true
+	setTimeout(() => {
+		loading.value = false
+		modelValue.value = false
+	}, 2000)
+	console.log(serv.value)
+	emit('publish', parseInt(serv.value))
+}
 </script>
 
 <template lang="pug">
@@ -30,7 +42,8 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 		q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 		q-card-section.row.items-center.q-pb-none
 			.text-h6(v-if='props.mode == "version"') Приложение опубликовано
-			.text-h6(v-if='props.mode == "publ"') Опубликовать приложение
+			.text-h6(v-if='props.mode == "version1"') Ожидает публикации
+			.text-h6(v-if='props.mode == "publ"') Публикация приложения
 			.text-h6(v-if='props.mode == "editors"') Редакторы приложения
 			// .text-h6(v-else) Вы уверены?
 
@@ -51,15 +64,31 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 					MySelect(v-model="user" prepend)
 					q-btn(flat round dense color="primary" icon='mdi-plus-circle-outline') 
 
-			div(v-if='props.mode == "publ"')
+			div(v-if='props.mode == "publ"' style="width: 400px;")
 				div Выберите сервер для публикации:
 				.column
-					q-radio(v-model="serv" val="1" label="DV-test (тестовый)")
-					q-radio(v-model="serv" val="2" label="DV-test1 (предбовевой)")
-					q-radio(v-model="serv" val="3" label="DV-prod (production)")
+					q-list
+						q-item(tag='label' clickable dense)
+							q-item-section(side)
+								q-radio(v-model="serv" val="2")
+							q-item-section DV-test
+							q-item-section(side) тестовый сервер
+
+						q-item(tag='label' clickable dense)
+							q-item-section(side)
+								q-radio(v-model="serv" val="1")
+							q-item-section DV-prod
+							q-item-section(side) продуктовый сервер
+
+				.info
+					q-icon(name="mdi-hand-pointing-right" color="negative" size="20px")
+					span(v-if='serv == "2"') Приложение будет опубликовано немедленно.
+					span(v-if='serv == "1"') Приложение будет передано админу для публикации.
 
 			ul(v-if='props.mode == "version"')
 				li Приложение опубликовано на сервере DV-prod и не может быть удалено.
+			ul(v-if='props.mode == "version1"')
+				li Приложение ожидает публикации и не может быть удалено.
 
 			// ul(v-else)
 			// 	li Удаление группы одновременно удалит все приложения, входящие в данную группу.
@@ -67,11 +96,24 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 
 		q-card-actions(align="right")
 			q-btn(flat color="primary" label="Отмена" v-close-popup) 
-			q-btn(v-if='props.mode == "publ"' unelevated color="primary" label="Опубликовать" v-close-popup) 
+			q-btn(v-if='props.mode == "publ"' unelevated color="primary" :loading='loading' label="Опубликовать" @click='publish') 
 			q-btn(v-if='props.mode == "editors"' unelevated color="primary" label="Применить" v-close-popup) 
 </template>
 
 <style scoped lang="scss">
+.info {
+	margin-top: 0.5rem;
+	// background: var(--dvblue);
+	// background: #eee;
+	padding: 0.5rem;
+	// color: var(--dark);
+	font-size: 0.8rem;
+	color: $negative;
+	// border: 1px solid var(--dark);
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
 .add {
 	display: flex;
 	justify-content: start;
