@@ -216,10 +216,15 @@ const dialog = ref(false)
 const showDialog = () => {
 	dialog.value = !dialog.value
 }
+
+const calcDraggable = (id: string) => {
+	return activeItem.value == id ? false : true
+}
 </script>
 
 <template lang="pug">
 Div.it(v-for="(item, index) in tapes", :key="item.id",
+	:draggable='calcDraggable(item.id)'
 	@click.stop='action(item)',
 	:layout-id="item.id"
 	:initial="initial"
