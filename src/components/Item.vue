@@ -230,17 +230,14 @@ const showDialog = () => {
 	dialog.value = !dialog.value
 }
 
-// const list = [
-// 	{ id: 0, icon: 'mdi-database-outline', label: 'Настройка баз данных', to: '' },
-// 	{ id: 2, icon: 'mdi-source-branch', label: 'Управление версиями', to: '/version' },
-// 	{ id: 1, icon: 'mdi-account-key', label: 'Права на публикацию', to: '/access' },
-// 	{ id: 3, icon: 'mdi-script-text-outline', label: 'Журнал публикаций', to: '/log' },
-// 	{ id: 4, icon: 'mdi-cog-outline', label: 'Все', to: '/setup' },
-// ]
+const calcDraggable = (id: string) => {
+	return activeItem.value == id ? false : true
+}
 </script>
 
 <template lang="pug">
 Div.it(v-for="(item, index) in tapes", :key="item.id",
+	:draggable='calcDraggable(item.id)'
 	@click.stop='action(item)',
 	:layout-id="item.id"
 	:initial="initial"

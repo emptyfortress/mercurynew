@@ -88,10 +88,14 @@ const ondragStart = (e: any) => {
 const ondragEnd = () => {
 	emit('undrag')
 }
+const calcDraggable = (id: string) => {
+	return activeItem.value == id ? false : true
+}
 </script>
 
 <template lang="pug">
 Div.it(v-for="(item, index) in tapes", :key="item.id",
+	:draggable='calcDraggable(item.id)'
 	@click.stop='action(item)',
 	@dragstart='ondragStart(item)'
 	@dragend='ondragEnd'
@@ -151,6 +155,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	padding: 1rem;
 	top: 125px;
 	display: block;
+	cursor: default;
 	.im {
 		height: 90px;
 		width: 90px;

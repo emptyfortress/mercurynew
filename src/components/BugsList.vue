@@ -9,25 +9,25 @@ const list = [
 
 <template lang="pug">
 q-list.q-mt-lg
-	q-item(clickable to='/bugs')
-		q-item-section(avatar)
-			q-icon(name="mdi-bug" color="primary")
-		q-item-section
-			q-item-label Баги
+	// q-item(clickable to='/bugs')
+	// 	q-item-section(avatar)
+	// 		q-icon(name="mdi-bug" color="primary")
+	// 	q-item-section
+	// 		q-item-label Баги
 	q-item(clickable to='/vars')
 		q-item-section(avatar)
 			q-icon(name="mdi-puzzle-outline" color="primary")
 		q-item-section
 			q-item-label Общие компоненты
 
-	br
-	q-separator
-	br
-	q-item(clickable, v-for="item in list", :key='item.id' :to='item.to')
-		q-item-section(avatar)
-			q-icon(:name="item.icon" color="primary")
-		q-item-section
-			q-item-label {{ item.label }}
+	// br
+	// q-separator
+	// br
+	// q-item(clickable, v-for="item in list", :key='item.id' :to='item.to')
+	// 	q-item-section(avatar)
+	// 		q-icon(:name="item.icon" color="primary")
+	// 	q-item-section
+	// 		q-item-label {{ item.label }}
 
 
 </template>
