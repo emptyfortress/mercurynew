@@ -38,14 +38,14 @@ const hints = [
 
 <template lang="pug">
 	q-drawer(v-model='modelValue' side='right' :width="250" overlay bordered behavior="desktop")
-		template(v-if='props.help')
-			.zg Подсказки
-			q-list
-				q-item(clickable v-for="item in hints" :key='item.id')
-					q-item-section(side)
-						IconoirSpark
-					q-item-section
-						q-item-label {{ item.label }}
+		// template(v-if='props.help')
+		// 	.zg Подсказки
+		// 	q-list
+		// 		q-item(clickable v-for="item in hints" :key='item.id')
+		// 			q-item-section(side)
+		// 				IconoirSpark
+		// 			q-item-section
+		// 				q-item-label {{ item.label }}
 		BugsList()
 
 </template>
