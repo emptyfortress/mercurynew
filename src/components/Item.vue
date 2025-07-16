@@ -361,6 +361,7 @@ ConfirmDialog(v-model="dialog" :mode='mode')
 	width: 680px;
 	min-height: 380px;
 	padding: 0;
+	cursor: default;
 	.ttt {
 		width: 100%;
 		height: 100%;
