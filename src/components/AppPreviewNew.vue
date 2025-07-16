@@ -4,7 +4,7 @@ import { useApps } from '@/stores/apps'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
-import VersionTable from '@/components/VersionTable.vue'
+import VersionList from '@/components/VersionList.vue'
 
 const myapps = useApps()
 const router = useRouter()
@@ -99,6 +99,8 @@ const handleEditors = () => {
 	mode.value = 'editors'
 	dialog.value = true
 }
+
+const tab = ref('setup')
 </script>
 
 <template lang="pug">
@@ -108,78 +110,83 @@ const handleEditors = () => {
 		q-popup-edit(v-model="props.item.descr" auto-save v-slot="scope")
 			q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
-	div(
-		v-if='!version',
-		v-motion
-		:initial="initial"
-		:enter='{ x: 0, opacity: 1 }'
-		:delay='400'
-	)
+	q-tabs.q-mt-md(v-model="tab" align="left" dense active-color='primary')
+		q-tab(name='setup' label='Настройка')
+		q-tab(name='publ' label='Публикация')
+		q-tab(name='vers' label='Версии')
 
-		.newgrid
-			.mygrid
-				label.link(@click.stop='toggleVersion') Версия:
-				.text-bold Базовая
-				label Статус:
-				.text-bold
-					span(v-if='props.item.published == 1') Ожидает&nbsp;публикации
-					span(v-if='props.item.published == 0') Черновик
-					span(v-if='props.item.published == 2') Опубликовано
-				q-btn.create(flat color="secondary" icon='mdi-plus-circle-outline' label="Создать версию" @click="" size='sm')
+	q-tab-panels(v-model="tab" animated)
+		q-tab-panel(name='setup')
+			.newgrid
+				.mygrid
+					label Версия:
+					.text-bold Базовая
+					label Статус:
+					.text-bold
+						span(v-if='props.item.published == 1') Ожидает&nbsp;публикации
+						span(v-if='props.item.published == 0') Черновик
+						span(v-if='props.item.published == 2') Опубликовано
 
-			.mygrid
-				label Автор:
-				.val {{ props.item.author }}
-				label Создано:
-				.val {{ props.item.created }}
+				.mygrid
+					label Автор:
+					.val {{ props.item.author }}
+					label Создано:
+					.val {{ props.item.created }}
 
-				// label Редакторы:
-				// .val
-				// 	div Лебедев С.С., Соловьева И.К., Воробьев С.П.
-				// 	.link(@click.stop='handleEditors') + 3
-				// 	q-btn(flat round dense color="primary" icon="mdi-plus-circle-outline" size='sm' @click.stop='handleEditors') 
+					label Изменено:
+					.val
+						div {{ props.item.modify }}
+						div(v-if='props.item.id !== "1"')
+							|Орлов П.С.
+						div(v-else style='font-weight: bold;')
+							|Роза Львовна
 
-				label Изменено:
-				.val
-					div {{ props.item.modify }}
-					div(v-if='props.item.id !== "1"')
-						|Орлов П.С.
-					div(v-else style='font-weight: bold;')
-						|Роза Львовна
+			.myrow
+				q-btn(outline color="primary" label='Мастер настройки' icon='mdi-magic-staff' @click.stop="navigate" ) 
+				q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click.stop="navigate1" ) 
 
-		.myrow
-			q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click.stop="navigate" ) 
-			q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click.stop="navigate1" ) 
+				q-btn(flat round dense icon="mdi-dots-horizontal" color="primary" @click.stop='') 
+					q-menu(anchor="bottom middle" self="top middle")
+						q-item(clickable @click.stop='duble(props.item)' v-close-popup)
+							q-item-section(side)
+								q-icon(name="mdi-plus-box-multiple-outline")
+							q-item-section Дублировать приложение
 
-			q-btn(color="primary" outline icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+						q-item(clickable @click.stop='remove(props.item)' v-close-popup)
+							q-item-section(side)
+								q-icon(name="mdi-delete-outline")
+							q-item-section Удалить приложение
 
-			q-btn(flat round dense icon="mdi-dots-horizontal" color="primary" @click.stop='') 
-				q-menu(anchor="bottom middle" self="top middle")
-					q-item(clickable @click.stop='duble(props.item)' v-close-popup)
-						q-item-section(side)
-							q-icon(name="mdi-plus-box-multiple-outline")
-						q-item-section Дублировать приложение
+		q-tab-panel(name='publ')
+			.newgrid
+				.mygrid
+					label Версия:
+					.text-bold Базовая
+					label Статус:
+					.text-bold
+						span(v-if='props.item.published == 1') Ожидает&nbsp;публикации
+						span(v-if='props.item.published == 0') Черновик
+						span(v-if='props.item.published == 2') Опубликовано
 
-					q-item(clickable @click.stop='remove(props.item)' v-close-popup)
-						q-item-section(side)
-							q-icon(name="mdi-delete-outline")
-						q-item-section Удалить приложение
+				.mygrid
+					label Автор:
+					.val {{ props.item.author }}
+					label Создано:
+					.val {{ props.item.created }}
 
-		.publ
-			label Опубликовано:
-			.row.align-center
-				.val(v-if='item.published') {{ props.item.created }}
-				.val(v-else) --''--
-			.to.star(v-if='item.published' @click.stop) Проверить на DV-test
+					label Изменено:
+					.val
+						div {{ props.item.modify }}
+						div(v-if='props.item.id !== "1"')
+							|Орлов П.С.
+						div(v-else style='font-weight: bold;')
+							|Роза Львовна
 
-	.q-mt-md(
-		v-else
-		v-motion
-		:initial="initial"
-		:enter='{ x: 0, opacity: 1 }'
-		:delay='400'
-	) Тут живут драконы (версии)
-		// VersionTable
+					q-btn.full(color="primary" unelevated icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+
+		q-tab-panel(name='vers')
+			VersionList
+
 			
 	ConfirmDialog(v-model="dialog" :mode='mode' @publish='publish')
 </template>
@@ -203,7 +210,7 @@ const handleEditors = () => {
 }
 
 .newgrid {
-	margin-top: 1rem;
+	// margin-top: 1rem;
 	display: flex;
 	// justify-content: space-between;
 	align-items: start;
@@ -228,6 +235,10 @@ const handleEditors = () => {
 		align-items: center;
 		gap: 1rem;
 	}
+	.full {
+		grid-column: 1/-1;
+		margin-top: 1rem;
+	}
 }
 .to {
 	color: $primary;
@@ -245,9 +256,12 @@ const handleEditors = () => {
 	right: -9px;
 }
 
+.myrow1 {
+	margin-top: 1rem;
+}
 .myrow {
 	display: grid;
-	grid-template-columns: auto auto auto 36px;
+	grid-template-columns: auto auto 36px;
 	// justify-content: center;
 	gap: 0.5rem;
 	margin-top: 1rem;
