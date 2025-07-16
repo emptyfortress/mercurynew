@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import type { QTableProps } from 'quasar'
-// import Draggable from 'vuedraggable'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
+import { useVersion } from '@/stores/version'
 import { useQuasar } from 'quasar'
-import Server from '@/components/Server.vue'
-// import { servers } from '@/stores/servers'
+import AddDialog from '@/components/AddDialog.vue'
 
-// const router = useRouter()
-// const route = useRoute()
-// const $q = useQuasar()
-
+const version = useVersion()
 const cols: QTableProps['columns'] = [
 	{
 		name: 'current',
@@ -45,11 +41,11 @@ const cols: QTableProps['columns'] = [
 		sortable: true,
 	},
 	{
-		name: 'server',
+		name: 'published',
 		required: true,
 		label: 'Опубликовано',
-		align: 'left',
-		field: 'server',
+		align: 'center',
+		field: 'published',
 		sortable: true,
 	},
 	{
@@ -61,75 +57,88 @@ const cols: QTableProps['columns'] = [
 		sortable: true,
 	},
 ]
-const source = ref([
-	{
-		id: 3,
-		ver: 'Версия 3',
-		author: 'Орлов П.С.',
-		created: '23.07.25',
-		val: 3,
-		server: '--',
-	},
-	{
-		id: 2,
-		ver: 'Роза 1',
-		author: 'Роза Львовна',
-		created: '21.07.25',
-		val: 2,
-		server: 'DV-test',
-	},
-	{
-		id: 1,
-		ver: 'Базовая',
-		author: 'Орлов П.С.',
-		created: '11.06.25',
-		val: 1,
-		server: 'DV-test, DV-prod',
-	},
-])
 
-const remove1 = (id: number) => {
-	let index = source.value.findIndex((el) => el.id == id)
-	if (index !== undefined) {
-		source.value.splice(index, 1)
-	}
-	radio.value = source.value[0].val
+const $q = useQuasar()
+const remove = (id: number) => {
+	version.remove(id)
+	version.versions[0].current = true
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-delete-outline',
+			color: 'negative',
+			message: 'Версия удалена',
+			position: 'top',
+		})
+	}, 500)
 }
 
-const add = () => {
-	source.value.unshift({
-		id: Date.now(), // Лучше Date.now() вместо index
-		ver: `Версия ${source.value.length + 1}`,
-		author: 'Орлов П.С.',
-		created: '23.07.25',
-		val: source.value.length + 1,
-		server: '',
-	})
+const currentVer = ref('')
+
+const add = (ver: string) => {
+	currentVer.value = ver
+	dialog.value = !dialog.value
 }
 
-const radio = ref(3)
+const radio = computed({
+	get: () => version.versions.find((v) => v.current)?.id ?? null,
+	set: (id) => {
+		if (id !== null) {
+			version.setCurrent(id)
+		}
+	},
+})
+
+const dialog = ref(false)
+
+const create = (e: any) => {
+	version.add(e.ver, e.descr)
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Создана новая версия',
+			position: 'top',
+		})
+	}, 500)
+}
 </script>
 
 <template lang="pug">
 q-table(flat
 	:columns="cols"
-	:rows='source'
+	:rows='version.versions'
 	row-key="id"
 	color="primary"
 	dense
 	hide-bottom
+	@row-click="(evt, row) => radio = row.id"
 )
 	template(v-slot:body-cell-current='props')
 		q-td(:props='props')
-			q-radio(v-model="radio" dense :val='props.row.val')
+			q-radio(
+        dense
+        :model-value="radio"
+        :val="props.row.id"
+        @update:model-value="radio = $event"
+      )
 
 	template(v-slot:body-cell-action='props')
 		q-td(:props='props')
 			.text-secondary
-				q-btn(flat round dense @click="add" size='md') 
+				q-btn(flat round dense @click="add(props.row.ver)" size='md') 
 					TablerCopyPlus.ic
-				q-btn(flat round dense icon="mdi-delete-outline" @click="remove1(props.row.id)" size='md') 
+				q-btn(flat round dense icon="mdi-delete-outline" size='md') 
+					q-menu
+						q-list
+							q-item(clickable @click='remove(props.row.id)').pink
+								q-item-section Удалить
 
+	template(v-slot:body-cell-published='props')
+		q-td(:props='props')
+			q-icon(v-if='props.row.published == 2' name="mdi-check-bold" color="primary" size="16px")
+			q-icon(v-if='props.row.published == 1' name="mdi-timer-sand" color="primary" size="16px")
+
+AddDialog(v-model="dialog" mode='version' :current='currentVer' @create="create")
 
 </template>
 
@@ -208,12 +217,4 @@ q-table(flat
 		text-decoration: none;
 	}
 }
-// .pare {
-// 	display: grid;
-// 	grid-template-columns: repeat(3, 1fr);
-// 	// justify-items: start;
-// 	// align-items: stretch;
-// 	column-gap: 0.5rem;
-// 	row-gap: 0.5rem;
-// }
 </style>

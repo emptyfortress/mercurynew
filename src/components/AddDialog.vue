@@ -1,23 +1,49 @@
 <script setup lang="ts">
-import { uid } from 'quasar'
+// import { ref, onUpdated } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 
 const modelValue = defineModel<boolean>()
 
+const props = defineProps({
+	current: {
+		type: String,
+		required: true,
+		default: '',
+	},
+})
+
 const emit = defineEmits(['create'])
 
-const create = (data: App) => {
-	let tmp = {
-		id: uid(),
-		label: data.label,
-		descr: data.descr,
-		expand: false,
-		version: '0.0.0',
+const model = ref('')
+const model1 = ref('')
+
+const submitForm = () => {
+	emit('create', {
+		id: +Date.now(),
+		ver: model.value,
+		descr: model1.value,
 		author: 'Орлов П.С.',
-		created: '22.09.2022',
-		type: 0,
-		group: false,
+		created: '11.06.25',
+		val: +Date.now(),
+		server: '',
+		published: 0,
+	})
+	input.value.resetValidation()
+}
+
+watch(modelValue, async (val) => {
+	if (val) {
+		model.value = props.current + ' - copy'
+		await nextTick()
+		input.value.select()
 	}
-	emit('create', tmp)
+})
+
+const input = ref()
+const otmena = () => {
+	model.value = ''
+	model1.value = ''
+	input.value.resetValidation()
 	modelValue.value = false
 }
 </script>
@@ -27,11 +53,51 @@ q-dialog(v-model="modelValue" transition-show="slide-up" transition-hide="slide-
 	q-card(style="min-width: 400px;")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
-			.text-h6 Новое приложение
+			.text-h6 Создать версию
+			.caption Создать версию на основе выбранной
+
 		q-card-section
-			FormKit(type="form" id="newapp" submit-label="Создать" @submit="create")
-				FormKit(type="text" autofocus name="label" label="Название" value='Мое приложение' help="Назовите ваше приложение" validation="required|length:3")
-				FormKit(type="textarea" name="descr" label="Описание" value='Описание приложения' help="Что будет делать ваше приложение?")
+			q-form(ref='form' @submit="submitForm")
+				.section
+					label Название:
+					q-input(ref="input"
+						v-model="model"
+						autofocus
+						dense
+						clearable
+						filled
+						:rules="[val => !!val || 'Это обязательное поле']"
+						hint='Название должно быть уникальным'
+						)
+
+				.section
+					label Описание:
+					q-input(
+						v-model="model1"
+						dense
+						clearable
+						filled
+						hint='Описание не обязательно'
+						)
+
+				q-card-actions(align="right"
+					v-motion
+					:initial="{ opacity: 0 }"
+					:enter='{ opacity: 1, transition: { delay: 200 } }'
+					)
+					q-btn(flat color="primary" label="Отмена" @click="otmena") 
+					q-btn(unelevated color="primary" label="Создать" type='submit' v-close-popup) 
+
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+label {
+	font-weight: 600;
+}
+.section {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
+}
+</style>

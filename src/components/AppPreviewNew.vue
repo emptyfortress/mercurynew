@@ -5,6 +5,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import VersionList from '@/components/VersionList.vue'
+import { useVersion } from '@/stores/version'
 
 const myapps = useApps()
 const router = useRouter()
@@ -15,6 +16,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['close', 'remove', 'duplicate'])
+
+const myver = useVersion()
 
 const group = computed(() => {
 	return route.fullPath.toString().split('/')[1] == 'folder' ? true : false
@@ -37,9 +40,6 @@ const navigate1 = () => {
 }
 
 const version = ref(false)
-const toggleVersion = () => {
-	version.value = !version.value
-}
 
 const move = { x: 20, opacity: 0 }
 const non = { x: 0, opacity: 1 }
@@ -83,20 +83,8 @@ const publish = (ver: number) => {
 const mode = ref('version')
 const dialog = ref(false)
 
-// const handleRemove = () => {
-// 	if (props.item.published) {
-// 		mode.value = 'version'
-// 		dialog.value = true
-// 	}
-// }
-
 const handlePub = () => {
 	mode.value = 'publ'
-	dialog.value = true
-}
-
-const handleEditors = () => {
-	mode.value = 'editors'
 	dialog.value = true
 }
 
@@ -120,18 +108,18 @@ const tab = ref('setup')
 			.newgrid
 				.mygrid
 					label Версия:
-					.text-bold Базовая
+					.text-bold {{ myver.curVersion.ver}}
 					label Статус:
 					.text-bold
-						span(v-if='props.item.published == 1') Ожидает&nbsp;публикации
-						span(v-if='props.item.published == 0') Черновик
-						span(v-if='props.item.published == 2') Опубликовано
+						span(v-if='myver.curVersion.published == 1') Ожидает&nbsp;публикации
+						span(v-if='myver.curVersion.published == 0') Черновик
+						span(v-if='myver.curVersion.published == 2') Опубликовано
 
 				.mygrid
 					label Автор:
-					.val {{ props.item.author }}
+					.val {{ myver.curVersion.author }}
 					label Создано:
-					.val {{ props.item.created }}
+					.val {{ myver.curVersion.created }}
 
 					label Изменено:
 					.val
