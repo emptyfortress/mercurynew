@@ -5,6 +5,7 @@ import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useVersion } from '@/stores/version'
 import { useQuasar } from 'quasar'
 import AddDialog from '@/components/AddDialog.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const version = useVersion()
 const cols: QTableProps['columns'] = [
@@ -58,18 +59,33 @@ const cols: QTableProps['columns'] = [
 	},
 ]
 
+const ve = ref('version')
+
 const $q = useQuasar()
-const remove = (id: number) => {
-	version.remove(id)
-	version.versions[0].current = true
-	setTimeout(() => {
-		$q.notify({
-			icon: 'mdi-delete-outline',
-			color: 'negative',
-			message: 'Версия удалена',
-			position: 'top',
-		})
-	}, 500)
+
+const remove = (id: number, pub: number) => {
+	console.log(id, pub)
+
+	if (pub == 0) {
+		version.remove(id)
+		version.versions[0].current = true
+		setTimeout(() => {
+			$q.notify({
+				icon: 'mdi-delete-outline',
+				color: 'negative',
+				message: 'Версия удалена',
+				position: 'top',
+			})
+		}, 500)
+	}
+	if (pub == 2) {
+		ve.value = 'version'
+		fuck.value = true
+	}
+	if (pub == 1) {
+		ve.value = 'version1'
+		fuck.value = true
+	}
 }
 
 const currentVer = ref('')
@@ -89,6 +105,7 @@ const radio = computed({
 })
 
 const dialog = ref(false)
+const fuck = ref(false)
 
 const create = (e: any) => {
 	version.add(e.ver, e.descr)
@@ -125,12 +142,13 @@ q-table(flat
 	template(v-slot:body-cell-action='props')
 		q-td(:props='props')
 			.text-secondary
-				q-btn(flat round dense @click="add(props.row.ver)" size='md') 
+				q-btn(flat round dense @click.stop="add(props.row.ver)" size='md') 
 					TablerCopyPlus.ic
-				q-btn(flat round dense icon="mdi-delete-outline" size='md') 
+
+				q-btn(flat round dense icon="mdi-delete-outline" size='md' @click.stop) 
 					q-menu
 						q-list
-							q-item(clickable @click='remove(props.row.id)').pink
+							q-item(clickable @click='remove(props.row.id, props.row.published)' v-close-popup).pink
 								q-item-section Удалить
 
 	template(v-slot:body-cell-published='props')
@@ -139,6 +157,7 @@ q-table(flat
 			q-icon(v-if='props.row.published == 1' name="mdi-timer-sand" color="primary" size="16px")
 
 AddDialog(v-model="dialog" mode='version' :current='currentVer' @create="create")
+ConfirmDialog(v-model="fuck" :mode='ve')
 
 </template>
 

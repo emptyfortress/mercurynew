@@ -86,9 +86,9 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 					span(v-if='serv == "1"') Приложение будет передано админу для публикации.
 
 			ul(v-if='props.mode == "version"')
-				li Приложение опубликовано на сервере DV-prod и не может быть удалено.
+				li Приложение (версия) опубликовано на сервере DV-prod и не может быть удалено.
 			ul(v-if='props.mode == "version1"')
-				li Приложение ожидает публикации и не может быть удалено.
+				li Приложение (версия) ожидает публикации и не может быть удалено.
 
 			// ul(v-else)
 			// 	li Удаление группы одновременно удалит все приложения, входящие в данную группу.
@@ -101,6 +101,12 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 </template>
 
 <style scoped lang="scss">
+ul,
+li {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 0;
+}
 .info {
 	margin-top: 0.5rem;
 	// background: var(--dvblue);

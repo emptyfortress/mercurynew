@@ -39,7 +39,9 @@ const navigate1 = () => {
 	router.push('/process')
 }
 
-const version = ref(false)
+const openUrl = () => {
+	window.open('https://google.com', '_blank')
+}
 
 const move = { x: 20, opacity: 0 }
 const non = { x: 0, opacity: 1 }
@@ -130,8 +132,9 @@ const tab = ref('setup')
 							|Роза Львовна
 
 			.myrow
-				q-btn(outline color="primary" label='Мастер настройки' icon='mdi-magic-staff' @click.stop="navigate" ) 
-				q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click.stop="navigate1" ) 
+				q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" ) 
+				q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click="navigate1" ) 
+				q-btn(unelevated color="primary" icon='mdi-eye-check-outline' label='Проверить' @click="openUrl" ) 
 
 				q-btn(flat round dense icon="mdi-dots-horizontal" color="primary" @click.stop='') 
 					q-menu(anchor="bottom middle" self="top middle")
@@ -249,7 +252,7 @@ const tab = ref('setup')
 }
 .myrow {
 	display: grid;
-	grid-template-columns: auto auto 36px;
+	grid-template-columns: auto auto auto 36px;
 	// justify-content: center;
 	gap: 0.5rem;
 	margin-top: 1rem;
