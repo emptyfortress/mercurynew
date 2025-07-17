@@ -110,14 +110,6 @@ const tab = ref('setup')
 	q-tab-panels(v-model="tab" animated)
 		q-tab-panel(name='setup')
 			.newgrid
-				.mygrid
-					label Версия:
-					.text-bold {{ myver.curVersion.ver}}
-					label Статус:
-					.text-bold
-						span(v-if='myver.curVersion.published == 1') Ожидает&nbsp;публикации
-						span(v-if='myver.curVersion.published == 0') Черновик
-						span(v-if='myver.curVersion.published == 2') Опубликовано
 
 				.mygrid
 					label Автор:
@@ -132,6 +124,15 @@ const tab = ref('setup')
 							|Орлов П.С.
 						div(v-else style='font-weight: bold;')
 							|Роза Львовна
+
+				.mygrid
+					label Версия:
+					.text-bold {{ myver.curVersion.ver}}
+					label Статус:
+					.text-bold
+						span(v-if='myver.curVersion.published == 1') Ожидает&nbsp;публикации
+						span(v-if='myver.curVersion.published == 0') Черновик
+						span(v-if='myver.curVersion.published == 2') Опубликовано
 
 			.myrow
 				q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" ) 
