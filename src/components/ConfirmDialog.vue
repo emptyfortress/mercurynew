@@ -13,7 +13,7 @@ const props = defineProps({
 const modelValue = defineModel<boolean>()
 
 const server = useServers()
-const emit = defineEmits(['remove', 'publish'])
+const emit = defineEmits(['remove', 'publish', 'check'])
 
 const remove = () => {
 	emit('remove')
@@ -32,6 +32,15 @@ const publish = () => {
 		modelValue.value = false
 	}, 2000)
 	emit('publish', parseInt(serv.value))
+}
+
+const check = () => {
+	loading.value = true
+	setTimeout(() => {
+		loading.value = false
+		modelValue.value = false
+	}, 2000)
+	emit('check')
 }
 </script>
 
@@ -99,6 +108,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 
 		q-card-actions(align="right")
 			q-btn(flat color="primary" label="Отмена" v-close-popup) 
+			q-btn(v-if='props.mode == "check"' unelevated color="primary" :loading='loading' label="Продолжить" @click='check') 
 			q-btn(v-if='props.mode == "publ"' unelevated color="primary" :loading='loading' label="Опубликовать" @click='publish') 
 			q-btn(v-if='props.mode == "editors"' unelevated color="primary" label="Применить" v-close-popup) 
 </template>

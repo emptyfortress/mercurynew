@@ -84,6 +84,10 @@ const publish = (ver: number) => {
 	}, 3000)
 }
 
+const check = () => {
+	window.open('https://docsvision.com', '_blank')
+}
+
 const mode = ref('version')
 const dialog = ref(false)
 
@@ -153,14 +157,6 @@ const tab = ref('setup')
 
 		q-tab-panel(name='publ')
 			.newgrid
-				.mygrid
-					label Версия:
-					.text-bold {{ myver.curVersion.ver}}
-					label Статус:
-					.text-bold
-						span(v-if='myver.curVersion.published == 1') Ожидает&nbsp;публикации
-						span(v-if='myver.curVersion.published == 0') Черновик
-						span(v-if='myver.curVersion.published == 2') Опубликовано
 
 				.mygrid
 					label Автор:
@@ -176,13 +172,24 @@ const tab = ref('setup')
 						div(v-else style='font-weight: bold;')
 							|Роза Львовна
 
-					q-btn.full(color="primary" unelevated icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+
+				.mygrid
+					label Версия:
+					.text-bold {{ myver.curVersion.ver}}
+					label Статус:
+					.text-bold
+						span(v-if='myver.curVersion.published == 1') Ожидает&nbsp;публикации
+						span(v-if='myver.curVersion.published == 0') Черновик
+						span(v-if='myver.curVersion.published == 2') Опубликовано
+
+			.full
+				q-btn(color="primary" unelevated icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
 
 		q-tab-panel(name='vers')
 			VersionList
 
 			
-	ConfirmDialog(v-model="dialog" :mode='mode' @publish='publish')
+	ConfirmDialog(v-model="dialog" :mode='mode' @publish='publish' @check='check')
 </template>
 
 <style scoped lang="scss">
@@ -204,9 +211,7 @@ const tab = ref('setup')
 }
 
 .newgrid {
-	// margin-top: 1rem;
 	display: flex;
-	// justify-content: space-between;
 	align-items: start;
 	gap: 3rem;
 }
@@ -229,10 +234,11 @@ const tab = ref('setup')
 		align-items: center;
 		gap: 1rem;
 	}
-	.full {
-		grid-column: 1/-1;
-		margin-top: 1rem;
-	}
+}
+.full {
+	width: 100%;
+	text-align: center;
+	margin-top: 1rem;
 }
 .to {
 	color: $primary;
