@@ -40,7 +40,8 @@ const navigate1 = () => {
 }
 
 const openUrl = () => {
-	window.open('https://google.com', '_blank')
+	mode.value = 'check'
+	dialog.value = true
 }
 
 const move = { x: 20, opacity: 0 }
@@ -61,8 +62,9 @@ const duble = (item: App) => {
 const $q = useQuasar()
 
 const publish = (ver: number) => {
+	myver.curVersion.published = ver
+
 	setTimeout(() => {
-		props.item.published = ver
 		if (ver == 2) {
 			$q.notify({
 				icon: 'mdi-check-bold',
@@ -152,12 +154,12 @@ const tab = ref('setup')
 			.newgrid
 				.mygrid
 					label Версия:
-					.text-bold Базовая
+					.text-bold {{ myver.curVersion.ver}}
 					label Статус:
 					.text-bold
-						span(v-if='props.item.published == 1') Ожидает&nbsp;публикации
-						span(v-if='props.item.published == 0') Черновик
-						span(v-if='props.item.published == 2') Опубликовано
+						span(v-if='myver.curVersion.published == 1') Ожидает&nbsp;публикации
+						span(v-if='myver.curVersion.published == 0') Черновик
+						span(v-if='myver.curVersion.published == 2') Опубликовано
 
 				.mygrid
 					label Автор:

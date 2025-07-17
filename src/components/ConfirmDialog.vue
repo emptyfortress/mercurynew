@@ -31,7 +31,6 @@ const publish = () => {
 		loading.value = false
 		modelValue.value = false
 	}, 2000)
-	console.log(serv.value)
 	emit('publish', parseInt(serv.value))
 }
 </script>
@@ -45,9 +44,13 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 			.text-h6(v-if='props.mode == "version1"') Ожидает публикации
 			.text-h6(v-if='props.mode == "publ"') Публикация приложения
 			.text-h6(v-if='props.mode == "editors"') Редакторы приложения
-			// .text-h6(v-else) Вы уверены?
+			.text-h6(v-if='props.mode == "check"') Проверка приложения
 
 		q-card-section
+			div(v-if='props.mode == "check"')
+				div Для проверки версия приложения будет загружена на тестовый сервер. Это займет некоторое время.
+				div Сейчас вы будете перенаправлены на тестовую страницу.
+
 			div(v-if='props.mode == "editors"')
 				div Выберите, кто может редактировать и публиковать приложение.
 				q-list(dense).q-mt-md
