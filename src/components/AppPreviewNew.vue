@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter, useRoute } from 'vue-router'
-import { useQuasar } from 'quasar'
+import { useQuasar, date } from 'quasar'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import VersionList from '@/components/VersionList.vue'
 import { useVersion } from '@/stores/version'
@@ -32,11 +32,16 @@ const navigate = () => {
 }
 
 const navigate1 = () => {
-	const path = route.fullPath.toString()
-	myapps.setCurrentApp(props.item)
-	myapps.setGroupPath(group.value ? path : '')
-	myapps.setPath(group.value ? '' : path)
-	router.push('/process')
+	if (myver.curVersion.published > 0) {
+		mode.value = 'edit'
+		dialog.value = true
+	} else {
+		const path = route.fullPath.toString()
+		myapps.setCurrentApp(props.item)
+		myapps.setGroupPath(group.value ? path : '')
+		myapps.setPath(group.value ? '' : path)
+		router.push('/process')
+	}
 }
 
 const openUrl = () => {
@@ -84,8 +89,10 @@ const publish = (ver: number) => {
 	}, 3000)
 }
 
+const letcheck = ref(false)
 const check = () => {
-	window.open('https://docsvision.com', '_blank')
+	letcheck.value = true
+	// window.open('https://docsvision.com', '_blank')
 }
 
 const mode = ref('version')
@@ -97,6 +104,13 @@ const handlePub = () => {
 }
 
 const tab = ref('setup')
+
+const timeStamp = Date.now()
+
+const formattedString = computed(() => {
+	return date.formatDate(timeStamp, 'DD.MM.YY HH:mm')
+	// return date.formatDate(timeStamp, 'YYYY-MM-DDTHH:mm:ss.SSSZ')
+})
 </script>
 
 <template lang="pug">
@@ -121,13 +135,14 @@ const tab = ref('setup')
 					label Создано:
 					.val {{ myver.curVersion.created }}
 
-					label Изменено:
-					.val
-						div {{ props.item.modify }}
-						div(v-if='props.item.id !== "1"')
-							|Орлов П.С.
-						div(v-else style='font-weight: bold;')
-							|Роза Львовна
+					template(v-if='!!props.item.modify')
+						label Изменено:
+						.val
+							div {{ props.item.modify }}
+							div(v-if='props.item.id !== "1"')
+								|Орлов П.С.
+							div(v-else style='font-weight: bold;')
+								|Роза Львовна
 
 				.mygrid
 					label Версия:
@@ -155,6 +170,13 @@ const tab = ref('setup')
 								q-icon(name="mdi-delete-outline")
 							q-item-section Удалить приложение
 
+			.q-mt-md(v-if='letcheck')
+				q-item(clickable)
+					q-item-section Последняя&nbsp;проверка:
+					q-item-section {{myver.curVersion.ver}} -- {{formattedString}}
+					q-item-section
+						.link DV-test
+
 		q-tab-panel(name='publ')
 			.newgrid
 
@@ -164,13 +186,14 @@ const tab = ref('setup')
 					label Создано:
 					.val {{ props.item.created }}
 
-					label Изменено:
-					.val
-						div {{ props.item.modify }}
-						div(v-if='props.item.id !== "1"')
-							|Орлов П.С.
-						div(v-else style='font-weight: bold;')
-							|Роза Львовна
+					template(v-if='!!props.item.modify')
+						label Изменено:
+						.val
+							div {{ props.item.modify }}
+							div(v-if='props.item.id !== "1"')
+								|Орлов П.С.
+							div(v-else style='font-weight: bold;')
+								|Роза Львовна
 
 
 				.mygrid
@@ -183,7 +206,14 @@ const tab = ref('setup')
 						span(v-if='myver.curVersion.published == 2') Опубликовано
 
 			.full
-				q-btn(color="primary" unelevated icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+				q-btn(color="primary" unelevated :disable="myver.curVersion.published > 0" icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+
+			.q-mt-md(v-if='myver.curVersion.published == 2')
+				q-item(clickable)
+					q-item-section Последняя&nbsp;публикация:
+					q-item-section {{myver.curVersion.ver}} -- {{formattedString}}
+					q-item-section
+						.link DV-prod
 
 		q-tab-panel(name='vers')
 			VersionList
@@ -264,7 +294,7 @@ const tab = ref('setup')
 	grid-template-columns: auto auto auto 36px;
 	// justify-content: center;
 	gap: 0.5rem;
-	margin-top: 1rem;
+	margin-top: 2rem;
 }
 
 .publ {

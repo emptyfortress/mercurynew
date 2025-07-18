@@ -26,7 +26,7 @@ const cols: QTableProps['columns'] = [
 		label: 'Версия',
 		align: 'left',
 		field: 'ver',
-		sortable: true,
+		sortable: false,
 	},
 	// {
 	// 	name: 'author',
@@ -50,7 +50,7 @@ const cols: QTableProps['columns'] = [
 		label: 'Статус',
 		align: 'center',
 		field: 'published',
-		sortable: true,
+		sortable: false,
 	},
 	{
 		name: 'action',
@@ -58,7 +58,7 @@ const cols: QTableProps['columns'] = [
 		label: '',
 		align: 'left',
 		field: 'action',
-		sortable: true,
+		sortable: false,
 	},
 ]
 

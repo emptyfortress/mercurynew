@@ -43,7 +43,7 @@ export const useApps = defineStore('apps', () => {
 			published: 2,
 			author: 'Орлов П.С.',
 			created: '22.10.24 14:00',
-			modify: '24.10.24 15:15',
+			// modify: '24.10.24 15:15',
 			uploaded: '24.10.24 15:17',
 			group: 1,
 			list: [],

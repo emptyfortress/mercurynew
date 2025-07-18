@@ -1,5 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { date } from 'quasar'
+
+const timeStamp = Date.now()
+
+const formattedString = computed(() => {
+	return date.formatDate(timeStamp, 'DD.MM.YY HH:mm')
+	// return date.formatDate(timeStamp, 'YYYY-MM-DDTHH:mm:ss.SSSZ')
+})
 
 export const useVersion = defineStore('version', () => {
 	const versions = ref([
@@ -8,6 +16,7 @@ export const useVersion = defineStore('version', () => {
 			ver: 'Версия 3',
 			author: 'Орлов П.С.',
 			created: '23.07.25 17:08',
+			modified: '23.07.25 18:05',
 			descr: 'Настройка поисковых запросов',
 			published: 0,
 			current: true,
@@ -17,6 +26,7 @@ export const useVersion = defineStore('version', () => {
 			ver: 'Роза 1',
 			author: 'Роза Львовна',
 			created: '21.07.25 12:53',
+			modified: '22.07.25 18:05',
 			descr: 'Добавлены роли и папки',
 			published: 1,
 			current: false,
@@ -26,6 +36,7 @@ export const useVersion = defineStore('version', () => {
 			ver: 'Базовая',
 			author: 'Орлов П.С.',
 			created: '11.06.25 14:25',
+			modified: '12.06.25 18:02',
 			descr: 'Стартовая версия приложения',
 			published: 2,
 			current: false,
@@ -38,7 +49,8 @@ export const useVersion = defineStore('version', () => {
 			ver: e,
 			descr: d,
 			author: 'Орлов П.С.',
-			created: '23.07.25',
+			created: formattedString.value,
+			modified: '',
 			published: 0,
 			current: false,
 		})

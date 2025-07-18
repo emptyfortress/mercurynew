@@ -58,8 +58,8 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 
 		q-card-section
 			div(v-if='props.mode == "edit"')
-				div Приложение опубликовано и будет открыто в режиме просмотра.
-				div Для внесения изменений создайте новую версию и опубликуйте ее.
+				div Версия опубликована и будет открыта в режиме просмотра.
+				div Для внесения изменений создайте новую версию.
 
 			div(v-if='props.mode == "check"')
 				div Для проверки версия приложения будет загружена на тестовый сервер. Это займет некоторое время.
@@ -82,25 +82,23 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 					q-btn(flat round dense color="primary" icon='mdi-plus-circle-outline') 
 
 			div(v-if='props.mode == "publ"' style="width: 400px;")
-				div Выберите сервер для публикации:
+				div Выберите способ публикации:
 				.column
 					q-list
 						q-item(tag='label' clickable dense)
 							q-item-section(side)
 								q-radio(v-model="serv" val="2")
-							q-item-section DV-test
-							q-item-section(side) тестовый сервер
+							q-item-section Опубликовать немедленно на сервере DV-prod
 
 						q-item(tag='label' clickable dense)
 							q-item-section(side)
 								q-radio(v-model="serv" val="1")
-							q-item-section DV-prod
-							q-item-section(side) продуктовый сервер
+							q-item-section Передать версию админу для публикации
 
-				.info
-					q-icon(name="mdi-hand-pointing-right" color="negative" size="20px")
-					span(v-if='serv == "2"') Приложение будет опубликовано немедленно.
-					span(v-if='serv == "1"') Приложение будет передано админу для публикации.
+				// .info
+				// 	q-icon(name="mdi-hand-pointing-right" color="negative" size="20px")
+				// 	span(v-if='serv == "2"') Приложение будет опубликовано немедленно.
+				// 	span(v-if='serv == "1"') Приложение будет передано админу для публикации.
 
 			ul(v-if='props.mode == "version"')
 				li Приложение (версия) опубликовано на сервере DV-prod и не может быть удалено.
