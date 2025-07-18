@@ -359,7 +359,7 @@ ConfirmDialog(v-model="dialog" :mode='mode')
 
 .parent.end .it.active {
 	width: 680px;
-	min-height: 380px;
+	min-height: 450px;
 	padding: 0;
 	cursor: default;
 	.ttt {

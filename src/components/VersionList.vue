@@ -6,17 +6,20 @@ import { useVersion } from '@/stores/version'
 import { useQuasar } from 'quasar'
 import AddDialog from '@/components/AddDialog.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const version = useVersion()
 const cols: QTableProps['columns'] = [
-	{
-		name: 'current',
-		required: true,
-		label: 'Текущая',
-		align: 'center',
-		field: 'current',
-		sortable: true,
-	},
+	// {
+	// 	name: 'current',
+	// 	required: true,
+	// 	label: 'Текущая',
+	// 	align: 'center',
+	// 	field: 'current',
+	// 	sortable: true,
+	// },
 	{
 		name: 'ver',
 		required: true,
@@ -25,14 +28,14 @@ const cols: QTableProps['columns'] = [
 		field: 'ver',
 		sortable: true,
 	},
-	{
-		name: 'author',
-		required: true,
-		label: 'Автор',
-		align: 'left',
-		field: 'author',
-		sortable: true,
-	},
+	// {
+	// 	name: 'author',
+	// 	required: true,
+	// 	label: 'Автор',
+	// 	align: 'left',
+	// 	field: 'author',
+	// 	sortable: true,
+	// },
 	{
 		name: 'created',
 		required: true,
@@ -44,7 +47,7 @@ const cols: QTableProps['columns'] = [
 	{
 		name: 'published',
 		required: true,
-		label: 'Опубликовано',
+		label: 'Статус',
 		align: 'center',
 		field: 'published',
 		sortable: true,
@@ -80,11 +83,11 @@ const remove = (id: number, pub: number) => {
 	}
 	if (pub == 2) {
 		ve.value = 'version'
-		fuck.value = true
+		dialog1.value = true
 	}
 	if (pub == 1) {
 		ve.value = 'version1'
-		fuck.value = true
+		dialog1.value = true
 	}
 }
 
@@ -105,7 +108,7 @@ const radio = computed({
 })
 
 const dialog = ref(false)
-const fuck = ref(false)
+const dialog1 = ref(false)
 
 const create = (e: any) => {
 	version.add(e.ver, e.descr)
@@ -117,6 +120,13 @@ const create = (e: any) => {
 			position: 'top',
 		})
 	}, 500)
+}
+
+const edit = (num: number) => {
+	if (num > 0) {
+		ve.value = 'edit'
+		dialog1.value = true
+	} else router.push('/process')
 }
 </script>
 
@@ -130,19 +140,27 @@ q-table(flat
 	hide-bottom
 	@row-click="(evt, row) => radio = row.id"
 )
-	template(v-slot:body-cell-current='props')
+
+	// template(v-slot:body-cell-current='props')
+	// 	q-td(:props='props')
+	// 		q-radio(
+	//        dense
+	//        :model-value="radio"
+	//        :val="props.row.id"
+	//        @update:model-value="radio = $event"
+	//      )
+
+	template(v-slot:body-cell-ver='props')
 		q-td(:props='props')
-			q-radio(
-        dense
-        :model-value="radio"
-        :val="props.row.id"
-        @update:model-value="radio = $event"
-      )
+			.text-bold {{ props.row.ver }}
+			.caption {{ props.row.descr }}
 
 	template(v-slot:body-cell-action='props')
-		q-td(:props='props')
+		q-td.text-right(:props='props')
 			.text-secondary
-				q-btn(flat round dense @click.stop="add(props.row.ver)" size='md') 
+				q-btn(flat round dense size='md' icon='mdi-pencil' @click='edit(props.row.published)') 
+
+				q-btn(flat round dense @click="add(props.row.ver)" size='md') 
 					TablerCopyPlus.ic
 
 				q-btn(flat round dense icon="mdi-delete-outline" size='md' @click.stop) 
@@ -153,11 +171,16 @@ q-table(flat
 
 	template(v-slot:body-cell-published='props')
 		q-td(:props='props')
-			q-icon(v-if='props.row.published == 2' name="mdi-check-bold" color="primary" size="16px")
-			q-icon(v-if='props.row.published == 1' name="mdi-timer-sand" color="primary" size="16px")
+			.caption(v-if='props.row.published == 0') Черновик
+			.caption(v-if='props.row.published == 2' )
+				q-icon(name="mdi-check-bold" color="primary" size="18px")
+				.link Опубликовано
+			.caption(v-if='props.row.published == 1' )
+				q-icon(name="mdi-timer-sand" color="primary" size="18px")
+				div Ожидает публикации
 
 AddDialog(v-model="dialog" mode='version' :current='currentVer' @create="create")
-ConfirmDialog(v-model="fuck" :mode='ve')
+ConfirmDialog(v-model="dialog1" :mode='ve')
 
 </template>
 
@@ -235,5 +258,9 @@ ConfirmDialog(v-model="fuck" :mode='ve')
 	&:hover {
 		text-decoration: none;
 	}
+}
+.caption {
+	font-size: 0.8rem;
+	color: #777;
 }
 </style>

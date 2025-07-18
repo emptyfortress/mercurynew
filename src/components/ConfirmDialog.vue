@@ -54,8 +54,13 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 			.text-h6(v-if='props.mode == "publ"') Публикация приложения
 			.text-h6(v-if='props.mode == "editors"') Редакторы приложения
 			.text-h6(v-if='props.mode == "check"') Проверка приложения
+			.text-h6(v-if='props.mode == "edit"') Просмотр приложения
 
 		q-card-section
+			div(v-if='props.mode == "edit"')
+				div Приложение опубликовано и будет открыто в режиме просмотра.
+				div Для внесения изменений создайте новую версию и опубликуйте ее.
+
 			div(v-if='props.mode == "check"')
 				div Для проверки версия приложения будет загружена на тестовый сервер. Это займет некоторое время.
 				div Сейчас вы будете перенаправлены на тестовую страницу.
@@ -108,6 +113,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 
 		q-card-actions(align="right")
 			q-btn(flat color="primary" label="Отмена" v-close-popup) 
+			q-btn(v-if='props.mode == "edit"' unelevated color="primary" label="Открыть на просмотр" @click='$router.push("/process")') 
 			q-btn(v-if='props.mode == "check"' unelevated color="primary" :loading='loading' label="Продолжить" @click='check') 
 			q-btn(v-if='props.mode == "publ"' unelevated color="primary" :loading='loading' label="Опубликовать" @click='publish') 
 			q-btn(v-if='props.mode == "editors"' unelevated color="primary" label="Применить" v-close-popup) 
