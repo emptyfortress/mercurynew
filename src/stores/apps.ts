@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, markRaw } from 'vue'
+import { ref, computed, markRaw } from 'vue'
 import IconTravel from '@/components/icons/list/IconTravel.vue'
 import IconBeach from '@/components/icons/list/IconBeach.vue'
 import IconLetter from '@/components/icons/list/IconLetter.vue'
@@ -33,6 +33,18 @@ export const useApps = defineStore('apps', () => {
 			group: 1,
 			list: [],
 			pic: IconTravel1,
+			versions: [
+				{
+					id: 0,
+					label: 'Базовая версия',
+					value: 'Базовая версия',
+					descr: 'Стартовая версия приложения',
+					created: '22.10.24 14:00',
+					modified: '',
+					published: 1,
+					current: true,
+				},
+			],
 		},
 		{
 			id: '2',
@@ -48,6 +60,18 @@ export const useApps = defineStore('apps', () => {
 			group: 1,
 			list: [],
 			pic: IconBeach1,
+			versions: [
+				{
+					id: 0,
+					label: 'Базовая версия',
+					value: 'Базовая версия',
+					descr: 'Стартовая версия приложения',
+					created: '22.10.24 14:00',
+					modified: '',
+					published: 0,
+					current: true,
+				},
+			],
 		},
 		{
 			id: '3',
@@ -61,6 +85,7 @@ export const useApps = defineStore('apps', () => {
 			modify: '24.10.24 15:15',
 			uploaded: '24.10.24 15:17',
 			group: 2,
+			versions: [],
 			list: [
 				{
 					id: '6',
@@ -76,6 +101,18 @@ export const useApps = defineStore('apps', () => {
 					group: 1,
 					list: [],
 					pic: IconPrinter1,
+					versions: [
+						{
+							id: 0,
+							label: 'Базовая версия',
+							value: 'Базовая версия',
+							descr: 'Стартовая версия приложения',
+							created: '22.10.24 14:00',
+							modified: '',
+							published: 0,
+							current: true,
+						},
+					],
 				},
 				{
 					id: '7',
@@ -91,6 +128,18 @@ export const useApps = defineStore('apps', () => {
 					group: 1,
 					list: [],
 					pic: IconMicrophone1,
+					versions: [
+						{
+							id: 0,
+							label: 'Базовая версия',
+							value: 'Базовая версия',
+							descr: 'Стартовая версия приложения',
+							created: '22.10.24 14:00',
+							modified: '',
+							published: 0,
+							current: true,
+						},
+					],
 				},
 				{
 					id: '8',
@@ -106,6 +155,18 @@ export const useApps = defineStore('apps', () => {
 					group: 1,
 					list: [],
 					pic: IconPresentation1,
+					versions: [
+						{
+							id: 0,
+							label: 'Базовая версия',
+							value: 'Базовая версия',
+							descr: 'Стартовая версия приложения',
+							created: '22.10.24 14:00',
+							modified: '',
+							published: 0,
+							current: true,
+						},
+					],
 				},
 			],
 		},
@@ -123,6 +184,18 @@ export const useApps = defineStore('apps', () => {
 			group: 1,
 			list: [],
 			pic: IconLetter1,
+			versions: [
+				{
+					id: 0,
+					label: 'Базовая версия',
+					value: 'Базовая версия',
+					descr: 'Стартовая версия приложения',
+					created: '22.10.24 14:00',
+					modified: '',
+					published: 0,
+					current: true,
+				},
+			],
 		},
 		{
 			id: '5',
@@ -138,6 +211,18 @@ export const useApps = defineStore('apps', () => {
 			group: 1,
 			list: [],
 			pic: IconLetter1,
+			versions: [
+				{
+					id: 0,
+					label: 'Базовая версия',
+					value: 'Базовая версия',
+					descr: 'Стартовая версия приложения',
+					created: '22.10.24 14:00',
+					modified: '',
+					published: 0,
+					current: true,
+				},
+			],
 		},
 	])
 
@@ -175,12 +260,39 @@ export const useApps = defineStore('apps', () => {
 		groupDrag.value = e
 	}
 
+	const curVersion = (app: App) => {
+		let tmp = app.versions.find((el) => el.current)
+		return tmp ? tmp : app.versions[0]
+	}
+
+	const setCurrentVersion = (versions: Ver[], id: number) => {
+		versions.forEach((v) => {
+			v.current = v.id === id
+		})
+	}
+
+	const removeVersion = (list: Ver[], id: number) => {
+		let tmp = list.findIndex((el) => el.id == id)
+		if (tmp > -1) {
+			list.splice(tmp, 1)
+		}
+	}
+
+	const addVersion = (list: Ver[], e: any) => {
+		list.unshift(e)
+	}
+
 	return {
 		apps,
 		createApp,
 
 		currentApp,
 		setCurrentApp,
+
+		curVersion,
+		setCurrentVersion,
+		removeVersion,
+		addVersion,
 
 		grouping,
 		setGrouping,

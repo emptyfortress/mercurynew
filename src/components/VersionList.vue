@@ -2,24 +2,21 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import type { QTableProps } from 'quasar'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
-import { useVersion } from '@/stores/version'
 import { useQuasar } from 'quasar'
 import AddDialog from '@/components/AddDialog.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import { useRouter } from 'vue-router'
+import { useApps } from '@/stores/apps'
 
 const router = useRouter()
 
-const version = useVersion()
+const props = defineProps<{
+	versions: Ver[]
+}>()
+
+const myapps = useApps()
+
 const cols: QTableProps['columns'] = [
-	// {
-	// 	name: 'current',
-	// 	required: true,
-	// 	label: 'Текущая',
-	// 	align: 'center',
-	// 	field: 'current',
-	// 	sortable: true,
-	// },
 	{
 		name: 'ver',
 		required: true,
@@ -67,11 +64,9 @@ const ve = ref('version')
 const $q = useQuasar()
 
 const remove = (id: number, pub: number) => {
-	console.log(id, pub)
-
 	if (pub == 0) {
-		version.remove(id)
-		version.versions[0].current = true
+		myapps.removeVersion(props.versions, id)
+		props.versions[0].current = true
 		setTimeout(() => {
 			$q.notify({
 				icon: 'mdi-delete-outline',
@@ -81,10 +76,12 @@ const remove = (id: number, pub: number) => {
 			})
 		}, 500)
 	}
+
 	if (pub == 2) {
 		ve.value = 'version'
 		dialog1.value = true
 	}
+
 	if (pub == 1) {
 		ve.value = 'version1'
 		dialog1.value = true
@@ -98,20 +95,12 @@ const add = (ver: string) => {
 	dialog.value = !dialog.value
 }
 
-const radio = computed({
-	get: () => version.versions.find((v) => v.current)?.id ?? null,
-	set: (id) => {
-		if (id !== null) {
-			version.setCurrent(id)
-		}
-	},
-})
-
 const dialog = ref(false)
 const dialog1 = ref(false)
 
 const create = (e: any) => {
-	version.add(e.ver, e.descr)
+	props.versions.map((el) => (el.current = false))
+	myapps.addVersion(props.versions, e)
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
@@ -133,34 +122,26 @@ const edit = (num: number) => {
 <template lang="pug">
 q-table(flat
 	:columns="cols"
-	:rows='version.versions'
+	:rows='props.versions'
 	row-key="id"
 	color="primary"
 	dense
 	hide-bottom
-	@row-click="(evt, row) => radio = row.id"
 )
-
-	// template(v-slot:body-cell-current='props')
-	// 	q-td(:props='props')
-	// 		q-radio(
-	//        dense
-	//        :model-value="radio"
-	//        :val="props.row.id"
-	//        @update:model-value="radio = $event"
-	//      )
 
 	template(v-slot:body-cell-ver='props')
 		q-td(:props='props')
-			.text-bold {{ props.row.ver }}
+			.text-bold {{ props.row.label }}
 			.caption {{ props.row.descr }}
 
 	template(v-slot:body-cell-action='props')
 		q-td.text-right(:props='props')
 			.text-secondary
-				q-btn(flat round dense size='md' icon='mdi-pencil' @click='edit(props.row.published)') 
+				q-btn(flat round dense size='md' @click='edit(props.row.published)') 
+					q-icon(v-if='props.row.published == 0' name="mdi-pencil")
+					q-icon(v-else name="mdi-eye")
 
-				q-btn(flat round dense @click="add(props.row.ver)" size='md') 
+				q-btn(flat round dense @click="add(props.row.label)" size='md') 
 					TablerCopyPlus.ic
 
 				q-btn(flat round dense icon="mdi-delete-outline" size='md' @click.stop) 

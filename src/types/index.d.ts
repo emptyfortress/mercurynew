@@ -12,6 +12,18 @@ interface App {
 	published: number
 	list: App[]
 	pic?: any
+	versions: Ver[]
+}
+
+interface Ver {
+	id: number
+	label: string
+	value: string
+	created: string
+	modified: string
+	published: number
+	descr: string
+	current: boolean
 }
 
 type Control = {

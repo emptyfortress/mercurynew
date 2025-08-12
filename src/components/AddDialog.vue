@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// import { ref, onUpdated } from 'vue'
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, computed, nextTick } from 'vue'
+import { date } from 'quasar'
 
 const modelValue = defineModel<boolean>()
 
@@ -17,16 +17,21 @@ const emit = defineEmits(['create'])
 const model = ref('')
 const model1 = ref('')
 
+const formattedString = computed(() => {
+	return date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+	// return date.formatDate(timeStamp, 'YYYY-MM-DDTHH:mm:ss.SSSZ')
+})
+
 const submitForm = () => {
 	emit('create', {
 		id: +Date.now(),
-		ver: model.value,
+		label: model.value,
 		descr: model1.value,
 		author: 'Орлов П.С.',
-		created: '11.06.25',
-		val: +Date.now(),
-		server: '',
+		created: formattedString.value,
+		modified: '',
 		published: 0,
+		current: true,
 	})
 	input.value.resetValidation()
 }

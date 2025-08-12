@@ -67,7 +67,8 @@ const duble = (item: App) => {
 const $q = useQuasar()
 
 const publish = (ver: number) => {
-	myver.curVersion.published = ver
+	myapps.curVersion(props.item).published = ver
+	// myver.curVersion.published = ver
 
 	setTimeout(() => {
 		if (ver == 2) {
@@ -90,8 +91,10 @@ const publish = (ver: number) => {
 }
 
 const letcheck = ref(false)
+
 const check = () => {
 	letcheck.value = true
+	timeStamp.value = Date.now()
 	// window.open('https://docsvision.com', '_blank')
 }
 
@@ -105,11 +108,10 @@ const handlePub = () => {
 
 const tab = ref('setup')
 
-const timeStamp = Date.now()
+const timeStamp = ref(Date.now())
 
 const formattedString = computed(() => {
-	return date.formatDate(timeStamp, 'DD.MM.YY HH:mm')
-	// return date.formatDate(timeStamp, 'YYYY-MM-DDTHH:mm:ss.SSSZ')
+	return date.formatDate(timeStamp.value, 'DD.MM.YY HH:mm')
 })
 </script>
 
@@ -146,12 +148,12 @@ const formattedString = computed(() => {
 
 				.mygrid
 					label Версия:
-					.text-bold {{ myver.curVersion.ver}}
+					.text-bold {{ myapps.curVersion(props.item).label }}
 					label Статус:
 					.text-bold
-						span(v-if='myver.curVersion.published == 1') Ожидает&nbsp;публикации
-						span(v-if='myver.curVersion.published == 0') Черновик
-						span(v-if='myver.curVersion.published == 2') Опубликовано
+						span(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
+						span(v-if='myapps.curVersion(props.item).published == 0') Черновик
+						span(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
 
 			.myrow
 				q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" ) 
@@ -171,11 +173,10 @@ const formattedString = computed(() => {
 							q-item-section Удалить приложение
 
 			.q-mt-md(v-if='letcheck')
-				q-item(clickable)
-					q-item-section Последняя&nbsp;проверка:
-					q-item-section {{myver.curVersion.ver}} -- {{formattedString}}
-					q-item-section
-						.link DV-test
+				.check
+					div Последняя&nbsp;проверка:
+					div {{myapps.curVersion(props.item).label}}&nbsp;--&nbsp;{{formattedString}}
+					.link DV-test
 
 		q-tab-panel(name='publ')
 			.newgrid
@@ -198,25 +199,23 @@ const formattedString = computed(() => {
 
 				.mygrid
 					label Версия:
-					.text-bold {{ myver.curVersion.ver}}
+					.text-bold {{ myapps.curVersion(props.item).label }}
 					label Статус:
 					.text-bold
-						span(v-if='myver.curVersion.published == 1') Ожидает&nbsp;публикации
-						span(v-if='myver.curVersion.published == 0') Черновик
-						span(v-if='myver.curVersion.published == 2') Опубликовано
+						span(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
+						span(v-if='myapps.curVersion(props.item).published == 0') Черновик
+						span(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
 
 			.full
-				q-btn(color="primary" unelevated :disable="myver.curVersion.published > 0" icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+				q-btn(color="primary" unelevated :disable="myapps.curVersion(props.item).published > 0" icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
 
-			.q-mt-md(v-if='myver.curVersion.published == 2')
-				q-item(clickable)
-					q-item-section Последняя&nbsp;публикация:
-					q-item-section {{myver.curVersion.ver}} -- {{formattedString}}
-					q-item-section
-						.link DV-prod
+			.check(v-if='myapps.curVersion(props.item).published == 2')
+					div Последняя&nbsp;публикация:
+					div {{myapps.curVersion(props.item).label}} -- {{formattedString}}
+					.link DV-prod
 
 		q-tab-panel(name='vers')
-			VersionList
+			VersionList(:versions="props.item.versions")
 
 			
 	ConfirmDialog(v-model="dialog" :mode='mode' @publish='publish' @check='check')
@@ -238,6 +237,7 @@ const formattedString = computed(() => {
 .link {
 	color: $primary;
 	text-decoration: underline;
+	cursor: pointer;
 }
 
 .newgrid {
@@ -305,5 +305,10 @@ const formattedString = computed(() => {
 	justify-items: start;
 	align-items: center;
 	column-gap: 2rem;
+}
+.check {
+	margin-top: 2rem;
+	display: flex;
+	gap: 1rem;
 }
 </style>
