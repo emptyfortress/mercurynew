@@ -11,6 +11,7 @@ import { uid, useQuasar } from 'quasar'
 import IconApp from '@/components/icons/IconApp.vue'
 import Empty from '@/components/Empty.vue'
 import { useKeyModifier } from '@vueuse/core'
+// import { versions } from 'process'
 
 const IconApp1 = markRaw(IconApp)
 const myapps = useApps()
@@ -126,6 +127,19 @@ const create = (e: any) => {
 		group: e.group,
 		list: [],
 		pic: e.pic,
+		versions: [
+			{
+				id: 0,
+				label: 'Базовая версия',
+				value: 'Базовая версия',
+				descr: 'Стартовая версия приложения',
+				created: '22.10.24 14:00',
+				author: 'Орлов П.С.',
+				modified: '--',
+				published: 1,
+				current: true,
+			},
+		],
 	}
 	tapes.value?.unshift(tmp)
 
@@ -148,23 +162,36 @@ const create = (e: any) => {
 	}
 }
 
-const duble = (e: any) => {
-	let tmp = {
-		id: uid(),
-		label: 'Копия приложения ' + e.label,
-		descr: e.description,
-		expand: false,
-		over: false,
-		version: '1',
-		author: 'Орлов П.С.',
-		created: '22.09.2022',
-		published: 0,
-		group: e.group,
-		list: [],
-		pic: e.pic,
-	}
-	tapes.value?.unshift(tmp)
-}
+// const duble = (e: any) => {
+// 	console.log(e)
+// 	let tmp = {
+// 		id: uid(),
+// 		label: 'Копия приложения ' + e.label,
+// 		descr: e.description,
+// 		expand: false,
+// 		over: false,
+// 		version: '1',
+// 		author: 'Орлов П.С.',
+// 		created: '22.09.2022',
+// 		published: 0,
+// 		group: e.group,
+// 		list: [],
+// 		pic: e.pic,
+// 		versions: [
+// 			{
+// 				id: 0,
+// 				label: 'Базовая версия',
+// 				value: 'Базовая версия',
+// 				descr: 'Стартовая версия приложения',
+// 				created: '22.10.24 14:00',
+// 				modified: '',
+// 				published: 1,
+// 				current: true,
+// 			},
+// 		],
+// 	}
+// 	tapes.value?.unshift(tmp)
+// }
 
 const duple = ref(false)
 const onDragEnterPlus = () => {
@@ -177,8 +204,8 @@ const onDropPlus = () => {
 	duple.value = false
 	let tmp = {
 		id: uid(),
-		label: 'Копия приложения',
-		descr: 'Копия описания',
+		label: dragged.value!.label + '-copy',
+		descr: dragged.value!.descr,
 		expand: false,
 		over: false,
 		version: '1',
@@ -188,9 +215,10 @@ const onDropPlus = () => {
 		group: 1,
 		list: [],
 		pic: IconApp1,
+		versions: [] as Ver[],
 	}
+	tmp.versions.push(dragged.value!.versions[0])
 	tapes.value?.unshift(tmp)
-	// tapes.value?.push(tmp)
 
 	setTimeout(() => {
 		$q.notify({
@@ -208,7 +236,7 @@ const row1 = computed(() => {
 	return tapes.value.length + 1
 })
 
-const createGroup = (one: App, two: App) => {
+const createGroup = (one: any, two: any) => {
 	const tmp = {
 		id: uid(),
 		label: one.label,
@@ -221,6 +249,7 @@ const createGroup = (one: App, two: App) => {
 		group: 1,
 		pic: one.pic,
 		list: [],
+		versions: one.versions,
 	}
 	const tmp1 = {
 		id: uid(),
@@ -234,6 +263,7 @@ const createGroup = (one: App, two: App) => {
 		group: 1,
 		pic: two.pic,
 		list: [],
+		versions: two.versions,
 	}
 
 	const ind = tapes.value.findIndex((el) => el.id == two.id)
@@ -264,6 +294,11 @@ const action = () => {
 const calcStyle = computed(() => {
 	return myapps.groupDrag ? 'outline: 3px dotted #143c5f;' : ''
 })
+
+const dragged = ref<App | null>(null)
+const startDrag = (e: any) => {
+	dragged.value = e
+}
 </script>
 
 <template lang="pug">
@@ -295,7 +330,7 @@ q-page(padding, @click='action')
 			v-model:activeItem="activeItem",
 			@navigate="navigate"
 			@createGroup='createGroup'
-			@duplicate='duble'
+			@drag='startDrag'
 			:shift="shift"
 		)
 

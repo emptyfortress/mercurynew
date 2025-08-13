@@ -41,6 +41,7 @@ const navigate1 = () => {
 		myapps.setGroupPath(group.value ? path : '')
 		myapps.setPath(group.value ? '' : path)
 		router.push('/process')
+		myapps.curVersion(props.item).modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
 	}
 }
 
@@ -90,12 +91,14 @@ const publish = (ver: number) => {
 	}, 3000)
 }
 
-const letcheck = ref(false)
+const letcheck = computed(() => {
+	return myapps.curVersion(props.item).tested == undefined ? false : true
+})
 
 const check = () => {
-	letcheck.value = true
 	timeStamp.value = Date.now()
-	// window.open('https://docsvision.com', '_blank')
+	myapps.curVersion(props.item).tested = formattedString.value
+	letcheck.value = true
 }
 
 const mode = ref('version')
@@ -122,29 +125,20 @@ const formattedString = computed(() => {
 		q-popup-edit(v-model="props.item.descr" auto-save v-slot="scope")
 			q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
+	.mygrid.q-mt-sm
+		label Автор приложения:
+		.val {{ props.item.author}}
+		label Создано:
+		.val {{ props.item.created}}
+
 	q-tabs.q-mt-md(v-model="tab" align="left" dense active-color='primary')
-		q-tab(name='setup' label='Настройка')
-		q-tab(name='publ' label='Публикация')
-		q-tab(name='vers' label='Версии')
+		q-tab(name='setup' label='Настройка' @click.stop)
+		q-tab(name='publ' label='Публикация' @click.stop)
+		q-tab(name='vers' label='Версии' @click.stop)
 
 	q-tab-panels(v-model="tab" animated)
 		q-tab-panel(name='setup')
 			.newgrid
-
-				.mygrid
-					label Автор:
-					.val {{ myver.curVersion.author }}
-					label Создано:
-					.val {{ myver.curVersion.created }}
-
-					template(v-if='!!props.item.modify')
-						label Изменено:
-						.val
-							div {{ props.item.modify }}
-							div(v-if='props.item.id !== "1"')
-								|Орлов П.С.
-							div(v-else style='font-weight: bold;')
-								|Роза Львовна
 
 				.mygrid
 					label Версия:
@@ -154,6 +148,20 @@ const formattedString = computed(() => {
 						span(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
 						span(v-if='myapps.curVersion(props.item).published == 0') Черновик
 						span(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
+
+				.mygrid
+					label Версию создал:
+					.val {{ myapps.curVersion(props.item).author }}
+
+					label Изменено:
+					.val
+						div {{ myapps.curVersion(props.item).modified }}
+						template(v-if='myapps.curVersion(props.item).modified !== "--"')
+							div(v-if='props.item.id !== "1"')
+								|Орлов П.С.
+							div(v-else style='font-weight: bold;')
+								|Роза Львовна
+
 
 			.myrow
 				q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" ) 
@@ -175,27 +183,11 @@ const formattedString = computed(() => {
 			.q-mt-md(v-if='letcheck')
 				.check
 					div Последняя&nbsp;проверка:
-					div {{myapps.curVersion(props.item).label}}&nbsp;--&nbsp;{{formattedString}}
+					div {{myapps.curVersion(props.item).label}}&nbsp;--&nbsp;{{myapps.curVersion(props.item).tested}}
 					.link DV-test
 
 		q-tab-panel(name='publ')
 			.newgrid
-
-				.mygrid
-					label Автор:
-					.val {{ props.item.author }}
-					label Создано:
-					.val {{ props.item.created }}
-
-					template(v-if='!!props.item.modify')
-						label Изменено:
-						.val
-							div {{ props.item.modify }}
-							div(v-if='props.item.id !== "1"')
-								|Орлов П.С.
-							div(v-else style='font-weight: bold;')
-								|Роза Львовна
-
 
 				.mygrid
 					label Версия:
@@ -205,6 +197,21 @@ const formattedString = computed(() => {
 						span(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
 						span(v-if='myapps.curVersion(props.item).published == 0') Черновик
 						span(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
+
+				.mygrid
+					label Версию создал:
+					.val {{ myapps.curVersion(props.item).author }}
+
+					label Изменено:
+					.val
+						div {{ myapps.curVersion(props.item).modified }}
+						template(v-if='myapps.curVersion(props.item).modified !== "--"')
+							div(v-if='props.item.id !== "1"')
+								|Орлов П.С.
+							div(v-else style='font-weight: bold;')
+								|Роза Львовна
+
+
 
 			.full
 				q-btn(color="primary" unelevated :disable="myapps.curVersion(props.item).published > 0" icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 

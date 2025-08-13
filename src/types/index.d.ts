@@ -19,11 +19,13 @@ interface Ver {
 	id: number
 	label: string
 	value: string
+	author: string
 	created: string
 	modified: string
 	published: number
 	descr: string
 	current: boolean
+	tested?: string
 }
 
 type Control = {

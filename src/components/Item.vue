@@ -24,7 +24,7 @@ const props = defineProps({
 
 const Div = motion.div
 
-const emit = defineEmits(['navigate', 'createGroup', 'duplicate'])
+const emit = defineEmits(['navigate', 'createGroup', 'duplicate', 'drag'])
 
 const action = async (item: App) => {
 	expanded.value = true
@@ -75,6 +75,7 @@ const hoverIndex = ref<number>(100)
 const onDragStart = (item: App, n: number) => {
 	draggedItem.value = item
 	dragIndex.value = n
+	emit('drag', item)
 }
 
 const onDragEnter = (app: App, index: number) => {
@@ -197,33 +198,34 @@ const isOver = (item: App) => {
 const duble = (e: App) => {
 	emit('duplicate', e)
 }
-const calcIcon = (e: string) => {
-	return `mdi-numeric-${e}-circle-outline`
-}
+
+// const calcIcon = (e: string) => {
+// 	return `mdi-numeric-${e}-circle-outline`
+// }
 
 const visibleItems = (items: any) => {
 	return items.length <= 4 ? items : items.slice(0, 3)
 }
 const hasOverflow = (items: any) => items.length > 4
 
-const options = [
-	{ id: 3, label: 'v. 3', pub: false },
-	{ id: 2, label: 'v. 2', pub: true },
-	{ id: 1, label: 'v. 1', pub: true },
-]
+// const options = [
+// 	{ id: 3, label: 'v. 3', pub: false },
+// 	{ id: 2, label: 'v. 2', pub: true },
+// 	{ id: 1, label: 'v. 1', pub: true },
+// ]
 
 // const setVer = (item: App, el: number, pub: boolean) => {
 // 	item.version = el.toString()
 // 	item.published = pub
 // }
 
-const calcItemClass = (item: App, id: number) => {
-	return item.version == id.toString() ? 'selected' : ''
-}
+// const calcItemClass = (item: App, id: number) => {
+// 	return item.version == id.toString() ? 'selected' : ''
+// }
 
-const toVersion = () => {
-	router.push('/version')
-}
+// const toVersion = () => {
+// 	router.push('/version')
+// }
 
 const dialog = ref(false)
 const showDialog = () => {

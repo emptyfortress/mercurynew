@@ -34,12 +34,12 @@ const cols: QTableProps['columns'] = [
 	// 	sortable: true,
 	// },
 	{
-		name: 'created',
+		name: 'modified',
 		required: true,
-		label: 'Дата создания',
+		label: 'Изменено',
 		align: 'left',
-		field: 'created',
-		sortable: true,
+		field: 'modified',
+		sortable: false,
 	},
 	{
 		name: 'published',
@@ -117,6 +117,10 @@ const edit = (num: number) => {
 		dialog1.value = true
 	} else router.push('/process')
 }
+
+const page = {
+	sortBy: 'created',
+}
 </script>
 
 <template lang="pug">
@@ -127,12 +131,16 @@ q-table(flat
 	color="primary"
 	dense
 	hide-bottom
+	:pagination='page'
 )
 
 	template(v-slot:body-cell-ver='props')
 		q-td(:props='props')
 			.text-bold {{ props.row.label }}
 			.caption {{ props.row.descr }}
+
+	template(v-slot:body-cell-modified='props')
+		q-td(:props='props') {{ props.row.modified}}
 
 	template(v-slot:body-cell-action='props')
 		q-td.text-right(:props='props')
