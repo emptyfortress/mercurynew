@@ -92,8 +92,15 @@ const publish = (ver: number) => {
 	}, 3000)
 }
 
-const letcheck = computed(() => {
-	return myapps.curVersion(props.item).tested == undefined ? false : true
+// const letcheck = computed(() => {
+// 	return myapps.curVersion(props.item).tested == undefined ? false : true
+// })
+
+const letcheck = computed({
+	get: () => myapps.curVersion(props.item).tested !== undefined,
+	set: (val) => {
+		myapps.curVersion(props.item).tested = val ? formattedString.value : undefined
+	},
 })
 
 const check = () => {
@@ -121,7 +128,7 @@ const formattedString = computed(() => {
 const currentVer = ref('')
 const dialog1 = ref(false)
 
-const add = (ver: string) => {
+const add = () => {
 	// currentVer.value = ver
 	currentVer.value = myapps.curVersion(props.item).label
 	dialog1.value = !dialog1.value

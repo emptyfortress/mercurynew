@@ -187,6 +187,19 @@ const create = (e: any) => {
 		group: 1,
 		list: [],
 		pic: IconApp,
+		versions: [
+			{
+				id: 0,
+				label: 'Базовая версия',
+				value: 'Базовая версия',
+				descr: 'Стартовая версия приложения',
+				author: 'Орлов П.С.',
+				created: '22.10.24 14:00',
+				modified: '--',
+				published: 0,
+				current: true,
+			},
+		],
 	}
 
 	tapes.value?.push(tmp)
