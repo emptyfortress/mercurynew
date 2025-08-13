@@ -136,7 +136,7 @@ const create = (e: any) => {
 				created: '22.10.24 14:00',
 				author: 'Орлов П.С.',
 				modified: '--',
-				published: 1,
+				published: 0,
 				current: true,
 			},
 		],
@@ -162,36 +162,36 @@ const create = (e: any) => {
 	}
 }
 
-// const duble = (e: any) => {
-// 	console.log(e)
-// 	let tmp = {
-// 		id: uid(),
-// 		label: 'Копия приложения ' + e.label,
-// 		descr: e.description,
-// 		expand: false,
-// 		over: false,
-// 		version: '1',
-// 		author: 'Орлов П.С.',
-// 		created: '22.09.2022',
-// 		published: 0,
-// 		group: e.group,
-// 		list: [],
-// 		pic: e.pic,
-// 		versions: [
-// 			{
-// 				id: 0,
-// 				label: 'Базовая версия',
-// 				value: 'Базовая версия',
-// 				descr: 'Стартовая версия приложения',
-// 				created: '22.10.24 14:00',
-// 				modified: '',
-// 				published: 1,
-// 				current: true,
-// 			},
-// 		],
-// 	}
-// 	tapes.value?.unshift(tmp)
-// }
+const duble = (e: any) => {
+	let tmp = {
+		id: uid(),
+		label: 'Копия приложения ' + e.label,
+		descr: e.description,
+		expand: false,
+		over: false,
+		version: '1',
+		author: 'Орлов П.С.',
+		created: '22.09.2022',
+		published: 0,
+		group: e.group,
+		list: [],
+		pic: e.pic,
+		versions: [
+			{
+				id: 0,
+				label: 'Базовая версия',
+				value: 'Базовая версия',
+				descr: 'Стартовая версия приложения',
+				author: 'Орлов П.С.',
+				created: '22.10.24 14:00',
+				modified: '--',
+				published: 0,
+				current: true,
+			},
+		],
+	}
+	tapes.value?.unshift(tmp)
+}
 
 const duple = ref(false)
 const onDragEnterPlus = () => {
@@ -331,6 +331,7 @@ q-page(padding, @click='action')
 			@navigate="navigate"
 			@createGroup='createGroup'
 			@drag='startDrag'
+			@duplicate="duble"
 			:shift="shift"
 		)
 

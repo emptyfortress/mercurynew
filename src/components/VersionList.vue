@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import type { QTableProps } from 'quasar'
 import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
-import { useQuasar } from 'quasar'
+import { useQuasar, date } from 'quasar'
 import AddDialog from '@/components/AddDialog.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import { useRouter } from 'vue-router'
@@ -101,6 +101,7 @@ const dialog1 = ref(false)
 const create = (e: any) => {
 	props.versions.map((el) => (el.current = false))
 	myapps.addVersion(props.versions, e)
+
 	setTimeout(() => {
 		$q.notify({
 			icon: 'mdi-check-bold',
@@ -111,11 +112,14 @@ const create = (e: any) => {
 	}, 500)
 }
 
-const edit = (num: number) => {
+const edit = (num: number, row: any) => {
 	if (num > 0) {
 		ve.value = 'edit'
 		dialog1.value = true
-	} else router.push('/process')
+	} else {
+		row.modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+		router.push('/process')
+	}
 }
 
 const page = {
@@ -145,7 +149,7 @@ q-table(flat
 	template(v-slot:body-cell-action='props')
 		q-td.text-right(:props='props')
 			.text-secondary
-				q-btn(flat round dense size='md' @click='edit(props.row.published)') 
+				q-btn(flat round dense size='md' @click='edit(props.row.published, props.row)') 
 					q-icon(v-if='props.row.published == 0' name="mdi-pencil")
 					q-icon(v-else name="mdi-eye")
 

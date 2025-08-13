@@ -4,6 +4,7 @@ import { useApps } from '@/stores/apps'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar, date } from 'quasar'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import AddDialog from '@/components/AddDialog.vue'
 import VersionList from '@/components/VersionList.vue'
 import { useVersion } from '@/stores/version'
 
@@ -116,6 +117,31 @@ const timeStamp = ref(Date.now())
 const formattedString = computed(() => {
 	return date.formatDate(timeStamp.value, 'DD.MM.YY HH:mm')
 })
+
+const currentVer = ref('')
+const dialog1 = ref(false)
+
+const add = (ver: string) => {
+	// currentVer.value = ver
+	currentVer.value = myapps.curVersion(props.item).label
+	dialog1.value = !dialog1.value
+}
+
+const create = (e: any) => {
+	myapps.curVersion(props.item).current = false
+	myapps.addVersion(props.item.versions, e)
+	router.push('/process')
+	myapps.curVersion(props.item).modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Создана новая версия',
+			position: 'top',
+		})
+	}, 500)
+}
 </script>
 
 <template lang="pug">
@@ -145,9 +171,9 @@ const formattedString = computed(() => {
 					.text-bold {{ myapps.curVersion(props.item).label }}
 					label Статус:
 					.text-bold
-						span(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
 						span(v-if='myapps.curVersion(props.item).published == 0') Черновик
-						span(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
+						span.pub(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
+						span.pub(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
 
 				.mygrid
 					label Версию создал:
@@ -165,8 +191,14 @@ const formattedString = computed(() => {
 
 			.myrow
 				q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" ) 
-				q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click="navigate1" ) 
-				q-btn(unelevated color="primary" icon='mdi-eye-check-outline' label='Проверить' @click="openUrl" ) 
+
+				template(v-if='myapps.curVersion(props.item).published == 0')
+					q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click="navigate1" ) 
+					q-btn(unelevated color="primary" icon='mdi-eye-check-outline' label='Проверить' @click="openUrl" ) 
+
+				template(v-else)
+					q-btn(unelevated color="primary" icon='mdi-eye-outline' label='Просмотр' @click="navigate1" ) 
+					q-btn(unelevated color="primary" icon='mdi-plus-circle-outline' label='Создать версию' @click="add" ) 
 
 				q-btn(flat round dense icon="mdi-dots-horizontal" color="primary" @click.stop='') 
 					q-menu(anchor="bottom middle" self="top middle")
@@ -194,9 +226,9 @@ const formattedString = computed(() => {
 					.text-bold {{ myapps.curVersion(props.item).label }}
 					label Статус:
 					.text-bold
-						span(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
 						span(v-if='myapps.curVersion(props.item).published == 0') Черновик
-						span(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
+						span.pub(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
+						span.pub(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
 
 				.mygrid
 					label Версию создал:
@@ -226,6 +258,7 @@ const formattedString = computed(() => {
 
 			
 	ConfirmDialog(v-model="dialog" :mode='mode' @publish='publish' @check='check')
+	AddDialog(v-model="dialog1" mode='version' :current='currentVer' @create="create")
 </template>
 
 <style scoped lang="scss">
@@ -299,7 +332,7 @@ const formattedString = computed(() => {
 .myrow {
 	display: grid;
 	grid-template-columns: auto auto auto 36px;
-	// justify-content: center;
+	justify-content: start;
 	gap: 0.5rem;
 	margin-top: 2rem;
 }
@@ -317,5 +350,9 @@ const formattedString = computed(() => {
 	margin-top: 2rem;
 	display: flex;
 	gap: 1rem;
+}
+.pub {
+	font-weight: 600;
+	color: darkred;
 }
 </style>
