@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, shallowRef } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
-// import IconHome from '@/components/icons/IconHome.vue'
 import { useApps } from '@/stores/apps'
 import { useIdle, useCounter } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
+import CircleFlagsLangRu from '@/components/icons/CircleFlagsLangRu.vue'
+import CircleFlagsLangEn from '@/components/icons/CircleFlagsLangEn.vue'
+import CircleFlagsLangKk from '@/components/icons/CircleFlagsLangKk.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -166,6 +168,36 @@ const refresh = () => {
 		progress: true,
 	})
 }
+
+const lang = [
+	{
+		id: 0,
+		label: 'Русский',
+		icon: CircleFlagsLangRu,
+	},
+	{
+		id: 1,
+		label: 'English',
+		icon: CircleFlagsLangEn,
+	},
+	{
+		id: 2,
+		label: 'Қазақша',
+		icon: CircleFlagsLangKk,
+	},
+]
+
+const currentLang = shallowRef({
+	id: 0,
+	label: 'Русский',
+	icon: CircleFlagsLangRu,
+})
+const changeLang = (e: any) => {
+	currentLang.value = e
+}
+const calcClass = (num: number) => {
+	if (currentLang.value.id == num) return 'selected'
+}
 </script>
 
 <template lang="pug">
@@ -184,6 +216,15 @@ q-layout(view='hHh LpR fFf')
 				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК
 					q-tooltip Сирень Крокодиловна
 				.save Сохранение...
+
+			.lang
+				component(:is='currentLang.icon')
+				q-menu
+					q-list
+						q-item(clickable v-for="item in lang" :key='item.id' @click="changeLang(item)" v-close-popup :class="calcClass(item.id)")
+							q-item-section(side)
+								component(:is='item.icon')
+							q-item-section {{ item.label }}
 
 			q-avatar(size='md')
 				img(src="https://cdn.quasar.dev/img/avatar.png")
@@ -305,5 +346,17 @@ nav a:first-of-type {
 }
 .save {
 	margin-left: 3rem;
+}
+.lang {
+	margin: 0 0.5rem;
+	margin-top: 5px;
+	cursor: pointer;
+	svg {
+		width: 28px;
+		height: 28px;
+	}
+}
+:deep(.q-item.selected) {
+	background: var(--selection);
 }
 </style>
