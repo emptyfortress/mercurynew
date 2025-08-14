@@ -29,7 +29,7 @@ const submitForm = () => {
 		descr: model1.value,
 		author: 'Орлов П.С.',
 		created: formattedString.value,
-		modified: '--',
+		modified: '',
 		published: 0,
 		current: true,
 	})

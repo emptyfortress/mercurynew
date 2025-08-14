@@ -37,7 +37,7 @@ const create = (e: string) => {
 				descr: 'Стартовая версия приложения',
 				author: 'Орлов П.С.',
 				created: '22.10.24 14:00',
-				modified: '--',
+				modified: '',
 				published: 0,
 				current: true,
 			},

@@ -259,7 +259,8 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 				span(@click.stop) {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
-			.user
+
+			.user(v-if='item.multiuser')
 				q-avatar(size='24px' color="positive" text-color="white") РЛ
 					q-tooltip Роза Львовна
 				q-avatar(size='24px' color="warning" text-color="black") СК
@@ -297,16 +298,6 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 
 
 		q-btn.cog(v-if='activeItem == item.id && item.group == 1' flat round dense icon="mdi-cloud-cog-outline" @click.stop='$router.push("/setup")') 
-
-		// .version(v-if='activeItem == item.id && item.group == 1' @click.stop)
-		// 	q-btn(flat round dense icon="mdi-cog" @click.stop) 
-		// 		q-menu
-		// 			q-list
-		// 				q-item(clickable, v-for="item in list", :key='item.id' :to='item.to')
-		// 					q-item-section(avatar)
-		// 						q-icon(:name="item.icon" color="primary")
-		// 					q-item-section
-		// 						q-item-label {{ item.label }}
 
 
 	.createGroup(v-if='isOver(item)')

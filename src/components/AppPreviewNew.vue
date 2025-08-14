@@ -70,7 +70,7 @@ const $q = useQuasar()
 
 const publish = (ver: number) => {
 	myapps.curVersion(props.item).published = ver
-	// myver.curVersion.published = ver
+	myapps.curVersion(props.item).pubDate = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
 
 	setTimeout(() => {
 		if (ver == 2) {
@@ -91,10 +91,6 @@ const publish = (ver: number) => {
 		}
 	}, 3000)
 }
-
-// const letcheck = computed(() => {
-// 	return myapps.curVersion(props.item).tested == undefined ? false : true
-// })
 
 const letcheck = computed({
 	get: () => myapps.curVersion(props.item).tested !== undefined,
@@ -129,7 +125,6 @@ const currentVer = ref('')
 const dialog1 = ref(false)
 
 const add = () => {
-	// currentVer.value = ver
 	currentVer.value = myapps.curVersion(props.item).label
 	dialog1.value = !dialog1.value
 }
@@ -260,7 +255,7 @@ const create = (e: any) => {
 					div {{myapps.curVersion(props.item).label}} -- {{formattedString}}
 					.link DV-prod
 
-		q-tab-panel(name='vers')
+		q-tab-panel(name='vers' style='padding-right: 0; padding-left: 0')
 			VersionList(:versions="props.item.versions")
 
 			

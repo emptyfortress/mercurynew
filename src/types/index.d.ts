@@ -13,6 +13,7 @@ interface App {
 	list: App[]
 	pic?: any
 	versions: Ver[]
+	multiuser?: boolean
 }
 
 interface Ver {
@@ -21,8 +22,9 @@ interface Ver {
 	value: string
 	author: string
 	created: string
-	modified: string
+	modified: date
 	published: number
+	pubDate?: string
 	descr: string
 	current: boolean
 	tested?: string

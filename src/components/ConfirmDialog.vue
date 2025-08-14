@@ -13,13 +13,9 @@ const props = defineProps({
 const modelValue = defineModel<boolean>()
 
 const server = useServers()
-const emit = defineEmits(['remove', 'publish', 'check'])
+const emit = defineEmits(['publish', 'check'])
 
-const remove = () => {
-	emit('remove')
-	modelValue.value = false
-}
-const serv = ref('1')
+const serv = ref('2')
 
 const user = ref('')
 
@@ -30,7 +26,7 @@ const publish = () => {
 	setTimeout(() => {
 		loading.value = false
 		modelValue.value = false
-	}, 2000)
+	}, 1000)
 	emit('publish', parseInt(serv.value))
 }
 
@@ -39,7 +35,7 @@ const check = () => {
 	setTimeout(() => {
 		loading.value = false
 		modelValue.value = false
-	}, 2000)
+	}, 1000)
 	emit('check')
 }
 </script>

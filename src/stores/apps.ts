@@ -32,6 +32,7 @@ export const useApps = defineStore('apps', () => {
 			uploaded: '24.10.24 15:17',
 			group: 1,
 			list: [],
+			multiuser: true,
 			pic: IconTravel1,
 			versions: [
 				{
@@ -41,7 +42,7 @@ export const useApps = defineStore('apps', () => {
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: '22.10.24 14:00',
-					modified: '--',
+					modified: '',
 					published: 0,
 					current: true,
 				},
@@ -60,6 +61,7 @@ export const useApps = defineStore('apps', () => {
 			uploaded: '24.10.24 15:17',
 			group: 1,
 			list: [],
+			multiuser: true,
 			pic: IconBeach1,
 			versions: [
 				{
@@ -69,7 +71,7 @@ export const useApps = defineStore('apps', () => {
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: '22.10.24 14:00',
-					modified: '--',
+					modified: '',
 					published: 0,
 					current: true,
 				},
@@ -102,6 +104,7 @@ export const useApps = defineStore('apps', () => {
 					uploaded: '24.10.24 15:17',
 					group: 1,
 					list: [],
+					multiuser: true,
 					pic: IconPrinter1,
 					versions: [
 						{
@@ -111,7 +114,7 @@ export const useApps = defineStore('apps', () => {
 							descr: 'Стартовая версия приложения',
 							created: '22.10.24 14:00',
 							author: 'Орлов П.С.',
-							modified: '--',
+							modified: '',
 							published: 0,
 							current: true,
 						},
@@ -130,6 +133,7 @@ export const useApps = defineStore('apps', () => {
 					uploaded: '24.10.24 15:17',
 					group: 1,
 					list: [],
+					multiuser: false,
 					pic: IconMicrophone1,
 					versions: [
 						{
@@ -139,7 +143,7 @@ export const useApps = defineStore('apps', () => {
 							descr: 'Стартовая версия приложения',
 							author: 'Орлов П.С.',
 							created: '22.10.24 14:00',
-							modified: '--',
+							modified: '',
 							published: 0,
 							current: true,
 						},
@@ -158,6 +162,7 @@ export const useApps = defineStore('apps', () => {
 					uploaded: '24.10.24 15:17',
 					group: 1,
 					list: [],
+					multiuser: false,
 					pic: IconPresentation1,
 					versions: [
 						{
@@ -167,7 +172,7 @@ export const useApps = defineStore('apps', () => {
 							descr: 'Стартовая версия приложения',
 							created: '22.10.24 14:00',
 							author: 'Орлов П.С.',
-							modified: '--',
+							modified: '',
 							published: 0,
 							current: true,
 						},
@@ -188,6 +193,7 @@ export const useApps = defineStore('apps', () => {
 			uploaded: '24.10.24 15:17',
 			group: 1,
 			list: [],
+			multiuser: false,
 			pic: IconLetter1,
 			versions: [
 				{
@@ -197,7 +203,7 @@ export const useApps = defineStore('apps', () => {
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: '22.10.24 14:00',
-					modified: '--',
+					modified: '',
 					published: 0,
 					current: true,
 				},
@@ -216,6 +222,7 @@ export const useApps = defineStore('apps', () => {
 			uploaded: '24.10.24 15:17',
 			group: 1,
 			list: [],
+			multiuser: true,
 			pic: IconLetter1,
 			versions: [
 				{
@@ -225,7 +232,7 @@ export const useApps = defineStore('apps', () => {
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: '22.10.24 14:00',
-					modified: '--',
+					modified: '',
 					published: 0,
 					current: true,
 				},

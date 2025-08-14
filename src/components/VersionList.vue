@@ -25,14 +25,22 @@ const cols: QTableProps['columns'] = [
 		field: 'ver',
 		sortable: false,
 	},
-	// {
-	// 	name: 'author',
-	// 	required: true,
-	// 	label: 'Автор',
-	// 	align: 'left',
-	// 	field: 'author',
-	// 	sortable: true,
-	// },
+	{
+		name: 'author',
+		required: true,
+		label: 'Автор',
+		align: 'left',
+		field: 'author',
+		sortable: true,
+	},
+	{
+		name: 'created',
+		required: true,
+		label: 'Создано',
+		align: 'left',
+		field: 'created',
+		sortable: false,
+	},
 	{
 		name: 'modified',
 		required: true,
@@ -63,37 +71,20 @@ const ve = ref('version')
 
 const $q = useQuasar()
 
-const remove = (id: number, pub: number) => {
-	if (pub == 0) {
-		myapps.removeVersion(props.versions, id)
-		props.versions[0].current = true
-		setTimeout(() => {
-			$q.notify({
-				icon: 'mdi-delete-outline',
-				color: 'negative',
-				message: 'Версия удалена',
-				position: 'top',
-			})
-		}, 500)
-	}
+const remove = (id: number) => {
+	myapps.removeVersion(props.versions, id)
 
-	if (pub == 2) {
-		ve.value = 'version'
-		dialog1.value = true
-	}
-
-	if (pub == 1) {
-		ve.value = 'version1'
-		dialog1.value = true
-	}
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-delete-outline',
+			color: 'negative',
+			message: 'Версия удалена',
+			position: 'top',
+		})
+	}, 500)
 }
 
 const currentVer = ref('')
-
-const add = (ver: string) => {
-	currentVer.value = ver
-	dialog.value = !dialog.value
-}
 
 const dialog = ref(false)
 const dialog1 = ref(false)
@@ -112,19 +103,88 @@ const create = (e: any) => {
 	}, 500)
 }
 
-const edit = (num: number, row: any) => {
-	if (num > 0) {
-		ve.value = 'edit'
-		dialog1.value = true
-	} else {
+const page = {
+	sortBy: 'created',
+}
+
+function viewSettings(id: number) {
+	ve.value = 'edit'
+	dialog1.value = true
+	// router.push('/process')
+}
+
+function edit(id: number) {
+	let row = props.versions.find((el) => el.id == id)
+	props.versions.map((el) => (el.current = false))
+	if (row) {
+		row.current = true
 		row.modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
 		router.push('/process')
 	}
 }
 
-const page = {
-	sortBy: 'created',
+function createVersion(id: number) {
+	let tmp = props.versions.findIndex((el) => el.id == id)
+	if (tmp > -1) {
+		currentVer.value = props.versions[tmp].label
+		dialog.value = !dialog.value
+	}
 }
+
+interface RowData {
+	id: number
+	label: string
+	descr: string
+	modified: string
+	published: number // 0, 1, 2
+}
+
+interface MenuItem {
+	id: number
+	icon: string
+	label: string
+	action: (rowId: number) => void
+}
+
+const menu: MenuItem[] = [
+	{ id: 0, icon: 'mdi-eye', label: 'Просмотреть настройки', action: viewSettings },
+	{ id: 1, icon: 'mdi-pencil', label: 'Редактировать', action: edit },
+	{
+		id: 2,
+		icon: 'mdi-plus-box-multiple-outline',
+		label: 'Создать версию на основе',
+		action: createVersion,
+	},
+	{ id: 3, icon: 'mdi-delete-outline', label: 'Удалить', action: remove },
+]
+
+function getMenuForRow(row: RowData) {
+	return menu.filter((item) => {
+		if (item.id === 3 && props.versions.length == 1) return false
+		if (item.id === 0 && row.published == 0) return false
+		if (item.id === 1 && row.published > 0) return false
+		if (item.id === 3 && row.published !== 0) return false
+		return true
+	})
+}
+
+const calcClass = (id: number) => {
+	return id == 3 ? 'pub' : ''
+}
+
+const isSomePublished = computed(() => {
+	return props.versions.find((el) => el.published == 2)
+})
+
+const lastPublication = computed(() => {
+	let tmp = props.versions.find((el) => el.published == 2)
+	if (tmp) return tmp.label
+})
+
+const pubDate = computed(() => {
+	let tmp = props.versions.find((el) => el.published == 2)
+	if (tmp) return tmp.pubDate
+})
 </script>
 
 <template lang="pug">
@@ -146,31 +206,31 @@ q-table(flat
 	template(v-slot:body-cell-modified='props')
 		q-td(:props='props') {{ props.row.modified}}
 
-	template(v-slot:body-cell-action='props')
-		q-td.text-right(:props='props')
-			.text-secondary
-				q-btn(flat round dense size='md' @click='edit(props.row.published, props.row)') 
-					q-icon(v-if='props.row.published == 0' name="mdi-pencil")
-					q-icon(v-else name="mdi-eye")
-
-				q-btn(flat round dense @click="add(props.row.label)" size='md') 
-					TablerCopyPlus.ic
-
-				q-btn(flat round dense icon="mdi-delete-outline" size='md' @click.stop) 
-					q-menu
-						q-list
-							q-item(clickable @click='remove(props.row.id, props.row.published)' v-close-popup).pink
-								q-item-section Удалить
-
 	template(v-slot:body-cell-published='props')
 		q-td(:props='props')
 			.caption(v-if='props.row.published == 0') Черновик
 			.caption(v-if='props.row.published == 2' )
-				q-icon(name="mdi-check-bold" color="primary" size="18px")
-				.link Опубликовано
+				.pub Опубликовано
 			.caption(v-if='props.row.published == 1' )
-				q-icon(name="mdi-timer-sand" color="primary" size="18px")
 				div Ожидает публикации
+
+	template(v-slot:body-cell-action='props')
+		q-td.text-right(:props='props' style="padding-right: 0")
+			q-btn(flat round color="primary" size='sm')
+				q-icon(name="mdi-dots-vertical"  size="24px")
+				q-menu
+					q-list
+						template(v-for="item in getMenuForRow(props.row)" :key="item.id")
+							q-item(clickable @click="item.action(props.row.id)" :class='calcClass(item.id)' v-close-popup)
+								q-item-section(avatar)
+									q-icon(:name="item.icon")
+								q-item-section {{ item.label }}
+	
+
+.check(v-if='isSomePublished')
+	div Последняя&nbsp;публикация:
+	div {{ lastPublication }} -- {{ pubDate }}
+	.link DV-prod
 
 AddDialog(v-model="dialog" mode='version' :current='currentVer' @create="create")
 ConfirmDialog(v-model="dialog1" :mode='ve')
@@ -255,5 +315,13 @@ ConfirmDialog(v-model="dialog1" :mode='ve')
 .caption {
 	font-size: 0.8rem;
 	color: #777;
+}
+.pub {
+	color: darkred;
+}
+.check {
+	margin-top: 2rem;
+	display: flex;
+	gap: 1rem;
 }
 </style>
