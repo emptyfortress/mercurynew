@@ -18,7 +18,7 @@ q-list.q-mt-lg
 		q-item-section(avatar)
 			q-icon(name="mdi-puzzle-outline" color="primary")
 		q-item-section
-			q-item-label Общие компоненты
+			q-item-label Общие компоненты, палитра
 
 	// br
 	// q-separator
