@@ -11,7 +11,6 @@ import { useMotion } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
-import CifKz from '@/components/icons/CifKz.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -180,11 +179,6 @@ const lang = [
 		id: 1,
 		label: 'English',
 		icon: CifGb,
-	},
-	{
-		id: 2,
-		label: 'Қазақша',
-		icon: CifKz,
 	},
 ]
 
