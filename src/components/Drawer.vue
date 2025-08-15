@@ -56,6 +56,9 @@ const calcWidth = computed(() => {
 	return mini.value ? 60 : 130
 })
 // TODO: move back batton in !mini mode
+const toVer = () => {
+	router.push('/apphome')
+}
 </script>
 
 <template lang="pug">
@@ -65,6 +68,13 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
 		icon="mdi-arrow-left" @click="router.back()" size="md") 
+
+	q-btn.house(v-if='back'
+		v-motion
+		:initial='{ x: -200, opacity: 0 }'
+		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
+		icon="mdi-check-bold" @click="toVer" size="md") 
+	
 
 	.toolbar(v-if="tool"
 		v-motion
@@ -110,7 +120,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 	width: calc(100% - 5px);
 	background: #fff;
 	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-	margin-top: 150px;
+	margin-top: 180px;
 }
 
 a {
@@ -125,6 +135,13 @@ a.router-link-active .q-item {
 .back {
 	position: absolute;
 	top: 1.8rem;
+	background: #fff;
+	color: $primary;
+	min-height: 48px;
+}
+.house {
+	position: absolute;
+	top: 6.6rem;
 	background: #fff;
 	color: $primary;
 	min-height: 48px;

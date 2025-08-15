@@ -95,6 +95,16 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/apphome',
+			name: 'apphome',
+			component: () => import('@/views/AppHome.vue'),
+			meta: {
+				toolbar: true,
+				back: true,
+				count: 1,
+			},
+		},
+		{
 			path: '/process',
 			name: 'process',
 			component: () => import('@/views/Process.vue'),
