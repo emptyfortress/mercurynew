@@ -4,7 +4,7 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import IconList from '@/components/IconList.vue'
 import IconRoleList from '@/components/IconRoleList.vue'
-import IconApp from '@/components/icons/list/IconApp.vue'
+import IconApp from '@/components/icons/IconApp.vue'
 
 const props = defineProps({
 	mode: {

@@ -6,7 +6,7 @@ import { useStorage } from '@vueuse/core'
 import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
 //
 // const iconModules = import.meta.glob('@/components/icons/**/*.vue')
-const iconModules: any = import.meta.glob('@/components/icons/**/*.vue')
+const iconModules: any = import.meta.glob('@/components/icons/list/*.vue')
 
 const mini = useStorage('mini', true)
 const app = useStorage('app', localStorage)
@@ -160,8 +160,6 @@ a.router-link-active .q-item {
 .back {
 	position: absolute;
 	top: 1.8rem;
-	// background: #fff;
-	// color: $primary;
 	svg {
 		width: 32px;
 		height: 32px;
