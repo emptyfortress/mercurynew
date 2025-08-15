@@ -9,9 +9,9 @@ import { useApps } from '@/stores/apps'
 import { useIdle, useCounter } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
-import CircleFlagsLangRu from '@/components/icons/CircleFlagsLangRu.vue'
-import CircleFlagsLangEn from '@/components/icons/CircleFlagsLangEn.vue'
-import CircleFlagsLangKk from '@/components/icons/CircleFlagsLangKk.vue'
+import CifRu from '@/components/icons/CifRu.vue'
+import CifGb from '@/components/icons/CifGb.vue'
+import CifKz from '@/components/icons/CifKz.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -173,24 +173,25 @@ const lang = [
 	{
 		id: 0,
 		label: 'Русский',
-		icon: CircleFlagsLangRu,
+		icon: CifRu,
+		// icon: CircleFlagsLangRu,
 	},
 	{
 		id: 1,
 		label: 'English',
-		icon: CircleFlagsLangEn,
+		icon: CifGb,
 	},
 	{
 		id: 2,
 		label: 'Қазақша',
-		icon: CircleFlagsLangKk,
+		icon: CifKz,
 	},
 ]
 
 const currentLang = shallowRef({
 	id: 0,
 	label: 'Русский',
-	icon: CircleFlagsLangRu,
+	icon: CifRu,
 })
 const changeLang = (e: any) => {
 	currentLang.value = e
@@ -346,7 +347,7 @@ nav a:first-of-type {
 	margin-left: 3rem;
 }
 .lang {
-	margin: 0 0.5rem;
+	margin: 0 1rem;
 	margin-top: 5px;
 	cursor: pointer;
 	svg {
