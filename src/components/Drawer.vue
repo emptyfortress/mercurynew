@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
+//
+// Храним все иконки в карте — Vite сам их подхватит
+const iconModules = import.meta.glob('@/components/icons/**/*.vue')
 
 const mini = useStorage('mini', true)
+const app = useStorage('app', localStorage)
 
 const router = useRouter()
 const route = useRoute()
@@ -55,26 +59,46 @@ const tool = computed(() => {
 const calcWidth = computed(() => {
 	return mini.value ? 60 : 130
 })
-// TODO: move back batton in !mini mode
-const toVer = () => {
-	router.push('/apphome')
+
+const iconComp = ref(null)
+
+async function loadIcon(picFile?: string) {
+	if (!picFile) {
+		iconComp.value = null
+		return
+	}
+	const relativeFromSrc = picFile.split('/src/')[1]
+	const key = `/src/${relativeFromSrc}`
+
+	if (iconModules[key]) {
+		iconComp.value = (await iconModules[key]()).default
+	} else {
+		console.warn(`Иконка по ключу ${key} не найдена`)
+		iconComp.value = null
+	}
 }
+
+// Загружаем при первом рендере
+loadIcon(app.value?.pic?.__file)
+
+// Следим за изменениями app
+watch(
+	() => app.value?.pic?.__file,
+	(newFile) => {
+		loadIcon(newFile)
+	}
+)
 </script>
 
 <template lang="pug">
 q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
-	q-btn.back(v-if='back'
-		v-motion
-		:initial='{ x: -200, opacity: 0 }'
-		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
-		icon="mdi-arrow-left" @click="router.back()" size="md") 
 
-	q-btn.house(v-if='back'
+	q-btn.back(v-if='back' round
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
-		icon="mdi-check-bold" @click="toVer" size="md") 
-	
+		@click="router.back()" size="16px") 
+		component(:is="iconComp")
 
 	.toolbar(v-if="tool"
 		v-motion
@@ -104,7 +128,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 
 .mini {
 	position: fixed;
-	bottom: 4rem;
+	bottom: 6rem;
 	left: 0.5rem;
 }
 
@@ -120,7 +144,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 	width: calc(100% - 5px);
 	background: #fff;
 	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
-	margin-top: 180px;
+	margin-top: 120px;
 }
 
 a {
@@ -137,7 +161,7 @@ a.router-link-active .q-item {
 	top: 1.8rem;
 	background: #fff;
 	color: $primary;
-	min-height: 48px;
+	// min-height: 48px;
 }
 .house {
 	position: absolute;

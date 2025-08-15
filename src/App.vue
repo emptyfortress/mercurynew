@@ -5,7 +5,7 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
-import { useApps } from '@/stores/apps'
+// import { useApps } from '@/stores/apps'
 import { useIdle, useCounter } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
@@ -14,7 +14,7 @@ import CifGb from '@/components/icons/CifGb.vue'
 
 const route = useRoute()
 const router = useRouter()
-const myapps = useApps()
+// const myapps = useApps()
 
 const rightDrawer = ref(false)
 
@@ -173,7 +173,6 @@ const lang = [
 		id: 0,
 		label: 'Русский',
 		icon: CifRu,
-		// icon: CircleFlagsLangRu,
 	},
 	{
 		id: 1,
@@ -193,6 +192,14 @@ const changeLang = (e: any) => {
 const calcClass = (num: number) => {
 	if (currentLang.value.id == num) return 'selected'
 }
+
+const footerState = computed(() => {
+	return route.meta.footer ? true : false
+})
+
+const action = () => {
+	router.push(`/${app.value.id}`)
+}
 </script>
 
 <template lang="pug">
@@ -210,7 +217,8 @@ q-layout(view='hHh LpR fFf')
 					q-tooltip Роза Львовна
 				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК
 					q-tooltip Сирень Крокодиловна
-				.save Сохранение...
+
+				q-btn.save(unelevated color="positive" label="Завершить" icon="mdi-check-bold" @click="action")
 
 			.lang
 				component(:is='currentLang.icon')
@@ -239,6 +247,17 @@ q-layout(view='hHh LpR fFf')
 					mode='out-in'
 					)
 					component(:is="Component")
+
+	q-footer.footer(v-model='footerState')
+		.cent
+			div Версия: {{ app.versions[0].label }}
+			div Автор: {{ app.versions[0].author }}
+			div Создано: {{ app.versions[0].created }}
+			div Изменено: {{ app.versions[0].modified }} (Роза Львовна)
+			div Статус: Черновик
+			div
+				q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
+				|Сохранено
 
 </template>
 
@@ -353,5 +372,18 @@ nav a:first-of-type {
 }
 :deep(.q-item.selected) {
 	background: var(--selection);
+}
+.footer {
+	background: hsl(202 33% 92% / 1);
+	box-shadow: 0 -1px 4px rgba($color: #000000, $alpha: 0.15);
+	color: #444;
+	padding: 3px 2rem;
+	.cent {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 3rem;
+		font-size: 0.8rem;
+	}
 }
 </style>
