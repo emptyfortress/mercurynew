@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, type Component } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
 //
-// Храним все иконки в карте — Vite сам их подхватит
-const iconModules = import.meta.glob('@/components/icons/**/*.vue')
+// const iconModules = import.meta.glob('@/components/icons/**/*.vue')
+const iconModules: any = import.meta.glob('@/components/icons/**/*.vue')
 
 const mini = useStorage('mini', true)
 const app = useStorage('app', localStorage)
@@ -60,7 +60,8 @@ const calcWidth = computed(() => {
 	return mini.value ? 60 : 130
 })
 
-const iconComp = ref(null)
+// const iconComp = ref(null)
+const iconComp = ref<Component | null>(null)
 
 async function loadIcon(picFile?: string) {
 	if (!picFile) {
@@ -97,7 +98,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
-		@click="router.back()" size="16px") 
+		@click="router.back()" size="16px" color='primary') 
 		component(:is="iconComp")
 
 	.toolbar(v-if="tool"
@@ -159,9 +160,12 @@ a.router-link-active .q-item {
 .back {
 	position: absolute;
 	top: 1.8rem;
-	background: #fff;
-	color: $primary;
-	// min-height: 48px;
+	// background: #fff;
+	// color: $primary;
+	svg {
+		width: 32px;
+		height: 32px;
+	}
 }
 .house {
 	position: absolute;
