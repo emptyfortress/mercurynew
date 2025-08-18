@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 import IconMenu from '@/components/IconMenu.vue'
 import { uid, useQuasar } from 'quasar'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
-const router = useRouter()
+// const router = useRouter()
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')

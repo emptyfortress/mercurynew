@@ -6,6 +6,7 @@ declare module 'vue-router' {
 	interface RouteMeta {
 		toolbar: boolean
 		back: boolean
+		back1?: boolean
 		count: number
 	}
 }
@@ -60,7 +61,8 @@ const router = createRouter({
 			component: () => import('@/views/Assistent.vue'),
 			meta: {
 				toolbar: false,
-				back: true,
+				back: false,
+				back1: true,
 				count: 1,
 			},
 		},
@@ -92,16 +94,6 @@ const router = createRouter({
 				toolbar: false,
 				back: true,
 				count: 20,
-			},
-		},
-		{
-			path: '/apphome',
-			name: 'apphome',
-			component: () => import('@/views/AppHome.vue'),
-			meta: {
-				toolbar: true,
-				back: true,
-				count: 1,
 			},
 		},
 		{

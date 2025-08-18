@@ -32,17 +32,18 @@ const navigate = () => {
 	myapps.setCurrentApp(props.item)
 }
 
-const navigate1 = () => {
+const navigate1 = async () => {
 	if (myver.curVersion.published > 0) {
 		mode.value = 'edit'
 		dialog.value = true
 	} else {
 		const path = route.fullPath.toString()
+		await router.push('/process')
 		myapps.setCurrentApp(props.item)
+		myapps.currentApp!.master = false
 		myapps.setGroupPath(group.value ? path : '')
 		myapps.setPath(group.value ? '' : path)
-		router.push('/process')
-		myapps.curVersion(props.item).modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+		myapps.curVersion(props.item).modified = Date.now()
 	}
 }
 
@@ -70,7 +71,8 @@ const $q = useQuasar()
 
 const publish = (ver: number) => {
 	myapps.curVersion(props.item).published = ver
-	myapps.curVersion(props.item).pubDate = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+	myapps.curVersion(props.item).pubDate = Date.now().toString()
+	// myapps.curVersion(props.item).pubDate = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
 
 	setTimeout(() => {
 		if (ver == 2) {
@@ -133,7 +135,8 @@ const create = (e: any) => {
 	myapps.curVersion(props.item).current = false
 	myapps.addVersion(props.item.versions, e)
 	router.push('/process')
-	myapps.curVersion(props.item).modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+	myapps.curVersion(props.item).modified = Date.now()
+	// myapps.curVersion(props.item).modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
 
 	setTimeout(() => {
 		$q.notify({
@@ -143,6 +146,14 @@ const create = (e: any) => {
 			position: 'top',
 		})
 	}, 500)
+}
+
+const state = computed(() => {
+	return myapps.curVersion(props.item).modified == null ? false : true
+})
+
+const showDate = (val: number | null) => {
+	return val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''
 }
 </script>
 
@@ -157,7 +168,7 @@ const create = (e: any) => {
 		label Автор приложения:
 		.val {{ props.item.author}}
 		label Создано:
-		.val {{ props.item.created}}
+		.val {{ showDate(props.item.created)}}
 
 	q-tabs.q-mt-md(v-model="tab" align="left" dense active-color='primary')
 		q-tab(name='setup' label='Настройка' @click.stop)
@@ -182,9 +193,9 @@ const create = (e: any) => {
 					.val {{ myapps.curVersion(props.item).author }}
 
 					label Изменено:
-					.val
-						div {{ myapps.curVersion(props.item).modified }}
-						template(v-if='myapps.curVersion(props.item).modified !== "--"')
+					template(v-if='myapps.curVersion(props.item).modified !== null')
+						.val
+							div {{ showDate(myapps.curVersion(props.item).modified) }}
 							div(v-if='props.item.id !== "1"')
 								|Орлов П.С.
 							div(v-else style='font-weight: bold;')
@@ -192,11 +203,11 @@ const create = (e: any) => {
 
 
 			.myrow
-				q-btn(outline color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" ) 
+				q-btn(v-if='props.item.master' unelevated color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" ) 
 
 				template(v-if='myapps.curVersion(props.item).published == 0')
-					q-btn(unelevated color="primary" icon='mdi-pencil-outline' label='Редактировать' @click="navigate1" ) 
-					q-btn(unelevated color="primary" icon='mdi-eye-check-outline' label='Проверить' @click="openUrl" ) 
+					q-btn(:outline='!state' color="primary" icon='mdi-pencil-outline' label='Редактировать' @click="navigate1" ) 
+					q-btn(v-if='myapps.curVersion(props.item).modified !== null' outline color="primary" icon='mdi-eye-check-outline' label='Проверить приложение' @click="openUrl" ) 
 
 				template(v-else)
 					q-btn(unelevated color="primary" icon='mdi-eye-outline' label='Просмотр' @click="navigate1" ) 
@@ -237,14 +248,13 @@ const create = (e: any) => {
 					.val {{ myapps.curVersion(props.item).author }}
 
 					label Изменено:
-					.val
-						div {{ myapps.curVersion(props.item).modified }}
-						template(v-if='myapps.curVersion(props.item).modified !== "--"')
+					template(v-if='myapps.curVersion(props.item).modified !== null')
+						.val
+							div {{ showDate(myapps.curVersion(props.item).modified) }}
 							div(v-if='props.item.id !== "1"')
 								|Орлов П.С.
 							div(v-else style='font-weight: bold;')
 								|Роза Львовна
-
 
 
 			.full

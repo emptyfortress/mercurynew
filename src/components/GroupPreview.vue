@@ -8,7 +8,7 @@ import Trash from '@/components/common/Trash.vue'
 import AppPreview from '@/components/AppPreview.vue'
 import IconMicrophone from '@/components/icons/IconMicrophone.vue'
 import IconPresentation from '@/components/icons/IconPresentation.vue'
-import AddButton from '@/components/common/AddButton.vue'
+// import AddButton from '@/components/common/AddButton.vue'
 
 gsap.registerPlugin(Flip)
 
@@ -28,11 +28,12 @@ const arr = ref([
 		expand: false,
 		version: '0.0.0',
 		author: 'Орлов П.С.',
-		created: '22.10.24 14:00',
+		created: 1755513353568,
 		published: 0,
 		group: 1,
 		pic: IconPresentation,
 		list: [],
+		master: false,
 		versions: [
 			{
 				id: 0,
@@ -40,8 +41,8 @@ const arr = ref([
 				value: 'Базовая версия',
 				descr: 'Стартовая версия приложения',
 				author: 'Орлов П.С.',
-				created: '22.10.24 14:00',
-				modified: '',
+				created: 1755513353568,
+				modified: null,
 				published: 0,
 				current: true,
 			},
@@ -54,11 +55,12 @@ const arr = ref([
 		expand: false,
 		version: '0.0.0',
 		author: 'Орлов П.С.',
-		created: '22.10.24 14:00',
+		created: 1755513353568,
 		published: 0,
 		group: 1,
 		pic: IconMicrophone,
 		list: [],
+		master: false,
 		versions: [
 			{
 				id: 0,
@@ -66,8 +68,8 @@ const arr = ref([
 				value: 'Базовая версия',
 				descr: 'Стартовая версия приложения',
 				author: 'Орлов П.С.',
-				created: '22.10.24 14:00',
-				modified: '',
+				created: 1755513353568,
+				modified: null,
 				published: 0,
 				current: true,
 			},
@@ -133,7 +135,6 @@ const expand1 = (item: any) => {
 				.hg {{ item.label }}
 				.img
 					component(:is='item.pic')
-				// q-img.myicon(:src='item.pic' fit='contain' height="100px" width='100px')
 				AppPreview(:item='item' v-if='expanded1')
 
 	Trash(:dragging="dragging" :group='true')

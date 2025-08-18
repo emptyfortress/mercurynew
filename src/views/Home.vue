@@ -42,6 +42,10 @@ const loadStateFromRoute = () => {
 	if (route.params.id !== '') {
 		activeItem.value = route.params.id.toString()
 		expanded.value = true
+		let app = myapps.apps.find((el) => el.id == activeItem.value)
+		if (app) {
+			myapps.setCurrentApp(app)
+		}
 	} else {
 		activeItem.value = ''
 		expanded.value = false
@@ -122,20 +126,21 @@ const create = (e: any) => {
 		over: false,
 		version: '1',
 		author: 'Орлов П.С.',
-		created: '22.09.2022',
+		created: 1755513353568,
 		published: 0,
 		group: e.group,
 		list: [],
 		pic: e.pic,
+		master: true,
 		versions: [
 			{
 				id: 0,
 				label: 'Базовая версия',
 				value: 'Базовая версия',
 				descr: 'Стартовая версия приложения',
-				created: '22.10.24 14:00',
+				created: 1755513353568,
 				author: 'Орлов П.С.',
-				modified: '',
+				modified: null,
 				published: 0,
 				current: true,
 			},
@@ -171,11 +176,12 @@ const duble = (e: any) => {
 		over: false,
 		version: '1',
 		author: 'Орлов П.С.',
-		created: '22.09.2022',
+		created: 1755513353568,
 		published: 0,
 		group: e.group,
 		list: [],
 		pic: e.pic,
+		master: false,
 		versions: [
 			{
 				id: 0,
@@ -183,8 +189,8 @@ const duble = (e: any) => {
 				value: 'Базовая версия',
 				descr: 'Стартовая версия приложения',
 				author: 'Орлов П.С.',
-				created: '22.10.24 14:00',
-				modified: '',
+				created: 1755513353568,
+				modified: null,
 				published: 0,
 				current: true,
 			},
@@ -210,11 +216,12 @@ const onDropPlus = () => {
 		over: false,
 		version: '1',
 		author: 'Орлов П.С.',
-		created: '22.09.2022',
+		created: 1755513353568,
 		published: 0,
 		group: 1,
 		list: [],
 		pic: IconApp1,
+		master: false,
 		versions: [] as Ver[],
 	}
 	tmp.versions.push(dragged.value!.versions[0])

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import type { QTableProps } from 'quasar'
-import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
+// import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useQuasar, date } from 'quasar'
 import AddDialog from '@/components/AddDialog.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
@@ -40,6 +40,7 @@ const cols: QTableProps['columns'] = [
 		align: 'left',
 		field: 'created',
 		sortable: false,
+		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
 	},
 	{
 		name: 'modified',
@@ -48,6 +49,7 @@ const cols: QTableProps['columns'] = [
 		align: 'left',
 		field: 'modified',
 		sortable: false,
+		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
 	},
 	{
 		name: 'published',
@@ -103,9 +105,10 @@ const create = (e: any) => {
 	}, 500)
 }
 
-const page = {
-	sortBy: 'created',
-}
+// const page = {
+// 	sortBy: 'current',
+// 	sortOder: 'da',
+// }
 
 function viewSettings(id: number) {
 	ve.value = 'edit'
@@ -113,13 +116,25 @@ function viewSettings(id: number) {
 	// router.push('/process')
 }
 
-function edit(id: number) {
-	let row = props.versions.find((el) => el.id == id)
-	props.versions.map((el) => (el.current = false))
+function moveToFirst(arr: any[], predicate: (el: any) => boolean) {
+	const index = arr.findIndex(predicate)
+	if (index > -1) {
+		const [item] = arr.splice(index, 1) // вырезаем элемент
+		arr.unshift(item) // вставляем в начало
+	}
+	return arr
+}
+
+async function edit(id: number) {
+	let row = props.versions.find((el) => el.id === id)
+	props.versions.forEach((el) => (el.current = false)) // лучше forEach, а не map
+
 	if (row) {
 		row.current = true
-		row.modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+		moveToFirst(props.versions, (el) => el.id === row.id) // ✅ исправлено
 		router.push('/process')
+		row.modified = Date.now()
+		myapps.currentApp!.master = false
 	}
 }
 
@@ -195,7 +210,6 @@ q-table(flat
 	color="primary"
 	dense
 	hide-bottom
-	:pagination='page'
 )
 
 	template(v-slot:body-cell-ver='props')
@@ -204,7 +218,7 @@ q-table(flat
 			.caption {{ props.row.descr }}
 
 	template(v-slot:body-cell-modified='props')
-		q-td(:props='props') {{ props.row.modified}}
+		q-td(:props='props') {{ date.formatDate(props.row.modified, 'DD.MM.YY HH:mm') }}
 
 	template(v-slot:body-cell-published='props')
 		q-td(:props='props')

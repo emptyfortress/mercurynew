@@ -8,7 +8,7 @@ import { animations, state } from '@formkit/drag-and-drop'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import Trash from '@/components/common/Trash.vue'
 import { uid, useQuasar } from 'quasar'
-import IconApp from '@/components/icons/IconApp.vue'
+import IconApp from '@/components/icons/list/list/IconApp.vue'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
 const myapps = useApps()
@@ -142,11 +142,12 @@ const onDropPlus = () => {
 		over: false,
 		version: '0.0.0',
 		author: 'Орлов П.С.',
-		created: '22.09.2022',
+		created: 1755513353568,
 		published: 0,
 		group: 1,
 		list: [],
 		pic: IconApp1,
+		master: false,
 		versions: [
 			{
 				id: 0,
@@ -154,8 +155,8 @@ const onDropPlus = () => {
 				value: 'Базовая версия',
 				descr: 'Стартовая версия приложения',
 				author: 'Орлов П.С.',
-				created: '22.10.24 14:00',
-				modified: '',
+				created: 1755513353568,
+				modified: null,
 				published: 0,
 				current: true,
 			},
@@ -203,11 +204,12 @@ const create = (e: any) => {
 		over: false,
 		version: '0.0.0',
 		author: 'Орлов П.С.',
-		created: '22.09.2022',
+		created: 1755513353568,
 		published: 0,
 		group: 1,
 		list: [],
 		pic: IconApp1,
+		master: true,
 		versions: [
 			{
 				id: 0,
@@ -215,8 +217,8 @@ const create = (e: any) => {
 				value: 'Базовая версия',
 				descr: 'Стартовая версия приложения',
 				author: 'Орлов П.С.',
-				created: '22.10.24 14:00',
-				modified: '',
+				created: 1755513353568,
+				modified: null,
 				published: 0,
 				current: true,
 			},

@@ -5,8 +5,7 @@ interface App {
 	expand: boolean
 	version: string
 	author: string
-	created: string
-	modify?: string
+	created: number
 	uploaded?: string
 	group: number
 	published: number
@@ -14,6 +13,7 @@ interface App {
 	pic?: any
 	versions: Ver[]
 	multiuser?: boolean
+	master: boolean
 }
 
 interface Ver {
@@ -21,8 +21,8 @@ interface Ver {
 	label: string
 	value: string
 	author: string
-	created: string
-	modified: date
+	created: number
+	modified: number | null
 	published: number
 	pubDate?: string
 	descr: string

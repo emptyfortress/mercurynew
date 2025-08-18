@@ -25,10 +25,11 @@ const create = (e: string) => {
 		expand: false,
 		version: '0.0.0',
 		author: 'Орлов П.С.',
-		created: '22.09.2022',
+		created: 1755513353568,
 		published: 0,
 		group: 1,
 		list: [],
+		master: true,
 		versions: [
 			{
 				id: 0,
@@ -36,8 +37,8 @@ const create = (e: string) => {
 				value: 'Базовая версия',
 				descr: 'Стартовая версия приложения',
 				author: 'Орлов П.С.',
-				created: '22.10.24 14:00',
-				modified: '',
+				created: 1755513353568,
+				modified: null,
 				published: 0,
 				current: true,
 			},

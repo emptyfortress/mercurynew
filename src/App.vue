@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, watch, shallowRef } from 'vue'
+import { ref, computed, shallowRef } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
-// import { useApps } from '@/stores/apps'
-import { useIdle, useCounter } from '@vueuse/core'
-import { useMotion } from '@vueuse/motion'
+import { useApps } from '@/stores/apps'
+// import { useIdle, useCounter } from '@vueuse/core'
+// import { useMotion } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
 
 const route = useRoute()
 const router = useRouter()
-// const myapps = useApps()
+const myapps = useApps()
 
 const rightDrawer = ref(false)
 
@@ -85,77 +85,77 @@ const toggleBug = () => {
 	helpMode.value = false
 	rightDrawer.value = !rightDrawer.value
 }
-const toggleHelp = () => {
-	helpMode.value = true
-	rightDrawer.value = !rightDrawer.value
-}
+// const toggleHelp = () => {
+// 	helpMode.value = true
+// 	rightDrawer.value = !rightDrawer.value
+// }
 
-const buttonRef = ref<HTMLButtonElement | null>(null)
-const isAnimating = ref(false)
+// const buttonRef = ref<HTMLButtonElement | null>(null)
+// const isAnimating = ref(false)
 
-const { idle, reset } = useIdle(5000)
-const { inc, count } = useCounter()
+// const { idle, reset } = useIdle(5000)
+// const { inc, count } = useCounter()
 
-const attention = computed(() => {
-	return isAnimating.value && idle.value
-})
+// const attention = computed(() => {
+// 	return isAnimating.value && idle.value
+// })
 
-watch(idle, async (idleValue) => {
-	if (idleValue) {
-		inc()
-		setTimeout(() => {
-			reset()
-		}, 5000)
+// watch(idle, async (idleValue) => {
+// 	if (idleValue) {
+// 		inc()
+// 		setTimeout(() => {
+// 			reset()
+// 		}, 5000)
+//
+// 		if (count.value == 3 && isAnimating.value) {
+// 			count.value = 0
+// 			reset()
+// 			jump()
+// 		}
+// 	}
+// })
 
-		if (count.value == 3 && isAnimating.value) {
-			count.value = 0
-			reset()
-			jump()
-		}
-	}
-})
-
-const { apply } = useMotion(buttonRef, {
-	enter: {
-		x: 0,
-		rotate: 0,
-		scale: 1,
-	},
-	fly1: {
-		x: -600,
-		scale: 1,
-		rotate: 0,
-	},
-	fly2: {
-		scale: 2,
-		rotate: 0,
-	},
-	fly3: {
-		scale: 1,
-		rotate: 0,
-	},
-	fly4: {
-		rotate: 720,
-		duration: 1000,
-	},
-	fly5: {
-		x: 0,
-		rotate: 0,
-	},
-})
+// const { apply } = useMotion(buttonRef, {
+// 	enter: {
+// 		x: 0,
+// 		rotate: 0,
+// 		scale: 1,
+// 	},
+// 	fly1: {
+// 		x: -600,
+// 		scale: 1,
+// 		rotate: 0,
+// 	},
+// 	fly2: {
+// 		scale: 2,
+// 		rotate: 0,
+// 	},
+// 	fly3: {
+// 		scale: 1,
+// 		rotate: 0,
+// 	},
+// 	fly4: {
+// 		rotate: 720,
+// 		duration: 1000,
+// 	},
+// 	fly5: {
+// 		x: 0,
+// 		rotate: 0,
+// 	},
+// })
 
 // const off = () => {
 // 	isAnimating.value = false
 // 	// toggleHelp()
 // }
-const jump = async () => {
-	await apply('fly1')
-	await apply('fly2')
-	await apply('fly3')
-	await apply('fly4')
-	await apply('fly5')
-	reset()
-}
+// const jump = async () => {
+// 	await apply('fly1')
+// 	await apply('fly2')
+// 	await apply('fly3')
+// 	await apply('fly4')
+// 	await apply('fly5')
+// 	reset()
+// }
 
 const $q = useQuasar()
 const refresh = () => {
@@ -198,7 +198,7 @@ const footerState = computed(() => {
 })
 
 const action = () => {
-	router.push(`/${app.value.id}`)
+	router.push(`/${myapps.currentApp?.id}`)
 }
 </script>
 
@@ -212,7 +212,7 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
-			.group(v-if='route.name !== "home" && route.name !== "version"')
+			.group(v-if='route.name !== "home" && route.name !== "version" && route.name !== "assistent"')
 				q-avatar(size='28px' color="positive" text-color="white" @click='refresh') РЛ
 					q-tooltip Роза Львовна
 				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК

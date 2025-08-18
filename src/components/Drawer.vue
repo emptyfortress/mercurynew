@@ -4,12 +4,15 @@ import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
+// import { myApps } from '@/stores/tree1'
+import { useApps } from '@/stores/apps'
 //
 // const iconModules = import.meta.glob('@/components/icons/**/*.vue')
 const iconModules: any = import.meta.glob('@/components/icons/list/*.vue')
 
 const mini = useStorage('mini', true)
 const app = useStorage('app', localStorage)
+const myapps = useApps()
 
 const router = useRouter()
 const route = useRoute()
@@ -89,6 +92,9 @@ watch(
 		loadIcon(newFile)
 	}
 )
+const toHome = () => {
+	router.push(`/${myapps.currentApp?.id}`)
+}
 </script>
 
 <template lang="pug">
@@ -98,8 +104,17 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
-		@click="router.back()" size="16px" color='primary') 
+		@click="toHome" size="16px" color='primary') 
 		component(:is="iconComp")
+
+	q-btn.back1(
+		v-if='route.meta.back1',
+		round,
+		unelevated,
+		color="primary",
+		@click="router.back()",
+		icon="mdi-arrow-left",
+		) 
 
 	.toolbar(v-if="tool"
 		v-motion
@@ -164,6 +179,10 @@ a.router-link-active .q-item {
 		width: 32px;
 		height: 32px;
 	}
+}
+.back1 {
+	position: absolute;
+	top: 1.8rem;
 }
 .house {
 	position: absolute;

@@ -5,8 +5,11 @@ import StepAttribute from '@/components/StepAttribute.vue'
 import StepStatus from '@/components/StepStatus.vue'
 import { useRouter } from 'vue-router'
 import { useStorage } from '@vueuse/core'
+import { useApps } from '@/stores/apps'
+import { date } from 'quasar'
 
 const router = useRouter()
+const myapps = useApps()
 
 const step = ref(1)
 
@@ -17,7 +20,10 @@ const setBt = () => {
 	button.value.select()
 }
 const temp = ref('')
+
 const navigate = () => {
+	myapps.currentApp!.master = false
+	myapps.currentApp!.versions[0].modified = Date.now()
 	router.push('/process')
 }
 </script>

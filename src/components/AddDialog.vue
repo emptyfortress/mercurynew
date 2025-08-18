@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, computed, nextTick } from 'vue'
-import { date } from 'quasar'
+import { ref, watch, nextTick } from 'vue'
+// import { date } from 'quasar'
 
 const modelValue = defineModel<boolean>()
 
@@ -17,10 +17,10 @@ const emit = defineEmits(['create'])
 const model = ref('')
 const model1 = ref('')
 
-const formattedString = computed(() => {
-	return date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
-	// return date.formatDate(timeStamp, 'YYYY-MM-DDTHH:mm:ss.SSSZ')
-})
+// const formattedString = computed(() => {
+// 	return date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+// 	// return date.formatDate(timeStamp, 'YYYY-MM-DDTHH:mm:ss.SSSZ')
+// })
 
 const submitForm = () => {
 	emit('create', {
@@ -28,7 +28,8 @@ const submitForm = () => {
 		label: model.value,
 		descr: model1.value,
 		author: 'Орлов П.С.',
-		created: formattedString.value,
+		created: Date.now(),
+		// created: formattedString.value,
 		modified: '',
 		published: 0,
 		current: true,
