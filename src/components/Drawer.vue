@@ -4,10 +4,8 @@ import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
-// import { myApps } from '@/stores/tree1'
 import { useApps } from '@/stores/apps'
 //
-// const iconModules = import.meta.glob('@/components/icons/**/*.vue')
 const iconModules: any = import.meta.glob('@/components/icons/list/*.vue')
 
 const mini = useStorage('mini', true)
@@ -63,31 +61,31 @@ const calcWidth = computed(() => {
 	return mini.value ? 60 : 130
 })
 
-// const iconComp = ref(null)
 const iconComp = ref<Component | null>(null)
 
-async function loadIcon(picFile?: string) {
-	if (!picFile) {
+async function loadIcon(iconName?: string) {
+	if (!iconName) {
 		iconComp.value = null
 		return
 	}
-	const relativeFromSrc = picFile.split('/src/')[1]
-	const key = `/src/${relativeFromSrc}`
+
+	// ключ формируется по имени файла, например IconTravel.vue
+	const key = `/src/components/icons/list/${iconName}.vue`
 
 	if (iconModules[key]) {
 		iconComp.value = (await iconModules[key]()).default
 	} else {
-		console.warn(`Иконка по ключу ${key} не найдена`)
+		console.warn(`Иконка "${iconName}" не найдена`)
 		iconComp.value = null
 	}
 }
 
 // Загружаем при первом рендере
-loadIcon(app.value?.pic?.__file)
+loadIcon(app.value?.pic?.name)
 
 // Следим за изменениями app
 watch(
-	() => app.value?.pic?.__file,
+	() => app.value?.pic?.name,
 	(newFile) => {
 		loadIcon(newFile)
 	}
