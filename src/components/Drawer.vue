@@ -108,8 +108,8 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 	q-btn.back1(
 		v-if='route.meta.back1',
 		round,
-		unelevated,
-		color="primary",
+		color="white",
+		text-color="primary"
 		@click="router.back()",
 		icon="mdi-arrow-left",
 		) 
