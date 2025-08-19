@@ -71,8 +71,11 @@ const $q = useQuasar()
 
 const publish = (ver: number) => {
 	myapps.curVersion(props.item).published = ver
-	myapps.curVersion(props.item).pubDate = Date.now().toString()
-	// myapps.curVersion(props.item).pubDate = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
+	myapps.curVersion(props.item).pubDate = Date.now()
+	props.item.published = ver
+	props.item.publishDate = Date.now()
+
+	props.item.master = false
 
 	setTimeout(() => {
 		if (ver == 2) {
@@ -136,7 +139,6 @@ const create = (e: any) => {
 	myapps.addVersion(props.item.versions, e)
 	router.push('/process')
 	myapps.curVersion(props.item).modified = Date.now()
-	// myapps.curVersion(props.item).modified = date.formatDate(Date.now(), 'DD.MM.YY HH:mm')
 
 	setTimeout(() => {
 		$q.notify({
@@ -155,6 +157,10 @@ const state = computed(() => {
 const showDate = (val: number | null) => {
 	return val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''
 }
+
+const localPubDate = computed(() => {
+	return date.formatDate(myapps.curVersion(props.item).pubDate, 'DD.MM.YY HH:mm')
+})
 </script>
 
 <template lang="pug">
@@ -220,7 +226,7 @@ const showDate = (val: number | null) => {
 								q-icon(name="mdi-plus-box-multiple-outline")
 							q-item-section Дублировать приложение
 
-						q-item(clickable @click.stop='remove(props.item)' v-close-popup)
+						q-item(clickable @click='remove(props.item)' v-close-popup)
 							q-item-section(side)
 								q-icon(name="mdi-delete-outline")
 							q-item-section Удалить приложение
@@ -230,6 +236,11 @@ const showDate = (val: number | null) => {
 					div Последняя&nbsp;проверка:
 					div {{myapps.curVersion(props.item).label}}&nbsp;--&nbsp;{{myapps.curVersion(props.item).tested}}
 					.link DV-test
+
+			.check(v-if='myapps.curVersion(props.item).published == 2')
+					div Последняя&nbsp;публикация:
+					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }}
+					.link DV-prod
 
 		q-tab-panel(name='publ')
 			.newgrid
@@ -262,7 +273,7 @@ const showDate = (val: number | null) => {
 
 			.check(v-if='myapps.curVersion(props.item).published == 2')
 					div Последняя&nbsp;публикация:
-					div {{myapps.curVersion(props.item).label}} -- {{formattedString}}
+					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }}
 					.link DV-prod
 
 		q-tab-panel(name='vers' style='padding-right: 0; padding-left: 0')

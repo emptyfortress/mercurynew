@@ -9,6 +9,7 @@ interface App {
 	uploaded?: string
 	group: number
 	published: number
+	publishDate?: number
 	list: App[]
 	pic?: any
 	versions: Ver[]
@@ -24,7 +25,7 @@ interface Ver {
 	created: number
 	modified: number | null
 	published: number
-	pubDate?: string
+	pubDate?: number
 	descr: string
 	current: boolean
 	tested?: string

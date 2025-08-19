@@ -151,6 +151,20 @@ const remove = (el: App) => {
 	if (ind !== undefined && el.published == 0) {
 		tapes.value?.splice(ind, 1)
 		expanded.value = false
+		$q.notify({
+			message: 'Приложение удалено',
+			color: 'negative',
+			icon: 'mdi-check-bold',
+			actions: [
+				{
+					label: 'Отмена',
+					color: 'white',
+					handler: () => {
+						/* ... */
+					},
+				},
+			],
+		})
 	}
 	if (ind !== undefined && el.published == 2) {
 		mode.value = 'version'

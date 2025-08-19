@@ -198,7 +198,7 @@ const lastPublication = computed(() => {
 
 const pubDate = computed(() => {
 	let tmp = props.versions.find((el) => el.published == 2)
-	if (tmp) return tmp.pubDate
+	if (tmp) return date.formatDate(tmp.pubDate, 'DD.MM.YY HH:mm')
 })
 </script>
 
