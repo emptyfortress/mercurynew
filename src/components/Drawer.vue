@@ -104,6 +104,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
 		@click="toHome" size="16px" color='primary') 
 		component(:is="iconComp")
+		q-tooltip( anchor="center end" self="center start") Вернуться
 
 	q-btn.back1(
 		v-if='route.meta.back1',

@@ -208,6 +208,7 @@ q-layout(view='hHh LpR fFf')
 		q-toolbar
 			q-btn(dense flat round @click='nav')
 				img(src='@/assets/img/kp_logo.svg')
+				q-tooltip Домой
 			q-toolbar-title( @click='nav')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
@@ -219,6 +220,7 @@ q-layout(view='hHh LpR fFf')
 					q-tooltip Сирень Крокодиловна
 
 				q-btn.save(unelevated color="positive" label="Завершить" icon="mdi-check-bold" @click="action")
+					q-tooltip Завершить настройку и вернуться
 
 			.lang
 				component(:is='currentLang.icon')
