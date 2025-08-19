@@ -8,7 +8,7 @@ import RDrawer from '@/components/RDrawer.vue'
 import { useApps } from '@/stores/apps'
 // import { useIdle, useCounter } from '@vueuse/core'
 // import { useMotion } from '@vueuse/motion'
-import { useQuasar } from 'quasar'
+import { useQuasar, date } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
 
@@ -200,6 +200,13 @@ const footerState = computed(() => {
 const action = () => {
 	router.push(`/${myapps.currentApp?.id}`)
 }
+
+const localCreated = computed(() => {
+	return date.formatDate(app.value.versions[0].created, 'DD.MM.YY HH:mm')
+})
+const localChanged = computed(() => {
+	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY HH:mm')
+})
 </script>
 
 <template lang="pug">
@@ -254,8 +261,8 @@ q-layout(view='hHh LpR fFf')
 		.cent
 			div Версия: {{ app.versions[0].label }}
 			div Автор: {{ app.versions[0].author }}
-			div Создано: {{ app.versions[0].created }}
-			div Изменено: {{ app.versions[0].modified }} (Роза Львовна)
+			div Создано: {{ localCreated }}
+			div Изменено: {{ localChanged }} (Роза Львовна)
 			div Статус: Черновик
 			div
 				q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
