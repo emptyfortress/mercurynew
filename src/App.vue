@@ -227,7 +227,7 @@ q-layout(view='hHh LpR fFf')
 					q-tooltip Сирень Крокодиловна
 
 				q-btn.save(unelevated color="positive" label="Завершить" icon="mdi-check-bold" @click="action")
-					q-tooltip Завершить настройку и вернуться
+					q-tooltip Завершить настройку
 
 			.lang
 				component(:is='currentLang.icon')
