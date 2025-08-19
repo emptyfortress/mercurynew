@@ -217,7 +217,7 @@ const localPubDate = computed(() => {
 
 				template(v-else)
 					q-btn(unelevated color="primary" icon='mdi-eye-outline' label='Просмотр' @click="navigate1" ) 
-					q-btn(unelevated color="primary" icon='mdi-plus-circle-outline' label='Создать версию' @click="add" ) 
+					q-btn(outline color="primary" icon='mdi-plus-circle-outline' label='Создать версию' @click="add" ) 
 
 				q-btn(flat round dense icon="mdi-dots-horizontal" color="primary" @click.stop='') 
 					q-menu(anchor="bottom middle" self="top middle")
@@ -231,7 +231,7 @@ const localPubDate = computed(() => {
 								q-icon(name="mdi-delete-outline")
 							q-item-section Удалить приложение
 
-			.q-mt-md(v-if='letcheck')
+			.q-mt-md(v-if='letcheck && myapps.curVersion(props.item).published !== 2')
 				.check
 					div Последняя&nbsp;проверка:
 					div {{myapps.curVersion(props.item).label}}&nbsp;--&nbsp;{{myapps.curVersion(props.item).tested}}

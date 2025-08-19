@@ -225,6 +225,7 @@ q-table(flat
 			.caption(v-if='props.row.published == 0') Черновик
 			.caption(v-if='props.row.published == 2' )
 				.pub Опубликовано
+				.pub {{ pubDate }}
 			.caption(v-if='props.row.published == 1' )
 				div Ожидает публикации
 
