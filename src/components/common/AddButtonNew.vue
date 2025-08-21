@@ -236,7 +236,7 @@ function createGroup(): void {
 						autofocus
 						dense
 						clearable
-						filled
+						outlined
 						:rules="[val => !!val || 'Это обязательное поле']"
 						hint='Название должно быть уникальным'
 						)
@@ -249,7 +249,7 @@ function createGroup(): void {
 							v-model="model1"
 							dense
 							clearable
-							filled
+							outlined
 							hint='Описание не обязательно'
 							)
 
