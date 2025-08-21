@@ -383,3 +383,17 @@
 		cursor: not-allowed;
 	}
 }
+
+// focus on inputs
+.q-field__control:before {
+	background: var(--bgLight);
+}
+.q-field--outlined.q-field--focused .q-field__control:after {
+	box-shadow: 0 0 3px 2px var(--dvviolet);
+}
+
+// for buttons
+.q-btn:focus:before {
+	outline: 1px solid white;
+	box-shadow: 0 0 4px 3px var(--dvviolet);
+}
