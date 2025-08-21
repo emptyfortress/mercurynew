@@ -113,6 +113,9 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 		text-color="primary"
 		@click="router.back()",
 		icon="mdi-arrow-left",
+		v-motion,
+		:initial='{ x: -200, opacity: 0 }',
+		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }',
 		) 
 
 	.toolbar(v-if="tool"

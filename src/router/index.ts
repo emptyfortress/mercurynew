@@ -112,8 +112,9 @@ const router = createRouter({
 			name: 'form',
 			component: () => import('@/views/Form.vue'),
 			meta: {
-				toolbar: true,
-				back: true,
+				toolbar: false,
+				back: false,
+				back1: true,
 				count: 21,
 				footer: true,
 			},
