@@ -216,7 +216,7 @@ q-layout(view='hHh LpR fFf')
 			q-btn(dense flat round @click='nav')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
-			q-toolbar-title( @click='nav')
+			q-toolbar-title
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
@@ -257,7 +257,7 @@ q-layout(view='hHh LpR fFf')
 					)
 					component(:is="Component")
 
-	q-footer.footer(v-model='footerState')
+	q-footer.footer(v-if='footerState')
 		.cent
 			div Версия: {{ app.versions[0].label }}
 			div Автор: {{ app.versions[0].author }}
@@ -363,9 +363,6 @@ nav a:first-of-type {
 	.q-avatar {
 		cursor: pointer;
 	}
-}
-.q-toolbar__title {
-	cursor: pointer;
 }
 .save {
 	margin-left: 3rem;
