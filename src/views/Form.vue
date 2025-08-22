@@ -7,6 +7,12 @@ import { useMotion } from '@vueuse/motion'
 import FormEditor from '@/components/FormEditor.vue'
 import { useControl } from '@/stores/controls'
 import Toolbar from '@/components/common/Toolbar.vue'
+import { useTitle } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
+
+const app = useStorage('app', localStorage)
+const title = useTitle()
+title.value = 'Формы: ' + app.value.label
 
 const control = useControl()
 const panels = usePanels()

@@ -8,6 +8,14 @@ import { uid, useQuasar } from 'quasar'
 import ItemForm from '@/components/ItemForm.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
+import TrashSimple from '@/components/common/TrashSimple.vue'
+// import { useList } from '@/stores/list'
+import { useTitle } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
+
+const app = useStorage('app', localStorage)
+const title = useTitle()
+title.value = 'Формы: ' + app.value.label
 
 const router = useRouter()
 const route = useRoute()

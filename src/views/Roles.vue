@@ -8,7 +8,13 @@ import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import ItemRole from '@/components/ItemRole.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
-// import TrashSimple from '@/components/common/TrashSimple.vue'
+import TrashSimple from '@/components/common/TrashSimple.vue'
+import { useTitle } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
+
+const app = useStorage('app', localStorage)
+const title = useTitle()
+title.value = 'Роли: ' + app.value.label
 
 const router = useRouter()
 const route = useRoute()

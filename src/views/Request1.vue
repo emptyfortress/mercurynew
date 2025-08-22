@@ -16,6 +16,12 @@ import { useKeys } from '@/stores/keys'
 import { useRoute } from 'vue-router'
 import { useList } from '@/stores/list'
 import { useQuasar } from 'quasar'
+import { useTitle } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
+
+const app = useStorage('app', localStorage)
+const title = useTitle('Папки: ' + app.value.label)
+// title.value = 'Папки: ' + app.value.label
 
 const list = useList()
 const route = useRoute()
