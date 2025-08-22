@@ -5,6 +5,12 @@ import { useMotion } from '@vueuse/motion'
 import { usePanels } from '@/stores/panels'
 import DiagramSvg from '@/components/DiagramSvg.vue'
 import Look from '@/components/Look.vue'
+import { useTitle } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
+
+const app = useStorage('app', localStorage)
+const title = useTitle()
+title.value = 'Процесс: ' + app.value.label
 
 const editor1 = ref<HTMLElement>()
 
