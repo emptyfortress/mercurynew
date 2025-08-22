@@ -5,7 +5,7 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
-import { useApps } from '@/stores/apps'
+// import { useApps } from '@/stores/apps'
 import { useIdle, useCounter } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
@@ -14,7 +14,7 @@ import CifGb from '@/components/icons/CifGb.vue'
 
 const route = useRoute()
 const router = useRouter()
-const myapps = useApps()
+// const myapps = useApps()
 
 const rightDrawer = ref(false)
 
@@ -201,7 +201,7 @@ q-layout(view='hHh LpR fFf')
 		q-toolbar
 			q-btn(dense flat round @click='nav')
 				img(src='@/assets/img/kp_logo.svg')
-			q-toolbar-title( @click='nav')
+			q-toolbar-title()
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
@@ -333,9 +333,6 @@ nav a:first-of-type {
 	.q-avatar {
 		cursor: pointer;
 	}
-}
-.q-toolbar__title {
-	cursor: pointer;
 }
 .save {
 	margin-left: 3rem;
