@@ -225,7 +225,7 @@ const router = createRouter({
 			name: 'vars',
 			component: () => import('@/views/Comps.vue'),
 			meta: {
-				toolbar: true,
+				toolbar: false,
 				back: false,
 				count: 30,
 			},
