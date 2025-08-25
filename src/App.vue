@@ -7,7 +7,7 @@ import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
 import { useApps } from '@/stores/apps'
 // import { useIdle, useCounter } from '@vueuse/core'
-// import { useMotion } from '@vueuse/motion'
+import { useMotions } from '@vueuse/motion'
 import { useQuasar, date } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
@@ -15,6 +15,7 @@ import CifGb from '@/components/icons/CifGb.vue'
 const route = useRoute()
 const router = useRouter()
 const myapps = useApps()
+const motions = useMotions()
 
 const rightDrawer = ref(false)
 
@@ -207,6 +208,11 @@ const localCreated = computed(() => {
 const localChanged = computed(() => {
 	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY HH:mm')
 })
+
+const save = ref(true)
+const close = () => {
+	save.value = !save.value
+}
 </script>
 
 <template lang="pug">
@@ -265,9 +271,20 @@ q-layout(view='hHh LpR fFf')
 			div Создано: {{ localCreated }}
 			div Изменено: {{ localChanged }} (Роза Львовна)
 			div Статус: Черновик
-			div
+			.saved
 				q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
 				|Сохранено
+				transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
+					.bubble(v-if='save'
+						v-motion='"cube"'
+						:initial="{ y: 200, opacity: 0, }"
+						:enter="{ y: 0, opacity: 1, }"
+						:leave="{ y: 200, opacity: 0, }"
+						:delay=4600
+					)
+						.text-center
+							|Сохранение данных происходит автоматически во всех редакторах.
+							q-btn(flat label="Понятно" @click.stop="close") 
 
 </template>
 
@@ -392,5 +409,32 @@ nav a:first-of-type {
 		gap: 3rem;
 		font-size: 0.8rem;
 	}
+}
+.saved {
+	position: relative;
+}
+.bubble {
+	width: 34ch;
+	background: $positive;
+	position: absolute;
+	top: -108px;
+	left: -130px;
+	border-radius: 0.4rem;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+	padding: 0.5rem;
+	font-size: 0.9rem;
+	color: white;
+}
+.bubble::after {
+	content: '';
+	position: absolute;
+	left: 50%;
+	bottom: -10px; /* чтобы хвостик «вырос» наружу */
+	transform: translateX(-50%);
+	width: 0;
+	height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 10px solid $positive; /* ▲ треугольник вверх */
 }
 </style>
