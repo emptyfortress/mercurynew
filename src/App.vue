@@ -280,7 +280,7 @@ q-layout(view='hHh LpR fFf')
 						:initial="{ y: 200, opacity: 0, }"
 						:enter="{ y: 0, opacity: 1, }"
 						:leave="{ y: 200, opacity: 0, }"
-						:delay=4600
+						:delay=2600
 					)
 						.text-center
 							|Сохранение данных происходит автоматически во всех редакторах.
