@@ -4,7 +4,7 @@ import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
-import RDrawer from '@/components/RDrawer.vue'
+// import RDrawer from '@/components/RDrawer.vue'
 // import { useApps } from '@/stores/apps'
 import { useIdle, useCounter } from '@vueuse/core'
 import { useMotion } from '@vueuse/motion'
@@ -221,12 +221,12 @@ q-layout(view='hHh LpR fFf')
 								component(:is='item.icon')
 							q-item-section {{ item.label }}
 
-			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
+			// q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
 			// q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
 
 	Drawer
-	RDrawer(v-model="rightDrawer" :help='helpMode')
+	// RDrawer(v-model="rightDrawer" :help='helpMode')
 
 	q-page-container
 		#cont
