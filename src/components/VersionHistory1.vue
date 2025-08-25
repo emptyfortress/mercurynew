@@ -105,7 +105,7 @@ const add = () => {
 .grid
 	div
 		.hd1
-			img.q-mr-sm(src="@/assets/img/kp-favicon.svg", width="16" height="16")
+			img.q-mr-sm(src="@/assets/img/favicon.svg", width="16" height="16")
 			|Конструктор
 		.constructor
 

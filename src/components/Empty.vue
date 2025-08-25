@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import IconFaceMask from '@/components/icons/IconFaceMask.vue'
+import BxBxsFaceMask from '@/components/icons/BxBxsFaceMask.vue'
 
 const props = defineProps({
 	mode: {
@@ -20,7 +20,7 @@ const txt = computed(() => {
 
 <template lang="pug">
 .empt
-	IconFaceMask.big
+	BxBxsFaceMask.big
 	div {{ txt }} не настроены.
 </template>
 

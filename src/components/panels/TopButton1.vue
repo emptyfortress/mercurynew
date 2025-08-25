@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import IconSearch from '@/components/icons/IconSearch.vue'
+import TablerSearch from '@/components/icons/TablerSearch.vue'
 
 const modelValue = defineModel()
 
@@ -16,7 +16,7 @@ const close = () => {
 	:enter='{ opacity: 1 }'
 	:delay='600')
 	.zg
-		IconSearch.ic()
+		TablerSearch.ic()
 		| Форма запроса
 </template>
 

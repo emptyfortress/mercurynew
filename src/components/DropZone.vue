@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import { ref } from 'vue'
-import IconDragHere from '@/components/icons/IconDragHere.vue'
+import IconParkOutlineHandDrag from '@/components/icons/IconParkOutlineHandDrag.vue'
 
 // const active = ref()
 
@@ -9,7 +9,7 @@ import IconDragHere from '@/components/icons/IconDragHere.vue'
 <template lang="pug">
 // .drop(:class='{ active: active }' @dragover.prevent @dragenter="active = true" @dragleave="active = false")
 .drop
-	IconDragHere.big
+	IconParkOutlineHandDrag.big
 	.text-h6 Форма не настроена
 	.text-caption Перетащите сюда элемент из библиотеки слева.
 

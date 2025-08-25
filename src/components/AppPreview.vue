@@ -2,8 +2,8 @@
 import { ref, } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useRouter } from 'vue-router'
-import IconFlag from '@/components/icons/IconFlag.vue'
-import IconEntrance from '@/components/icons/IconEntrance.vue'
+import LineiconsFlag2 from '@/components/icons/LineiconsFlag2.vue'
+import IconamoonEnter from '@/components/icons/IconamoonEnter.vue'
 import VersionTable from '@/components/VersionTable.vue'
 
 const myapps = useApps()
@@ -66,11 +66,11 @@ div(
 		.myrow
 			.bt(@click.stop='navigate' v-if='props.item.version == "0.0.0"')
 				div
-					IconFlag.ic
+					LineiconsFlag2.ic
 					div Помощник по настройке
 			.bt(@click.stop='navigate1')
 				div
-					IconEntrance.ic
+					IconamoonEnter.ic
 					div Перейти к приложению
 
 

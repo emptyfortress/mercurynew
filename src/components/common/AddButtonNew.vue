@@ -4,7 +4,7 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import IconList from '@/components/IconList.vue'
 import IconRoleList from '@/components/IconRoleList.vue'
-import IconApp from '@/components/icons/list/IconApp.vue'
+import MdiApplicationBracesOutline from '@/components/icons/list/MdiApplicationBracesOutline.vue'
 
 const props = defineProps({
 	mode: {
@@ -14,7 +14,7 @@ const props = defineProps({
 	},
 })
 
-const IconApp1 = markRaw(IconApp)
+const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 
 const header = computed(() => {
 	switch (props.mode) {
@@ -108,7 +108,7 @@ const calcFinish = computed(() => {
 	return trans.value ? second : { opacity: 1, rotate: 0, scale: 1 }
 })
 
-const icon = ref(IconApp1)
+const icon = ref(MdiApplicationBracesOutline1)
 const avatar = ref('src/assets/img/avatar/avatar1.svg')
 const setIcon = (e: any) => {
 	icon.value = e

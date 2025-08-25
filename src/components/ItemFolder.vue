@@ -5,7 +5,7 @@ import { motion } from 'motion-v'
 // import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 // import RoleRulesDialog from '@/components/RoleRulesDialog.vue'
-import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
+import MdiFolderSearchOutline from '@/components/icons/MdiFolderSearchOutline.vue'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<any[]>('tapes')
@@ -106,7 +106,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:class='calcClass(item, index)'
 )
 
-	IconFolderSearch.im
+	MdiFolderSearchOutline.im
 	.hg
 		span(@click='stopClick(item, $event)') {{ item.label }}
 			q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope")

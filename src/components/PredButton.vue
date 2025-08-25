@@ -5,7 +5,7 @@ import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import PredContent from '@/components/PredContent.vue'
-import IconTableEdit from '@/components/icons/IconTableEdit.vue'
+import MaterialSymbolsTableEditOutline from '@/components/icons/MaterialSymbolsTableEditOutline.vue'
 
 const panels = usePanels()
 
@@ -53,7 +53,7 @@ const close = () => {
 		color="primary"
 		size='24px')
 
-	// IconTableEdit.ic(
+	// MaterialSymbolsTableEditOutline.ic(
 	// 	v-if='!panels.pred',
 	// 	v-motion
 	// 	:initial='{ rotate: "0deg" }'

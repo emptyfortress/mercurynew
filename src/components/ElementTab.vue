@@ -4,7 +4,7 @@ import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import AddFormButton from '@/components/common/AddFormButton.vue'
 import { state } from '@formkit/drag-and-drop'
 import { Kind } from '@/types/enum'
-import IconText from '@/components/icons/IconText.vue'
+import MaterialSymbolsInsertTextRounded from '@/components/icons/MaterialSymbolsInsertTextRounded.vue'
 import MdiCalendar from '@/components/icons/MdiCalendar.vue'
 import MaterialSymbolsAccountCircle from '@/components/icons/MaterialSymbolsAccountCircle.vue'
 import DeleteDialog from '@/components/DeleteDialog.vue'
@@ -40,7 +40,7 @@ const elements = ref([
 		caption: 'Свободный комментарий',
 		selected: false,
 		type: Kind.Text,
-		pic: IconText,
+		pic: MaterialSymbolsInsertTextRounded,
 	},
 ])
 

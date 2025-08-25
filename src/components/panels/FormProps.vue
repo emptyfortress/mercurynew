@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import IconAttribute from '@/components/icons/IconAttribute.vue'
-// import IconRelation from '@/components/icons/IconRelation.vue'
+import IcBaselineDriveFileRenameOutline from '@/components/icons/IcBaselineDriveFileRenameOutline.vue'
+// import CarbonPropertyRelationship from '@/components/icons/CarbonPropertyRelationship.vue'
 import FormPropsMain from '@/components/panels/FormPropsMain.vue'
 
 const item1 = ref(true)
@@ -13,7 +13,7 @@ q-list(separator)
 	q-expansion-item(v-model="item1")
 		template(v-slot:header)
 			q-item-section(side)
-				IconAttribute.ic
+				IcBaselineDriveFileRenameOutline.ic
 			q-item-section.zg Атрибуты формы
 
 		// q-list.prop
@@ -23,7 +23,7 @@ q-list(separator)
 	// q-expansion-item(v-model="item2")
 		template(v-slot:header)
 			q-item-section(side)
-				IconRelation.ic
+				CarbonPropertyRelationship.ic
 			q-item-section.zg Дополнительно
 </template>
 

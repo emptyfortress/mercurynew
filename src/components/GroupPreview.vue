@@ -6,8 +6,8 @@ import { Container, Draggable } from 'vue3-smooth-dnd'
 import { applyDrag } from '@/utils/utils'
 import Trash from '@/components/common/Trash.vue'
 import AppPreview from '@/components/AppPreview.vue'
-import IconMicrophone from '@/components/icons/IconMicrophone.vue'
-import IconPresentation from '@/components/icons/IconPresentation.vue'
+import PhMicrophoneStageFill from '@/components/icons/PhMicrophoneStageFill.vue'
+import MingcutePresentation3Fill from '@/components/icons/MingcutePresentation3Fill.vue'
 // import AddButton from '@/components/common/AddButton.vue'
 
 gsap.registerPlugin(Flip)
@@ -31,7 +31,7 @@ const arr = ref([
 		created: 1755513353568,
 		published: 0,
 		group: 1,
-		pic: IconPresentation,
+		pic: MingcutePresentation3Fill,
 		list: [],
 		master: false,
 		versions: [
@@ -58,7 +58,7 @@ const arr = ref([
 		created: 1755513353568,
 		published: 0,
 		group: 1,
-		pic: IconMicrophone,
+		pic: PhMicrophoneStageFill,
 		list: [],
 		master: false,
 		versions: [

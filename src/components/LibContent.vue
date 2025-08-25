@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import IconPallete from '@/components/icons/IconPallete.vue'
-import IconField from '@/components/icons/IconField.vue'
+import SolarPallete2Linear from '@/components/icons/SolarPallete2Linear.vue'
+import IconoirInputField from '@/components/icons/IconoirInputField.vue'
 import CommonElements from '@/components/CommonElements.vue'
 import ElementTab from '@/components/ElementTab.vue'
 
@@ -14,7 +14,7 @@ q-list(separator)
 	q-expansion-item(v-model="item1")
 		template(v-slot:header)
 			q-item-section(side)
-				IconPallete.ic
+				SolarPallete2Linear.ic
 			q-item-section.zg Оформление
 
 		CommonElements
@@ -22,7 +22,7 @@ q-list(separator)
 	q-expansion-item(v-model="item2")
 		template(v-slot:header)
 			q-item-section(side)
-				IconField.ic
+				IconoirInputField.ic
 			q-item-section.zg Поля
 
 		ElementTab

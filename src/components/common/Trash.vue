@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useMotions } from '@vueuse/motion'
-import IconTrash from '@/components/icons/IconTrash.vue'
+import MdiDeleteEmptyOutline from '@/components/icons/MdiDeleteEmptyOutline.vue'
 
 const props = defineProps({
 	group: {
@@ -77,7 +77,7 @@ transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 					@drop='onDrop'
 					:class='{ over: over2 }'
 					)
-					IconTrash
+					MdiDeleteEmptyOutline
 					label
 						|Удалить
 						span.q-ml-sm(v-if='props.group') навсегда

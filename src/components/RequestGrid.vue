@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, h } from 'vue'
-import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
-import IconClear from '@/components/icons/IconClear.vue'
-import IconSearch from '@/components/icons/IconSearch.vue'
+import MdiFolderSearchOutline from '@/components/icons/MdiFolderSearchOutline.vue'
+import LsiconClearOutline from '@/components/icons/LsiconClearOutline.vue'
+import TablerSearch from '@/components/icons/TablerSearch.vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useKeys } from '@/stores/keys'
@@ -95,7 +95,7 @@ const currentId = computed(() => {
 .q-px-md
 	.empty
 		.big
-			IconFolderSearch
+			MdiFolderSearchOutline
 			span Все заявки
 			span(v-if='!isGridEmpty') ,
 
@@ -134,11 +134,11 @@ const currentId = computed(() => {
 			div
 				q-btn(unelevated color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mykeys.toggleDragWindow")
 				q-btn(flat color="primary" @click="search") 
-					IconSearch.ic.q-mr-sm
+					TablerSearch.ic.q-mr-sm
 					.q-cursor Проверить запрос
 
 			q-btn.q-ml-sm(flat color="negative" @click="clearAll")
-				IconClear.ic.q-mr-sm
+				LsiconClearOutline.ic.q-mr-sm
 				.q-cursor Очистить все
 </template>
 

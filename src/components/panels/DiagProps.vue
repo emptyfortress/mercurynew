@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useDiagram } from '@/stores/diagram'
-import IconAttribute from '@/components/icons/IconAttribute.vue'
-import IconFlag from '@/components/icons/IconFlag.vue'
+import IcBaselineDriveFileRenameOutline from '@/components/icons/IcBaselineDriveFileRenameOutline.vue'
+import LineiconsFlag2 from '@/components/icons/LineiconsFlag2.vue'
 import DiagRootProps from '@/components/panels/DiagRootProps.vue'
 import DiagRoleProps from '@/components/panels/DiagRoleProps.vue'
 import DiagEtapProps from '@/components/panels/DiagEtapProps.vue'
@@ -48,7 +48,7 @@ div
 		q-expansion-item(v-model="item1")
 			template(v-slot:header)
 				q-item-section(side)
-					IconAttribute.ic
+					IcBaselineDriveFileRenameOutline.ic
 				q-item-section.zg Атрибуты
 
 			DiagRootProps(v-if='mydiagram.selection && showRoot' separator)
@@ -60,7 +60,7 @@ div
 		q-expansion-item.q-mt-md(v-model="item2" v-if='mydiagram.selection && showEtap')
 			template(v-slot:header)
 				q-item-section(side)
-					IconFlag.ic
+					LineiconsFlag2.ic
 				q-item-section.zg Варианты завершения
 			DiagVariantProps(separator)
 

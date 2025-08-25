@@ -6,7 +6,7 @@ import { usePanels } from '@/stores/panels'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { nextTick } from 'vue'
-import IconSearch from '@/components/icons/IconSearch.vue'
+import TablerSearch from '@/components/icons/TablerSearch.vue'
 
 const panels = usePanels()
 
@@ -50,7 +50,7 @@ const search = () => {
 	@click='expand'
 	)
 
-	IconSearch.ic(
+	TablerSearch.ic(
 		v-if='!panels.preview',
 		v-motion
 		:initial='{ rotate: "0deg" }'

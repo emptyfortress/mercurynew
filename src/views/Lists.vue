@@ -6,7 +6,7 @@ import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { useQuasar } from 'quasar'
 import AddButton from '@/components/common/AddButton.vue'
-import IconFolderSearch from '@/components/icons/IconFolderSearch.vue'
+import MdiFolderSearchOutline from '@/components/icons/MdiFolderSearchOutline.vue'
 import Trash from '@/components/common/Trash.vue'
 import { useRouter } from 'vue-router'
 import { useList } from '@/stores/list'
@@ -203,7 +203,7 @@ q-page(padding)
 			@click.stop='expand(item)'
 			:class="calcClass(item)"
 			)
-			IconFolderSearch.img
+			MdiFolderSearchOutline.img
 			.hg(@click.stop)
 				span {{ item.label }}
 					q-popup-edit(v-if='item.expand' v-model="item.label" auto-save v-slot="scope")

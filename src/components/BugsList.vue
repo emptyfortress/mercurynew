@@ -20,6 +20,12 @@ q-list.q-mt-lg
 		q-item-section
 			q-item-label Общие компоненты, палитра
 
+	q-item(clickable to='/iconList')
+		q-item-section(avatar)
+			q-icon(name="mdi-image-outline" color="primary")
+		q-item-section
+			q-item-label Иконки
+
 	// br
 	// q-separator
 	// br

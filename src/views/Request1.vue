@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import IconUndo from '@/components/icons/IconUndo.vue'
-import IconRedo from '@/components/icons/IconRedo.vue'
-import IconWizard from '@/components/icons/IconWizard.vue'
-import IconLogic from '@/components/icons/IconLogic.vue'
+import MaterialSymbolsUndoRounded from '@/components/icons/MaterialSymbolsUndoRounded.vue'
+import MaterialSymbolsRedoRounded from '@/components/icons/MaterialSymbolsRedoRounded.vue'
+import MdiWizardHat from '@/components/icons/MdiWizardHat.vue'
+import TablerLogicNand from '@/components/icons/TablerLogicNand.vue'
 import TextAi from '@/components/TextAi.vue'
 import Loading from '@/components/Loading.vue'
 import RequestGrid from '@/components/RequestGrid.vue'
@@ -133,18 +133,16 @@ q-page(padding)
 			.top()
 				.zg Настройка папки "{{ currentFolder?.label }}"
 				.q-gutter-x-sm
-					q-btn(flat round dense color="primary" @click="") 
-						IconUndo.ic
+					q-btn(flat round dense color="primary" @click="" icon='mdi-undo') 
 						q-tooltip Отменить
-					q-btn(flat round dense color="primary" @click="") 
-						IconRedo.ic
+					q-btn(flat round dense color="primary" @click="" icon="mdi-redo") 
 						q-tooltip Повторить
 					q-btn(flat round dense color="primary" @click="toggleMain") 
 						template(v-if='main')
-							IconWizard.ic
+							MdiWizardHat.ic
 							q-tooltip ИИ-ассистент
 						template(v-else)
-							IconLogic.ic
+							TablerLogicNand.ic
 							q-tooltip Конструктор
 
 			transition(name="slide-bottom" mode="out-in")

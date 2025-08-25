@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
-// import IconFlag from '@/components/icons/IconFlag.vue'
-// import IconEntrance from '@/components/icons/IconEntrance.vue'
+// import LineiconsFlag2 from '@/components/icons/LineiconsFlag2.vue'
+// import IconamoonEnter from '@/components/icons/IconamoonEnter.vue'
 import { useRouter, } from 'vue-router'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'

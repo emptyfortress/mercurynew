@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import IconGroup from '@/components/icons/IconGroup.vue'
-import IconPic from '@/components/icons/IconPic.vue'
-import IconAa from '@/components/icons/IconAa.vue'
+import MdiSelectGroup from '@/components/icons/MdiSelectGroup.vue'
+import IconParkTwotonePic from '@/components/icons/IconParkTwotonePic.vue'
+import PhTextAaBold from '@/components/icons/PhTextAaBold.vue'
 
 const layouts = [
 	{
 		id: 0,
 		label: 'Группа',
 		caption: 'Группировка элементов',
-		icon: IconGroup
+		icon: MdiSelectGroup
 	},
 	{
 		id: 2,
 		label: 'Текст',
 		caption: 'Однострочный текст (метка)',
-		icon: IconAa
+		icon: PhTextAaBold
 	},
 	{
 		id: 6,
 		label: 'Картинка',
 		caption: 'Изображение в формате png, jpg, gif',
-		icon: IconPic
+		icon: IconParkTwotonePic
 	},
 ]
 </script>

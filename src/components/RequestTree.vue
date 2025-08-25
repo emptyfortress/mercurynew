@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import IconFaceMask from '@/components/icons/IconFaceMask.vue'
-import IconClear from '@/components/icons/IconClear.vue'
+import BxBxsFaceMask from '@/components/icons/BxBxsFaceMask.vue'
+import LsiconClearOutline from '@/components/icons/LsiconClearOutline.vue'
 import TreeItem from '@/components/TreeItem.vue'
 import TreeQuery from '@/components/TreeQuery.vue'
 import { Draggable } from '@he-tree/vue'
@@ -92,7 +92,7 @@ const addRemoveCondL = ((e: any, n: any) => {
 <template lang="pug">
 div
 	.empty(v-if='zero')
-		IconFaceMask.big
+		BxBxsFaceMask.big
 		div Запрос не настроен.
 		q-btn.q-mt-md(unelevated color="primary" label="Настроить" @click="mytree.toggleDragWindow") 
 
@@ -122,7 +122,7 @@ div
 		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить условие" @click="mytree.toggleDragWindow") 
 		q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Добавить оператор" @click="addOper") 
 		q-btn.q-ml-sm(flat color="negative" @click="clear") 
-			IconClear.ic.q-mr-sm
+			LsiconClearOutline.ic.q-mr-sm
 			.q-cursor Очистить все
 
 	.text-center.q-mt-md(v-if='!zero')

@@ -4,8 +4,8 @@ import Level1 from '@/components/Level1.vue'
 import LevelDate from '@/components/LevelDate.vue'
 import LevelDue from '@/components/LevelDue.vue'
 import LevelEtap from '@/components/LevelEtap.vue'
-import IconSave from '@/components/icons/IconSave.vue'
-import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
+import LucideSave from '@/components/icons/LucideSave.vue'
+import MingcuteArrowUpCircleLine from '@/components/icons/MingcuteArrowUpCircleLine.vue'
 import { stat } from '@/stores/conditions'
 import { zero } from '@/stores/options2'
 import { useTree } from '@/stores/tree12'
@@ -258,10 +258,10 @@ div
 			q-btn(flat round icon="mdi-close-circle" color="negative" @click="reset" dense) 
 				q-tooltip Очистить
 			q-btn(flat round color="primary" @click="addCond" dense ) 
-				IconUpArrowCircle.ic
+				MingcuteArrowUpCircleLine.ic
 				q-tooltip Добавить условие и продолжить
 			q-btn(flat round color="primary" @click="save" dense ) 
-				IconSave.ic
+				LucideSave.ic
 				q-tooltip Сохранить
 
 	.grid

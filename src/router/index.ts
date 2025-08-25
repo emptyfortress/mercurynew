@@ -45,16 +45,15 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/icons',
-			name: 'icons',
-			component: () => import('@/views/Icons.vue'),
+			path: '/iconList',
+			name: 'iconList',
+			component: () => import('@/views/IconList.vue'),
 			meta: {
-				toolbar: true,
+				toolbar: false,
 				back: false,
 				count: 0,
 			},
 		},
-
 		{
 			path: '/assistent',
 			name: 'assistent',

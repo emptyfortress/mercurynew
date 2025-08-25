@@ -11,7 +11,7 @@ import { uid, useQuasar } from 'quasar'
 import GroupPreview1 from '@/components/GroupPreview1.vue'
 import Trash from '@/components/common/Trash.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
-import IconApp from '@/components/icons/IconApp.vue'
+import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
 import AppPreview from '@/components/AppPreview.vue'
 import { useRouter, useRoute } from 'vue-router'
 import Empty from '@/components/Empty.vue'
@@ -186,7 +186,7 @@ const create = (e: any) => {
 		published: 0,
 		group: 1,
 		list: [],
-		pic: IconApp,
+		pic: MdiApplicationBracesOutline,
 		master: true,
 		versions: [
 			{

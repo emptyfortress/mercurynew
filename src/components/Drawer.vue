@@ -69,7 +69,7 @@ async function loadIcon(iconName?: string) {
 		return
 	}
 
-	// ключ формируется по имени файла, например IconTravel.vue
+	// ключ формируется по имени файла, например MaterialSymbolsTravelLuggageAndBags.vue
 	const key = `/src/components/icons/list/${iconName}.vue`
 
 	if (iconModules[key]) {

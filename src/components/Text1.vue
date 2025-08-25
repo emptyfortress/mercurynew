@@ -9,8 +9,8 @@ import LevelEtap from '@/components/LevelEtap.vue'
 import SimpleQuery from '@/components/SimpleQuery.vue'
 import { useElementSize } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
-import IconClear from '@/components/icons/IconClear.vue'
-import IconUpArrowCircle from '@/components/icons/IconUpArrowCircle.vue'
+import LsiconClearOutline from '@/components/icons/LsiconClearOutline.vue'
+import MingcuteArrowUpCircleLine from '@/components/icons/MingcuteArrowUpCircleLine.vue'
 import { useQuasar } from 'quasar'
 import { useMotions } from '@vueuse/motion'
 
@@ -229,7 +229,7 @@ div
 				SimpleQuery(:arr="item" @remove="remCond(item)")
 		.btt
 			q-btn(v-if='condList.length > 1' size='sm' flat color="negative" @click="clear") 
-				IconClear.ic.q-mr-sm
+				LsiconClearOutline.ic.q-mr-sm
 				.q-cursor Очистить условия
 			q-btn(size='sm' flat color="primary" icon='mdi-plus-circle-outline' label='Добавить условие' @click="adding = !adding") 
 
@@ -251,7 +251,7 @@ div
 					q-btn(flat round icon="mdi-close" @click="reset" dense) 
 						q-tooltip Очистить
 					q-btn(flat round color="primary" @click="addCond") 
-						IconUpArrowCircle.ic
+						MingcuteArrowUpCircleLine.ic
 						q-tooltip Добавить условие
 
 

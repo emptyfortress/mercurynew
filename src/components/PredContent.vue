@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import IconTableColumns from '@/components/icons/IconTableColumns.vue'
+import SiTableColumnsLine from '@/components/icons/SiTableColumnsLine.vue'
 import ColumnList from '@/components/ColumnList.vue'
 import ThemeList from '@/components/ThemeList.vue'
-import IconPallete from '@/components/icons/IconPallete.vue'
-import IconPaint from '@/components/icons/IconPaint.vue'
+import SolarPallete2Linear from '@/components/icons/SolarPallete2Linear.vue'
+import MaterialSymbolsColors from '@/components/icons/MaterialSymbolsColors.vue'
 import DrawBottom from '@/components/DrawBottom.vue'
 import { useKeys } from '@/stores/keys'
 
@@ -26,21 +26,21 @@ q-scroll-area(:style='hei')
 		q-expansion-item(v-model="item1")
 			template(v-slot:header)
 				q-item-section(side)
-					IconTableColumns.ic
+					SiTableColumnsLine.ic
 				q-item-section.zg Колонки
 			ColumnList(:cols='columns')
 
 		q-expansion-item(v-model="item2")
 			template(v-slot:header)
 				q-item-section(side)
-					IconPallete.ic
+					SolarPallete2Linear.ic
 				q-item-section.zg Тема оформления
 			ThemeList
 
 		q-expansion-item(v-model="item3")
 			template(v-slot:header)
 				q-item-section(side)
-					IconPaint.ic
+					MaterialSymbolsColors.ic
 				q-item-section.zg Подсветка
 			DrawBottom
 </template>

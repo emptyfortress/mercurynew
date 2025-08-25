@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
 import { useApps } from '@/stores/apps'
-import IconMicrophone from '@/components/icons/IconMicrophone.vue'
-import IconPresentation from '@/components/icons/IconPresentation.vue'
+import PhMicrophoneStageFill from '@/components/icons/PhMicrophoneStageFill.vue'
+import MingcutePresentation3Fill from '@/components/icons/MingcutePresentation3Fill.vue'
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -65,8 +65,8 @@ const calcOver = (item: any, index: number) => {
 			)
 			.hg1 Приложения отдела маркетинга
 			.img
-				IconPresentation
-				IconMicrophone
+				MingcutePresentation3Fill
+				PhMicrophoneStageFill
 				// q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
 				// q-icon(name='mdi-application-braces-outline' color="secondary" size="md")
 

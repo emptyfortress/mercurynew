@@ -1,19 +1,19 @@
 import { defineStore } from 'pinia'
 import { ref, computed, markRaw } from 'vue'
-import IconTravel from '@/components/icons/list/IconTravel.vue'
-import IconBeach from '@/components/icons/list/IconBeach.vue'
-import IconLetter from '@/components/icons/list/IconLetter.vue'
-import IconPresentation from '@/components/icons/list/IconPresentation.vue'
-import IconMicrophone from '@/components/icons/list/IconMicrophone.vue'
-import IconPrinter from '@/components/icons/list/IconPrinter.vue'
+import MaterialSymbolsTravelLuggageAndBags from '@/components/icons/list/MaterialSymbolsTravelLuggageAndBags.vue'
+import MakiBeach from '@/components/icons/list/MakiBeach.vue'
+import MaterialSymbolsLabProfile from '@/components/icons/list/MaterialSymbolsLabProfile.vue'
+import MingcutePresentation3Fill from '@/components/icons/list/MingcutePresentation3Fill.vue'
+import PhMicrophoneStageFill from '@/components/icons/list/PhMicrophoneStageFill.vue'
+import MaterialSymbolsPrint from '@/components/icons/list/MaterialSymbolsPrint.vue'
 import { useStorage } from '@vueuse/core'
 
-const IconTravel1 = markRaw(IconTravel)
-const IconBeach1 = markRaw(IconBeach)
-const IconLetter1 = markRaw(IconLetter)
-const IconPresentation1 = markRaw(IconPresentation)
-const IconMicrophone1 = markRaw(IconMicrophone)
-const IconPrinter1 = markRaw(IconPrinter)
+const MaterialSymbolsTravelLuggageAndBags1 = markRaw(MaterialSymbolsTravelLuggageAndBags)
+const MakiBeach1 = markRaw(MakiBeach)
+const MaterialSymbolsLabProfile1 = markRaw(MaterialSymbolsLabProfile)
+const MingcutePresentation3Fill1 = markRaw(MingcutePresentation3Fill)
+const PhMicrophoneStageFill1 = markRaw(PhMicrophoneStageFill)
+const MaterialSymbolsPrint1 = markRaw(MaterialSymbolsPrint)
 
 const app = useStorage('app', localStorage)
 
@@ -32,7 +32,7 @@ export const useApps = defineStore('apps', () => {
 			group: 1,
 			list: [],
 			multiuser: true,
-			pic: IconTravel1,
+			pic: MaterialSymbolsTravelLuggageAndBags1,
 			master: true,
 			versions: [
 				{
@@ -61,7 +61,7 @@ export const useApps = defineStore('apps', () => {
 			group: 1,
 			list: [],
 			multiuser: true,
-			pic: IconBeach1,
+			pic: MakiBeach1,
 			master: true,
 			versions: [
 				{
@@ -103,7 +103,7 @@ export const useApps = defineStore('apps', () => {
 					group: 1,
 					list: [],
 					multiuser: true,
-					pic: IconPrinter1,
+					pic: MaterialSymbolsPrint1,
 					master: true,
 					versions: [
 						{
@@ -132,7 +132,7 @@ export const useApps = defineStore('apps', () => {
 					group: 1,
 					list: [],
 					multiuser: false,
-					pic: IconMicrophone1,
+					pic: PhMicrophoneStageFill1,
 					master: true,
 					versions: [
 						{
@@ -161,7 +161,7 @@ export const useApps = defineStore('apps', () => {
 					group: 1,
 					list: [],
 					multiuser: false,
-					pic: IconPresentation1,
+					pic: MingcutePresentation3Fill1,
 					master: true,
 					versions: [
 						{
@@ -192,7 +192,7 @@ export const useApps = defineStore('apps', () => {
 			group: 1,
 			list: [],
 			multiuser: false,
-			pic: IconLetter1,
+			pic: MaterialSymbolsLabProfile1,
 			master: true,
 			versions: [
 				{
@@ -221,7 +221,7 @@ export const useApps = defineStore('apps', () => {
 			group: 1,
 			list: [],
 			multiuser: true,
-			pic: IconLetter1,
+			pic: MaterialSymbolsLabProfile1,
 			master: true,
 			versions: [
 				{

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import IconWizard from '@/components/icons/IconWizard.vue'
+import MdiWizardHat from '@/components/icons/MdiWizardHat.vue'
 import AssistentInside from '@/components/AssistentInside.vue'
 import { useRouter } from 'vue-router'
 import { useTitle } from '@vueuse/core'
@@ -21,7 +21,7 @@ q-page(padding)
 		.row.justify-between.items-center
 			.hd Первичные настройки
 			.bt(@click='navigate')
-				IconWizard.ic
+				MdiWizardHat.ic
 				span ИИ-ассистент
 
 		AssistentInside

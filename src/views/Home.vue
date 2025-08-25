@@ -8,12 +8,12 @@ import { useApps } from '@/stores/apps'
 import Item from '@/components/Item.vue'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import { uid, useQuasar } from 'quasar'
-import IconApp from '@/components/icons/IconApp.vue'
+import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
 import Empty from '@/components/Empty.vue'
 import { useKeyModifier } from '@vueuse/core'
 // import { versions } from 'process'
 
-const IconApp1 = markRaw(IconApp)
+const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
@@ -220,7 +220,7 @@ const onDropPlus = () => {
 		published: 0,
 		group: 1,
 		list: [],
-		pic: IconApp1,
+		pic: MdiApplicationBracesOutline1,
 		master: false,
 		versions: [] as Ver[],
 	}

@@ -5,7 +5,7 @@ import { Flip } from 'gsap/Flip'
 import { useWindowSize } from '@vueuse/core'
 import CarbonStringText from '@/components/icons/CarbonStringText.vue'
 import CarbonStringInteger from '@/components/icons/CarbonStringInteger.vue'
-import IconText from '@/components/icons/IconText.vue'
+import MaterialSymbolsInsertTextRounded from '@/components/icons/MaterialSymbolsInsertTextRounded.vue'
 import MdiCalendar from '@/components/icons/MdiCalendar.vue'
 import MaterialSymbolsAccountCircle from '@/components/icons/MaterialSymbolsAccountCircle.vue'
 import { Kind } from '@/types/enum'
@@ -58,7 +58,7 @@ const typeModel = ref({
 const options = [
 	{ type: Kind.String, pic: CarbonStringText, value: 'Строка', label: 'Строка' },
 	{ type: Kind.Num, pic: CarbonStringInteger, value: 'Число', label: 'Число' },
-	{ type: Kind.Text, pic: IconText, value: 'Текст', label: 'Текст' },
+	{ type: Kind.Text, pic: MaterialSymbolsInsertTextRounded, value: 'Текст', label: 'Текст' },
 	{ type: Kind.Date, pic: MdiCalendar, value: 'Дата', label: 'Дата' },
 	{
 		type: Kind.Man,

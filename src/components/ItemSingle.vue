@@ -10,8 +10,8 @@ import Trash from '@/components/common/Trash.vue'
 import { useQuasar } from 'quasar'
 import AppPreview from '@/components/AppPreview.vue'
 import GroupPreview from '@/components/GroupPreview.vue'
-import IconMicrophone from '@/components/icons/IconMicrophone.vue'
-import IconPresentation from '@/components/icons/IconPresentation.vue'
+import PhMicrophoneStageFill from '@/components/icons/PhMicrophoneStageFill.vue'
+import MingcutePresentation3Fill from '@/components/icons/MingcutePresentation3Fill.vue'
 
 const tapes = defineModel<App[]>('tapes')
 
@@ -139,8 +139,8 @@ div
 				template(v-if='!expanded')
 					.hg1 Приложения отдела маркетинга
 					.img
-						IconPresentation
-						IconMicrophone
+						MingcutePresentation3Fill
+						PhMicrophoneStageFill
 
 				div(v-if='expanded')
 					.zag(

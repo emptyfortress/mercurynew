@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import IconUndo from '@/components/icons/IconUndo.vue'
-import IconRedo from '@/components/icons/IconRedo.vue'
+import MaterialSymbolsUndoRounded from '@/components/icons/MaterialSymbolsUndoRounded.vue'
+import MaterialSymbolsRedoRounded from '@/components/icons/MaterialSymbolsRedoRounded.vue'
 import { animations } from "@formkit/drag-and-drop"
 import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
 import img from '@/assets/img/predstavlenie.png'
@@ -53,10 +53,10 @@ q-page(padding)
 			.zg Представление "Все заявки"
 			.q-gutter-x-sm
 				q-btn(flat round dense color="primary" @click="") 
-					IconUndo.ic
+					MaterialSymbolsUndoRounded.ic
 					q-tooltip Отменить
 				q-btn(flat round dense color="primary" @click="") 
-					IconRedo.ic
+					MaterialSymbolsRedoRounded.ic
 					q-tooltip Повторить
 				q-btn(flat round dense icon='mdi-fullscreen' color="primary" @click="") 
 					q-tooltip Во весь экран

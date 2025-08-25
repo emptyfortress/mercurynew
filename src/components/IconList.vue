@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, markRaw } from 'vue'
 import IconMenu from '@/components/IconMenu.vue'
-import IconApp from '@/components/icons/IconApp.vue'
+import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
 
-const IconApp1 = markRaw(IconApp)
+const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 
 const emit = defineEmits(['select'])
 
@@ -11,8 +11,8 @@ const select = (icon: any) => {
 	selectedIcon.value = icon
 	emit('select', selectedIcon.value)
 }
-const selectedIcon = ref(IconApp1)
-const temp = ref('IconApp')
+const selectedIcon = ref(MdiApplicationBracesOutline1)
+const temp = ref('MdiApplicationBracesOutline')
 </script>
 
 <template lang="pug">

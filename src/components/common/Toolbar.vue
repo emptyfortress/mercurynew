@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 // import { useDraggable } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
-import IconEye from '@/components/icons/IconEye.vue'
+import FluentEyeShow12Filled from '@/components/icons/FluentEyeShow12Filled.vue'
 
 const el = ref<HTMLElement | null>(null)
 // const { x, y, style } = useDraggable(el, {

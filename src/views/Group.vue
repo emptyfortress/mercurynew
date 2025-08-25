@@ -8,13 +8,13 @@ import { animations, state } from '@formkit/drag-and-drop'
 import AddButtonNew from '@/components/common/AddButtonNew.vue'
 import Trash from '@/components/common/Trash.vue'
 import { uid, useQuasar } from 'quasar'
-import IconApp from '@/components/icons/list/list/IconApp.vue'
+import MdiApplicationBracesOutline from '@/components/icons/list/list/MdiApplicationBracesOutline.vue'
 import AppPreviewNew from '@/components/AppPreviewNew.vue'
 
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
-const IconApp1 = markRaw(IconApp)
+const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 
 const list = computed(() => {
 	return myapps.apps.filter((item) => item.id == route.params.id)[0].list
@@ -146,7 +146,7 @@ const onDropPlus = () => {
 		published: 0,
 		group: 1,
 		list: [],
-		pic: IconApp1,
+		pic: MdiApplicationBracesOutline1,
 		master: false,
 		versions: [
 			{
@@ -208,7 +208,7 @@ const create = (e: any) => {
 		published: 0,
 		group: 1,
 		list: [],
-		pic: IconApp1,
+		pic: MdiApplicationBracesOutline1,
 		master: true,
 		versions: [
 			{

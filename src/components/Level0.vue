@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 // import type { Option } from '@/types/enum'
-import IconRun from '@/components/icons/IconRun.vue'
+import PhPersonSimpleRunFill from '@/components/icons/PhPersonSimpleRunFill.vue'
 
 const options = defineModel<Option[] | undefined>('options')
 const query = defineModel('query', { type: String, default: '' })
@@ -34,7 +34,7 @@ q-item(v-for="item in filtered" :key="item.id" clickable @click="add(item)" :cla
 	q-item-section
 		q-item-label {{ item.text }}
 	q-item-section(side v-if='item.text == "Исполнение"')
-		IconRun.ic
+		PhPersonSimpleRunFill.ic
 
 </template>
 

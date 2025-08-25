@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useKeys } from '@/stores/keys'
 import { ref, onMounted, watch } from 'vue'
-import IconRocket from '@/components/icons/IconRocket.vue'
+import IonRocketSharp from '@/components/icons/IonRocketSharp.vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 
@@ -99,7 +99,7 @@ const [parent, tapes] = useDragAndDrop(mykeys.hasParameters, config)
 			q-toggle(size="sm" v-model="toggle[index]")
 
 	.empty(v-else)
-		IconRocket.big
+		IonRocketSharp.big
 		div Параметры не заданы.<br />Показ формы не требуется.
 
 	.action()

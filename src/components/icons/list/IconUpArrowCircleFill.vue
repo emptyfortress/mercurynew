@@ -8,6 +8,6 @@
 
 <script>
 export default {
-	name: 'IconUpArrowCircleFill'
+	name: 'MingcuteArrowUpCircleLineFill'
 }
 </script>

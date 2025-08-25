@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import IconPersonNo from '@/components/icons/IconPersonNo.vue'
+import EmojioneMonotonePersonGesturingNo from '@/components/icons/EmojioneMonotonePersonGesturingNo.vue'
 
 const props = defineProps({
 	mode: {
@@ -20,7 +20,7 @@ const txt = computed(() => {
 
 <template lang="pug">
 .empt
-	IconPersonNo.big
+	EmojioneMonotonePersonGesturingNo.big
 	div Ничего не выбрано
 </template>
 
