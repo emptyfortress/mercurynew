@@ -255,10 +255,6 @@ const calcDraggable = (id: string) => {
 Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:draggable='calcDraggable(item.id)'
 	@click.stop='action(item)',
-	:layout-id="item.id"
-	:initial="initial"
-	:animate="animate"
-	:transition="spring"
 	:data-group="item.group > 1 ? 'true' : 'false'"
 	:class='calcClass(item, index)'
 	@dragstart='onDragStart(item, index)'

@@ -317,8 +317,6 @@ q-page(padding, @click='action')
 	)
 
 		Div.plus(
-			layout
-			:transition='spring'
 			@click.stop
 			@dragover.prevent="onDragEnterPlus"
 			@dragenter.prevent

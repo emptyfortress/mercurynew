@@ -190,11 +190,7 @@ function createGroup(): void {
 	@touchstart="startPress"
 	@touchend="endPress"
 )
-	.button(v-if='!adding'
-		data-flip-id='fuck'
-		v-motion
-		:initial="calcStart"
-		:enter='calcFinish')
+	.button(v-if='!adding')
 		q-icon(name="mdi-plus" color="white" size="24px")
 
 		svg(class="progress-ring" width="41" height="41")
