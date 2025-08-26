@@ -214,19 +214,14 @@ q-layout(view='hHh LpR fFf')
 
 			.lang
 				component(:is='currentLang.icon')
-				q-menu
+				q-menu(transition-show="jump-down" transition-hide="jump-up")
 					q-list
 						q-item(clickable v-for="item in lang" :key='item.id' @click="changeLang(item)" v-close-popup :class="calcClass(item.id)")
 							q-item-section(side)
 								component(:is='item.icon')
 							q-item-section {{ item.label }}
 
-			// q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
-			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
-			// q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
-
 	Drawer
-	// RDrawer(v-model="rightDrawer" :help='helpMode')
 
 	q-page-container
 		#cont
