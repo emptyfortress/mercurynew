@@ -243,7 +243,7 @@ q-layout(view='hHh LpR fFf')
 
 			.lang
 				component(:is='currentLang.icon')
-				q-menu
+				q-menu(transition-show="jump-down" transition-hide="jump-up")
 					q-list
 						q-item(clickable v-for="item in lang" :key='item.id' @click="changeLang(item)" v-close-popup :class="calcClass(item.id)")
 							q-item-section(side)
