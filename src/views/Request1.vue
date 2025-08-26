@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import MaterialSymbolsUndoRounded from '@/components/icons/MaterialSymbolsUndoRounded.vue'
-import MaterialSymbolsRedoRounded from '@/components/icons/MaterialSymbolsRedoRounded.vue'
+// import MaterialSymbolsUndoRounded from '@/components/icons/MaterialSymbolsUndoRounded.vue'
+// import MaterialSymbolsRedoRounded from '@/components/icons/MaterialSymbolsRedoRounded.vue'
 import MdiWizardHat from '@/components/icons/MdiWizardHat.vue'
 import TablerLogicNand from '@/components/icons/TablerLogicNand.vue'
 import TextAi from '@/components/TextAi.vue'
