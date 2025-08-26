@@ -160,13 +160,14 @@ const toggleBug = () => {
 
 const $q = useQuasar()
 const refresh = () => {
-	$q.notify({
-		icon: 'mdi-alert',
-		color: 'negative',
-		message: 'Страница изменена другим пользователем. Ваши изменения не сохранены.',
-		position: 'center',
-		progress: true,
-	})
+	notsave.value = !notsave.value
+	// $q.notify({
+	// 	icon: 'mdi-alert',
+	// 	color: 'negative',
+	// 	message: 'Страница изменена другим пользователем. Ваши изменения не сохранены.',
+	// 	position: 'center',
+	// 	progress: true,
+	// })
 }
 
 const lang = [
@@ -210,8 +211,12 @@ const localChanged = computed(() => {
 })
 
 const save = ref(true)
+const notsave = ref(false)
 const close = () => {
 	save.value = !save.value
+}
+const close1 = () => {
+	notsave.value = !notsave.value
 }
 </script>
 
@@ -275,7 +280,7 @@ q-layout(view='hHh LpR fFf')
 				q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
 				|Сохранено
 				transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-					.bubble(v-if='save'
+					.bubble.pos(v-if='save'
 						v-motion='"cube"'
 						:initial="{ y: 200, opacity: 0, }"
 						:enter="{ y: 0, opacity: 1, }"
@@ -285,6 +290,17 @@ q-layout(view='hHh LpR fFf')
 						.text-center
 							|Сохранение данных происходит автоматически во всех редакторах.
 							q-btn(flat label="Понятно" @click.stop="close") 
+
+				transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
+					.bubble.neg(v-if='notsave'
+						v-motion='"cube"'
+						:initial="{ y: 200, opacity: 0, }"
+						:enter="{ y: 0, opacity: 1, }"
+						:leave="{ y: 200, opacity: 0, }"
+					)
+						.text-center
+							|Страница изменена другим пользователем. Ваши изменения не сохранены.
+							q-btn(flat label="Понятно" @click.stop="close1") 
 
 </template>
 
@@ -415,7 +431,6 @@ nav a:first-of-type {
 }
 .bubble {
 	width: 34ch;
-	background: $positive;
 	position: absolute;
 	top: -108px;
 	left: -130px;
@@ -424,8 +439,16 @@ nav a:first-of-type {
 	padding: 0.5rem;
 	font-size: 0.9rem;
 	color: white;
+	&.pos {
+		background: $positive;
+	}
+	&.neg {
+		left: -156px;
+		width: 40ch;
+		background: $negative;
+	}
 }
-.bubble::after {
+.bubble.pos::after {
 	content: '';
 	position: absolute;
 	left: 50%;
@@ -436,5 +459,17 @@ nav a:first-of-type {
 	border-left: 10px solid transparent;
 	border-right: 10px solid transparent;
 	border-top: 10px solid $positive; /* ▲ треугольник вверх */
+}
+.bubble.neg::after {
+	content: '';
+	position: absolute;
+	left: 50%;
+	bottom: -10px; /* чтобы хвостик «вырос» наружу */
+	transform: translateX(-50%);
+	width: 0;
+	height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 10px solid $negative; /* ▲ треугольник вверх */
 }
 </style>
