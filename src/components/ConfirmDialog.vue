@@ -89,7 +89,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 						q-item(tag='label' clickable dense)
 							q-item-section(side)
 								q-radio(v-model="serv" val="1")
-							q-item-section Передать версию админу для публикации
+							q-item-section Передать версию администратору для публикации.
 
 			ul(v-if='props.mode == "version"')
 				li Приложение (версия) опубликовано на сервере DV-prod и не может быть удалено.

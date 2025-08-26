@@ -213,7 +213,7 @@ const localPubDate = computed(() => {
 
 				template(v-if='myapps.curVersion(props.item).published == 0')
 					q-btn(:outline='!state' color="primary" icon='mdi-pencil-outline' label='Редактировать' @click="navigate1" ) 
-					q-btn(v-if='myapps.curVersion(props.item).modified !== null' outline color="primary" icon='mdi-eye-check-outline' label='Проверить приложение' @click="openUrl" ) 
+					q-btn(v-if='myapps.curVersion(props.item).modified !== null' outline color="primary" icon='mdi-eye-check-outline' label='Проверить версию' @click="openUrl" ) 
 
 				template(v-else)
 					q-btn(unelevated color="primary" icon='mdi-eye-outline' label='Просмотр' @click="navigate1" ) 
