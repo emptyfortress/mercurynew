@@ -239,7 +239,7 @@ const localPubDate = computed(() => {
 
 			.check(v-if='myapps.curVersion(props.item).published == 2')
 					div Последняя&nbsp;публикация:
-					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }}
+					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }} -- Орлов П.С.
 					.link DV-prod
 
 		q-tab-panel(name='publ')
@@ -273,7 +273,7 @@ const localPubDate = computed(() => {
 
 			.check(v-if='myapps.curVersion(props.item).published == 2')
 					div Последняя&nbsp;публикация:
-					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }}
+					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }} -- Орлов П.С.
 					.link DV-prod
 
 		q-tab-panel(name='vers' style='padding-right: 0; padding-left: 0')

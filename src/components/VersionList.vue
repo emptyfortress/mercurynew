@@ -25,14 +25,14 @@ const cols: QTableProps['columns'] = [
 		field: 'ver',
 		sortable: false,
 	},
-	{
-		name: 'author',
-		required: true,
-		label: 'Автор',
-		align: 'left',
-		field: 'author',
-		sortable: true,
-	},
+	// {
+	// 	name: 'author',
+	// 	required: true,
+	// 	label: 'Автор',
+	// 	align: 'left',
+	// 	field: 'author',
+	// 	sortable: true,
+	// },
 	{
 		name: 'created',
 		required: true,
@@ -200,6 +200,9 @@ const pubDate = computed(() => {
 	let tmp = props.versions.find((el) => el.published == 2)
 	if (tmp) return date.formatDate(tmp.pubDate, 'DD.MM.YY HH:mm')
 })
+const formatDate = (e: number) => {
+	return date.formatDate(e, 'DD.MM.YY HH:mm')
+}
 </script>
 
 <template lang="pug">
@@ -220,12 +223,18 @@ q-table(flat
 	template(v-slot:body-cell-modified='props')
 		q-td(:props='props') {{ date.formatDate(props.row.modified, 'DD.MM.YY HH:mm') }}
 
+	template(v-slot:body-cell-created='props')
+		q-td(:props='props')
+			div {{formatDate(props.row.created)}}
+			div Орлов П.С.
+
 	template(v-slot:body-cell-published='props')
 		q-td(:props='props')
 			.caption(v-if='props.row.published == 0') Черновик
 			.caption(v-if='props.row.published == 2' )
 				.pub Опубликовано
 				.pub {{ pubDate }}
+				.pub Орлов П.С.
 			.caption(v-if='props.row.published == 1' )
 				div Ожидает публикации
 
@@ -244,7 +253,7 @@ q-table(flat
 
 .check(v-if='isSomePublished')
 	div Последняя&nbsp;публикация:
-	div {{ lastPublication }} -- {{ pubDate }}
+	div {{ lastPublication }} -- {{ pubDate }} -- Орлов П.С.
 	.link DV-prod
 
 AddDialog(v-model="dialog" mode='version' :current='currentVer' @create="create")
@@ -330,12 +339,14 @@ ConfirmDialog(v-model="dialog1" :mode='ve')
 .caption {
 	font-size: 0.8rem;
 	color: #777;
+	margin: 0;
 }
 .pub {
 	color: darkred;
+	line-height: 1.2;
 }
 .check {
-	margin-top: 2rem;
+	margin-top: 1rem;
 	display: flex;
 	gap: 1rem;
 }

@@ -84,17 +84,12 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 						q-item(tag='label' clickable dense)
 							q-item-section(side)
 								q-radio(v-model="serv" val="2")
-							q-item-section Опубликовать немедленно на сервере DV-prod
+							q-item-section Опубликовать на сервере DV-prod
 
 						q-item(tag='label' clickable dense)
 							q-item-section(side)
 								q-radio(v-model="serv" val="1")
 							q-item-section Передать версию админу для публикации
-
-				// .info
-				// 	q-icon(name="mdi-hand-pointing-right" color="negative" size="20px")
-				// 	span(v-if='serv == "2"') Приложение будет опубликовано немедленно.
-				// 	span(v-if='serv == "1"') Приложение будет передано админу для публикации.
 
 			ul(v-if='props.mode == "version"')
 				li Приложение (версия) опубликовано на сервере DV-prod и не может быть удалено.
