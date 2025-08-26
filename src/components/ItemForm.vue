@@ -2,7 +2,7 @@
 import { ref, computed, nextTick } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter } from 'vue-router'
-import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
+import CarbonDataFormat from '@/components/icons/CarbonDataFormat.vue'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<any[]>('tapes')
@@ -116,7 +116,8 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	:class='calcClass(item, index)'
 )
 
-	AntDesignFormOutlined.im
+	// q-icon.im(name="mdi-form-dropdown" color="secondary")
+	CarbonDataFormat.im
 	.hg
 		span {{ item.label }}
 			q-popup-edit(v-if='item.expand && expanded' v-model="item.label" auto-save v-slot="scope")

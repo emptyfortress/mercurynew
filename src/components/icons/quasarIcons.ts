@@ -74,4 +74,5 @@ export const quasarIcons = [
 	'mdi-application-braces-outline',
 	'mdi-filter-plus',
 	'mdi-pencil',
+	'mdi-form-dropdown',
 ]

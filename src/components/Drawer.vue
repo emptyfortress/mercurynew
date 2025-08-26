@@ -3,7 +3,7 @@ import { ref, computed, watch, type Component } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRouter, useRoute } from 'vue-router'
 import { useStorage } from '@vueuse/core'
-import AntDesignFormOutlined from '@/components/icons/AntDesignFormOutlined.vue'
+import CarbonDataFormat from '@/components/icons/CarbonDataFormat.vue'
 import { useApps } from '@/stores/apps'
 //
 const iconModules: any = import.meta.glob('@/components/icons/list/*.vue')
@@ -127,7 +127,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 			RouterLink(v-for="page in pages" :key="page.id" :to="page.url")
 				q-item(clickable v-ripple )
 					q-item-section(:side="!mini")
-						AntDesignFormOutlined.ic(v-if='page.id == 2')
+						CarbonDataFormat.ic(v-if='page.id == 2')
 						q-icon(v-else :name="page.icon" color="primary" size="22px")
 					q-tooltip(v-if='mini' anchor="center end" self="center start") {{ page.title }}
 					q-item-section(v-if='!mini')
