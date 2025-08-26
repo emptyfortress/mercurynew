@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useKeys } from '@/stores/keys'
 import { uid } from 'quasar'
 
@@ -158,10 +158,15 @@ const calcOr = (item: any, index: number) => {
 	}
 	return false
 }
+
+// const place = ref('Что ищем?')
+const place = computed(() => {
+	return isLast.value ? '' : 'Что ищем?'
+})
 </script>
 
 <template lang="pug">
-q-input(v-model="query" dense @clear="query = ''" placeholder="Что ищем?")
+q-input(v-model="query" dense @clear="query = ''" :placeholder="place")
 	template(v-slot:prepend)
 		q-chip Заявка
 		template(
