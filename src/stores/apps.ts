@@ -239,9 +239,43 @@ export const useApps = defineStore('apps', () => {
 		},
 	])
 
+	function collectGroup1(apps: App[]): App[] {
+		const result: App[] = []
+
+		function walk(items: App[]) {
+			for (const app of items) {
+				if (app.group === 1) {
+					result.push(app)
+				}
+				if (app.list && app.list.length > 0) {
+					walk(app.list)
+				}
+			}
+		}
+
+		walk(apps)
+		return result
+	}
+	const flatApps = computed(() => collectGroup1(apps.value))
+
 	const createApp = (e: App) => {
 		apps.value.push(e)
 	}
+
+	const db = ref([
+		{
+			id: 0,
+			label: 'DV-Test',
+		},
+		{
+			id: 1,
+			label: 'DV-Preprod',
+		},
+		{
+			id: 2,
+			label: 'DV-Prod',
+		},
+	])
 
 	const currentApp = ref<App | null>(null)
 
@@ -297,6 +331,8 @@ export const useApps = defineStore('apps', () => {
 
 	return {
 		apps,
+		flatApps,
+		db,
 		createApp,
 
 		currentApp,

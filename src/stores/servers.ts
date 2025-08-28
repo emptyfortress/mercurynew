@@ -112,6 +112,13 @@ export const useServers = defineStore('servers', () => {
 		{ id: 3, name: 'Воробьев А.А.', author: false },
 	])
 
+	const userGroups = ref([
+		{ id: 0, name: 'Автор' },
+		{ id: 1, name: 'Администраторы' },
+		{ id: 2, name: 'Продвинутые пользователи' },
+		{ id: 3, name: 'Пользователи' },
+	])
+
 	const visibleServers = computed(() => {
 		return servers.value.filter((item) => item.vis)
 	})
@@ -140,6 +147,7 @@ export const useServers = defineStore('servers', () => {
 	return {
 		servers,
 		editors,
+		userGroups,
 		visibleServers,
 		def: false,
 		testservers,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, shallowRef } from 'vue'
+import { ref, computed, shallowRef, nextTick } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
@@ -11,6 +11,8 @@ import { useMotions } from '@vueuse/motion'
 import { useQuasar, date } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
+import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergencyExitSolid.vue'
+import OcticonTools from '@/components/icons/OcticonTools.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -23,61 +25,77 @@ const app = useStorage('app', localStorage)
 
 const cover = ref(0)
 
+// router.beforeEach((to, from, next) => {
+// 	if (from.meta.count !== undefined) {
+// 		cover.value = to.meta.count - from.meta.count
+// 		next()
+// 	} else next()
+// })
+
 router.beforeEach((to, from, next) => {
-	if (from.meta.count !== undefined) {
-		cover.value = to.meta.count - from.meta.count
-		next()
-	} else next()
+	// Безопасно читаем count (0, если не указан)
+	const toCount = typeof to.meta.count === 'number' ? to.meta.count : 0
+	const fromCount = typeof from.meta.count === 'number' ? from.meta.count : 0
+	cover.value = toCount - fromCount
+	next()
 })
 
-const calcLeave = computed(() => {
-	if (cover.value == 19) {
-		return 'fadeOutLeft'
-	}
-	if (cover.value == -19) {
-		return 'fadeOutRight'
-	}
-	if (cover.value > 0) {
-		return 'fadeOutTop'
-	}
-	if (cover.value < 0) {
-		return 'fadeOutBottom'
-	}
-	if (cover.value == 0) {
-		return ''
-	}
+// const calcLeave = computed(() => {
+// 	if (cover.value == 19) {
+// 		return 'fadeOutLeft'
+// 	}
+// 	if (cover.value == -19) {
+// 		return 'fadeOutRight'
+// 	}
+// 	if (cover.value > 0) {
+// 		return 'fadeOutTop'
+// 	}
+// 	if (cover.value < 0) {
+// 		return 'fadeOutBottom'
+// 	}
+// 	if (cover.value == 0) {
+// 		return ''
+// 	}
+// })
+
+const leaveClass = computed(() => {
+	const v = cover.value
+	if (v === 19) return 'fadeOutLeft'
+	if (v === -19) return 'fadeOutRight'
+	if (v > 0) return 'fadeOutTop'
+	if (v < 0) return 'fadeOutBottom'
+	return 'fadeOutTop' // безопасный дефолт на случай 0/NaN
 })
 
-const calcEnter = computed(() => {
-	if (cover.value == 19) {
-		return 'fadeInRight'
-	}
-	if (cover.value == -19) {
-		return 'fadeInLeft'
-	}
-	if (cover.value > 0) {
-		return 'fadeInBottom'
-	}
-	if (cover.value < 0) {
-		return 'fadeInTop'
-	}
-	if (cover.value == 0) {
-		return ''
-	}
+// const calcEnter = computed(() => {
+// 	if (cover.value == 19) {
+// 		return 'fadeInRight'
+// 	}
+// 	if (cover.value == -19) {
+// 		return 'fadeInLeft'
+// 	}
+// 	if (cover.value > 0) {
+// 		return 'fadeInBottom'
+// 	}
+// 	if (cover.value < 0) {
+// 		return 'fadeInTop'
+// 	}
+// 	if (cover.value == 0) {
+// 		return ''
+// 	}
+// })
+
+const enterClass = computed(() => {
+	const v = cover.value
+	if (v === 19) return 'fadeInRight'
+	if (v === -19) return 'fadeInLeft'
+	if (v > 0) return 'fadeInBottom'
+	if (v < 0) return 'fadeInTop'
+	return 'fadeInBottom' // безопасный дефолт на случай 0/NaN
 })
 
 const nav = () => {
 	router.push('/')
-	// if (myapps.groupPath.length > 0 && myapps.groupPath == route.fullPath.toString()) {
-	// 	router.push(myapps.path)
-	// 	myapps.setGroupPath('')
-	// } else if (myapps.groupPath.length > 0) {
-	// 	router.push(myapps.groupPath)
-	// } else if (myapps.path == route.fullPath.toString()) {
-	// 	router.push('/')
-	// } else if (myapps.groupPath.length == 0) {
-	// 	router.push(myapps.path)
-	// }
 }
 
 const helpMode = ref(false)
@@ -218,6 +236,27 @@ const close = () => {
 const close1 = () => {
 	notsave.value = !notsave.value
 }
+
+const goto = () => {
+	router.push('/settings')
+}
+
+const user = [
+	{
+		id: 1,
+		icon: OcticonTools,
+		label: 'Настройки',
+		action: () => router.push('/settings'),
+	},
+	{
+		id: 0,
+		icon: StreamlineEmergencyExitSolid,
+		label: 'Выход',
+		action: null,
+	},
+]
+
+const topLevelKey = (route) => route.matched[0]?.path || route.path
 </script>
 
 <template lang="pug">
@@ -228,7 +267,7 @@ q-layout(view='hHh LpR fFf')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
 			q-toolbar-title
-				span(v-if='route.name == "home"') Конструктор приложений
+				span(v-if='route.name == "home" || route.path.includes("settings")') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
 			// .group(v-if='route.name !== "home" && route.name !== "version" && route.name !== "assistent"')
@@ -252,6 +291,18 @@ q-layout(view='hHh LpR fFf')
 
 			q-avatar(size='md')
 				img(src="https://cdn.quasar.dev/img/avatar.png")
+				q-menu(transition-show="jump-down" transition-hide="jump-up")
+					q-list
+						q-item(clickable  v-close-popup)
+							q-item-section(side)
+								q-avatar(size='26px')
+									img(src="https://cdn.quasar.dev/img/avatar.png")
+							q-item-section Администратор
+
+						q-item(clickable v-for="item in user" :key='item.id' @click="item.action" v-close-popup)
+							q-item-section(side)
+								component.ic(:is='item.icon')
+							q-item-section {{ item.label }}
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
 			// q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
@@ -263,11 +314,11 @@ q-layout(view='hHh LpR fFf')
 		#cont
 			router-view(v-slot="{ Component, route }")
 				transition(
-					:leave-active-class='calcLeave'
-					:enter-active-class='calcEnter'
+					:leave-active-class="leaveClass"
+					:enter-active-class="enterClass"
 					mode='out-in'
 					)
-					component(:is="Component")
+					component(:is="Component" :key="topLevelKey(route)")
 
 	q-footer.footer(v-if='footerState')
 		.cent
@@ -471,5 +522,9 @@ nav a:first-of-type {
 	border-left: 10px solid transparent;
 	border-right: 10px solid transparent;
 	border-top: 10px solid $negative; /* ▲ треугольник вверх */
+}
+.ic {
+	font-size: 1.5rem;
+	color: $primary;
 }
 </style>

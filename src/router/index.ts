@@ -275,6 +275,38 @@ const router = createRouter({
 				count: 10,
 			},
 		},
+		{
+			path: '/settings',
+			component: () => import('@/views/Settings.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 10,
+			},
+			children: [
+				{
+					path: '', // <- пустой путь = дефолтный дочерний
+					name: 'settings',
+					component: () => import('@/components/SettingsRoot.vue'), // твой корневой контент
+					props: true,
+				},
+				{
+					path: 'users/:id',
+					component: () => import('@/components/UserSettingDetails.vue'),
+					props: (route) => ({ id: route.params.id, type: 'users' }),
+				},
+				{
+					path: 'apps/:id',
+					component: () => import('@/components/AppSettingDetails.vue'),
+					props: (route) => ({ id: route.params.id, type: 'app' }),
+				},
+				{
+					path: 'db/:id',
+					component: () => import('@/components/DbSettingDetails.vue'),
+					props: (route) => ({ id: route.params.id, type: 'db' }),
+				},
+			],
+		},
 	],
 })
 

@@ -99,6 +99,7 @@ const onDragLeave = () => {
 
 const $q = useQuasar()
 const onDrop1 = (el: App, n: number) => {
+	console.log(n)
 	if (hoverIndex.value == dragIndex.value) return
 	if (props.shift == true) {
 		let tmp = {} as App
