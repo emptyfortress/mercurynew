@@ -6,7 +6,8 @@ import { useStorage } from '@vueuse/core'
 import CarbonDataFormat from '@/components/icons/CarbonDataFormat.vue'
 import { useApps } from '@/stores/apps'
 //
-const iconModules: any = import.meta.glob('@/components/icons/list/*.vue')
+// const iconModules: any = import.meta.glob('@/components/icons/list/*.vue')
+const iconModules = import.meta.glob('@/components/icons/list/*.vue', { eager: true })
 
 const mini = useStorage('mini', true)
 const app = useStorage('app', localStorage)
@@ -69,16 +70,33 @@ async function loadIcon(iconName?: string) {
 		return
 	}
 
-	// ключ формируется по имени файла, например MaterialSymbolsTravelLuggageAndBags.vue
 	const key = `/src/components/icons/list/${iconName}.vue`
 
 	if (iconModules[key]) {
-		iconComp.value = (await iconModules[key]()).default
+		// при eager импорт уже готов
+		iconComp.value = (iconModules[key] as any).default
 	} else {
 		console.warn(`Иконка "${iconName}" не найдена`)
 		iconComp.value = null
 	}
 }
+
+// async function loadIcon(iconName?: string) {
+// 	if (!iconName) {
+// 		iconComp.value = null
+// 		return
+// 	}
+//
+// 	// ключ формируется по имени файла, например MaterialSymbolsTravelLuggageAndBags.vue
+// 	const key = `/src/components/icons/list/${iconName}.vue`
+//
+// 	if (iconModules[key]) {
+// 		iconComp.value = (await iconModules[key]()).default
+// 	} else {
+// 		console.warn(`Иконка "${iconName}" не найдена`)
+// 		iconComp.value = null
+// 	}
+// }
 
 // Загружаем при первом рендере
 loadIcon(app.value?.pic?.name)
