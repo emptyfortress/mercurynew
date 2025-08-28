@@ -31,7 +31,7 @@ export const useApps = defineStore('apps', () => {
 			created: 1755513353568,
 			group: 1,
 			list: [],
-			multiuser: true,
+			multiuser: false,
 			pic: MaterialSymbolsTravelLuggageAndBags1,
 			master: true,
 			versions: [
@@ -60,7 +60,7 @@ export const useApps = defineStore('apps', () => {
 			created: 1755513353568,
 			group: 1,
 			list: [],
-			multiuser: true,
+			multiuser: false,
 			pic: MakiBeach1,
 			master: true,
 			versions: [
@@ -102,7 +102,7 @@ export const useApps = defineStore('apps', () => {
 					created: 1755513353568,
 					group: 1,
 					list: [],
-					multiuser: true,
+					multiuser: false,
 					pic: MaterialSymbolsPrint1,
 					master: true,
 					versions: [
@@ -220,7 +220,7 @@ export const useApps = defineStore('apps', () => {
 			created: 1755513353568,
 			group: 1,
 			list: [],
-			multiuser: true,
+			multiuser: false,
 			pic: MaterialSymbolsLabProfile1,
 			master: true,
 			versions: [

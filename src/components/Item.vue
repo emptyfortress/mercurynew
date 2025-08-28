@@ -7,6 +7,7 @@ import IconMenu from '@/components/IconMenu.vue'
 import { uid, useQuasar } from 'quasar'
 // import { useRouter } from 'vue-router'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import ShareDialog from '@/components/ShareDialog.vue'
 
 // const router = useRouter()
 
@@ -250,6 +251,8 @@ const showDialog = () => {
 const calcDraggable = (id: string) => {
 	return activeItem.value == id ? false : true
 }
+
+const shareDialog = ref(false)
 </script>
 
 <template lang="pug">
@@ -275,11 +278,17 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
-			.user(v-if='item.multiuser')
-				q-avatar(size='24px' color="positive" text-color="white") РЛ
-					q-tooltip Роза Львовна
-				q-avatar(size='24px' color="warning" text-color="black") СК
-					q-tooltip Сирень Крокодиловна
+			.user
+				q-btn(flat round icon="mdi-share-variant" color="primary" dense size='12px' @click='shareDialog = !shareDialog') 
+					q-tooltip Предоставить доступ
+					ShareDialog(v-model="shareDialog" v-model:multiuser='item.multiuser')
+
+
+				template(v-if='item.multiuser')
+					q-avatar(size='24px' color="positive" text-color="white") РЛ
+						q-tooltip Роза Львовна
+					q-avatar(size='24px' color="warning" text-color="black") СК
+						q-tooltip Сирень Крокодиловна
 
 		template(v-else)
 			span {{ item.label }}
@@ -292,6 +301,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 		)
 
 		q-btn.addAbs(v-if='activeItem == item.id && item.group > 1' flat round icon="mdi-plus-circle" color="primary" @click.stop) 
+
 		GroupInsidePreview(
 			v-if='activeItem == item.id && item.group > 1'
 			v-model:list="item.list"
