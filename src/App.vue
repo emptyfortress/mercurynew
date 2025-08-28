@@ -252,11 +252,11 @@ const user = [
 		id: 0,
 		icon: StreamlineEmergencyExitSolid,
 		label: 'Выход',
-		action: null,
+		action: undefined,
 	},
 ]
 
-const topLevelKey = (route) => route.matched[0]?.path || route.path
+const topLevelKey = (route: any) => route.matched[0]?.path || route.path
 </script>
 
 <template lang="pug">
