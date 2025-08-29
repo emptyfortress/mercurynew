@@ -23,29 +23,21 @@ const cols: QTableProps['columns'] = [
 		sortable: false,
 	},
 	{
-		name: 'view',
+		name: 'details',
 		required: true,
-		label: 'Просмотр',
-		align: 'center',
-		field: 'view',
+		label: 'Тип',
+		align: 'left',
+		field: 'details',
 		sortable: false,
 	},
 	{
-		name: 'edit',
+		name: 'action',
 		required: true,
-		label: 'Редактирование',
+		label: 'Действие',
 		align: 'center',
-		field: 'edit',
+		field: 'action',
 		sortable: false,
 	},
-	// {
-	// 	name: 'admin',
-	// 	required: true,
-	// 	label: 'Администраторы',
-	// 	align: 'center',
-	// 	field: 'admin',
-	// 	sortable: false,
-	// },
 ]
 
 const cols1: QTableProps['columns'] = [
@@ -95,14 +87,18 @@ const rows: any = ref([
 	{
 		id: 0,
 		users: 'Администратор',
-		view: true,
-		edit: true,
+		details: 'Системная роль',
 	},
 	{
 		id: 1,
-		users: 'Орлов П.С. (я)',
-		view: true,
-		edit: true,
+		users: 'Орлов П.С.',
+		details: 'Автор (я)',
+	},
+	{
+		id: 2,
+		users: 'Роза Львовна',
+		details: 'По приглашению',
+		action: true,
 	},
 ])
 
@@ -227,40 +223,31 @@ const rows2: any = ref([
 
 <template lang="pug">
 div
-	h6 {{ current?.label || 'fuck'}}
+	h6
+		component.ic(:is='current?.pic')
+		|{{ current?.label || 'fuck'}}
 	br
+	h7 Права на редактирование
 
 	q-table(flat,
 		:columns="cols"
 		:rows="rows"
 		row-key="id"
 		color="primary"
-		title='Права на редактирование'
 		hide-bottom
 		)
-
-		template(v-slot:body-cell-view='props')
+		template(v-slot:body-cell-action='props')
 			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.view" dense)
-		template(v-slot:body-cell-edit='props')
-			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.edit" dense)
+				q-btn(v-if='props.row.action' flat color="primary" icon="mdi-delete-outline" label="Отозвать приглашение" @click="" size='sm') 
 
-		template(v-slot:body-cell-users='props')
-			q-td(:props='props')
-				q-icon(name="mdi-account-circle" color="primary" size="24px")
-				span.q-ml-md {{ props.row.users}}
-		// template(v-slot:body-cell-users='props')
-		// 	q-td.text-center(:props='props')
-		// 		q-checkbox(v-model="props.row.users" dense)
 
 	br
+	h7 Права на публикацию
 	q-table(flat,
 		:columns="cols1"
 		:rows="rows1"
 		row-key="id"
 		color="primary"
-		title='Права на публикацию'
 		hide-bottom
 		)
 		template(v-slot:body-cell-db='props')
@@ -284,12 +271,12 @@ div
 				q-checkbox(v-model="props.row.users" dense)
 
 	br
+	h7 Версии приложения
 	q-table(flat,
 		:columns="cols2"
 		:rows="rows2"
 		row-key="id"
 		color="primary"
-		title='Версии приложения'
 		hide-bottom
 		)
 		template(v-slot:body-cell-action)
@@ -301,4 +288,10 @@ div
 
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.ic {
+	font-size: 1.8rem;
+	margin-right: 0.5rem;
+	margin-bottom: -5px;
+}
+</style>

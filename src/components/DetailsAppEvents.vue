@@ -185,12 +185,12 @@ const page = {
 </script>
 
 <template lang="pug">
+h7 Журнал событий
 q-table(flat,
 	:columns="cols"
 	:rows="rows"
 	row-key="id"
 	color="primary"
-	title='Журнал событий'
 	hide-bottom
 	:pagination="page"
 	)
