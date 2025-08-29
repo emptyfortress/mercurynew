@@ -259,12 +259,14 @@ const user = [
 const topLevelKey = (route: any) => route.matched[0]?.path || route.path
 
 const title = computed(() => {
-	if (route.name === 'home' && !route.path.includes('settings')) {
+	if (route.matched[0]?.path === '/:id?') {
 		return 'Конструктор приложений'
 	}
-	if (route.name === 'settings') {
+
+	if (route.path.startsWith('/settings')) {
 		return 'Настройка конструктора'
 	}
+
 	return `Настройка приложения "${app.value.label}"`
 })
 </script>

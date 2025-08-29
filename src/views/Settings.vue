@@ -48,7 +48,7 @@ q-page(padding)
 		.grid
 			q-list(separator)
 
-				q-expansion-item(
+				// q-expansion-item(
 					v-model="panels.users"
 					expand-separator
 					header-class='exphd'
