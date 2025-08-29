@@ -257,6 +257,16 @@ const user = [
 ]
 
 const topLevelKey = (route: any) => route.matched[0]?.path || route.path
+
+const title = computed(() => {
+	if (route.name === 'home' && !route.path.includes('settings')) {
+		return 'Конструктор приложений'
+	}
+	if (route.name === 'settings') {
+		return 'Настройка конструктора'
+	}
+	return `Настройка приложения "${app.value.label}"`
+})
 </script>
 
 <template lang="pug">
@@ -266,9 +276,7 @@ q-layout(view='hHh LpR fFf')
 			q-btn(dense flat round @click='nav')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
-			q-toolbar-title
-				span(v-if='route.name == "home" || route.path.includes("settings")') Конструктор приложений
-				span(v-else) Настройка приложения "{{ app.label }}"
+			q-toolbar-title {{ title }}
 
 			// .group(v-if='route.name !== "home" && route.name !== "version" && route.name !== "assistent"')
 			.group(v-if='route.meta.toolbar')

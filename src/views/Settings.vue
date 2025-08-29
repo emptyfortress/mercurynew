@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import OcticonTools from '@/components/icons/OcticonTools.vue'
+// import OcticonTools from '@/components/icons/OcticonTools.vue'
 import { useApps } from '@/stores/apps'
 import { useServers } from '@/stores/servers'
 import { useStorage } from '@vueuse/core'
+import { useTitle } from '@vueuse/core'
+const title = useTitle()
+title.value = 'Настройки конструктора'
 
 const myapps = useApps()
 const server = useServers()
@@ -38,7 +41,7 @@ const panels = useStorage('settings_expansion_state', {
 <template lang="pug">
 q-page(padding)
 	.cont()
-		.hd
+		// .hd
 			OcticonTools.q-mr-md
 			|Настройки конструктора приложений
 
