@@ -1,33 +1,31 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
-const modelValue = defineModel<boolean>()
-const multiuser = defineModel<boolean>('multiuser')
+const modelValue = defineModel<boolean>() // отвечает за открытие/закрытие
+const multiuser = defineModel<boolean>('multiuser', { default: false }) // связь с родителем
 
-const dostup = ref('Доступ ограничен')
-const options = [
-	{ id: 0, label: 'Доступ ограничен', value: 'Доступ ограничен' },
-	{ id: 1, label: 'Все, у кого есть ссылка', value: 'Все, у кого есть ссылка' },
-]
+const localMultiuser = ref(false) // локальное значение
+const options = ['Доступ ограничен', 'Все, у кого есть ссылка']
 
-const action = () => {
-	if (dostup.value === 'Все, у кого есть ссылка') {
-		multiuser.value = true
-	} else {
-		multiuser.value = false
-	}
-}
+// computed для удобного биндинга к селекту
+const dostup = computed({
+	get: () => (localMultiuser.value ? 'Все, у кого есть ссылка' : 'Доступ ограничен'),
+	set: (val: string) => {
+		localMultiuser.value = val === 'Все, у кого есть ссылка'
+	},
+})
 
+// Когда открываем диалог — копируем значение из родителя в локальное
 watch(modelValue, (val) => {
-	if (val === true) {
-		// Диалог открылся
-		if (multiuser.value) {
-			dostup.value = 'Все, у кого есть ссылка'
-		} else {
-			dostup.value = 'Доступ ограничен'
-		}
+	if (val) {
+		localMultiuser.value = multiuser.value
 	}
 })
+
+// При нажатии "Готово" сохраняем изменения в родителя
+const confirm = () => {
+	multiuser.value = localMultiuser.value
+}
 </script>
 
 <template lang="pug">
@@ -62,10 +60,10 @@ q-dialog(v-model="modelValue")
 				span(v-if='dostup =="Доступ ограничен"') Открывать приложение могут только пользователи, имеющие доступ.
 				span(v-else) Открывать приложение могут все, у кого есть ссылка.
 		q-card-actions.q-mx-md(align='right')
-			q-btn(outline rounded color="primary" icon="mdi-link" label="Копировать ссылку" size="sm") 
+			q-btn(v-if='localMultiuser' outline rounded color="primary" icon="mdi-link" label="Копировать ссылку" size="sm") 
 			q-space
 			q-btn(flat color="primary" label="Отмена" v-close-popup) 
-			q-btn(unelevated color="primary" label="Готово" @click="action" v-close-popup) 
+			q-btn(unelevated color="primary" label="Готово" @click="confirm" v-close-popup) 
 </template>
 
 <style scoped lang="scss">
