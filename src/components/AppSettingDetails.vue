@@ -236,6 +236,11 @@ div
 		color="primary"
 		hide-bottom
 		)
+		template(v-slot:body-cell-users='props')
+			q-td.text-center(:props='props')
+				q-icon(name="mdi-account-circle" color="primary" size="sm")
+				|&nbsp;&nbsp; {{ props.row.users}}
+
 		template(v-slot:body-cell-action='props')
 			q-td.text-center(:props='props')
 				q-btn(v-if='props.row.action' flat color="primary" icon="mdi-delete-outline" label="Отозвать приглашение" @click="" size='sm') 
@@ -252,7 +257,7 @@ div
 		)
 		template(v-slot:body-cell-db='props')
 			q-td.text-left(:props='props')
-				q-icon(name="mdi-database-outline" color="secondary" size="sm")
+				q-icon(name="mdi-database-outline" color="primary" size="sm")
 				|&nbsp;&nbsp;{{ props.row.db }}
 		template(v-slot:body-cell-author='props')
 			q-td.text-center(:props='props')
