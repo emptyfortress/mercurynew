@@ -18,34 +18,34 @@ const cols: QTableProps['columns'] = [
 		name: 'users',
 		required: true,
 		label: 'Пользователи',
-		align: 'center',
+		align: 'left',
 		field: 'users',
 		sortable: false,
 	},
 	{
-		name: 'advanced',
+		name: 'view',
 		required: true,
-		label: 'Продвинутые пользователи',
+		label: 'Просмотр',
 		align: 'center',
-		field: 'advanced',
+		field: 'view',
 		sortable: false,
 	},
 	{
-		name: 'author',
+		name: 'edit',
 		required: true,
-		label: 'Автор',
+		label: 'Редактирование',
 		align: 'center',
-		field: 'author',
+		field: 'edit',
 		sortable: false,
 	},
-	{
-		name: 'admin',
-		required: true,
-		label: 'Администраторы',
-		align: 'center',
-		field: 'admin',
-		sortable: false,
-	},
+	// {
+	// 	name: 'admin',
+	// 	required: true,
+	// 	label: 'Администраторы',
+	// 	align: 'center',
+	// 	field: 'admin',
+	// 	sortable: false,
+	// },
 ]
 
 const cols1: QTableProps['columns'] = [
@@ -94,10 +94,15 @@ const cols1: QTableProps['columns'] = [
 const rows: any = ref([
 	{
 		id: 0,
-		author: true,
-		admin: true,
-		advanced: true,
-		users: true,
+		users: 'Администратор',
+		view: true,
+		edit: true,
+	},
+	{
+		id: 1,
+		users: 'Орлов П.С. (я)',
+		view: true,
+		edit: true,
 	},
 ])
 
@@ -224,6 +229,7 @@ const rows2: any = ref([
 div
 	h6 {{ current?.label || 'fuck'}}
 	br
+
 	q-table(flat,
 		:columns="cols"
 		:rows="rows"
@@ -232,21 +238,22 @@ div
 		title='Права на редактирование'
 		hide-bottom
 		)
-		template(v-slot:body-cell-author='props')
-			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.author" dense)
 
-		template(v-slot:body-cell-admin='props')
+		template(v-slot:body-cell-view='props')
 			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.admin" dense)
-
-		template(v-slot:body-cell-advanced='props')
+				q-checkbox(v-model="props.row.view" dense)
+		template(v-slot:body-cell-edit='props')
 			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.advanced" dense)
+				q-checkbox(v-model="props.row.edit" dense)
 
 		template(v-slot:body-cell-users='props')
-			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.users" dense)
+			q-td(:props='props')
+				q-icon(name="mdi-account-circle" color="primary" size="24px")
+				span.q-ml-md {{ props.row.users}}
+		// template(v-slot:body-cell-users='props')
+		// 	q-td.text-center(:props='props')
+		// 		q-checkbox(v-model="props.row.users" dense)
+
 	br
 	q-table(flat,
 		:columns="cols1"
