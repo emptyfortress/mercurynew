@@ -5,26 +5,49 @@ const modelValue = defineModel<boolean>() // отвечает за открыт�
 const multiuser = defineModel<boolean>('multiuser', { default: false }) // связь с родителем
 
 const localMultiuser = ref(false) // локальное значение
-const options = ['Доступ ограничен', 'Все, у кого есть ссылка']
-
-// computed для удобного биндинга к селекту
-const dostup = computed({
-	get: () => (localMultiuser.value ? 'Все, у кого есть ссылка' : 'Доступ ограничен'),
-	set: (val: string) => {
-		localMultiuser.value = val === 'Все, у кого есть ссылка'
+const options = [
+	{
+		id: 0,
+		label: 'Роза Львовна',
+		abbrev: 'РЛ',
+		color: 'positive',
 	},
-})
+	{
+		id: 1,
+		label: 'Сирень Крокодиловна',
+		abbrev: 'СК',
+		color: 'warning',
+	},
+	{
+		id: 2,
+		label: 'Лотос Тигрович',
+		abbrev: 'ЛТ',
+		color: 'negative',
+	},
+]
 
-// Когда открываем диалог — копируем значение из родителя в локальное
-watch(modelValue, (val) => {
-	if (val) {
-		localMultiuser.value = multiuser.value
-	}
-})
+const dostup = ref<any>(null)
 
-// При нажатии "Готово" сохраняем изменения в родителя
 const confirm = () => {
 	multiuser.value = localMultiuser.value
+}
+
+const users = ref<any>([])
+
+const addUser = () => {
+	users.value.push({
+		id: +Date.now(),
+		label: dostup.value.label,
+		abbrev: dostup.value.abbrev,
+		color: dostup.value.color,
+	})
+	dostup.value = null
+	localMultiuser.value = true
+}
+
+const remove = (ind: number) => {
+	users.value.splice(ind, 1)
+	if (users.value.length == 0) localMultiuser.value = false
 }
 </script>
 
@@ -52,26 +75,22 @@ q-dialog(v-model="modelValue")
 					q-item-section(side)
 						.caption Вы (автор)
 
-				q-item(clickable)
+				q-item(clickable v-for="(user, index) in users" :key='user.id')
 					q-item-section(side)
-						q-avatar(size='28px' color="positive" text-color="white") РЛ
+						q-avatar(size='28px' :color="user.color" text-color="white") {{ user.abbrev}}
 					q-item-section
-							div Роза Львовна
-							.caption По приглашению
+						div {{ user.label}}
 					q-item-section(side)
-						q-icon(name="mdi-close-circle" color="grey" size="sm")
+						q-icon(name="mdi-close-circle" color="grey" size="sm" @click='remove(index)')
 
-			.text-bold.q-mt-md Доступ на редактирование
-			q-select(outlined dense v-model="dostup" :options='options')
-				template(v-slot:prepend)
-					q-icon(v-if='dostup == "Доступ ограничен"' name="mdi-lock" color="primary")
-					q-icon(v-else name="mdi-link" color="primary")
-			.hint
-				span(v-if='dostup =="Доступ ограничен"') Редактировать приложение могут только пользователи, из списка выше.
-				span(v-else) Редактировать приложение могут все, у кого есть ссылка.
+			.text-bold.q-mt-md Добавить
+			q-select(outlined dense v-model="dostup" :options='options' label="Пользователь")
+				template(v-slot:prepend v-if='dostup')
+					q-icon(name="mdi-account-circle" color="primary")
+				template(v-slot:after)
+					q-btn(flat round color="primary" icon='mdi-plus-circle' @click="addUser" size="18px" dense) 
+
 		q-card-actions.q-mx-md(align='right')
-			q-btn(v-if='localMultiuser' outline rounded color="primary" icon="mdi-link" label="Копировать ссылку" size="sm") 
-			q-space
 			q-btn(flat color="primary" label="Отмена" v-close-popup) 
 			q-btn(unelevated color="primary" label="Готово" @click="confirm" v-close-popup) 
 </template>
