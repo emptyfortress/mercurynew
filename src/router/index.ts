@@ -290,11 +290,11 @@ const router = createRouter({
 					component: () => import('@/components/SettingsRoot.vue'), // твой корневой контент
 					props: true,
 				},
-				{
-					path: 'users/:id',
-					component: () => import('@/components/UserSettingDetails.vue'),
-					props: (route) => ({ id: route.params.id, type: 'users' }),
-				},
+				// {
+				// 	path: 'users/:id',
+				// 	component: () => import('@/components/UserSettingDetails.vue'),
+				// 	props: (route) => ({ id: route.params.id, type: 'users' }),
+				// },
 				{
 					path: 'apps/:id',
 					component: () => import('@/components/AppSettingDetails.vue'),
@@ -303,6 +303,38 @@ const router = createRouter({
 				{
 					path: 'db/:id',
 					component: () => import('@/components/DbSettingDetails.vue'),
+					props: (route) => ({ id: route.params.id, type: 'db' }),
+				},
+			],
+		},
+		{
+			path: '/publications',
+			component: () => import('@/views/Publications.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 10,
+			},
+			children: [
+				{
+					path: '', // <- пустой путь = дефолтный дочерний
+					name: 'publications',
+					component: () => import('@/components/PublRoot.vue'), // твой корневой контент
+					props: true,
+				},
+				{
+					path: 'users/:id',
+					component: () => import('@/components/UserPublDetails.vue'),
+					props: (route) => ({ id: route.params.id, type: 'users' }),
+				},
+				{
+					path: 'apps/:id',
+					component: () => import('@/components/AppPublDetails.vue'),
+					props: (route) => ({ id: route.params.id, type: 'app' }),
+				},
+				{
+					path: 'db/:id',
+					component: () => import('@/components/DbPublDetails.vue'),
 					props: (route) => ({ id: route.params.id, type: 'db' }),
 				},
 			],

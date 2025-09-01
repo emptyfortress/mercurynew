@@ -13,6 +13,7 @@ import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
 import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergencyExitSolid.vue'
 import OcticonTools from '@/components/icons/OcticonTools.vue'
+import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -243,13 +244,19 @@ const goto = () => {
 
 const user = [
 	{
-		id: 1,
+		id: 0,
 		icon: OcticonTools,
-		label: 'Настройки',
+		label: 'Настройки конструктора',
 		action: () => router.push('/settings'),
 	},
 	{
-		id: 0,
+		id: 1,
+		icon: MdiCloudUploadOutline,
+		label: 'Управление публикациями',
+		action: () => router.push('/publications'),
+	},
+	{
+		id: 2,
 		icon: StreamlineEmergencyExitSolid,
 		label: 'Выход',
 		action: undefined,
@@ -265,6 +272,10 @@ const title = computed(() => {
 
 	if (route.path.startsWith('/settings')) {
 		return 'Настройка конструктора'
+	}
+
+	if (route.path.startsWith('/publications')) {
+		return 'Управление публикациями'
 	}
 
 	return `Настройка приложения "${app.value.label}"`
