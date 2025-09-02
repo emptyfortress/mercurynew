@@ -25,6 +25,16 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/test',
+			name: 'test',
+			component: () => import('@/views/Testing.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+			},
+		},
+		{
 			path: '/tmp1',
 			name: 'tmp1',
 			component: () => import('@/views/Tmp1.vue'),
@@ -290,11 +300,11 @@ const router = createRouter({
 					component: () => import('@/components/SettingsRoot.vue'), // твой корневой контент
 					props: true,
 				},
-				// {
-				// 	path: 'users/:id',
-				// 	component: () => import('@/components/UserSettingDetails.vue'),
-				// 	props: (route) => ({ id: route.params.id, type: 'users' }),
-				// },
+				{
+					path: 'users/:id',
+					component: () => import('@/components/UserSettingDetails.vue'),
+					props: (route) => ({ id: route.params.id, type: 'users' }),
+				},
 				{
 					path: 'apps/:id',
 					component: () => import('@/components/AppSettingDetails.vue'),
