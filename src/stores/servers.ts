@@ -107,9 +107,12 @@ export const useServers = defineStore('servers', () => {
 
 	const editors = ref([
 		{ id: 0, name: 'Орлов П.С.', author: true },
-		{ id: 1, name: 'Лебедев С.С.', author: false },
-		{ id: 2, name: 'Соловьева И.К.', author: false },
-		{ id: 3, name: 'Воробьев А.А.', author: false },
+		// { id: 1, name: 'Лебедев С.С.', author: false },
+		// { id: 2, name: 'Соловьева И.К.', author: false },
+		// { id: 3, name: 'Воробьев А.А.', author: false },
+		{ id: 4, name: 'Роза Львовна', author: false },
+		{ id: 5, name: 'Сирень Крокодиловна', author: false },
+		{ id: 6, name: 'Лотос Тигрович', author: false },
 	])
 
 	const userGroups = ref([

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useApps } from '@/stores/apps'
+import { useServers } from '@/stores/servers'
 import type { QTableProps } from 'quasar'
 import { date } from 'quasar'
 import DetailsAppEvents from '@/components/DetailsAppEvents.vue'
@@ -8,6 +9,7 @@ import DetailsAppEvents from '@/components/DetailsAppEvents.vue'
 const props = defineProps<{ id: string; type: string }>()
 
 const myapps = useApps()
+const server = useServers()
 
 const current = computed(() => {
 	return myapps.flatApps.find((el) => el.id == props.id)
@@ -15,28 +17,44 @@ const current = computed(() => {
 
 const cols: QTableProps['columns'] = [
 	{
-		name: 'users',
+		name: 'name',
 		required: true,
 		label: 'Пользователи',
 		align: 'left',
-		field: 'users',
+		field: 'name',
 		sortable: false,
 	},
 	{
-		name: 'details',
+		name: 'col0',
 		required: true,
-		label: 'Тип',
-		align: 'left',
-		field: 'details',
-		sortable: false,
-	},
-	{
-		name: 'action',
-		required: true,
-		label: 'Действие',
+		label: 'Редактирование',
 		align: 'center',
-		field: 'action',
-		sortable: false,
+		field: 'col0',
+		sortable: true,
+	},
+	{
+		name: 'col1',
+		required: true,
+		label: 'DV-Test',
+		align: 'center',
+		field: 'col1',
+		sortable: true,
+	},
+	{
+		name: 'col2',
+		required: true,
+		label: 'DV-Main',
+		align: 'center',
+		field: 'col2',
+		sortable: true,
+	},
+	{
+		name: 'col3',
+		required: true,
+		label: 'DV-Prod',
+		align: 'center',
+		field: 'col3',
+		sortable: true,
 	},
 ]
 
@@ -83,24 +101,34 @@ const cols1: QTableProps['columns'] = [
 	},
 ]
 
-const rows: any = ref([
-	{
-		id: 0,
-		users: 'Администратор',
-		details: 'Системная роль',
-	},
-	{
-		id: 1,
-		users: 'Орлов П.С.',
-		details: 'Автор (я)',
-	},
-	{
-		id: 2,
-		users: 'Роза Львовна',
-		details: 'По приглашению',
-		action: true,
-	},
-])
+const rows = ref(
+	server.editors.map((item) => ({
+		...item,
+		id: item.id.toString(),
+		col0: true,
+		col1: false,
+		col2: false,
+		col3: false,
+	}))
+)
+// const rows: any = ref([
+// 	{
+// 		id: 0,
+// 		users: 'Администратор',
+// 		details: 'Системная роль',
+// 	},
+// 	{
+// 		id: 1,
+// 		users: 'Орлов П.С.',
+// 		details: 'Автор (я)',
+// 	},
+// 	{
+// 		id: 2,
+// 		users: 'Роза Львовна',
+// 		details: 'По приглашению',
+// 		action: true,
+// 	},
+// ])
 
 const rows1: any = ref([
 	{
@@ -227,7 +255,7 @@ div
 		component.ic(:is='current?.pic')
 		|{{ current?.label || 'fuck'}}
 	br
-	h7 Права на редактирование
+	.h7 Права на редактирование и публикацию
 
 	q-table(flat,
 		:columns="cols"
@@ -236,60 +264,23 @@ div
 		color="primary"
 		hide-bottom
 		)
-		template(v-slot:body-cell-users='props')
+		template(v-slot:body-cell-name='props')
 			q-td.text-center(:props='props')
 				q-icon(name="mdi-account-circle" color="primary" size="sm")
-				|&nbsp;&nbsp; {{ props.row.users}}
+				|&nbsp;&nbsp; {{ props.row.name}}
 
-		template(v-slot:body-cell-action='props')
-			q-td.text-center(:props='props')
-				q-btn(v-if='props.row.action' flat color="primary" icon="mdi-delete-outline" label="Отозвать приглашение" @click="" size='sm') 
-
-
-	br
-	h7 Права на публикацию
-	q-table(flat,
-		:columns="cols1"
-		:rows="rows1"
-		row-key="id"
-		color="primary"
-		hide-bottom
-		)
-		template(v-slot:body-cell-db='props')
-			q-td.text-left(:props='props')
-				q-icon(name="mdi-database-outline" color="primary" size="sm")
-				|&nbsp;&nbsp;{{ props.row.db }}
-		template(v-slot:body-cell-author='props')
-			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.author" dense)
-
-		template(v-slot:body-cell-admin='props')
-			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.admin" dense)
-
-		template(v-slot:body-cell-advanced='props')
-			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.advanced" dense)
-
-		template(v-slot:body-cell-users='props')
-			q-td.text-center(:props='props')
-				q-checkbox(v-model="props.row.users" dense)
-
-	br
-	h7 Версии приложения
-	q-table(flat,
-		:columns="cols2"
-		:rows="rows2"
-		row-key="id"
-		color="primary"
-		hide-bottom
-		)
-		template(v-slot:body-cell-action)
-			q-td.text-right(auto-width)
-				q-btn(flat round icon="mdi-dots-vertical" color="primary" dense) 
-
-	br
-	DetailsAppEvents
+		template(v-slot:body-cell-col0="props")
+			q-td.text-center(:props="props")
+				q-checkbox(v-model="props.row.col0" dense)
+		template(v-slot:body-cell-col1="props")
+			q-td.text-center(:props="props")
+				q-checkbox(v-model="props.row.col1" dense)
+		template(v-slot:body-cell-col2="props")
+			q-td.text-center(:props="props")
+				q-checkbox(v-model="props.row.col2" dense)
+		template(v-slot:body-cell-col3="props")
+			q-td.text-center(:props="props")
+				q-checkbox(v-model="props.row.col3" dense)
 
 </template>
 

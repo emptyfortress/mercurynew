@@ -5,7 +5,7 @@ import { date } from 'quasar'
 import type { QTableProps } from 'quasar'
 import DetailsAppEvents from '@/components/DetailsAppEvents.vue'
 
-const props = defineProps<{ id: number; type: string }>()
+const props = defineProps<{ id: string; type: string }>()
 
 const myapps = useApps()
 
@@ -178,7 +178,7 @@ div
 		q-icon(name="mdi-database-outline")
 		|&nbsp;{{ current?.label || 'fuck'}}
 	br
-	h7 Установленные приложения
+	.h7 Установленные приложения
 	q-table(flat,
 		:columns="cols"
 		:rows="rows"
@@ -191,7 +191,7 @@ div
 				q-btn(flat color="primary" icon="mdi-dots-vertical" dense) 
 
 	br
-	h7 Архив версий
+	.h7 Архив версий
 	q-table(flat,
 		:columns="cols1"
 		:rows="rows1"

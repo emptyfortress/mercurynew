@@ -1,7 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import DetailsAppEvents from '@/components/DetailsAppEvents.vue'
+import WaitingPub from '@/components/WaitingPub.vue'
+</script>
 
 <template lang="pug">
-h2 Root
+div
+	WaitingPub
+	br
+	DetailsAppEvents
+
 </template>
 
 <style scoped lang="scss"></style>

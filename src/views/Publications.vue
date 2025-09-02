@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-// import OcticonTools from '@/components/icons/OcticonTools.vue'
+import { computed } from 'vue'
 import { useApps } from '@/stores/apps'
 import { useServers } from '@/stores/servers'
 import { useStorage } from '@vueuse/core'
 import { useTitle } from '@vueuse/core'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+
 const title = useTitle()
 title.value = 'Управление публикациями'
 
 const myapps = useApps()
 const server = useServers()
-const route = useRoute()
 
 const db = [
 	{
@@ -27,8 +30,36 @@ const db = [
 	},
 ]
 
-function isSelected(type: string, id: string | number) {
-	return route.params.id == String(id) && route.path.includes(`/settings/${type}/`)
+// Текущий выбор из пути /publications/<type>/<id>
+const current = computed(() => {
+	const m = route.path.match(/^\/publications\/(apps|db)\/([^/]+)/)
+	return { type: m?.[1] ?? null, id: m?.[2] ?? null }
+})
+
+function isSelected(type: 'apps' | 'db', id: string | number) {
+	return current.value.type === type && String(current.value.id) === String(id)
+}
+
+function linkTo(type: 'apps' | 'db', id: string | number) {
+	return `/publications/${type}/${id}`
+}
+
+function onItemClick(e: MouseEvent, to: string, type: 'apps' | 'db', id: string | number) {
+	// Даем пользователю открыть в новой вкладке (Cmd/Ctrl или средняя кнопка)
+	if (e.metaKey || e.ctrlKey || e.button === 1) {
+		window.open(to, '_blank')
+		return
+	}
+
+	// Переключатель: повторный клик — сброс на /publications
+	if (isSelected(type, id)) {
+		e.preventDefault()
+		router.push('/publications')
+	} else {
+		// Берём навигацию на себя, чтобы не было двойного перехода
+		e.preventDefault()
+		router.push(to)
+	}
 }
 
 const panels = useStorage('settings_expansion_state', {
@@ -41,30 +72,8 @@ const panels = useStorage('settings_expansion_state', {
 <template lang="pug">
 q-page(padding)
 	.cont()
-		// .hd
-			OcticonTools.q-mr-md
-			|Настройки конструктора приложений
-
 		.grid
 			q-list(separator)
-
-				// q-expansion-item(
-					v-model="panels.users"
-					expand-separator
-					header-class='exphd'
-					label="Группы пользователей")
-
-					q-list
-						q-item(clickable v-for="user in server.userGroups"
-							:class="{ selected: isSelected('users', user.id) }"
-							:to="`/settings/users/${user.id}`"
-							:key="`user-${user.id}`"
-							)
-
-							q-item-section(side)
-								q-icon(name="mdi-account-multiple" color="primary")
-							q-item-section
-								q-item-label {{ user.name }}
 
 				q-expansion-item(
 					v-model="panels.apps"
@@ -74,7 +83,8 @@ q-page(padding)
 
 					q-list
 						q-item(clickable v-for="app in myapps.flatApps"
-							:to="`/settings/apps/${app.id}`"
+							:to="linkTo('apps', app.id)"
+              @click="onItemClick($event, linkTo('apps', app.id), 'apps', app.id)"
 							:class="{ selected: isSelected('apps', app.id) }"
 							:key="`app-${app.id}`"
 							)
@@ -90,7 +100,8 @@ q-page(padding)
 					label="Базы данных")
 					q-list
 						q-item(clickable v-for="server in db"
-							:to="`/settings/db/${server.id}`"
+							:to="linkTo('db', server.id)"
+							@click="onItemClick($event, linkTo('db', server.id), 'db', server.id)"
 							:key="`db-${server.id}`"
 							:class="{ selected: isSelected('db', server.id) }"
 							)
@@ -109,7 +120,7 @@ q-page(padding)
 
 <style scoped lang="scss">
 .cont {
-	max-width: 1400px;
+	max-width: 1440px;
 	margin: 0 auto;
 	// background: #ccc;
 }

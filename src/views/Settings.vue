@@ -41,28 +41,24 @@ const panels = useStorage('settings_expansion_state', {
 <template lang="pug">
 q-page(padding)
 	.cont()
-		// .hd
-			OcticonTools.q-mr-md
-			|Настройки конструктора приложений
-
 		.grid
 			q-list(separator)
 
-				// q-expansion-item(
+				q-expansion-item(
 					v-model="panels.users"
 					expand-separator
 					header-class='exphd'
-					label="Группы пользователей")
+					label="Пользователи")
 
 					q-list
-						q-item(clickable v-for="user in server.userGroups"
+						q-item(clickable v-for="user in server.editors"
 							:class="{ selected: isSelected('users', user.id) }"
 							:to="`/settings/users/${user.id}`"
 							:key="`user-${user.id}`"
 							)
 
 							q-item-section(side)
-								q-icon(name="mdi-account-multiple" color="primary")
+								q-icon(name="mdi-account-circle" color="primary")
 							q-item-section
 								q-item-label {{ user.name }}
 

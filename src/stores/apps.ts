@@ -264,15 +264,15 @@ export const useApps = defineStore('apps', () => {
 
 	const db = ref([
 		{
-			id: 0,
+			id: '0',
 			label: 'DV-Test',
 		},
 		{
-			id: 1,
+			id: '1',
 			label: 'DV-Preprod',
 		},
 		{
-			id: 2,
+			id: '2',
 			label: 'DV-Prod',
 		},
 	])

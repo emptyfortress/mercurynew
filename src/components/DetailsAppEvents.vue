@@ -185,7 +185,7 @@ const page = {
 </script>
 
 <template lang="pug">
-h7 Журнал событий
+.h7 Журнал событий
 q-table(flat,
 	:columns="cols"
 	:rows="rows"

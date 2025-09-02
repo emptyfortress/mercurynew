@@ -108,6 +108,8 @@ const check = () => {
 	timeStamp.value = Date.now()
 	myapps.curVersion(props.item).tested = formattedString.value
 	letcheck.value = true
+	const routeData = router.resolve({ path: '/test' })
+	window.open(routeData.href, '_blank')
 }
 
 const mode = ref('version')
