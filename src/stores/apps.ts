@@ -269,7 +269,7 @@ export const useApps = defineStore('apps', () => {
 		},
 		{
 			id: '1',
-			label: 'DV-Preprod',
+			label: 'DV-Main',
 		},
 		{
 			id: '2',

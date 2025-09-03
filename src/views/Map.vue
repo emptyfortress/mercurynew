@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import type { QTableProps } from 'quasar'
 import { date } from 'quasar'
+import { useServers } from '@/stores/servers'
+
+const server = useServers()
 
 const dat = [
 	{ id: 0, label: 'Приложение', val: 'Заявки на отпуск' },
@@ -150,8 +153,13 @@ q-page(padding)
 			expand-separator
 			header-class='exphd'
 			label="Базы данных")
-			q-card
-				div Тут базы данных
+			q-list
+				q-item(clickable v-for="item in server.servers" :key='item.id')
+					q-item-section(side)
+						q-icon(name="mdi-database-outline" color="primary")
+					q-item-section {{ item.nick }}
+			// q-card
+			// 	div Тут базы данных
 		q-expansion-item(
 			v-model='map'
 			expand-separator

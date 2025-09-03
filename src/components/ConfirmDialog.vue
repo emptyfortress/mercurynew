@@ -35,7 +35,7 @@ const check = () => {
 	setTimeout(() => {
 		loading.value = false
 		modelValue.value = false
-	}, 1000)
+	}, 1500)
 	emit('check')
 }
 </script>
@@ -59,7 +59,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 
 			div(v-if='props.mode == "check"')
 				div Для проверки версия приложения будет загружена на тестовый сервер. Это займет некоторое время.
-				div После завершения загрузки вы увидите линк на сервер для проверки.
+				div После завершения загрузки вы увидите линк для проверки.
 
 			div(v-if='props.mode == "editors"')
 				div Выберите, кто может редактировать и публиковать приложение.

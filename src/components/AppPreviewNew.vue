@@ -114,7 +114,7 @@ const check = () => {
 		timeStamp.value = Date.now()
 		precheck.value = false
 		letcheck.value = true
-	}, 12000)
+	}, 10000)
 	// const routeData = router.resolve({ path: '/test' })
 	// window.open(routeData.href, '_blank')
 }
@@ -241,13 +241,13 @@ const localPubDate = computed(() => {
 							q-item-section Удалить приложение
 
 			.q-mt-md(v-if='precheck')
-				.check
-					div Последняя&nbsp;проверка:
-					SvgSpinners3DotsRotate
+				.check1
+					div Проверка:
+					SvgSpinners3DotsRotate.big
 					div Подождите, идет настройка
 
 
-			.q-mt-md(v-if='letcheck && myapps.curVersion(props.item).published !== 2')
+			.q-mt-md(v-if='!precheck && letcheck && myapps.curVersion(props.item).published !== 2')
 				.check
 					div Последняя&nbsp;проверка:
 					div {{myapps.curVersion(props.item).label}}&nbsp;--&nbsp;{{myapps.curVersion(props.item).tested}}
@@ -389,6 +389,16 @@ const localPubDate = computed(() => {
 	margin-top: 2rem;
 	display: flex;
 	gap: 1rem;
+}
+.check1 {
+	margin-top: 2rem;
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	.big {
+		font-size: 2rem;
+		color: $negative;
+	}
 }
 .pub {
 	font-weight: 600;
