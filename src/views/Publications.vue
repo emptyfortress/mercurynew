@@ -4,9 +4,8 @@ import { useApps } from '@/stores/apps'
 import { useServers } from '@/stores/servers'
 import { useStorage } from '@vueuse/core'
 import { useTitle } from '@vueuse/core'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 
-const router = useRouter()
 const route = useRoute()
 
 const title = useTitle()
@@ -29,6 +28,8 @@ const db = [
 		label: 'DV-Prod',
 	},
 ]
+// Проверка для дашборда
+const isDashboard = computed(() => route.path === '/publications')
 
 // Текущий выбор из пути /publications/<type>/<id>
 const current = computed(() => {
@@ -44,24 +45,6 @@ function linkTo(type: 'apps' | 'db', id: string | number) {
 	return `/publications/${type}/${id}`
 }
 
-function onItemClick(e: MouseEvent, to: string, type: 'apps' | 'db', id: string | number) {
-	// Даем пользователю открыть в новой вкладке (Cmd/Ctrl или средняя кнопка)
-	if (e.metaKey || e.ctrlKey || e.button === 1) {
-		window.open(to, '_blank')
-		return
-	}
-
-	// Переключатель: повторный клик — сброс на /publications
-	if (isSelected(type, id)) {
-		e.preventDefault()
-		router.push('/publications')
-	} else {
-		// Берём навигацию на себя, чтобы не было двойного перехода
-		e.preventDefault()
-		router.push(to)
-	}
-}
-
 const panels = useStorage('settings_expansion_state', {
 	users: false,
 	apps: false,
@@ -75,6 +58,13 @@ q-page(padding)
 		.grid
 			q-list(separator)
 
+				q-item(clickable to='/publications' :class="{ selected: isDashboard }")
+					q-item-section(side)
+						q-icon(name="mdi-monitor-dashboard" color="primary")
+					q-item-section
+						label Дашборд
+
+
 				q-expansion-item(
 					v-model="panels.apps"
 					expand-separator
@@ -84,7 +74,6 @@ q-page(padding)
 					q-list
 						q-item(clickable v-for="app in myapps.flatApps"
 							:to="linkTo('apps', app.id)"
-              @click="onItemClick($event, linkTo('apps', app.id), 'apps', app.id)"
 							:class="{ selected: isSelected('apps', app.id) }"
 							:key="`app-${app.id}`"
 							)
@@ -101,7 +90,6 @@ q-page(padding)
 					q-list
 						q-item(clickable v-for="server in db"
 							:to="linkTo('db', server.id)"
-							@click="onItemClick($event, linkTo('db', server.id), 'db', server.id)"
 							:key="`db-${server.id}`"
 							:class="{ selected: isSelected('db', server.id) }"
 							)

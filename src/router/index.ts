@@ -318,6 +318,17 @@ const router = createRouter({
 			],
 		},
 		{
+			path: '/map',
+			name: 'map',
+			component: () => import('@/views/Map.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				back1: true,
+				count: 29,
+			},
+		},
+		{
 			path: '/publications',
 			component: () => import('@/views/Publications.vue'),
 			meta: {

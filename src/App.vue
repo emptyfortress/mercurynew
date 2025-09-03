@@ -274,6 +274,10 @@ const title = computed(() => {
 		return 'Настройка конструктора'
 	}
 
+	if (route.path.startsWith('/map')) {
+		return 'Публикация версии'
+	}
+
 	if (route.path.startsWith('/publications')) {
 		return 'Управление публикациями'
 	}

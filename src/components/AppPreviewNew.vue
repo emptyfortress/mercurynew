@@ -7,6 +7,7 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import AddDialog from '@/components/AddDialog.vue'
 import VersionList from '@/components/VersionList.vue'
 import { useVersion } from '@/stores/version'
+import SvgSpinners3DotsRotate from '@/components/icons/SvgSpinners3DotsRotate.vue'
 
 const myapps = useApps()
 const router = useRouter()
@@ -104,12 +105,18 @@ const letcheck = computed({
 	},
 })
 
+const precheck = ref(false)
+
 const check = () => {
-	timeStamp.value = Date.now()
-	myapps.curVersion(props.item).tested = formattedString.value
-	letcheck.value = true
-	const routeData = router.resolve({ path: '/test' })
-	window.open(routeData.href, '_blank')
+	precheck.value = true
+	setTimeout(() => {
+		myapps.curVersion(props.item).tested = formattedString.value
+		timeStamp.value = Date.now()
+		precheck.value = false
+		letcheck.value = true
+	}, 12000)
+	// const routeData = router.resolve({ path: '/test' })
+	// window.open(routeData.href, '_blank')
 }
 
 const mode = ref('version')
@@ -232,6 +239,13 @@ const localPubDate = computed(() => {
 							q-item-section(side)
 								q-icon(name="mdi-delete-outline")
 							q-item-section Удалить приложение
+
+			.q-mt-md(v-if='precheck')
+				.check
+					div Последняя&nbsp;проверка:
+					SvgSpinners3DotsRotate
+					div Подождите, идет настройка
+
 
 			.q-mt-md(v-if='letcheck && myapps.curVersion(props.item).published !== 2')
 				.check
