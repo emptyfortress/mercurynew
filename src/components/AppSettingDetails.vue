@@ -111,24 +111,6 @@ const rows = ref(
 		col3: false,
 	}))
 )
-// const rows: any = ref([
-// 	{
-// 		id: 0,
-// 		users: 'Администратор',
-// 		details: 'Системная роль',
-// 	},
-// 	{
-// 		id: 1,
-// 		users: 'Орлов П.С.',
-// 		details: 'Автор (я)',
-// 	},
-// 	{
-// 		id: 2,
-// 		users: 'Роза Львовна',
-// 		details: 'По приглашению',
-// 		action: true,
-// 	},
-// ])
 
 const rows1: any = ref([
 	{
@@ -264,10 +246,12 @@ div
 		color="primary"
 		hide-bottom
 		)
+
 		template(v-slot:body-cell-name='props')
 			q-td.text-center(:props='props')
 				q-icon(name="mdi-account-circle" color="primary" size="sm")
 				|&nbsp;&nbsp; {{ props.row.name}}
+				span.q-ml-sm(v-if='props.row.author') (Автор)
 
 		template(v-slot:body-cell-col0="props")
 			q-td.text-center(:props="props")
