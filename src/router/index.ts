@@ -321,6 +321,7 @@ const router = createRouter({
 			path: '/map',
 			name: 'map',
 			component: () => import('@/views/Map.vue'),
+			props: true,
 			meta: {
 				toolbar: false,
 				back: false,

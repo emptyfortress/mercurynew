@@ -7,7 +7,8 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import AddDialog from '@/components/AddDialog.vue'
 import VersionList from '@/components/VersionList.vue'
 import { useVersion } from '@/stores/version'
-import SvgSpinners3DotsRotate from '@/components/icons/SvgSpinners3DotsRotate.vue'
+import SvgSpinnersBarsRotateFade from '@/components/icons/SvgSpinnersBarsRotateFade.vue'
+import MappingDialog from '@/components/MappingDialog.vue'
 
 const myapps = useApps()
 const router = useRouter()
@@ -70,32 +71,48 @@ const duble = (item: App) => {
 
 const $q = useQuasar()
 
-const publish = (ver: number) => {
-	myapps.curVersion(props.item).published = ver
-	myapps.curVersion(props.item).pubDate = Date.now()
-	props.item.published = ver
-	props.item.publishDate = Date.now()
+const dialog2 = ref(false)
 
-	props.item.master = false
+const prepublish = (ver: number) => {
+	if (ver == 1) {
+		myapps.curVersion(props.item).published = ver
+		myapps.curVersion(props.item).pubDate = Date.now()
+		props.item.published = ver
+		props.item.publishDate = Date.now()
 
-	setTimeout(() => {
-		if (ver == 2) {
-			$q.notify({
-				icon: 'mdi-check-bold',
-				color: 'positive',
-				message: 'Приложение опубликовано!',
-				position: 'top',
-			})
-		}
-		if (ver == 1) {
+		props.item.master = false
+		setTimeout(() => {
 			$q.notify({
 				icon: 'mdi-check-bold',
 				color: 'positive',
 				message: 'Приложение передано на публикацию!',
 				position: 'top',
 			})
-		}
-	}, 3000)
+		}, 3000)
+	}
+	if (ver == 2) {
+		dialog2.value = true
+	}
+}
+
+const publish = () => {
+	precheck1.value = true
+	myapps.curVersion(props.item).published = 2
+	myapps.curVersion(props.item).pubDate = Date.now()
+	props.item.published = 2
+	props.item.publishDate = Date.now()
+
+	props.item.master = false
+
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Приложение опубликовано!',
+			position: 'top',
+		})
+		precheck1.value = false
+	}, 6000)
 }
 
 const letcheck = computed({
@@ -106,6 +123,7 @@ const letcheck = computed({
 })
 
 const precheck = ref(false)
+const precheck1 = ref(false)
 
 const check = () => {
 	precheck.value = true
@@ -224,7 +242,7 @@ const localPubDate = computed(() => {
 					q-btn(:outline='!state' color="primary" icon='mdi-pencil-outline' label='Редактировать' @click="navigate1" ) 
 					q-btn(v-if='myapps.curVersion(props.item).modified !== null' outline color="primary" icon='mdi-eye-check-outline' label='Проверить версию' @click="openUrl" ) 
 
-				template(v-else)
+				template(v-if='myapps.curVersion(props.item).published > 0')
 					q-btn(unelevated color="primary" icon='mdi-eye-outline' label='Просмотр' @click="navigate1" ) 
 					q-btn(outline color="primary" icon='mdi-plus-circle-outline' label='Создать версию' @click="add" ) 
 
@@ -242,21 +260,20 @@ const localPubDate = computed(() => {
 
 			.q-mt-md(v-if='precheck')
 				.check1
-					div Проверка:
-					SvgSpinners3DotsRotate.big
-					div Подождите, идет настройка
+					SvgSpinnersBarsRotateFade.big
+					div Выполняется загрузка версии на тестовый сервер.
 
 
-			.q-mt-md(v-if='!precheck && letcheck && myapps.curVersion(props.item).published !== 2')
-				.check
-					div Последняя&nbsp;проверка:
+
+			.q-mt-md
+				.check(v-if='letcheck')
 					div {{myapps.curVersion(props.item).label}}&nbsp;--&nbsp;{{myapps.curVersion(props.item).tested}}
-					.link DV-test
+					div загружена для проверки в БД
+					.link.text-bold DV-test
 
-			.check(v-if='myapps.curVersion(props.item).published == 2')
-					div Последняя&nbsp;публикация:
-					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }} -- Орлов П.С.
-					.link DV-prod
+				.check(v-if='myapps.curVersion(props.item).published == 2')
+					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }}&nbsp;&nbsp;опубликована Орловым П.С. в БД
+					.link.text-bold DV-prod
 
 		q-tab-panel(name='publ')
 			.newgrid
@@ -284,19 +301,26 @@ const localPubDate = computed(() => {
 								|Роза Львовна
 
 
+
 			.full
 				q-btn(color="primary" unelevated :disable="myapps.curVersion(props.item).published > 0" icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
 
-			.check(v-if='myapps.curVersion(props.item).published == 2')
+			.q-mt-md(v-if='precheck1')
+				.check1
+					SvgSpinnersBarsRotateFade.big
+					div Выполняется публикация версии на сервер.
+
+			.check.q-mt-md(v-if='!precheck1 && myapps.curVersion(props.item).published == 2')
 					div Последняя&nbsp;публикация:
 					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }} -- Орлов П.С.
-					.link DV-prod
+					.link.text-bold DV-prod
 
 		q-tab-panel(name='vers' style='padding-right: 0; padding-left: 0')
 			VersionList(:versions="props.item.versions")
 
 			
-	ConfirmDialog(v-model="dialog" :mode='mode' @publish='publish' @check='check')
+	MappingDialog(v-model="dialog2" bd='DV-prod' @publish="publish")
+	ConfirmDialog(v-model="dialog" :mode='mode' @publish='prepublish' @check='check')
 	AddDialog(v-model="dialog1" mode='version' :current='currentVer' @create="create")
 </template>
 
@@ -369,8 +393,9 @@ const localPubDate = computed(() => {
 	margin-top: 1rem;
 }
 .myrow {
-	display: grid;
-	grid-template-columns: auto auto auto 36px;
+	// display: grid;
+	// grid-template-columns: auto auto auto auto 36px;
+	display: flex;
 	justify-content: start;
 	gap: 0.5rem;
 	margin-top: 2rem;
@@ -386,7 +411,6 @@ const localPubDate = computed(() => {
 	column-gap: 2rem;
 }
 .check {
-	margin-top: 2rem;
 	display: flex;
 	gap: 1rem;
 }

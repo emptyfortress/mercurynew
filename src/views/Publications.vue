@@ -108,7 +108,7 @@ q-page(padding)
 
 <style scoped lang="scss">
 .cont {
-	max-width: 1440px;
+	max-width: 1600px;
 	margin: 0 auto;
 	// background: #ccc;
 }
@@ -131,8 +131,8 @@ q-page(padding)
 }
 .grid {
 	display: grid;
-	grid-template-columns: 1fr 3fr;
-	column-gap: 4rem;
+	grid-template-columns: 300px 3fr;
+	column-gap: 3rem;
 	margin-top: 2rem;
 }
 .selected {
