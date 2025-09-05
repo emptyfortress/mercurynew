@@ -178,6 +178,9 @@ const publish = () => {
 	curRow.value.db = curDB.value
 	curRow.value.status = 1
 	progress.value.push(curRow.value)
+	setTimeout(() => {
+		curRow.value.status = 2
+	}, 3000)
 }
 
 const remove = (row: any) => {
@@ -273,14 +276,16 @@ template(v-if='progress.length')
 				.pub(v-if='props.row.status == 1')
 					SvgSpinnersBarsRotateFade.ic
 					span &nbsp;&nbsp;Публикация
+				.pub(v-if='props.row.status == 2')
+					q-icon(name="mdi-check-bold" color="positive" size="22px")
+					span.q-ml-sm Опубликовано
 				span.red(v-if='props.row.col2 == 0')
 					q-icon(name="mdi-close-octagon" color="negative")
 					|&nbsp;Ошибка
 
 		template(v-slot:body-cell-actions='props')
 			q-td.text-center(:props='props' auto-width)
-				q-btn(v-if='props.row.status == 1' flat round color="primary" icon="mdi-pause" @click="" size='md' dense) 
-				q-btn(v-else flat round color="primary" icon="mdi-delete-outline" @click="remove(props.row)" size='md' dense) 
+				q-btn(flat round color="primary" icon="mdi-delete-outline" @click="remove(props.row)" size='md' dense) 
 				q-btn(flat round color="primary" icon="mdi-dots-vertical" @click="" size='md' dense) 
 					q-menu
 						q-list

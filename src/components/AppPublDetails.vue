@@ -155,13 +155,23 @@ const cols2: QTableProps['columns'] = [
 ]
 
 const rows2: any = ref([
+	// {
+	// 	id: 0,
+	// 	version: 'Базовая-copy',
+	// 	author: 'Роза Львовна',
+	// 	created: 1755533353568,
+	// 	status: 'Ожидает публикации',
+	// 	col1: 1755533483568,
+	// },
 	{
 		id: 0,
-		version: 'Базовая-copy',
+		app: 'Управление командировками',
+		version: 'Базовая-сopy',
 		author: 'Роза Львовна',
-		created: 1755533353568,
-		status: 'Ожидает публикации',
+		created: 1755515353569,
+		status: 'Опубликовано',
 		col1: 1755533483568,
+		col3: 1755535483568,
 	},
 	{
 		id: 1,

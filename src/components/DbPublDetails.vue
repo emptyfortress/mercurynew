@@ -55,14 +55,14 @@ const cols: QTableProps['columns'] = [
 		sortable: true,
 		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
 	},
-	{
-		name: 'action',
-		required: true,
-		label: '',
-		align: 'left',
-		field: 'action',
-		sortable: true,
-	},
+	// {
+	// 	name: 'action',
+	// 	required: true,
+	// 	label: '',
+	// 	align: 'left',
+	// 	field: 'action',
+	// 	sortable: true,
+	// },
 ]
 const rows: any = ref([
 	{
@@ -170,6 +170,11 @@ const page = {
 	sortBy: 'date',
 	descending: true,
 }
+
+const expanded = [
+	{ id: 0, author: 'Роза Львовна', version: 'Пробная', published: '14.08.25 13:23' },
+	{ id: 1, author: 'Лотус Тигрович', version: 'Нулевая', published: '13.08.25 10:26' },
+]
 </script>
 
 <template lang="pug">
@@ -186,23 +191,50 @@ div
 		color="primary"
 		hide-bottom
 		)
-		template(v-slot:body-cell-action='props')
-			q-td.text-right(:props='props')
-				q-btn(flat color="primary" icon="mdi-dots-vertical" dense) 
+		template(v-slot:header='props')
+			q-tr(:props='props')
+				q-th(auto-width)
+				q-th(v-for="col in props.cols" :key='col.name' :props="props") {{ col.label}}
+				q-th(auto-width)
 
-	br
-	.h7 Архив версий
-	q-table(flat,
-		:columns="cols1"
-		:rows="rows1"
-		row-key="id"
-		color="primary"
-		:pagination='page'
-		hide-bottom
-		)
-		template(v-slot:body-cell-action='props')
-			q-td.text-right(:props='props')
-				q-btn(flat color="primary" icon="mdi-dots-vertical" dense) 
+		template(v-slot:body='props')
+			q-tr(:props='props')
+				q-td(auto-width)
+					q-btn.exp(flat round dense icon="mdi-chevron-right" color="primary" @click="props.expand = !props.expand" :class='props.expand ? "rot" : ""') 
+				q-td(v-for="col in props.cols" :key='col.name' :props="props") {{ col.value}}
+				q-td.text-right
+					q-btn(flat round dense color="primary" icon="mdi-dots-vertical") 
+						q-menu
+							q-list
+								q-item(clickable)
+									q-item-section(side)
+										q-icon(name="mdi-pencil" color="primary")
+									q-item-section Открыть версию
+								q-item(clickable color="negative")
+									q-item-section(side)
+										q-icon(name="mdi-delete-outline" color="negative")
+									q-item-section Удалить версию
+
+			template(v-for="item in expanded" :key='item.id')
+				q-tr.inner(:props='props' v-show='props.expand' )
+					q-td
+					q-td
+					q-td {{ item.author }}
+					q-td {{ item.version }}
+					q-td Архив
+					q-td {{ item.published }}
+					q-td
+						q-btn(flat round dense color="primary" icon="mdi-dots-vertical") 
+							q-menu
+								q-list
+									q-item(clickable)
+										q-item-section(side)
+											q-icon(name="mdi-pencil" color="primary")
+										q-item-section Открыть версию
+									q-item(clickable color="negative")
+										q-item-section(side)
+											q-icon(name="mdi-delete-outline" color="negative")
+										q-item-section Удалить версию
 
 	br
 	DetailsAppEvents
@@ -214,5 +246,14 @@ h6 .q-icon {
 	margin-top: -3px;
 	margin-right: 0.5rem;
 	font-size: 1.8rem;
+}
+.exp {
+	transition: 0.3s all ease;
+}
+.rot {
+	transform: rotate(90deg);
+}
+.inner {
+	background: #d2dce9;
 }
 </style>
