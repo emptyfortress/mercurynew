@@ -62,7 +62,7 @@ q-page(padding)
 					q-item-section(side)
 						q-icon(name="mdi-monitor-dashboard" color="primary")
 					q-item-section
-						label Дашборд
+						label Сводка
 
 
 				q-expansion-item(

@@ -180,7 +180,7 @@ const rows = [
 	},
 ]
 const page = {
-	rowsPerPage: 0,
+	rowsPerPage: 7,
 }
 </script>
 
@@ -191,7 +191,6 @@ q-table(flat,
 	:rows="rows"
 	row-key="id"
 	color="primary"
-	hide-bottom
 	:pagination="page"
 	)
 	template(v-slot:body-cell-result='props')
@@ -204,4 +203,8 @@ q-table(flat,
 			q-btn(flat round icon="mdi-dots-vertical" color="primary" dense) 
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.q-field__control:before) {
+	background: #fff;
+}
+</style>

@@ -59,7 +59,7 @@ const coverLeave = async (el: any, done: any) => {
 
 // slide anim *************************************************
 
-const slideBeforeEnter = () => { }
+const slideBeforeEnter = () => {}
 
 const slideLeaveLeft = async (el: any, done: any) => {
 	await gsap.to(el, {
@@ -120,7 +120,17 @@ const getMembers = (members: any[]): any[] => {
 		.concat(children.length ? getMembers(children) : children)
 }
 
+const randomArray = (length: number, min: number, max: number) => {
+	let result = []
+	while (result.length < length) {
+		let random = Math.floor(Math.random() * (max - min + 1) + min)
+		result.push(random)
+	}
+	return result
+}
+
 export {
+	randomArray,
 	applyDrag,
 	coverBeforeEnter,
 	coverEnter,
