@@ -155,18 +155,18 @@ const create = (e: Control) => {
 							q-item-section Удалить
 
 
-	.q-mt-sm
-		AddFormButton(@create='create'
-		v-motion
-		:initial="{ opacity: 0, rotate: -720, scale: 0.5 }"
-		:enter="{ opacity: 1, rotate: 0, scale: 1 }"
-		)
+	.butt
+		AddFormButton(@create='create')
 
 </template>
 
 <style scoped lang="scss">
 .pa {
 	margin-top: 1rem;
+}
+.butt {
+	margin-top: 1rem;
+	min-height: 40px;
 }
 
 .star {

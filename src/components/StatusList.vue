@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { animations } from "@formkit/drag-and-drop"
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
-import AddButton from '@/components/common/AddButton.vue'
+import { animations } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+import AddFormButton from '@/components/common/AddFormButton.vue'
 import { uid } from 'quasar'
 
 const statuses = [
 	{
 		id: uid(),
-		label: 'На подготовке'
+		label: 'На подготовке',
 	},
 	{
 		id: uid(),
-		label: 'На согласовании'
+		label: 'На согласовании',
 	},
 	{
 		id: uid(),
-		label: 'На доработке'
+		label: 'На доработке',
 	},
 	{
 		id: uid(),
-		label: 'Согласовано'
+		label: 'Согласовано',
 	},
 	{
 		id: uid(),
-		label: 'Завершено'
+		label: 'Завершено',
 	},
 ]
 
 const config = {
-	plugins: [animations(),],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (el: any) => {
@@ -37,9 +37,9 @@ const config = {
 }
 const [parent, tapes] = useDragAndDrop(statuses, config)
 
-const remove = ((index: number) => {
+const remove = (index: number) => {
 	tapes.value.splice(index, 1)
-})
+}
 </script>
 
 <template lang="pug">
@@ -66,15 +66,13 @@ const remove = ((index: number) => {
 						q-item(clickable @click="remove(index)" ).pink
 							q-item-section Удалить
 
-	// AddButton(mode='app')
+	.butt
+		// AddFormButton(@create='create'
+		// v-motion
+		// :initial="{ opacity: 0, rotate: -720, scale: 0.5 }"
+		// :enter="{ opacity: 1, rotate: 0, scale: 1 }"
+		// )
 
-	q-btn.q-mt-md(round unelevated
-		icon='mdi-plus'
-		color="primary"
-		v-motion
-		:initial="{ scale: 0.1, opacity: 0, rotate: 360 }"
-		:enter='{ scale: 1, opacity: 1, rotate: 0, transition: { delay: 900 } }'
-		)
 </template>
 
 <style scoped lang="scss">
@@ -83,10 +81,10 @@ const remove = ((index: number) => {
 }
 
 .stat {
-	border-radius: .25rem;
+	border-radius: 0.25rem;
 	text-align: left;
 	cursor: pointer;
-	padding-right: .5rem;
+	padding-right: 0.5rem;
 	background: #fff;
 	width: 100%;
 	height: 36px;
@@ -103,7 +101,6 @@ const remove = ((index: number) => {
 		justify-self: end;
 		color: grey;
 	}
-
 }
 
 .ghost {
@@ -115,6 +112,8 @@ const remove = ((index: number) => {
 	* {
 		display: none;
 	}
-
+}
+.butt {
+	margin-top: 1rem;
 }
 </style>

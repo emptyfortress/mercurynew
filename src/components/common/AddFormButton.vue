@@ -104,7 +104,7 @@ const otmena = () => {
 		@click="add"
 		v-motion
 		:initial="{ opacity: 0, rotate: -720, scale: 0.5  }"
-		:enter='{ opacity: 1, rotate: 0, scale: 1, transition: { delay: 1100}  }'
+		:enter='{ opacity: 1, rotate: 0, scale: 1, transition: { delay: 900}  }'
 		)
 		q-icon(name="mdi-plus" color="white" size="24px")
 
