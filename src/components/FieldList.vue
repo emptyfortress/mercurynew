@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { animations } from "@formkit/drag-and-drop"
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
-import { state } from "@formkit/drag-and-drop"
+import { animations } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+import { state } from '@formkit/drag-and-drop'
 import { uid } from 'quasar'
 import { useRouter } from 'vue-router'
-import AddButton from '@/components/common/AddButton.vue'
+// import AddButton from '@/components/common/AddButton.vue'
+import AddFormButton from '@/components/common/AddFormButton.vue'
 
 const router = useRouter()
 
@@ -13,16 +14,18 @@ const props = defineProps({
 	restore: {
 		type: Boolean,
 		required: true,
-		default: false
-	}
+		default: false,
+	},
 })
 
-watch(() => props.restore,
+watch(
+	() => props.restore,
 	(val) => {
 		if (val) {
 			tapes.value.splice(ind.value, 0, tmp.value!)
 		}
-	})
+	}
+)
 
 interface Field {
 	id: string
@@ -84,20 +87,20 @@ const fields = [
 ]
 
 const config = {
-	plugins: [animations(),],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: false,
 	group: 'digest',
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains("stat");
+		return child.classList.contains('stat')
 	},
 }
 
 const [parent, tapes] = useDragAndDrop(fields, config)
 
-const remove = ((index: number) => {
+const remove = (index: number) => {
 	tapes.value.splice(index, 1)
-})
+}
 
 const ind = ref(0)
 
@@ -106,23 +109,27 @@ state.on('dragStarted', (event: any) => {
 	ind.value = event.initialIndex
 })
 
-const goto = (() => {
+const goto = () => {
 	router.push('/statuses')
-})
+}
 
 const emit = defineEmits(['begin', 'stop'])
 const tmp = ref<Field>()
 
 const dragging = ref(false)
-const start = ((e: Field) => {
+const start = (e: Field) => {
 	emit('begin', e)
 	// dragging.value = true
-})
-const stop = (() => {
+}
+const stop = () => {
 	emit('stop')
 	// dragging.value = false
-})
+}
 
+const create = (e: Control) => {
+	console.log(111)
+	// libitems.value.push(e)
+}
 </script>
 
 <template lang="pug">
@@ -149,7 +156,11 @@ const stop = (() => {
 
 
 	.q-mt-sm
-		AddButton(mode='app')
+		AddFormButton(@create='create'
+		v-motion
+		:initial="{ opacity: 0, rotate: -720, scale: 0.5 }"
+		:enter="{ opacity: 1, rotate: 0, scale: 1 }"
+		)
 
 </template>
 
@@ -159,22 +170,22 @@ const stop = (() => {
 }
 
 .star {
-	margin-left: .25rem;
+	margin-left: 0.25rem;
 	color: $primary;
 }
 
 .stat {
-	border-radius: .25rem;
+	border-radius: 0.25rem;
 	text-align: left;
 	cursor: pointer;
-	padding-right: .5rem;
+	padding-right: 0.5rem;
 	background: #fff;
 	width: 100%;
 	height: 36px;
 
 	margin-bottom: 1px;
 	display: grid;
-	grid-template-columns: 24px 1fr 1fr .5fr 38px;
+	grid-template-columns: 24px 1fr 1fr 0.5fr 38px;
 	justify-items: start;
 	align-items: center;
 	display: grid;
@@ -184,11 +195,10 @@ const stop = (() => {
 		justify-self: end;
 		color: grey;
 	}
-
 }
 
 .sma {
-	font-size: .8rem;
+	font-size: 0.8rem;
 	color: #666;
 	font-style: italic;
 }
@@ -202,6 +212,5 @@ const stop = (() => {
 	* {
 		display: none;
 	}
-
 }
 </style>

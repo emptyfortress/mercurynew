@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, } from 'vue'
+import { ref } from 'vue'
 import FieldList from '@/components/FieldList.vue'
-// import StatusList from '@/components/StatusList.vue'
-import { useDragAndDrop } from "@formkit/drag-and-drop/vue"
-import { animations } from "@formkit/drag-and-drop"
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+import { animations } from '@formkit/drag-and-drop'
 import StatusList from '@/components/StatusList.vue'
 
 // interface Chip {
@@ -22,31 +21,30 @@ interface Field {
 }
 
 const config = {
-	plugins: [animations(),],
+	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	group: 'digest',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains("q-chip");
+		return child.classList.contains('q-chip')
 	},
 }
 
 const list = [] as Field[]
 
-
 const [digest, chips] = useDragAndDrop(list, config)
 
-const clearAll = (() => {
+const clearAll = () => {
 	chips.value.length = 0
-})
+}
 
-const clear = ((index: number) => {
+const clear = (index: number) => {
 	chips.value.splice(index, 1)
-})
+}
 
 const restore = ref(false)
 
-const add = (() => {
+const add = () => {
 	if (item.value) {
 		list.push(item.value)
 	}
@@ -54,21 +52,21 @@ const add = (() => {
 	setTimeout(() => {
 		restore.value = false
 	}, 200)
-})
+}
 
-const test = (() => {
+const test = () => {
 	console.log(item.value)
-})
+}
 
 const dragging = ref(false)
 const item = ref<Field>()
-const setItem = ((e: Field) => {
+const setItem = (e: Field) => {
 	item.value = e
 	dragging.value = true
-})
-const stop = (() => {
+}
+const stop = () => {
 	dragging.value = false
-})
+}
 </script>
 
 <template lang="pug">
@@ -130,15 +128,15 @@ span {
 	max-width: 1200px;
 	min-height: 48px;
 	margin: 0 auto;
-	padding: .5rem 1rem;
+	padding: 0.5rem 1rem;
 	border: 1px solid $secondary;
 	background: hsl(211 26% 90% / 1);
-	border-radius: .5rem;
+	border-radius: 0.5rem;
 	position: relative;
 
 	.q-btn {
 		position: absolute;
-		right: .5rem;
+		right: 0.5rem;
 	}
 
 	&.active {
@@ -166,6 +164,5 @@ span {
 	* {
 		visibility: hidden;
 	}
-
 }
 </style>
