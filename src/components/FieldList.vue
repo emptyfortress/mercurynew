@@ -5,8 +5,7 @@ import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { state } from '@formkit/drag-and-drop'
 import { uid } from 'quasar'
 import { useRouter } from 'vue-router'
-// import AddButton from '@/components/common/AddButton.vue'
-import AddFormButton from '@/components/common/AddFormButton.vue'
+import AddFormButtonNew from '@/components/common/AddFormButtonNew.vue'
 
 const router = useRouter()
 
@@ -127,8 +126,14 @@ const stop = () => {
 }
 
 const create = (e: Control) => {
-	console.log(111)
-	// libitems.value.push(e)
+	console.log(e)
+	tapes.value.push({
+		id: e.id.toString(),
+		label: e.label,
+		caption: '',
+		type: e.type,
+		def: false,
+	})
 }
 </script>
 
@@ -156,7 +161,7 @@ const create = (e: Control) => {
 
 
 	.butt
-		AddFormButton(@create='create')
+		AddFormButtonNew(@create='create' elementId='field')
 
 </template>
 

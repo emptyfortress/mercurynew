@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import AddFormButton from '@/components/common/AddFormButton.vue'
+import AddFormButtonNew from '@/components/common/AddFormButtonNew.vue'
 import { uid } from 'quasar'
 
 const statuses = [
@@ -67,11 +67,7 @@ const remove = (index: number) => {
 							q-item-section Удалить
 
 	.butt
-		// AddFormButton(@create='create'
-		// v-motion
-		// :initial="{ opacity: 0, rotate: -720, scale: 0.5 }"
-		// :enter="{ opacity: 1, rotate: 0, scale: 1 }"
-		// )
+		AddFormButtonNew(@create='create' elementId='status')
 
 </template>
 
