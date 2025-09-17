@@ -15,6 +15,11 @@ const props = defineProps({
 		required: true,
 		default: 'element',
 	},
+	mode: {
+		type: String,
+		required: false,
+		default: '',
+	},
 })
 
 const Div = motion.div
@@ -140,9 +145,11 @@ Teleport(to="body")
 
 		q-form(ref='form' @submit="submitForm"
 			)
-			.hd Добавить поле
+			.hd
+				span(v-if='props.mode == "status"') Добавить статус
+				span(v-else) Добавить поле
 			.section
-				label Название поля:
+				label Название:
 				q-input(ref="input"
 					v-model="model"
 					autofocus
@@ -153,8 +160,8 @@ Teleport(to="body")
 					hint='Название должно быть уникальным'
 					)
 
-			.section
-				label Тип поля:
+			.section(v-if='props.mode !== "status"')
+				label Тип:
 				q-select(
 					v-model="typeModel"
 					:options='options'
@@ -163,7 +170,7 @@ Teleport(to="body")
 					:rules="[val => !!val || 'Это обязательное поле']"
 					)
 
-			.section
+			.section(v-if='props.mode !== "status"')
 				label Описание:
 				q-input(
 					v-model="model1"

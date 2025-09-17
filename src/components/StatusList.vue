@@ -42,8 +42,7 @@ const remove = (index: number) => {
 }
 
 const create = (e: any) => {
-	console.log(e)
-	// tapes.value.push(e)
+	tapes.value.push(e)
 }
 </script>
 
@@ -64,7 +63,7 @@ const create = (e: any) => {
 						q-item-section Удалить
 
 .butt
-	AddFormButtonNew(@create='create' elementId='status')
+	AddFormButtonNew(@create='create' elementId='status' mode='status')
 
 </template>
 
