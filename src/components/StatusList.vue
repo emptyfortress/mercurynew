@@ -40,34 +40,31 @@ const [parent, tapes] = useDragAndDrop(statuses, config)
 const remove = (index: number) => {
 	tapes.value.splice(index, 1)
 }
+
+const create = (e: any) => {
+	console.log(e)
+	// tapes.value.push(e)
+}
 </script>
 
 <template lang="pug">
-.full
-	.pa(ref='parent')
-		div(v-if='tapes.length == 0' id="no-drag"
-			v-motion
-			:initial="{ y: 40, opacity: 0 }"
-			:enter='{ y: 0, opacity: 1, transition: { delay: 400 } }'
-			)
-			div Статусы не заданы
+.pa(ref='parent')
+	div(v-if='tapes.length == 0' id="no-drag")
+		div Статусы не заданы
 
-		.stat(v-else
-			v-for="(item, index) in tapes" :key="item.id"
-			v-motion
-			:initial="{ y: 40, opacity: 0 }"
-			:enter='{ y: 0, opacity: 1, transition: { delay: 400 + 100 * index } }'
-			)
-			q-icon.move(name="mdi-drag-vertical" color="primary" size="sm")
-			.hg {{ item.label }}
-			q-btn(flat round icon='mdi-close' dense size='sm') 
-				q-menu
-					q-list
-						q-item(clickable @click="remove(index)" ).pink
-							q-item-section Удалить
+	.stat(v-else
+		v-for="(item, index) in tapes" :key="item.id")
+		q-icon.move(name="mdi-drag-vertical" color="primary" size="sm")
+		.hg {{ item.label }}
 
-	.butt
-		AddFormButtonNew(@create='create' elementId='status')
+		q-btn(flat round icon='mdi-delete-outline' dense size='sm') 
+			q-menu
+				q-list
+					q-item(clickable @click="remove(index)" ).pink
+						q-item-section Удалить
+
+.butt
+	AddFormButtonNew(@create='create' elementId='status')
 
 </template>
 
@@ -95,7 +92,14 @@ const remove = (index: number) => {
 
 	.q-btn {
 		justify-self: end;
-		color: grey;
+		color: $secondary;
+		display: none;
+	}
+	&:hover {
+		background: #efefef;
+		.q-btn {
+			display: block;
+		}
 	}
 }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, markRaw } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import CarbonStringText from '@/components/icons/CarbonStringText.vue'
 import CarbonStringInteger from '@/components/icons/CarbonStringInteger.vue'
@@ -25,7 +25,7 @@ const form = ref()
 const adding = ref(false)
 
 const add = () => {
-	firstTime.value = false
+	// firstTime.value = false
 	adding.value = !adding.value
 	nextTick(() => {
 		if (adding.value == true) {
@@ -53,13 +53,18 @@ const typeModel = ref({
 	label: 'Строка',
 })
 const options = [
-	{ type: Kind.String, pic: CarbonStringText, value: 'Строка', label: 'Строка' },
-	{ type: Kind.Num, pic: CarbonStringInteger, value: 'Число', label: 'Число' },
-	{ type: Kind.Text, pic: MaterialSymbolsInsertTextRounded, value: 'Текст', label: 'Текст' },
-	{ type: Kind.Date, pic: MdiCalendar, value: 'Дата', label: 'Дата' },
+	{ type: Kind.String, pic: markRaw(CarbonStringText), value: 'Строка', label: 'Строка' },
+	{ type: Kind.Num, pic: markRaw(CarbonStringInteger), value: 'Число', label: 'Число' },
+	{
+		type: Kind.Text,
+		pic: markRaw(MaterialSymbolsInsertTextRounded),
+		value: 'Текст',
+		label: 'Текст',
+	},
+	{ type: Kind.Date, pic: markRaw(MdiCalendar), value: 'Дата', label: 'Дата' },
 	{
 		type: Kind.Man,
-		pic: MaterialSymbolsAccountCircle,
+		pic: markRaw(MaterialSymbolsAccountCircle),
 		value: 'Ссылка на справочник',
 		label: 'Ссылка на справочник',
 	},
@@ -71,7 +76,12 @@ const resetForm = () => {
 	})
 	model.value = null
 	model1.value = null
-	typeModel.value = { type: Kind.String, pic: CarbonStringText, value: 'Строка', label: 'Строка' }
+	typeModel.value = {
+		type: Kind.String,
+		pic: markRaw(CarbonStringText),
+		value: 'Строка',
+		label: 'Строка',
+	}
 }
 const submitForm = () => {
 	emit('create', {
@@ -97,24 +107,23 @@ const spring = {
 	bounce: 0.25,
 }
 
-const firstTime = ref(true)
-const calcDelay = computed(() => {
-	return firstTime
-		? { opacity: 1, rotate: 0, transition: { delay: 1.2 } }
-		: { opacity: 1, rotate: 0 }
-})
+// const firstTime = ref(true)
+
+// const calcDelay = computed(() => {
+// 	return firstTime
+// 		? { opacity: 1, rotate: 0, transition: { delay: 1.2 } }
+// 		: { opacity: 1, rotate: 0 }
+// })
 </script>
 
 <template lang="pug">
-.fucking
-	Div.button1(v-show='!adding'
-		:layoutId='props.elementId'
-		:transition='spring'
-		:initial='{opacity: 0, rotate: 720, }'
-		:animate="calcDelay"
-		@click="add"
-		)
-		q-icon(name="mdi-plus" color="white" size="24px")
+// .fucking
+Div.button1(v-show='!adding'
+	:layoutId='props.elementId'
+	:transition='spring'
+	@click="add"
+	)
+	q-icon(name="mdi-plus" color="white" size="24px")
 
 Teleport(to="body")
 	.backdrop1(v-if='adding')
@@ -178,8 +187,8 @@ Teleport(to="body")
 <style scoped lang="scss">
 .button1 {
 	background: $primary;
-	width: 42px;
-	height: 42px;
+	width: 36px;
+	height: 36px;
 	border-radius: 24px;
 	display: flex;
 	justify-content: center;

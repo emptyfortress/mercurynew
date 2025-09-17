@@ -116,6 +116,7 @@ const emit = defineEmits(['begin', 'stop'])
 const tmp = ref<Field>()
 
 const dragging = ref(false)
+
 const start = (e: Field) => {
 	emit('begin', e)
 	// dragging.value = true

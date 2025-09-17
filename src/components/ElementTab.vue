@@ -1,13 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, markRaw } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import AddFormButton from '@/components/common/AddFormButton.vue'
+import AddFormButtonNew from '@/components/common/AddFormButtonNew.vue'
 import { state } from '@formkit/drag-and-drop'
 import { Kind } from '@/types/enum'
 import MaterialSymbolsInsertTextRounded from '@/components/icons/MaterialSymbolsInsertTextRounded.vue'
 import MdiCalendar from '@/components/icons/MdiCalendar.vue'
 import MaterialSymbolsAccountCircle from '@/components/icons/MaterialSymbolsAccountCircle.vue'
 import DeleteDialog from '@/components/DeleteDialog.vue'
+
+// interface Field {
+// 	id: string
+// 	label: string
+// 	caption: string
+// 	type: string
+// 	def: boolean
+// }
+
+const props = defineProps({
+	mode: {
+		type: Boolean,
+		required: true,
+		default: true,
+	},
+})
 
 const elements = ref([
 	{
@@ -16,7 +32,7 @@ const elements = ref([
 		caption: 'Кто создал заявку',
 		selected: false,
 		type: Kind.Man,
-		pic: MaterialSymbolsAccountCircle,
+		pic: markRaw(MaterialSymbolsAccountCircle),
 	},
 	{
 		id: 1,
@@ -24,15 +40,15 @@ const elements = ref([
 		caption: 'Планируемая дата старта',
 		selected: false,
 		type: Kind.Date,
-		pic: MdiCalendar,
+		pic: markRaw(MdiCalendar),
 	},
 	{
 		id: 2,
 		label: 'Дата окончания отпуска',
 		caption: 'Планируемая дата завершения',
 		selected: false,
-		type: Kind.String,
-		pic: MdiCalendar,
+		type: Kind.Date,
+		pic: markRaw(MdiCalendar),
 	},
 	{
 		id: 3,
@@ -40,7 +56,7 @@ const elements = ref([
 		caption: 'Свободный комментарий',
 		selected: false,
 		type: Kind.Text,
-		pic: MaterialSymbolsInsertTextRounded,
+		pic: markRaw(MaterialSymbolsInsertTextRounded),
 	},
 ])
 
@@ -72,12 +88,27 @@ const confirm = (e: string, num: number) => {
 	removedIndex.value = num
 	dialog.value = true
 }
+
+const emit = defineEmits(['begin', 'stop'])
+const start = (e: Control) => {
+	emit('begin', e)
+	// dragging.value = true
+}
+const stop = () => {
+	emit('stop')
+	// dragging.value = false
+}
 </script>
 
 <template lang="pug">
 .grey(v-if='libitems.length == 0') Поля отсутствуют
 q-list.list(v-else bordered separator ref="lib")
-	q-item.drag(v-for="(item, index) in libitems" :key="item.id")
+	q-item.drag(
+		v-for="(item, index) in libitems",
+		:key="item.id"
+		@dragstart="start(item)"
+		@dragend="stop"
+	)
 		q-item-section(avatar)
 			.big
 				component(:is='item.pic')
@@ -85,32 +116,39 @@ q-list.list(v-else bordered separator ref="lib")
 			q-item-label.text-bold {{ item.label }}
 			q-item-label.grey(caption) {{ item.caption }}
 
+		q-item-section(v-if='!props.mode')
+			q-item-label.grey(caption)
+				span(v-if='item.type == Kind.Man') Строка справочника
+				span(v-if='item.type == Kind.Date') Дата
+				span(v-if='item.type == Kind.Text') Текст
+				span(v-if='item.type == Kind.String') Строка
+
 		q-item-section(side)
 			q-btn.remove(flat round icon="mdi-delete-outline" color="secondary" dense size="sm" @click='confirm(item.label, index)') 
+.butt
+	AddFormButtonNew(@create='create' elementId='field')
 
-				// q-menu
-				// 	q-list(dense)
-				// 		q-item.pink(clickable @click="remove(index)")
-				// 			q-item-section Да, удалить!
-
-br
-AddFormButton(@create='create')
 DeleteDialog(v-model="dialog" :field='removedItem' @remove="remove")
-// Trash(:dragging='true')
 </template>
 
 <style scoped lang="scss">
+.butt {
+	margin-top: 1rem;
+	margin-left: 1rem;
+	min-height: 40px;
+}
 .list {
 	text-align: left;
 	margin: 0 1rem;
+	// background: #fff;
 }
 
 .drag {
 	cursor: all-scroll;
 	color: $secondary;
-
+	background: #fff;
 	.remove {
-		display: none;
+		visibility: hidden;
 	}
 
 	&:hover {
@@ -118,7 +156,7 @@ DeleteDialog(v-model="dialog" :field='removedItem' @remove="remove")
 		background: #efefef;
 
 		.remove {
-			display: block;
+			visibility: visible;
 		}
 	}
 }

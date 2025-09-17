@@ -4,6 +4,7 @@ import FieldList from '@/components/FieldList.vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
 import StatusList from '@/components/StatusList.vue'
+import ElementTab from '@/components/ElementTab.vue'
 
 // interface Chip {
 // 	id: string
@@ -67,51 +68,59 @@ const setItem = (e: Field) => {
 const stop = () => {
 	dragging.value = false
 }
+
+const tab = ref('field')
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.header Поля
-	.grid
-		FieldList(@begin='setItem' @stop='stop' :restore='restore')
+	q-tabs(v-model="tab")
+		q-tab(name='card' label="Карточка")
+		q-tab(name='field' label="Поля")
+		q-tab(name='status' label="Статусы")
 
-	.header Дайджест
-	.droparea(ref="digest"
-		@drop="add"
-		:class="{ active: dragging }"
-		)
-		span(v-if='chips.length' contenteditable="true")
-		template(v-for="(item, index) in chips" :key="item.id")
-			q-chip(
-				removable
-				@remove='clear(index)'
-				) {{ item.label }}
-			span(contenteditable="true")
+	q-tab-panels(v-model="tab" animated)
+		q-tab-panel(name='card') card
+		q-tab-panel(name='field')
+			.grid
+				.header.q-ml-md Поля
+				ElementTab(:mode='false' @begin='setItem' @stop='stop')
 
-		q-btn(v-if='chips.length' round flat dense @click="clearAll" icon="mdi-close") 
-		.comm(v-if="chips.length == 0") Перетащите сюда нужные поля и/ если необходимо, добавьте текст
+			.grid1
+				.header Дайджест
+				.droparea(ref="digest"
+					@drop="add"
+					:class="{ active: dragging }"
+					)
+					span(v-if='chips.length' contenteditable="true")
+					template(v-for="(item, index) in chips" :key="item.id")
+						q-chip(
+							removable
+							@remove='clear(index)'
+							) {{ item.label }}
+						span(contenteditable="true")
 
-	br
-	br
-	.header Статусы
-	.grid
-		StatusList()
+					q-btn(v-if='chips.length' round flat dense @click="clearAll" icon="mdi-close") 
+					.comm(v-if="chips.length == 0") Перетащите сюда нужные поля и/ если необходимо, добавьте текст
+
+		q-tab-panel(name='status')
+			.header Статусы
+			StatusList()
 </template>
 
 <style scoped lang="scss">
+.q-tab-panels {
+	background: transparent;
+	max-width: 800px;
+	margin: 0 auto;
+}
 span {
 	outline: none;
 	min-width: l0px;
 }
 
 .header {
-	font-size: 1.5rem;
-	text-align: center;
-}
-
-.grid {
-	max-width: 700px;
-	margin: 1rem auto;
+	font-size: 1.3rem;
 }
 
 .comm {
@@ -122,6 +131,11 @@ span {
 	.active & {
 		color: green;
 	}
+}
+.grid1 {
+	// max-width: 1200px;
+	margin: 1rem;
+	margin-top: 2rem;
 }
 
 .droparea {
