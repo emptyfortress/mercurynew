@@ -41,10 +41,10 @@ const [parent, tapes] = useDragAndDrop(cards, config)
 		q-btn(flat round icon='mdi-delete-outline' dense size='sm') 
 			q-menu
 				q-list
-					q-item(clickable @click="remove(index)" ).pink
+					q-item(clickable @click="" ).pink
 						q-item-section Удалить
 .butt
-	AddFormButtonNew(@create='create' elementId='card')
+	AddFormButtonNew(@create='' elementId='card')
 </template>
 
 <style scoped lang="scss">

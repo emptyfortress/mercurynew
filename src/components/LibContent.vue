@@ -25,14 +25,14 @@ q-list(separator)
 				IconoirInputField.ic
 			q-item-section.zg Поля
 
-		ElementTab
+		ElementTab(:mode="true")
 
 </template>
 
 <style scoped lang="scss">
 .ic {
 	font-size: 1.5rem;
-	margin-right: .5rem;
+	margin-right: 0.5rem;
 	color: $secondary;
 }
 
@@ -47,9 +47,7 @@ q-list(separator)
 	bottom: 0;
 }
 
-
 .q-tab {
-
 	label {
 		text-transform: capitalize;
 		cursor: pointer;
