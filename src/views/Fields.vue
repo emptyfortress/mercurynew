@@ -59,23 +59,25 @@ const stop = () => {
 	dragging.value = false
 }
 
-const tab = ref('card')
+const tab = ref('field')
 </script>
 
 <template lang="pug">
 q-page(padding)
 	q-tabs(v-model="tab")
-		q-tab(name='card' label="Карточка")
+		// q-tab(name='card' label="Карточки")
 		q-tab(name='field' label="Поля")
 		q-tab(name='status' label="Статусы")
 
 	q-tab-panels(v-model="tab" animated)
-		q-tab-panel(name='card')
+
+		// q-tab-panel(name='card')
+			.header Карточки
 			CardList
 
 		q-tab-panel(name='field')
 			.grid
-				.header.q-ml-md Поля
+				.header.q-ml-md.q-mb-md Поля
 				ElementTab(:mode='false' @begin='setItem' @stop='stop')
 
 			.grid1
@@ -102,10 +104,10 @@ q-page(padding)
 
 <style scoped lang="scss">
 .q-tab-panels {
-	// background: transparent;
+	background: transparent;
 	max-width: 800px;
 	margin: 0 auto;
-	// height: calc(100vh - 200px);
+	height: calc(100vh - 400px);
 }
 span {
 	outline: none;

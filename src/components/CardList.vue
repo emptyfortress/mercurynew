@@ -35,8 +35,8 @@ const [parent, tapes] = useDragAndDrop(cards, config)
 		v-for="(item, index) in tapes" :key="item.id")
 		q-icon.move(name="mdi-drag-vertical" color="primary" size="sm")
 		.hg {{ item.label }}
-		.hg тут тип
-		.hg тут название
+		.hg тип, вид
+		.hg название
 
 		q-btn(flat round icon='mdi-delete-outline' dense size='sm') 
 			q-menu
@@ -44,7 +44,7 @@ const [parent, tapes] = useDragAndDrop(cards, config)
 					q-item(clickable @click="remove(index)" ).pink
 						q-item-section Удалить
 .butt
-	AddFormButtonNew(@create='create' elementId='field')
+	AddFormButtonNew(@create='create' elementId='card')
 </template>
 
 <style scoped lang="scss">
