@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
 import IconMenuRole from '@/components/IconMenuRole.vue'
 import { useRouter } from 'vue-router'

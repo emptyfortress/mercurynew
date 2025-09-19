@@ -60,7 +60,11 @@ const elements = ref([
 	},
 ])
 
-const [lib, libitems] = useDragAndDrop(elements.value, { sortable: false, group: 'one' })
+const [lib, libitems] = useDragAndDrop(elements.value, {
+	sortable: true,
+	group: 'one',
+	dragPlaceholderClass: 'ghost',
+})
 
 const tmp = ref<Control[]>([])
 
@@ -98,6 +102,10 @@ const stop = () => {
 	emit('stop')
 	// dragging.value = false
 }
+
+//TODO: Добавить сортировку в список полей
+
+//TODO: Добавить кнопку реадктирования в список полей
 </script>
 
 <template lang="pug">
@@ -178,6 +186,15 @@ DeleteDialog(v-model="dialog" :field='removedItem' @remove="remove")
 	}
 }
 
+.ghost {
+	background: hsl(213 38% 81% / 1) !important;
+	box-shadow: none !important;
+	border: none !important;
+
+	* {
+		display: none;
+	}
+}
 // .ghost {
 // 	// background: hsl(213 38% 90% / 1) !important;
 // 	background: #73ad81 !important;

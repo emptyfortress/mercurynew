@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// import FieldList from '@/components/FieldList.vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
 import StatusList from '@/components/StatusList.vue'
 import ElementTab from '@/components/ElementTab.vue'
-import CardList from '@/components/CardList.vue'
 
 interface Field {
 	id: string
@@ -65,37 +63,32 @@ const tab = ref('field')
 <template lang="pug">
 q-page(padding)
 	q-tabs(v-model="tab")
-		// q-tab(name='card' label="Карточки")
 		q-tab(name='field' label="Поля")
 		q-tab(name='status' label="Статусы")
 
 	q-tab-panels(v-model="tab" animated)
 
-		// q-tab-panel(name='card')
-			.header Карточки
-			CardList
-
 		q-tab-panel(name='field')
-			.grid
-				.header.q-ml-md.q-mb-md Поля
-				ElementTab(:mode='false' @begin='setItem' @stop='stop')
+			.header.q-ml-md.q-mb-md Поля
 
-			.grid1
-				.header Дайджест
-				.droparea(ref="digest"
-					@drop="add"
-					:class="{ active: dragging }"
-					)
-					span(v-if='chips.length' contenteditable="true")
-					template(v-for="(item, index) in chips" :key="item.id")
-						q-chip(
-							removable
-							@remove='clear(index)'
-							) {{ item.label }}
-						span(contenteditable="true")
+			.digest Описание приложения
+			.droparea(ref="digest"
+				@drop="add"
+				:class="{ active: dragging }"
+				)
+				span(v-if='chips.length' contenteditable="true")
+				template(v-for="(item, index) in chips" :key="item.id")
+					q-chip(
+						removable
+						@remove='clear(index)'
+						) {{ item.label }}
+					span(contenteditable="true")
 
-					q-btn(v-if='chips.length' round flat dense @click="clearAll" icon="mdi-close") 
-					.comm(v-if="chips.length == 0") Перетащите сюда нужные поля и/ если необходимо, добавьте текст
+				q-btn(v-if='chips.length' round flat dense @click="clearAll" icon="mdi-close") 
+				.comm(v-if="chips.length == 0") Перетащите сюда нужные поля и/ если необходимо, добавьте текст
+
+			ElementTab(:mode='false' @begin='setItem' @stop='stop')
+
 
 		q-tab-panel(name='status')
 			.header Статусы
@@ -127,16 +120,10 @@ span {
 		color: green;
 	}
 }
-.grid1 {
-	// max-width: 1200px;
-	margin: 1rem;
-	margin-top: 2rem;
-}
 
 .droparea {
-	max-width: 1200px;
 	min-height: 48px;
-	margin: 0 auto;
+	margin: 0 1rem;
 	padding: 0.5rem 1rem;
 	border: 1px solid $secondary;
 	background: hsl(211 26% 90% / 1);
@@ -178,7 +165,8 @@ span {
 	max-width: 400px;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
-	// margin-left: 0.5rem;
-	// margin-right: 0.5rem;
+}
+.digest {
+	margin-left: 1rem;
 }
 </style>
