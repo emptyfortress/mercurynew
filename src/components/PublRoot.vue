@@ -6,8 +6,8 @@ import Trends from '@/components/Trends.vue'
 
 <template lang="pug">
 div
-	Trends
-	br
+	// Trends
+	// br
 
 	WaitingPub
 	br

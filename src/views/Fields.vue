@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import FieldList from '@/components/FieldList.vue'
+// import FieldList from '@/components/FieldList.vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
 import StatusList from '@/components/StatusList.vue'
 import ElementTab from '@/components/ElementTab.vue'
-
-// interface Chip {
-// 	id: string
-// 	label: string
-// 	caption: string
-// 	type: string
-// }
+import CardList from '@/components/CardList.vue'
 
 interface Field {
 	id: string
@@ -55,10 +49,6 @@ const add = () => {
 	}, 200)
 }
 
-const test = () => {
-	console.log(item.value)
-}
-
 const dragging = ref(false)
 const item = ref<Field>()
 const setItem = (e: Field) => {
@@ -69,7 +59,7 @@ const stop = () => {
 	dragging.value = false
 }
 
-const tab = ref('field')
+const tab = ref('card')
 </script>
 
 <template lang="pug">
@@ -80,7 +70,9 @@ q-page(padding)
 		q-tab(name='status' label="Статусы")
 
 	q-tab-panels(v-model="tab" animated)
-		q-tab-panel(name='card') card
+		q-tab-panel(name='card')
+			CardList
+
 		q-tab-panel(name='field')
 			.grid
 				.header.q-ml-md Поля
@@ -110,9 +102,10 @@ q-page(padding)
 
 <style scoped lang="scss">
 .q-tab-panels {
-	background: transparent;
+	// background: transparent;
 	max-width: 800px;
 	margin: 0 auto;
+	// height: calc(100vh - 200px);
 }
 span {
 	outline: none;
@@ -178,5 +171,12 @@ span {
 	* {
 		visibility: hidden;
 	}
+}
+.section {
+	max-width: 400px;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	// margin-left: 0.5rem;
+	// margin-right: 0.5rem;
 }
 </style>
