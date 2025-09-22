@@ -270,6 +270,10 @@ const title = computed(() => {
 		return 'Конструктор приложений'
 	}
 
+	if (route.path.startsWith('/timeline')) {
+		return 'bpmn + timeline'
+	}
+
 	if (route.path.startsWith('/settings')) {
 		return 'Настройка конструктора'
 	}

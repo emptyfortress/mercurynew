@@ -25,6 +25,16 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/timeline',
+			name: 'timeline',
+			component: () => import('@/views/Timeline.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+			},
+		},
+		{
 			path: '/test',
 			name: 'test',
 			component: () => import('@/views/Testing.vue'),

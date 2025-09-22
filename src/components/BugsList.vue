@@ -26,6 +26,12 @@ q-list.q-mt-lg
 		q-item-section
 			q-item-label Иконки
 
+	q-item(clickable to='/timeline')
+		q-item-section(avatar)
+			q-icon(name="mdi-chart-gantt" color="primary")
+		q-item-section
+			q-item-label timeline-bpmn
+
 	// br
 	// q-separator
 	// br
