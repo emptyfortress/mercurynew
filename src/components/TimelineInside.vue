@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import VueApexChart from 'vue3-apexcharts'
+import ApexChart from 'vue3-apexcharts'
 
 interface TimelineEvent {
 	name: string
@@ -69,7 +69,7 @@ const chartOptions = {
 
 <template lang="pug">
 .inside
-	VueApexChart(
+	ApexChart(
 		type="rangeBar"
 		height="350"
 		:options="chartOptions"
