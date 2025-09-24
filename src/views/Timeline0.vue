@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTitle } from '@vueuse/core'
 import TokenSim from '@/components/TokenSim.vue'
-import TimelineInside from '@/components/TimelineInside.vue'
+import TimelineInside0 from '@/components/TimelineInside0.vue'
 // import TimelineInside1 from '@/components/TimelineInside1.vue'
 
 const title = useTitle()
@@ -13,7 +13,7 @@ q-page(padding)
 	.h7.text-center Проверка спрягания timeline & bpmn
 	br
 	.grid
-		TimelineInside
+		TimelineInside0
 		TokenSim
 </template>
 

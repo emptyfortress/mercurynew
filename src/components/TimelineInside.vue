@@ -38,6 +38,16 @@ const series = [
 	},
 ]
 
+// const series = [
+// 	{
+// 		data: events.map((ev) => ({
+// 			x: 'Процесс', // ✅ все в одной строке
+// 			y: [ev.start.getTime(), ev.end.getTime()],
+// 			label: ev.name, // сохраним имя отдельно
+// 		})),
+// 	},
+// ]
+
 const chartOptions = {
 	chart: {
 		type: 'rangeBar',
@@ -63,6 +73,9 @@ const chartOptions = {
 	},
 	xaxis: {
 		type: 'datetime',
+	},
+	yaxis: {
+		show: true, // ✅ убираем ось Y
 	},
 }
 </script>
