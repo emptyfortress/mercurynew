@@ -35,26 +35,6 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/timeline1',
-			name: 'timeline1',
-			component: () => import('@/views/Timeline1.vue'),
-			meta: {
-				toolbar: false,
-				back: false,
-				count: 0,
-			},
-		},
-		{
-			path: '/timeline0',
-			name: 'timeline0',
-			component: () => import('@/views/Timeline0.vue'),
-			meta: {
-				toolbar: false,
-				back: false,
-				count: 0,
-			},
-		},
-		{
 			path: '/test',
 			name: 'test',
 			component: () => import('@/views/Testing.vue'),

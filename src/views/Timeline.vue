@@ -1,29 +1,68 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { useTitle } from '@vueuse/core'
-import TokenSim from '@/components/TokenSim.vue'
-import TimelineInside from '@/components/TimelineInside.vue'
-// import TimelineInside1 from '@/components/TimelineInside1.vue'
+import PlusButton from '@/components/PlusButton.vue'
+import { usePanels } from '@/stores/panels'
+import { useMotion } from '@vueuse/motion'
+import HodIspMain from '@/components/HodIspMain.vue'
 
 const title = useTitle()
-title.value = 'bpmn + timeline'
+title.value = 'Ход исполнения'
+
+const editor1 = ref<HTMLElement>()
+
+const panels = usePanels()
+
+const full = { width: 1500, x: 0 }
+const rightStart = { width: 1150, x: -175 }
+
+const calcStart = computed(() => {
+	if (!panels.right0) return full
+	if (panels.right0) return rightStart
+})
+
+const { apply: editorAnim, stop } = useMotion(editor1, {
+	initial: calcStart.value,
+	enter: calcStart.value,
+	start: { width: 1500, x: 0, transition: { stiffness: 200, damping: 20 } },
+	shrinkRight: { width: 1150, x: -175, transition: { stiffness: 200, damping: 20 } },
+})
+
+const startRight0 = async () => {
+	panels.setRight0(true)
+	await editorAnim('shrinkRight')
+	stop()
+}
+
+const stopRight0 = async () => {
+	setTimeout(() => {
+		editorAnim('start')
+	}, 400)
+	stop()
+}
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.h7.text-center Проверка спрягания timeline & bpmn
-	br
-	.grid
-		TimelineInside
-		TokenSim
+	.edito(ref='editor1')
+		HodIspMain
+		PlusButton(@activate='startRight0' @stop='stopRight0')
+
 </template>
 
 <style scoped lang="scss">
-.grid {
-	display: grid;
-	grid-template-rows: 1fr 1.5fr;
-	height: calc(100vh - 150px);
-	gap: 0.5rem;
-	// background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAAXNSR0IArs4c6QAAADBJREFUGFclioEJADAMwvSl7f8P1pfMaAsiCcT1inOPQJIlkwy3uT8JbmImh2zANh9STBXvibRbIgAAAABJRU5ErkJggg==);
-	// background: pink;
+.q-page {
+	display: flex;
+	justify-content: center;
+	position: relative;
+}
+// .q-splitter__separator:hover {
+// 	border-top: 2px dotted black;
+// }
+:deep(.q-splitter__separator:hover, .q-splitter__separator:focus) {
+	border-top: 2px dotted var(--dvviolet);
+}
+:deep(.q-splitter--horizontal > .q-splitter__separator) {
+	height: 2px;
 }
 </style>

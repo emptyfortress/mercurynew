@@ -401,3 +401,22 @@
 	outline: 1px solid white;
 	box-shadow: 0 0 4px 3px var(--dvviolet);
 }
+
+.q-splitter--horizontal > .q-splitter__separator {
+	height: 2px;
+}
+.q-splitter--horizontal > .q-splitter__separator:hover,
+.q-splitter--horizontal > .q-splitter__separator:active {
+	border-top: 2px dotted black;
+}
+
+// vis-timeline
+.vis-time-axis .vis-grid.vis-saturday,
+.vis-time-axis .vis-grid.vis-sunday {
+	background: #efefef;
+	// background: #ffe6e6;
+}
+.vis-time-axis .vis-text.vis-saturday,
+.vis-time-axis .vis-text.vis-sunday {
+	// color: white;
+}

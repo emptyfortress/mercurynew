@@ -271,7 +271,7 @@ const title = computed(() => {
 	}
 
 	if (route.path.startsWith('/timeline')) {
-		return 'bpmn + timeline'
+		return 'Ход исполнения'
 	}
 
 	if (route.path.startsWith('/settings')) {
