@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { DataSet } from 'vis-data'
-import { Timeline } from 'vis-timeline/standalone' // или 'vis-timeline/standalone' если у тебя так работает лучше
+import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
-
-/* ---------- demo data ---------- */
-// const categories = ['Инициатор', 'Руководитель', 'Рассматривающий', 'Исполнитель']
 
 const events = [
 	{
@@ -20,7 +17,6 @@ const events = [
 		id: 2,
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
-		// start: new Date(2025, 8, 22),
 		start: new Date(2025, 8, 21),
 		end: new Date(2025, 8, 23),
 	},
@@ -71,14 +67,14 @@ const dependencies: Array<[number, number]> = [
 
 /* ---------- prepare vis data (with className per item!) ---------- */
 // добавляем className: item-<id> чтобы потом легко найти DOM-элемент
-const items = new DataSet<any>(
-	events.map((ev) => ({
+const items = new DataSet(
+	events.map((ev, i) => ({
 		id: ev.id,
+		type: ev.type,
 		start: ev.start,
 		end: ev.end,
 		content: ev.name,
-		type: ev.type,
-		className: `item-${ev.id}`, // <- ключевая правка
+		className: `item-${ev.id}`,
 	}))
 )
 
@@ -189,6 +185,7 @@ onMounted(() => {
 	}
 
 	// создаём timeline: items, groups
+	console.log('Timeline options =', options)
 	timeline = new Timeline(timelineEl.value, items as any, options)
 
 	// центрируем окно на все события
