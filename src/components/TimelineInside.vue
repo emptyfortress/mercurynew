@@ -9,6 +9,7 @@ const events = [
 		id: 1,
 		role: 'Инициатор',
 		name: 'Создал заявку',
+		fio: 'Орлов П.С.',
 		start: new Date(2025, 8, 20),
 		type: 'point',
 		end: new Date(2025, 8, 22),
@@ -17,12 +18,14 @@ const events = [
 		id: 2,
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
+		fio: 'Соколов С.П.',
 		start: new Date(2025, 8, 21),
 		end: new Date(2025, 8, 23),
 	},
 	{
 		id: 3,
 		role: 'Инициатор',
+		fio: 'Орлов П.С.',
 		name: 'Исправить заявку',
 		start: new Date(2025, 8, 23),
 		end: new Date(2025, 8, 24),
@@ -31,12 +34,14 @@ const events = [
 		id: 4,
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
+		fio: 'Соколов С.П.',
 		start: new Date(2025, 8, 24),
 		end: new Date(2025, 8, 26),
 	},
 	{
 		id: 5,
 		role: 'Рассматривающий',
+		fio: 'Воронин A.A.',
 		name: 'Рассмотреть заявку',
 		start: new Date(2025, 8, 26),
 		end: new Date(2025, 8, 28),
@@ -45,6 +50,7 @@ const events = [
 		id: 6,
 		role: 'Исполнитель',
 		name: 'Исполнить заявку',
+		fio: 'Галкин Р.A.',
 		start: new Date(2025, 8, 28),
 		end: new Date(2025, 8, 29),
 	},
@@ -52,6 +58,7 @@ const events = [
 		id: 7,
 		role: 'Инициатор',
 		name: 'Принять результаты',
+		fio: 'Орлов П.С.',
 		start: new Date(2025, 9, 2),
 		end: new Date(2025, 9, 4),
 	},
@@ -73,7 +80,9 @@ const items = new DataSet(
 		type: ev.type,
 		start: ev.start,
 		end: ev.end,
-		content: ev.name,
+		name: ev.name,
+		role: ev.role,
+		fio: ev.fio,
 		className: `item-${ev.id}`,
 	}))
 )
@@ -170,6 +179,15 @@ function scheduleRedraw() {
 	})
 }
 
+// helper
+function escapeHtml(s: string) {
+	return String(s ?? '')
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;')
+}
 /* ---------- lifecycle ---------- */
 onMounted(() => {
 	if (!timelineEl.value || !wrapper.value) return
@@ -182,10 +200,60 @@ onMounted(() => {
 		margin: { item: 12, axis: 5 },
 		editable: false,
 		locale: 'ru',
+		template: function (item: any, element: HTMLElement | null) {
+			const name = item?.name ?? item?.content ?? ''
+			const fio = item?.fio ?? ''
+
+			if (element) {
+				element.innerHTML = ''
+
+				const box = document.createElement('div')
+				box.className = 'event-box'
+				box.style.display = 'flex'
+				box.style.alignItems = 'center'
+
+				// иконка слева
+				const icon = document.createElement('i')
+				icon.className = 'q-icon notranslate mdi mdi-account'
+				box.appendChild(icon)
+
+				// правая часть (fio + name в колонку)
+				const textBox = document.createElement('div')
+				textBox.style.display = 'flex'
+				textBox.style.flexDirection = 'column'
+				textBox.style.marginLeft = '4px'
+
+				const fioDiv = document.createElement('div')
+				fioDiv.className = 'event-name'
+				fioDiv.textContent = fio
+
+				const nameDiv = document.createElement('div')
+				nameDiv.className = 'event-fio'
+				nameDiv.textContent = name
+
+				textBox.appendChild(fioDiv)
+				textBox.appendChild(nameDiv)
+
+				box.appendChild(textBox)
+				element.appendChild(box)
+
+				return ''
+			}
+
+			// fallback — если element === null
+			return `
+    <div class="event-box" style="display:flex;align-items:center">
+      <i class="q-icon notranslate mdi mdi-account"></i>
+      <div style="display:flex;flex-direction:column;margin-left:4px">
+        <div class="event-name">${escapeHtml(fio)}</div>
+        <div class="event-fio">${escapeHtml(name)}</div>
+      </div>
+    </div>
+  `
+		},
 	}
 
 	// создаём timeline: items, groups
-	console.log('Timeline options =', options)
 	timeline = new Timeline(timelineEl.value, items as any, options)
 
 	// центрируем окно на все события
@@ -202,6 +270,7 @@ onMounted(() => {
 
 	// первичная отрисовка
 	scheduleRedraw()
+	;(timeline as any).redraw?.()
 })
 
 onBeforeUnmount(() => {
@@ -227,5 +296,28 @@ onBeforeUnmount(() => {
 :deep(.vis-item .vis-item-overflow) {
 	overflow: visible;
 }
+:deep(.vis-item.vis-range) {
+	background: #cce669;
+	border-color: green;
+	&.vis-selected {
+		background: var(--selection);
+		border: 1px solid var(--dark2);
+		box-shadow: var(--shad0);
+		.event-name {
+			font-weight: bold;
+		}
+	}
+}
 /* Можно стилизовать .vis-item .vis-item-content, если надо центрировать текст и т.д. */
+:deep(.vis-item .event-box) {
+	font-size: 11px;
+	line-height: 1.2;
+	/* text-align: center; */
+}
+:deep(.vis-item .event-fio) {
+	font-size: 9px;
+}
+:deep(.vis-item .q-icon) {
+	font-size: 1.5rem;
+}
 </style>
