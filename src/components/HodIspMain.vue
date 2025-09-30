@@ -4,14 +4,20 @@ import TokenSim from '@/components/TokenSim.vue'
 import TimelineInside from '@/components/TimelineInside.vue'
 
 const splitter = ref(25)
+
+const selection = ref<string | null>(null)
+
+const select = (e: string) => {
+	selection.value = e
+}
 </script>
 
 <template lang="pug">
 q-splitter(v-model="splitter" horizontal)
 	template(v-slot:before)
-		TimelineInside
+		TimelineInside(@select="select")
 	template(v-slot:after)
-		TokenSim
+		TokenSim(:selection="selection")
 </template>
 
 <style scoped lang="scss">

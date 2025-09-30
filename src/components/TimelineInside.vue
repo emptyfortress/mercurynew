@@ -24,10 +24,8 @@ const events: MyEvent[] = [
 		name: 'Создал заявку',
 		fio: 'Орлов П.С.',
 		start: new Date(2025, 8, 22),
-		// type: 'point',
 		type: 'box',
 		className: 'start',
-		// end: new Date(2025, 8, 22),
 	},
 	{
 		id: 2,
@@ -274,12 +272,22 @@ onMounted(() => {
 	// первичная отрисовка
 	scheduleRedraw()
 	;(timeline as any).redraw?.()
-	//
+
 	// selection ******************************
+
+	// timeline.on('select', function (properties) {
+	// 	emit('select', properties.items[0])
+	// })
 	timeline.on('select', function (properties) {
-		alert('selected items: ' + properties.items)
+		const id = properties.items[0]
+		const item = items.get(id) as unknown as MyEvent | undefined
+		if (item) {
+			emit('select', item.name) // эмитим name вместо id
+		}
 	})
 })
+
+const emit = defineEmits(['select'])
 
 onBeforeUnmount(() => {
 	if (timeline) {

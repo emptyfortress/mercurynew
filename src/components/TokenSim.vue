@@ -7,6 +7,13 @@ import zay from '@/stores/zayavka1.bpmn?raw'
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 
+const props = defineProps({
+	selection: {
+		type: String,
+		required: true,
+		default: '',
+	},
+})
 const container = ref<HTMLDivElement | null>(null)
 
 onMounted(async () => {
