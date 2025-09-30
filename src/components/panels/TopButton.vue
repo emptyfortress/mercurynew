@@ -16,8 +16,8 @@ const close = () => {
 	:enter='{ opacity: 1 }'
 	:delay='600')
 	.zg
-		q-icon(name="mdi-tune-vertical-variant")
-		| Свойства
+		q-icon(name="mdi-information-outline")
+		| Информация
 </template>
 
 <style scoped lang="scss">

@@ -129,6 +129,49 @@ const randomArray = (length: number, min: number, max: number) => {
 	return result
 }
 
+function centerWithPadding(
+	timeline: any,
+	events: Array<{ start?: Date; end?: Date }>,
+	paddingPercent = 0.05
+) {
+	if (!events || events.length === 0) return
+
+	// найдём min/max по всем событиям (если end нет — берём start)
+	let minTime = Number.POSITIVE_INFINITY
+	let maxTime = Number.NEGATIVE_INFINITY
+
+	for (const ev of events) {
+		if (ev.start instanceof Date) {
+			const t = ev.start.getTime()
+			if (t < minTime) minTime = t
+			if (t > maxTime) maxTime = t
+		}
+		if (ev.end instanceof Date) {
+			const t = ev.end.getTime()
+			if (t < minTime) minTime = t
+			if (t > maxTime) maxTime = t
+		}
+	}
+
+	// если не удалось найти валидные даты — выходим
+	if (!Number.isFinite(minTime) || !Number.isFinite(maxTime)) return
+
+	// если min === max (все события в одну точку) — даём запас в 1 день
+	if (minTime === maxTime) {
+		const day = 24 * 60 * 60 * 1000
+		minTime -= day
+		maxTime += day
+	}
+
+	const range = maxTime - minTime
+	const offset = typeof paddingPercent === 'number' ? range * paddingPercent : 0
+
+	const start = new Date(minTime - offset)
+	const end = new Date(maxTime + offset)
+
+	;(timeline as any).setWindow(start, end, { animation: false })
+}
+
 export {
 	randomArray,
 	applyDrag,
@@ -141,4 +184,5 @@ export {
 	slideEnterFromLeft,
 	slideBeforeEnter,
 	getMembers,
+	centerWithPadding,
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useTitle } from '@vueuse/core'
-import PlusButton from '@/components/PlusButton.vue'
+import InfoButton from '@/components/InfoButton.vue'
 import { usePanels } from '@/stores/panels'
 import { useMotion } from '@vueuse/motion'
 import HodIspMain from '@/components/HodIspMain.vue'
@@ -46,7 +46,7 @@ const stopRight0 = async () => {
 q-page(padding)
 	.edito(ref='editor1')
 		HodIspMain
-		PlusButton(@activate='startRight0' @stop='stopRight0')
+		InfoButton(@activate='startRight0' @stop='stopRight0')
 
 </template>
 

@@ -3,65 +3,82 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { DataSet } from 'vis-data'
 import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
+import { centerWithPadding } from '@/utils/utils'
 
-const events = [
+interface MyEvent {
+	id: number
+	role: string
+	name: string
+	fio: string
+	start: Date
+	end?: Date
+	type?: string
+	current?: boolean
+	className?: string
+}
+
+const events: MyEvent[] = [
 	{
 		id: 1,
 		role: 'Инициатор',
 		name: 'Создал заявку',
 		fio: 'Орлов П.С.',
-		start: new Date(2025, 8, 20),
-		type: 'point',
-		end: new Date(2025, 8, 22),
+		start: new Date(2025, 8, 22),
+		// type: 'point',
+		type: 'box',
+		className: 'start',
+		// end: new Date(2025, 8, 22),
 	},
 	{
 		id: 2,
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
 		fio: 'Соколов С.П.',
-		start: new Date(2025, 8, 21),
-		end: new Date(2025, 8, 23),
+		start: new Date(2025, 8, 22, 1, 0, 0),
+		end: new Date(2025, 8, 24),
 	},
 	{
 		id: 3,
 		role: 'Инициатор',
 		fio: 'Орлов П.С.',
 		name: 'Исправить заявку',
-		start: new Date(2025, 8, 23),
-		end: new Date(2025, 8, 24),
+		start: new Date(2025, 8, 24),
+		end: new Date(2025, 8, 26),
 	},
 	{
 		id: 4,
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
 		fio: 'Соколов С.П.',
-		start: new Date(2025, 8, 24),
-		end: new Date(2025, 8, 26),
+		start: new Date(2025, 8, 26),
+		end: new Date(2025, 8, 27),
 	},
 	{
 		id: 5,
 		role: 'Рассматривающий',
 		fio: 'Воронин A.A.',
 		name: 'Рассмотреть заявку',
-		start: new Date(2025, 8, 26),
-		end: new Date(2025, 8, 28),
+		start: new Date(2025, 8, 29, 15, 0, 0),
+		end: new Date(),
+		type: 'range',
+		current: true,
 	},
-	{
-		id: 6,
-		role: 'Исполнитель',
-		name: 'Исполнить заявку',
-		fio: 'Галкин Р.A.',
-		start: new Date(2025, 8, 28),
-		end: new Date(2025, 8, 29),
-	},
-	{
-		id: 7,
-		role: 'Инициатор',
-		name: 'Принять результаты',
-		fio: 'Орлов П.С.',
-		start: new Date(2025, 9, 2),
-		end: new Date(2025, 9, 4),
-	},
+	// {
+	// 	id: 6,
+	// 	role: 'Исполнитель',
+	// 	name: 'Исполнить заявку',
+	// 	fio: 'Галкин Р.A.',
+	// 	start: new Date(2025, 8, 28),
+	// 	end: new Date(2025, 8, 29),
+	// },
+	// {
+	// 	id: 7,
+	// 	role: 'Инициатор',
+	// 	name: 'Принять результаты',
+	// 	fio: 'Орлов П.С.',
+	// 	start: new Date(2025, 9, 2),
+	// 	end: new Date(2025, 9, 4),
+	// },
 ]
 
 // Пример зависимостей: стрелки от события -> к событию
@@ -83,6 +100,7 @@ const items = new DataSet(
 		name: ev.name,
 		role: ev.role,
 		fio: ev.fio,
+		current: ev.current,
 		className: `item-${ev.id}`,
 	}))
 )
@@ -179,16 +197,6 @@ function scheduleRedraw() {
 	})
 }
 
-// helper
-function escapeHtml(s: string) {
-	return String(s ?? '')
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#39;')
-}
-/* ---------- lifecycle ---------- */
 onMounted(() => {
 	if (!timelineEl.value || !wrapper.value) return
 
@@ -197,59 +205,55 @@ onMounted(() => {
 		orientation: 'top',
 		horizontalScroll: true,
 		verticalScroll: true,
-		margin: { item: 12, axis: 5 },
+		margin: { item: 12, axis: 12 },
 		editable: false,
+		start: new Date(2025, 8, 21),
+		end: new Date(),
 		locale: 'ru',
-		template: function (item: any, element: HTMLElement | null) {
-			const name = item?.name ?? item?.content ?? ''
-			const fio = item?.fio ?? ''
+		xss: {
+			disabled: true,
+		},
+		template: function (item: MyEvent, element: HTMLElement, data: any) {
+			if (item.current) {
+				return `
+				<div class="event-box current">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+						<circle cx="12" cy="12" r="3" fill="currentColor"/>
+						<g>
+							<circle cx="4" cy="12" r="3" fill="currentColor"/>
+							<circle cx="20" cy="12" r="3" fill="currentColor"/>
+							<animateTransform 
+								attributeName="transform"
+								type="rotate"
+								dur="3s"
+								values="0 12 12;360 12 12;360 12 12"
+								keyTimes="0;0.33;1"
+								calcMode="spline"
+								keySplines=".36,.6,.31,1;0,0,1,1"
+								repeatCount="indefinite"
+							/>
+						</g>
+					</svg>
 
-			if (element) {
-				element.innerHTML = ''
-
-				const box = document.createElement('div')
-				box.className = 'event-box'
-				box.style.display = 'flex'
-				box.style.alignItems = 'center'
-
-				// иконка слева
-				const icon = document.createElement('i')
-				icon.className = 'q-icon notranslate mdi mdi-account'
-				box.appendChild(icon)
-
-				// правая часть (fio + name в колонку)
-				const textBox = document.createElement('div')
-				textBox.style.display = 'flex'
-				textBox.style.flexDirection = 'column'
-				textBox.style.marginLeft = '4px'
-
-				const fioDiv = document.createElement('div')
-				fioDiv.className = 'event-name'
-				fioDiv.textContent = fio
-
-				const nameDiv = document.createElement('div')
-				nameDiv.className = 'event-fio'
-				nameDiv.textContent = name
-
-				textBox.appendChild(fioDiv)
-				textBox.appendChild(nameDiv)
-
-				box.appendChild(textBox)
-				element.appendChild(box)
-
-				return ''
+					<div>
+						<div class="event-name">
+							<i class='mdi mdi-account ic'></i>
+							${item.fio}
+						</div>
+						<div class="event-fio">${item.name}</div>
+					</div>
+				</div>
+				`
+			} else {
+				return `
+				<div class="event-box">
+					<div class="event-name">
+						<i class='mdi mdi-account ic'></i>
+						${item.fio}
+					</div>
+					<div class="event-fio">${item.name}</div>
+				</div>`
 			}
-
-			// fallback — если element === null
-			return `
-    <div class="event-box" style="display:flex;align-items:center">
-      <i class="q-icon notranslate mdi mdi-account"></i>
-      <div style="display:flex;flex-direction:column;margin-left:4px">
-        <div class="event-name">${escapeHtml(fio)}</div>
-        <div class="event-fio">${escapeHtml(name)}</div>
-      </div>
-    </div>
-  `
 		},
 	}
 
@@ -257,8 +261,7 @@ onMounted(() => {
 	timeline = new Timeline(timelineEl.value, items as any, options)
 
 	// центрируем окно на все события
-	;(timeline as any).setWindow(events[0].start, events[events.length - 1].end, { animation: false })
-
+	centerWithPadding(timeline, events, 0.05)
 	// создаём overlay как дочерний element timelineEl (чтобы coords были в одном контексте)
 	svgOverlay = createSvgOverlay(timelineEl.value)
 
@@ -271,6 +274,11 @@ onMounted(() => {
 	// первичная отрисовка
 	scheduleRedraw()
 	;(timeline as any).redraw?.()
+	//
+	// selection ******************************
+	timeline.on('select', function (properties) {
+		alert('selected items: ' + properties.items)
+	})
 })
 
 onBeforeUnmount(() => {
@@ -299,6 +307,28 @@ onBeforeUnmount(() => {
 :deep(.vis-item.vis-range) {
 	background: #cce669;
 	border-color: green;
+	&.item-5 {
+		background: var(--dvblue);
+		border-color: blue;
+	}
+	&.vis-selected {
+		background: var(--selection);
+		border: 1px solid var(--dark2);
+		box-shadow: var(--shad0);
+		.event-name {
+			font-weight: bold;
+		}
+	}
+}
+
+:deep(.vis-item.vis-selected) {
+	border-color: var(--dark2);
+	background-color: var(--dark2);
+}
+
+:deep(.vis-item.vis-box) {
+	background: #cce669;
+	border-color: green;
 	&.vis-selected {
 		background: var(--selection);
 		border: 1px solid var(--dark2);
@@ -310,14 +340,27 @@ onBeforeUnmount(() => {
 }
 /* Можно стилизовать .vis-item .vis-item-content, если надо центрировать текст и т.д. */
 :deep(.vis-item .event-box) {
-	font-size: 11px;
+	font-size: 12px;
 	line-height: 1.2;
-	/* text-align: center; */
+	&.current {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
 }
 :deep(.vis-item .event-fio) {
 	font-size: 9px;
+	margin-left: 2px;
+	color: #333;
 }
 :deep(.vis-item .q-icon) {
 	font-size: 1.5rem;
+}
+:deep(.ic) {
+	font-size: 0.95rem;
+}
+:deep(.start) {
+	background: #cce669;
+	border-color: green;
 }
 </style>
