@@ -5,7 +5,7 @@ import TimelineInside from '@/components/TimelineInside.vue'
 
 const splitter = ref(25)
 
-const selection = ref<string | null>(null)
+const selection = ref<string>('')
 
 const select = (e: string) => {
 	selection.value = e

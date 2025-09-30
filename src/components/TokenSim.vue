@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
-import { highlightByDom } from '@/lib/selectHelper'
+import { highlightByDom, unhighlightByDom } from '@/lib/selectHelper'
 import zay from '@/stores/zayavka1.bpmn?raw'
 
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -15,29 +15,61 @@ const props = defineProps({
 	},
 })
 const container = ref<HTMLDivElement | null>(null)
+const viewer = ref<SelectableViewer | null>(null)
+
+// текущий подсвеченный узел
+let currentNodeId: string | null = null
+// let currentHighlightedId: string | null = null
+
+// пример соответствия name -> id узла в BPMN
+const nodeMap: Record<string, string> = {
+	'Создал заявку': 'Event_1t7b10m',
+	'Согласовать заявку': 'Activity_13ysreu',
+	'Исправить заявку': 'Activity_0kpt2qn',
+	'Обработать отказ': 'Activity_0obo0kc',
+	'Принять результаты': 'Activity_1rqtd62',
+	'Рассмотреть заявку': 'Activity_0vjxzxe',
+	'Исполнить заявку': 'Activity_1xr02p6',
+}
 
 onMounted(async () => {
 	if (!container.value) return
 
-	const viewer = new SelectableViewer({ container: container.value })
+	viewer.value = new SelectableViewer({ container: container.value })
 
 	try {
-		await viewer.importXML(zay)
+		await viewer.value.importXML(zay)
 
-		const canvas: any = viewer.get('canvas')
+		const canvas: any = viewer.value.get('canvas')
 		canvas.zoom('fit-viewport', 'auto')
 	} catch (err) {
 		console.error('Ошибка при загрузке BPMN:', err)
 	}
 })
 
-const select = () => {
-	highlightByDom('Activity_0obo0kc')
-}
+watch(
+	() => props.selection,
+	(newVal) => {
+		if (!viewer.value) return
+
+		// снимаем подсветку с предыдущего узла
+		if (currentNodeId) {
+			unhighlightByDom(currentNodeId)
+			currentNodeId = null
+		}
+
+		// подсвечиваем новый узел
+		if (newVal && nodeMap[newVal]) {
+			const nodeId = nodeMap[newVal]
+			highlightByDom(nodeId)
+			currentNodeId = nodeId
+		}
+	}
+)
 </script>
 
 <template lang="pug">
-.canvas(ref="container" @click="select")
+.canvas(ref="container")
 </template>
 
 <style scoped>
