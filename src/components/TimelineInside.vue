@@ -270,17 +270,33 @@ onMounted(() => {
 	;(timeline as any).redraw?.()
 
 	// selection ******************************
-
-	// timeline.on('select', function (properties) {
-	// 	emit('select', properties.items[0])
-	// })
 	timeline.on('select', function (properties) {
 		const id = properties.items[0]
-		const item = items.get(id) as unknown as MyEvent | undefined
-		if (item) {
-			emit('select', item.name) // эмитим name вместо id
+
+		// снимаем выделение со всех событий
+		document.querySelectorAll('.vis-item').forEach((el) => el.classList.remove('vis-selected'))
+
+		// ставим выделение только на выбранный элемент
+		if (id != null) {
+			const el = document.querySelector(`.vis-item.item-${id}`)
+			if (el) {
+				el.classList.add('vis-selected')
+			}
+
+			const item = items.get(id) as unknown as MyEvent | undefined
+			if (item) {
+				emit('select', item.name)
+			}
 		}
 	})
+
+	// timeline.on('select', function (properties) {
+	// 	const id = properties.items[0]
+	// 	const item = items.get(id) as unknown as MyEvent | undefined
+	// 	if (item) {
+	// 		emit('select', item.name) // эмитим name вместо id
+	// 	}
+	// })
 })
 
 const emit = defineEmits(['select'])
