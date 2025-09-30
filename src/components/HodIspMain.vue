@@ -6,18 +6,23 @@ import TimelineInside from '@/components/TimelineInside.vue'
 const splitter = ref(25)
 
 const selection = ref<string>('')
+const selection1 = ref<string>('')
 
 const select = (e: string) => {
 	selection.value = e
+}
+
+const select1 = (e: any) => {
+	selection1.value = e
 }
 </script>
 
 <template lang="pug">
 q-splitter(v-model="splitter" horizontal)
 	template(v-slot:before)
-		TimelineInside(@select="select")
+		TimelineInside(@select="select" :selection='selection1')
 	template(v-slot:after)
-		TokenSim(:selection="selection")
+		TokenSim(:selection="selection" @select="select1")
 </template>
 
 <style scoped lang="scss">

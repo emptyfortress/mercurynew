@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
 import { highlightByDom, unhighlightByDom } from '@/lib/selectHelper'
 import zay from '@/stores/zayavka1.bpmn?raw'
@@ -14,14 +14,14 @@ const props = defineProps({
 		default: '',
 	},
 })
+
 const container = ref<HTMLDivElement | null>(null)
 const viewer = ref<SelectableViewer | null>(null)
 
-// текущий подсвеченный узел
-let currentNodeId: string | null = null
-// let currentHighlightedId: string | null = null
+// текущий подсвеченный узел (через props.selection)
+let currentHighlightedId: string | null = null
 
-// пример соответствия name -> id узла в BPMN
+// nodeMap: name -> BPMN nodeId
 const nodeMap: Record<string, string> = {
 	'Создал заявку': 'Event_1t7b10m',
 	'Согласовать заявку': 'Activity_13ysreu',
@@ -31,6 +31,8 @@ const nodeMap: Record<string, string> = {
 	'Рассмотреть заявку': 'Activity_0vjxzxe',
 	'Исполнить заявку': 'Activity_1xr02p6',
 }
+
+const emit = defineEmits(['select'])
 
 onMounted(async () => {
 	if (!container.value) return
@@ -42,29 +44,61 @@ onMounted(async () => {
 
 		const canvas: any = viewer.value.get('canvas')
 		canvas.zoom('fit-viewport', 'auto')
+
+		const eventBus = viewer.value.get('eventBus') as any
+		const selectionService = viewer.value.get('selection') as any
+
+		// обработка клика пользователя
+		eventBus.on('element.click', (e: any) => {
+			const clickedId = e.element?.id
+			if (!clickedId) return
+
+			// снимаем подсветку props.selection
+			if (currentHighlightedId) {
+				unhighlightByDom(currentHighlightedId)
+				currentHighlightedId = null
+			}
+
+			// выделяем элемент кликом пользователя
+			selectionService.select([e.element])
+			emit('select', e.element.id)
+		})
 	} catch (err) {
 		console.error('Ошибка при загрузке BPMN:', err)
 	}
 })
 
+onBeforeUnmount(() => {
+	if (viewer.value) {
+		viewer.value.destroy()
+		viewer.value = null
+	}
+})
+
+// слежение за props.selection
 watch(
 	() => props.selection,
 	(newVal) => {
 		if (!viewer.value) return
+		const selectionService = viewer.value.get('selection') as any
 
-		// снимаем подсветку с предыдущего узла
-		if (currentNodeId) {
-			unhighlightByDom(currentNodeId)
-			currentNodeId = null
+		// сбрасываем выделение пользователя
+		selectionService.select([])
+
+		// снимаем старую подсветку
+		if (currentHighlightedId) {
+			unhighlightByDom(currentHighlightedId)
+			currentHighlightedId = null
 		}
 
-		// подсвечиваем новый узел
+		// подсвечиваем новый элемент по name
 		if (newVal && nodeMap[newVal]) {
 			const nodeId = nodeMap[newVal]
 			highlightByDom(nodeId)
-			currentNodeId = nodeId
+			currentHighlightedId = nodeId
 		}
-	}
+	},
+	{ immediate: true }
 )
 </script>
 

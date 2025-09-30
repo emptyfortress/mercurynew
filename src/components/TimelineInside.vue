@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { DataSet } from 'vis-data'
 import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
@@ -7,6 +7,7 @@ import { centerWithPadding } from '@/utils/utils'
 
 interface MyEvent {
 	id: number
+	sideId: string
 	role: string
 	name: string
 	fio: string
@@ -17,9 +18,18 @@ interface MyEvent {
 	className?: string
 }
 
+const props = defineProps({
+	selection: {
+		type: String,
+		required: true,
+		default: '',
+	},
+})
+
 const events: MyEvent[] = [
 	{
 		id: 1,
+		sideId: 'Event_1t7b10m',
 		role: 'Инициатор',
 		name: 'Создал заявку',
 		fio: 'Орлов П.С.',
@@ -29,6 +39,7 @@ const events: MyEvent[] = [
 	},
 	{
 		id: 2,
+		sideId: 'Activity_13ysreu',
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
 		fio: 'Соколов С.П.',
@@ -37,6 +48,7 @@ const events: MyEvent[] = [
 	},
 	{
 		id: 3,
+		sideId: 'Activity_0kpt2qn',
 		role: 'Инициатор',
 		fio: 'Орлов П.С.',
 		name: 'Исправить заявку',
@@ -45,6 +57,7 @@ const events: MyEvent[] = [
 	},
 	{
 		id: 4,
+		sideId: 'Activity_13ysreu',
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
 		fio: 'Соколов С.П.',
@@ -53,6 +66,7 @@ const events: MyEvent[] = [
 	},
 	{
 		id: 5,
+		sideId: 'Activity_0vjxzxe',
 		role: 'Рассматривающий',
 		fio: 'Воронин A.A.',
 		name: 'Рассмотреть заявку',
@@ -61,22 +75,6 @@ const events: MyEvent[] = [
 		type: 'range',
 		current: true,
 	},
-	// {
-	// 	id: 6,
-	// 	role: 'Исполнитель',
-	// 	name: 'Исполнить заявку',
-	// 	fio: 'Галкин Р.A.',
-	// 	start: new Date(2025, 8, 28),
-	// 	end: new Date(2025, 8, 29),
-	// },
-	// {
-	// 	id: 7,
-	// 	role: 'Инициатор',
-	// 	name: 'Принять результаты',
-	// 	fio: 'Орлов П.С.',
-	// 	start: new Date(2025, 9, 2),
-	// 	end: new Date(2025, 9, 4),
-	// },
 ]
 
 // Пример зависимостей: стрелки от события -> к событию
@@ -87,11 +85,11 @@ const dependencies: Array<[number, number]> = [
 	[4, 5],
 ]
 
-/* ---------- prepare vis data (with className per item!) ---------- */
 // добавляем className: item-<id> чтобы потом легко найти DOM-элемент
 const items = new DataSet(
 	events.map((ev, i) => ({
 		id: ev.id,
+		sideId: ev.sideId,
 		type: ev.type,
 		start: ev.start,
 		end: ev.end,
@@ -102,8 +100,6 @@ const items = new DataSet(
 		className: `item-${ev.id}`,
 	}))
 )
-
-// const groups = new DataSet(categories.map((role) => ({ id: role, content: role })))
 
 /* ---------- refs & state ---------- */
 const wrapper = ref<HTMLElement | null>(null) // outer wrapper
@@ -297,6 +293,32 @@ onBeforeUnmount(() => {
 	if (svgOverlay && svgOverlay.parentElement) svgOverlay.parentElement.removeChild(svgOverlay)
 	window.removeEventListener('resize', scheduleRedraw)
 })
+
+watch(
+	() => props.selection,
+	(newVal: string) => {
+		// снимем классы selected/choosen со всех событий
+		const myitems = document.querySelectorAll('.vis-item')
+		myitems.forEach((el) => {
+			el.classList.remove('vis-selected')
+		})
+
+		// назначим класс только событию с совпадающим sideId
+		if (newVal) {
+			const selitems = events.filter((el) => el.sideId == newVal)
+
+			if (selitems.length) {
+				selitems.forEach((el) => {
+					const target = document.querySelector(`.item-${el.id}`)
+					if (target) {
+						target.classList.add('vis-selected')
+					}
+				})
+			}
+		}
+	},
+	{ immediate: true }
+)
 </script>
 
 <template lang="pug">
@@ -329,11 +351,6 @@ onBeforeUnmount(() => {
 	}
 }
 
-:deep(.vis-item.vis-selected) {
-	border-color: var(--dark2);
-	background-color: var(--dark2);
-}
-
 :deep(.vis-item.vis-box) {
 	background: #cce669;
 	border-color: green;
@@ -346,6 +363,12 @@ onBeforeUnmount(() => {
 		}
 	}
 }
+
+:deep(.vis-item.vis-selected) {
+	border-color: var(--dark2);
+	background-color: var(--dark2);
+}
+
 /* Можно стилизовать .vis-item .vis-item-content, если надо центрировать текст и т.д. */
 :deep(.vis-item .event-box) {
 	font-size: 12px;
