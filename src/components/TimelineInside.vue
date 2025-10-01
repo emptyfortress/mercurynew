@@ -289,14 +289,6 @@ onMounted(() => {
 			}
 		}
 	})
-
-	// timeline.on('select', function (properties) {
-	// 	const id = properties.items[0]
-	// 	const item = items.get(id) as unknown as MyEvent | undefined
-	// 	if (item) {
-	// 		emit('select', item.name) // эмитим name вместо id
-	// 	}
-	// })
 })
 
 const emit = defineEmits(['select'])

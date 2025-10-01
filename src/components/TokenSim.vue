@@ -106,7 +106,7 @@ watch(
 .canvas(ref="container")
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .canvas {
 	width: 100%;
 	height: 100%;
@@ -120,18 +120,39 @@ watch(
 	display: none !important;
 }
 
-/* подсветка выбранного элемента */
-:deep(.djs-element.djs-shape.selected > .djs-visual) {
-	outline: 3px solid var(--violet);
-	outline-offset: 3px;
-	border-radius: 0.5rem;
-}
-:deep(.djs-element.djs-hover > .djs-visual) {
-	outline: 2px solid rgba(0, 123, 255, 0.5);
-	outline-offset: 2px;
-	transition: outline 0.2s;
-}
 :deep(svg:focus) {
 	outline: none;
+}
+
+/* заменяем outline на stroke у самих фигур (работает для rect/path/circle/polygon) */
+:deep(.djs-element.djs-shape.selected > .djs-visual > rect),
+:deep(.djs-element.djs-shape.selected > .djs-visual > path),
+:deep(.djs-element.djs-shape.selected > .djs-visual > circle),
+:deep(.djs-element.djs-shape.selected > .djs-visual > polygon) {
+	stroke: var(--violet) !important; /* цвет обводки */
+	stroke-width: 4 !important; /* толщина */
+	stroke-linejoin: miter; /* острые углы (или round) */
+	stroke-linecap: round;
+	vector-effect: non-scaling-stroke; /* толщина не масштабируется при zoom */
+	paint-order: stroke; /* рисуем stroke «перед» fill (настраиваем) */
+	transition:
+		stroke 0.12s,
+		stroke-width 0.12s;
+	pointer-events: none; /* чтобы не мешать кликам, если нужно */
+}
+
+/* для соединений (flows) — path внутри djs-connection */
+:deep(.djs-connection.selected .djs-visual > path) {
+	stroke: var(--violet) !important;
+	stroke-width: 4 !important;
+	vector-effect: non-scaling-stroke;
+	stroke-linejoin: round;
+}
+
+/* лёгкий внешнее свечение (не портит форму и выглядит как «хало») */
+:deep(.djs-element.djs-shape.selected > .djs-visual > rect),
+:deep(.djs-element.djs-shape.selected > .djs-visual > path),
+:deep(.djs-element.djs-shape.selected > .djs-visual > circle) {
+	filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.75)); /* опционально: внешний «хайлайт» */
 }
 </style>
