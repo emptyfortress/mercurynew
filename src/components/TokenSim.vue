@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
-import { highlightByDom, unhighlightByDom } from '@/lib/selectHelper'
+import { highlightByDom, unhighlightByDom } from '@/lib/selectNewHelper'
 import zay from '@/stores/zayavka1.bpmn?raw'
 
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -124,21 +124,20 @@ watch(
 	outline: none;
 }
 
-/* заменяем outline на stroke у самих фигур (работает для rect/path/circle/polygon) */
+/* обводка и свечение только для формы */
 :deep(.djs-element.djs-shape.selected > .djs-visual > rect),
-:deep(.djs-element.djs-shape.selected > .djs-visual > path),
 :deep(.djs-element.djs-shape.selected > .djs-visual > circle),
 :deep(.djs-element.djs-shape.selected > .djs-visual > polygon) {
-	stroke: var(--violet) !important; /* цвет обводки */
-	stroke-width: 4 !important; /* толщина */
-	stroke-linejoin: miter; /* острые углы (или round) */
-	stroke-linecap: round;
-	vector-effect: non-scaling-stroke; /* толщина не масштабируется при zoom */
-	paint-order: stroke; /* рисуем stroke «перед» fill (настраиваем) */
-	transition:
-		stroke 0.12s,
-		stroke-width 0.12s;
-	pointer-events: none; /* чтобы не мешать кликам, если нужно */
+	stroke: var(--violet) !important;
+	stroke-width: 4 !important;
+	vector-effect: non-scaling-stroke;
+	filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.55));
+}
+
+/* у иконок внутри шлюза убираем stroke, но glow и не нужен */
+:deep(.djs-element.djs-shape.selected > .djs-visual > path) {
+	stroke: none !important;
+	filter: none !important;
 }
 
 /* для соединений (flows) — path внутри djs-connection */
@@ -154,5 +153,23 @@ watch(
 :deep(.djs-element.djs-shape.selected > .djs-visual > path),
 :deep(.djs-element.djs-shape.selected > .djs-visual > circle) {
 	filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.75)); /* опционально: внешний «хайлайт» */
+}
+
+:deep(.highlighted) {
+	// stroke: var(--dvviolet) !important;
+	stroke: hsl(240.69deg 100% 75%) !important;
+	stroke-width: 3 !important;
+	vector-effect: non-scaling-stroke;
+	fill: none !important;
+	stroke-dasharray: 8 4; /* длина штриха 8, пробел 4 */
+	animation: dash-move 1s linear infinite; /* бесконечная анимация */
+	// filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.75)); /* опционально: внешний «хайлайт» */
+}
+
+/* Анимация бегущего пунктира */
+@keyframes dash-move {
+	to {
+		stroke-dashoffset: -12; /* отрицательное значение сдвигает штрих */
+	}
 }
 </style>

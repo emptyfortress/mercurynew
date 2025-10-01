@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { DataSet } from 'vis-data'
 import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
@@ -34,7 +34,7 @@ const events: MyEvent[] = [
 		name: 'Создал заявку',
 		fio: 'Орлов П.С.',
 		start: new Date(2025, 8, 22),
-		type: 'box',
+		type: 'point',
 		className: 'start',
 	},
 	{
@@ -43,7 +43,7 @@ const events: MyEvent[] = [
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
 		fio: 'Соколов С.П.',
-		start: new Date(2025, 8, 22, 1, 0, 0),
+		start: new Date(2025, 8, 22, 12, 0, 0),
 		end: new Date(2025, 8, 24),
 	},
 	{
@@ -123,7 +123,7 @@ function createSvgOverlay(root: HTMLElement) {
 	svg.innerHTML = `
     <defs>
       <marker id="arrowhead" markerWidth="8" markerHeight="5" refX="8" refY="2.5" orient="auto">
-        <polygon points="0 0, 8 2.5, 0 5" fill="red" />
+        <polygon points="0 0, 8 2.5, 0 5" fill="#666" />
       </marker>
     </defs>
   `
@@ -174,7 +174,7 @@ function drawAllArrows() {
 		const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 		path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`)
 		path.setAttribute('fill', 'none')
-		path.setAttribute('stroke', 'red')
+		path.setAttribute('stroke', '#666')
 		path.setAttribute('stroke-width', '2')
 		path.setAttribute('marker-end', 'url(#arrowhead)')
 
@@ -216,7 +216,7 @@ onMounted(() => {
 						<g>
 							<circle cx="4" cy="12" r="3" fill="currentColor"/>
 							<circle cx="20" cy="12" r="3" fill="currentColor"/>
-							<animateTransform 
+							<animateTransform
 								attributeName="transform"
 								type="rotate"
 								dur="3s"
@@ -270,24 +270,23 @@ onMounted(() => {
 	;(timeline as any).redraw?.()
 
 	// selection ******************************
-	timeline.on('select', function (properties) {
+	timeline.on('select', (properties) => {
 		const id = properties.items[0]
+		nextTick(() => {
+			// снимаем выделение и подсветку со всех событий
+			document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
+				el.classList.remove('vis-selected', 'highlight')
+			})
 
-		// снимаем выделение со всех событий
-		document.querySelectorAll('.vis-item').forEach((el) => el.classList.remove('vis-selected'))
+			// навешиваем vis-selected только на выбранный элемент
+			if (id != null) {
+				const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
+				el?.classList.add('vis-selected')
 
-		// ставим выделение только на выбранный элемент
-		if (id != null) {
-			const el = document.querySelector(`.vis-item.item-${id}`)
-			if (el) {
-				el.classList.add('vis-selected')
+				const item = items.get(id) as MyEvent | undefined
+				if (item) emit('select', item.name)
 			}
-
-			const item = items.get(id) as unknown as MyEvent | undefined
-			if (item) {
-				emit('select', item.name)
-			}
-		}
+		})
 	})
 })
 
@@ -307,23 +306,26 @@ watch(
 	(newVal: string) => {
 		// снимем классы selected/choosen со всех событий
 		const myitems = document.querySelectorAll('.vis-item')
-		myitems.forEach((el) => {
-			el.classList.remove('vis-selected')
-		})
+		nextTick(() => {
+			myitems.forEach((el) => {
+				el.classList.remove('vis-selected')
+				el.classList.remove('highlight')
+			})
 
-		// назначим класс только событию с совпадающим sideId
-		if (newVal) {
-			const selitems = events.filter((el) => el.sideId == newVal)
+			// назначим класс только событию с совпадающим sideId
+			if (newVal) {
+				const selitems = events.filter((el) => el.sideId == newVal)
 
-			if (selitems.length) {
-				selitems.forEach((el) => {
-					const target = document.querySelector(`.item-${el.id}`)
-					if (target) {
-						target.classList.add('vis-selected')
-					}
-				})
+				if (selitems.length) {
+					selitems.forEach((el) => {
+						const target = document.querySelector(`.item-${el.id}`)
+						if (target) {
+							target.classList.add('highlight')
+						}
+					})
+				}
 			}
-		}
+		})
 	},
 	{ immediate: true }
 )
@@ -334,7 +336,7 @@ watch(
   .timeline(ref="timelineEl")
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .wrapper {
 	background: #fff;
 	position: relative;
@@ -342,42 +344,43 @@ watch(
 :deep(.vis-item .vis-item-overflow) {
 	overflow: visible;
 }
-:deep(.vis-item.vis-range) {
-	background: #cce669;
-	border-color: green;
-	&.item-5 {
-		background: var(--dvblue);
-		border-color: blue;
-	}
+
+:deep(.vis-item) {
+	background: #dedede;
+	border-color: #bbb;
 	&.vis-selected {
-		background: var(--selection);
-		border: 1px solid var(--dark2);
-		box-shadow: var(--shad0);
+		background: #fff;
+		border: 1px solid var(--violet);
+		outline: 2px solid var(--violet);
+		filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.75)); /* опционально: внешний «хайлайт» */
 		.event-name {
 			font-weight: bold;
 		}
 	}
-}
-
-:deep(.vis-item.vis-box) {
-	background: #cce669;
-	border-color: green;
-	&.vis-selected {
-		background: var(--selection);
-		border: 1px solid var(--dark2);
-		box-shadow: var(--shad0);
-		.event-name {
-			font-weight: bold;
-		}
+	&.highlight {
+		background: #fff;
+		border-color: transparent;
+		outline: 3px dashed var(--dvviolet);
+		box-shadow: 0 0 15px var(--dvviolet); /* лёгкое свечение */
 	}
 }
 
-:deep(.vis-item.vis-selected) {
-	border-color: var(--dark2);
-	background-color: var(--dark2);
+/* Подсветка текста внутри */
+:deep(.vis-item.vis-selected .event-name),
+:deep(.vis-item.vis-box.vis-selected .event-name) {
+	font-weight: bold;
 }
 
-/* Можно стилизовать .vis-item .vis-item-content, если надо центрировать текст и т.д. */
+:deep(.vis-item.vis-point.vis-selected) {
+	background: #fff;
+	border: 1px solid var(--violet);
+	outline: 2px solid var(--violet);
+	filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.75)); /* опционально: внешний «хайлайт» */
+	.event-name {
+		font-weight: bold;
+	}
+}
+
 :deep(.vis-item .event-box) {
 	font-size: 12px;
 	line-height: 1.2;
@@ -397,9 +400,5 @@ watch(
 }
 :deep(.ic) {
 	font-size: 0.95rem;
-}
-:deep(.start) {
-	background: #cce669;
-	border-color: green;
 }
 </style>
