@@ -17,6 +17,7 @@ const events: MyEvent[] = [
 		fio: 'Соколов С.П.',
 		start: new Date(2025, 8, 22, 12, 0, 0),
 		end: new Date(2025, 8, 24),
+		type: 'range',
 	},
 	{
 		id: 3,
@@ -26,6 +27,7 @@ const events: MyEvent[] = [
 		name: 'Исправить заявку',
 		start: new Date(2025, 8, 24),
 		end: new Date(2025, 8, 26),
+		type: 'range',
 	},
 	{
 		id: 4,
@@ -35,6 +37,7 @@ const events: MyEvent[] = [
 		fio: 'Соколов С.П.',
 		start: new Date(2025, 8, 26),
 		end: new Date(2025, 8, 28),
+		type: 'range',
 	},
 	{
 		id: 5,

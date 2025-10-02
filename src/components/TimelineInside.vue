@@ -212,24 +212,23 @@ onMounted(() => {
 	// selection ******************************
 	timeline.on('select', (properties) => {
 		const id = properties.items[0]
-		nextTick(() => {
-			// снимаем выделение и подсветку со всех событий
-			document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
-				el.classList.remove('vis-selected', 'highlight')
-			})
-
-			// навешиваем vis-selected только на выбранный элемент
-			if (id != null) {
-				const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-				el?.classList.add('vis-selected')
-
-				const item = items.get(id) as unknown as MyEvent | undefined
-				if (item) {
-					emit('select', item.name)
-					selectionStore.selectTimeline(item)
-				}
-			}
+		// снимаем выделение и подсветку со всех событий
+		document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
+			el.classList.remove('vis-selected', 'highlight')
 		})
+
+		// навешиваем vis-selected только на выбранный элемент
+		if (id != null) {
+			const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
+			el?.classList.add('vis-selected')
+
+			const item = items.get(id) as unknown as MyEvent | undefined
+			if (item) {
+				emit('select', item.name)
+				// console.log(item)
+				selectionStore.selectTimeline(item)
+			}
+		}
 	})
 })
 
@@ -276,7 +275,7 @@ watch(
 
 <template lang="pug">
 .wrapper(ref="wrapper")
-  .timeline(ref="timelineEl")
+	.timeline(ref="timelineEl")
 </template>
 
 <style scoped lang="scss">

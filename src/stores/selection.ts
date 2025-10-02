@@ -1,14 +1,14 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 export type BpmnSelection = {
-	type: 'bpmn'
+	kind: 'bpmn'
 	id: string
 	element: any // можешь уточнить тип ModdleElement
 }
 
 export type TimelineSelection = {
-	type: 'timeline'
+	kind: 'timeline'
 	id: string
 	event: any // твой MyEvent
 }
@@ -22,12 +22,16 @@ export const useSelectionStore = defineStore('selection', () => {
 		current.value = null
 	}
 
-	function selectBpmn(element: any) {
-		current.value = { type: 'bpmn', id: element.id, element }
+	const selectBpmn = (element: any) => {
+		current.value = { kind: 'bpmn', id: element.id, element }
 	}
 
-	function selectTimeline(event: any) {
-		current.value = { type: 'timeline', id: event.id, event }
+	const selectTimeline = (event: any) => {
+		// console.log(event)
+		// current.value = { type: 'timeline', id: event.id, event }
+		// console.log('event.id =', event.id, event)
+		current.value = { kind: 'timeline', id: event.id, event }
+		// console.log('current set ->', current.value)
 	}
 
 	return {

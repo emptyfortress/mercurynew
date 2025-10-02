@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import TokenSim from '@/components/TokenSim.vue'
 import TimelineInside from '@/components/TimelineInside.vue'
 
-const splitter = ref(25)
+const splitter = ref(27)
 
 const selection = ref<string>('')
 const selection1 = ref<string>('')

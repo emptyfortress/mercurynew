@@ -46,8 +46,6 @@ const close = () => {
 		})
 	})
 }
-
-// const selectionActive = ref(false)
 </script>
 
 <template lang="pug">
@@ -64,14 +62,11 @@ const close = () => {
 	CloseButton(v-model="panels.right0" @close="close")
 
 	TopButton(v-model="panels.right0" @close='close')
-
-	<div v-if="current">
-		<div v-if="current.type === 'bpmn'" :element="current.element">bpmn</div>
-		<div v-else-if="current.type === 'timeline'" :event="current.event" >time</div>
-	</div>
-	<div v-else>
-		<em>Ничего не выбрано</em>
-	</div>
+	div(v-if="current")
+		div(v-if="current?.kind === 'bpmn'" :element="current.element") bpmn
+		div(v-else-if="current?.kind === 'timeline'" :event="current.event") time
+	div(v-else)
+		em Ничего не выбрано
 
 	// NodeProps(v-if='panels.right0 && !!props.show'
 	// 	v-motion
