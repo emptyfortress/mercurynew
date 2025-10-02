@@ -18,7 +18,7 @@ export type Selection = BpmnSelection | TimelineSelection | null
 export const useSelectionStore = defineStore('selection', () => {
 	const current = ref<Selection>(null)
 
-	function clear() {
+	const clear = () => {
 		current.value = null
 	}
 

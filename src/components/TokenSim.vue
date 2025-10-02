@@ -36,6 +36,9 @@ const nodeMap: Record<string, string> = {
 
 const emit = defineEmits(['select'])
 
+let onElementClick: any
+let onSelectionChanged: any
+
 onMounted(async () => {
 	if (!container.value) return
 
@@ -50,22 +53,60 @@ onMounted(async () => {
 		const eventBus = viewer.value.get('eventBus') as any
 		const selectionService = viewer.value.get('selection') as any
 
-		// обработка клика пользователя
-		eventBus.on('element.click', (e: any) => {
+		// helper — определяем, является ли элемент "Collaboration" (пустым местом)
+		const isCollaboration = (el: any) => {
+			const id = el.id ?? el.businessObject?.id ?? ''
+			const boType = el.businessObject?.$type ?? el.type ?? ''
+			return boType === 'bpmn:Collaboration' || /collaboration/i.test(id)
+		}
+
+		// обработчик клика на элемент — делегируем выбор selectionService (selection.changed сработает)
+		onElementClick = (e: any) => {
 			const clickedId = e.element?.id
 			if (!clickedId) return
 
-			// снимаем подсветку props.selection
+			// снимаем подсветку props.selection (если была)
 			if (currentHighlightedId) {
 				unhighlightByDom(currentHighlightedId)
 				currentHighlightedId = null
 			}
 
-			// выделяем элемент кликом пользователя
+			// делегируем выбор в сервис — это вызовет selection.changed
 			selectionService.select([e.element])
-			emit('select', e.element.businessObject)
-			selectionStore.selectBpmn(e.element)
-		})
+		}
+
+		// обработчик изменения selection — центр синхронизации со store
+		onSelectionChanged = (e: any) => {
+			const sel = e.newSelection || []
+
+			// если выбор пустой или выбран "Collaboration"
+			const isEmpty = sel.length === 0 || (sel.length === 1 && isCollaboration(sel[0]))
+
+			if (isEmpty) {
+				// вызываем select только если текущий selection реально не пустой
+				const currentSelection = selectionService.get() || []
+				if (currentSelection.length > 0) {
+					selectionService.select([])
+				}
+
+				if (currentHighlightedId) {
+					unhighlightByDom(currentHighlightedId)
+					currentHighlightedId = null
+				}
+				selectionStore.clear()
+				emit('select', '')
+				return
+			}
+
+			// обычный случай — выбран реальный элемент
+			const element = sel[0]
+			selectionStore.selectBpmn(element.businessObject)
+			emit('select', element.businessObject)
+		}
+
+		// регистрация обработчиков
+		eventBus.on('element.click', onElementClick)
+		eventBus.on('selection.changed', onSelectionChanged)
 	} catch (err) {
 		console.error('Ошибка при загрузке BPMN:', err)
 	}
@@ -73,6 +114,18 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
 	if (viewer.value) {
+		const eventBus = viewer.value.get('eventBus') as any
+		if (eventBus) {
+			// некоторые версии bpmn-js используют off, другие — removeListener
+			if (typeof eventBus.off === 'function') {
+				eventBus.off('element.click', onElementClick)
+				eventBus.off('selection.changed', onSelectionChanged)
+			} else if (typeof eventBus.removeListener === 'function') {
+				eventBus.removeListener('element.click', onElementClick)
+				eventBus.removeListener('selection.changed', onSelectionChanged)
+			}
+		}
+
 		viewer.value.destroy()
 		viewer.value = null
 	}
