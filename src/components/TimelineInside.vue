@@ -283,7 +283,7 @@ onMounted(() => {
 				const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
 				el?.classList.add('vis-selected')
 
-				const item = items.get(id) as MyEvent | undefined
+				const item = items.get(id) as unknown as MyEvent | undefined
 				if (item) emit('select', item.name)
 			}
 		})
