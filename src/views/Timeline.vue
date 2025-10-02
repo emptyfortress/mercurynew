@@ -40,13 +40,18 @@ const stopRight0 = async () => {
 	}, 400)
 	stop()
 }
+
+const nodeSelected = ref(null)
+const selectNode = (e: any) => {
+	nodeSelected.value = e
+}
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.edito(ref='editor1')
-		HodIspMain
-		InfoButton(@activate='startRight0' @stop='stopRight0')
+		HodIspMain(@selectNode='selectNode')
+		InfoButton(@activate='startRight0' @stop='stopRight0' :show='nodeSelected')
 
 </template>
 

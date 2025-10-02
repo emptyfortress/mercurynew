@@ -2,13 +2,18 @@
 import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { usePanels } from '@/stores/panels'
-// import DiagProps from '@/components/panels/DiagProps.vue'
+// import NodeProps from '@/components/panels/NodeProps.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
+import { useSelectionStore } from '@/stores/selection'
+import { storeToRefs } from 'pinia'
 
-const router = useRouter()
+const selectionStore = useSelectionStore()
+const { current } = storeToRefs(selectionStore)
+
+// const router = useRouter()
 const panels = usePanels()
 
 gsap.registerPlugin(Flip)
@@ -42,9 +47,7 @@ const close = () => {
 	})
 }
 
-const next = () => {
-	router.push('/form')
-}
+// const selectionActive = ref(false)
 </script>
 
 <template lang="pug">
@@ -62,12 +65,20 @@ const next = () => {
 
 	TopButton(v-model="panels.right0" @close='close')
 
-	// DiagProps(v-if='panels.right0'
+	<div v-if="current">
+		<div v-if="current.type === 'bpmn'" :element="current.element">bpmn</div>
+		<div v-else-if="current.type === 'timeline'" :event="current.event" >time</div>
+	</div>
+	<div v-else>
+		<em>Ничего не выбрано</em>
+	</div>
+
+	// NodeProps(v-if='panels.right0 && !!props.show'
 	// 	v-motion
 	// 	:initial='{ opacity: 0 }'
 	// 	:enter='{ opacity: 1 }'
 	// 	:delay='1000'
-	// 	@next="next") 
+	// 	) 
 
 </template>
 

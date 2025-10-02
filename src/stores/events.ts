@@ -1,0 +1,52 @@
+const events: MyEvent[] = [
+	{
+		id: 1,
+		sideId: 'Event_1t7b10m',
+		role: 'Инициатор',
+		name: 'Создал заявку',
+		fio: 'Орлов П.С.',
+		start: new Date(2025, 8, 22),
+		type: 'point',
+		className: 'start',
+	},
+	{
+		id: 2,
+		sideId: 'Activity_13ysreu',
+		role: 'Руководитель',
+		name: 'Согласовать заявку',
+		fio: 'Соколов С.П.',
+		start: new Date(2025, 8, 22, 12, 0, 0),
+		end: new Date(2025, 8, 24),
+	},
+	{
+		id: 3,
+		sideId: 'Activity_0kpt2qn',
+		role: 'Инициатор',
+		fio: 'Орлов П.С.',
+		name: 'Исправить заявку',
+		start: new Date(2025, 8, 24),
+		end: new Date(2025, 8, 26),
+	},
+	{
+		id: 4,
+		sideId: 'Activity_13ysreu',
+		role: 'Руководитель',
+		name: 'Согласовать заявку',
+		fio: 'Соколов С.П.',
+		start: new Date(2025, 8, 26),
+		end: new Date(2025, 8, 28),
+	},
+	{
+		id: 5,
+		sideId: 'Activity_0vjxzxe',
+		role: 'Рассматривающий',
+		fio: 'Воронин A.A.',
+		name: 'Рассмотреть заявку',
+		start: new Date(2025, 8, 29, 15, 0, 0),
+		end: new Date(),
+		type: 'range',
+		current: true,
+	},
+]
+
+export { events }

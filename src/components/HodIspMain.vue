@@ -12,8 +12,11 @@ const select = (e: string) => {
 	selection.value = e
 }
 
+const emit = defineEmits(['selectNode'])
+
 const select1 = (e: any) => {
-	selection1.value = e
+	selection1.value = e.id
+	emit('selectNode', e)
 }
 </script>
 

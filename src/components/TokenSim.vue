@@ -3,6 +3,7 @@ import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
 import { highlightByDom, unhighlightByDom } from '@/lib/selectNewHelper'
 import zay from '@/stores/zayavka1.bpmn?raw'
+import { useSelectionStore } from '@/stores/selection'
 
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
@@ -15,6 +16,7 @@ const props = defineProps({
 	},
 })
 
+const selectionStore = useSelectionStore()
 const container = ref<HTMLDivElement | null>(null)
 const viewer = ref<SelectableViewer | null>(null)
 
@@ -61,7 +63,8 @@ onMounted(async () => {
 
 			// выделяем элемент кликом пользователя
 			selectionService.select([e.element])
-			emit('select', e.element.id)
+			emit('select', e.element.businessObject)
+			selectionStore.selectBpmn(e.element)
 		})
 	} catch (err) {
 		console.error('Ошибка при загрузке BPMN:', err)
@@ -163,7 +166,6 @@ watch(
 	fill: none !important;
 	stroke-dasharray: 8 4; /* длина штриха 8, пробел 4 */
 	animation: dash-move 1s linear infinite; /* бесконечная анимация */
-	// filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.75)); /* опционально: внешний «хайлайт» */
 }
 
 /* Анимация бегущего пунктира */

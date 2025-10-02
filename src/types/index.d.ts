@@ -142,4 +142,17 @@ interface PredCols {
 	sortable: boolean
 }
 
+interface MyEvent {
+	id: number
+	sideId: string
+	role: string
+	name: string
+	fio: string
+	start: Date
+	end?: Date
+	type?: string
+	current?: boolean
+	className?: string
+}
+
 type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'

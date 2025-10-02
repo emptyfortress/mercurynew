@@ -4,19 +4,8 @@ import { DataSet } from 'vis-data'
 import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
 import { centerWithPadding } from '@/utils/utils'
-
-interface MyEvent {
-	id: number
-	sideId: string
-	role: string
-	name: string
-	fio: string
-	start: Date
-	end?: Date
-	type?: string
-	current?: boolean
-	className?: string
-}
+import { events } from '@/stores/events'
+import { useSelectionStore } from '@/stores/selection'
 
 const props = defineProps({
 	selection: {
@@ -26,56 +15,7 @@ const props = defineProps({
 	},
 })
 
-const events: MyEvent[] = [
-	{
-		id: 1,
-		sideId: 'Event_1t7b10m',
-		role: 'Инициатор',
-		name: 'Создал заявку',
-		fio: 'Орлов П.С.',
-		start: new Date(2025, 8, 22),
-		type: 'point',
-		className: 'start',
-	},
-	{
-		id: 2,
-		sideId: 'Activity_13ysreu',
-		role: 'Руководитель',
-		name: 'Согласовать заявку',
-		fio: 'Соколов С.П.',
-		start: new Date(2025, 8, 22, 12, 0, 0),
-		end: new Date(2025, 8, 24),
-	},
-	{
-		id: 3,
-		sideId: 'Activity_0kpt2qn',
-		role: 'Инициатор',
-		fio: 'Орлов П.С.',
-		name: 'Исправить заявку',
-		start: new Date(2025, 8, 24),
-		end: new Date(2025, 8, 26),
-	},
-	{
-		id: 4,
-		sideId: 'Activity_13ysreu',
-		role: 'Руководитель',
-		name: 'Согласовать заявку',
-		fio: 'Соколов С.П.',
-		start: new Date(2025, 8, 26),
-		end: new Date(2025, 8, 27),
-	},
-	{
-		id: 5,
-		sideId: 'Activity_0vjxzxe',
-		role: 'Рассматривающий',
-		fio: 'Воронин A.A.',
-		name: 'Рассмотреть заявку',
-		start: new Date(2025, 8, 29, 15, 0, 0),
-		end: new Date(),
-		type: 'range',
-		current: true,
-	},
-]
+const selectionStore = useSelectionStore()
 
 // Пример зависимостей: стрелки от события -> к событию
 const dependencies: Array<[number, number]> = [
@@ -284,7 +224,10 @@ onMounted(() => {
 				el?.classList.add('vis-selected')
 
 				const item = items.get(id) as unknown as MyEvent | undefined
-				if (item) emit('select', item.name)
+				if (item) {
+					emit('select', item.name)
+					selectionStore.selectTimeline(item)
+				}
 			}
 		})
 	})
