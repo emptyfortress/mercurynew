@@ -138,17 +138,32 @@ watch(
 		if (!viewer.value) return
 		const selectionService = viewer.value.get('selection') as any
 
-		// сбрасываем выделение пользователя
-		selectionService.select([])
+		// новый, безопасный вариант
+		if (!newVal) {
+			// если пришло пустое значение — явно очистим selectionService
+			try {
+				selectionService.select([])
+			} catch (err) {
+				// ignore
+			}
 
-		// снимаем старую подсветку
+			if (currentHighlightedId) {
+				unhighlightByDom(currentHighlightedId)
+				currentHighlightedId = null
+			}
+
+			// и больше ничего — это реальная очистка
+			return
+		}
+
+		// если newVal задан — НЕ сбрасываем selectionService через select([]),
+		// а только управляем нашим programmatic highlight (unhighlight/highlight)
 		if (currentHighlightedId) {
 			unhighlightByDom(currentHighlightedId)
 			currentHighlightedId = null
 		}
 
-		// подсвечиваем новый элемент по name
-		if (newVal && nodeMap[newVal]) {
+		if (nodeMap[newVal]) {
 			const nodeId = nodeMap[newVal]
 			highlightByDom(nodeId)
 			currentHighlightedId = nodeId

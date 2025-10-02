@@ -212,24 +212,49 @@ onMounted(() => {
 	// selection ******************************
 	timeline.on('select', (properties) => {
 		const id = properties.items[0]
+
 		// снимаем выделение и подсветку со всех событий
 		document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
 			el.classList.remove('vis-selected', 'highlight')
 		})
 
-		// навешиваем vis-selected только на выбранный элемент
 		if (id != null) {
+			// если выбрано событие
 			const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
 			el?.classList.add('vis-selected')
 
 			const item = items.get(id) as unknown as MyEvent | undefined
 			if (item) {
 				emit('select', item.name)
-				// console.log(item)
 				selectionStore.selectTimeline(item)
 			}
+		} else {
+			// если кликнули в пустоту → очищаем выбор
+			selectionStore.clear()
+			emit('select', '')
 		}
 	})
+
+	// timeline.on('select', (properties) => {
+	// 	const id = properties.items[0]
+	// 	// снимаем выделение и подсветку со всех событий
+	// 	document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
+	// 		el.classList.remove('vis-selected', 'highlight')
+	// 	})
+	//
+	// 	// навешиваем vis-selected только на выбранный элемент
+	// 	if (id != null) {
+	// 		const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
+	// 		el?.classList.add('vis-selected')
+	//
+	// 		const item = items.get(id) as unknown as MyEvent | undefined
+	// 		if (item) {
+	// 			emit('select', item.name)
+	// 			// console.log(item)
+	// 			selectionStore.selectTimeline(item)
+	// 		}
+	// 	}
+	// })
 })
 
 const emit = defineEmits(['select'])

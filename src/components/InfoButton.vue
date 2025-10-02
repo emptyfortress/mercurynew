@@ -62,9 +62,12 @@ const close = () => {
 	CloseButton(v-model="panels.right0" @close="close")
 
 	TopButton(v-model="panels.right0" @close='close')
-	div(v-if="current")
-		div(v-if="current?.kind === 'bpmn'" :element="current.element") bpmn
-		div(v-else-if="current?.kind === 'timeline'" :event="current.event") time
+
+	div(v-if="current.kind !== 'none'")
+		div(v-if="current.kind === 'bpmn'" :element="current.element")
+			| bpmn
+		div(v-else-if="current.kind === 'timeline'" :event="current.event")
+			| time
 	div(v-else)
 		em Ничего не выбрано
 

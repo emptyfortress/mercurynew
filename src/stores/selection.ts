@@ -13,13 +13,17 @@ export type TimelineSelection = {
 	event: any // твой MyEvent
 }
 
-export type Selection = BpmnSelection | TimelineSelection | null
+export type NoneSelection = {
+	kind: 'none'
+}
+
+export type Selection = BpmnSelection | TimelineSelection | NoneSelection
 
 export const useSelectionStore = defineStore('selection', () => {
-	const current = ref<Selection>(null)
+	const current = ref<Selection>({ kind: 'none' })
 
 	const clear = () => {
-		current.value = null
+		current.value = { kind: 'none' }
 	}
 
 	const selectBpmn = (element: any) => {
@@ -27,11 +31,7 @@ export const useSelectionStore = defineStore('selection', () => {
 	}
 
 	const selectTimeline = (event: any) => {
-		// console.log(event)
-		// current.value = { type: 'timeline', id: event.id, event }
-		// console.log('event.id =', event.id, event)
 		current.value = { kind: 'timeline', id: event.id, event }
-		// console.log('current set ->', current.value)
 	}
 
 	return {
