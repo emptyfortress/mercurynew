@@ -65,9 +65,11 @@ const close = () => {
 
 	div(v-if="current.kind !== 'none'")
 		div(v-if="current.kind === 'bpmn'" :element="current.element")
-			| bpmn
+			h6 bpmn
+			pre {{ selectionStore.current.element}}
 		div(v-else-if="current.kind === 'timeline'" :event="current.event")
-			| time
+			h6 timeline
+			pre {{ selectionStore.current.event}}
 	div(v-else)
 		em Ничего не выбрано
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch, nextTick } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
 import { highlightByDom, unhighlightByDom } from '@/lib/selectNewHelper'
 import zay from '@/stores/zayavka1.bpmn?raw'
@@ -139,22 +139,24 @@ watch(
 		const selectionService = viewer.value.get('selection') as any
 
 		// новый, безопасный вариант
-		if (!newVal) {
-			// если пришло пустое значение — явно очистим selectionService
-			try {
-				selectionService.select([])
-			} catch (err) {
-				// ignore
-			}
+		nextTick(() => {
+			if (!newVal) {
+				// если пришло пустое значение — явно очистим selectionService
+				try {
+					selectionService.select([])
+				} catch (err) {
+					// ignore
+				}
 
-			if (currentHighlightedId) {
-				unhighlightByDom(currentHighlightedId)
-				currentHighlightedId = null
-			}
+				if (currentHighlightedId) {
+					unhighlightByDom(currentHighlightedId)
+					currentHighlightedId = null
+				}
 
-			// и больше ничего — это реальная очистка
-			return
-		}
+				// и больше ничего — это реальная очистка
+				return
+			}
+		})
 
 		// если newVal задан — НЕ сбрасываем selectionService через select([]),
 		// а только управляем нашим programmatic highlight (unhighlight/highlight)

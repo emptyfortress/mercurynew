@@ -27,6 +27,7 @@ export const useSelectionStore = defineStore('selection', () => {
 	}
 
 	const selectBpmn = (element: any) => {
+		console.log(element)
 		current.value = { kind: 'bpmn', id: element.id, element }
 	}
 
