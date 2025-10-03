@@ -313,8 +313,8 @@ watch(
 }
 
 :deep(.vis-item) {
-	background: #dedede;
-	border-color: #bbb;
+	background: var(--node);
+	border-color: var(--nodeborder);
 	&.vis-selected {
 		background: #fff;
 		border: 1px solid var(--violet);
