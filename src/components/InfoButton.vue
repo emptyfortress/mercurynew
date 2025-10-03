@@ -63,22 +63,23 @@ const close = () => {
 
 	TopButton(v-model="panels.right0" @close='close')
 
-	div(v-if="current.kind !== 'none'")
+	div(v-if="panels.right0 && current.kind !== 'none'"
+		v-motion
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
+		:delay='600')
 		div(v-if="current.kind === 'bpmn'" :element="current.element")
 			h6 bpmn
 			pre {{ selectionStore.current.element}}
 		div(v-else-if="current.kind === 'timeline'" :event="current.event")
 			h6 timeline
 			pre {{ selectionStore.current.event}}
-	div(v-else)
+	div(v-if="panels.right0 && current.kind == 'none'"
+		v-motion
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
+		:delay='600')
 		em Ничего не выбрано
-
-	// NodeProps(v-if='panels.right0 && !!props.show'
-	// 	v-motion
-	// 	:initial='{ opacity: 0 }'
-	// 	:enter='{ opacity: 1 }'
-	// 	:delay='1000'
-	// 	) 
 
 </template>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, watch, nextTick } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
-import { highlightByDom, unhighlightByDom } from '@/lib/selectNewHelper'
+import { highlightByDom, unhighlightByDom, highlightNodes } from '@/lib/selectNewHelper'
 import zay from '@/stores/zayavka1.bpmn?raw'
 import { useSelectionStore } from '@/stores/selection'
 
@@ -28,10 +28,10 @@ const nodeMap: Record<string, string> = {
 	'Создал заявку': 'Event_1t7b10m',
 	'Согласовать заявку': 'Activity_13ysreu',
 	'Исправить заявку': 'Activity_0kpt2qn',
-	'Обработать отказ': 'Activity_0obo0kc',
-	'Принять результаты': 'Activity_1rqtd62',
 	'Рассмотреть заявку': 'Activity_0vjxzxe',
-	'Исполнить заявку': 'Activity_1xr02p6',
+	// 'Обработать отказ': 'Activity_0obo0kc',
+	// 'Принять результаты': 'Activity_1rqtd62',
+	// 'Исполнить заявку': 'Activity_1xr02p6',
 }
 
 const emit = defineEmits(['select'])
@@ -45,7 +45,8 @@ onMounted(async () => {
 	viewer.value = new SelectableViewer({ container: container.value })
 
 	try {
-		await viewer.value.importXML(zay)
+		void (await viewer.value.importXML(zay))
+		highlightNodes(viewer.value, nodeMap)
 
 		const canvas: any = viewer.value.get('canvas')
 		canvas.zoom('fit-viewport', 'auto')
@@ -204,6 +205,7 @@ watch(
 	stroke: var(--violet) !important;
 	stroke-width: 4 !important;
 	vector-effect: non-scaling-stroke;
+	fill: #ffffff !important;
 	filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.55));
 }
 
