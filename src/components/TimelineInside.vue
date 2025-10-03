@@ -152,10 +152,10 @@ onMounted(() => {
 				return `
 				<div class="event-box current">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-						<circle cx="12" cy="12" r="3" fill="#7775ff"/>
+						<circle cx="12" cy="12" r="3" fill="currentColor"/>
 						<g>
-							<circle cx="4" cy="12" r="3" fill="#7775ff"/>
-							<circle cx="20" cy="12" r="3" fill="#7775ff"/>
+							<circle cx="4" cy="12" r="3" fill="currentColor"/>
+							<circle cx="20" cy="12" r="3" fill="currentColor"/>
 							<animateTransform
 								attributeName="transform"
 								type="rotate"
