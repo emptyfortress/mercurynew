@@ -2,9 +2,9 @@
 import { ref, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-// import { useRouter } from 'vue-router'
 import { usePanels } from '@/stores/panels'
-// import NodeProps from '@/components/panels/NodeProps.vue'
+import BpmnInfo from '@/components/panels/BpmnInfo.vue'
+import TimelineInfo from '@/components/panels/TimelineInfo.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
 import { useSelectionStore } from '@/stores/selection'
@@ -13,14 +13,11 @@ import { storeToRefs } from 'pinia'
 const selectionStore = useSelectionStore()
 const { current } = storeToRefs(selectionStore)
 
-// const router = useRouter()
 const panels = usePanels()
 
 gsap.registerPlugin(Flip)
 
 const emit = defineEmits(['activate', 'stop'])
-
-// const expanded = ref<boolean>(false)
 
 const expand = () => {
 	const state = Flip.getState('.button')
@@ -63,23 +60,33 @@ const close = () => {
 
 	TopButton(v-model="panels.right0" @close='close')
 
-	div(v-if="panels.right0 && current.kind !== 'none'"
+	div(v-if="panels.right0 && !!current"
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
 		:delay='600')
-		div(v-if="current.kind === 'bpmn'" :element="current.element")
-			h6 bpmn
-			pre {{ selectionStore.current.element}}
-		div(v-else-if="current.kind === 'timeline'" :event="current.event")
-			h6 timeline
-			pre {{ selectionStore.current.event}}
-	div(v-if="panels.right0 && current.kind == 'none'"
+
+		BpmnInfo(v-if="current.kind === 'bpmn'")
+		TimelineInfo(v-else-if="current.kind === 'timeline'")
+
+	div(v-if="panels.right0 && !current"
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
 		:delay='600')
-		em Ничего не выбрано
+
+		.grid
+			.zag Ход процесса
+			label Процесс начат:
+			div 22.09.25 13:07
+			label Инициатор:
+			div Орлов П.С.
+			label Длительность:
+			div 14 дней
+			label Текущий этап:
+			.link Рассмотреть заявку
+			label Просрочено:
+			.link1 Согласовать заявку
 
 </template>
 
@@ -106,5 +113,30 @@ const close = () => {
 		border-radius: 6px;
 		cursor: default;
 	}
+}
+.grid {
+	padding: 1rem;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	justify-items: start;
+	align-items: center;
+	column-gap: 1rem;
+	row-gap: 0.5rem;
+}
+label {
+	color: #666;
+}
+.zag {
+	grid-column: 1/-1;
+	width: 100%;
+	font-weight: 600;
+}
+.link {
+	color: $primary;
+	text-decoration: underline;
+}
+.link1 {
+	color: $negative;
+	text-decoration: underline;
 }
 </style>

@@ -64,7 +64,16 @@ onMounted(async () => {
 		// обработчик клика на элемент — делегируем выбор selectionService (selection.changed сработает)
 		onElementClick = (e: any) => {
 			const clickedId = e.element?.id
+			const el = e.element
 			if (!clickedId) return
+			if (
+				el.type !== 'bpmn:Task' &&
+				el.type !== 'bpmn:StartEvent' &&
+				el.type !== 'bpmn:IntermediateThrowEvent'
+			) {
+				selectionService.select([]) // снимаем выбор
+				return
+			}
 
 			// снимаем подсветку props.selection (если была)
 			if (currentHighlightedId) {

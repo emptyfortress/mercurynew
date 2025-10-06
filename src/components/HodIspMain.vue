@@ -3,13 +3,14 @@ import { ref } from 'vue'
 import TokenSim from '@/components/TokenSim.vue'
 import TimelineInside from '@/components/TimelineInside.vue'
 
-const splitter = ref(27)
+const splitter = ref(23)
 
 const selection = ref<string>('')
 const selection1 = ref<string>('')
 
 const select = (e: string) => {
 	selection.value = e
+	emit('selectNode', e)
 }
 
 const emit = defineEmits(['selectNode'])
