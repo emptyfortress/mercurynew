@@ -6,6 +6,7 @@ export type BpmnSelection = {
 	id: string
 	type: string
 	name: string
+	lane?: string
 }
 
 export type TimelineSelection = {
@@ -33,11 +34,13 @@ export const useSelectionStore = defineStore('selection', () => {
 	}
 
 	const selectBpmn = (element: any) => {
+		console.log(element)
 		current.value = {
 			kind: 'bpmn',
 			id: element.id,
 			type: 'bpmn:Task',
 			name: element.name,
+			lane: element.lanes[0].name,
 		}
 	}
 

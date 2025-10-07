@@ -93,13 +93,19 @@ const selNow = (id: number) => {
 			.zag Ход процесса
 			label Процесс начат:
 			div 22.09.25 13:07
+			label Процесс длится:
+			div 14 дней 7 часов
 			label Инициатор:
 			div Орлов П.С.
-			label Длительность:
-			div 14 дней
+			label Всего этапов:
+			div 6
+			label Завершено этапов:
+			div 3
+			label Совершено циклов:
+			div 2
 			label Текущий этап:
 			.link(@click='selNow(5)') Рассмотреть заявку
-			label Просрочено:
+			label Просрочены этапы:
 			.link1(@click='selNow(2)') Согласовать заявку
 
 </template>

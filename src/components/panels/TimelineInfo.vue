@@ -29,24 +29,28 @@ const decision = computed(() => {
 		}
 	}
 })
+
+const diff = computed(() => {
+	return date.getDateDiff(timeline.value?.end, timeline.value?.start, 'hours')
+})
 </script>
 
 <template lang="pug">
 .grid
-	.zag История
-	label id:
-	div {{timeline?.id}}
-	label Исполнитель:
-	div {{timeline?.fio}}
-	label Роль:
-	div {{timeline?.role}}
+	.zag Событие
 	label Этап:
 	div {{timeline?.name}}
+	label Роль:
+	div {{timeline?.role}}
+	label Исполнитель:
+	div {{timeline?.fio}}
 	label Начато:
 	div {{format(timeline?.start)}}
 	label Завершено:
 	.neg(v-if='current?.id == 5') Задание не завершено
 	div(v-else) {{format(timeline?.end)}}
+	label Длительность:
+	div {{ diff }} часов
 	q-separator(spaced)
 	label Решение:
 	div {{ decision }}

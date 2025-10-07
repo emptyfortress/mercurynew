@@ -16,15 +16,19 @@ const finished = computed(() => {
 
 <template lang="pug">
 .grid
-	.zag Маршрут
-	label id:
-	div {{current?.id}}
+	.zag Этап
+	// label id:
+	// div {{current?.id}}
 	label Тип:
 	div {{current?.type}}
 	label Название:
 	div {{current?.name}}
+	label Роль:
+	div {{current?.lane}}
 	label Завершено:
-	div {{finished}}
+	div
+		span(v-if='current?.id == "Activity_0vjxzxe"') В процессе
+		span(v-else) {{finished}}
 
 </template>
 
