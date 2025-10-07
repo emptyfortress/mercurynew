@@ -19,12 +19,13 @@ const select1 = (e: any) => {
 	selection1.value = e.id
 	emit('selectNode', e)
 }
+const timelineRef = ref<InstanceType<typeof TimelineInside> | null>(null)
 </script>
 
 <template lang="pug">
 q-splitter(v-model="splitter" horizontal)
 	template(v-slot:before)
-		TimelineInside(@select="select" :selection='selection1')
+		TimelineInside(ref='timelineRef' :selection='selection1' @select="select")
 	template(v-slot:after)
 		TokenSim(:selection="selection" @select="select1")
 </template>

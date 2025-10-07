@@ -39,6 +39,17 @@ const emit = defineEmits(['select'])
 let onElementClick: any
 let onSelectionChanged: any
 
+const myIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+	<circle cx="12" cy="12" r="3" fill="currentColor"/>
+	<g>
+		<circle cx="4" cy="12" r="3" fill="currentColor"/>
+		<circle cx="20" cy="12" r="3" fill="currentColor"/>
+		<animateTransform attributeName="transform" calcMode="spline" dur="2s" keySplines=".36,.6,.31,1;.36,.6,.31,1" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12;360 12 12"/>
+	</g>
+</svg>
+`
+
 onMounted(async () => {
 	if (!container.value) return
 
@@ -47,6 +58,22 @@ onMounted(async () => {
 	try {
 		void (await viewer.value.importXML(zay))
 		highlightNodes(viewer.value, nodeMap)
+
+		// add icon
+		// --- вставляем SVG-иконку в конкретный узел ---
+		const elementRegistry = viewer.value.get('elementRegistry')
+		const element = elementRegistry.get('Activity_0vjxzxe')
+
+		if (element) {
+			const gfx = elementRegistry.getGraphics(element)
+			const parser = new DOMParser()
+			const svgDoc = parser.parseFromString(myIcon, 'image/svg+xml')
+			const svgEl = svgDoc.documentElement
+			svgEl.setAttribute('x', String(element.width - 32))
+			svgEl.setAttribute('y', '-3')
+
+			gfx.appendChild(svgEl)
+		}
 
 		const canvas: any = viewer.value.get('canvas')
 		canvas.zoom('fit-viewport', 'auto')

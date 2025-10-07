@@ -131,6 +131,36 @@ function scheduleRedraw() {
 	})
 }
 
+// select by id ***************************
+const selectById = async (id: number) => {
+	if (!timeline) return
+	const item = items.get(id)
+	if (!item) return
+
+	// 1️⃣ Снимаем ВСЕ выделения и подсветки
+	document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
+		el.classList.remove('vis-selected', 'highlight')
+	})
+
+	// 2️⃣ Сообщаем vis.js о новом выборе
+	try {
+		timeline.setSelection([id])
+		timeline.focus(id, { animation: true })
+	} catch (err) {
+		console.warn('Timeline selection error:', err)
+	}
+
+	// 3️⃣ Выделяем элемент вручную (для верности)
+	const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
+	if (el) el.classList.add('vis-selected')
+
+	// 4️⃣ Обновляем store
+	selectionStore.selectTimeline(item)
+
+	// 5️⃣ Эмитим select для родителя
+	emit('select', item.name)
+}
+
 onMounted(() => {
 	if (!timelineEl.value || !wrapper.value) return
 
@@ -234,27 +264,6 @@ onMounted(() => {
 			emit('select', '')
 		}
 	})
-
-	// timeline.on('select', (properties) => {
-	// 	const id = properties.items[0]
-	// 	// снимаем выделение и подсветку со всех событий
-	// 	document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
-	// 		el.classList.remove('vis-selected', 'highlight')
-	// 	})
-	//
-	// 	// навешиваем vis-selected только на выбранный элемент
-	// 	if (id != null) {
-	// 		const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-	// 		el?.classList.add('vis-selected')
-	//
-	// 		const item = items.get(id) as unknown as MyEvent | undefined
-	// 		if (item) {
-	// 			emit('select', item.name)
-	// 			// console.log(item)
-	// 			selectionStore.selectTimeline(item)
-	// 		}
-	// 	}
-	// })
 })
 
 const emit = defineEmits(['select'])
@@ -295,6 +304,21 @@ watch(
 		})
 	},
 	{ immediate: true }
+)
+
+defineExpose({ selectById })
+
+watch(
+	() => selectionStore.programmaticSelectId,
+	async (newId) => {
+		if (newId != null) {
+			await nextTick()
+			selectById(newId)
+			// 💡 после выбора можно сбросить значение,
+			// чтобы не повторять выбор случайно
+			selectionStore.programmaticSelectId = null
+		}
+	}
 )
 </script>
 

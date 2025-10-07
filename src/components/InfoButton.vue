@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
@@ -19,7 +19,10 @@ gsap.registerPlugin(Flip)
 
 const emit = defineEmits(['activate', 'stop'])
 
+const del = ref(false)
+
 const expand = () => {
+	del.value = true
 	const state = Flip.getState('.button')
 	emit('activate')
 	nextTick(() => {
@@ -29,6 +32,9 @@ const expand = () => {
 			delay: 0.2,
 		})
 	})
+	setTimeout(() => {
+		del.value = false
+	}, 800)
 }
 
 const close = () => {
@@ -42,6 +48,14 @@ const close = () => {
 			delay: 0.2,
 		})
 	})
+}
+
+const calcDelay = computed(() => {
+	return del.value ? 600 : 0
+})
+
+const selNow = (id: number) => {
+	selectionStore.selectById(id)
 }
 </script>
 
@@ -64,7 +78,7 @@ const close = () => {
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
-		:delay='600')
+		:delay='calcDelay')
 
 		BpmnInfo(v-if="current.kind === 'bpmn'")
 		TimelineInfo(v-else-if="current.kind === 'timeline'")
@@ -73,7 +87,7 @@ const close = () => {
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
-		:delay='600')
+		:delay='calcDelay')
 
 		.grid
 			.zag Ход процесса
@@ -84,9 +98,9 @@ const close = () => {
 			label Длительность:
 			div 14 дней
 			label Текущий этап:
-			.link Рассмотреть заявку
+			.link(@click='selNow(5)') Рассмотреть заявку
 			label Просрочено:
-			.link1 Согласовать заявку
+			.link1(@click='selNow(2)') Согласовать заявку
 
 </template>
 
@@ -134,9 +148,11 @@ label {
 .link {
 	color: $primary;
 	text-decoration: underline;
+	cursor: pointer;
 }
 .link1 {
 	color: $negative;
 	text-decoration: underline;
+	cursor: pointer;
 }
 </style>

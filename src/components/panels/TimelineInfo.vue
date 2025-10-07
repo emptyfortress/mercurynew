@@ -16,17 +16,18 @@ const format = (val: Date) => {
 }
 
 const decision = computed(() => {
-	switch (current.value.id) {
-		case 5:
-			return 'Решение не принято'
-		case 4:
-			return 'На рассмотрение'
-		case 2:
-			return 'На исправление'
-		default:
-			return 'На согласование'
+	if (current.value) {
+		switch (current.value.id) {
+			case 5:
+				return 'Решение не принято'
+			case 4:
+				return 'На рассмотрение'
+			case 2:
+				return 'На исправление'
+			default:
+				return 'На согласование'
+		}
 	}
-	return
 })
 </script>
 
@@ -44,7 +45,8 @@ const decision = computed(() => {
 	label Начато:
 	div {{format(timeline?.start)}}
 	label Завершено:
-	div {{format(timeline?.end)}}
+	.neg(v-if='current?.id == 5') Задание не завершено
+	div(v-else) {{format(timeline?.end)}}
 	q-separator(spaced)
 	label Решение:
 	div {{ decision }}
@@ -72,5 +74,8 @@ label {
 .q-separator {
 	grid-column: 1/-1;
 	width: 100%;
+}
+.neg {
+	color: $negative;
 }
 </style>

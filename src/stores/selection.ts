@@ -22,9 +22,11 @@ export type TimelineSelection = {
 }
 
 export type Selection = TimelineSelection | BpmnSelection | null
+// export type Selection1 = number | null
 
 export const useSelectionStore = defineStore('selection', () => {
 	const current = ref<Selection>(null)
+	const programmaticSelectId = ref<number | null>(null)
 
 	const clear = () => {
 		current.value = null
@@ -54,10 +56,16 @@ export const useSelectionStore = defineStore('selection', () => {
 		}
 	}
 
+	const selectById = (id: number) => {
+		programmaticSelectId.value = id
+	}
+
 	return {
 		current,
+		programmaticSelectId,
 		clear,
 		selectBpmn,
 		selectTimeline,
+		selectById,
 	}
 })
