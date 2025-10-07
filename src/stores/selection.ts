@@ -23,7 +23,6 @@ export type TimelineSelection = {
 }
 
 export type Selection = TimelineSelection | BpmnSelection | null
-// export type Selection1 = number | null
 
 export const useSelectionStore = defineStore('selection', () => {
 	const current = ref<Selection>(null)
@@ -34,7 +33,6 @@ export const useSelectionStore = defineStore('selection', () => {
 	}
 
 	const selectBpmn = (element: any) => {
-		console.log(element)
 		current.value = {
 			kind: 'bpmn',
 			id: element.id,
