@@ -17,14 +17,13 @@ const finished = computed(() => {
 <template lang="pug">
 .grid
 	.zag Этап
-	// label id:
-	// div {{current?.id}}
 	label Тип:
 	div {{current?.type}}
 	label Название:
 	div {{current?.name}}
-	label Роль:
-	div {{current?.lane}}
+	template(v-if='current?.kind == "bpmn"')
+		label Роль:
+		div {{current?.lane}}
 	label Завершено:
 	div
 		span(v-if='current?.id == "Activity_0vjxzxe"') В процессе
