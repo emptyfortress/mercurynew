@@ -80,6 +80,7 @@ onMounted(async () => {
 
 		const eventBus = viewer.value.get('eventBus') as any
 		const selectionService = viewer.value.get('selection') as any
+		const allowedTypes = ['bpmn:Task', 'bpmn:StartEvent', 'bpmn:IntermediateThrowEvent']
 
 		// helper — определяем, является ли элемент "Collaboration" (пустым местом)
 		const isCollaboration = (el: any) => {
@@ -93,14 +94,6 @@ onMounted(async () => {
 			const clickedId = e.element?.id
 			const el = e.element
 			if (!clickedId) return
-			if (
-				el.type !== 'bpmn:Task' &&
-				el.type !== 'bpmn:StartEvent' &&
-				el.type !== 'bpmn:IntermediateThrowEvent'
-			) {
-				selectionService.select([]) // снимаем выбор
-				return
-			}
 
 			// снимаем подсветку props.selection (если была)
 			if (currentHighlightedId) {
@@ -137,12 +130,21 @@ onMounted(async () => {
 
 			// обычный случай — выбран реальный элемент
 			const element = sel[0]
-			selectionStore.selectBpmn(element.businessObject)
-			emit('select', element.businessObject)
+			if (allowedTypes.includes(element.type)) {
+				selectionStore.selectBpmn(element.businessObject)
+				emit('select', element.businessObject)
+			}
 		}
 
 		// регистрация обработчиков
-		eventBus.on('element.click', onElementClick)
+		// отмена выбора дорожки - через приоритет
+		eventBus.on('element.click', 1000, (e) => {
+			const el = e.element
+			if (!allowedTypes.includes(el.type)) {
+				e.stopPropagation() // ❗ останавливаем всплытие и выбор
+				selectionService.select([]) // очистим выбор, если вдруг что-то выбралось
+			}
+		})
 		eventBus.on('selection.changed', onSelectionChanged)
 	} catch (err) {
 		console.error('Ошибка при загрузке BPMN:', err)

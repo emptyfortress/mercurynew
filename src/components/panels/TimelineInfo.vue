@@ -50,7 +50,7 @@ const diff = computed(() => {
 	.neg(v-if='current?.id == 5') Задание не завершено
 	div(v-else) {{format(timeline?.end)}}
 	label Длительность:
-	div {{ diff }} часов
+	div {{ diff }} ч.
 	q-separator(spaced)
 	label Решение:
 	div {{ decision }}
