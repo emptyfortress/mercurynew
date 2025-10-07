@@ -61,8 +61,8 @@ onMounted(async () => {
 
 		// add icon
 		// --- вставляем SVG-иконку в конкретный узел ---
-		const elementRegistry = viewer.value.get('elementRegistry')
-		const element = elementRegistry.get('Activity_0vjxzxe')
+		const elementRegistry = viewer.value.get('elementRegistry') as any
+		const element = elementRegistry.get('Activity_0vjxzxe') as any
 
 		if (element) {
 			const gfx = elementRegistry.getGraphics(element)
