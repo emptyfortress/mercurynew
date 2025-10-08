@@ -6,6 +6,8 @@ import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
 import { centerWithPadding } from '@/utils/utils'
 import { events } from '@/stores/events'
 import { useSelectionStore } from '@/stores/selection'
+import { storeToRefs } from 'pinia'
+import type { TimelineHiddenDateOption } from 'vis-timeline'
 
 const props = defineProps({
 	selection: {
@@ -16,6 +18,7 @@ const props = defineProps({
 })
 
 const selectionStore = useSelectionStore()
+const { hideWeekends } = storeToRefs(selectionStore)
 
 // Пример зависимостей: стрелки от события -> к событию
 const dependencies: Array<[number, number]> = [
@@ -145,7 +148,7 @@ const selectById = async (id: number) => {
 	// 2️⃣ Сообщаем vis.js о новом выборе
 	try {
 		timeline.setSelection([id])
-		timeline.focus(id, { animation: true })
+		// timeline.focus(id, { animation: true })
 	} catch (err) {
 		console.warn('Timeline selection error:', err)
 	}
@@ -161,6 +164,11 @@ const selectById = async (id: number) => {
 	emit('select', item.name)
 }
 
+// шаблон для скрытия выходных — можно вынести в константу
+const hiddenWeekendsPattern: TimelineHiddenDateOption[] = [
+	{ start: '2025-10-04 00:00:00', end: '2025-10-06 00:00:00', repeat: 'weekly' },
+]
+
 onMounted(() => {
 	if (!timelineEl.value || !wrapper.value) return
 
@@ -171,8 +179,9 @@ onMounted(() => {
 		verticalScroll: true,
 		margin: { item: 12, axis: 12 },
 		editable: false,
-		start: new Date(2025, 8, 21),
+		start: new Date(2025, 9, 21),
 		end: new Date(),
+		hiddenDates: hideWeekends.value ? hiddenWeekendsPattern : [],
 		locale: 'ru',
 		xss: {
 			disabled: true,
@@ -225,7 +234,8 @@ onMounted(() => {
 	timeline = new Timeline(timelineEl.value, items as any, options)
 
 	// центрируем окно на все события
-	centerWithPadding(timeline, events, 0.05)
+	centerWithPadding(timeline, events, 0.1)
+	// timeline.fit()
 	// создаём overlay как дочерний element timelineEl (чтобы coords были в одном контексте)
 	svgOverlay = createSvgOverlay(timelineEl.value)
 
@@ -304,6 +314,28 @@ watch(
 		})
 	},
 	{ immediate: true }
+)
+
+// отслеживаем изменение переменной в сторе и применяем setOptions
+watch(
+	hideWeekends,
+	(val) => {
+		if (!timeline) return
+
+		timeline.setOptions({
+			hiddenDates: val ? hiddenWeekendsPattern : [],
+		})
+
+		// Дополнительно — форсируем перерасчёт позиций/масштабирования:
+		// получаем текущий видимый window и заново ставим его (без анимации)
+		try {
+			timeline.fit()
+		} catch (e) {
+			// безопасный catch в случае если API чуть отличается
+			console.warn('Timeline refresh after setOptions failed', e)
+		}
+	},
+	{ immediate: false }
 )
 
 defineExpose({ selectById })

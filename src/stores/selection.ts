@@ -28,8 +28,33 @@ export const useSelectionStore = defineStore('selection', () => {
 	const current = ref<Selection>(null)
 	const programmaticSelectId = ref<number | null>(null)
 
+	const selectedLateFilter = ref<boolean>(false)
+	const selectedRouteFilter = ref<string | null>(null)
+
+	// прячем выходные на таймлайне
+	const hideWeekends = ref(true)
+
+	const toggleWeekends = () => {
+		hideWeekends.value = !hideWeekends.value
+	}
+
 	const clear = () => {
 		current.value = null
+		selectedLateFilter.value = false
+	}
+
+	const clearLateFilter = () => {
+		selectedLateFilter.value = false
+	}
+
+	// Сбрасывает только route-фильтр
+	const clearRouteFilter = () => {
+		selectedRouteFilter.value = null
+	}
+
+	// Toggle-логика для route-фильтра (одиночный выбор, повторный клик — сброс)
+	const selectRouteFilter = (filter: string) => {
+		selectedRouteFilter.value = selectedRouteFilter.value === filter ? null : filter
 	}
 
 	const selectBpmn = (element: any) => {
@@ -68,5 +93,12 @@ export const useSelectionStore = defineStore('selection', () => {
 		selectBpmn,
 		selectTimeline,
 		selectById,
+		selectedLateFilter,
+		selectedRouteFilter,
+		selectRouteFilter,
+		clearRouteFilter,
+		clearLateFilter,
+		hideWeekends,
+		toggleWeekends,
 	}
 })

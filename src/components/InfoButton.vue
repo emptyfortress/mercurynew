@@ -7,6 +7,7 @@ import BpmnInfo from '@/components/panels/BpmnInfo.vue'
 import TimelineInfo from '@/components/panels/TimelineInfo.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
+import InfoBtFilters from '@/components/InfoBtFilters.vue'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 
@@ -105,8 +106,11 @@ const selNow = (id: number) => {
 			div 2
 			label Текущий этап:
 			.link(@click='selNow(5)') Рассмотреть заявку
-			label Просрочены этапы:
-			.link1(@click='selNow(2)') Согласовать заявку
+			q-separator(spaced)
+			.zag Показать
+
+		InfoBtFilters
+
 
 </template>
 
@@ -142,6 +146,10 @@ const selNow = (id: number) => {
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
+}
+.q-separator {
+	grid-column: 1/-1;
+	width: 100%;
 }
 label {
 	color: #666;
