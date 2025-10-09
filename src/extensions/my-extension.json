@@ -13,7 +13,7 @@
 				{
 					"name": "finished",
 					"isAttr": true,
-					"type": "Boolean"
+					"type": "String"
 				}
 			]
 		}

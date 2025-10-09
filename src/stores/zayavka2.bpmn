@@ -41,10 +41,10 @@
         <bpmn:flowNodeRef>Activity_1xr02p6</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="Event_1t7b10m" name="Создал Заявку" my:finished="true">
+    <bpmn:startEvent id="Event_1t7b10m" name="Создал Заявку" my:finished="Завершено">
       <bpmn:outgoing>Flow_1nrfrmz</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="Activity_13ysreu" name="Согласовать заявку" my:finished="true">
+    <bpmn:task id="Activity_13ysreu" name="Согласовать заявку" my:finished="Завершено">
       <bpmn:incoming>Flow_1nrfrmz</bpmn:incoming>
       <bpmn:incoming>Flow_0wjrh6w</bpmn:incoming>
       <bpmn:incoming>Flow_14mq7uv</bpmn:incoming>
@@ -55,11 +55,11 @@
       <bpmn:outgoing>Flow_0fy9oaf</bpmn:outgoing>
       <bpmn:outgoing>Flow_0deybx3</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="Activity_0kpt2qn" name="Исправить заявку" my:finished="true">
+    <bpmn:task id="Activity_0kpt2qn" name="Исправить заявку" my:finished="Завершено">
       <bpmn:incoming>Flow_0fy9oaf</bpmn:incoming>
       <bpmn:outgoing>Flow_0wjrh6w</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_0obo0kc" name="Обработать отказ">
+    <bpmn:task id="Activity_0obo0kc" name="Обработать отказ" my:finished="Не начато">
       <bpmn:incoming>Flow_0y6nr5i</bpmn:incoming>
       <bpmn:outgoing>Flow_1vjwrgg</bpmn:outgoing>
     </bpmn:task>
@@ -81,17 +81,17 @@
     <bpmn:sequenceFlow id="Flow_1vjwrgg" sourceRef="Activity_0obo0kc" targetRef="Gateway_1g3408c" />
     <bpmn:sequenceFlow id="Flow_1y5q21t" name="Отменить заявку" sourceRef="Gateway_1g3408c" targetRef="Event_1yi1uuk" />
     <bpmn:sequenceFlow id="Flow_14xgday" name="Подтвердить" sourceRef="Activity_1rqtd62" targetRef="Event_1wwtnaa" />
-    <bpmn:intermediateThrowEvent id="Event_1yi1uuk" name="Заявка отменена">
+    <bpmn:intermediateThrowEvent id="Event_1yi1uuk" name="Заявка отменена" my:finished="Не начато">
       <bpmn:incoming>Flow_1y5q21t</bpmn:incoming>
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateThrowEvent id="Event_1wwtnaa" name="Заявка выполнена">
+    <bpmn:intermediateThrowEvent id="Event_1wwtnaa" name="Заявка выполнена" my:finished="Не начато">
       <bpmn:incoming>Flow_14xgday</bpmn:incoming>
     </bpmn:intermediateThrowEvent>
-    <bpmn:task id="Activity_1rqtd62" name="Принять результаты">
+    <bpmn:task id="Activity_1rqtd62" name="Принять результаты" my:finished="Не начато">
       <bpmn:incoming>Flow_1w67ag7</bpmn:incoming>
       <bpmn:outgoing>Flow_14xgday</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_0vjxzxe" name="Рассмотреть заявку" my:finished="true">
+    <bpmn:task id="Activity_0vjxzxe" name="Рассмотреть заявку" my:finished="Завершено">
       <bpmn:incoming>Flow_0deybx3</bpmn:incoming>
       <bpmn:outgoing>Flow_18z4ruq</bpmn:outgoing>
     </bpmn:task>
@@ -100,7 +100,7 @@
       <bpmn:outgoing>Flow_1il0hqn</bpmn:outgoing>
       <bpmn:outgoing>Flow_0y6nr5i</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="Activity_1xr02p6" name="Исполнить заявку">
+    <bpmn:task id="Activity_1xr02p6" name="Исполнить заявку" my:finished="Не начато">
       <bpmn:incoming>Flow_1il0hqn</bpmn:incoming>
       <bpmn:outgoing>Flow_1w67ag7</bpmn:outgoing>
     </bpmn:task>

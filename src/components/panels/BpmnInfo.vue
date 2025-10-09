@@ -6,11 +6,11 @@ import { storeToRefs } from 'pinia'
 const selectionStore = useSelectionStore()
 const { current } = storeToRefs(selectionStore)
 
-const list = ['Event_1t7b10m', 'Activity_13ysreu', 'Activity_0kpt2qn', 'Activity_0vjxzxe']
-
 const finished = computed(() => {
-	if (!current.value) return false
-	return list.includes(String(current.value.id))
+	if (current.value && current.value.id == 'Activity_0vjxzxe') return 'в процессе'
+	if (current.value && current.value.kind == 'bpmn') {
+		return current.value.finished
+	}
 })
 </script>
 
@@ -24,10 +24,8 @@ const finished = computed(() => {
 	template(v-if='current?.kind == "bpmn"')
 		label Роль:
 		div {{current?.lane}}
-	label Завершено:
-	div
-		span(v-if='current?.id == "Activity_0vjxzxe"') В процессе
-		span(v-else) {{finished}}
+	label Состояние:
+	div {{ finished }}
 
 </template>
 

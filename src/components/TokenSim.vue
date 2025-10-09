@@ -67,8 +67,8 @@ onMounted(async () => {
 	// viewer.value = new SelectableViewer({ container: container.value })
 
 	try {
-		// void (await viewer.value.importXML(zay1))
-		void (await inst.importXML(zay1))
+		void (await viewer.value.importXML(zay1))
+		// void (await inst.importXML(zay1))
 		highlightNodes(viewer.value, nodeMap)
 
 		// add icon
@@ -88,13 +88,6 @@ onMounted(async () => {
 			gfx.appendChild(svgEl)
 		}
 
-		const task = inst.findElementsByCustomProperty('finished', false)
-		if (task) {
-			console.log(task)
-			console.log(task[1].businessObject.name)
-			// console.log(task.businessObject.name)
-		}
-
 		const canvas: any = viewer.value.get('canvas')
 		canvas.zoom('fit-viewport', 'auto')
 
@@ -110,20 +103,19 @@ onMounted(async () => {
 		}
 
 		// обработчик клика на элемент — делегируем выбор selectionService (selection.changed сработает)
-		onElementClick = (e: any) => {
-			const clickedId = e.element?.id
-			const el = e.element
-			if (!clickedId) return
-
-			// снимаем подсветку props.selection (если была)
-			if (currentHighlightedId) {
-				unhighlightByDom(currentHighlightedId)
-				currentHighlightedId = null
-			}
-
-			// делегируем выбор в сервис — это вызовет selection.changed
-			selectionService.select([e.element])
-		}
+		// onElementClick = (e: any) => {
+		// 	const clickedId = e.element?.id
+		// 	if (!clickedId) return
+		//
+		// 	// снимаем подсветку props.selection (если была)
+		// 	if (currentHighlightedId) {
+		// 		unhighlightByDom(currentHighlightedId)
+		// 		currentHighlightedId = null
+		// 	}
+		//
+		// 	// делегируем выбор в сервис — это вызовет selection.changed
+		// 	selectionService.select([e.element])
+		// }
 
 		// обработчик изменения selection — центр синхронизации со store
 		onSelectionChanged = (e: any) => {
