@@ -89,9 +89,8 @@ const calcDelay = computed(() => {
 		BpmnInfo(v-if="current.kind === 'bpmn'")
 		TimelineInfo(v-else-if="current.kind === 'timeline'")
 
-	q-separator
 
-	InfoBtCommon(v-if="panels.right0"
+	InfoBtCommon(v-if="panels.right0 && !current"
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'

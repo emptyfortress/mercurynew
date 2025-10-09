@@ -67,7 +67,7 @@ onMounted(async () => {
 	// viewer.value = new SelectableViewer({ container: container.value })
 
 	try {
-		void (await viewer.value.importXML(zay1))
+		void (await inst.importXML(zay1))
 		// void (await inst.importXML(zay1))
 		highlightNodes(viewer.value, nodeMap)
 
@@ -121,6 +121,10 @@ onMounted(async () => {
 		onSelectionChanged = (e: any) => {
 			const sel = e.newSelection || []
 
+			if (currentHighlightedId) {
+				unhighlightByDom(currentHighlightedId)
+				currentHighlightedId = null
+			}
 			// если выбор пустой или выбран "Collaboration"
 			const isEmpty = sel.length === 0 || (sel.length === 1 && isCollaboration(sel[0]))
 
@@ -131,10 +135,10 @@ onMounted(async () => {
 					selectionService.select([])
 				}
 
-				if (currentHighlightedId) {
-					unhighlightByDom(currentHighlightedId)
-					currentHighlightedId = null
-				}
+				// if (currentHighlightedId) {
+				// 	unhighlightByDom(currentHighlightedId)
+				// 	currentHighlightedId = null
+				// }
 				selectionStore.clear()
 				emit('select', '')
 				return
@@ -144,6 +148,7 @@ onMounted(async () => {
 			const element = sel[0]
 			if (allowedTypes.includes(element.type)) {
 				selectionStore.selectBpmn(element.businessObject)
+				selectionStore.clearForecast()
 				emit('select', element.businessObject)
 			}
 		}

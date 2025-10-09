@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSelectionStore } from '@/stores/selection'
 
 const selectionStore = useSelectionStore()
-const { selectedLateFilter, hideWeekends } = storeToRefs(selectionStore)
+const { selectedLateFilter, hideWeekends, current, selectedForecast } = storeToRefs(selectionStore)
 
-const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3']
+const forecast = computed(() => {
+	if (current.value && current.value.kind == 'bpmn') {
+		return current.value?.finished == 'Не начато' ? true : false
+	}
+	return false
+})
+
+// const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3']
 
 // function toggleMainFilter(filter: string) {
 // 	selectMainFilter(filter)
@@ -25,6 +33,7 @@ const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3'
 		:text-color="selectedLateFilter ? 'white' : 'black'"
 		@click='selectionStore.selectById(2)'
 	) просрочено
+		q-tooltip подсветить просроченные
 
 	q-chip(clickable
 		:selected="!hideWeekends"
@@ -32,18 +41,16 @@ const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3'
 		:text-color="!hideWeekends ? 'white' : 'black'"
 		@click="hideWeekends = !hideWeekends"
 	) выходные
+		q-tooltip показать выходные на шкале
 
-	.pr()
-		|Прогноз
-		span (экспериментальная функция)
-	// q-chip(
-	// 	v-for="filter in routeFilters"
-	// 	:key="filter"
-	// 	clickable
-	// 	:color="selectedRouteFilter === filter ? 'primary' : 'grey-3'"
-	// 	:text-color="selectedRouteFilter === filter ? 'white' : 'black'"
-	// 	@click="toggleRouteFilter(filter)"
-	// ) {{ filter }}
+	q-chip(clickable v-if='forecast'
+		:selected="selectedForecast"
+		:color="selectedForecast ? 'primary' : 'grey-3'"
+		:text-color="selectedForecast ? 'white' : 'black'"
+		@click="selectedForecast = !selectedForecast"
+	) прогноз
+		q-tooltip экспериментальная функция
+
 </template>
 
 <style scoped lang="scss">
