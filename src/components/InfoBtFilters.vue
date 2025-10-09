@@ -18,6 +18,7 @@ const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3'
 
 <template lang="pug">
 .filt
+	.zag Показать
 	q-chip(clickable
 		v-model:selected='selectedLateFilter'
 		:color="selectedLateFilter ? 'primary' : 'grey-3'"
@@ -32,7 +33,7 @@ const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3'
 		@click="hideWeekends = !hideWeekends"
 	) выходные
 
-	.pr
+	.pr()
 		|Прогноз
 		span (экспериментальная функция)
 	// q-chip(
@@ -48,7 +49,7 @@ const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3'
 <style scoped lang="scss">
 .filt {
 	text-align: left;
-	margin: 0 1rem;
+	margin: 1rem;
 }
 .pr {
 	font-weight: 500;
@@ -62,5 +63,10 @@ const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3'
 }
 :deep(.q-chip__icon.q-chip__icon--left) {
 	display: none;
+}
+.zag {
+	text-align: center;
+	width: 100%;
+	font-weight: 600;
 }
 </style>

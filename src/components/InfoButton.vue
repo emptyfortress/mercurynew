@@ -8,6 +8,7 @@ import TimelineInfo from '@/components/panels/TimelineInfo.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
 import InfoBtFilters from '@/components/InfoBtFilters.vue'
+import InfoBtCommon from '@/components/InfoBtCommon.vue'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 
@@ -54,10 +55,6 @@ const close = () => {
 const calcDelay = computed(() => {
 	return del.value ? 600 : 0
 })
-
-const selNow = (id: number) => {
-	selectionStore.selectById(id)
-}
 </script>
 
 <template lang="pug">
@@ -75,6 +72,14 @@ const selNow = (id: number) => {
 
 	TopButton(v-model="panels.right0" @close='close')
 
+	InfoBtFilters(v-if="panels.right0"
+		v-motion
+		:initial='{ opacity: 0 }'
+		:enter='{ opacity: 1 }'
+		:delay='calcDelay')
+
+	q-separator
+
 	div(v-if="panels.right0 && !!current"
 		v-motion
 		:initial='{ opacity: 0 }'
@@ -84,33 +89,13 @@ const selNow = (id: number) => {
 		BpmnInfo(v-if="current.kind === 'bpmn'")
 		TimelineInfo(v-else-if="current.kind === 'timeline'")
 
-	div(v-if="panels.right0 && !current"
+	q-separator
+
+	InfoBtCommon(v-if="panels.right0"
 		v-motion
 		:initial='{ opacity: 0 }'
 		:enter='{ opacity: 1 }'
 		:delay='calcDelay')
-
-		.grid
-			.zag Ход процесса
-			label Процесс начат:
-			div 22.09.25 13:07
-			label Процесс длится:
-			div 14 дней 7 часов
-			label Инициатор:
-			div Орлов П.С.
-			label Всего этапов:
-			div 6
-			label Завершено этапов:
-			div 3
-			label Совершено циклов:
-			div 2
-			label Текущий этап:
-			.link(@click='selNow(5)') Рассмотреть заявку
-			q-separator(spaced)
-			.zag Показать
-
-		InfoBtFilters
-
 
 </template>
 

@@ -51,7 +51,6 @@ const diff = computed(() => {
 	div(v-else) {{format(timeline?.end)}}
 	label Длительность:
 	div {{ diff }} ч.
-	q-separator(spaced)
 	label Решение:
 	div {{ decision }}
 
