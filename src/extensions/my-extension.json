@@ -1,0 +1,21 @@
+{
+	"name": "MyExtension",
+	"uri": "http://example.com/schema/myExtension",
+	"prefix": "my",
+	"xml": {
+		"tagAlias": "lowerCase"
+	},
+	"types": [
+		{
+			"name": "BaseElementExtension",
+			"extends": ["bpmn:BaseElement"],
+			"properties": [
+				{
+					"name": "finished",
+					"isAttr": true,
+					"type": "Boolean"
+				}
+			]
+		}
+	]
+}

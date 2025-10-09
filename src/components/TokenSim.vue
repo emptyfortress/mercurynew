@@ -3,7 +3,9 @@ import { onMounted, onBeforeUnmount, ref, watch, nextTick } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
 import { highlightByDom, unhighlightByDom, highlightNodes } from '@/lib/selectNewHelper'
 import zay from '@/stores/zayavka1.bpmn?raw'
+import zay1 from '@/stores/zayavka2.bpmn?raw'
 import { useSelectionStore } from '@/stores/selection'
+import myExtension from '@/extensions/my-extension.json'
 
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
@@ -53,15 +55,26 @@ const myIcon = `
 onMounted(async () => {
 	if (!container.value) return
 
-	viewer.value = new SelectableViewer({ container: container.value })
+	// создаём viewer с moddleExtensions
+	const inst = new SelectableViewer({
+		container: container.value,
+		moddleExtensions: {
+			my: myExtension,
+		},
+	})
+
+	viewer.value = inst
+	// viewer.value = new SelectableViewer({ container: container.value })
 
 	try {
-		void (await viewer.value.importXML(zay))
+		// void (await viewer.value.importXML(zay1))
+		void (await inst.importXML(zay1))
 		highlightNodes(viewer.value, nodeMap)
 
 		// add icon
 		// --- вставляем SVG-иконку в конкретный узел ---
 		const elementRegistry = viewer.value.get('elementRegistry') as any
+
 		const element = elementRegistry.get('Activity_0vjxzxe') as any
 
 		if (element) {
@@ -73,6 +86,13 @@ onMounted(async () => {
 			svgEl.setAttribute('y', '-3')
 
 			gfx.appendChild(svgEl)
+		}
+
+		const task = inst.findElementsByCustomProperty('finished', false)
+		if (task) {
+			console.log(task)
+			console.log(task[1].businessObject.name)
+			// console.log(task.businessObject.name)
 		}
 
 		const canvas: any = viewer.value.get('canvas')
@@ -138,7 +158,7 @@ onMounted(async () => {
 
 		// регистрация обработчиков
 		// отмена выбора дорожки - через приоритет
-		eventBus.on('element.click', 1000, (e) => {
+		eventBus.on('element.click', 1000, (e: any) => {
 			const el = e.element
 			if (!allowedTypes.includes(el.type)) {
 				e.stopPropagation() // ❗ останавливаем всплытие и выбор
