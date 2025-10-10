@@ -12,16 +12,6 @@ const forecast = computed(() => {
 	}
 	return false
 })
-
-// const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3']
-
-// function toggleMainFilter(filter: string) {
-// 	selectMainFilter(filter)
-// }
-
-// function toggleRouteFilter(filter: string) {
-// 	selectRouteFilter(filter)
-// }
 </script>
 
 <template lang="pug">
@@ -31,7 +21,6 @@ const forecast = computed(() => {
 		v-model:selected='selectedLateFilter'
 		:color="selectedLateFilter ? 'primary' : 'grey-3'"
 		:text-color="selectedLateFilter ? 'white' : 'black'"
-		@click='selectionStore.selectById(2)'
 	) просрочено
 		q-tooltip подсветить просроченные
 

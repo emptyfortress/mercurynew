@@ -118,7 +118,6 @@ onMounted(async () => {
 					currentHighlightedId = null
 				}
 				selectionStore.clear()
-				// emit('select', '')
 				return
 			}
 

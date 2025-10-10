@@ -41,16 +41,11 @@ export const useSelectionStore = defineStore('selection', () => {
 
 	const clear = () => {
 		current.value = null
-		selectedLateFilter.value = false
 		selectedForecast.value = false
 	}
 
 	const clearForecast = () => {
 		selectedForecast.value = false
-	}
-
-	const clearLateFilter = () => {
-		selectedLateFilter.value = false
 	}
 
 	const selectBpmn = (element: any) => {
@@ -79,19 +74,13 @@ export const useSelectionStore = defineStore('selection', () => {
 		}
 	}
 
-	const selectById = (id: number) => {
-		programmaticSelectId.value = id
-	}
-
 	return {
 		current,
 		programmaticSelectId,
 		clear,
 		selectBpmn,
 		selectTimeline,
-		selectById,
 		selectedLateFilter,
-		clearLateFilter,
 		hideWeekends,
 		toggleWeekends,
 		selectedForecast,

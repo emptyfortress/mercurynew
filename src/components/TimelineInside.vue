@@ -128,33 +128,42 @@ function scheduleRedraw() {
 
 // select by id ***************************
 const selectById = async (id: number) => {
-	if (!timeline) return
-	const item = items.get(id)
-	if (!item) return
-
-	// 1️⃣ Снимаем ВСЕ выделения и подсветки
-	document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
-		el.classList.remove('vis-selected', 'highlight')
-	})
-
-	// 2️⃣ Сообщаем vis.js о новом выборе
-	try {
-		timeline.setSelection([id])
-		// timeline.focus(id, { animation: true })
-	} catch (err) {
-		console.warn('Timeline selection error:', err)
-	}
-
-	// 3️⃣ Выделяем элемент вручную (для верности)
 	const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-	if (el) el.classList.add('vis-selected')
-
-	// 4️⃣ Обновляем store
-	selectionStore.selectTimeline(item)
-
-	// 5️⃣ Эмитим select для родителя
-	emit('select', item.name)
+	if (el) el.classList.add('vis-late')
 }
+const deselectById = async (id: number) => {
+	const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
+	if (el) el.classList.remove('vis-late')
+}
+
+// const selectById = async (id: number) => {
+// 	if (!timeline) return
+// 	const item = items.get(id)
+// 	if (!item) return
+//
+// 	// 1️⃣ Снимаем ВСЕ выделения и подсветки
+// 	document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
+// 		el.classList.remove('vis-selected', 'highlight')
+// 	})
+//
+// 	// 2️⃣ Сообщаем vis.js о новом выборе
+// 	try {
+// 		timeline.setSelection([id])
+// 		// timeline.focus(id, { animation: true })
+// 	} catch (err) {
+// 		console.warn('Timeline selection error:', err)
+// 	}
+//
+// 	// 3️⃣ Выделяем элемент вручную (для верности)
+// 	const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
+// 	if (el) el.classList.add('vis-selected')
+//
+// 	// 4️⃣ Обновляем store
+// 	selectionStore.selectTimeline(item)
+//
+// 	// 5️⃣ Эмитим select для родителя
+// 	emit('select', item.name)
+// }
 
 // шаблон для скрытия выходных — можно вынести в константу
 const hiddenWeekendsPattern: TimelineHiddenDateOption[] = [
@@ -259,13 +268,11 @@ onMounted(() => {
 			const item = items.get(id) as unknown as MyEvent | undefined
 
 			if (item) {
-				// emit('select', item.name)
 				selectionStore.selectTimeline(item)
 			}
 		} else {
 			// если кликнули в пустоту → очищаем выбор
 			selectionStore.clear()
-			// emit('select', '')
 		}
 	})
 })
@@ -306,14 +313,12 @@ watch(
 defineExpose({ selectById })
 
 watch(
-	() => selectionStore.programmaticSelectId,
-	async (newId) => {
-		if (newId != null) {
-			await nextTick()
-			selectById(newId)
-			// 💡 после выбора можно сбросить значение,
-			// чтобы не повторять выбор случайно
-			selectionStore.programmaticSelectId = null
+	() => selectionStore.selectedLateFilter,
+	(newVal, oldVal) => {
+		if (newVal && !oldVal) {
+			selectById(2)
+		} else if (!newVal && oldVal) {
+			deselectById(2)
 		}
 	}
 )
@@ -337,28 +342,7 @@ watch(current, (val) => {
 			})
 		}
 	}
-
-	// if (val == null) {
-	// 	const myitems = document.querySelectorAll('.vis-item')
-	// 	myitems.forEach((el) => {
-	// 		el.classList.remove('vis-selected')
-	// 		el.classList.remove('highlight')
-	// 	})
-	// }
 })
-
-// watch(
-// 	() => selectionStore.programmaticSelectId,
-// 	async (newId) => {
-// 		if (newId != null) {
-// 			await nextTick()
-// 			selectById(newId)
-// 			// 💡 после выбора можно сбросить значение,
-// 			// чтобы не повторять выбор случайно
-// 			selectionStore.programmaticSelectId = null
-// 		}
-// 	}
-// )
 </script>
 
 <template lang="pug">
@@ -430,5 +414,9 @@ watch(current, (val) => {
 }
 :deep(.ic) {
 	font-size: 0.95rem;
+}
+:deep(.vis-item.vis-late) {
+	border-color: red;
+	background: #ffecef;
 }
 </style>
