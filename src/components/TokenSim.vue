@@ -2,7 +2,6 @@
 import { onMounted, onBeforeUnmount, ref, watch, nextTick } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
 import { highlightByDom, unhighlightByDom, highlightNodes } from '@/lib/selectNewHelper'
-// import zay from '@/stores/zayavka1.bpmn?raw'
 import zay1 from '@/stores/zayavka2.bpmn?raw'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
@@ -10,14 +9,6 @@ import myExtension from '@/extensions/my-extension.json'
 
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
-
-const props = defineProps({
-	selection: {
-		type: String,
-		required: true,
-		default: '',
-	},
-})
 
 const selectionStore = useSelectionStore()
 const { current } = storeToRefs(selectionStore)
@@ -104,21 +95,6 @@ onMounted(async () => {
 			return boType === 'bpmn:Collaboration' || /collaboration/i.test(id)
 		}
 
-		// обработчик клика на элемент — делегируем выбор selectionService (selection.changed сработает)
-		// onElementClick = (e: any) => {
-		// 	const clickedId = e.element?.id
-		// 	if (!clickedId) return
-		//
-		// 	// снимаем подсветку props.selection (если была)
-		// 	if (currentHighlightedId) {
-		// 		unhighlightByDom(currentHighlightedId)
-		// 		currentHighlightedId = null
-		// 	}
-		//
-		// 	// делегируем выбор в сервис — это вызовет selection.changed
-		// 	selectionService.select([e.element])
-		// }
-
 		// обработчик изменения selection — центр синхронизации со store
 		onSelectionChanged = (e: any) => {
 			const sel = e.newSelection || []
@@ -137,12 +113,12 @@ onMounted(async () => {
 					selectionService.select([])
 				}
 
-				// if (currentHighlightedId) {
-				// 	unhighlightByDom(currentHighlightedId)
-				// 	currentHighlightedId = null
-				// }
+				if (currentHighlightedId) {
+					unhighlightByDom(currentHighlightedId)
+					currentHighlightedId = null
+				}
 				selectionStore.clear()
-				emit('select', '')
+				// emit('select', '')
 				return
 			}
 
@@ -189,29 +165,8 @@ onBeforeUnmount(() => {
 	}
 })
 
-// watch(current, (val) => {
-// 	if (val && val.kind == 'timeline') {
-// 		console.log(val)
-// 		if (!viewer.value) return
-// 		const selectionService = viewer.value.get('selection') as any
-//
-// 		try {
-// 			selectionService.select([])
-// 			if (currentHighlightedId) {
-// 				unhighlightByDom(currentHighlightedId)
-// 				currentHighlightedId = null
-// 			}
-// 		} catch (err) {
-// 			// ignore
-// 		}
-// 	}
-// })
-
-// слежение за props.selection
-watch(
-	() => props.selection,
-	(newVal) => {
-		console.log('props')
+watch(current, (val) => {
+	if (val && val.kind == 'timeline') {
 		if (!viewer.value) return
 		const selectionService = viewer.value.get('selection') as any
 
@@ -224,46 +179,18 @@ watch(
 		} catch (err) {
 			// ignore
 		}
-
-		// новый, безопасный вариант
-		// nextTick(() => {
-		// 	if (!newVal) {
-		// 		// если пришло пустое значение — явно очистим selectionService
-		// 		try {
-		// 			selectionService.select([])
-		// 		} catch (err) {
-		// 			// ignore
-		// 		}
-		//
-		// 		if (currentHighlightedId) {
-		// 			unhighlightByDom(currentHighlightedId)
-		// 			currentHighlightedId = null
-		// 		}
-		//
-		// 		// и больше ничего — это реальная очистка
-		// 		return
-		// 	}
-		// })
-
-		// если newVal задан — НЕ сбрасываем selectionService через select([]),
-		// а только управляем нашим programmatic highlight (unhighlight/highlight)
-		// if (currentHighlightedId) {
-		// 	unhighlightByDom(currentHighlightedId)
-		// 	currentHighlightedId = null
-		// }
-
-		if (nodeMap[newVal]) {
-			const nodeId = nodeMap[newVal]
-			highlightByDom(nodeId)
-			currentHighlightedId = nodeId
-		}
-	},
-	{ immediate: true }
-)
+		nextTick(() => {
+			highlightByDom(val.sideId)
+			currentHighlightedId = val.sideId
+		})
+	}
+	if (!val && currentHighlightedId) {
+		unhighlightByDom(currentHighlightedId)
+	}
+})
 </script>
 
 <template lang="pug">
-// div {{props.selection}}
 .canvas(ref="container")
 </template>
 
@@ -275,8 +202,6 @@ watch(
 	background: #f4f4f4;
 }
 
-/* никаких палитр/контекстных меню не будет,
-   но на всякий случай отключим */
 :deep(.djs-palette, .djs-context-pad, .bjs-powered-by) {
 	display: none !important;
 }

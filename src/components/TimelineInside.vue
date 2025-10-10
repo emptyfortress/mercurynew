@@ -9,16 +9,8 @@ import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 import type { TimelineHiddenDateOption } from 'vis-timeline'
 
-const props = defineProps({
-	selection: {
-		type: String,
-		required: true,
-		default: '',
-	},
-})
-
 const selectionStore = useSelectionStore()
-const { hideWeekends } = storeToRefs(selectionStore)
+const { hideWeekends, current } = storeToRefs(selectionStore)
 
 // Пример зависимостей: стрелки от события -> к событию
 const dependencies: Array<[number, number]> = [
@@ -265,15 +257,15 @@ onMounted(() => {
 			el?.classList.add('vis-selected')
 
 			const item = items.get(id) as unknown as MyEvent | undefined
-			console.log('item ', item)
+
 			if (item) {
-				emit('select', item.name)
+				// emit('select', item.name)
 				selectionStore.selectTimeline(item)
 			}
 		} else {
 			// если кликнули в пустоту → очищаем выбор
 			selectionStore.clear()
-			emit('select', '')
+			// emit('select', '')
 		}
 	})
 })
@@ -288,35 +280,6 @@ onBeforeUnmount(() => {
 	if (svgOverlay && svgOverlay.parentElement) svgOverlay.parentElement.removeChild(svgOverlay)
 	window.removeEventListener('resize', scheduleRedraw)
 })
-
-watch(
-	() => props.selection,
-	(newVal: string) => {
-		// снимем классы selected/choosen со всех событий
-		const myitems = document.querySelectorAll('.vis-item')
-		nextTick(() => {
-			myitems.forEach((el) => {
-				el.classList.remove('vis-selected')
-				el.classList.remove('highlight')
-			})
-
-			// назначим класс только событию с совпадающим sideId
-			if (newVal) {
-				const selitems = events.filter((el) => el.sideId == newVal)
-
-				if (selitems.length) {
-					selitems.forEach((el) => {
-						const target = document.querySelector(`.item-${el.id}`)
-						if (target) {
-							target.classList.add('highlight')
-						}
-					})
-				}
-			}
-		})
-	},
-	{ immediate: true }
-)
 
 // отслеживаем изменение переменной в сторе и применяем setOptions
 watch(
@@ -354,6 +317,48 @@ watch(
 		}
 	}
 )
+
+watch(current, (val) => {
+	if (val && val.kind == 'bpmn') {
+		const myitems = document.querySelectorAll('.vis-item')
+		myitems.forEach((el) => {
+			el.classList.remove('vis-selected')
+			el.classList.remove('highlight')
+		})
+		// назначим класс только событию с совпадающим sideId
+		const selitems = events.filter((el) => el.sideId == val.id)
+
+		if (selitems.length) {
+			selitems.forEach((el) => {
+				const target = document.querySelector(`.item-${el.id}`)
+				if (target) {
+					target.classList.add('highlight')
+				}
+			})
+		}
+	}
+
+	// if (val == null) {
+	// 	const myitems = document.querySelectorAll('.vis-item')
+	// 	myitems.forEach((el) => {
+	// 		el.classList.remove('vis-selected')
+	// 		el.classList.remove('highlight')
+	// 	})
+	// }
+})
+
+// watch(
+// 	() => selectionStore.programmaticSelectId,
+// 	async (newId) => {
+// 		if (newId != null) {
+// 			await nextTick()
+// 			selectById(newId)
+// 			// 💡 после выбора можно сбросить значение,
+// 			// чтобы не повторять выбор случайно
+// 			selectionStore.programmaticSelectId = null
+// 		}
+// 	}
+// )
 </script>
 
 <template lang="pug">
