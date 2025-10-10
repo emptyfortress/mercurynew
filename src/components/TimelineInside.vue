@@ -261,9 +261,11 @@ onMounted(() => {
 		if (id != null) {
 			// если выбрано событие
 			const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
+
 			el?.classList.add('vis-selected')
 
 			const item = items.get(id) as unknown as MyEvent | undefined
+			console.log('item ', item)
 			if (item) {
 				emit('select', item.name)
 				selectionStore.selectTimeline(item)

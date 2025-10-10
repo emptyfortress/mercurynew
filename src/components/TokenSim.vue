@@ -2,9 +2,10 @@
 import { onMounted, onBeforeUnmount, ref, watch, nextTick } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
 import { highlightByDom, unhighlightByDom, highlightNodes } from '@/lib/selectNewHelper'
-import zay from '@/stores/zayavka1.bpmn?raw'
+// import zay from '@/stores/zayavka1.bpmn?raw'
 import zay1 from '@/stores/zayavka2.bpmn?raw'
 import { useSelectionStore } from '@/stores/selection'
+import { storeToRefs } from 'pinia'
 import myExtension from '@/extensions/my-extension.json'
 
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -19,6 +20,7 @@ const props = defineProps({
 })
 
 const selectionStore = useSelectionStore()
+const { current } = storeToRefs(selectionStore)
 const container = ref<HTMLDivElement | null>(null)
 const viewer = ref<SelectableViewer | null>(null)
 
@@ -187,39 +189,68 @@ onBeforeUnmount(() => {
 	}
 })
 
+// watch(current, (val) => {
+// 	if (val && val.kind == 'timeline') {
+// 		console.log(val)
+// 		if (!viewer.value) return
+// 		const selectionService = viewer.value.get('selection') as any
+//
+// 		try {
+// 			selectionService.select([])
+// 			if (currentHighlightedId) {
+// 				unhighlightByDom(currentHighlightedId)
+// 				currentHighlightedId = null
+// 			}
+// 		} catch (err) {
+// 			// ignore
+// 		}
+// 	}
+// })
+
 // слежение за props.selection
 watch(
 	() => props.selection,
 	(newVal) => {
+		console.log('props')
 		if (!viewer.value) return
 		const selectionService = viewer.value.get('selection') as any
 
-		// новый, безопасный вариант
-		nextTick(() => {
-			if (!newVal) {
-				// если пришло пустое значение — явно очистим selectionService
-				try {
-					selectionService.select([])
-				} catch (err) {
-					// ignore
-				}
-
-				if (currentHighlightedId) {
-					unhighlightByDom(currentHighlightedId)
-					currentHighlightedId = null
-				}
-
-				// и больше ничего — это реальная очистка
-				return
+		try {
+			selectionService.select([])
+			if (currentHighlightedId) {
+				unhighlightByDom(currentHighlightedId)
+				currentHighlightedId = null
 			}
-		})
+		} catch (err) {
+			// ignore
+		}
+
+		// новый, безопасный вариант
+		// nextTick(() => {
+		// 	if (!newVal) {
+		// 		// если пришло пустое значение — явно очистим selectionService
+		// 		try {
+		// 			selectionService.select([])
+		// 		} catch (err) {
+		// 			// ignore
+		// 		}
+		//
+		// 		if (currentHighlightedId) {
+		// 			unhighlightByDom(currentHighlightedId)
+		// 			currentHighlightedId = null
+		// 		}
+		//
+		// 		// и больше ничего — это реальная очистка
+		// 		return
+		// 	}
+		// })
 
 		// если newVal задан — НЕ сбрасываем selectionService через select([]),
 		// а только управляем нашим programmatic highlight (unhighlight/highlight)
-		if (currentHighlightedId) {
-			unhighlightByDom(currentHighlightedId)
-			currentHighlightedId = null
-		}
+		// if (currentHighlightedId) {
+		// 	unhighlightByDom(currentHighlightedId)
+		// 	currentHighlightedId = null
+		// }
 
 		if (nodeMap[newVal]) {
 			const nodeId = nodeMap[newVal]
@@ -232,6 +263,7 @@ watch(
 </script>
 
 <template lang="pug">
+// div {{props.selection}}
 .canvas(ref="container")
 </template>
 
