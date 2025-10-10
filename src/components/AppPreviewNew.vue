@@ -112,7 +112,7 @@ const publish = () => {
 			position: 'top',
 		})
 		precheck1.value = false
-	}, 6000)
+	}, 4000)
 }
 
 const letcheck = computed({
@@ -132,7 +132,7 @@ const check = () => {
 		timeStamp.value = Date.now()
 		precheck.value = false
 		letcheck.value = true
-	}, 10000)
+	}, 4000)
 	// const routeData = router.resolve({ path: '/test' })
 	// window.open(routeData.href, '_blank')
 }
@@ -303,7 +303,7 @@ const localPubDate = computed(() => {
 
 
 			.full
-				q-btn(color="primary" unelevated :disable="myapps.curVersion(props.item).published > 0" icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
+							q-btn(color="primary" unelevated :disable="myapps.curVersion(props.item).published > 0 || myapps.curVersion(props.item).modified == null" icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
 
 			.q-mt-md(v-if='precheck1')
 				.check1

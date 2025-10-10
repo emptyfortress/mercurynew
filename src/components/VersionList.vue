@@ -183,6 +183,18 @@ function getMenuForRow(row: RowData) {
 	})
 }
 
+function getMenuForRow1(row: RowData) {
+	return menu.filter((item) => {
+		if (item.id === 0 && row.published == 0) return false
+		if (item.id === 1 && row.published > 0) return false
+		if (item.id === 2 && row.published == 0) return false
+		if (item.id === 3 && props.versions.length == 1) return false
+		if (item.id === 3 && row.published > 0) return false
+		// if (item.id === 3 && row.published !== 0) return false
+		return true
+	})
+}
+
 const calcClass = (id: number) => {
 	return id == 3 ? 'pub' : ''
 }
@@ -244,11 +256,16 @@ q-table(flat
 				q-icon(name="mdi-dots-vertical"  size="24px")
 				q-menu
 					q-list
-						template(v-for="item in getMenuForRow(props.row)" :key="item.id")
+						template(v-for="item in getMenuForRow1(props.row)" :key="item.id")
 							q-item(clickable @click="item.action(props.row.id)" :class='calcClass(item.id)' v-close-popup)
 								q-item-section(avatar)
 									q-icon(:name="item.icon")
 								q-item-section {{ item.label }}
+						// template(v-for="item in getMenuForRow(props.row)" :key="item.id")
+						// 	q-item(clickable @click="item.action(props.row.id)" :class='calcClass(item.id)' v-close-popup)
+						// 		q-item-section(avatar)
+						// 			q-icon(:name="item.icon")
+						// 		q-item-section {{ item.label }}
 	
 
 .check(v-if='isSomePublished')
