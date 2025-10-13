@@ -29,8 +29,6 @@ const nodeMap: Record<string, string> = {
 	// 'Исполнить заявку': 'Activity_1xr02p6',
 }
 
-const emit = defineEmits(['select'])
-
 let onElementClick: any
 let onSelectionChanged: any
 
@@ -109,6 +107,7 @@ onMounted(async () => {
 			if (isEmpty) {
 				// вызываем select только если текущий selection реально не пустой
 				const currentSelection = selectionService.get() || []
+
 				if (currentSelection.length > 0) {
 					selectionService.select([])
 				}
@@ -117,7 +116,6 @@ onMounted(async () => {
 					unhighlightByDom(currentHighlightedId)
 					currentHighlightedId = null
 				}
-				selectionStore.clear()
 				return
 			}
 
@@ -125,8 +123,6 @@ onMounted(async () => {
 			const element = sel[0]
 			if (allowedTypes.includes(element.type)) {
 				selectionStore.selectBpmn(element.businessObject)
-				selectionStore.clearForecast()
-				emit('select', element.businessObject)
 			}
 		}
 
@@ -137,6 +133,7 @@ onMounted(async () => {
 			if (!allowedTypes.includes(el.type)) {
 				e.stopPropagation() // ❗ останавливаем всплытие и выбор
 				selectionService.select([]) // очистим выбор, если вдруг что-то выбралось
+				selectionStore.clear()
 			}
 		})
 		eventBus.on('selection.changed', onSelectionChanged)
@@ -178,12 +175,14 @@ watch(current, (val) => {
 		} catch (err) {
 			// ignore
 		}
+
 		nextTick(() => {
 			highlightByDom(val.sideId)
 			currentHighlightedId = val.sideId
 		})
 	}
-	if (!val && currentHighlightedId) {
+
+	if (val == null && currentHighlightedId) {
 		unhighlightByDom(currentHighlightedId)
 	}
 })

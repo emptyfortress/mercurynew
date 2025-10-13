@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { DataSet } from 'vis-data'
 import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
@@ -136,35 +136,6 @@ const deselectById = async (id: number) => {
 	if (el) el.classList.remove('vis-late')
 }
 
-// const selectById = async (id: number) => {
-// 	if (!timeline) return
-// 	const item = items.get(id)
-// 	if (!item) return
-//
-// 	// 1️⃣ Снимаем ВСЕ выделения и подсветки
-// 	document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
-// 		el.classList.remove('vis-selected', 'highlight')
-// 	})
-//
-// 	// 2️⃣ Сообщаем vis.js о новом выборе
-// 	try {
-// 		timeline.setSelection([id])
-// 		// timeline.focus(id, { animation: true })
-// 	} catch (err) {
-// 		console.warn('Timeline selection error:', err)
-// 	}
-//
-// 	// 3️⃣ Выделяем элемент вручную (для верности)
-// 	const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-// 	if (el) el.classList.add('vis-selected')
-//
-// 	// 4️⃣ Обновляем store
-// 	selectionStore.selectTimeline(item)
-//
-// 	// 5️⃣ Эмитим select для родителя
-// 	emit('select', item.name)
-// }
-
 // шаблон для скрытия выходных — можно вынести в константу
 const hiddenWeekendsPattern: TimelineHiddenDateOption[] = [
 	{ start: '2025-10-04 00:00:00', end: '2025-10-06 00:00:00', repeat: 'weekly' },
@@ -277,8 +248,6 @@ onMounted(() => {
 	})
 })
 
-const emit = defineEmits(['select'])
-
 onBeforeUnmount(() => {
 	if (timeline) {
 		timeline.destroy()
@@ -298,12 +267,9 @@ watch(
 			hiddenDates: val ? hiddenWeekendsPattern : [],
 		})
 
-		// Дополнительно — форсируем перерасчёт позиций/масштабирования:
-		// получаем текущий видимый window и заново ставим его (без анимации)
 		try {
 			timeline.fit()
 		} catch (e) {
-			// безопасный catch в случае если API чуть отличается
 			console.warn('Timeline refresh after setOptions failed', e)
 		}
 	},
@@ -341,6 +307,13 @@ watch(current, (val) => {
 				}
 			})
 		}
+	}
+	if (val == null) {
+		const myitems = document.querySelectorAll('.vis-item')
+		myitems.forEach((el) => {
+			el.classList.remove('vis-selected')
+			el.classList.remove('highlight')
+		})
 	}
 })
 </script>
@@ -417,6 +390,7 @@ watch(current, (val) => {
 }
 :deep(.vis-item.vis-late) {
 	border-color: red;
-	background: #ffecef;
+	// background: #ffecef;
+	background: linear-gradient(to right, #daebff 0%, #daebff 80%, #ff7c00 81%, #ff7f04 100%);
 }
 </style>
