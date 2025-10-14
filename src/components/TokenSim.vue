@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watch, nextTick } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch, nextTick, computed } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
 import { highlightByDom, unhighlightByDom, highlightNodes } from '@/lib/selectNewHelper'
 import zay1 from '@/stores/zayavka2.bpmn?raw'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 import myExtension from '@/extensions/my-extension.json'
+import { goodHightlights, badHightlights } from '@/stores/events'
 
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
@@ -24,9 +25,6 @@ const nodeMap: Record<string, string> = {
 	'Согласовать заявку': 'Activity_13ysreu',
 	'Исправить заявку': 'Activity_0kpt2qn',
 	'Рассмотреть заявку': 'Activity_0vjxzxe',
-	// 'Обработать отказ': 'Activity_0obo0kc',
-	// 'Принять результаты': 'Activity_1rqtd62',
-	// 'Исполнить заявку': 'Activity_1xr02p6',
 }
 
 let onElementClick: any
@@ -186,6 +184,47 @@ watch(current, (val) => {
 		unhighlightByDom(currentHighlightedId)
 	}
 })
+
+// подсветка стрелок ************************
+const activeHighlights = new Set<string>()
+const forecastHighlightIds = computed(() => {
+	if (current.value && current.value.id == 'Event_1wwtnaa') {
+		return goodHightlights
+	}
+	if (current.value && current.value.id == 'Event_1yi1uuk') {
+		return badHightlights
+	} else return []
+})
+
+function highlightFlows() {
+	if (!viewer.value) return
+	// for (const id of forecastHighlightIds) {
+	for (const id of forecastHighlightIds.value) {
+		const el = viewer.value.getDomByElementId(id)
+		if (!el) continue
+		el.classList.add('forecast-highlight')
+		activeHighlights.add(id)
+	}
+}
+
+function clearHighlights() {
+	if (!viewer.value) return
+	for (const id of activeHighlights) {
+		const el = viewer.value.getDomByElementId(id)
+		if (el) el.classList.remove('forecast-highlight')
+	}
+	activeHighlights.clear()
+}
+
+watch(
+	() => selectionStore.selectedForecast,
+	(val) => {
+		if (!viewer.value) return
+		if (val) highlightFlows()
+		else clearHighlights()
+	},
+	{ immediate: true }
+)
 </script>
 
 <template lang="pug">
@@ -255,5 +294,28 @@ watch(current, (val) => {
 	to {
 		stroke-dashoffset: -12; /* отрицательное значение сдвигает штрих */
 	}
+}
+
+@keyframes forecast-glow {
+	0% {
+		stroke: #8a2be2;
+		stroke-width: 2px;
+		filter: drop-shadow(0 0 0 rgba(138, 43, 226, 0.1));
+	}
+	50% {
+		stroke: #b47aff;
+		stroke-width: 3px;
+		filter: drop-shadow(0 0 12px rgba(138, 43, 226, 1));
+	}
+	100% {
+		stroke: #8a2be2;
+		stroke-width: 2px;
+		filter: drop-shadow(0 0 0 rgba(138, 43, 226, 0.1));
+	}
+}
+
+:deep(.forecast-highlight path) {
+	animation: forecast-glow 1.5s infinite ease-in-out;
+	stroke-linecap: round;
 }
 </style>

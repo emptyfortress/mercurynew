@@ -27,7 +27,7 @@ const events: MyEvent[] = [
 		fio: 'Орлов П.С.',
 		name: 'Исправить заявку',
 		start: new Date(2025, 9, 2),
-		end: new Date(2025, 9, 6, 13, 0, 0),
+		end: new Date(2025, 9, 7),
 		type: 'range',
 	},
 	{
@@ -53,4 +53,68 @@ const events: MyEvent[] = [
 	},
 ]
 
-export { events }
+const goodFinish: MyEvent[] = [
+	{
+		id: 6,
+		sideId: 'Activity_1xr02p6',
+		role: 'Исполнитель',
+		fio: 'Соловьев Б.Я.',
+		name: 'Исполнить заявку',
+		start: new Date(),
+		end: new Date(2025, 9, 15, 10, 0, 0),
+		type: 'range',
+		className: 'forecast-item item-6',
+	},
+	{
+		id: 7,
+		sideId: 'Activity_1rqtd62',
+		role: 'Инициатор',
+		fio: 'Соколов С.П.',
+		name: 'Принять результаты',
+		start: new Date(2025, 9, 15, 12, 0, 0),
+		end: new Date(2025, 9, 17),
+		type: 'range',
+		className: 'forecast-item item-7',
+	},
+	{
+		id: 8,
+		sideId: 'Event_1wwtnaa',
+		role: 'Инициатор',
+		fio: '',
+		name: 'Заявка выполнена',
+		start: new Date(2025, 9, 17),
+		end: new Date(2025, 9, 17),
+		type: 'point',
+		className: 'start item-8',
+	},
+]
+
+const badFinish: MyEvent[] = [
+	{
+		id: 9,
+		sideId: 'Activity_0obo0kc',
+		role: 'Инициатор',
+		fio: '',
+		name: 'Обработать отказ',
+		start: new Date(),
+		end: new Date(2025, 9, 15, 10, 0, 0),
+		type: 'point',
+		className: 'forecast-item item-9',
+	},
+	{
+		id: 10,
+		sideId: 'Event_1yi1uuk',
+		role: 'Инициатор',
+		fio: 'Соколов С.П.',
+		name: 'Заявка отменена',
+		start: new Date(2025, 9, 15, 12, 0, 0),
+		end: new Date(2025, 9, 17),
+		type: 'point',
+		className: 'start item-10',
+	},
+]
+
+const goodHightlights = ['Flow_18z4ruq', 'Flow_1il0hqn', 'Flow_1w67ag7', 'Flow_14xgday']
+const badHightlights = ['Flow_18z4ruq', 'Flow_0y6nr5i', 'Flow_1vjwrgg', 'Flow_1y5q21t']
+
+export { events, goodFinish, badFinish, goodHightlights, badHightlights }

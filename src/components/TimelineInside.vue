@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { DataSet } from 'vis-data'
 import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
@@ -18,6 +18,11 @@ const dependencies: Array<[number, number]> = [
 	[2, 3],
 	[3, 4],
 	[4, 5],
+	[5, 6],
+	[6, 7],
+	[7, 8],
+	[5, 9],
+	[9, 10],
 ]
 
 // добавляем className: item-<id> чтобы потом легко найти DOM-элемент
@@ -127,13 +132,18 @@ function scheduleRedraw() {
 }
 
 // select by id ***************************
-const selectById = async (id: number) => {
-	const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-	if (el) el.classList.add('vis-late')
+const selectById = (id: number) => {
+	const item = items.get(id)
+	if (item && !item.className?.includes('vis-late')) {
+		items.update({ id, className: `${item.className || ''} vis-late` })
+	}
 }
-const deselectById = async (id: number) => {
-	const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-	if (el) el.classList.remove('vis-late')
+
+const deselectById = (id: number) => {
+	const item = items.get(id)
+	if (item && item.className?.includes('vis-late')) {
+		items.update({ id, className: item.className.replace('vis-late', '').trim() })
+	}
 }
 
 // шаблон для скрытия выходных — можно вынести в константу
@@ -316,6 +326,66 @@ watch(current, (val) => {
 		})
 	}
 })
+
+// add forecast *********************
+// локально храним какие именно forecast id мы добавили в timeline
+const addedForecastIds = ref<string[]>([])
+
+function scrollToNowWithOffset() {
+	const now = new Date()
+	const range = timeline?.getWindow()
+	if (!range?.start || !range?.end) return
+
+	const windowSize = range.end.getTime() - range.start.getTime()
+	const offsetMs = 2 * 24 * 60 * 60 * 1000 // 2 дня
+	const newStart = new Date(now.getTime() - offsetMs)
+	const newEnd = new Date(newStart.getTime() + windowSize)
+
+	timeline?.setWindow(newStart, newEnd, { animation: true })
+	scheduleRedraw()
+}
+// функция безопасного добавления — идемпотентная
+const safeAddForecasts = (events: any) => {
+	const existingIds = new Set(items.getIds())
+	const toAdd = events.filter((e: any) => !existingIds.has(e.id))
+	if (toAdd.length > 0) {
+		items.add(toAdd)
+		scrollToNowWithOffset()
+		// обновляем список добавленных id (без дубликатов)
+		addedForecastIds.value = Array.from(
+			new Set([...addedForecastIds.value, ...toAdd.map((e: any) => e.id)])
+		)
+	}
+}
+
+// функция безопасного удаления — только те, что реально добавляли
+const safeRemoveForecasts = () => {
+	if (addedForecastIds.value.length === 0) return
+	// проверяем, какие из addedForecastIds реально существуют в items
+	const existingIds = items.getIds()
+	const idsToRemove = addedForecastIds.value.filter((id) => existingIds.includes(id))
+	if (idsToRemove.length > 0) {
+		items.remove(idsToRemove)
+	}
+	addedForecastIds.value = [] // очищаем трекер
+}
+
+// реактивно следим за флагом selectedForecast
+watch(
+	() => selectionStore.selectedForecast,
+	async (isSelected) => {
+		if (isSelected) {
+			// если forecastEvents ещё не загружены, загрузим
+			if (selectionStore.forecastEvents.length === 0) {
+				await selectionStore.loadForecastEvents()
+			}
+			safeAddForecasts(selectionStore.forecastEvents)
+		} else {
+			// снимаем — безопасно удаляем только те ids, которые мы добавили
+			safeRemoveForecasts()
+		}
+	}
+)
 </script>
 
 <template lang="pug">
@@ -342,6 +412,9 @@ watch(current, (val) => {
 		filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.75)); /* опционально: внешний «хайлайт» */
 		.event-name {
 			font-weight: bold;
+		}
+		&.vis-late {
+			background: linear-gradient(to right, #ffffff 0%, #ffffff 80%, #ff7c00 81%, #ff7f04 100%);
 		}
 	}
 	&.highlight {
@@ -390,7 +463,11 @@ watch(current, (val) => {
 }
 :deep(.vis-item.vis-late) {
 	border-color: red;
-	// background: #ffecef;
 	background: linear-gradient(to right, #daebff 0%, #daebff 80%, #ff7c00 81%, #ff7f04 100%);
+}
+:deep(.vis-item.forecast-item) {
+	background: #f0f0f0;
+	border: 1px dashed #aaa;
+	// transition: all 0.2s ease;
 }
 </style>

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { goodFinish, badFinish } from '@/stores/events'
 
 export type BpmnSelection = {
 	kind: 'bpmn'
@@ -30,7 +31,18 @@ export const useSelectionStore = defineStore('selection', () => {
 	const programmaticSelectId = ref<number | null>(null)
 
 	const selectedLateFilter = ref<boolean>(false)
+
 	const selectedForecast = ref<boolean>(false)
+	const forecastEvents = ref<MyEvent[]>([])
+
+	const loadForecastEvents = async () => {
+		if (current.value && current.value.kind == 'bpmn' && current.value.id == 'Event_1wwtnaa') {
+			forecastEvents.value = goodFinish
+		}
+		if (current.value && current.value.kind == 'bpmn' && current.value.id == 'Event_1yi1uuk') {
+			forecastEvents.value = badFinish
+		}
+	}
 
 	// прячем выходные на таймлайне
 	const hideWeekends = ref(true)
@@ -85,5 +97,7 @@ export const useSelectionStore = defineStore('selection', () => {
 		toggleWeekends,
 		selectedForecast,
 		clearForecast,
+		loadForecastEvents,
+		forecastEvents,
 	}
 })

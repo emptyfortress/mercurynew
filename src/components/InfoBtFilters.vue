@@ -12,6 +12,14 @@ const forecast = computed(() => {
 	}
 	return false
 })
+
+const toggleForecast = async () => {
+	selectedForecast.value = !selectedForecast.value
+
+	if (selectedForecast) {
+		await selectionStore.loadForecastEvents()
+	}
+}
 </script>
 
 <template lang="pug">
@@ -36,7 +44,7 @@ const forecast = computed(() => {
 		:selected="selectedForecast"
 		:color="selectedForecast ? 'primary' : 'grey-3'"
 		:text-color="selectedForecast ? 'white' : 'black'"
-		@click="selectedForecast = !selectedForecast"
+		@click="toggleForecast"
 	) прогноз
 		q-tooltip экспериментальная функция
 
