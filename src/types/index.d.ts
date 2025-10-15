@@ -153,6 +153,7 @@ interface MyEvent {
 	type?: string
 	current?: boolean
 	className?: string
+	editable?: any
 }
 
 type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'

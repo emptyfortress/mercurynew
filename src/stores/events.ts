@@ -1,14 +1,39 @@
-const events: MyEvent[] = [
+function addDays(baseDate: Date, days: number) {
+	const date = new Date(baseDate)
+	date.setDate(date.getDate() + days)
+	return date
+}
+
+function addWorkDays(baseDate: Date, workDays: number) {
+	const date = new Date(baseDate)
+	let remaining = Math.abs(workDays)
+	const direction = workDays >= 0 ? 1 : -1
+
+	while (remaining > 0) {
+		date.setDate(date.getDate() + direction)
+		const day = date.getDay()
+		if (day !== 0 && day !== 6) {
+			// 0 — воскресенье, 6 — суббота
+			remaining--
+		}
+	}
+	return date
+}
+
+const now = new Date()
+
+const events = [
 	{
 		id: 1,
 		sideId: 'Event_1t7b10m',
 		role: 'Инициатор',
 		name: 'Создал заявку',
 		fio: 'Орлов П.С.',
-		start: new Date(2025, 8, 29),
-		end: new Date(2025, 8, 29),
+		start: addWorkDays(now, -16),
+		end: addWorkDays(now, -16),
 		type: 'point',
 		className: 'start',
+		editable: false,
 	},
 	{
 		id: 2,
@@ -16,9 +41,10 @@ const events: MyEvent[] = [
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
 		fio: 'Соколов С.П.',
-		start: new Date(2025, 8, 30),
-		end: new Date(2025, 9, 2),
+		start: addWorkDays(now, -15),
+		end: addWorkDays(now, -12),
 		type: 'range',
+		editable: false,
 	},
 	{
 		id: 3,
@@ -26,9 +52,10 @@ const events: MyEvent[] = [
 		role: 'Инициатор',
 		fio: 'Орлов П.С.',
 		name: 'Исправить заявку',
-		start: new Date(2025, 9, 2),
-		end: new Date(2025, 9, 7),
+		start: addWorkDays(now, -12),
+		end: addWorkDays(now, -7),
 		type: 'range',
+		editable: false,
 	},
 	{
 		id: 4,
@@ -36,9 +63,10 @@ const events: MyEvent[] = [
 		role: 'Руководитель',
 		name: 'Согласовать заявку',
 		fio: 'Соколов С.П.',
-		start: new Date(2025, 9, 7),
-		end: new Date(2025, 9, 10),
+		start: addWorkDays(now, -7),
+		end: addWorkDays(now, -4),
 		type: 'range',
+		editable: false,
 	},
 	{
 		id: 5,
@@ -46,10 +74,15 @@ const events: MyEvent[] = [
 		role: 'Рассматривающий',
 		fio: 'Воронин A.A.',
 		name: 'Рассмотреть заявку',
-		start: new Date(2025, 9, 10),
-		end: new Date(),
+		start: addWorkDays(now, -4),
+		end: now,
 		type: 'range',
 		current: true,
+		editable: {
+			updateTime: true,
+			updateGroup: false,
+			remove: false,
+		},
 	},
 ]
 
@@ -60,10 +93,11 @@ const goodFinish: MyEvent[] = [
 		role: 'Исполнитель',
 		fio: 'Соловьев Б.Я.',
 		name: 'Исполнить заявку',
-		start: new Date(),
-		end: new Date(2025, 9, 15, 10, 0, 0),
+		start: now,
+		end: addWorkDays(now, 3),
 		type: 'range',
 		className: 'forecast-item item-6',
+		editable: { updateTime: true, updateGroup: false, remove: false },
 	},
 	{
 		id: 7,
@@ -71,21 +105,23 @@ const goodFinish: MyEvent[] = [
 		role: 'Инициатор',
 		fio: 'Соколов С.П.',
 		name: 'Принять результаты',
-		start: new Date(2025, 9, 15, 12, 0, 0),
-		end: new Date(2025, 9, 17),
+		start: addWorkDays(now, 3),
+		end: addWorkDays(now, 5),
 		type: 'range',
 		className: 'forecast-item item-7',
+		editable: { updateTime: true, updateGroup: false, remove: false },
 	},
 	{
 		id: 8,
 		sideId: 'Event_1wwtnaa',
 		role: 'Инициатор',
-		fio: '',
+		fio: 'Орлов П.С.',
 		name: 'Заявка выполнена',
-		start: new Date(2025, 9, 17),
-		end: new Date(2025, 9, 17),
+		start: addWorkDays(now, 5),
+		end: addWorkDays(now, 5),
 		type: 'point',
 		className: 'start item-8',
+		editable: { updateTime: false, updateGroup: false, remove: false },
 	},
 ]
 
@@ -96,19 +132,19 @@ const badFinish: MyEvent[] = [
 		role: 'Инициатор',
 		fio: '',
 		name: 'Обработать отказ',
-		start: new Date(),
-		end: new Date(2025, 9, 15, 10, 0, 0),
-		type: 'point',
+		start: now,
+		end: addWorkDays(now, 1),
+		type: 'range',
 		className: 'forecast-item item-9',
 	},
 	{
 		id: 10,
 		sideId: 'Event_1yi1uuk',
 		role: 'Инициатор',
-		fio: 'Соколов С.П.',
+		fio: 'Орлов П.С.',
 		name: 'Заявка отменена',
-		start: new Date(2025, 9, 15, 12, 0, 0),
-		end: new Date(2025, 9, 17),
+		start: addWorkDays(now, 1),
+		end: addWorkDays(now, 1),
 		type: 'point',
 		className: 'start item-10',
 	},

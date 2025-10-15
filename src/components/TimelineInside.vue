@@ -38,6 +38,7 @@ const items = new DataSet(
 		fio: ev.fio,
 		current: ev.current,
 		className: `item-${ev.id}`,
+		editable: ev.editable,
 	}))
 )
 
@@ -160,7 +161,7 @@ onMounted(() => {
 		horizontalScroll: true,
 		verticalScroll: true,
 		margin: { item: 12, axis: 12 },
-		editable: false,
+		// editable: false,
 		start: new Date(2025, 9, 21),
 		end: new Date(),
 		hiddenDates: hideWeekends.value ? hiddenWeekendsPattern : [],
