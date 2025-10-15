@@ -4,7 +4,7 @@ import { DataSet } from 'vis-data'
 import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
 import { centerWithPadding } from '@/utils/utils'
-import { events } from '@/stores/events'
+import { events, addWorkDays } from '@/stores/events'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 import type { TimelineHiddenDateOption } from 'vis-timeline'
@@ -41,6 +41,26 @@ const items = new DataSet(
 		editable: ev.editable,
 	}))
 )
+
+// snapshot текущих границ (start/end) всех элементов
+const snapshot = new Map<number, { start: Date | null; end: Date | null }>()
+// защита от рекурсии при cascade-обновлениях
+let isCascade = false
+// const previousRanges = new Map<number, { start: Date | null; end: Date | null }>()
+
+// инициализация snapshot из items
+function buildSnapshot() {
+	snapshot.clear()
+	const all = items.get() as any[]
+	all.forEach((ev: any) => {
+		snapshot.set(ev.id, {
+			start: ev.start ? new Date(ev.start) : null,
+			end: ev.end ? new Date(ev.end) : null,
+		})
+	})
+}
+// вызов один раз при старте
+buildSnapshot()
 
 /* ---------- refs & state ---------- */
 const wrapper = ref<HTMLElement | null>(null) // outer wrapper
@@ -161,7 +181,13 @@ onMounted(() => {
 		horizontalScroll: true,
 		verticalScroll: true,
 		margin: { item: 12, axis: 12 },
-		// editable: false,
+		editable: {
+			add: false,
+			updateTime: false,
+			updateGroup: false,
+			remove: false,
+			overrideItems: false,
+		},
 		start: new Date(2025, 9, 21),
 		end: new Date(),
 		hiddenDates: hideWeekends.value ? hiddenWeekendsPattern : [],
@@ -216,6 +242,7 @@ onMounted(() => {
 	// создаём timeline: items, groups
 	timeline = new Timeline(timelineEl.value, items as any, options)
 
+	buildSnapshot() // remove
 	// центрируем окно на все события
 	centerWithPadding(timeline, events, 0.1)
 	// timeline.fit()
@@ -226,15 +253,27 @@ onMounted(() => {
 	const onChange = () => setTimeout(scheduleRedraw, 20) // даём vis время на рендер
 	;(timeline as any).on('changed', onChange)
 	;(timeline as any).on('rangechanged', onChange)
-	window.addEventListener('resize', onChange)
+	window.addEventListener('resize', onChange, { passive: true })
 
 	// первичная отрисовка
 	scheduleRedraw()
 	;(timeline as any).redraw?.()
 
-	// selection ******************************
 	timeline.on('select', (properties) => {
 		const id = properties.items[0]
+
+		// --- сохраняем старые значения start/end для выбранных элементов ---
+		properties.items.forEach((selectedId) => {
+			const ev = items.get(selectedId)
+			if (ev) {
+				// обновим snapshot для выбранного элемента
+				snapshot.set(selectedId, {
+					start: ev.start ? new Date(ev.start) : null,
+					end: ev.end ? new Date(ev.end) : null,
+				})
+			}
+		})
+		// ---------------------------------------------------------------
 
 		// снимаем выделение и подсветку со всех событий
 		document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
@@ -244,7 +283,6 @@ onMounted(() => {
 		if (id != null) {
 			// если выбрано событие
 			const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-
 			el?.classList.add('vis-selected')
 
 			const item = items.get(id) as unknown as MyEvent | undefined
@@ -255,6 +293,102 @@ onMounted(() => {
 		} else {
 			// если кликнули в пустоту → очищаем выбор
 			selectionStore.clear()
+		}
+	})
+
+	// нормализатор payload -> array of ids
+	function normalizeToIds(payload: any): (number | string)[] {
+		if (!payload) return []
+		if (Array.isArray(payload)) return payload
+		if (typeof payload === 'number' || typeof payload === 'string') return [payload]
+		if (payload && typeof payload === 'object') {
+			if ('id' in payload) return [payload.id]
+			if ('items' in payload && Array.isArray(payload.items)) return payload.items
+		}
+		try {
+			return Array.from(payload)
+		} catch (e) {
+			return []
+		}
+	}
+
+	// items.on('update', (payload: any) => {
+	timeline.on('change', (payload: any) => {
+		if (isCascade) return // если мы обновляем в cascade — игнорируем
+
+		const updatedIds = normalizeToIds(payload)
+
+		// DEBUG: если нужно, распечатай payload для понимания формы
+		// console.log('items.update payload:', payload, '->', updatedIds);
+
+		const toUpdateSnapshot: number[] = [] // id, которые надо записать в snapshot после обработки
+
+		updatedIds.forEach((idRaw) => {
+			const id = Number(idRaw)
+			const current = items.get(id)
+			const prev = snapshot.get(id)
+			if (!current || !prev) {
+				// если нет предыдущих данных — просто отметим обновление и запомним текущее состояние
+				toUpdateSnapshot.push(id)
+				return
+			}
+
+			const prevStartMs = prev.start ? prev.start.getTime() : null
+			const prevEndMs = prev.end ? prev.end.getTime() : null
+			const nowStartMs = current.start ? new Date(current.start).getTime() : null
+			const nowEndMs = current.end ? new Date(current.end).getTime() : null
+
+			const startChanged = prevStartMs !== null && nowStartMs !== null && prevStartMs !== nowStartMs
+			const endChanged = prevEndMs !== null && nowEndMs !== null && prevEndMs !== nowEndMs
+
+			// 1) Если изменился старт (возможно это move) — запрещаем перемещение: откатываем
+			if (startChanged) {
+				// откатываем к prev
+				items.update({
+					id,
+					start: prev.start as Date,
+					end: prev.end as Date,
+				})
+				nextTick(() => timeline?.redraw?.())
+				// не добавляем в toUpdateSnapshot - snapshot уже правильный
+				return
+			}
+
+			// 2) Если изменился только end — это ресайз, считаем delta и делаем cascade
+			if (endChanged && !startChanged) {
+				const oldEnd = prev.end as Date
+				const newEnd = new Date(current.end)
+				const deltaDays = computeWorkdayDelta(oldEnd, newEnd)
+				if (deltaDays !== 0) {
+					// isCascade = true
+					try {
+						cascadeShift(id, deltaDays)
+					} finally {
+						isCascade = false
+					}
+					// после cascade — обновим весь snapshot (т.к. мы сместили многие элементы)
+					buildSnapshot()
+					return
+				} else {
+					// если delta 0 — просто обновим snapshot для этого id
+					toUpdateSnapshot.push(id)
+					return
+				}
+			}
+
+			// 3) прочие случаи (например, отсутствие end или нераспознанный payload) — обновляем snapshot
+			toUpdateSnapshot.push(id)
+		})
+
+		// обновляем snapshot для тех элементов, которые изменились напрямую
+		if (toUpdateSnapshot.length) {
+			toUpdateSnapshot.forEach((id) => {
+				const ev = items.get(id)
+				snapshot.set(id, {
+					start: ev.start ? new Date(ev.start) : null,
+					end: ev.end ? new Date(ev.end) : null,
+				})
+			})
 		}
 	})
 })
@@ -387,6 +521,38 @@ watch(
 		}
 	}
 )
+
+// Вычисляем разницу в рабочих днях между датами
+function computeWorkdayDelta(d1, d2) {
+	const dir = d2 > d1 ? 1 : -1
+	let delta = 0
+	let date = new Date(d1)
+	while ((dir > 0 && date < d2) || (dir < 0 && date > d2)) {
+		date = addWorkDays(date, dir)
+		delta += dir
+	}
+	return delta
+}
+
+// Каскадное обновление всех последующих событий
+function cascadeShift(changedId: number, deltaDays: number) {
+	isCascade = true
+	const all = items.get().sort((a: any, b: any) => a.id - b.id)
+	const index = all.findIndex((ev: any) => ev.id === changedId)
+	if (index === -1) return
+
+	const updates: any[] = []
+	for (let i = index + 1; i < all.length; i++) {
+		const ev = all[i]
+		const newStart = addWorkDays(ev.start, deltaDays)
+		const newEnd = ev.end ? addWorkDays(ev.end, deltaDays) : null
+		updates.push({ id: ev.id, start: newStart, end: newEnd })
+	}
+
+	if (updates.length > 0) {
+		items.update(updates) // одно массовое обновление
+	}
+}
 </script>
 
 <template lang="pug">

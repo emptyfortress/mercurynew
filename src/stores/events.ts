@@ -153,4 +153,4 @@ const badFinish: MyEvent[] = [
 const goodHightlights = ['Flow_18z4ruq', 'Flow_1il0hqn', 'Flow_1w67ag7', 'Flow_14xgday']
 const badHightlights = ['Flow_18z4ruq', 'Flow_0y6nr5i', 'Flow_1vjwrgg', 'Flow_1y5q21t']
 
-export { events, goodFinish, badFinish, goodHightlights, badHightlights }
+export { events, goodFinish, badFinish, goodHightlights, badHightlights, addWorkDays }
