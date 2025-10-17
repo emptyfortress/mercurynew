@@ -28,7 +28,7 @@ export type Selection = TimelineSelection | BpmnSelection | null
 
 export const useSelectionStore = defineStore('selection', () => {
 	const current = ref<Selection>(null)
-	const programmaticSelectId = ref<number | null>(null)
+	const programmaticSelectId = ref<string | null>(null)
 
 	const selectedLateFilter = ref<boolean>(false)
 

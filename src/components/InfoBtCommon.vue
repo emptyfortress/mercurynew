@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useSelectionStore } from '@/stores/selection'
 
-const { selectById } = useSelectionStore()
+const store = useSelectionStore()
+const select = () => {
+	store.programmaticSelectId = 'Activity_0vjxzxe'
+}
 </script>
 
 <template lang="pug">
@@ -20,7 +23,7 @@ const { selectById } = useSelectionStore()
 	label Совершено циклов:
 	div 2
 	label Текущий этап:
-	.link(@click='selectById(5)') Рассмотреть заявку
+	.link(@click='select') Рассмотреть заявку
 </template>
 
 <style scoped lang="scss">

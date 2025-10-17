@@ -45,6 +45,8 @@ const items = new DataSet(
 // snapshot текущих границ (start/end) всех элементов
 const snapshot = new Map<number, { start: Date | null; end: Date | null }>()
 
+console.log(snapshot)
+
 // console.log(snapshot)
 // защита от рекурсии при cascade-обновлениях
 let isCascade = false
@@ -156,6 +158,7 @@ function scheduleRedraw() {
 
 // select by id ***************************
 const selectById = (id: number) => {
+	console.log(id)
 	const item = items.get(id)
 	if (item && !item.className?.includes('vis-late')) {
 		items.update({ id, className: `${item.className || ''} vis-late` })
@@ -174,6 +177,13 @@ const hiddenWeekendsPattern: TimelineHiddenDateOption[] = [
 	{ start: '2025-10-04 00:00:00', end: '2025-10-06 00:00:00', repeat: 'weekly' },
 ]
 
+// function normalizeDate(date: Date | null): Date | null {
+// 	if (!date) return null
+// 	const d = new Date(date)
+// 	d.setHours(0, 0, 0, 0)
+// 	return d
+// }
+
 onMounted(() => {
 	if (!timelineEl.value || !wrapper.value) return
 
@@ -190,13 +200,6 @@ onMounted(() => {
 			remove: false,
 			overrideItems: false,
 		},
-		snap: (date, scale, step) => {
-			const snapped = new Date(date)
-			// Обнуляем время, оставляем только дату
-			snapped.setHours(0, 0, 0, 0)
-
-			return snapped
-		},
 		start: new Date(2025, 9, 21),
 		end: new Date(),
 		hiddenDates: hideWeekends.value ? hiddenWeekendsPattern : [],
@@ -204,7 +207,7 @@ onMounted(() => {
 		xss: {
 			disabled: true,
 		},
-		onMoving: (item, callback) => {
+		onMoving: (item: any, callback: (item: any | null) => void) => {
 			const prev = snapshot.get(item.id)
 			if (!prev) return callback(item)
 
@@ -230,8 +233,7 @@ onMounted(() => {
 			// return callback(item)
 			return callback(null)
 		},
-
-		onMove: (item, callback) => {
+		onMove: (item: any, callback: (item: any | null) => void) => {
 			const prev = snapshot.get(item.id)
 			if (!prev) return callback(item)
 
@@ -252,7 +254,6 @@ onMounted(() => {
 					scheduleRedraw()
 				}
 			}
-
 			// обновляем snapshot этого элемента
 			snapshot.set(item.id, {
 				start: item.start ? new Date(item.start) : null,
@@ -329,7 +330,7 @@ onMounted(() => {
 		const id = properties.items[0]
 
 		// --- сохраняем старые значения start/end для выбранных элементов ---
-		properties.items.forEach((selectedId) => {
+		properties.items.forEach((selectedId: number) => {
 			const ev = items.get(selectedId)
 			if (ev) {
 				// обновим snapshot для выбранного элемента
@@ -509,7 +510,7 @@ watch(
 )
 
 // Вычисляем разницу в рабочих днях между датами
-function computeWorkdayDelta(d1, d2) {
+function computeWorkdayDelta(d1: Date, d2: Date): number {
 	const dir = d2 > d1 ? 1 : -1
 	let delta = 0
 	let date = new Date(d1)

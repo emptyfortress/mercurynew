@@ -12,7 +12,7 @@ import 'bpmn-js/dist/assets/diagram-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 
 const selectionStore = useSelectionStore()
-const { current } = storeToRefs(selectionStore)
+const { current, programmaticSelectId } = storeToRefs(selectionStore)
 const container = ref<HTMLDivElement | null>(null)
 const viewer = ref<SelectableViewer | null>(null)
 
@@ -182,6 +182,20 @@ watch(current, (val) => {
 
 	if (val == null && currentHighlightedId) {
 		unhighlightByDom(currentHighlightedId)
+	}
+})
+watch(programmaticSelectId, (val) => {
+	if (val) {
+		const selectionService = viewer.value?.get('selection') as any
+		const elementRegistry = viewer.value?.get('elementRegistry') as any
+
+		const elementToSelect = elementRegistry.get('Activity_0vjxzxe')
+		if (elementToSelect) {
+			selectionService.select(elementToSelect)
+		}
+		nextTick(() => {
+			programmaticSelectId.value = null
+		})
 	}
 })
 

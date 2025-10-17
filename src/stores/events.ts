@@ -4,7 +4,7 @@
 // 	return date
 // }
 
-function addWorkDays(baseDate: Date, workDays: number) {
+function addWorkDays(baseDate: Date, workDays: number): Date {
 	const date = new Date(baseDate)
 	let remaining = Math.abs(workDays)
 	const direction = workDays >= 0 ? 1 : -1
@@ -78,10 +78,11 @@ const events = [
 		fio: 'Воронин A.A.',
 		name: 'Рассмотреть заявку',
 		start: addWorkDays(now, -4),
-		end: now,
+		end: addWorkDays(now, 1),
 		type: 'range',
 		current: true,
-		editable: { updateTime: true, updateGroup: false, remove: false },
+		editable: false,
+		// editable: { updateTime: true, updateGroup: false, remove: false },
 	},
 ]
 
@@ -92,7 +93,7 @@ const goodFinish: MyEvent[] = [
 		role: 'Исполнитель',
 		fio: 'Соловьев Б.Я.',
 		name: 'Исполнить заявку',
-		start: now,
+		start: addWorkDays(now, 1),
 		end: addWorkDays(now, 3),
 		type: 'range',
 		className: 'forecast-item item-6',
@@ -131,8 +132,8 @@ const badFinish: MyEvent[] = [
 		role: 'Инициатор',
 		fio: '',
 		name: 'Обработать отказ',
-		start: now,
-		end: addWorkDays(now, 1),
+		start: addWorkDays(now, 1),
+		end: addWorkDays(now, 2),
 		type: 'range',
 		className: 'forecast-item item-9',
 	},
@@ -142,8 +143,8 @@ const badFinish: MyEvent[] = [
 		role: 'Инициатор',
 		fio: 'Орлов П.С.',
 		name: 'Заявка отменена',
-		start: addWorkDays(now, 1),
-		end: addWorkDays(now, 1),
+		start: addWorkDays(now, 2),
+		end: addWorkDays(now, 2),
 		type: 'point',
 		className: 'start item-10',
 	},
