@@ -44,6 +44,8 @@ const items = new DataSet(
 
 // snapshot текущих границ (start/end) всех элементов
 const snapshot = new Map<number, { start: Date | null; end: Date | null }>()
+
+// console.log(snapshot)
 // защита от рекурсии при cascade-обновлениях
 let isCascade = false
 // const previousRanges = new Map<number, { start: Date | null; end: Date | null }>()
@@ -183,10 +185,17 @@ onMounted(() => {
 		margin: { item: 12, axis: 12 },
 		editable: {
 			add: false,
-			updateTime: false,
+			updateTime: true,
 			updateGroup: false,
 			remove: false,
 			overrideItems: false,
+		},
+		snap: (date, scale, step) => {
+			const snapped = new Date(date)
+			// Обнуляем время, оставляем только дату
+			snapped.setHours(0, 0, 0, 0)
+
+			return snapped
 		},
 		start: new Date(2025, 9, 21),
 		end: new Date(),
@@ -194,6 +203,63 @@ onMounted(() => {
 		locale: 'ru',
 		xss: {
 			disabled: true,
+		},
+		onMoving: (item, callback) => {
+			const prev = snapshot.get(item.id)
+			if (!prev) return callback(item)
+
+			const prevStart = prev.start ? prev.start.getTime() : null
+			const prevEnd = prev.end ? prev.end.getTime() : null
+			const nowStart = item.start ? new Date(item.start).getTime() : null
+			const nowEnd = item.end ? new Date(item.end).getTime() : null
+
+			const startChanged = prevStart !== null && nowStart !== null && prevStart !== nowStart
+			const endChanged = prevEnd !== null && nowEnd !== null && prevEnd !== nowEnd
+
+			// 🚫 Если изменился старт — блокируем движение (нельзя сдвигать событие)
+			if (startChanged && !endChanged) {
+				return callback(null)
+			}
+
+			// ✅ Если изменился конец — разрешаем (изменение длительности)
+			if (endChanged && !startChanged) {
+				return callback(item)
+			}
+
+			// иначе просто разрешаем (на всякий случай)
+			// return callback(item)
+			return callback(null)
+		},
+
+		onMove: (item, callback) => {
+			const prev = snapshot.get(item.id)
+			if (!prev) return callback(item)
+
+			const prevEnd = prev.end ? new Date(prev.end) : null
+			const nowEnd = item.end ? new Date(item.end) : null
+
+			if (prevEnd && nowEnd && prevEnd.getTime() !== nowEnd.getTime()) {
+				const deltaDays = computeWorkdayDelta(prevEnd, nowEnd)
+				if (deltaDays !== 0) {
+					isCascade = true
+					try {
+						cascadeShift(item.id, deltaDays)
+					} finally {
+						isCascade = false
+					}
+					buildSnapshot()
+					timeline?.redraw?.()
+					scheduleRedraw()
+				}
+			}
+
+			// обновляем snapshot этого элемента
+			snapshot.set(item.id, {
+				start: item.start ? new Date(item.start) : null,
+				end: item.end ? new Date(item.end) : null,
+			})
+
+			callback(item)
 		},
 		template: function (item: MyEvent, element: HTMLElement, data: any) {
 			if (item.current) {
@@ -311,86 +377,6 @@ onMounted(() => {
 			return []
 		}
 	}
-
-	// items.on('update', (payload: any) => {
-	timeline.on('change', (payload: any) => {
-		if (isCascade) return // если мы обновляем в cascade — игнорируем
-
-		const updatedIds = normalizeToIds(payload)
-
-		// DEBUG: если нужно, распечатай payload для понимания формы
-		// console.log('items.update payload:', payload, '->', updatedIds);
-
-		const toUpdateSnapshot: number[] = [] // id, которые надо записать в snapshot после обработки
-
-		updatedIds.forEach((idRaw) => {
-			const id = Number(idRaw)
-			const current = items.get(id)
-			const prev = snapshot.get(id)
-			if (!current || !prev) {
-				// если нет предыдущих данных — просто отметим обновление и запомним текущее состояние
-				toUpdateSnapshot.push(id)
-				return
-			}
-
-			const prevStartMs = prev.start ? prev.start.getTime() : null
-			const prevEndMs = prev.end ? prev.end.getTime() : null
-			const nowStartMs = current.start ? new Date(current.start).getTime() : null
-			const nowEndMs = current.end ? new Date(current.end).getTime() : null
-
-			const startChanged = prevStartMs !== null && nowStartMs !== null && prevStartMs !== nowStartMs
-			const endChanged = prevEndMs !== null && nowEndMs !== null && prevEndMs !== nowEndMs
-
-			// 1) Если изменился старт (возможно это move) — запрещаем перемещение: откатываем
-			if (startChanged) {
-				// откатываем к prev
-				items.update({
-					id,
-					start: prev.start as Date,
-					end: prev.end as Date,
-				})
-				nextTick(() => timeline?.redraw?.())
-				// не добавляем в toUpdateSnapshot - snapshot уже правильный
-				return
-			}
-
-			// 2) Если изменился только end — это ресайз, считаем delta и делаем cascade
-			if (endChanged && !startChanged) {
-				const oldEnd = prev.end as Date
-				const newEnd = new Date(current.end)
-				const deltaDays = computeWorkdayDelta(oldEnd, newEnd)
-				if (deltaDays !== 0) {
-					// isCascade = true
-					try {
-						cascadeShift(id, deltaDays)
-					} finally {
-						isCascade = false
-					}
-					// после cascade — обновим весь snapshot (т.к. мы сместили многие элементы)
-					buildSnapshot()
-					return
-				} else {
-					// если delta 0 — просто обновим snapshot для этого id
-					toUpdateSnapshot.push(id)
-					return
-				}
-			}
-
-			// 3) прочие случаи (например, отсутствие end или нераспознанный payload) — обновляем snapshot
-			toUpdateSnapshot.push(id)
-		})
-
-		// обновляем snapshot для тех элементов, которые изменились напрямую
-		if (toUpdateSnapshot.length) {
-			toUpdateSnapshot.forEach((id) => {
-				const ev = items.get(id)
-				snapshot.set(id, {
-					start: ev.start ? new Date(ev.start) : null,
-					end: ev.end ? new Date(ev.end) : null,
-				})
-			})
-		}
-	})
 })
 
 onBeforeUnmount(() => {
