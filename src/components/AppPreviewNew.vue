@@ -5,9 +5,9 @@ import { useRouter, useRoute } from 'vue-router'
 import { useQuasar, date } from 'quasar'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import AddDialog from '@/components/AddDialog.vue'
-import VersionList from '@/components/VersionList.vue'
+import VersionList0 from '@/components/VersionList0.vue'
 import { useVersion } from '@/stores/version'
-import SvgSpinnersBarsRotateFade from '@/components/icons/SvgSpinnersBarsRotateFade.vue'
+// import SvgSpinnersBarsRotateFade from '@/components/icons/SvgSpinnersBarsRotateFade.vue'
 import MappingDialog from '@/components/MappingDialog.vue'
 
 const myapps = useApps()
@@ -197,126 +197,17 @@ const localPubDate = computed(() => {
 		q-popup-edit(v-model="props.item.descr" auto-save v-slot="scope")
 			q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
 
-	.mygrid.q-mt-sm
-		label Автор приложения:
-		.val {{ props.item.author}}
-		label Создано:
-		.val {{ showDate(props.item.created)}}
-
-	q-tabs.q-mt-md(v-model="tab" align="left" dense active-color='primary')
-		q-tab(name='setup' label='Настройка' @click.stop)
-		q-tab(name='publ' label='Публикация' @click.stop)
-		q-tab(name='vers' label='Версии' @click.stop)
-
-	q-tab-panels(v-model="tab" animated)
-		q-tab-panel(name='setup')
-			.newgrid
-
-				.mygrid
-					label Версия:
-					.text-bold {{ myapps.curVersion(props.item).label }}
-					label Статус:
-					.text-bold
-						span(v-if='myapps.curVersion(props.item).published == 0') Черновик
-						span.pub(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
-						span.pub(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
-
-				.mygrid
-					label Версию создал:
-					.val {{ myapps.curVersion(props.item).author }}
-
-					label Изменено:
-					template(v-if='myapps.curVersion(props.item).modified !== null')
-						.val
-							div {{ showDate(myapps.curVersion(props.item).modified) }}
-							div(v-if='props.item.id !== "1"')
-								|Орлов П.С.
-							div(v-else style='font-weight: bold;')
-								|Роза Львовна
+	.flex
+		.mygrid.q-mt-sm
+			label Автор приложения:
+			.val {{ props.item.author}}
+			label Создано:
+			.val {{ showDate(props.item.created)}}
+		q-btn.q-mt-sm(v-if='props.item.master' unelevated color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" size='sm') 
 
 
-			.myrow
-				q-btn(v-if='props.item.master' unelevated color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" ) 
-
-				template(v-if='myapps.curVersion(props.item).published == 0')
-					q-btn(:outline='!state' color="primary" icon='mdi-pencil-outline' label='Редактировать' @click="navigate1" ) 
-					q-btn(v-if='myapps.curVersion(props.item).modified !== null' outline color="primary" icon='mdi-eye-check-outline' label='Проверить версию' @click="openUrl" ) 
-
-				template(v-if='myapps.curVersion(props.item).published > 0')
-					q-btn(unelevated color="primary" icon='mdi-eye-outline' label='Просмотр' @click="navigate1" ) 
-					q-btn(outline color="primary" icon='mdi-plus-circle-outline' label='Создать версию' @click="add" ) 
-
-				q-btn(flat round dense icon="mdi-dots-horizontal" color="primary" @click.stop='') 
-					q-menu(anchor="bottom middle" self="top middle")
-						q-item(clickable @click.stop='duble(props.item)' v-close-popup)
-							q-item-section(side)
-								q-icon(name="mdi-plus-box-multiple-outline")
-							q-item-section Дублировать приложение
-
-						q-item(clickable @click='remove(props.item)' v-close-popup)
-							q-item-section(side)
-								q-icon(name="mdi-delete-outline")
-							q-item-section Удалить приложение
-
-			.q-mt-md(v-if='precheck')
-				.check1
-					SvgSpinnersBarsRotateFade.big
-					div Выполняется загрузка версии на тестовый сервер.
-
-
-
-			.q-mt-md
-				.check(v-if='letcheck')
-					div {{myapps.curVersion(props.item).label}}&nbsp;--&nbsp;{{myapps.curVersion(props.item).tested}}
-					div загружена для проверки в БД
-					.link.text-bold DV-test
-
-				.check(v-if='myapps.curVersion(props.item).published == 2')
-					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }}&nbsp;&nbsp;опубликована Орловым П.С. в БД
-					.link.text-bold DV-prod
-
-		q-tab-panel(name='publ')
-			.newgrid
-
-				.mygrid
-					label Версия:
-					.text-bold {{ myapps.curVersion(props.item).label }}
-					label Статус:
-					.text-bold
-						span(v-if='myapps.curVersion(props.item).published == 0') Черновик
-						span.pub(v-if='myapps.curVersion(props.item).published == 1') Ожидает&nbsp;публикации
-						span.pub(v-if='myapps.curVersion(props.item).published == 2') Опубликовано
-
-				.mygrid
-					label Версию создал:
-					.val {{ myapps.curVersion(props.item).author }}
-
-					label Изменено:
-					template(v-if='myapps.curVersion(props.item).modified !== null')
-						.val
-							div {{ showDate(myapps.curVersion(props.item).modified) }}
-							div(v-if='props.item.id !== "1"')
-								|Орлов П.С.
-							div(v-else style='font-weight: bold;')
-								|Роза Львовна
-
-
-
-			.full
-							q-btn(color="primary" unelevated :disable="myapps.curVersion(props.item).published > 0 || myapps.curVersion(props.item).modified == null" icon="mdi-cloud-upload-outline" label="Опубликовать" @click.stop="handlePub" size='md') 
-
-			.q-mt-md(v-if='precheck1')
-				.check1
-					SvgSpinnersBarsRotateFade.big
-					div Выполняется публикация версии на сервер.
-
-			.check.q-mt-md(v-if='!precheck1 && myapps.curVersion(props.item).published == 2')
-					div Последняя&nbsp;публикация:
-					div {{myapps.curVersion(props.item).label}} -- {{ localPubDate }} -- Орлов П.С.
-					.link.text-bold DV-prod
-
-		q-tab-panel(name='vers' style='padding-right: 0; padding-left: 0')
-			VersionList(:versions="props.item.versions")
+	br
+	VersionList0(:versions="props.item.versions")
 
 			
 	MappingDialog(v-model="dialog2" bd='DV-prod' @publish="publish")
@@ -351,6 +242,11 @@ const localPubDate = computed(() => {
 
 .create {
 	grid-column: 1/-1;
+}
+.flex {
+	display: flex;
+	gap: 3rem;
+	align-items: center;
 }
 .mygrid {
 	display: grid;

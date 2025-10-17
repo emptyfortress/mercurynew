@@ -37,8 +37,8 @@ export const useApps = defineStore('apps', () => {
 			versions: [
 				{
 					id: 0,
-					label: 'Базовая версия',
-					value: 'Базовая версия',
+					label: 'Базовая',
+					value: 'Базовая',
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: 1755513353568,
@@ -66,8 +66,8 @@ export const useApps = defineStore('apps', () => {
 			versions: [
 				{
 					id: 0,
-					label: 'Базовая версия',
-					value: 'Базовая версия',
+					label: 'Базовая',
+					value: 'Базовая',
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: 1755513353568,
@@ -108,8 +108,8 @@ export const useApps = defineStore('apps', () => {
 					versions: [
 						{
 							id: 0,
-							label: 'Базовая версия',
-							value: 'Базовая версия',
+							label: 'Базовая',
+							value: 'Базовая',
 							descr: 'Стартовая версия приложения',
 							created: 1755513353568,
 							author: 'Орлов П.С.',
@@ -137,8 +137,8 @@ export const useApps = defineStore('apps', () => {
 					versions: [
 						{
 							id: 0,
-							label: 'Базовая версия',
-							value: 'Базовая версия',
+							label: 'Базовая',
+							value: 'Базовая',
 							descr: 'Стартовая версия приложения',
 							author: 'Орлов П.С.',
 							created: 1755513353568,
@@ -166,8 +166,8 @@ export const useApps = defineStore('apps', () => {
 					versions: [
 						{
 							id: 0,
-							label: 'Базовая версия',
-							value: 'Базовая версия',
+							label: 'Базовая',
+							value: 'Базовая',
 							descr: 'Стартовая версия приложения',
 							created: 1755513353568,
 							author: 'Орлов П.С.',
@@ -197,8 +197,8 @@ export const useApps = defineStore('apps', () => {
 			versions: [
 				{
 					id: 0,
-					label: 'Базовая версия',
-					value: 'Базовая версия',
+					label: 'Базовая',
+					value: 'Базовая',
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: 1755513353568,
@@ -226,8 +226,8 @@ export const useApps = defineStore('apps', () => {
 			versions: [
 				{
 					id: 0,
-					label: 'Базовая версия',
-					value: 'Базовая версия',
+					label: 'Базовая',
+					value: 'Базовая',
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: 1755513353568,
