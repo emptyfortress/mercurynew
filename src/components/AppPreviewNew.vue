@@ -207,7 +207,7 @@ const localPubDate = computed(() => {
 
 
 	br
-	VersionList0(:versions="props.item.versions")
+	VersionList0(:versions="props.item.versions" :item='props.item')
 
 			
 	MappingDialog(v-model="dialog2" bd='DV-prod' @publish="publish")

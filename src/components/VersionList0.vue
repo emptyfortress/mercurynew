@@ -5,13 +5,15 @@ import type { QTableProps } from 'quasar'
 import { useQuasar, date } from 'quasar'
 import AddDialog from '@/components/AddDialog.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
 
 const router = useRouter()
+const route = useRoute()
 
 const props = defineProps<{
 	versions: Ver[]
+	item: App
 }>()
 
 const myapps = useApps()
@@ -25,14 +27,6 @@ const cols: QTableProps['columns'] = [
 		field: 'ver',
 		sortable: false,
 	},
-	// {
-	// 	name: 'author',
-	// 	required: true,
-	// 	label: 'Автор',
-	// 	align: 'left',
-	// 	field: 'author',
-	// 	sortable: true,
-	// },
 	{
 		name: 'modified',
 		required: true,
@@ -73,6 +67,33 @@ const cols: QTableProps['columns'] = [
 		align: 'left',
 		field: 'action',
 		sortable: false,
+	},
+]
+
+const rows = [
+	{
+		id: 0,
+		label: 'Базовая-copy',
+		modified: '18.10.25',
+		published: 0,
+		test: '--',
+		prod: '--',
+	},
+	{
+		id: 1,
+		label: 'Базовая',
+		modified: '25.09.25',
+		published: 1,
+		test: '25.09.25',
+		prod: '--',
+	},
+	{
+		id: 2,
+		label: 'Начальная',
+		modified: '23.09.25',
+		published: 2,
+		test: '23.09.25',
+		prod: '23.09.25',
 	},
 ]
 
@@ -226,15 +247,31 @@ const formatDate = (e: number) => {
 const btmenu = [
 	{ id: 0, label: 'Тестировать', icon: 'mdi-test-tube', action: '' },
 	{ id: 1, label: 'Опубликовать', icon: 'mdi-cloud-upload-outline', action: '' },
-	{ id: 2, label: 'Создать версию на основе', icon: 'mdi-plus-box-multiple-outline', action: '' },
+	// { id: 2, label: 'Создать версию на основе', icon: 'mdi-plus-box-multiple-outline', action: '' },
 	{ id: 3, label: 'Удалить', icon: 'mdi-delete-outline', action: '' },
 ]
+const btmenu2 = [
+	{ id: 0, label: 'Просмотреть', icon: 'mdi-eye', action: '' },
+	// { id: 1, label: 'Опубликовать', icon: 'mdi-cloud-upload-outline', action: '' },
+	{ id: 2, label: 'Создать версию на основе', icon: 'mdi-plus-box-multiple-outline', action: '' },
+	// { id: 3, label: 'Удалить', icon: 'mdi-delete-outline', action: '' },
+]
+
+const navigate = async () => {
+	// const path = route.fullPath.toString()
+	await router.push('/process')
+	myapps.setCurrentApp(props.item)
+	// myapps.currentApp!.master = false
+	// myapps.setGroupPath(group.value ? path : '')
+	// myapps.setPath(group.value ? '' : path)
+	myapps.curVersion(props.item).modified = Date.now()
+}
 </script>
 
 <template lang="pug">
 q-table(flat
 	:columns="cols"
-	:rows='props.versions'
+	:rows='rows'
 	row-key="id"
 	color="primary"
 	dense
@@ -251,7 +288,7 @@ q-table(flat
 			) {{ col.label }}
 
 	template(v-slot:body="props")
-		q-tr(:props="props")
+		q-tr(:props="props" :class="props.rowIndex === 0 ? 'first-row-separator' : ''")
 			q-td(auto-width)
 				q-btn(size="sm" color="primary" round flat dense @click="props.expand = !props.expand" icon="mdi-chevron-right")
 			q-td
@@ -263,21 +300,33 @@ q-table(flat
 				.caption(v-if='props.row.published == 1' ) Ожидает публикации
 				.caption(v-if='props.row.published == 2' ) Опубликовано
 
-			q-td dv-test
-			q-td dv-prod
+			q-td {{ props.row.test }}
+			q-td {{ props.row.prod }}
 			q-td.text-right()
-				q-btn-dropdown(unelevated split icon='mdi-pencil' color="primary" label="Редактировать" size='sm')
+				q-btn-dropdown(v-if='props.row.id == 0' unelevated split icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='navigate')
 					q-list
 						q-item(clickable v-for="item in btmenu" :key='item.id' v-close-popup @click="")
 							q-item-section(side)
 								q-icon(:name="item.icon" color="primary")
 							q-item-section
 								q-item-label {{ item.label }}
+				q-btn(v-else flat round color="primary" size='sm')
+					q-icon(name="mdi-dots-vertical"  size="24px")
+					q-menu
+						q-list
+							q-item(clickable v-for="item in btmenu2" :key="item.id" v-close-popup)
+								q-item-section(side)
+									q-icon(:name="item.icon" color="primary")
+								q-item-section {{ item.label }}
+
 
 		q-tr(v-show="props.expand" :props="props")
 			q-td(colspan="100%")
 				.text-left This is expand slot for row above: {{ props.row.name }}.
 
+		q-tr(v-if="props.rowIndex === 0" class="empty-row-spacer")
+			q-td(:colspan="props.cols.length + 1")
+			
 	// template(v-slot:body-cell-ver='props')
 	// 	q-td(:props='props')
 	// 		.text-bold {{ props.row.label }}
@@ -424,5 +473,9 @@ ConfirmDialog(v-model="dialog1" :mode='ve')
 	margin-top: 1rem;
 	display: flex;
 	gap: 1rem;
+}
+:deep(.first-row-separator td) {
+	border-bottom: 2px solid $primary !important;
+	background-color: var(--node);
 }
 </style>

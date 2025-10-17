@@ -116,12 +116,24 @@ const toHome = () => {
 <template lang="pug">
 q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 
-	q-btn.back(v-if='back' round
+	// q-btn.back(v-if='back' round
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
 		@click="toHome" size="16px" color='primary') 
 		component(:is="iconComp")
+		q-tooltip( anchor="center end" self="center start") Управление приложением
+
+	q-btn.back(v-if='back'
+		v-motion
+		:initial='{ x: -200, opacity: 0 }'
+		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
+		round,
+		color="white",
+		text-color="primary"
+		@click="toHome"
+		size="16px"
+		icon="mdi-arrow-left",)
 		q-tooltip( anchor="center end" self="center start") Управление приложением
 
 	q-btn.back1(
