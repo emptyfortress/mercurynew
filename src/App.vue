@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, shallowRef, nextTick } from 'vue'
+import { ref, computed, shallowRef, nextTick, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
@@ -288,6 +288,15 @@ const title = computed(() => {
 
 	return `Настройка приложения "${app.value.label}"`
 })
+
+const saveDialog = ref(false)
+
+onMounted(() => {
+	setTimeout(() => {
+		saveDialog.value = true
+	}, 4000)
+})
+const showInfo = ref(false)
 </script>
 
 <template lang="pug">
@@ -306,7 +315,7 @@ q-layout(view='hHh LpR fFf')
 				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК
 					q-tooltip Сирень Крокодиловна
 
-				q-btn.save(unelevated color="positive" label="Завершить" icon="mdi-check-bold" @click="action")
+				// q-btn.save(unelevated color="positive" label="Завершить" icon="mdi-check-bold" @click="action")
 					q-tooltip Завершить настройку
 
 			.lang
@@ -359,7 +368,8 @@ q-layout(view='hHh LpR fFf')
 			.saved
 				q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
 				|Сохранено
-				transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
+
+				// transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
 					.bubble.pos(v-if='save'
 						v-motion='"cube"'
 						:initial="{ y: 200, opacity: 0, }"
@@ -381,6 +391,8 @@ q-layout(view='hHh LpR fFf')
 						.text-center
 							|Страница изменена другим пользователем. Ваши изменения не сохранены.
 							q-btn(flat label="Понятно" @click.stop="close1") 
+
+
 
 </template>
 

@@ -9,7 +9,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
 
 const router = useRouter()
-const route = useRoute()
+// const route = useRoute()
 
 const props = defineProps<{
 	versions: Ver[]
@@ -70,32 +70,32 @@ const cols: QTableProps['columns'] = [
 	},
 ]
 
-const rows = [
-	{
-		id: 0,
-		label: 'Базовая-copy',
-		modified: '18.10.25',
-		published: 0,
-		test: '--',
-		prod: '--',
-	},
-	{
-		id: 1,
-		label: 'Базовая',
-		modified: '25.09.25',
-		published: 1,
-		test: '25.09.25',
-		prod: '--',
-	},
-	{
-		id: 2,
-		label: 'Начальная',
-		modified: '23.09.25',
-		published: 2,
-		test: '23.09.25',
-		prod: '23.09.25',
-	},
-]
+// const rows = [
+// 	{
+// 		id: 0,
+// 		label: 'Базовая-copy',
+// 		modified: '18.10.25',
+// 		published: 0,
+// 		test: '--',
+// 		prod: '--',
+// 	},
+// 	{
+// 		id: 1,
+// 		label: 'Базовая',
+// 		modified: '25.09.25',
+// 		published: 1,
+// 		test: '25.09.25',
+// 		prod: '--',
+// 	},
+// 	{
+// 		id: 2,
+// 		label: 'Начальная',
+// 		modified: '23.09.25',
+// 		published: 2,
+// 		test: '23.09.25',
+// 		prod: '23.09.25',
+// 	},
+// ]
 
 const ve = ref('version')
 
@@ -266,12 +266,45 @@ const navigate = async () => {
 	// myapps.setPath(group.value ? '' : path)
 	myapps.curVersion(props.item).modified = Date.now()
 }
+
+const full1 = [
+	{
+		label: 'Тестирование',
+		val: '22.10.25 13:26',
+	},
+	{
+		label: 'Публикация',
+		val: '',
+	},
+]
+const full = [
+	{
+		label: 'Название',
+		val: 'Базовая-copy',
+	},
+	{
+		label: 'Описание',
+		val: 'Пробую новую настройку папок',
+	},
+	{
+		label: 'Автор',
+		val: 'Орлов П.С.',
+	},
+	{
+		label: 'Создано',
+		val: '22.10.25 13:26',
+	},
+	{
+		label: 'Изменено',
+		val: '22.10.25 13:32',
+	},
+]
 </script>
 
 <template lang="pug">
 q-table(flat
 	:columns="cols"
-	:rows='rows'
+	:rows='props.versions'
 	row-key="id"
 	color="primary"
 	dense
@@ -290,7 +323,7 @@ q-table(flat
 	template(v-slot:body="props")
 		q-tr(:props="props" :class="props.rowIndex === 0 ? 'first-row-separator' : ''")
 			q-td(auto-width)
-				q-btn(size="sm" color="primary" round flat dense @click="props.expand = !props.expand" icon="mdi-chevron-right")
+				q-btn.exp(size="sm" color="primary" round flat dense @click="props.expand = !props.expand" icon="mdi-chevron-right" :class='{rot : props.expand}')
 			q-td
 				.text-bold {{ props.row.label }}
 
@@ -303,13 +336,17 @@ q-table(flat
 			q-td {{ props.row.test }}
 			q-td {{ props.row.prod }}
 			q-td.text-right()
-				q-btn-dropdown(v-if='props.row.id == 0' unelevated split icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='navigate')
+
+				q-btn(v-if='props.row.id == 0' unelevated icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='edit(props.row.id)')
+
+				// q-btn-dropdown(v-if='props.row.id == 0' unelevated split icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='edit')
 					q-list
 						q-item(clickable v-for="item in btmenu" :key='item.id' v-close-popup @click="")
 							q-item-section(side)
 								q-icon(:name="item.icon" color="primary")
 							q-item-section
 								q-item-label {{ item.label }}
+
 				q-btn(v-else flat round color="primary" size='sm')
 					q-icon(name="mdi-dots-vertical"  size="24px")
 					q-menu
@@ -322,7 +359,16 @@ q-table(flat
 
 		q-tr(v-show="props.expand" :props="props")
 			q-td(colspan="100%")
-				.text-left This is expand slot for row above: {{ props.row.name }}.
+				.fle
+					.grids
+						template(v-for="item in full" :key='item.label')
+							label {{ item.label }}:
+							.val {{ item.val }}
+					.grids
+						template(v-for="item in full1" :key='item.label')
+							label {{ item.label }}:
+							.link {{ item.val }}
+				
 
 		q-tr(v-if="props.rowIndex === 0" class="empty-row-spacer")
 			q-td(:colspan="props.cols.length + 1")
@@ -477,5 +523,33 @@ ConfirmDialog(v-model="dialog1" :mode='ve')
 :deep(.first-row-separator td) {
 	border-bottom: 2px solid $primary !important;
 	background-color: var(--node);
+}
+.exp {
+	transition: 0.2s ease transform;
+	&.rot {
+		transform: rotate(90deg);
+	}
+}
+.fle {
+	display: flex;
+	gap: 2rem;
+}
+.grids {
+	margin: 0.5rem 1rem 1rem;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	// justify-items: start;
+	// align-items: stretch;
+	column-gap: 1rem;
+	row-gap: 0;
+	font-size: 0.8rem;
+	label {
+		color: #666;
+	}
+}
+.link {
+	color: $primary;
+	text-decoration: underline;
+	cursor: pointer;
 }
 </style>
