@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import type { QTableProps } from 'quasar'
-// import TablerCopyPlus from '@/components/icons/TablerCopyPlus.vue'
 import { useQuasar, date } from 'quasar'
 import AddDialog from '@/components/AddDialog.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
+import MappingDialog from '@/components/MappingDialog.vue'
+import SvgSpinnersBarsRotateFade from '@/components/icons/SvgSpinnersBarsRotateFade.vue'
 
 const router = useRouter()
-// const route = useRoute()
 
 const props = defineProps<{
 	versions: Ver[]
 	item: App
 }>()
 
+console.log('item ', props.item)
+console.log('versions ', props.versions)
 const myapps = useApps()
 
 const cols: QTableProps['columns'] = [
@@ -44,58 +46,7 @@ const cols: QTableProps['columns'] = [
 		field: 'published',
 		sortable: false,
 	},
-	{
-		name: 'test',
-		required: true,
-		label: 'DV-Test',
-		align: 'left',
-		field: 'test',
-		sortable: false,
-	},
-	{
-		name: 'prod',
-		required: true,
-		label: 'DV-Prod',
-		align: 'left',
-		field: 'prod',
-		sortable: false,
-	},
-	{
-		name: 'action',
-		required: true,
-		label: '',
-		align: 'left',
-		field: 'action',
-		sortable: false,
-	},
 ]
-
-// const rows = [
-// 	{
-// 		id: 0,
-// 		label: 'Базовая-copy',
-// 		modified: '18.10.25',
-// 		published: 0,
-// 		test: '--',
-// 		prod: '--',
-// 	},
-// 	{
-// 		id: 1,
-// 		label: 'Базовая',
-// 		modified: '25.09.25',
-// 		published: 1,
-// 		test: '25.09.25',
-// 		prod: '--',
-// 	},
-// 	{
-// 		id: 2,
-// 		label: 'Начальная',
-// 		modified: '23.09.25',
-// 		published: 2,
-// 		test: '23.09.25',
-// 		prod: '23.09.25',
-// 	},
-// ]
 
 const ve = ref('version')
 
@@ -122,6 +73,7 @@ const dialog1 = ref(false)
 const create = (e: any) => {
 	props.versions.map((el) => (el.current = false))
 	myapps.addVersion(props.versions, e)
+	expandedRows.value = [props.item.versions[0].id]
 
 	setTimeout(() => {
 		$q.notify({
@@ -133,24 +85,14 @@ const create = (e: any) => {
 	}, 500)
 }
 
-// const page = {
-// 	sortBy: 'current',
-// 	sortOder: 'da',
-// }
-
 function viewSettings(id: number) {
 	ve.value = 'edit'
 	dialog1.value = true
-	// router.push('/process')
 }
 
-function moveToFirst(arr: any[], predicate: (el: any) => boolean) {
-	const index = arr.findIndex(predicate)
-	if (index > -1) {
-		const [item] = arr.splice(index, 1) // вырезаем элемент
-		arr.unshift(item) // вставляем в начало
-	}
-	return arr
+function testVersion() {
+	ve.value = 'check'
+	dialog1.value = true
 }
 
 async function edit(id: number) {
@@ -159,8 +101,8 @@ async function edit(id: number) {
 
 	if (row) {
 		row.current = true
-		moveToFirst(props.versions, (el) => el.id === row.id) // ✅ исправлено
-		router.push('/process')
+		await router.push('/process')
+
 		row.modified = Date.now()
 		myapps.currentApp!.master = false
 	}
@@ -251,60 +193,99 @@ const btmenu = [
 	{ id: 3, label: 'Удалить', icon: 'mdi-delete-outline', action: '' },
 ]
 const btmenu2 = [
-	{ id: 0, label: 'Просмотреть', icon: 'mdi-eye', action: '' },
-	// { id: 1, label: 'Опубликовать', icon: 'mdi-cloud-upload-outline', action: '' },
-	{ id: 2, label: 'Создать версию на основе', icon: 'mdi-plus-box-multiple-outline', action: '' },
-	// { id: 3, label: 'Удалить', icon: 'mdi-delete-outline', action: '' },
+	{ id: 0, label: 'Просмотреть', icon: 'mdi-eye', action: viewSettings },
+	{
+		id: 2,
+		label: 'Создать версию на основе',
+		icon: 'mdi-plus-box-multiple-outline',
+		action: viewSettings,
+	},
 ]
 
-const navigate = async () => {
-	// const path = route.fullPath.toString()
-	await router.push('/process')
-	myapps.setCurrentApp(props.item)
-	// myapps.currentApp!.master = false
-	// myapps.setGroupPath(group.value ? path : '')
-	// myapps.setPath(group.value ? '' : path)
-	myapps.curVersion(props.item).modified = Date.now()
+const expandedRows = ref([props.item.versions[0].id])
+
+const formattedString = computed(() => {
+	return date.formatDate(timeStamp.value, 'DD.MM.YY HH:mm')
+})
+const letcheck = computed({
+	get: () => myapps.curVersion(props.item).tested !== undefined,
+	set: (val) => {
+		myapps.curVersion(props.item).tested = val ? formattedString.value : undefined
+	},
+})
+
+const precheck = ref(false)
+const precheck1 = ref(false)
+
+const timeStamp = ref(Date.now())
+const check = () => {
+	precheck.value = true
+	setTimeout(() => {
+		myapps.curVersion(props.item).tested = formattedString.value
+		timeStamp.value = Date.now()
+		precheck.value = false
+		letcheck.value = true
+	}, 4000)
 }
 
-const full1 = [
-	{
-		label: 'Тестирование',
-		val: '22.10.25 13:26',
-	},
-	{
-		label: 'Публикация',
-		val: '',
-	},
-]
-const full = [
-	{
-		label: 'Название',
-		val: 'Базовая-copy',
-	},
-	{
-		label: 'Описание',
-		val: 'Пробую новую настройку папок',
-	},
-	{
-		label: 'Автор',
-		val: 'Орлов П.С.',
-	},
-	{
-		label: 'Создано',
-		val: '22.10.25 13:26',
-	},
-	{
-		label: 'Изменено',
-		val: '22.10.25 13:32',
-	},
-]
+const dialog2 = ref(false)
+
+const prepublish = (ver: number) => {
+	if (ver == 1) {
+		myapps.curVersion(props.item).published = ver
+		myapps.curVersion(props.item).pubDate = Date.now()
+		props.item.published = ver
+		props.item.publishDate = Date.now()
+
+		props.item.master = false
+		setTimeout(() => {
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'positive',
+				message: 'Приложение передано на публикацию!',
+				position: 'top',
+			})
+		}, 3000)
+	}
+	if (ver == 2) {
+		dialog2.value = true
+	}
+}
+const add = () => {
+	currentVer.value = myapps.curVersion(props.item).label
+	dialog.value = !dialog.value
+}
+const publish = () => {
+	precheck1.value = true
+	myapps.curVersion(props.item).published = 2
+	myapps.curVersion(props.item).pubDate = Date.now()
+	props.item.published = 2
+	props.item.publishDate = Date.now()
+
+	props.item.master = false
+
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Приложение опубликовано!',
+			position: 'top',
+		})
+		precheck1.value = false
+	}, 4000)
+}
+const handlePub = () => {
+	ve.value = 'publ'
+	dialog1.value = true
+}
 </script>
 
 <template lang="pug">
-q-table(flat
+q-table(
+	flat
 	:columns="cols"
 	:rows='props.versions'
+	v-model:expanded='expandedRows'
 	row-key="id"
 	color="primary"
 	dense
@@ -319,6 +300,7 @@ q-table(flat
 				:key="col.name"
 				:props="props"
 			) {{ col.label }}
+			q-th.fixwidth
 
 	template(v-slot:body="props")
 		q-tr(:props="props" :class="props.rowIndex === 0 ? 'first-row-separator' : ''")
@@ -327,107 +309,76 @@ q-table(flat
 			q-td
 				.text-bold {{ props.row.label }}
 
-			q-td {{ props.row.modified }}
+			q-td {{ date.formatDate(props.row.modified, 'DD.MM.YY HH:mm') }}
 			q-td.text-center
 				.caption(v-if='props.row.published == 0') Черновик
-				.caption(v-if='props.row.published == 1' ) Ожидает публикации
-				.caption(v-if='props.row.published == 2' ) Опубликовано
+				.red(v-if='props.row.published == 1' ) Ожидает публикации
+				.red(v-if='props.row.published == 2' ) Опубликовано
 
-			q-td {{ props.row.test }}
-			q-td {{ props.row.prod }}
-			q-td.text-right()
+			q-td.fixwidth
+				template(v-if='props.rowIndex == 0')
+					q-btn(v-if='props.row.published == 0' unelevated icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='edit(props.row.id)')
+					q-btn(v-if='props.row.published > 0' unelevated icon='mdi-eye' color="primary" label="Просмотр" size='sm' @click='edit(props.row.id)')
 
-				q-btn(v-if='props.row.id == 0' unelevated icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='edit(props.row.id)')
-
-				// q-btn-dropdown(v-if='props.row.id == 0' unelevated split icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='edit')
-					q-list
-						q-item(clickable v-for="item in btmenu" :key='item.id' v-close-popup @click="")
-							q-item-section(side)
-								q-icon(:name="item.icon" color="primary")
-							q-item-section
-								q-item-label {{ item.label }}
-
-				q-btn(v-else flat round color="primary" size='sm')
+				q-btn.men(v-else flat round color="primary" size='sm')
 					q-icon(name="mdi-dots-vertical"  size="24px")
 					q-menu
 						q-list
-							q-item(clickable v-for="item in btmenu2" :key="item.id" v-close-popup)
+							q-item(clickable v-for="item in btmenu2" :key="item.id" v-close-popup @click='item.action(props.row.id)')
 								q-item-section(side)
 									q-icon(:name="item.icon" color="primary")
 								q-item-section {{ item.label }}
 
 
 		q-tr(v-show="props.expand" :props="props")
-			q-td(colspan="100%")
+			q-td(colspan="4")
 				.fle
 					.grids
-						template(v-for="item in full" :key='item.label')
-							label {{ item.label }}:
-							.val {{ item.val }}
-					.grids
-						template(v-for="item in full1" :key='item.label')
-							label {{ item.label }}:
-							.link {{ item.val }}
+						label Название:
+						.val {{props.row.label}}
+						label Описание:
+						.val {{props.row.descr}}
+						label Создано:
+						.val {{ date.formatDate(props.row.created, 'DD.MM.YY HH:mm') }}
+						label Автор версии:
+						.val {{props.row.author}}
+						label Изменено:
+						.val {{ date.formatDate(props.row.modified, 'DD.MM.YY HH:mm') }}
+						label Тестирование:
+						.val
+							.check(v-if='precheck')
+								SvgSpinnersBarsRotateFade.big
+								span Загрузка версии на тестовый сервер
+							div(v-if='letcheck')
+								span Версия доступна для тестирования на
+								span.link() DV-test
+								span {{ props.row.tested }}
+						label Публикация:
+						.val
+							div(v-if='props.row.published == 1')
+								span Версия передана на публикацию
+								span.q-ml-md {{ date.formatDate(props.row.pubDate, 'DD.MM.YY HH:mm') }}
+							div(v-if='props.row.published == 2')
+								span Версия опубликована на
+								span.link DV-Prod
+								span {{ pubDate }} -- Орлов П.С.
+
+			q-td.fixwidth
+				div(v-if='props.row.published > 0' )
+					q-btn(outline color="primary" label="Создать версию" @click="add" size='sm') 
+				div(v-if='props.row.modified && props.row.published == 0')
+					div
+						q-btn(outline color="primary" label="Тестировать" @click="testVersion" size='sm') 
+					div
+						q-btn.q-mt-xs(outline color="primary" label="Опубликовать" @click="handlePub" size='sm') 
 				
 
 		q-tr(v-if="props.rowIndex === 0" class="empty-row-spacer")
-			q-td(:colspan="props.cols.length + 1")
+			q-td(:colspan="props.cols.length + 2")
 			
-	// template(v-slot:body-cell-ver='props')
-	// 	q-td(:props='props')
-	// 		.text-bold {{ props.row.label }}
-	//
-	// template(v-slot:body-cell-modified='props')
-	// 	q-td(:props='props') {{ date.formatDate(props.row.modified, 'DD.MM.YY HH:mm') }}
-	//
-	// template(v-slot:body-cell-created='props')
-	// 	q-td(:props='props')
-	// 		div {{formatDate(props.row.created)}}
-	// 		div Орлов П.С.
-	//
-	// template(v-slot:body-cell-published='props')
-	// 	q-td(:props='props')
-	// 		.caption(v-if='props.row.published == 0') Черновик
-	// 		.caption(v-if='props.row.published == 2' )
-	// 			.pub Опубликовано
-	// 			.pub {{ pubDate }}
-	// 			.pub Орлов П.С.
-	// 		.caption(v-if='props.row.published == 1' )
-	// 			div Ожидает публикации
-
-	// template(v-slot:body-cell-action='props')
-	// 	q-td.text-right(:props='props' style="padding-right: 0")
-	// 		q-btn-dropdown(unelevated split icon='mdi-pencil' color="primary" label="Редактировать" size='sm')
-	// 			q-list
-	// 				q-item(clickable v-for="item in btmenu" :key='item.id' v-close-popup @click="onItemClick")
-	// 					q-item-section(side)
-	// 						q-icon(:name="item.icon" color="primary")
-	// 					q-item-section
-	// 						q-item-label {{ item.label }}
-
-			// q-btn(flat round color="primary" size='sm')
-				q-icon(name="mdi-dots-vertical"  size="24px")
-				q-menu
-					q-list
-						template(v-for="item in getMenuForRow1(props.row)" :key="item.id")
-							q-item(clickable @click="item.action(props.row.id)" :class='calcClass(item.id)' v-close-popup)
-								q-item-section(avatar)
-									q-icon(:name="item.icon")
-								q-item-section {{ item.label }}
-						// template(v-for="item in getMenuForRow(props.row)" :key="item.id")
-						// 	q-item(clickable @click="item.action(props.row.id)" :class='calcClass(item.id)' v-close-popup)
-						// 		q-item-section(avatar)
-						// 			q-icon(:name="item.icon")
-						// 		q-item-section {{ item.label }}
-	
-
-.check(v-if='isSomePublished')
-	div Последняя&nbsp;публикация:
-	div {{ lastPublication }} -- {{ pubDate }} -- Орлов П.С.
-	.link DV-prod
-
+MappingDialog(v-model="dialog2" bd='DV-prod' @publish="publish")
 AddDialog(v-model="dialog" mode='version' :current='currentVer' @create="create")
-ConfirmDialog(v-model="dialog1" :mode='ve')
+ConfirmDialog(v-model="dialog1" :mode='ve' @publish='prepublish' @check='check')
 
 </template>
 
@@ -508,17 +459,11 @@ ConfirmDialog(v-model="dialog1" :mode='ve')
 }
 .caption {
 	font-size: 0.8rem;
-	color: #777;
 	margin: 0;
 }
 .pub {
 	color: darkred;
 	line-height: 1.2;
-}
-.check {
-	margin-top: 1rem;
-	display: flex;
-	gap: 1rem;
 }
 :deep(.first-row-separator td) {
 	border-bottom: 2px solid $primary !important;
@@ -533,13 +478,14 @@ ConfirmDialog(v-model="dialog1" :mode='ve')
 .fle {
 	display: flex;
 	gap: 2rem;
+	align-items: center;
 }
 .grids {
-	margin: 0.5rem 1rem 1rem;
+	margin-top: 0.5rem;
 	display: grid;
 	grid-template-columns: auto 1fr;
-	// justify-items: start;
-	// align-items: stretch;
+	align-items: center;
+	justify-items: start;
 	column-gap: 1rem;
 	row-gap: 0;
 	font-size: 0.8rem;
@@ -551,5 +497,28 @@ ConfirmDialog(v-model="dialog1" :mode='ve')
 	color: $primary;
 	text-decoration: underline;
 	cursor: pointer;
+	margin-left: 1rem;
+	margin-right: 1rem;
+}
+.fixwidth {
+	width: 170px;
+	text-align: right;
+	.q-btn {
+		width: 100%;
+	}
+	.men {
+		width: initial;
+	}
+}
+.check {
+	color: darkred;
+	.big {
+		// font-size: 1.1rem;
+		margin-right: 1rem;
+	}
+}
+.red {
+	font-weight: 600;
+	color: darkred;
 }
 </style>
