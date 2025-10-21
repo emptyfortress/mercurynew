@@ -514,7 +514,7 @@ ConfirmDialog(v-model="dialog1" :mode='ve' @publish='prepublish' @check='check')
 	margin-right: 1rem;
 }
 .fixwidth {
-	width: 170px;
+	width: 175px;
 	text-align: right;
 	.q-btn {
 		width: 100%;
@@ -534,4 +534,7 @@ ConfirmDialog(v-model="dialog1" :mode='ve' @publish='prepublish' @check='check')
 	font-weight: 600;
 	color: teal;
 }
+// :deep(.q-table--dense .q-table th:last-child, .q-table--dense .q-table td:last-child) {
+// 	padding-right: 0 !important;
+// }
 </style>
