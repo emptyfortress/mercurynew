@@ -16,8 +16,8 @@ const props = defineProps<{
 	item: App
 }>()
 
-console.log('item ', props.item)
-console.log('versions ', props.versions)
+// console.log('item ', props.item)
+// console.log('versions ', props.versions)
 const myapps = useApps()
 
 const cols: QTableProps['columns'] = [
@@ -257,6 +257,10 @@ const add = () => {
 }
 const publish = () => {
 	precheck1.value = true
+	let tmp = props.item.versions.find((el) => el.published == 2)
+	if (tmp) {
+		tmp.published = 3
+	}
 	myapps.curVersion(props.item).published = 2
 	myapps.curVersion(props.item).pubDate = Date.now()
 	props.item.published = 2
@@ -302,48 +306,49 @@ q-table(
 			) {{ col.label }}
 			q-th.fixwidth
 
-	template(v-slot:body="props")
-		q-tr(:props="props" :class="props.rowIndex === 0 ? 'first-row-separator' : ''")
+	template(v-slot:body="scope")
+		q-tr(:props="scope" :class="scope.rowIndex === 0 ? 'first-row-separator' : ''")
 			q-td(auto-width)
-				q-btn.exp(size="sm" color="primary" round flat dense @click="props.expand = !props.expand" icon="mdi-chevron-right" :class='{rot : props.expand}')
+				q-btn.exp(size="sm" color="primary" round flat dense @click="scope.expand = !scope.expand" icon="mdi-chevron-right" :class='{rot : scope.expand}')
 			q-td
-				.text-bold {{ props.row.label }}
+				.text-bold {{ scope.row.label }}
 
-			q-td {{ date.formatDate(props.row.modified, 'DD.MM.YY HH:mm') }}
+			q-td {{ date.formatDate(scope.row.modified, 'DD.MM.YY HH:mm') }}
 			q-td.text-center
-				.caption(v-if='props.row.published == 0') Черновик
-				.red(v-if='props.row.published == 1' ) Ожидает публикации
-				.red(v-if='props.row.published == 2' ) Опубликовано
+				.caption(v-if='scope.row.published == 0') Черновик
+				.red(v-if='scope.row.published == 1' ) Ожидает публикации
+				.red(v-if='scope.row.published == 2' ) Опубликовано
+				.red(v-if='scope.row.published == 3' ) Архив
 
 			q-td.fixwidth
-				template(v-if='props.rowIndex == 0')
-					q-btn(v-if='props.row.published == 0' unelevated icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='edit(props.row.id)')
-					q-btn(v-if='props.row.published > 0' unelevated icon='mdi-eye' color="primary" label="Просмотр" size='sm' @click='edit(props.row.id)')
+				template(v-if='scope.rowIndex == 0')
+					q-btn(v-if='scope.row.published == 0' unelevated icon='mdi-pencil' color="primary" label="Редактировать" size='sm' @click='edit(scope.row.id)')
+					q-btn(v-if='scope.row.published > 0' unelevated icon='mdi-eye' color="primary" label="Просмотр" size='sm' @click='edit(scope.row.id)')
 
 				q-btn.men(v-else flat round color="primary" size='sm')
 					q-icon(name="mdi-dots-vertical"  size="24px")
 					q-menu
 						q-list
-							q-item(clickable v-for="item in btmenu2" :key="item.id" v-close-popup @click='item.action(props.row.id)')
+							q-item(clickable v-for="item in btmenu2" :key="item.id" v-close-popup @click='item.action(scope.row.id)')
 								q-item-section(side)
 									q-icon(:name="item.icon" color="primary")
 								q-item-section {{ item.label }}
 
 
-		q-tr(v-show="props.expand" :props="props")
+		q-tr(v-show="scope.expand" :props="scope")
 			q-td(colspan="4")
 				.fle
 					.grids
 						label Название:
-						.val {{props.row.label}}
+						.val {{scope.row.label}}
 						label Описание:
-						.val {{props.row.descr}}
+						.val {{scope.row.descr}}
 						label Создано:
-						.val {{ date.formatDate(props.row.created, 'DD.MM.YY HH:mm') }}
+						.val {{ date.formatDate(scope.row.created, 'DD.MM.YY HH:mm') }}
 						label Автор версии:
-						.val {{props.row.author}}
+						.val {{scope.row.author}}
 						label Изменено:
-						.val {{ date.formatDate(props.row.modified, 'DD.MM.YY HH:mm') }}
+						.val {{ date.formatDate(scope.row.modified, 'DD.MM.YY HH:mm') }}
 						label Тестирование:
 						.val
 							.check(v-if='precheck')
@@ -352,29 +357,37 @@ q-table(
 							div(v-if='letcheck')
 								span Версия доступна для тестирования на
 								span.link() DV-test
-								span {{ props.row.tested }}
+								span {{ scope.row.tested }}
 						label Публикация:
 						.val
-							div(v-if='props.row.published == 1')
+							div(v-if='scope.row.published == 1')
 								span Версия передана на публикацию
-								span.q-ml-md {{ date.formatDate(props.row.pubDate, 'DD.MM.YY HH:mm') }}
-							div(v-if='props.row.published == 2')
+								span.q-ml-md {{ date.formatDate(scope.row.pubDate, 'DD.MM.YY HH:mm') }}
+							div(v-if='scope.row.published == 2')
 								span Версия опубликована на
 								span.link DV-Prod
 								span {{ pubDate }} -- Орлов П.С.
+							div(v-if='scope.row.published == 3')
+								span Версия опубликована на DV-prod
+								span.q-ml-md {{ pubDate }} -- Орлов П.С.
 
 			q-td.fixwidth
-				div(v-if='props.row.published > 0' )
-					q-btn(outline color="primary" label="Создать версию" @click="add" size='sm') 
-				div(v-if='props.row.modified && props.row.published == 0')
+				div(v-if='props.item.versions.length > 1 && scope.row.published == 0' )
+					q-btn(outline color="primary" label="Удалить версию" @click="remove(scope.row.id)" size='sm') 
+				div(v-if='scope.row.published > 0' )
+					div
+						q-btn(outline color="primary" label="Просмотреть" @click="edit(scope.row.id)" size='sm') 
+					.q-mt-xs
+						q-btn(outline color="primary" label="Создать версию" @click="add" size='sm') 
+				div(v-if='scope.row.modified && scope.row.published == 0')
 					div
 						q-btn(outline color="primary" label="Тестировать" @click="testVersion" size='sm') 
 					div
 						q-btn.q-mt-xs(outline color="primary" label="Опубликовать" @click="handlePub" size='sm') 
 				
 
-		q-tr(v-if="props.rowIndex === 0" class="empty-row-spacer")
-			q-td(:colspan="props.cols.length + 2")
+		// q-tr(v-if="scope.rowIndex === 0" class="empty-row-spacer")
+		// 	q-td(:colspan="scope.cols.length + 2")
 			
 MappingDialog(v-model="dialog2" bd='DV-prod' @publish="publish")
 AddDialog(v-model="dialog" mode='version' :current='currentVer' @create="create")
@@ -519,6 +532,6 @@ ConfirmDialog(v-model="dialog1" :mode='ve' @publish='prepublish' @check='check')
 }
 .red {
 	font-weight: 600;
-	color: darkred;
+	color: teal;
 }
 </style>
