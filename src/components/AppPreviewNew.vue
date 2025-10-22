@@ -140,12 +140,12 @@ const check = () => {
 const mode = ref('version')
 const dialog = ref(false)
 
-const handlePub = () => {
-	mode.value = 'publ'
-	dialog.value = true
-}
+// const handlePub = () => {
+// 	mode.value = 'publ'
+// 	dialog.value = true
+// }
 
-const tab = ref('setup')
+// const tab = ref('setup')
 
 const timeStamp = ref(Date.now())
 
@@ -177,17 +177,17 @@ const create = (e: any) => {
 	}, 500)
 }
 
-const state = computed(() => {
-	return myapps.curVersion(props.item).modified == null ? false : true
-})
+// const state = computed(() => {
+// 	return myapps.curVersion(props.item).modified == null ? false : true
+// })
 
 const showDate = (val: number | null) => {
 	return val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''
 }
 
-const localPubDate = computed(() => {
-	return date.formatDate(myapps.curVersion(props.item).pubDate, 'DD.MM.YY HH:mm')
-})
+// const localPubDate = computed(() => {
+// 	return date.formatDate(myapps.curVersion(props.item).pubDate, 'DD.MM.YY HH:mm')
+// })
 </script>
 
 <template lang="pug">
@@ -222,6 +222,7 @@ const localPubDate = computed(() => {
 
 .descr {
 	color: $primary;
+	margin-left: 5rem;
 
 	span {
 		border-bottom: 1px dotted $primary;
@@ -247,6 +248,7 @@ const localPubDate = computed(() => {
 	display: flex;
 	gap: 3rem;
 	align-items: center;
+	margin-left: 5rem;
 }
 .mygrid {
 	display: grid;

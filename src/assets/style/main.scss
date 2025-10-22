@@ -213,9 +213,12 @@
 			&.active {
 				padding: 1rem;
 				font-size: 1.2rem;
-				.img {
-					font-size: 4rem;
-				}
+				// .img {
+				// 	font-size: 4rem;
+				// 	position: absolute;
+				// 	top: 0.8rem;
+				// 	left: 0.8rem;
+				// }
 			}
 			&.group {
 				.img {
@@ -320,15 +323,22 @@
 		// 	}
 		// }
 	}
-	.img,
-	.img1 {
-		position: absolute;
-		bottom: 0;
-		left: 0.5rem;
-		font-size: 3rem;
-		line-height: 1;
-		color: var(--icon);
-	}
+}
+.img,
+.img1 {
+	position: absolute;
+	bottom: 0;
+	left: 0.5rem;
+	font-size: 2.5rem;
+	line-height: 1;
+	color: var(--icon);
+}
+.parent.end .it.active .img {
+	font-size: 4rem;
+	top: 0.8rem;
+	bottom: initial;
+	left: 0.8rem;
+	color: var(--icon);
 }
 
 .cl-0 {

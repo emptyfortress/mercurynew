@@ -5,11 +5,8 @@ import AppPreviewNew from '@/components/AppPreviewNew.vue'
 import GroupInsidePreview from '@/components/GroupInsidePreview.vue'
 import IconMenu from '@/components/IconMenu.vue'
 import { uid, useQuasar } from 'quasar'
-// import { useRouter } from 'vue-router'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import ShareDialog from '@/components/ShareDialog.vue'
-
-// const router = useRouter()
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
@@ -215,33 +212,10 @@ const duble = (e: App) => {
 	emit('duplicate', e)
 }
 
-// const calcIcon = (e: string) => {
-// 	return `mdi-numeric-${e}-circle-outline`
-// }
-
 const visibleItems = (items: any) => {
 	return items.length <= 4 ? items : items.slice(0, 3)
 }
 const hasOverflow = (items: any) => items.length > 4
-
-// const options = [
-// 	{ id: 3, label: 'v. 3', pub: false },
-// 	{ id: 2, label: 'v. 2', pub: true },
-// 	{ id: 1, label: 'v. 1', pub: true },
-// ]
-
-// const setVer = (item: App, el: number, pub: boolean) => {
-// 	item.version = el.toString()
-// 	item.published = pub
-// }
-
-// const calcItemClass = (item: App, id: number) => {
-// 	return item.version == id.toString() ? 'selected' : ''
-// }
-
-// const toVersion = () => {
-// 	router.push('/version')
-// }
 
 const dialog = ref(false)
 const showDialog = () => {
@@ -272,7 +246,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 	@drop='onDrop1(item, draggedItem)'
 )
 	.ttt(v-if='!isOver(item)')
-		template(v-if='expanded && item.id == activeItem')
+		.myhead(v-if='expanded && item.id == activeItem')
 			.head
 				span(@click.stop) {{ item.label }}
 					q-popup-edit(v-model="item.label" auto-save v-slot="scope")
@@ -378,14 +352,19 @@ ConfirmDialog(v-model="dialog" :mode='mode')
 .parent.end .it.active {
 	width: 780px;
 	min-height: 450px;
+	max-height: calc(100vh - 120px);
+	overflow: auto;
 	padding: 0;
-	padding-bottom: 4rem;
+	// padding-bottom: 5rem;
 	cursor: default;
 	.ttt {
 		width: 100%;
 		height: 100%;
 		padding: 1rem;
 	}
+}
+.myhead {
+	margin-left: 5rem;
 }
 
 .createGroup {
