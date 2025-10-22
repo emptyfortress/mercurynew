@@ -43,15 +43,6 @@ const stopRight0 = async () => {
 	}, 400)
 	stop()
 }
-
-const saveDialog = ref(false)
-
-onMounted(() => {
-	setTimeout(() => {
-		saveDialog.value = true
-	}, 4000)
-})
-const showInfo = ref(false)
 </script>
 
 <template lang="pug">
@@ -66,20 +57,7 @@ q-page(padding)
 			DiagramSvg
 			Look
 
-
 		PlusButton(@activate='startRight0' @stop='stopRight0')
-
-	q-dialog(v-model="saveDialog" position='bottom')
-		q-card(style='width: 350px;')
-			q-card-section.text-center(v-show='showInfo')
-				img(src='/images.jpeg' )
-				p Мы используем автосохранение.<br />Это значит, что ваши данные и прогресс сохраняются в фоновом режиме.
-				p Поэтому, мы убрали кнопку «Сохранить»,<br />чтобы сэкономить ваше время.
-			q-card-section.text-center
-				q-btn(unelevated color="primary" v-if='!showInfo' @click="showInfo = true") 
-					label Сохранить изменения
-				q-btn(unelevated color="primary" v-else @click="saveDialog = false") 
-					label Понятно
 </template>
 
 <style scoped lang="scss">
