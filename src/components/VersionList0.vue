@@ -16,8 +16,6 @@ const props = defineProps<{
 	item: App
 }>()
 
-// console.log('item ', props.item)
-// console.log('versions ', props.versions)
 const myapps = useApps()
 
 const cols: QTableProps['columns'] = [
@@ -143,62 +141,18 @@ const menu: MenuItem[] = [
 	{ id: 3, icon: 'mdi-delete-outline', label: 'Удалить', action: remove },
 ]
 
-function getMenuForRow(row: RowData) {
-	return menu.filter((item) => {
-		if (item.id === 3 && props.versions.length == 1) return false
-		if (item.id === 0 && row.published == 0) return false
-		if (item.id === 1 && row.published > 0) return false
-		if (item.id === 3 && row.published !== 0) return false
-		return true
-	})
-}
-
-function getMenuForRow1(row: RowData) {
-	return menu.filter((item) => {
-		if (item.id === 0 && row.published == 0) return false
-		if (item.id === 1 && row.published > 0) return false
-		if (item.id === 2 && row.published == 0) return false
-		if (item.id === 3 && props.versions.length == 1) return false
-		if (item.id === 3 && row.published > 0) return false
-		// if (item.id === 3 && row.published !== 0) return false
-		return true
-	})
-}
-
-const calcClass = (id: number) => {
-	return id == 3 ? 'pub' : ''
-}
-
-const isSomePublished = computed(() => {
-	return props.versions.find((el) => el.published == 2)
-})
-
-const lastPublication = computed(() => {
-	let tmp = props.versions.find((el) => el.published == 2)
-	if (tmp) return tmp.label
-})
-
 const pubDate = computed(() => {
 	let tmp = props.versions.find((el) => el.published == 2)
 	if (tmp) return date.formatDate(tmp.pubDate, 'DD.MM.YY HH:mm')
 })
-const formatDate = (e: number) => {
-	return date.formatDate(e, 'DD.MM.YY HH:mm')
-}
 
-const btmenu = [
-	{ id: 0, label: 'Тестировать', icon: 'mdi-test-tube', action: '' },
-	{ id: 1, label: 'Опубликовать', icon: 'mdi-cloud-upload-outline', action: '' },
-	// { id: 2, label: 'Создать версию на основе', icon: 'mdi-plus-box-multiple-outline', action: '' },
-	{ id: 3, label: 'Удалить', icon: 'mdi-delete-outline', action: '' },
-]
 const btmenu2 = [
 	{ id: 0, label: 'Просмотреть', icon: 'mdi-eye', action: viewSettings },
 	{
 		id: 2,
 		label: 'Создать версию на основе',
 		icon: 'mdi-plus-box-multiple-outline',
-		action: viewSettings,
+		action: createVersion,
 	},
 ]
 
@@ -340,24 +294,35 @@ q-table(
 				.fle
 					.grids
 						label Название:
-						.val {{scope.row.label}}
+						.vale(v-if='scope.row.published == 0') {{scope.row.label}}
+							q-popup-edit(v-model="scope.row.label" auto-save v-slot="scope1")
+								q-input(v-model="scope1.value" dense autofocus @keyup.enter="scope1.set")
+						.val(v-else) {{scope.row.label }}
+
 						label Описание:
-						.val {{scope.row.descr}}
+						.vale(v-if='scope.row.published == 0') {{scope.row.descr}}
+							q-popup-edit(v-model="scope.row.descr" auto-save v-slot="scope1")
+								q-input(v-model="scope1.value" outline dense autofocus @keyup.enter="scope1.set")
+						.val(v-else) {{scope.row.descr}}
+
 						label Создано:
 						.val {{ date.formatDate(scope.row.created, 'DD.MM.YY HH:mm') }}
 						label Автор версии:
 						.val {{scope.row.author}}
 						label Изменено:
 						.val {{ date.formatDate(scope.row.modified, 'DD.MM.YY HH:mm') }}
-						label Тестирование:
-						.val
-							.check(v-if='precheck')
-								SvgSpinnersBarsRotateFade.big
-								span Загрузка версии на тестовый сервер
-							div(v-if='letcheck')
-								span Версия доступна для тестирования на
-								span.link() DV-test
-								span {{ scope.row.tested }}
+
+						template(v-if='scope.row.published == 0')
+							label Тестирование:
+							.val
+								.check(v-if='precheck')
+									SvgSpinnersBarsRotateFade.big
+									span Загрузка версии на тестовый сервер
+								div(v-if='letcheck')
+									span Версия доступна для тестирования на
+									span.link() DV-test
+									span {{ scope.row.tested }}
+
 						label Публикация:
 						.val
 							div(v-if='scope.row.published == 1')
@@ -534,7 +499,9 @@ ConfirmDialog(v-model="dialog1" :mode='ve' @publish='prepublish' @check='check')
 	font-weight: 600;
 	color: teal;
 }
-// :deep(.q-table--dense .q-table th:last-child, .q-table--dense .q-table td:last-child) {
-// 	padding-right: 0 !important;
-// }
+.vale {
+	color: $primary;
+	cursor: pointer;
+	border-bottom: 1px dotted $primary;
+}
 </style>

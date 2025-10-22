@@ -296,7 +296,7 @@ Div.it(v-for="(item, index) in tapes", :key="item.id",
 			component.im( v-for="el in item.list" :key="el.id" :is='el.pic')
 
 
-		q-btn.cog(v-if='activeItem == item.id && item.group == 1' flat round dense icon="mdi-cloud-cog-outline" @click.stop='$router.push("/setup")') 
+		// q-btn.cog(v-if='activeItem == item.id && item.group == 1' flat round dense icon="mdi-cloud-cog-outline" @click.stop='$router.push("/setup")') 
 
 
 	.createGroup(v-if='isOver(item)')
