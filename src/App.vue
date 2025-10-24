@@ -6,39 +6,23 @@ import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
 import { useApps } from '@/stores/apps'
-// import { useMotions } from '@vueuse/motion'
-import { useQuasar, date } from 'quasar'
+import { date } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
 import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergencyExitSolid.vue'
 import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
 import Fab from '@/components/Fab.vue'
-// import type { TouchPanValue } from 'quasar'
-
-interface PanEvent {
-	isFirst?: boolean
-	isFinal?: boolean
-	delta?: { x?: number; y?: number }
-}
 
 const route = useRoute()
 const router = useRouter()
 const myapps = useApps()
-// const motions = useMotions()
 
 const rightDrawer = ref(false)
 
 const app = useStorage('app', localStorage)
 
 const cover = ref(0)
-
-// router.beforeEach((to, from, next) => {
-// 	if (from.meta.count !== undefined) {
-// 		cover.value = to.meta.count - from.meta.count
-// 		next()
-// 	} else next()
-// })
 
 router.beforeEach((to, from, next) => {
 	// Безопасно читаем count (0, если не указан)
@@ -48,24 +32,6 @@ router.beforeEach((to, from, next) => {
 	next()
 })
 
-// const calcLeave = computed(() => {
-// 	if (cover.value == 19) {
-// 		return 'fadeOutLeft'
-// 	}
-// 	if (cover.value == -19) {
-// 		return 'fadeOutRight'
-// 	}
-// 	if (cover.value > 0) {
-// 		return 'fadeOutTop'
-// 	}
-// 	if (cover.value < 0) {
-// 		return 'fadeOutBottom'
-// 	}
-// 	if (cover.value == 0) {
-// 		return ''
-// 	}
-// })
-
 const leaveClass = computed(() => {
 	const v = cover.value
 	if (v === 19) return 'fadeOutLeft'
@@ -74,24 +40,6 @@ const leaveClass = computed(() => {
 	if (v < 0) return 'fadeOutBottom'
 	return 'fadeOutTop' // безопасный дефолт на случай 0/NaN
 })
-
-// const calcEnter = computed(() => {
-// 	if (cover.value == 19) {
-// 		return 'fadeInRight'
-// 	}
-// 	if (cover.value == -19) {
-// 		return 'fadeInLeft'
-// 	}
-// 	if (cover.value > 0) {
-// 		return 'fadeInBottom'
-// 	}
-// 	if (cover.value < 0) {
-// 		return 'fadeInTop'
-// 	}
-// 	if (cover.value == 0) {
-// 		return ''
-// 	}
-// })
 
 const enterClass = computed(() => {
 	const v = cover.value
@@ -111,89 +59,6 @@ const helpMode = ref(false)
 const toggleBug = () => {
 	helpMode.value = false
 	rightDrawer.value = !rightDrawer.value
-}
-// const toggleHelp = () => {
-// 	helpMode.value = true
-// 	rightDrawer.value = !rightDrawer.value
-// }
-
-// const buttonRef = ref<HTMLButtonElement | null>(null)
-// const isAnimating = ref(false)
-
-// const { idle, reset } = useIdle(5000)
-// const { inc, count } = useCounter()
-
-// const attention = computed(() => {
-// 	return isAnimating.value && idle.value
-// })
-
-// watch(idle, async (idleValue) => {
-// 	if (idleValue) {
-// 		inc()
-// 		setTimeout(() => {
-// 			reset()
-// 		}, 5000)
-//
-// 		if (count.value == 3 && isAnimating.value) {
-// 			count.value = 0
-// 			reset()
-// 			jump()
-// 		}
-// 	}
-// })
-
-// const { apply } = useMotion(buttonRef, {
-// 	enter: {
-// 		x: 0,
-// 		rotate: 0,
-// 		scale: 1,
-// 	},
-// 	fly1: {
-// 		x: -600,
-// 		scale: 1,
-// 		rotate: 0,
-// 	},
-// 	fly2: {
-// 		scale: 2,
-// 		rotate: 0,
-// 	},
-// 	fly3: {
-// 		scale: 1,
-// 		rotate: 0,
-// 	},
-// 	fly4: {
-// 		rotate: 720,
-// 		duration: 1000,
-// 	},
-// 	fly5: {
-// 		x: 0,
-// 		rotate: 0,
-// 	},
-// })
-
-// const off = () => {
-// 	isAnimating.value = false
-// 	// toggleHelp()
-// }
-// const jump = async () => {
-// 	await apply('fly1')
-// 	await apply('fly2')
-// 	await apply('fly3')
-// 	await apply('fly4')
-// 	await apply('fly5')
-// 	reset()
-// }
-
-const $q = useQuasar()
-const refresh = () => {
-	notsave.value = !notsave.value
-	// $q.notify({
-	// 	icon: 'mdi-alert',
-	// 	color: 'negative',
-	// 	message: 'Страница изменена другим пользователем. Ваши изменения не сохранены.',
-	// 	position: 'center',
-	// 	progress: true,
-	// })
 }
 
 const lang = [
@@ -225,29 +90,12 @@ const footerState = computed(() => {
 	return route.meta.footer ? true : false
 })
 
-const action = () => {
-	router.push(`/${myapps.currentApp?.id}`)
-}
-
 const localCreated = computed(() => {
 	return date.formatDate(app.value.versions[0].created, 'DD.MM.YY HH:mm')
 })
 const localChanged = computed(() => {
 	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY HH:mm')
 })
-
-const save = ref(true)
-const notsave = ref(false)
-const close = () => {
-	save.value = !save.value
-}
-const close1 = () => {
-	notsave.value = !notsave.value
-}
-
-const goto = () => {
-	router.push('/settings')
-}
 
 const user = [
 	{
@@ -295,38 +143,6 @@ const title = computed(() => {
 
 	return `Настройка приложения "${app.value.label}"`
 })
-
-const fab = ref()
-const hide = () => {
-	fabOpened.value = false
-}
-
-const fabOpened = ref(false)
-const fabOpened1 = ref(false)
-
-let hoverTimeout: any = null
-
-function onEnter() {
-	clearTimeout(hoverTimeout)
-	fabOpened1.value = true
-}
-
-function onLeave() {
-	hoverTimeout = setTimeout(() => (fabOpened1.value = false), 200)
-}
-
-const fabPos = ref([18, 18])
-const draggingFab = ref(false)
-
-const moveFab = (ev: PanEvent) => {
-	draggingFab.value = ev.isFirst !== true && ev.isFinal !== true
-
-	// Безопасная деструктуризация
-	const dx = ev.delta?.x ?? 0
-	const dy = ev.delta?.y ?? 0
-
-	fabPos.value = [fabPos.value[0] - dx, fabPos.value[1] - dy]
-}
 </script>
 
 <template lang="pug">
@@ -337,16 +153,6 @@ q-layout(view='hHh LpR fFf')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
 			q-toolbar-title {{ title }}
-
-			// .group(v-if='route.name !== "home" && route.name !== "version" && route.name !== "assistent"')
-			.group(v-if='route.meta.toolbar')
-				q-avatar(size='28px' color="positive" text-color="white" @click='refresh') РЛ
-					q-tooltip Роза Львовна
-				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК
-					q-tooltip Сирень Крокодиловна
-
-				// q-btn.save(unelevated color="positive" label="Завершить" icon="mdi-check-bold" @click="action")
-					q-tooltip Завершить настройку
 
 			.lang
 				component(:is='currentLang.icon')
@@ -397,77 +203,7 @@ q-layout(view='hHh LpR fFf')
 				q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
 				|Сохранено
 
-	.fab(v-if='route.meta.save')
-		q-fab(
-			ref='fab'
-			v-model="fabOpened1"
-			color="primary"
-			direction="up"
-			glossy
-			:class="{ notsave: notsave }"
-			@mouseenter='onEnter'
-			@mouseleave='onLeave'
-		)
-			template(v-slot:icon="{ opened }")
-				q-icon(
-					v-if="!notsave"
-					:class="{ 'example-fab-animate--hover': opened !== true }"
-					name="keyboard_arrow_up"
-				)
-				q-avatar.act(v-else size="32px" color="positive" text-color="white")
-					| РЛ
-
-			template(v-slot:active-icon="{ opened }")
-				q-icon(
-					:class="{ 'example-fab-animate': opened === true }"
-					name="close"
-				)
-
-			.bubble(v-if="notsave")
-				.text-center
-					| Страница заблокирована другим пользователем. Сохранить изменения нельзя.
-					q-btn(flat label="Понятно" @click.stop="hide")
-
-			template(v-else)
-				q-fab-action(color="primary" label="Сохранить")
-				q-fab-action(color="primary" label="Отменить")
-
-	q-page-sticky(position="bottom-right" :offset="fabPos")
-		q-fab(
-			v-model="fabOpened"
-			color="primary"
-			direction="up"
-			glossy
-			:class="{ notsave: notsave }"
-			:disable="draggingFab"
-			v-touch-pan.prevent.mouse="moveFab"
-		)
-			template(v-slot:icon="{ opened }")
-				q-icon(
-					v-if="!notsave"
-					:class="{ 'example-fab-animate--hover': opened !== true }"
-					name="keyboard_arrow_up"
-				)
-				q-avatar.act(v-else size="32px" color="positive" text-color="white")
-					| РЛ
-
-			template(v-slot:active-icon="{ opened }")
-				q-icon(
-					:class="{ 'example-fab-animate': opened === true }"
-					name="close"
-				)
-
-			.bubble(v-if="notsave")
-				.text-center
-					| Страница заблокирована другим пользователем. Сохранить изменения нельзя.
-					q-btn(flat label="Понятно" @click.stop="hide")
-
-			template(v-else)
-				q-fab-action(color="primary" label="Сохранить" @click.stop='')
-				q-fab-action(color="primary" label="Отменить изменения" @click.stop='')
-
-	Fab(v-if='route.meta.save')
-
+	Fab
 </template>
 
 <style scoped lang="scss">
