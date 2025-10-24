@@ -81,8 +81,8 @@ const events = [
 		end: addWorkDays(now, 1),
 		type: 'range',
 		current: true,
-		editable: false,
-		// editable: { updateTime: true, updateGroup: false, remove: false },
+		editable: { updateTime: true, updateGroup: false, remove: false },
+		// editable: false,
 	},
 ]
 
