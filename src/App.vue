@@ -14,6 +14,13 @@ import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergency
 import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
 import Fab from '@/components/Fab.vue'
+// import type { TouchPanValue } from 'quasar'
+
+interface PanEvent {
+	isFirst?: boolean
+	isFinal?: boolean
+	delta?: { x?: number; y?: number }
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -311,10 +318,14 @@ function onLeave() {
 const fabPos = ref([18, 18])
 const draggingFab = ref(false)
 
-const moveFab = (ev) => {
+const moveFab = (ev: PanEvent) => {
 	draggingFab.value = ev.isFirst !== true && ev.isFinal !== true
 
-	fabPos.value = [fabPos.value[0] - ev.delta.x, fabPos.value[1] - ev.delta.y]
+	// Безопасная деструктуризация
+	const dx = ev.delta?.x ?? 0
+	const dy = ev.delta?.y ?? 0
+
+	fabPos.value = [fabPos.value[0] - dx, fabPos.value[1] - dy]
 }
 </script>
 
