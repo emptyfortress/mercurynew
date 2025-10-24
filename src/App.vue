@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { ref, computed, shallowRef, nextTick, onMounted } from 'vue'
+import { ref, computed, shallowRef } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
 import { useApps } from '@/stores/apps'
-// import { useIdle, useCounter } from '@vueuse/core'
-import { useMotions } from '@vueuse/motion'
+// import { useMotions } from '@vueuse/motion'
 import { useQuasar, date } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
 import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergencyExitSolid.vue'
 import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
+import Fab from '@/components/Fab.vue'
 
 const route = useRoute()
 const router = useRouter()
 const myapps = useApps()
-const motions = useMotions()
+// const motions = useMotions()
 
 const rightDrawer = ref(false)
 
@@ -289,14 +289,33 @@ const title = computed(() => {
 	return `Настройка приложения "${app.value.label}"`
 })
 
-const saveDialog = ref(false)
+const fab = ref()
+const hide = () => {
+	fabOpened.value = false
+}
 
-onMounted(() => {
-	setTimeout(() => {
-		saveDialog.value = true
-	}, 4000)
-})
-const showInfo = ref(false)
+const fabOpened = ref(false)
+const fabOpened1 = ref(false)
+
+let hoverTimeout: any = null
+
+function onEnter() {
+	clearTimeout(hoverTimeout)
+	fabOpened1.value = true
+}
+
+function onLeave() {
+	hoverTimeout = setTimeout(() => (fabOpened1.value = false), 200)
+}
+
+const fabPos = ref([18, 18])
+const draggingFab = ref(false)
+
+const moveFab = (ev) => {
+	draggingFab.value = ev.isFirst !== true && ev.isFinal !== true
+
+	fabPos.value = [fabPos.value[0] - ev.delta.x, fabPos.value[1] - ev.delta.y]
+}
 </script>
 
 <template lang="pug">
@@ -342,8 +361,6 @@ q-layout(view='hHh LpR fFf')
 								component.ic(:is='item.icon')
 							q-item-section {{ item.label }}
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
-			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
-			// q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
 
 	Drawer
 	RDrawer(v-model="rightDrawer" :help='helpMode')
@@ -369,30 +386,76 @@ q-layout(view='hHh LpR fFf')
 				q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
 				|Сохранено
 
-				// transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-					.bubble.pos(v-if='save'
-						v-motion='"cube"'
-						:initial="{ y: 200, opacity: 0, }"
-						:enter="{ y: 0, opacity: 1, }"
-						:leave="{ y: 200, opacity: 0, }"
-						:delay=2600
-					)
-						.text-center
-							|Сохранение данных происходит автоматически во всех редакторах.
-							q-btn(flat label="Понятно" @click.stop="close") 
+	.fab(v-if='route.meta.save')
+		q-fab(
+			ref='fab'
+			v-model="fabOpened1"
+			color="primary"
+			direction="up"
+			glossy
+			:class="{ notsave: notsave }"
+			@mouseenter='onEnter'
+			@mouseleave='onLeave'
+		)
+			template(v-slot:icon="{ opened }")
+				q-icon(
+					v-if="!notsave"
+					:class="{ 'example-fab-animate--hover': opened !== true }"
+					name="keyboard_arrow_up"
+				)
+				q-avatar.act(v-else size="32px" color="positive" text-color="white")
+					| РЛ
 
-				transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-					.bubble.neg(v-if='notsave'
-						v-motion='"cube"'
-						:initial="{ y: 200, opacity: 0, }"
-						:enter="{ y: 0, opacity: 1, }"
-						:leave="{ y: 200, opacity: 0, }"
-					)
-						.text-center
-							|Страница изменена другим пользователем. Ваши изменения не сохранены.
-							q-btn(flat label="Понятно" @click.stop="close1") 
+			template(v-slot:active-icon="{ opened }")
+				q-icon(
+					:class="{ 'example-fab-animate': opened === true }"
+					name="close"
+				)
 
+			.bubble(v-if="notsave")
+				.text-center
+					| Страница заблокирована другим пользователем. Сохранить изменения нельзя.
+					q-btn(flat label="Понятно" @click.stop="hide")
 
+			template(v-else)
+				q-fab-action(color="primary" label="Сохранить")
+				q-fab-action(color="primary" label="Отменить")
+
+	q-page-sticky(position="bottom-right" :offset="fabPos")
+		q-fab(
+			v-model="fabOpened"
+			color="primary"
+			direction="up"
+			glossy
+			:class="{ notsave: notsave }"
+			:disable="draggingFab"
+			v-touch-pan.prevent.mouse="moveFab"
+		)
+			template(v-slot:icon="{ opened }")
+				q-icon(
+					v-if="!notsave"
+					:class="{ 'example-fab-animate--hover': opened !== true }"
+					name="keyboard_arrow_up"
+				)
+				q-avatar.act(v-else size="32px" color="positive" text-color="white")
+					| РЛ
+
+			template(v-slot:active-icon="{ opened }")
+				q-icon(
+					:class="{ 'example-fab-animate': opened === true }"
+					name="close"
+				)
+
+			.bubble(v-if="notsave")
+				.text-center
+					| Страница заблокирована другим пользователем. Сохранить изменения нельзя.
+					q-btn(flat label="Понятно" @click.stop="hide")
+
+			template(v-else)
+				q-fab-action(color="primary" label="Сохранить" @click.stop='')
+				q-fab-action(color="primary" label="Отменить изменения" @click.stop='')
+
+	Fab(v-if='route.meta.save')
 
 </template>
 
@@ -522,50 +585,50 @@ nav a:first-of-type {
 	position: relative;
 }
 .bubble {
-	width: 34ch;
+	width: 42ch;
 	position: absolute;
-	top: -108px;
-	left: -130px;
+	top: -103px;
+	left: -250px;
 	border-radius: 0.4rem;
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 	padding: 0.5rem;
 	font-size: 0.9rem;
 	color: white;
-	&.pos {
-		background: $positive;
-	}
-	&.neg {
-		left: -156px;
-		width: 40ch;
-		background: $negative;
-	}
-}
-.bubble.pos::after {
-	content: '';
-	position: absolute;
-	left: 50%;
-	bottom: -10px; /* чтобы хвостик «вырос» наружу */
-	transform: translateX(-50%);
-	width: 0;
-	height: 0;
-	border-left: 10px solid transparent;
-	border-right: 10px solid transparent;
-	border-top: 10px solid $positive; /* ▲ треугольник вверх */
-}
-.bubble.neg::after {
-	content: '';
-	position: absolute;
-	left: 50%;
-	bottom: -10px; /* чтобы хвостик «вырос» наружу */
-	transform: translateX(-50%);
-	width: 0;
-	height: 0;
-	border-left: 10px solid transparent;
-	border-right: 10px solid transparent;
-	border-top: 10px solid $negative; /* ▲ треугольник вверх */
+	background: $negative;
 }
 .ic {
 	font-size: 1.5rem;
 	color: $primary;
+}
+.fab {
+	position: fixed;
+	bottom: 2.5rem;
+	right: 7rem;
+}
+.myflex {
+	display: flex;
+}
+.ic {
+	font-size: 2rem;
+}
+.notsave {
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.9);
+	}
+	70% {
+		box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+	}
+}
+.act {
+	margin-left: -4px;
+	margin-top: -3px;
+	border: 1px solid green;
 }
 </style>
