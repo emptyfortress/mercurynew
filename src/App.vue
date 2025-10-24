@@ -356,26 +356,6 @@ nav a:first-of-type {
 	display: flex;
 }
 .ic {
-	font-size: 2rem;
-}
-.notsave {
-	animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-	0% {
-		box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.9);
-	}
-	70% {
-		box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);
-	}
-	100% {
-		box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
-	}
-}
-.act {
-	margin-left: -4px;
-	margin-top: -3px;
-	border: 1px solid green;
+	font-size: 1.7rem;
 }
 </style>

@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { motion } from 'motion-v'
+import { useSave } from '@/stores/save'
+import { storeToRefs } from 'pinia'
+import Fa7SolidDigging from '@/components/icons/Fa7SolidDigging.vue'
 
 interface PanEvent {
 	isFirst?: boolean
@@ -9,19 +12,19 @@ interface PanEvent {
 	delta?: { x?: number; y?: number }
 }
 
+const saveStore = useSave()
+const { notsave } = storeToRefs(saveStore)
+
 const route = useRoute()
 const fab = ref()
 const hide = () => {
 	fabOpened.value = false
 }
-
-const save = ref(true)
-const notsave = ref(false)
-const close = () => {
-	save.value = !save.value
+const unhide = () => {
+	saveStore.toggle()
 }
 
-const fabOpened = ref(false)
+const fabOpened = ref(true)
 
 const fabPos = ref([58, 18])
 const draggingFab = ref(false)
@@ -61,7 +64,6 @@ q-page-sticky(v-if='route.meta.save' position="bottom-right" :offset="fabPos")
 			v-model="fabOpened"
 			color="primary"
 			direction="up"
-			glossy
 			:class="{ notsave: notsave }"
 			:disable="draggingFab"
 			v-touch-pan.prevent.mouse="moveFab"
@@ -72,8 +74,7 @@ q-page-sticky(v-if='route.meta.save' position="bottom-right" :offset="fabPos")
 					:class="{ 'example-fab-animate--hover': opened !== true }"
 					name="keyboard_arrow_up"
 				)
-				q-avatar.act(v-else size="32px" color="positive" text-color="white")
-					| РЛ
+				Fa7SolidDigging.ic(v-else)
 
 			template(v-slot:active-icon="{ opened }")
 				q-icon(
@@ -84,7 +85,8 @@ q-page-sticky(v-if='route.meta.save' position="bottom-right" :offset="fabPos")
 			.bubble(v-if="notsave")
 				.text-center
 					| Страница заблокирована другим пользователем. Сохранить изменения нельзя.
-					q-btn(flat label="Понятно" @click.stop="hide")
+					q-btn(unelevated color="pink-8" label="Подождать" @click.stop="hide" size='sm')
+					q-btn(unelevated color="pink-8" label="Снять блокировку" @click.stop="unhide" size='sm')
 
 			template(v-else)
 				q-fab-action(color="primary" label="Сохранить" @click.stop='')
@@ -113,5 +115,37 @@ q-page-sticky(v-if='route.meta.save' position="bottom-right" :offset="fabPos")
 	&:hover {
 		background: $positive;
 	}
+}
+.notsave {
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(180, 0, 255, 0.9);
+	}
+	70% {
+		box-shadow: 0 0 0 20px rgba(180, 0, 255, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(180, 0, 255, 0);
+	}
+}
+.ic {
+	font-size: 2rem;
+	margin-top: -3px;
+	margin-left: -3px;
+}
+.bubble {
+	width: 42ch;
+	position: absolute;
+	top: -103px;
+	left: -250px;
+	border-radius: 0.4rem;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+	padding: 0.5rem;
+	font-size: 0.9rem;
+	color: white;
+	background: $negative;
 }
 </style>
