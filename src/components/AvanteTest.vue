@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { date } from 'quasar'
 
-const test = ref(new Date())
+const test = ref(date.formatDate(new Date(), 'DD.MM.YYYY'))
 </script>
 
 <template lang="pug">
