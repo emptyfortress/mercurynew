@@ -7,7 +7,6 @@ const test = ref()
 <template lang="pug">
 h2 Hello {{ test }}
 p This is a dummy paragraph. This is some more text for the first paragraph.
-p This is another dummy paragraph.
 </template>
 
 <style scoped lang="scss">
