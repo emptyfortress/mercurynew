@@ -11,6 +11,7 @@ p This is a dummy paragraph. This is some more text for the first paragraph.
 
 <style scoped lang="scss">
 h2 {
-	color: #ff9999;
+	color: red;
+	font-weight: bold;
 }
 </style>
