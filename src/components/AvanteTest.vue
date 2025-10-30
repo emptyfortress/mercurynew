@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { date, QTableProps } from 'quasar'
+import { date } from 'quasar'
+import type { QTableProps } from 'quasar'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -24,7 +25,7 @@ const rows = Array.from({ length: 10 }, (_, i) => ({
 </script>
 
 <template lang="pug">
-q-page
+q-page(padding)
 	h2 Hi, there {{ test }}
 	p This is a dummy paragraph. This is some more text for the first paragraph.
 	q-table(title="Sample Data" flat :rows="rows" :columns="columns" row-key="id")
