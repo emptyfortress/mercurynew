@@ -12,7 +12,7 @@ q-page
 	h2 Hi, there {{ test }}
 	p This is a dummy paragraph. This is some more text for the first paragraph.
 	.row.justify-center
-		q-btn(color="primary" label="Test" @click="router.push('/')")
+		q-btn(color="secondary" label="Test" @click="router.push('/')")
 </template>
 
 <style scoped lang="scss">
