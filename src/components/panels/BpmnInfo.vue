@@ -4,7 +4,22 @@ import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 
 const selectionStore = useSelectionStore()
-const { current } = storeToRefs(selectionStore)
+const { current, selectedForecast } = storeToRefs(selectionStore)
+
+const forecast = computed(() => {
+	if (current.value && current.value.kind == 'bpmn') {
+		return current.value?.finished == 'Не начато' ? true : false
+	}
+	return false
+})
+
+const toggleForecast = async () => {
+	selectedForecast.value = !selectedForecast.value
+
+	if (selectedForecast.value) {
+		await selectionStore.loadForecastEvents()
+	}
+}
 
 const finished = computed(() => {
 	if (current.value && current.value.id == 'Activity_0vjxzxe') return 'в процессе'
@@ -26,7 +41,13 @@ const finished = computed(() => {
 		div {{current?.lane}}
 	label Состояние:
 	div {{ finished }}
-
+	q-chip.chip-forecast(v-if='forecast' clickable
+		:selected="selectedForecast"
+		:color="selectedForecast ? 'primary' : 'grey-3'"
+		:text-color="selectedForecast ? 'white' : 'black'"
+		@click="toggleForecast"
+	) прогноз
+		q-tooltip экспериментальная функция
 </template>
 
 <style scoped lang="scss">
@@ -46,5 +67,9 @@ label {
 	grid-column: 1/-1;
 	width: 100%;
 	font-weight: 600;
+}
+.chip-forecast {
+	grid-column: 1 / -1;
+	margin-top: 0.5rem;
 }
 </style>

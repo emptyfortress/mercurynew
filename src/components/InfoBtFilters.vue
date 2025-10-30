@@ -1,25 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSelectionStore } from '@/stores/selection'
 
 const selectionStore = useSelectionStore()
-const { selectedLateFilter, hideWeekends, current, selectedForecast } = storeToRefs(selectionStore)
-
-const forecast = computed(() => {
-	if (current.value && current.value.kind == 'bpmn') {
-		return current.value?.finished == 'Не начато' ? true : false
-	}
-	return false
-})
-
-const toggleForecast = async () => {
-	selectedForecast.value = !selectedForecast.value
-
-	if (selectedForecast) {
-		await selectionStore.loadForecastEvents()
-	}
-}
+const { selectedLateFilter, hideWeekends } = storeToRefs(selectionStore)
 </script>
 
 <template lang="pug">
@@ -39,14 +23,6 @@ const toggleForecast = async () => {
 		@click="hideWeekends = !hideWeekends"
 	) выходные
 		q-tooltip показать выходные на шкале
-
-	q-chip(clickable v-if='forecast'
-		:selected="selectedForecast"
-		:color="selectedForecast ? 'primary' : 'grey-3'"
-		:text-color="selectedForecast ? 'white' : 'black'"
-		@click="toggleForecast"
-	) прогноз
-		q-tooltip экспериментальная функция
 
 </template>
 
