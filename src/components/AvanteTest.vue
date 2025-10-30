@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const test = ref()
+const test = ref(new Date())
 </script>
 
 <template lang="pug">
