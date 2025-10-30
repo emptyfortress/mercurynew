@@ -69,7 +69,7 @@ const dialog = ref(false)
 const dialog1 = ref(false)
 
 const create = (e: any) => {
-	props.versions.map((el) => (el.current = false))
+	props.versions.forEach((el) => (el.current = false))
 	myapps.addVersion(props.versions, e)
 	expandedRows.value = [props.item.versions[0].id]
 
@@ -94,8 +94,8 @@ function testVersion() {
 }
 
 async function edit(id: number) {
-	let row = props.versions.find((el) => el.id === id)
-	props.versions.forEach((el) => (el.current = false)) // лучше forEach, а не map
+	const row = props.versions.find((el) => el.id === id)
+	props.versions.forEach((el) => (el.current = false))
 
 	if (row) {
 		row.current = true
@@ -107,42 +107,15 @@ async function edit(id: number) {
 }
 
 function createVersion(id: number) {
-	let tmp = props.versions.findIndex((el) => el.id == id)
-	if (tmp > -1) {
-		currentVer.value = props.versions[tmp].label
+	const version = props.versions.find((el) => el.id === id)
+	if (version) {
+		currentVer.value = version.label
 		dialog.value = !dialog.value
 	}
 }
 
-interface RowData {
-	id: number
-	label: string
-	descr: string
-	modified: string
-	published: number // 0, 1, 2
-}
-
-interface MenuItem {
-	id: number
-	icon: string
-	label: string
-	action: (rowId: number) => void
-}
-
-const menu: MenuItem[] = [
-	{ id: 0, icon: 'mdi-eye', label: 'Просмотреть настройки', action: viewSettings },
-	{ id: 1, icon: 'mdi-pencil', label: 'Редактировать', action: edit },
-	{
-		id: 2,
-		icon: 'mdi-plus-box-multiple-outline',
-		label: 'Создать версию на основе',
-		action: createVersion,
-	},
-	{ id: 3, icon: 'mdi-delete-outline', label: 'Удалить', action: remove },
-]
-
 const pubDate = computed(() => {
-	let tmp = props.versions.find((el) => el.published == 2)
+	const tmp = props.versions.find((el) => el.published == 2)
 	if (tmp) return date.formatDate(tmp.pubDate, 'DD.MM.YY HH:mm')
 })
 
@@ -169,7 +142,6 @@ const letcheck = computed({
 })
 
 const precheck = ref(false)
-const precheck1 = ref(false)
 
 const timeStamp = ref(Date.now())
 const check = () => {
@@ -210,8 +182,7 @@ const add = () => {
 	dialog.value = !dialog.value
 }
 const publish = () => {
-	precheck1.value = true
-	let tmp = props.item.versions.find((el) => el.published == 2)
+	const tmp = props.item.versions.find((el) => el.published == 2)
 	if (tmp) {
 		tmp.published = 3
 	}
@@ -229,7 +200,6 @@ const publish = () => {
 			message: 'Приложение опубликовано!',
 			position: 'top',
 		})
-		precheck1.value = false
 	}, 4000)
 }
 const handlePub = () => {
