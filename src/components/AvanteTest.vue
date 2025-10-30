@@ -7,6 +7,7 @@ const test = ref(new Date())
 <template lang="pug">
 h2 Hello {{ test }}
 p This is a dummy paragraph. This is some more text for the first paragraph.
+q-btn(color="primary" label="Test")
 </template>
 
 <style scoped lang="scss">
