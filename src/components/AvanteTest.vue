@@ -6,7 +6,7 @@ const test = ref(date.formatDate(new Date(), 'DD.MM.YYYY'))
 </script>
 
 <template lang="pug">
-h2 Hello {{ test }}
+h2 Hi, there {{ test }}
 p This is a dummy paragraph. This is some more text for the first paragraph.
 .row.justify-center
 	q-btn(color="primary" label="Test")
