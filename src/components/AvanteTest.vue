@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { date } from 'quasar'
+import { date, QTableProps } from 'quasar'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const test = ref(date.formatDate(new Date(), 'DD.MM.YYYY'))
 
-const columns = [
+const columns: QTableProps['columns'] = [
 	{ name: 'id', required: true, label: 'ID', align: 'left', field: 'id', sortable: true },
 	{ name: 'name', align: 'center', label: 'Name', field: 'name', sortable: true },
 	{ name: 'description', label: 'Description', field: 'description', sortable: true },
