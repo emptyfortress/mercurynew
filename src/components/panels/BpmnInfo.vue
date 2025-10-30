@@ -41,13 +41,15 @@ const finished = computed(() => {
 		div {{current?.lane}}
 	label Состояние:
 	div {{ finished }}
-	q-chip.chip-forecast(v-if='forecast' clickable
-		:selected="selectedForecast"
-		:color="selectedForecast ? 'primary' : 'grey-3'"
-		:text-color="selectedForecast ? 'white' : 'black'"
-		@click="toggleForecast"
-	) прогноз
-		q-tooltip экспериментальная функция
+	template(v-if='forecast')
+		label Прогноз:
+		q-chip(clickable
+			:selected="selectedForecast"
+			:color="selectedForecast ? 'primary' : 'grey-3'"
+			:text-color="selectedForecast ? 'white' : 'black'"
+			@click="toggleForecast"
+		) Показать
+			q-tooltip экспериментальная функция
 </template>
 
 <style scoped lang="scss">
@@ -67,9 +69,5 @@ label {
 	grid-column: 1/-1;
 	width: 100%;
 	font-weight: 600;
-}
-.chip-forecast {
-	grid-column: 1 / -1;
-	margin-top: 0.5rem;
 }
 </style>
