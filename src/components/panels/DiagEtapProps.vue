@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import PropField from '@/components/common/PropField.vue'
+import { useChangesStore } from '@/stores/changes'
 
-const list = [
+const changesStore = useChangesStore()
+
+const list = ref([
 	{
 		id: 0,
 		label: 'Название',
@@ -27,7 +31,15 @@ const list = [
 		main: 'Подготовка',
 		select: true,
 	},
-]
+])
+
+watch(
+	list,
+	() => {
+		changesStore.setHasChanges(true)
+	},
+	{ deep: true }
+)
 </script>
 
 <template lang="pug">

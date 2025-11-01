@@ -5,6 +5,7 @@ import { motion } from 'motion-v'
 import { useSave } from '@/stores/save'
 import { storeToRefs } from 'pinia'
 import Fa7SolidDigging from '@/components/icons/Fa7SolidDigging.vue'
+import { useChangesStore } from '@/stores/changes'
 
 interface PanEvent {
 	isFirst?: boolean
@@ -14,6 +15,8 @@ interface PanEvent {
 
 const saveStore = useSave()
 const { notsave } = storeToRefs(saveStore)
+const changesStore = useChangesStore()
+const { hasChanges } = storeToRefs(changesStore)
 
 const route = useRoute()
 const fab = ref()
@@ -36,6 +39,17 @@ const moveFab = (ev: PanEvent) => {
 	fabPos.value = [fabPos.value[0] - dx, fabPos.value[1] - dy]
 }
 
+const handleSaveChanges = () => {
+	// Future save logic goes here
+	changesStore.setHasChanges(false)
+	hide()
+}
+const handleCancelChanges = () => {
+	// Future cancel/revert logic goes here
+	changesStore.setHasChanges(false)
+	hide()
+}
+
 const Div = motion.div
 const initial = {
 	opacity: 0,
@@ -49,12 +63,11 @@ const spring = {
 	type: 'spring',
 	visualDuration: 0.3,
 	bounce: 0.5,
-	delay: 2,
 }
 </script>
 
 <template lang="pug">
-q-page-sticky(v-if='route.meta.save' position="bottom-right" :offset="fabPos")
+q-page-sticky(v-if='route.meta.save && hasChanges' position="bottom-right" :offset="fabPos")
 	Div(
 		:initial="initial"
 		:animate="animate"
@@ -89,8 +102,8 @@ q-page-sticky(v-if='route.meta.save' position="bottom-right" :offset="fabPos")
 					q-btn(unelevated color="pink-8" label="Снять блокировку" @click.stop="unhide" size='sm')
 
 			template(v-else)
-				q-fab-action(color="primary" label="Сохранить" @click.stop='')
-				q-fab-action(color="primary" label="Отменить изменения" @click.stop='')
+				q-fab-action(color="primary" label="Сохранить" @click.stop='handleSaveChanges')
+				q-fab-action(color="primary" label="Отменить изменения" @click.stop='handleCancelChanges')
 </template>
 
 <style scoped lang="scss">
