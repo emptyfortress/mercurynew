@@ -48,8 +48,6 @@ const finished = computed(() => {
 	label Состояние:
 	div {{ finished }}
 	template(v-if='forecast')
-		label Дата завершения:
-		div {{ finishDate }}
 		label Прогноз:
 		q-chip(clickable
 			:selected="selectedForecast"
@@ -58,6 +56,9 @@ const finished = computed(() => {
 			@click="toggleForecast"
 		) Показать
 			q-tooltip экспериментальная функция
+		template(v-if="selectedForecast")
+			label Дата завершения:
+			div.forecast-date {{ finishDate }}
 </template>
 
 <style scoped lang="scss">
@@ -77,5 +78,9 @@ label {
 	grid-column: 1/-1;
 	width: 100%;
 	font-weight: 600;
+}
+.forecast-date {
+	font-style: italic;
+	color: #666;
 }
 </style>
