@@ -48,7 +48,7 @@ const finished = computed(() => {
 	label Состояние:
 	div {{ finished }}
 	template(v-if='forecast')
-		q-separator
+		q-separator(spaced)
 		label Прогноз:
 		q-chip(clickable
 			:selected="selectedForecast"
