@@ -78,7 +78,7 @@ const calcDelay = computed(() => {
 		:enter='{ opacity: 1 }'
 		:delay='calcDelay')
 
-	q-separator
+	// q-separator
 
 	div(v-if="panels.right0 && !!current"
 		v-motion

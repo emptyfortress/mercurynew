@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
+import LucideMilestone from '@/components/icons/LucideMilestone.vue'
 
 const selectionStore = useSelectionStore()
 const { current, selectedForecast, forecastEvents } = storeToRefs(selectionStore)
@@ -33,36 +34,43 @@ const finished = computed(() => {
 		return current.value.finished
 	}
 })
+
+const item1 = ref(true)
 </script>
 
 <template lang="pug">
-.grid
-	.zag Этап
-	label Тип:
-	div {{current?.type}}
-	label Название:
-	div {{current?.name}}
-	template(v-if='current?.kind == "bpmn"')
-		label Роль:
-		div {{current?.lane}}
-	label Состояние:
-	div {{ finished }}
-	template(v-if='forecast')
-		q-separator(spaced)
-		label Прогноз:
-		q-chip(clickable
-			:selected="selectedForecast"
-			:color="selectedForecast ? 'primary' : 'grey-3'"
-			:text-color="selectedForecast ? 'white' : 'black'"
-			@click="toggleForecast"
-		) Показать
-			q-tooltip экспериментальная функция
-		template(v-if="selectedForecast")
-			label Дата завершения:
-			div.forecast-date
-				span {{ finishDate }}
-				q-icon(name="mdi-help-circle-outline" color="primary" size="xs")
-					q-tooltip Прогнозируемая дата завершения этапа
+q-expansion-item(v-model="item1")
+	template(v-slot:header)
+		q-item-section(side)
+			LucideMilestone.ic
+		q-item-section.zg Этап
+
+	.grid
+		label Тип:
+		div {{current?.type}}
+		label Название:
+		div {{current?.name}}
+		template(v-if='current?.kind == "bpmn"')
+			label Роль:
+			div {{current?.lane}}
+		label Состояние:
+		div {{ finished }}
+		template(v-if='forecast')
+			q-separator(spaced)
+			label Прогноз:
+			q-chip(clickable
+				:selected="selectedForecast"
+				:color="selectedForecast ? 'primary' : 'grey-3'"
+				:text-color="selectedForecast ? 'white' : 'black'"
+				@click="toggleForecast"
+			) Показать
+				q-tooltip экспериментальная функция
+			template(v-if="selectedForecast")
+				label Дата завершения:
+				div.forecast-date
+					span {{ finishDate }}
+					q-icon(name="mdi-help-circle-outline" color="primary" size="xs")
+						q-tooltip Прогнозируемая дата завершения этапа
 </template>
 
 <style scoped lang="scss">
@@ -82,10 +90,15 @@ const finished = computed(() => {
 label {
 	color: #666;
 }
-.zag {
-	grid-column: 1/-1;
-	width: 100%;
-	font-weight: 600;
+.ic {
+	font-size: 1.5rem;
+	margin-right: 0.5rem;
+	color: $secondary;
+}
+.zg {
+	text-transform: uppercase;
+	color: $secondary;
+	text-align: left;
 }
 .forecast-date {
 	font-style: italic;
