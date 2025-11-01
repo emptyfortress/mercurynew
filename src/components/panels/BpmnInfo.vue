@@ -8,7 +8,7 @@ const selectionStore = useSelectionStore()
 const { current, selectedForecast } = storeToRefs(selectionStore)
 
 const finishDate = computed(() => {
-	const event = goodFinish.find(e => e.id === 8)
+	const event = goodFinish.find((e) => e.id === 8)
 	return event?.end?.toLocaleDateString('ru-RU')
 })
 
@@ -48,6 +48,7 @@ const finished = computed(() => {
 	label Состояние:
 	div {{ finished }}
 	template(v-if='forecast')
+		q-separator
 		label Прогноз:
 		q-chip(clickable
 			:selected="selectedForecast"
@@ -70,6 +71,9 @@ const finished = computed(() => {
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
+}
+.q-separator {
+	grid-column: 1/-1;
 }
 label {
 	color: #666;
