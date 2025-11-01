@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { goodFinish, badFinish } from '@/stores/events'
 
 export type BpmnSelection = {

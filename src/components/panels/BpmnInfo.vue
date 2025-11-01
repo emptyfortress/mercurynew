@@ -62,7 +62,7 @@ const finished = computed(() => {
 			div.forecast-date
 				span {{ finishDate }}
 				q-icon(name="mdi-help-circle-outline" color="primary" size="xs")
-					q-tooltip Прогнозируемая дата завершения
+					q-tooltip Прогнозируемая дата завершения этапа
 </template>
 
 <style scoped lang="scss">
