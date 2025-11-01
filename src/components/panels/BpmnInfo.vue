@@ -74,6 +74,7 @@ const finished = computed(() => {
 }
 .q-separator {
 	grid-column: 1/-1;
+	width: 100%;
 }
 label {
 	color: #666;
@@ -86,5 +87,7 @@ label {
 .forecast-date {
 	font-style: italic;
 	color: #666;
+	border: 1px dotted $positive;
+	padding: 0 0.5rem;
 }
 </style>
