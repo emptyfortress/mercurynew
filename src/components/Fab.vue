@@ -40,14 +40,12 @@ const moveFab = (ev: PanEvent) => {
 }
 
 const handleSaveChanges = () => {
+	fabOpened.value = false
 	// Future save logic goes here
-	changesStore.setHasChanges(false)
-	hide()
 }
 const handleCancelChanges = () => {
+	fabOpened.value = false
 	// Future cancel/revert logic goes here
-	changesStore.setHasChanges(false)
-	hide()
 }
 
 const Div = motion.div

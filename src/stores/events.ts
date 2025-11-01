@@ -82,7 +82,6 @@ const events = [
 		type: 'range',
 		current: true,
 		editable: { updateTime: true, updateGroup: false, remove: false },
-		// editable: false,
 	},
 ]
 
@@ -97,7 +96,6 @@ const goodFinish: MyEvent[] = [
 		end: addWorkDays(now, 3),
 		type: 'range',
 		className: 'forecast-item item-6',
-		// editable: { updateTime: true, updateGroup: false, remove: false },
 	},
 	{
 		id: 7,
@@ -109,7 +107,6 @@ const goodFinish: MyEvent[] = [
 		end: addWorkDays(now, 5),
 		type: 'range',
 		className: 'forecast-item item-7',
-		// editable: { updateTime: true, updateGroup: false, remove: false },
 	},
 	{
 		id: 8,
@@ -121,7 +118,6 @@ const goodFinish: MyEvent[] = [
 		end: addWorkDays(now, 5),
 		type: 'point',
 		className: 'start item-8',
-		// editable: { updateTime: false, updateGroup: false, remove: false },
 	},
 ]
 

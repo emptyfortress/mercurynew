@@ -37,7 +37,7 @@ export const useSelectionStore = defineStore('selection', () => {
 
 	const loadForecastEvents = async () => {
 		if (current.value && current.value.kind == 'bpmn') {
-			if (current.value.id == 'Event_1yi1uuk') {
+			if (current.value.id == 'Event_1yi1uuk' || current.value.id == 'Activity_0obo0kc') {
 				forecastEvents.value = badFinish
 			} else {
 				forecastEvents.value = goodFinish
