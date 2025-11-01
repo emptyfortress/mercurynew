@@ -59,7 +59,10 @@ const finished = computed(() => {
 			q-tooltip экспериментальная функция
 		template(v-if="selectedForecast")
 			label Дата завершения:
-			div.forecast-date {{ finishDate }}
+			div.forecast-date
+				span {{ finishDate }}
+				q-icon(name="mdi-help-circle-outline" color="primary" size="xs")
+					q-tooltip Прогнозируемая дата завершения
 </template>
 
 <style scoped lang="scss">
@@ -89,5 +92,8 @@ label {
 	color: #666;
 	border: 1px dotted $positive;
 	padding: 0 0.5rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
 }
 </style>
