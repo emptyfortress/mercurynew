@@ -36,11 +36,12 @@ export const useSelectionStore = defineStore('selection', () => {
 	const forecastEvents = ref<MyEvent[]>([])
 
 	const loadForecastEvents = async () => {
-		if (current.value && current.value.kind == 'bpmn' && current.value.id == 'Event_1wwtnaa') {
-			forecastEvents.value = goodFinish
-		}
-		if (current.value && current.value.kind == 'bpmn' && current.value.id == 'Event_1yi1uuk') {
-			forecastEvents.value = badFinish
+		if (current.value && current.value.kind == 'bpmn') {
+			if (current.value.id == 'Event_1yi1uuk') {
+				forecastEvents.value = badFinish
+			} else {
+				forecastEvents.value = goodFinish
+			}
 		}
 	}
 

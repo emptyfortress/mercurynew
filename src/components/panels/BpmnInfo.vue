@@ -2,13 +2,13 @@
 import { computed } from 'vue'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
-import { goodFinish } from '@/stores/events'
 
 const selectionStore = useSelectionStore()
-const { current, selectedForecast } = storeToRefs(selectionStore)
+const { current, selectedForecast, forecastEvents } = storeToRefs(selectionStore)
 
 const finishDate = computed(() => {
-	const event = goodFinish.find((e) => e.id === 8)
+	if (!current.value || current.value.kind !== 'bpmn') return null
+	const event = forecastEvents.value.find((e) => e.sideId === current.value?.id)
 	return event?.end?.toLocaleDateString('ru-RU')
 })
 
