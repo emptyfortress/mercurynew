@@ -5,7 +5,7 @@ import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import PredContent from '@/components/PredContent.vue'
-import MaterialSymbolsTableEditOutline from '@/components/icons/MaterialSymbolsTableEditOutline.vue'
+// import MaterialSymbolsTableEditOutline from '@/components/icons/MaterialSymbolsTableEditOutline.vue'
 
 const panels = usePanels()
 
