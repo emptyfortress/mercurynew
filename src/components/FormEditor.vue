@@ -5,11 +5,13 @@ import { insert } from "@formkit/drag-and-drop"
 import Resizable from '@/components/Resizable.vue'
 import { useElementSize } from '@vueuse/core'
 import { useControl } from '@/stores/controls'
+import { useChangesStore } from '@/stores/changes'
 import DropZone from '@/components/DropZone.vue'
 import { storeToRefs } from 'pinia'
 import { state } from "@formkit/drag-and-drop"
 
 const control = useControl()
+const changesStore = useChangesStore()
 const { editorControls } = storeToRefs(control)
 
 const config = {
@@ -31,6 +33,14 @@ const config = {
 
 
 const [doneList, dones] = useDragAndDrop(editorControls.value, config)
+
+watch(
+	dones,
+	() => {
+		changesStore.setHasChanges(true)
+	},
+	{ deep: true }
+)
 
 const edit = ref()
 const { width } = useElementSize(edit)
