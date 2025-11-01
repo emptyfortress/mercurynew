@@ -2,9 +2,15 @@
 import { computed } from 'vue'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
+import { goodFinish } from '@/stores/events'
 
 const selectionStore = useSelectionStore()
 const { current, selectedForecast } = storeToRefs(selectionStore)
+
+const finishDate = computed(() => {
+	const event = goodFinish.find(e => e.id === 8)
+	return event?.end?.toLocaleDateString('ru-RU')
+})
 
 const forecast = computed(() => {
 	if (current.value && current.value.kind == 'bpmn') {
@@ -42,6 +48,8 @@ const finished = computed(() => {
 	label Состояние:
 	div {{ finished }}
 	template(v-if='forecast')
+		label Дата завершения:
+		div {{ finishDate }}
 		label Прогноз:
 		q-chip(clickable
 			:selected="selectedForecast"
