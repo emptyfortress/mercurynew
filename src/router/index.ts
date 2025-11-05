@@ -49,17 +49,6 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/aider',
-			name: 'aider',
-			component: () => import('@/components/AvanteTest.vue'),
-			meta: {
-				toolbar: false,
-				back: false,
-				count: 0,
-				save: false,
-			},
-		},
-		{
 			path: '/spot',
 			name: 'spot',
 			component: () => import('@/views/Spotlight.vue'),
