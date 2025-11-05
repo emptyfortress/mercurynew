@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 import LucideMilestone from '@/components/icons/LucideMilestone.vue'
+import ExpansionItem from '@/components/ExpansionItem.vue'
 
 const selectionStore = useSelectionStore()
 const { current, selectedForecast, forecastEvents } = storeToRefs(selectionStore)
@@ -34,17 +35,10 @@ const finished = computed(() => {
 		return current.value.finished
 	}
 })
-
-const item1 = ref(true)
 </script>
 
 <template lang="pug">
-q-expansion-item(v-model="item1")
-	template(v-slot:header)
-		q-item-section(side)
-			LucideMilestone.ic
-		q-item-section.zg Этап
-
+ExpansionItem(title="Этап" :icon="LucideMilestone")
 	.grid
 		label Тип:
 		div {{current?.type}}
@@ -89,16 +83,6 @@ q-expansion-item(v-model="item1")
 }
 label {
 	color: #666;
-}
-.ic {
-	font-size: 1.5rem;
-	margin-right: 0.5rem;
-	color: $secondary;
-}
-.zg {
-	text-transform: uppercase;
-	color: $secondary;
-	text-align: left;
 }
 .forecast-date {
 	font-style: italic;
