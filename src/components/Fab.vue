@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { motion } from 'motion-v'
 import { useSave } from '@/stores/save'
@@ -17,15 +17,6 @@ const saveStore = useSave()
 const { notsave } = storeToRefs(saveStore)
 const changesStore = useChangesStore()
 const { hasChanges } = storeToRefs(changesStore)
-
-watch(hasChanges, (isChanging) => {
-	if (isChanging) {
-		document.body.style.overflow = 'hidden'
-		// setTimeout(() => {
-		// 	document.body.style.overflow = ''
-		// }, 400) // Animation duration + buffer
-	}
-})
 
 const route = useRoute()
 const fab = ref()

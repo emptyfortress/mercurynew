@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, shallowRef } from 'vue'
+import { ref, computed, shallowRef, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
@@ -15,6 +15,19 @@ import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
 
 const route = useRoute()
+
+watch(
+	() => route.name,
+	(routeName) => {
+		if (routeName === 'process') {
+			document.documentElement.style.overflow = 'hidden'
+		} else {
+			document.documentElement.style.overflow = ''
+		}
+	},
+	{ immediate: true }
+)
+
 const router = useRouter()
 const myapps = useApps()
 
