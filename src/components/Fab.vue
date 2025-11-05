@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { motion } from 'motion-v'
 import { useSave } from '@/stores/save'
@@ -17,6 +17,11 @@ const saveStore = useSave()
 const { notsave } = storeToRefs(saveStore)
 const changesStore = useChangesStore()
 const { hasChanges } = storeToRefs(changesStore)
+
+const showMotionDiv = ref(false)
+onMounted(() => {
+	showMotionDiv.value = true
+})
 
 const route = useRoute()
 const fab = ref()
@@ -51,7 +56,7 @@ const handleCancelChanges = () => {
 const Div = motion.div
 const initial = {
 	opacity: 0,
-	y: -120,
+	y: 120,
 }
 const animate = {
 	opacity: 1,
@@ -67,6 +72,7 @@ const spring = {
 <template lang="pug">
 q-page-sticky(v-if='route.meta.save && hasChanges' position="bottom-right" :offset="fabPos")
 	Div(
+		v-if="showMotionDiv"
 		:initial="initial"
 		:animate="animate"
 		:transition='spring'
