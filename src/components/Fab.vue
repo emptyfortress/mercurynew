@@ -22,7 +22,7 @@ const showFab = ref(false)
 onMounted(() => {
 	setTimeout(() => {
 		showFab.value = true
-	}, 200)
+	}, 2000)
 })
 
 const route = useRoute()
