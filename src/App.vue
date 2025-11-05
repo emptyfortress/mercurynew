@@ -17,9 +17,9 @@ import Footer from '@/components/Footer.vue'
 const route = useRoute()
 
 watch(
-	() => route.name,
-	(routeName) => {
-		if (routeName === 'process') {
+	() => route.meta.hideScroll,
+	(hideScroll) => {
+		if (hideScroll) {
 			document.documentElement.style.overflow = 'hidden'
 		} else {
 			document.documentElement.style.overflow = ''

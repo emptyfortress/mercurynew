@@ -9,6 +9,7 @@ declare module 'vue-router' {
 		back1?: boolean
 		count: number
 		save?: boolean
+		hideScroll?: boolean
 	}
 }
 
@@ -124,6 +125,7 @@ const router = createRouter({
 				count: 2,
 				footer: true,
 				save: true,
+				hideScroll: true,
 			},
 		},
 		{
@@ -137,6 +139,7 @@ const router = createRouter({
 				count: 21,
 				footer: true,
 				save: true,
+				hideScroll: true,
 			},
 		},
 		{
@@ -211,6 +214,7 @@ const router = createRouter({
 				count: 25,
 				footer: true,
 				save: true,
+				hideScroll: true,
 			},
 		},
 		{
