@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, shallowRef, nextTick } from 'vue'
+import { ref, computed, shallowRef, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
 import { useApps } from '@/stores/apps'
-// import { useIdle, useCounter } from '@vueuse/core'
+import { useIdle, useCounter } from '@vueuse/core'
 import { useMotions } from '@vueuse/motion'
 import { useQuasar, date } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
@@ -14,6 +14,7 @@ import CifGb from '@/components/icons/CifGb.vue'
 import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergencyExitSolid.vue'
 import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
+import { useMotion } from '@vueuse/motion'
 
 const route = useRoute()
 const router = useRouter()
@@ -105,77 +106,77 @@ const toggleBug = () => {
 	helpMode.value = false
 	rightDrawer.value = !rightDrawer.value
 }
-// const toggleHelp = () => {
-// 	helpMode.value = true
-// 	rightDrawer.value = !rightDrawer.value
-// }
+const toggleHelp = () => {
+	helpMode.value = true
+	rightDrawer.value = !rightDrawer.value
+}
 
-// const buttonRef = ref<HTMLButtonElement | null>(null)
-// const isAnimating = ref(false)
+const buttonRef = ref<HTMLButtonElement | null>(null)
+const isAnimating = ref(true)
 
-// const { idle, reset } = useIdle(5000)
-// const { inc, count } = useCounter()
+const { idle, reset } = useIdle(5000)
+const { inc, count } = useCounter()
 
-// const attention = computed(() => {
-// 	return isAnimating.value && idle.value
-// })
+const attention = computed(() => {
+	return isAnimating.value && idle.value
+})
 
-// watch(idle, async (idleValue) => {
-// 	if (idleValue) {
-// 		inc()
-// 		setTimeout(() => {
-// 			reset()
-// 		}, 5000)
-//
-// 		if (count.value == 3 && isAnimating.value) {
-// 			count.value = 0
-// 			reset()
-// 			jump()
-// 		}
-// 	}
-// })
+watch(idle, async (idleValue) => {
+	if (idleValue) {
+		inc()
+		setTimeout(() => {
+			reset()
+		}, 5000)
 
-// const { apply } = useMotion(buttonRef, {
-// 	enter: {
-// 		x: 0,
-// 		rotate: 0,
-// 		scale: 1,
-// 	},
-// 	fly1: {
-// 		x: -600,
-// 		scale: 1,
-// 		rotate: 0,
-// 	},
-// 	fly2: {
-// 		scale: 2,
-// 		rotate: 0,
-// 	},
-// 	fly3: {
-// 		scale: 1,
-// 		rotate: 0,
-// 	},
-// 	fly4: {
-// 		rotate: 720,
-// 		duration: 1000,
-// 	},
-// 	fly5: {
-// 		x: 0,
-// 		rotate: 0,
-// 	},
-// })
+		if (count.value == 3 && isAnimating.value) {
+			count.value = 0
+			reset()
+			jump()
+		}
+	}
+})
 
-// const off = () => {
-// 	isAnimating.value = false
-// 	// toggleHelp()
-// }
-// const jump = async () => {
-// 	await apply('fly1')
-// 	await apply('fly2')
-// 	await apply('fly3')
-// 	await apply('fly4')
-// 	await apply('fly5')
-// 	reset()
-// }
+const { apply } = useMotion(buttonRef, {
+	enter: {
+		x: 0,
+		rotate: 0,
+		scale: 1,
+	},
+	fly1: {
+		x: -600,
+		scale: 1,
+		rotate: 0,
+	},
+	fly2: {
+		scale: 2,
+		rotate: 0,
+	},
+	fly3: {
+		scale: 1,
+		rotate: 0,
+	},
+	fly4: {
+		rotate: 720,
+		duration: 1000,
+	},
+	fly5: {
+		x: 0,
+		rotate: 0,
+	},
+})
+
+const off = () => {
+	isAnimating.value = false
+	toggleHelp()
+}
+const jump = async () => {
+	await apply('fly1')
+	await apply('fly2')
+	await apply('fly3')
+	await apply('fly4')
+	await apply('fly5')
+	reset()
+}
 
 const $q = useQuasar()
 const refresh = () => {
@@ -334,7 +335,7 @@ q-layout(view='hHh LpR fFf')
 							q-item-section {{ item.label }}
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
-			// q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
+			q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
 
 	Drawer
 	RDrawer(v-model="rightDrawer" :help='helpMode')
