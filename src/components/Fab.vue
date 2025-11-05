@@ -18,6 +18,13 @@ const { notsave } = storeToRefs(saveStore)
 const changesStore = useChangesStore()
 const { hasChanges } = storeToRefs(changesStore)
 
+const showFab = ref(false)
+onMounted(() => {
+	setTimeout(() => {
+		showFab.value = true
+	}, 200)
+})
+
 const route = useRoute()
 const fab = ref()
 const hide = () => {
@@ -65,7 +72,7 @@ const spring = {
 </script>
 
 <template lang="pug">
-q-page-sticky(v-if='route.meta.save && hasChanges' position="bottom-right" :offset="fabPos")
+q-page-sticky(v-if='route.meta.save && hasChanges && showFab' position="bottom-right" :offset="fabPos")
 	Div(
 		:initial="initial"
 		:animate="animate"
