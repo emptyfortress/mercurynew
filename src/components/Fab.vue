@@ -51,7 +51,7 @@ const handleCancelChanges = () => {
 const Div = motion.div
 const initial = {
 	opacity: 0,
-	y: 120,
+	y: -120,
 }
 const animate = {
 	opacity: 1,
