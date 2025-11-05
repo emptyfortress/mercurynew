@@ -102,6 +102,7 @@ q-page-sticky(v-if='route.meta.save && hasChanges' position="bottom-right" :offs
 			template(v-else)
 				q-fab-action(color="primary" label="Сохранить" @click.stop='handleSaveChanges')
 				q-fab-action(color="primary" label="Отменить изменения" @click.stop='handleCancelChanges')
+				q-fab-action(color="primary" icon='lightbulb' label='Помощь' @click.stop='handleCancelChanges')
 </template>
 
 <style scoped lang="scss">
