@@ -20,7 +20,9 @@ const { hasChanges } = storeToRefs(changesStore)
 
 const showMotionDiv = ref(false)
 onMounted(() => {
-	showMotionDiv.value = true
+	setTimeout(() => {
+		showMotionDiv.value = true
+	}, 200)
 })
 
 const route = useRoute()
