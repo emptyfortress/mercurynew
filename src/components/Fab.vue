@@ -21,9 +21,9 @@ const { hasChanges } = storeToRefs(changesStore)
 watch(hasChanges, (isChanging) => {
 	if (isChanging) {
 		document.body.style.overflow = 'hidden'
-		setTimeout(() => {
-			document.body.style.overflow = ''
-		}, 400) // Animation duration + buffer
+		// setTimeout(() => {
+		// 	document.body.style.overflow = ''
+		// }, 400) // Animation duration + buffer
 	}
 })
 
