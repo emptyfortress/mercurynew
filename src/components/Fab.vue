@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { motion } from 'motion-v'
 import { useSave } from '@/stores/save'
@@ -18,11 +18,13 @@ const { notsave } = storeToRefs(saveStore)
 const changesStore = useChangesStore()
 const { hasChanges } = storeToRefs(changesStore)
 
-const showFab = ref(false)
-onMounted(() => {
-	setTimeout(() => {
-		showFab.value = true
-	}, 2000)
+watch(hasChanges, (isChanging) => {
+	if (isChanging) {
+		document.body.style.overflow = 'hidden'
+		setTimeout(() => {
+			document.body.style.overflow = ''
+		}, 400) // Animation duration + buffer
+	}
 })
 
 const route = useRoute()
@@ -72,7 +74,7 @@ const spring = {
 </script>
 
 <template lang="pug">
-q-page-sticky(v-if='route.meta.save && hasChanges && showFab' position="bottom-right" :offset="fabPos")
+q-page-sticky(v-if='route.meta.save && hasChanges' position="bottom-right" :offset="fabPos")
 	Div(
 		:initial="initial"
 		:animate="animate"
