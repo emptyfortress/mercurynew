@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useDiagram } from '@/stores/diagram'
 import IcBaselineDriveFileRenameOutline from '@/components/icons/IcBaselineDriveFileRenameOutline.vue'
 import LineiconsFlag2 from '@/components/icons/LineiconsFlag2.vue'
@@ -7,6 +7,7 @@ import DiagRootProps from '@/components/panels/DiagRootProps.vue'
 import DiagRoleProps from '@/components/panels/DiagRoleProps.vue'
 import DiagEtapProps from '@/components/panels/DiagEtapProps.vue'
 import DiagVariantProps from '@/components/panels/DiagVariantProps.vue'
+import ExpansionItem from '@/components/ExpansionItem.vue'
 
 const mydiagram = useDiagram()
 
@@ -38,30 +39,17 @@ const showRole = computed(() => {
 	)
 		return true
 })
-const item1 = ref(true)
-const item2 = ref(true)
 </script>
 
 <template lang="pug">
 div
 	q-list
-		q-expansion-item(v-model="item1")
-			template(v-slot:header)
-				q-item-section(side)
-					IcBaselineDriveFileRenameOutline.ic
-				q-item-section.zg Атрибуты
-
+		ExpansionItem(title="Атрибуты" :icon="IcBaselineDriveFileRenameOutline")
 			DiagRootProps(v-if='mydiagram.selection && showRoot' separator)
-
 			DiagRoleProps(v-if='mydiagram.selection && showRole' separator)
-
 			DiagEtapProps(v-if='mydiagram.selection && showEtap' separator)
 
-		q-expansion-item.q-mt-md(v-model="item2" v-if='mydiagram.selection && showEtap')
-			template(v-slot:header)
-				q-item-section(side)
-					LineiconsFlag2.ic
-				q-item-section.zg Варианты завершения
+		ExpansionItem.q-mt-md(title="Варианты завершения" :icon="LineiconsFlag2" v-if='mydiagram.selection && showEtap')
 			DiagVariantProps(separator)
 
 </template>
@@ -69,15 +57,5 @@ div
 <style scoped lang="scss">
 :deep(area) {
 	cursor: pointer;
-}
-.ic {
-	font-size: 1.5rem;
-	margin-right: 0.5rem;
-	color: $secondary;
-}
-.zg {
-	text-transform: uppercase;
-	color: $secondary;
-	text-align: left;
 }
 </style>
