@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, type Component } from 'vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   icon: Component
   startExpanded?: boolean
-}>()
+}>(), {
+  startExpanded: true,
+})
 
-const expanded = ref(props.startExpanded ?? true)
+const expanded = ref(props.startExpanded)
 </script>
 
 <template lang="pug">
