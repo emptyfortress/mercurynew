@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref, type Component } from 'vue'
 
-const props = withDefaults(defineProps<{
-  title: string
-  icon: Component
-  startExpanded?: boolean
-}>(), {
-  startExpanded: true,
-})
+const props = withDefaults(
+	defineProps<{
+		title: string
+		icon: Component
+		startExpanded?: boolean
+	}>(),
+	{
+		startExpanded: true,
+	}
+)
 
 const expanded = ref(props.startExpanded)
 </script>
@@ -31,5 +34,8 @@ q-expansion-item(v-model="expanded")
 	text-transform: uppercase;
 	color: $secondary;
 	text-align: left;
+}
+:deep(.q-item__section--side > .q-icon) {
+	color: $secondary;
 }
 </style>
