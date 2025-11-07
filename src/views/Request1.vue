@@ -131,10 +131,6 @@ q-page(padding)
 			.top()
 				.zg Настройка папки "{{ currentFolder?.label }}"
 				.q-gutter-x-sm
-					q-btn(flat round dense color="primary" @click="" icon='mdi-undo') 
-						q-tooltip Отменить
-					q-btn(flat round dense color="primary" @click="" icon="mdi-redo") 
-						q-tooltip Повторить
 					q-btn(flat round dense color="primary" @click="toggleMain") 
 						template(v-if='main')
 							MdiWizardHat.ic

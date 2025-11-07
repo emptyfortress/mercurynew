@@ -91,8 +91,6 @@ q-page(padding)
 		.top(@click='control.deselect')
 			.zg Форма "Просмотр"
 			div
-				q-btn(flat round dense icon="mdi-undo" color="primary" @click="") 
-				q-btn(flat round dense icon="mdi-redo" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
 				q-btn.q-ml-md(flat round dense color="primary" @click="toggleFull") 
 					q-icon(v-if='fullscreen' name="mdi-fullscreen-exit" color="primary")
