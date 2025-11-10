@@ -5,7 +5,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useApps } from '@/stores/apps'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations, state } from '@formkit/drag-and-drop'
-import AddButtonNew from '@/components/common/AddButtonNew.vue'
+import AddButtonNew1 from '@/components/common/AddButtonNew1.vue'
 import Trash from '@/components/common/Trash.vue'
 import { uid, useQuasar } from 'quasar'
 import MdiApplicationBracesOutline from '@/components/icons/list/list/MdiApplicationBracesOutline.vue'
@@ -291,7 +291,7 @@ q-page(padding)
 				@drop='onDropPlus'
 				:class="{ duplicate: duple }"
 			)
-				AddButtonNew(mode='app' @create='create')
+				AddButtonNew1(mode='app' @create='create')
 
 	Trash(v-model="dragStatus" @remove="remove" :group='true' :duple='duple')
 
