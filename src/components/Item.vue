@@ -58,7 +58,7 @@ const animate = {
 const spring = {
 	type: 'spring',
 	visualDuration: 0.3,
-	bounce: 0.25,
+	bounce: 0.15,
 }
 
 const overGroup = ref(false)
