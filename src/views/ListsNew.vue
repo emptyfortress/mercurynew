@@ -12,6 +12,7 @@ import TrashSimple from '@/components/common/TrashSimple.vue'
 import { useList } from '@/stores/list'
 import { useTitle } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
+import { spring } from '@/utils/springConstants'
 
 const app = useStorage('app', localStorage)
 const title = useTitle()
@@ -138,11 +139,6 @@ const Div = motion.div
 const back = () => {
 	router.push('/roles')
 	expanded.value = false
-}
-const spring = {
-	type: 'spring',
-	visualDuration: 0.3,
-	bounce: 0.25,
 }
 const calcPlusClass = computed(() => {
 	if (duple.value) return 'duplicate'
