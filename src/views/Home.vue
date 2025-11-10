@@ -11,7 +11,7 @@ import { uid, useQuasar } from 'quasar'
 import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
 import Empty from '@/components/Empty.vue'
 import { useKeyModifier } from '@vueuse/core'
-import { springWithBounce } from '@/utils/springConstants'
+import { spring } from '@/utils/springConstants'
 // import { versions } from 'process'
 
 const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
@@ -312,7 +312,7 @@ q-page(padding, @click='action')
 
 		Div.plus(
 			layout
-			:transition='springWithBounce'
+			:transition='spring'
 			@click.stop
 			@dragover.prevent="onDragEnterPlus"
 			@dragenter.prevent
