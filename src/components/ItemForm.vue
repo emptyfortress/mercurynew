@@ -3,6 +3,7 @@ import { ref, computed, nextTick } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter } from 'vue-router'
 import CarbonDataFormat from '@/components/icons/CarbonDataFormat.vue'
+import { spring } from '@/utils/springConstants'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<any[]>('tapes')
@@ -46,12 +47,6 @@ const initial = {
 const animate = {
 	opacity: 1,
 	y: 0,
-}
-
-const spring = {
-	type: 'spring',
-	visualDuration: 0.3,
-	bounce: 0.25,
 }
 
 // const $q = useQuasar()
