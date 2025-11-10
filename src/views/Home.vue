@@ -11,6 +11,7 @@ import { uid, useQuasar } from 'quasar'
 import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
 import Empty from '@/components/Empty.vue'
 import { useKeyModifier } from '@vueuse/core'
+import { springWithBounce } from '@/utils/springConstants'
 // import { versions } from 'process'
 
 const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
@@ -69,7 +70,6 @@ const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
-	group: 'items',
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
@@ -109,12 +109,6 @@ const navigate = (id: number) => {
 onUpdated(() => {
 	myapps.setPath('/' + route.params.id.toString())
 })
-
-const spring = {
-	type: 'spring',
-	visualDuration: 0.3,
-	bounce: 0.25,
-}
 
 const $q = useQuasar()
 const create = (e: any) => {
@@ -318,7 +312,7 @@ q-page(padding, @click='action')
 
 		Div.plus(
 			layout
-			:transition='spring'
+			:transition='springWithBounce'
 			@click.stop
 			@dragover.prevent="onDragEnterPlus"
 			@dragenter.prevent

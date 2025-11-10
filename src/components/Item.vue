@@ -7,6 +7,7 @@ import IconMenu from '@/components/IconMenu.vue'
 import { uid, useQuasar } from 'quasar'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import ShareDialog from '@/components/ShareDialog.vue'
+import { spring } from '@/utils/springConstants'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
@@ -53,12 +54,6 @@ const initial = {
 const animate = {
 	opacity: 1,
 	y: 0,
-}
-
-const spring = {
-	type: 'spring',
-	visualDuration: 0.3,
-	bounce: 0.15,
 }
 
 const overGroup = ref(false)
