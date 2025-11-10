@@ -6,7 +6,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useApps } from '@/stores/apps'
 import Item from '@/components/Item.vue'
-import AddButtonNew from '@/components/common/AddButtonNew.vue'
+import AddButtonNew1 from '@/components/common/AddButtonNew1.vue'
 import { uid, useQuasar } from 'quasar'
 import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
 import Empty from '@/components/Empty.vue'
@@ -326,7 +326,7 @@ q-page(padding, @click='action')
 			@drop='onDropPlus'
 			:class="calcPlusClass"
 		)
-			AddButtonNew(mode='app' @create='create')
+			AddButtonNew1(mode='app' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='app')
