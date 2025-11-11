@@ -3,49 +3,35 @@ import FormPreview from '@/components/FormPreview.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton1 from '@/components/panels/TopButton1.vue'
 import { usePanels } from '@/stores/panels'
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
-import { nextTick } from 'vue'
+import { motion } from 'motion-v'
+import { springDelay, spring } from '@/utils/springConstants'
 import TablerSearch from '@/components/icons/TablerSearch.vue'
 
 const panels = usePanels()
 
-gsap.registerPlugin(Flip)
-
 const emit = defineEmits(['activate', 'stop', 'search'])
 
-// Function to animate Flip state transition
-const animateFlip = (previewState: boolean) => {
-	const state = Flip.getState('.button')
-	panels.setPreview(previewState)
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
-}
-
-// Expand the preview
 const expand = () => {
 	emit('activate')
-	animateFlip(true)
+	panels.setPreview(true)
 }
 
-// Close the preview
 const close = () => {
 	emit('stop')
-	animateFlip(false)
+	panels.setPreview(false)
 }
 
 const search = () => {
 	emit('search')
 }
+
+const Div = motion.div
 </script>
 
 <template lang="pug">
-.button(
+Div.button(
+	layout
+	:transition='panels.preview ? springDelay : spring'
 	:class='{ expand: panels.preview }'
 	@click='expand'
 	)
