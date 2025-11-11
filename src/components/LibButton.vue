@@ -1,48 +1,35 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import LibContent from '@/components/LibContent.vue'
+import { motion } from 'motion-v'
+import { springDelay, spring } from '@/utils/springConstants'
 
 const panels = usePanels()
-
-gsap.registerPlugin(Flip)
 
 const emit = defineEmits(['activate', 'stop'])
 
 const expand = () => {
-	const state = Flip.getState('.button')
 	emit('activate')
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
 }
 
 const close = () => {
 	emit('stop')
-	const state = Flip.getState('.button')
 	panels.setLeft(false)
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
 }
+
+const Div = motion.div
 </script>
 
 <template lang="pug">
-.button(
+Div.button(
+	layout
+	:transition='panels.left ? springDelay : spring'
 	:class='{ expand: panels.left }'
 	@click='expand'
 	)
+
 	q-icon.ic(v-if='!panels.left'
 		v-motion
 		:initial='{ rotate: "0deg" }'
