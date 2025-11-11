@@ -39,17 +39,6 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/test',
-			name: 'test',
-			component: () => import('@/views/Testing.vue'),
-			meta: {
-				toolbar: false,
-				back: false,
-				count: 0,
-				save: false,
-			},
-		},
-		{
 			path: '/spot',
 			name: 'spot',
 			component: () => import('@/views/Spotlight.vue'),
