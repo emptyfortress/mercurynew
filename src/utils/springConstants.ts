@@ -8,5 +8,5 @@ export const springDelay = {
 	type: 'spring',
 	visualDuration: 0.3,
 	bounce: 0.15,
-	delay: 0.5,
+	delay: 0.2,
 }

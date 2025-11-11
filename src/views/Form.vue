@@ -57,14 +57,14 @@ const startLeft = async () => {
 const stopRight = async () => {
 	setTimeout(() => {
 		panels.left ? editorAnim('shrinkLeft') : editorAnim('start')
-	}, 400)
+	}, 300)
 	stop()
 }
 
 const stopLeft = async () => {
 	setTimeout(() => {
 		panels.right ? editorAnim('shrinkRight') : editorAnim('start')
-	}, 400)
+	}, 300)
 	stop()
 }
 

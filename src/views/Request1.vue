@@ -19,14 +19,12 @@ import { useStorage } from '@vueuse/core'
 
 const app = useStorage('app', localStorage)
 const title = useTitle('Папки: ' + app.value.label)
-// title.value = 'Папки: ' + app.value.label
 
 const list = useList()
 const route = useRoute()
 
 const currentFolder = computed(() => {
 	return list.lists.find((item) => item.id === route.params.id)
-	// return list.lists.find((item) => item.id === Number(route.params.id))
 })
 
 const mykeys = useKeys()
@@ -78,14 +76,14 @@ const startLeft = async () => {
 const stopRight = async () => {
 	setTimeout(() => {
 		panels.pred ? folderAnim('shrinkLeft') : folderAnim('start')
-	}, 400)
+	}, 300)
 	stop()
 }
 
 const stopLeft = async () => {
 	setTimeout(() => {
 		panels.preview ? folderAnim('shrinkRight') : folderAnim('start')
-	}, 400)
+	}, 300)
 	stop()
 }
 
