@@ -40,11 +40,11 @@ const moveFab = (ev: PanEvent) => {
 }
 
 const handleSaveChanges = () => {
-	fabOpened.value = false
+	fabOpened.value = true
 	// Future save logic goes here
 }
 const handleCancelChanges = () => {
-	fabOpened.value = false
+	fabOpened.value = true
 	// Future cancel/revert logic goes here
 }
 
