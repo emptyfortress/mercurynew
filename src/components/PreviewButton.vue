@@ -3,8 +3,6 @@ import FormPreview from '@/components/FormPreview.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton1 from '@/components/panels/TopButton1.vue'
 import { usePanels } from '@/stores/panels'
-import { motion } from 'motion-v'
-import { springDelay, spring } from '@/utils/springConstants'
 import TablerSearch from '@/components/icons/TablerSearch.vue'
 
 const panels = usePanels()
@@ -24,14 +22,10 @@ const close = () => {
 const search = () => {
 	emit('search')
 }
-
-const Div = motion.div
 </script>
 
 <template lang="pug">
-Div.button(
-	layout
-	:transition='panels.preview ? springDelay : spring'
+.button(
 	:class='{ expand: panels.preview }'
 	@click='expand'
 	)
@@ -43,7 +37,6 @@ Div.button(
 		:hovered='{ rotate: "90deg" }'
 	)
 
-	CloseButton(v-model="panels.preview" @close="close")
 
 	TopButton1(v-model="panels.preview" @close="close")
 
@@ -54,6 +47,7 @@ Div.button(
 		:delay='1000'
 		@search='search'
 		) 
+	CloseButton(v-model="panels.preview" @close="close")
 
 </template>
 
@@ -64,17 +58,14 @@ Div.button(
 	background: #fff;
 	box-shadow: var(--shad0);
 	border-radius: 24px;
-	position: absolute;
-	top: 0;
-	right: -58px;
 	text-align: center;
 	cursor: pointer;
 	padding: 0.6rem;
+	position: relative;
 
 	&.expand {
-		width: 400px;
+		width: 385px;
 		height: calc(100vh - 120px);
-		right: -408px;
 		border-radius: 6px;
 		cursor: default;
 		padding: 0;
@@ -90,16 +81,5 @@ Div.button(
 .ic1 {
 	font-size: 1.3rem;
 	margin-right: 0.5rem;
-}
-
-.zg {
-	font-size: 1.1rem;
-	color: $primary;
-	text-align: center;
-}
-
-.top1 {
-	display: block;
-	width: 100%;
 }
 </style>

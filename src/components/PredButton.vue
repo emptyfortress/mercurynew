@@ -24,9 +24,7 @@ const Div = motion.div
 </script>
 
 <template lang="pug">
-Div.button(
-	layout
-	:transition='panels.pred ? springDelay : spring'
+.button(
 	:class='{ expand: panels.pred }'
 	@click='expand'
 	)
@@ -40,15 +38,6 @@ Div.button(
 		color="primary"
 		size='24px')
 
-	// MaterialSymbolsTableEditOutline.ic(
-	// 	v-if='!panels.pred',
-	// 	v-motion
-	// 	:initial='{ rotate: "0deg" }'
-	// 	:hovered='{ rotate: "90deg" }'
-	// )
-
-	CloseButton(v-model="panels.pred" @close="close")
-
 	.rrel(v-if='panels.pred'
 		v-motion
 		:initial='{ opacity: 0 }'
@@ -60,6 +49,7 @@ Div.button(
 				q-icon.ico(name="mdi-tune-vertical-variant" color="primary")
 				|Представление
 		PredContent
+		CloseButton(v-model="panels.pred" @close="close")
 
 </template>
 
@@ -81,9 +71,6 @@ Div.button(
 	background: #fff;
 	box-shadow: var(--shad0);
 	border-radius: 24px;
-	position: absolute;
-	top: 0;
-	left: -58px;
 	text-align: center;
 	cursor: pointer;
 	padding: 0.6rem;
@@ -97,7 +84,6 @@ Div.button(
 	&.expand {
 		width: 385px;
 		height: calc(100vh - 120px);
-		left: -395px;
 		border-radius: 6px;
 		cursor: default;
 		padding: 0;

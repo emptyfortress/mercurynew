@@ -26,13 +26,11 @@ const next = () => {
 	router.push('/form')
 }
 
-const Div = motion.div
+// const Div = motion.div
 </script>
 
 <template lang="pug">
-Div.button(
-	layout
-	:transition='panels.right0 ? springDelay : spring'
+.button(
 	:class='{ expand: panels.right0 }'
 	@click='expand'
 	)
@@ -70,6 +68,7 @@ Div.button(
 	right: -58px;
 	text-align: center;
 	cursor: pointer;
+	transition: all 0.2s ease;
 	.ic {
 		margin-top: 11px;
 	}

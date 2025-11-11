@@ -24,9 +24,7 @@ const Div = motion.div
 </script>
 
 <template lang="pug">
-Div.button(
-	layout
-	:transition='panels.right ? springDelay : spring'
+.button(
 	:class='{ expand: panels.right }'
 	@click='expand'
 	)
@@ -53,9 +51,6 @@ Div.button(
 	background: #fff;
 	box-shadow: var(--shad0);
 	border-radius: 24px;
-	position: absolute;
-	top: 0;
-	right: -58px;
 	text-align: center;
 	cursor: pointer;
 
@@ -66,14 +61,7 @@ Div.button(
 	&.expand {
 		width: 385px;
 		height: calc(100vh - 120px);
-		right: -395px;
 		border-radius: 6px;
 	}
-}
-
-.next {
-	position: absolute;
-	top: 20rem;
-	left: 4rem;
 }
 </style>

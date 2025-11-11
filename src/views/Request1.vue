@@ -29,6 +29,7 @@ const currentFolder = computed(() => {
 const mykeys = useKeys()
 
 const main = ref(true)
+
 const toggleMain = () => {
 	main.value = !main.value
 }
@@ -53,16 +54,16 @@ const stopLeft = async () => {
 
 const fullscreen = ref(false)
 
-const toggleFull = () => {
-	if (fullscreen.value == false) {
-		panels.setPred(false)
-		panels.setPreview(false)
-	} else {
-		panels.setPred(true)
-		panels.setPreview(true)
-	}
-	fullscreen.value = !fullscreen.value
-}
+// const toggleFull = () => {
+// 	if (fullscreen.value == false) {
+// 		panels.setPred(false)
+// 		panels.setPreview(false)
+// 	} else {
+// 		panels.setPred(true)
+// 		panels.setPreview(true)
+// 	}
+// 	fullscreen.value = !fullscreen.value
+// }
 
 const calcPageClass = computed(() => {
 	if (panels.pred && panels.preview) return 'collapsedB'
@@ -152,6 +153,7 @@ q-page(padding
 }
 
 .editor {
+	// width: 100%;
 	margin-top: 0;
 	padding: 0;
 	background: var(--bgLight);

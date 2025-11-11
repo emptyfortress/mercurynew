@@ -122,14 +122,16 @@
 }
 
 .editor {
-	width: 1500px;
+	// width: 100%;
+	// width: 1500px;
 	height: calc(100vh - 120px);
 	background: #fff;
 	padding: 0.5rem;
 	border-radius: 0.4rem;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	margin-top: 1rem;
+	// display: flex;
+	// justify-content: center;
+	// align-items: center;
 	box-shadow: var(--shad0);
 	position: relative;
 }

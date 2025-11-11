@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+// import { ref, nextTick } from 'vue'
 import { usePanels } from '@/stores/panels'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import LibContent from '@/components/LibContent.vue'
 import { motion } from 'motion-v'
-import { springDelay, spring } from '@/utils/springConstants'
+// import { springDelay, spring } from '@/utils/springConstants'
 
 const panels = usePanels()
 
@@ -23,9 +23,7 @@ const Div = motion.div
 </script>
 
 <template lang="pug">
-Div.button(
-	layout
-	:transition='panels.left ? springDelay : spring'
+.button(
 	:class='{ expand: panels.left }'
 	@click='expand'
 	)
@@ -38,7 +36,6 @@ Div.button(
 		color="primary"
 		size='28px')
 
-	CloseButton(v-model="panels.left" @close="close")
 
 	.rrel(v-if='panels.left'
 		v-motion
@@ -50,6 +47,7 @@ Div.button(
 			.zg
 				q-icon(name="mdi-book-open-page-variant-outline")
 				|Библиотека
+		CloseButton(v-model="panels.left" @close="close")
 		LibContent
 		.info
 			q-icon(name="mdi-lightbulb-outline" size="sm")
@@ -87,22 +85,18 @@ Div.button(
 	background: #fff;
 	box-shadow: var(--shad0);
 	border-radius: 24px;
-	position: absolute;
-	top: 0;
-	left: -58px;
 	text-align: center;
 	cursor: pointer;
-
 	.ic {
 		margin-top: 9px;
 	}
-
 	&.expand {
 		width: 385px;
 		height: calc(100vh - 120px);
 		left: -395px;
 		border-radius: 6px;
 		cursor: default;
+		// position: relative;
 	}
 }
 

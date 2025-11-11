@@ -12,43 +12,23 @@ const app = useStorage('app', localStorage)
 const title = useTitle()
 title.value = 'Процесс: ' + app.value.label
 
-const editor1 = ref<HTMLElement>()
-
 const panels = usePanels()
-
-const full = { width: 1500, x: 0 }
-const rightStart = { width: 1150, x: -175 }
-
-const calcStart = computed(() => {
-	if (!panels.right0) return full
-	if (panels.right0) return rightStart
-})
-
-const { apply: editorAnim, stop } = useMotion(editor1, {
-	initial: calcStart.value,
-	enter: calcStart.value,
-	start: { width: 1500, x: 0, transition: { stiffness: 200, damping: 20 } },
-	shrinkRight: { width: 1150, x: -175, transition: { stiffness: 200, damping: 20 } },
-})
 
 const startRight0 = async () => {
 	panels.setRight0(true)
-	await editorAnim('shrinkRight')
-	stop()
 }
 
 const stopRight0 = async () => {
-	setTimeout(() => {
-		editorAnim('start')
-	}, 400)
-	stop()
+	panels.setRight0(false)
 }
 </script>
 
 <template lang="pug">
-q-page(padding)
-	.editor(ref='editor1')
-		.zg Процесс
+q-page(padding
+	:class='{ collapsed: panels.right0}'
+	)
+	.editor
+		.zg {{ title }}
 		.center
 			DiagramSvg
 			Look
@@ -58,9 +38,13 @@ q-page(padding)
 
 <style scoped lang="scss">
 .q-page {
-	display: flex;
-	justify-content: center;
-	position: relative;
+	display: grid;
+	grid-template-columns: 1fr 80px;
+	column-gap: 1rem;
+	transition: all 0.2s ease;
+	&.collapsed {
+		grid-template-columns: 1fr 390px;
+	}
 }
 
 .text {
@@ -68,11 +52,11 @@ q-page(padding)
 }
 
 .editor {
-	// margin-top: 1rem;
+	width: 100%;
+	margin: 0 1rem;
 	padding-top: 4rem;
 	display: flex;
 	justify-content: center;
-	// flex-direction: column;
 	align-items: start;
 	position: relative;
 }

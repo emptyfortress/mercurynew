@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const usePanels = defineStore('panels', () => {
-	const left = useStorage('left', true)
-	const right = useStorage('right', true)
+	const left = useStorage('left', false)
+	const right = useStorage('right', false)
 	const right0 = useStorage('right0', true)
 	const preview = useStorage('preview', false)
 	const pred = useStorage('pred', false)
