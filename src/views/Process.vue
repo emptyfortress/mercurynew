@@ -47,7 +47,6 @@ const stopRight0 = async () => {
 
 <template lang="pug">
 q-page(padding)
-
 	.editor(ref='editor1')
 		.zg Процесс
 		.center
@@ -62,7 +61,6 @@ q-page(padding)
 	display: flex;
 	justify-content: center;
 	position: relative;
-	// top: 0;
 }
 
 .text {
@@ -70,6 +68,7 @@ q-page(padding)
 }
 
 .editor {
+	// margin-top: 1rem;
 	padding-top: 4rem;
 	display: flex;
 	justify-content: center;

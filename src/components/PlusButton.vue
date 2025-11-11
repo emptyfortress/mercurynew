@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+// import { ref, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePanels } from '@/stores/panels'
 import DiagProps from '@/components/panels/DiagProps.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
 import { motion } from 'motion-v'
+import { springDelay, spring } from '@/utils/springConstants'
 
 const router = useRouter()
 const panels = usePanels()
@@ -24,14 +25,16 @@ const close = () => {
 const next = () => {
 	router.push('/form')
 }
+
+const Div = motion.div
 </script>
 
 <template lang="pug">
-motion.button(
-	:layout
+Div.button(
+	layout
+	:transition='panels.right0 ? springDelay : spring'
 	:class='{ expand: panels.right0 }'
 	@click='expand'
-	:transition='{ layout: { duration: 0.4, ease: "power3.inOut" } }'
 	)
 
 	q-icon.ic(
