@@ -1,45 +1,24 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
 import { useRouter } from 'vue-router'
 import { usePanels } from '@/stores/panels'
 import DiagProps from '@/components/panels/DiagProps.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
+import { motion } from 'motion-v'
 
 const router = useRouter()
 const panels = usePanels()
 
-gsap.registerPlugin(Flip)
-
 const emit = defineEmits(['activate', 'stop'])
 
-// const expanded = ref<boolean>(false)
-
 const expand = () => {
-	const state = Flip.getState('.button')
 	emit('activate')
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
 }
 
 const close = () => {
 	emit('stop')
-	const state = Flip.getState('.button')
 	panels.setRight0(false)
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
 }
 
 const next = () => {
@@ -48,16 +27,19 @@ const next = () => {
 </script>
 
 <template lang="pug">
-.button(
+motion.button(
+	:layout
 	:class='{ expand: panels.right0 }'
 	@click='expand'
+	:transition='{ layout: { duration: 0.4, ease: "power3.inOut" } }'
 	)
 
-	q-icon.ic(v-if='!panels.right0'
+	q-icon.ic(
+		v-if='!panels.right0'
 		v-motion
 		:initial='{ opacity: 0, rotate: "0deg" }'
-		:enter='{ opacity: 1, rotate: "0deg", }'
-		:hovered='{ rotate: "90deg", }'
+		:enter='{ opacity: 1, rotate: "0deg" }'
+		:hovered='{ rotate: "90deg", transition: { duration: 0.2 } }'
 		name="mdi-tune-vertical-variant"
 		color="primary"
 		size='24px')
@@ -65,13 +47,12 @@ const next = () => {
 	CloseButton(v-model="panels.right0" @close="close")
 
 	TopButton(v-model="panels.right0" @close='close')
-	DiagProps(v-if='panels.right0'
+	DiagProps(
+		v-if='panels.right0'
 		v-motion
 		:initial='{ opacity: 0 }'
-		:enter='{ opacity: 1 }'
-		:delay='1000'
+		:enter='{ opacity: 1, transition: { delay: 0.2 } }'
 		@next="next") 
-
 </template>
 
 <style scoped lang="scss">
