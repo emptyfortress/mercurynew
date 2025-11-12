@@ -160,7 +160,7 @@ q-layout(view='hHh LpR fFf')
 
 			.settings
 				label Анимации:
-				select(v-model="userOverride" @change="setReduceMotion(userOverride)")
+				select(v-model="userOverride")
 					option(value="auto") Авто (системная настройка)
 					option(value="false") Включены
 					option(value="true") Отключены
