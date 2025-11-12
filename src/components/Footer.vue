@@ -3,28 +3,17 @@ import { computed } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import { date } from 'quasar'
-import { useSave } from '@/stores/save'
 import { useChangesStore } from '@/stores/changes'
 import { storeToRefs } from 'pinia'
 
 const route = useRoute()
 const app = useStorage('app', localStorage)
 
-const saveStore = useSave()
-
-const { notsave } = storeToRefs(saveStore)
 const changesStore = useChangesStore()
 const { hasChanges } = storeToRefs(changesStore)
 
 const footerState = computed(() => {
 	return route.meta.footer ? true : false
-})
-
-const localCreated = computed(() => {
-	return date.formatDate(app.value.versions[0].created, 'DD.MM.YY HH:mm')
-})
-const localChanged = computed(() => {
-	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY HH:mm')
 })
 
 const modified = computed(() => {
