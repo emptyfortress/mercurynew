@@ -8,12 +8,11 @@
 	--shad: 0 11px 20px 0 rgba(0, 0, 0, 0.2);
 }
 
-@media (prefers-reduced-motion: reduce) {
-	* {
-		animation: none !important;
-		transition: none !important;
-		transform: none !important;
-	}
+/* Пользовательская настройка анимации */
+.reduce-motion * {
+	animation: none !important;
+	transition: none !important;
+	transform: none !important;
 }
 
 #app {

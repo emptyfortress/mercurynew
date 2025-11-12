@@ -14,7 +14,8 @@ import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
 import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
 import { useReducedMotion } from '@/composable/useReducedMotion'
-const { userOverride, setReduceMotion } = useReducedMotion()
+
+const { userOverride, reducedMotion } = useReducedMotion()
 
 const route = useRoute()
 
@@ -159,7 +160,7 @@ q-layout(view='hHh LpR fFf')
 			q-toolbar-title {{ title }}
 
 			.settings
-				label Анимации:
+				label Анимации ({{ !reducedMotion }}):
 				select(v-model="userOverride")
 					option(value="auto") Авто (системная настройка)
 					option(value="false") Включены

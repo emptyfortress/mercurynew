@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, watch } from 'vue'
 import { createPinia } from 'pinia'
 
 import { Quasar, Notify } from 'quasar'
@@ -15,6 +15,7 @@ import router from './router'
 import { plugin, defaultConfig } from '@formkit/vue'
 import '@formkit/themes/genesis'
 // import VueDragSelect from '@coleqiu/vue-drag-select'
+import { useReducedMotion } from '@/composable/useReducedMotion'
 
 const app = createApp(App)
 
@@ -40,3 +41,13 @@ app.use(MotionPlugin)
 // app.use(VueDragSelect)
 
 app.mount('#app')
+
+const { reducedMotion } = useReducedMotion()
+
+watch(
+	reducedMotion,
+	(value) => {
+		document.documentElement.classList.toggle('reduce-motion', value)
+	},
+	{ immediate: true }
+)
