@@ -8,7 +8,6 @@ import TopButton from '@/components/panels/TopButton.vue'
 import InfoBtFilters from '@/components/InfoBtFilters.vue'
 import InfoBtCommon from '@/components/InfoBtCommon.vue'
 import { motion } from 'motion-v'
-import { springDelay, spring } from '@/utils/springConstants'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 
@@ -37,14 +36,10 @@ const close = () => {
 const calcDelay = computed(() => {
 	return del.value ? 600 : 0
 })
-
-const Div = motion.div
 </script>
 
 <template lang="pug">
-Div.button(
-	layout
-	:transition='panels.right0 ? springDelay : spring'
+.button(
 	:class='{ expand: panels.right0 }'
 	@click='expand'
 	)
@@ -91,11 +86,9 @@ Div.button(
 	background: #fff;
 	box-shadow: var(--shad0);
 	border-radius: 24px;
-	position: absolute;
-	top: 0;
-	right: -58px;
 	text-align: center;
 	cursor: pointer;
+	position: relative;
 	.ic {
 		margin-top: 11px;
 	}
@@ -103,7 +96,6 @@ Div.button(
 	&.expand {
 		width: 350px;
 		height: calc(100vh - 120px);
-		right: -358px;
 		border-radius: 6px;
 		cursor: default;
 	}
