@@ -82,4 +82,7 @@ const search = () => {
 	font-size: 1.3rem;
 	margin-right: 0.5rem;
 }
+// .test {
+// 	color: red;
+// }
 </style>
