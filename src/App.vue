@@ -5,7 +5,6 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
-import { useApps } from '@/stores/apps'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
 import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergencyExitSolid.vue'
@@ -15,7 +14,7 @@ import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
 import { useReducedMotion } from '@/composable/useReducedMotion'
 
-const { userOverride, reducedMotion } = useReducedMotion()
+const { userOverride } = useReducedMotion()
 
 const route = useRoute()
 
@@ -32,7 +31,6 @@ watch(
 )
 
 const router = useRouter()
-const myapps = useApps()
 
 const rightDrawer = ref(false)
 
@@ -160,9 +158,9 @@ q-layout(view='hHh LpR fFf')
 			q-toolbar-title {{ title }}
 
 			.settings
-				label Анимации ({{ !reducedMotion }}):
+				label Анимации:
 				select(v-model="userOverride")
-					option(value="auto") Авто (системная настройка)
+					option(value="auto") Авто
 					option(value="false") Включены
 					option(value="true") Отключены
 			.lang
