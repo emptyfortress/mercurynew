@@ -16,6 +16,12 @@ import { useReducedMotion } from '@/composable/useReducedMotion'
 
 const { userOverride } = useReducedMotion()
 
+const animationOptions = [
+	{ value: 'auto', label: 'Авто' },
+	{ value: 'false', label: 'Включены' },
+	{ value: 'true', label: 'Отключены' },
+]
+
 const route = useRoute()
 
 watch(
@@ -158,11 +164,7 @@ q-layout(view='hHh LpR fFf')
 			q-toolbar-title {{ title }}
 
 			.settings
-				label Анимации:
-				select(v-model="userOverride")
-					option(value="auto") Авто
-					option(value="false") Включены
-					option(value="true") Отключены
+				q-select(v-model="userOverride" :options="animationOptions" label='Анимации' dense borderless emit-value map-options)
 			.lang
 				component(:is='currentLang.icon')
 				q-menu(transition-show="jump-down" transition-hide="jump-up")
