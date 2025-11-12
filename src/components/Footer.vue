@@ -3,9 +3,18 @@ import { computed } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import { date } from 'quasar'
+import { useSave } from '@/stores/save'
+import { useChangesStore } from '@/stores/changes'
+import { storeToRefs } from 'pinia'
 
 const route = useRoute()
 const app = useStorage('app', localStorage)
+
+const saveStore = useSave()
+
+const { notsave } = storeToRefs(saveStore)
+const changesStore = useChangesStore()
+const { hasChanges } = storeToRefs(changesStore)
 
 const footerState = computed(() => {
 	return route.meta.footer ? true : false
@@ -17,19 +26,25 @@ const localCreated = computed(() => {
 const localChanged = computed(() => {
 	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY HH:mm')
 })
+
+const modified = computed(() => {
+	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY HH:mm')
+})
 </script>
 
 <template lang="pug">
 q-footer.footer(v-if='footerState')
 	.cent
-		div Версия: {{ app.versions[0].label }}
-		div Автор: {{ app.versions[0].author }}
-		div Создано: {{ localCreated }}
-		div Изменено: {{ localChanged }} (Роза Львовна)
-		div Статус: Черновик
-		.saved
+		div(v-if='app.versions[0].modified == null && !hasChanges')
 			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
-			|Сохранено
+			span Все изменения сохранены
+		div(v-if='app.versions[0].modified !== null && !hasChanges')
+			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
+			span Сохранено {{modified}} - Орлов П.С.
+		div(v-if='hasChanges')
+			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="negative")
+			span Есть несохраненные изменения
+
 </template>
 
 <style scoped lang="scss">
@@ -45,8 +60,5 @@ q-footer.footer(v-if='footerState')
 		gap: 3rem;
 		font-size: 0.8rem;
 	}
-}
-.saved {
-	position: relative;
 }
 </style>
