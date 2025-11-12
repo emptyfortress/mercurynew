@@ -277,7 +277,9 @@ q-table(
 						label Создано:
 						.val {{ date.formatDate(scope.row.created, 'DD.MM.YY HH:mm') }} - автор версии {{ scope.row.author }}
 						label Изменено:
-						.val {{ date.formatDate(scope.row.modified, 'DD.MM.YY HH:mm') }}
+						.val
+							|{{ date.formatDate(scope.row.modified, 'DD.MM.YY HH:mm') }}
+							span.q-ml-sm(v-if='scope.row.modified') - {{ scope.row.author }}
 
 						template(v-if='scope.row.published == 0')
 							label Тестирование:
