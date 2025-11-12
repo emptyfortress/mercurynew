@@ -13,6 +13,8 @@ import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
 import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
+import { useReducedMotion } from '@/composable/useReducedMotion'
+const { userOverride, setReduceMotion } = useReducedMotion()
 
 const route = useRoute()
 
@@ -156,6 +158,12 @@ q-layout(view='hHh LpR fFf')
 				q-tooltip Домой
 			q-toolbar-title {{ title }}
 
+			.settings
+				label Анимации:
+				select(v-model="userOverride" @change="setReduceMotion(userOverride)")
+					option(value="auto") Авто (системная настройка)
+					option(value="false") Включены
+					option(value="true") Отключены
 			.lang
 				component(:is='currentLang.icon')
 				q-menu(transition-show="jump-down" transition-hide="jump-up")
