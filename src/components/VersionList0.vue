@@ -101,7 +101,6 @@ async function edit(id: number) {
 		row.current = true
 		await router.push('/process')
 
-		row.modified = Date.now()
 		myapps.currentApp!.master = false
 	}
 }
@@ -276,9 +275,7 @@ q-table(
 						.val(v-else) {{scope.row.descr}}
 
 						label Создано:
-						.val {{ date.formatDate(scope.row.created, 'DD.MM.YY HH:mm') }}
-						label Автор версии:
-						.val {{scope.row.author}}
+						.val {{ date.formatDate(scope.row.created, 'DD.MM.YY HH:mm') }} - автор версии {{ scope.row.author }}
 						label Изменено:
 						.val {{ date.formatDate(scope.row.modified, 'DD.MM.YY HH:mm') }}
 

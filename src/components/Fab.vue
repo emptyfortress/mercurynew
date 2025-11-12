@@ -6,6 +6,7 @@ import { useSave } from '@/stores/save'
 import { storeToRefs } from 'pinia'
 import Fa7SolidDigging from '@/components/icons/Fa7SolidDigging.vue'
 import { useChangesStore } from '@/stores/changes'
+import { useStorage } from '@vueuse/core'
 
 interface PanEvent {
 	isFirst?: boolean
@@ -13,10 +14,12 @@ interface PanEvent {
 	delta?: { x?: number; y?: number }
 }
 
+const app = useStorage('app', localStorage)
+
 const saveStore = useSave()
 const { notsave } = storeToRefs(saveStore)
 const changesStore = useChangesStore()
-const { hasChanges } = storeToRefs(changesStore)
+const { hasChanges, countChanges } = storeToRefs(changesStore)
 
 const route = useRoute()
 const fab = ref()
@@ -40,9 +43,11 @@ const moveFab = (ev: PanEvent) => {
 }
 
 const handleSaveChanges = () => {
+	changesStore.setHasChanges(false)
+	app.value.versions[0].modified = new Date()
 	fabOpened.value = true
-	// Future save logic goes here
 }
+
 const handleCancelChanges = () => {
 	fabOpened.value = true
 	// Future cancel/revert logic goes here
@@ -65,7 +70,7 @@ const spring = {
 </script>
 
 <template lang="pug">
-q-page-sticky(v-if='route.meta.save && hasChanges' position="bottom-right" :offset="fabPos")
+q-page-sticky(v-if='route.meta.save && countChanges > 0' position="bottom-right" :offset="fabPos")
 	Div(
 		:initial="initial"
 		:animate="animate"

@@ -32,7 +32,7 @@ q-footer.footer(v-if='footerState')
 			span Сохранено {{modified}} - Орлов П.С.
 		div(v-if='hasChanges')
 			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="negative")
-			span Есть несохраненные изменения
+			span Есть несохраненные изменения (доступ к странице для других пользователей ограничен)
 
 </template>
 
