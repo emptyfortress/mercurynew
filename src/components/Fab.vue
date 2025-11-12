@@ -7,6 +7,7 @@ import { storeToRefs } from 'pinia'
 import Fa7SolidDigging from '@/components/icons/Fa7SolidDigging.vue'
 import { useChangesStore } from '@/stores/changes'
 import { useStorage } from '@vueuse/core'
+import { useApps } from '@/stores/apps'
 
 interface PanEvent {
 	isFirst?: boolean
@@ -20,6 +21,8 @@ const saveStore = useSave()
 const { notsave } = storeToRefs(saveStore)
 const changesStore = useChangesStore()
 const { hasChanges, countChanges } = storeToRefs(changesStore)
+const appsStore = useApps()
+const { currentApp } = storeToRefs(appsStore)
 
 const route = useRoute()
 const fab = ref()
@@ -44,6 +47,12 @@ const moveFab = (ev: PanEvent) => {
 
 const handleSaveChanges = () => {
 	changesStore.setHasChanges(false)
+	if (currentApp.value) {
+		const currentVersion = currentApp.value.versions.find((version) => version.current)
+		if (currentVersion) {
+			currentVersion.modified = new Date().getTime()
+		}
+	}
 	app.value.versions[0].modified = new Date()
 	fabOpened.value = true
 }
