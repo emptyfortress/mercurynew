@@ -324,16 +324,16 @@ q-page(padding, @click='action')
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='app')
 
-		Item(
-			v-model:expanded="expanded",
-			v-model:tapes='tapes',
-			v-model:activeItem="activeItem",
-			@navigate="navigate"
-			@createGroup='createGroup'
-			@drag='startDrag'
-			@duplicate="duble"
-			:shift="shift"
-		)
+		// Item(
+		// 	v-model:expanded="expanded",
+		// 	v-model:tapes='tapes',
+		// 	v-model:activeItem="activeItem",
+		// 	@navigate="navigate"
+		// 	@createGroup='createGroup'
+		// 	@drag='startDrag'
+		// 	@duplicate="duble"
+		// 	:shift="shift"
+		// )
 
 </template>
 
