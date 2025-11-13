@@ -17,19 +17,28 @@ const footerState = computed(() => {
 })
 
 const modified = computed(() => {
-	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY HH:mm')
+	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY  HH:mm')
+})
+
+const localCreated = computed(() => {
+	return date.formatDate(app.value.versions[0].created, 'DD.MM.YY HH:mm')
 })
 </script>
 
 <template lang="pug">
 q-footer.footer(v-if='footerState')
 	.cent
+		div Версия: {{ app.versions[0].label }}
+		div Автор: {{ app.versions[0].author }}
+		div Создано: {{ localCreated }}
+
+	.cent
 		div(v-if='app.versions[0].modified == null && !hasChanges')
 			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
 			span Все изменения сохранены
 		div(v-if='app.versions[0].modified !== null && !hasChanges')
 			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
-			span Сохранено {{modified}} - Орлов П.С.
+			span Сохранено: {{modified}} -- Орлов П.С.
 		div(v-if='hasChanges')
 			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="negative")
 			span Есть несохраненные изменения (доступ к странице для других пользователей ограничен)
@@ -42,6 +51,8 @@ q-footer.footer(v-if='footerState')
 	box-shadow: 0 -1px 4px rgba($color: #000000, $alpha: 0.15);
 	color: #444;
 	padding: 3px 2rem;
+	display: flex;
+	justify-content: space-between;
 	.cent {
 		display: flex;
 		justify-content: center;
