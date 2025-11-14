@@ -12,9 +12,8 @@ q-page(padding)
 
 <style scoped lang="scss">
 .content {
-	max-width: 1200px;
+	max-width: 1100px;
 	margin: 2rem auto;
-	background: #ccc;
 	display: grid;
 	grid-template-columns: 220px 1fr;
 	column-gap: 3rem;

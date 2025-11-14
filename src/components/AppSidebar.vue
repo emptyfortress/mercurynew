@@ -34,7 +34,7 @@ div(ref='parent')
 		v-for="item in tapes",
 		:key='item.id',
 		@click="go(item.id)",
-		:class="{ active: item.id === route.params.id }"
+		:class="{ selected: item.id === route.params.id }"
 	) {{ item.id }}
 </template>
 
@@ -47,14 +47,19 @@ div(ref='parent')
 	cursor: pointer;
 	transition: background-color 0.2s ease;
 
-	&:hover {
-		background-color: #f5f5f5;
-	}
-
-	&.active {
-		background-color: #e3f2fd;
-		font-weight: bold;
-		color: #0d47a1;
+	&.selected {
+		position: relative;
+		transition: transform 0.2s ease;
+		&::before {
+			content: '';
+			position: absolute;
+			top: -4px;
+			left: -8px;
+			width: 110%;
+			height: 110%;
+			background: red;
+			z-index: -1;
+		}
 	}
 }
 </style>

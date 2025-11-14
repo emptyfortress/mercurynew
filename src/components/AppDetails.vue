@@ -14,8 +14,9 @@ const item = computed(() => route.params.id)
 <style scoped lang="scss">
 .myItem {
 	width: 100%;
-	height: 200px;
+	min-height: 500px;
 	background: #fff;
 	padding: 1rem;
+	border-radius: 0.5rem;
 }
 </style>
