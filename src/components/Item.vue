@@ -8,10 +8,13 @@ import { uid, useQuasar } from 'quasar'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import ShareDialog from '@/components/ShareDialog.vue'
 import { spring } from '@/utils/springConstants'
+import { useReducedMotion } from '@/composable/useReducedMotion'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<App[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
+
+const { reducedMotion } = useReducedMotion()
 
 const props = defineProps({
 	shift: {
@@ -21,7 +24,10 @@ const props = defineProps({
 	},
 })
 
-const Div = motion.div
+// const Div = motion.div
+const Div = computed(() => {
+	return reducedMotion.value ? 'div' : motion.div
+})
 
 const emit = defineEmits(['navigate', 'createGroup', 'duplicate', 'drag'])
 

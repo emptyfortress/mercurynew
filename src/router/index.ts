@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { defineComponent, h } from 'vue'
 import Group1 from '@/views/Group1.vue'
 import Home from '@/views/Home.vue'
-import HomeReduced from '@/views/HomeReduced.vue'
+import HomeReduced1 from '@/views/HomeReduced1.vue'
 import { useReducedMotion } from '@/composable/useReducedMotion'
 
 declare module 'vue-router' {
@@ -25,7 +25,7 @@ const router = createRouter({
 			component: defineComponent({
 				setup() {
 					const { reducedMotion } = useReducedMotion()
-					return () => h(reducedMotion.value ? HomeReduced : Home)
+					return () => h(reducedMotion.value ? HomeReduced1 : Home)
 				},
 			}),
 			meta: {
