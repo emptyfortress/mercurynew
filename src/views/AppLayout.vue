@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import AppSidebar from '@/components/AppSidebar.vue'
-import AppDetails from '@/components/AppDetails.vue'
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.content
 		AppSidebar()
-		AppDetails()
+		router-view()
 
 </template>
 
