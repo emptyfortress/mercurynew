@@ -61,10 +61,10 @@ onMounted(loadStateFromRoute)
 watch(() => route.params.id, loadStateFromRoute)
 
 // other code
-const Div = computed(() => {
-	return reducedMotion.value ? 'div' : motion.div
-})
-// const Div = motion.div
+// const Div = computed(() => {
+// 	return reducedMotion.value ? 'div' : motion.div
+// })
+const Div = motion.div
 
 // const dragStatus = ref(false)
 // const setDragStatus = (e: boolean) => {

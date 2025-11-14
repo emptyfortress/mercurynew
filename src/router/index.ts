@@ -3,6 +3,8 @@ import { defineComponent, h } from 'vue'
 import Group1 from '@/views/Group1.vue'
 import Home from '@/views/Home.vue'
 import HomeReduced1 from '@/views/HomeReduced1.vue'
+import AppLayout from '@/views/AppLayout.vue'
+import AppDetails from '@/components/AppDetails.vue'
 import { useReducedMotion } from '@/composable/useReducedMotion'
 
 declare module 'vue-router' {
@@ -19,15 +21,51 @@ declare module 'vue-router' {
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
+		// {
+		// 	path: '/:id?',
+		// 	name: 'home',
+		// 	component: defineComponent({
+		// 		setup() {
+		// 			const { reducedMotion } = useReducedMotion()
+		// 			return () => h(reducedMotion.value ? HomeReduced1 : Home)
+		// 		},
+		// 	}),
+		// 	meta: {
+		// 		toolbar: false,
+		// 		back: false,
+		// 		count: 0,
+		// 		save: false,
+		// 	},
+		// },
 		{
-			path: '/:id?',
+			path: '/',
 			name: 'home',
-			component: defineComponent({
-				setup() {
-					const { reducedMotion } = useReducedMotion()
-					return () => h(reducedMotion.value ? HomeReduced1 : Home)
+			component: HomeReduced1,
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 3,
+				save: false,
+			},
+		},
+		{
+			path: '/:id',
+			component: AppLayout,
+			props: true,
+			children: [
+				{
+					path: '',
+					name: 'AppDetails',
+					component: AppDetails,
+					props: true,
+					meta: {
+						toolbar: false,
+						back: false,
+						count: 4,
+						save: false,
+					},
 				},
-			}),
+			],
 			meta: {
 				toolbar: false,
 				back: false,
