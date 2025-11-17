@@ -1,11 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { defineComponent, h } from 'vue'
 import Group1 from '@/views/Group1.vue'
 import Home from '@/views/Home.vue'
 import HomeReduced1 from '@/views/HomeReduced1.vue'
 import AppLayout from '@/views/AppLayout.vue'
 import AppDetails from '@/components/AppDetails.vue'
-import { useReducedMotion } from '@/composable/useReducedMotion'
 
 declare module 'vue-router' {
 	interface RouteMeta {

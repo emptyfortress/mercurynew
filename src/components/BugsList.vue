@@ -65,15 +65,11 @@ q-list.q-mt-lg
 	:deep(.q-select) {
 		width: 110px;
 	}
-	// :deep(.q-field__control:before) {
-	// 	background: #21629c;
-	// }
 	:deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
 		height: 32px;
 	}
 	:deep(.q-field--auto-height.q-field--dense .q-field__native) {
 		min-height: 32px;
-		// color: white;
 	}
 	:deep(
 		.q-field--auto-height.q-field--dense .q-field__control,
@@ -84,7 +80,6 @@ q-list.q-mt-lg
 
 	:deep(.q-field--dense .q-field__marginal) {
 		height: 32px;
-		// color: white;
 	}
 }
 </style>
