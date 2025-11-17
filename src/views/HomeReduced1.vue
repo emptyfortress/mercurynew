@@ -7,14 +7,14 @@ import { useApps } from '@/stores/apps'
 import AddButtonNew1 from '@/components/common/AddButtonNew1.vue'
 import { uid, useQuasar } from 'quasar'
 import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
-import Empty from '@/components/Empty.vue'
-import { useKeyModifier } from '@vueuse/core'
+// import Empty from '@/components/Empty.vue'
+// import { useKeyModifier } from '@vueuse/core'
 
 const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 const myapps = useApps()
 const router = useRouter()
-const route = useRoute()
-const shift = useKeyModifier('Shift', { initial: false })
+// const route = useRoute()
+// const shift = useKeyModifier('Shift', { initial: false })
 
 const config = {
 	plugins: [animations()],
@@ -36,7 +36,7 @@ const go = (id: string) => {
 	if (curApp) {
 		myapps.setCurrentApp(curApp)
 	}
-	router.push(`/${id}`)
+	router.push(`/reduce/${id}`)
 }
 
 const $q = useQuasar()

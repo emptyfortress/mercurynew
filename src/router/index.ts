@@ -21,24 +21,24 @@ declare module 'vue-router' {
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
-		// {
-		// 	path: '/:id?',
-		// 	name: 'home',
-		// 	component: defineComponent({
-		// 		setup() {
-		// 			const { reducedMotion } = useReducedMotion()
-		// 			return () => h(reducedMotion.value ? HomeReduced1 : Home)
-		// 		},
-		// 	}),
-		// 	meta: {
-		// 		toolbar: false,
-		// 		back: false,
-		// 		count: 0,
-		// 		save: false,
-		// 	},
-		// },
 		{
-			path: '/',
+			path: '/:id?',
+			name: 'home',
+			component: defineComponent({
+				setup() {
+					const { reducedMotion } = useReducedMotion()
+					return () => h(reducedMotion.value ? HomeReduced1 : Home)
+				},
+			}),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+				save: false,
+			},
+		},
+		{
+			path: '/reduce',
 			name: 'home',
 			component: HomeReduced1,
 			meta: {
@@ -49,7 +49,7 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/:id',
+			path: '/reduce/:id',
 			component: AppLayout,
 			props: true,
 			children: [
