@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import MdiWizardHat from '@/components/icons/MdiWizardHat.vue'
-import TablerLogicNand from '@/components/icons/TablerLogicNand.vue'
+// import MdiWizardHat from '@/components/icons/MdiWizardHat.vue'
+// import TablerLogicNand from '@/components/icons/TablerLogicNand.vue'
 import TextAi from '@/components/TextAi.vue'
 import Loading from '@/components/Loading.vue'
 import RequestGrid from '@/components/RequestGrid.vue'
@@ -114,13 +114,15 @@ q-page(padding
 	PredButton(@activate='startLeft' @stop='stopLeft' :class="{'shake-horizontal': isShaking}")
 	.edito
 		.first
-			.top(@click='toggleMain')
+			.top
 				.zg Настройка папки "{{ currentFolder?.label }}"
 				.q-gutter-x-sm
-					q-btn(flat round dense color="primary") 
+					q-btn(flat round dense color="primary" @click='toggleMain') 
 						q-icon(v-if='main' name="mdi-wizard-hat" color="primary")
 						q-icon(v-else name="mdi-gate-nor" color="primary")
+
 					q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
+
 					q-btn.q-ml-md(flat round dense color="primary" @click="toggleFull") 
 						q-icon(v-if='fullscreen' name="mdi-fullscreen-exit" color="primary")
 						q-icon(v-else name="mdi-fullscreen" color="primary")
