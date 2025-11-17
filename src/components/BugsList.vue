@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { useSave } from '@/stores/save'
+import { useReducedMotion } from '@/composable/useReducedMotion'
+
+const { userOverride } = useReducedMotion()
+
+const animationOptions = [
+	{ value: 'auto', label: 'Авто' },
+	{ value: 'false', label: 'Вкл' },
+	{ value: 'true', label: 'Откл' },
+]
 
 const store = useSave()
 const emit = defineEmits(['close'])
@@ -42,6 +51,40 @@ q-list.q-mt-lg
 			q-icon(name="mdi-account-circle" color="primary")
 		q-item-section
 			q-item-label Роза Львовна
+
+	q-item.settings
+		label Анимации: 
+		q-select(v-model="userOverride" :options="animationOptions" dense emit-value map-options outlined)
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.settings {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	:deep(.q-select) {
+		width: 110px;
+	}
+	// :deep(.q-field__control:before) {
+	// 	background: #21629c;
+	// }
+	:deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
+		height: 32px;
+	}
+	:deep(.q-field--auto-height.q-field--dense .q-field__native) {
+		min-height: 32px;
+		// color: white;
+	}
+	:deep(
+		.q-field--auto-height.q-field--dense .q-field__control,
+		.q-field--auto-height.q-field--dense .q-field__native
+	) {
+		min-height: 32px;
+	}
+
+	:deep(.q-field--dense .q-field__marginal) {
+		height: 32px;
+		// color: white;
+	}
+}
+</style>

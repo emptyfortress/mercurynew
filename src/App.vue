@@ -12,15 +12,6 @@ import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
 import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
-import { useReducedMotion } from '@/composable/useReducedMotion'
-
-const { userOverride } = useReducedMotion()
-
-const animationOptions = [
-	{ value: 'auto', label: 'Авто' },
-	{ value: 'false', label: 'Вкл' },
-	{ value: 'true', label: 'Откл' },
-]
 
 const route = useRoute()
 
@@ -162,10 +153,6 @@ q-layout(view='hHh LpR fFf')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
 			q-toolbar-title {{ title }}
-
-			.settings
-				label Анимации: 
-				q-select(v-model="userOverride" :options="animationOptions" dense emit-value map-options outlined)
 			.lang
 				component(:is='currentLang.icon')
 				q-menu(transition-show="jump-down" transition-hide="jump-up")
@@ -343,44 +330,5 @@ nav a:first-of-type {
 }
 .ic {
 	font-size: 1.7rem;
-}
-.settings {
-	display: flex;
-	gap: 0.5rem;
-	align-items: center;
-	:deep(.q-select) {
-		width: 110px;
-	}
-	:deep(.q-field__control:before) {
-		background: #21629c;
-	}
-	:deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
-		height: 32px;
-	}
-	:deep(.q-field--auto-height.q-field--dense .q-field__native) {
-		min-height: 32px;
-		color: white;
-	}
-	:deep(
-		.q-field--auto-height.q-field--dense .q-field__control,
-		.q-field--auto-height.q-field--dense .q-field__native
-	) {
-		min-height: 32px;
-	}
-
-	:deep(.q-field--dense .q-field__marginal) {
-		height: 32px;
-		color: white;
-	}
-
-	// :deep(.q-field__control:before) {
-	// 	background: rgba($color: #ffffff, $alpha: 0.2);
-	// }
-	// :deep(.q-field--auto-height.q-field--dense .q-field__native) {
-	// 	color: white;
-	// }
-	// :deep(.q-field--dense .q-field__append) {
-	// 	color: white;
-	// }
 }
 </style>
