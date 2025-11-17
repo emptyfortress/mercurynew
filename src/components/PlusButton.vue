@@ -58,14 +58,12 @@ const next = () => {
 
 <style scoped lang="scss">
 .button {
+	// margin-top: 1rem;
 	width: 48px;
 	height: 48px;
 	background: #fff;
 	box-shadow: var(--shad0);
 	border-radius: 24px;
-	position: absolute;
-	top: 0;
-	right: -58px;
 	text-align: center;
 	cursor: pointer;
 	transition: all 0.2s ease;
@@ -76,7 +74,7 @@ const next = () => {
 	&.expand {
 		width: 350px;
 		height: calc(100vh - 120px);
-		right: -358px;
+		// right: -358px;
 		border-radius: 6px;
 		cursor: default;
 	}

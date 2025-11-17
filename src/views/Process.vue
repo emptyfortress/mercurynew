@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import PlusButton from '@/components/PlusButton.vue'
-import { useMotion } from '@vueuse/motion'
+// import { useMotion } from '@vueuse/motion'
 import { usePanels } from '@/stores/panels'
 import DiagramSvg from '@/components/DiagramSvg.vue'
 import Look from '@/components/Look.vue'
@@ -33,14 +33,14 @@ q-page(padding
 			DiagramSvg
 			Look
 
-		PlusButton(@activate='startRight0' @stop='stopRight0')
+	PlusButton(@activate='startRight0' @stop='stopRight0')
 </template>
 
 <style scoped lang="scss">
 .q-page {
 	display: grid;
 	grid-template-columns: 1fr 80px;
-	column-gap: 1rem;
+	column-gap: 0.5rem;
 	transition: all 0.2s ease;
 	&.collapsed {
 		grid-template-columns: 1fr 390px;
@@ -53,7 +53,7 @@ q-page(padding
 
 .editor {
 	width: 100%;
-	margin: 0 1rem;
+	margin-top: 0;
 	padding-top: 4rem;
 	display: flex;
 	justify-content: center;
