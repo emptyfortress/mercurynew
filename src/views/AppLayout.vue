@@ -6,7 +6,13 @@ import AppSidebar from '@/components/AppSidebar.vue'
 q-page(padding)
 	.content
 		AppSidebar()
-		router-view()
+		router-view(v-slot="{ Component, route }")
+			transition(
+				leave-active-class="fadeOutTop"
+				enter-active-class="fadeInBottom"
+				mode='out-in'
+				)
+				component(:is="Component" :key="route.fullPath")
 
 </template>
 

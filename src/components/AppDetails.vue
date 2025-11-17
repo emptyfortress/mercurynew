@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useApps } from '@/stores/apps'
 
-const route = useRoute()
-
-const item = computed(() => route.params.id)
+const myapps = useApps()
 </script>
 
 <template lang="pug">
-.myItem {{ item }}
+.myItem {{ myapps.currentApp?.label }}
 </template>
 
 <style scoped lang="scss">

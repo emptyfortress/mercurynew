@@ -32,6 +32,10 @@ const config = {
 const [parent, tapes] = useDragAndDrop(myapps.apps, config)
 
 const go = (id: string) => {
+	const curApp = tapes.value.find((el: App) => el.id == id)
+	if (curApp) {
+		myapps.setCurrentApp(curApp)
+	}
 	router.push(`/${id}`)
 }
 
