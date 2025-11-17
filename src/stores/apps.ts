@@ -272,6 +272,10 @@ export const useApps = defineStore('apps', () => {
 		},
 	])
 
+	const updateApps = (list: App[]) => {
+		apps.value = list
+	}
+
 	function collectGroup1(apps: App[]): App[] {
 		const result: App[] = []
 
@@ -367,6 +371,7 @@ export const useApps = defineStore('apps', () => {
 		flatApps,
 		db,
 		createApp,
+		updateApps,
 
 		currentApp,
 		setCurrentApp,

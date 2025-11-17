@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Group1 from '@/views/Group1.vue'
 import Home from '@/views/Home.vue'
+import HomeReduced1 from '@/views/HomeReduced1.vue'
+import AppLayout from '@/views/AppLayout.vue'
+import AppDetails from '@/components/AppDetails.vue'
 
 declare module 'vue-router' {
 	interface RouteMeta {
@@ -28,9 +31,34 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/timeline',
-			name: 'timeline',
-			component: () => import('@/views/Timeline.vue'),
+			path: '/reduce',
+			name: 'reducedHome',
+			component: HomeReduced1,
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 3,
+				save: false,
+			},
+		},
+		{
+			path: '/reduce/:id',
+			component: AppLayout,
+			props: true,
+			children: [
+				{
+					path: '',
+					name: 'AppDetails',
+					component: AppDetails,
+					props: true,
+					meta: {
+						toolbar: false,
+						back: false,
+						count: 4,
+						save: false,
+					},
+				},
+			],
 			meta: {
 				toolbar: false,
 				back: false,
@@ -39,9 +67,9 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/test',
-			name: 'test',
-			component: () => import('@/views/Testing.vue'),
+			path: '/timeline',
+			name: 'timeline',
+			component: () => import('@/views/Timeline.vue'),
 			meta: {
 				toolbar: false,
 				back: false,
@@ -151,7 +179,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 3,
-				footer: true,
+				footer: false,
 				save: false,
 			},
 		},
@@ -163,7 +191,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 4,
-				footer: true,
+				footer: false,
 				save: false,
 			},
 		},
@@ -199,7 +227,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 6,
-				footer: true,
+				footer: false,
 				save: false,
 			},
 		},

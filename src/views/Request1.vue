@@ -8,7 +8,6 @@ import RequestGrid from '@/components/RequestGrid.vue'
 import PreviewButton from '@/components/PreviewButton.vue'
 import PredButton from '@/components/PredButton.vue'
 import { usePanels } from '@/stores/panels'
-import { useMotion } from '@vueuse/motion'
 import DragEditWindow1 from '@/components/DragEditWindow1.vue'
 import { useKeys } from '@/stores/keys'
 import { useRoute } from 'vue-router'
@@ -19,75 +18,59 @@ import { useStorage } from '@vueuse/core'
 
 const app = useStorage('app', localStorage)
 const title = useTitle('Папки: ' + app.value.label)
-// title.value = 'Папки: ' + app.value.label
 
 const list = useList()
 const route = useRoute()
 
 const currentFolder = computed(() => {
 	return list.lists.find((item) => item.id === route.params.id)
-	// return list.lists.find((item) => item.id === Number(route.params.id))
 })
 
 const mykeys = useKeys()
 
 const main = ref(true)
+
 const toggleMain = () => {
 	main.value = !main.value
 }
 
 const panels = usePanels()
-const editorPreview = ref<HTMLElement>()
-
-const full = { width: 1500, x: 0 }
-const leftStart = { width: 1150, x: 175 }
-const rightStart = { width: 1150, x: -175 }
-const allStart = { width: 800, x: 0 }
-
-const calcStart = computed(() => {
-	if (panels.pred && panels.preview) return allStart
-	if (!panels.pred && !panels.preview) return full
-	if (panels.pred) return leftStart
-	if (panels.preview) return rightStart
-})
-
-const { apply: folderAnim, stop } = useMotion(editorPreview, {
-	enter: calcStart.value,
-	start: { width: 1500, x: 0, transition: { stiffness: 200, damping: 20 } },
-	shrinkRight: { width: 1150, x: -175, transition: { stiffness: 200, damping: 20 } },
-	shrinkLeft: { width: 1150, x: 175, transition: { stiffness: 200, damping: 20 } },
-	shrinkAll: { width: 800, x: 0, transition: { stiffness: 200, damping: 20 } },
-})
 
 const startRight = async () => {
 	panels.setPreview(true)
-	if (panels.pred && panels.preview) {
-		await folderAnim('shrinkAll')
-	} else await folderAnim('shrinkRight')
-	stop()
 }
 
 const startLeft = async () => {
 	panels.setPred(true)
-	if (panels.pred && panels.preview) {
-		await folderAnim('shrinkAll')
-	} else await folderAnim('shrinkLeft')
-	stop()
 }
 
 const stopRight = async () => {
-	setTimeout(() => {
-		panels.pred ? folderAnim('shrinkLeft') : folderAnim('start')
-	}, 400)
-	stop()
+	panels.setPreview(false)
 }
 
 const stopLeft = async () => {
-	setTimeout(() => {
-		panels.preview ? folderAnim('shrinkRight') : folderAnim('start')
-	}, 400)
-	stop()
+	panels.setPred(false)
 }
+
+const fullscreen = ref(false)
+
+const toggleFull = () => {
+	if (fullscreen.value == false) {
+		panels.setPred(false)
+		panels.setPreview(false)
+	} else {
+		panels.setPred(true)
+		panels.setPreview(true)
+	}
+	fullscreen.value = !fullscreen.value
+}
+
+const calcPageClass = computed(() => {
+	if (panels.pred && panels.preview) return 'collapsedB'
+	if (panels.pred) return 'collapsedL'
+	if (panels.preview) return 'collapsedR'
+	return ''
+})
 
 const isShaking = ref(false)
 const isShaking1 = ref(false)
@@ -125,57 +108,64 @@ const checkStartSearch = () => {
 </script>
 
 <template lang="pug">
-q-page(padding)
-	.edito(ref='editorPreview')
+q-page(padding
+	:class='calcPageClass'
+	)
+	PredButton(@activate='startLeft' @stop='stopLeft' :class="{'shake-horizontal': isShaking}")
+	.edito
 		.first
-			.top()
+			.top(@click='toggleMain')
 				.zg Настройка папки "{{ currentFolder?.label }}"
 				.q-gutter-x-sm
-					q-btn(flat round dense color="primary" @click="toggleMain") 
-						template(v-if='main')
-							MdiWizardHat.ic
-							q-tooltip ИИ-ассистент
-						template(v-else)
-							TablerLogicNand.ic
-							q-tooltip Конструктор
+					q-btn(flat round dense color="primary") 
+						q-icon(v-if='main' name="mdi-wizard-hat" color="primary")
+						q-icon(v-else name="mdi-gate-nor" color="primary")
+					q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
+					q-btn.q-ml-md(flat round dense color="primary" @click="toggleFull") 
+						q-icon(v-if='fullscreen' name="mdi-fullscreen-exit" color="primary")
+						q-icon(v-else name="mdi-fullscreen" color="primary")
 
 			transition(name="slide-bottom" mode="out-in")
 				RequestGrid(v-if='main' @button='checkStartSearch' @open='startRight')
-
 				TextAi(v-else)
 
-		template(v-if='main')
-			Loading(@startPred='startPred' v-model:poisk='isSearching' button :folder='currentFolder?.label')
+		Loading(@startPred='startPred' v-model:poisk='isSearching' button :folder='currentFolder?.label')
 
-		PreviewButton(@activate='startRight' @stop='stopRight' :class="{'shake-horizontal': isShaking1}" @search='isSearching = true')
-		PredButton(@activate='startLeft' @stop='stopLeft' :class="{'shake-horizontal': isShaking}")
+	PreviewButton(@activate='startRight' @stop='stopRight' :class="{'shake-horizontal': isShaking1}" @search='isSearching = true')
 
 	DragEditWindow1(v-model="mykeys.isDragWindow")
 </template>
 
 <style scoped lang="scss">
 .q-page {
-	display: flex;
-	justify-content: center;
-	position: relative;
-	align-items: start;
+	display: grid;
+	grid-template-columns: 50px 1fr 50px;
+	column-gap: 0.5rem;
+	transition: all 0.2s ease;
+	&.collapsedL {
+		grid-template-columns: 390px 1fr 50px;
+	}
+	&.collapsedR {
+		grid-template-columns: 50px 1fr 390px;
+	}
+	&.collapsedB {
+		grid-template-columns: 390px 1fr 390px;
+	}
 }
 
 .edito {
-	width: 1200px;
-	height: calc(100vh - 120px);
-	border-radius: 0.4rem;
+	// width: 100%;
+	margin-top: 0;
+	padding: 0;
+	// background: var(--bgLight);
 	position: relative;
 }
+
 .first {
 	background: #fff;
 	border-radius: 0.4rem;
 	box-shadow: var(--shad0);
 	min-height: calc(100vh - 120px - 330px);
-}
-.setup {
-	height: 300px;
-	background: white;
 }
 
 .top {

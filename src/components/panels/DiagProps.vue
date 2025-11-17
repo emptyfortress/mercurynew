@@ -45,12 +45,12 @@ const showRole = computed(() => {
 div
 	q-list
 		ExpansionItem(title="Атрибуты" :icon="IcBaselineDriveFileRenameOutline")
-			DiagRootProps(v-if='mydiagram.selection && showRoot' separator)
-			DiagRoleProps(v-if='mydiagram.selection && showRole' separator)
-			DiagEtapProps(v-if='mydiagram.selection && showEtap' separator)
+			DiagRootProps(v-if='mydiagram.selection && showRoot' )
+			DiagRoleProps(v-if='mydiagram.selection && showRole' )
+			DiagEtapProps(v-if='mydiagram.selection && showEtap' )
 
 		ExpansionItem.q-mt-md(title="Варианты завершения" :icon="LineiconsFlag2" v-if='mydiagram.selection && showEtap')
-			DiagVariantProps(separator)
+			DiagVariantProps
 
 </template>
 

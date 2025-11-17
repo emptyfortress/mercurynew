@@ -1,69 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUpdated, markRaw } from 'vue'
-import { motion } from 'motion-v'
+import { ref, computed, markRaw } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useApps } from '@/stores/apps'
-import Item from '@/components/Item.vue'
 import AddButtonNew1 from '@/components/common/AddButtonNew1.vue'
 import { uid, useQuasar } from 'quasar'
 import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
-import Empty from '@/components/Empty.vue'
-import { useKeyModifier } from '@vueuse/core'
-import { spring } from '@/utils/springConstants'
+// import Empty from '@/components/Empty.vue'
+// import { useKeyModifier } from '@vueuse/core'
 
 const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 const myapps = useApps()
 const router = useRouter()
-const route = useRoute()
-const activeItem = ref('')
-const shift = useKeyModifier('Shift', { initial: false })
-
-// Функция для обновления URL при изменении состояния
-const updateRouteParams = () => {
-	router.push({
-		params: {
-			id: activeItem.value,
-		},
-	})
-}
-watch(activeItem, updateRouteParams)
-
-watch(shift, (val) => {
-	if (val) {
-		updateConfig(config1)
-	} else {
-		updateConfig(config)
-	}
-})
-// Функция для загрузки состояния из параметров маршрута
-const loadStateFromRoute = () => {
-	if (route.params.id !== '') {
-		activeItem.value = route.params.id.toString()
-		expanded.value = true
-		let app = myapps.apps.find((el) => el.id == activeItem.value)
-		if (app) {
-			myapps.setCurrentApp(app)
-		}
-	} else {
-		activeItem.value = ''
-		expanded.value = false
-	}
-}
-// Загружаем состояние при монтировании компонента
-onMounted(loadStateFromRoute)
-//
-// Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
-watch(() => route.params.id, loadStateFromRoute)
-
-// other code
-const Div = motion.div
-
-// const dragStatus = ref(false)
-// const setDragStatus = (e: boolean) => {
-// 	dragStatus.value = e
-// }
+// const route = useRoute()
+// const shift = useKeyModifier('Shift', { initial: false })
 
 const config = {
 	plugins: [animations()],
@@ -75,39 +26,18 @@ const config = {
 	accept: (draggedElement: HTMLElement) => {
 		return !draggedElement.classList.contains('group')
 	},
-}
-const config1 = {
-	plugins: [animations()],
-	dragPlaceholderClass: 'ghost',
-	sortable: false,
-	draggable: (child: HTMLElement) => {
-		return child.classList.contains('it')
-	},
-	accept: (draggedElement: HTMLElement) => {
-		return !draggedElement.classList.contains('group')
-	},
+	onSort: (event: any) => myapps.updateApps(event.values),
 }
 
-const expanded = ref(false)
-const [parent, tapes, updateConfig] = useDragAndDrop(myapps.apps, config)
+const [parent, tapes] = useDragAndDrop(myapps.apps, config)
 
-watch(tapes, (val) => {
-	if (val) {
-		myapps.apps = tapes.value
+const go = (id: string) => {
+	const curApp = tapes.value.find((el: App) => el.id == id)
+	if (curApp) {
+		myapps.setCurrentApp(curApp)
 	}
-})
-
-const back = () => {
-	router.push('/')
-	expanded.value = false
+	router.push(`/reduce/${id}`)
 }
-
-const navigate = (id: number) => {
-	router.push(`/folder/${id}`)
-}
-onUpdated(() => {
-	myapps.setPath('/' + route.params.id.toString())
-})
 
 const $q = useQuasar()
 const create = (e: any) => {
@@ -280,17 +210,9 @@ const createGroup = (one: any, two: any) => {
 
 const calcPlusClass = computed(() => {
 	if (duple.value) return 'duplicate'
-	if (expanded.value) return 'cl-0'
-	// if (expanded.value) return `cl-${tapes.value.length}`
 	return ''
 })
 
-const action = () => {
-	if (expanded.value) {
-		expanded.value = false
-		activeItem.value = ''
-	}
-}
 const calcStyle = computed(() => {
 	return myapps.groupDrag ? 'outline: 3px dotted #143c5f;' : ''
 })
@@ -302,16 +224,10 @@ const startDrag = (e: any) => {
 </script>
 
 <template lang="pug">
-q-page(padding, @click='action')
-	.parent(ref='parent'
-		:class="{'end': expanded}"
-		@click.stop='back'
-		:style='calcStyle'
-	)
+q-page(padding)
+	.parent(ref='parent')
 
-		Div.plus(
-			layout
-			:transition='spring'
+		.plus(
 			@click.stop
 			@dragover.prevent="onDragEnterPlus"
 			@dragenter.prevent
@@ -321,19 +237,12 @@ q-page(padding, @click='action')
 		)
 			AddButtonNew1(mode='app' @create='create')
 
-		.cen( v-if='tapes.length == 0')
-			Empty(mode='app')
-
-		Item(
-			v-model:expanded="expanded",
-			v-model:tapes='tapes',
-			v-model:activeItem="activeItem",
-			@navigate="navigate"
-			@createGroup='createGroup'
-			@drag='startDrag'
-			@duplicate="duble"
-			:shift="shift"
-		)
+		.it(
+			v-for="item in tapes",
+			:key='item.id'
+			@click='go(item.id)'
+		) {{ item.id }}
+	
 
 </template>
 
@@ -369,5 +278,8 @@ q-page(padding, @click='action')
 	width: 170px;
 	display: flex;
 	align-items: center;
+}
+.ite {
+	background: #fff;
 }
 </style>

@@ -12,6 +12,9 @@ import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBraces
 import Empty from '@/components/Empty.vue'
 import { useKeyModifier } from '@vueuse/core'
 import { spring } from '@/utils/springConstants'
+import { useReducedMotion } from '@/composable/useReducedMotion'
+
+const { reducedMotion } = useReducedMotion()
 
 const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 const myapps = useApps()
@@ -58,6 +61,9 @@ onMounted(loadStateFromRoute)
 watch(() => route.params.id, loadStateFromRoute)
 
 // other code
+// const Div = computed(() => {
+// 	return reducedMotion.value ? 'div' : motion.div
+// })
 const Div = motion.div
 
 // const dragStatus = ref(false)

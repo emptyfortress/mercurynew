@@ -3,40 +3,20 @@ import FormPreview from '@/components/FormPreview.vue'
 import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton1 from '@/components/panels/TopButton1.vue'
 import { usePanels } from '@/stores/panels'
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
-import { nextTick } from 'vue'
 import TablerSearch from '@/components/icons/TablerSearch.vue'
 
 const panels = usePanels()
 
-gsap.registerPlugin(Flip)
-
 const emit = defineEmits(['activate', 'stop', 'search'])
 
-// Function to animate Flip state transition
-const animateFlip = (previewState: boolean) => {
-	const state = Flip.getState('.button')
-	panels.setPreview(previewState)
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
-}
-
-// Expand the preview
 const expand = () => {
 	emit('activate')
-	animateFlip(true)
+	panels.setPreview(true)
 }
 
-// Close the preview
 const close = () => {
 	emit('stop')
-	animateFlip(false)
+	panels.setPreview(false)
 }
 
 const search = () => {
@@ -57,7 +37,6 @@ const search = () => {
 		:hovered='{ rotate: "90deg" }'
 	)
 
-	CloseButton(v-model="panels.preview" @close="close")
 
 	TopButton1(v-model="panels.preview" @close="close")
 
@@ -68,6 +47,7 @@ const search = () => {
 		:delay='1000'
 		@search='search'
 		) 
+	CloseButton(v-model="panels.preview" @close="close")
 
 </template>
 
@@ -78,17 +58,15 @@ const search = () => {
 	background: #fff;
 	box-shadow: var(--shad0);
 	border-radius: 24px;
-	position: absolute;
-	top: 0;
-	right: -58px;
 	text-align: center;
 	cursor: pointer;
 	padding: 0.6rem;
+	transition: all 0.2s ease;
+	position: relative;
 
 	&.expand {
-		width: 400px;
+		width: 385px;
 		height: calc(100vh - 120px);
-		right: -408px;
 		border-radius: 6px;
 		cursor: default;
 		padding: 0;
@@ -105,15 +83,7 @@ const search = () => {
 	font-size: 1.3rem;
 	margin-right: 0.5rem;
 }
-
-.zg {
-	font-size: 1.1rem;
-	color: $primary;
-	text-align: center;
-}
-
-.top1 {
-	display: block;
-	width: 100%;
-}
+// .test {
+// 	color: red;
+// }
 </style>

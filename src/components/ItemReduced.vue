@@ -24,10 +24,10 @@ const props = defineProps({
 	},
 })
 
-const Div = motion.div
-// const Div = computed(() => {
-// 	return reducedMotion.value ? 'div' : motion.div
-// })
+// const Div = motion.div
+const Div = computed(() => {
+	return reducedMotion.value ? 'div' : motion.div
+})
 
 const emit = defineEmits(['navigate', 'createGroup', 'duplicate', 'drag'])
 
