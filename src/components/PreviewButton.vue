@@ -61,6 +61,7 @@ const search = () => {
 	text-align: center;
 	cursor: pointer;
 	padding: 0.6rem;
+	transition: all 0.2s ease;
 	position: relative;
 
 	&.expand {

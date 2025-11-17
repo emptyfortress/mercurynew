@@ -53,6 +53,8 @@ const Div = motion.div
 	border-radius: 24px;
 	text-align: center;
 	cursor: pointer;
+	transition: all 0.2s ease;
+	position: relative;
 
 	.ic {
 		margin-top: 11px;

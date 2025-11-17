@@ -89,6 +89,7 @@ const calcDelay = computed(() => {
 	text-align: center;
 	cursor: pointer;
 	position: relative;
+	transition: all 0.2s ease;
 	.ic {
 		margin-top: 11px;
 	}

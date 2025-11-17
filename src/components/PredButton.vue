@@ -74,6 +74,8 @@ const Div = motion.div
 	text-align: center;
 	cursor: pointer;
 	padding: 0.6rem;
+	transition: all 0.2s ease;
+	position: relative;
 
 	.ic {
 		margin-top: 11px;
