@@ -54,16 +54,16 @@ const stopLeft = async () => {
 
 const fullscreen = ref(false)
 
-// const toggleFull = () => {
-// 	if (fullscreen.value == false) {
-// 		panels.setPred(false)
-// 		panels.setPreview(false)
-// 	} else {
-// 		panels.setPred(true)
-// 		panels.setPreview(true)
-// 	}
-// 	fullscreen.value = !fullscreen.value
-// }
+const toggleFull = () => {
+	if (fullscreen.value == false) {
+		panels.setPred(false)
+		panels.setPreview(false)
+	} else {
+		panels.setPred(true)
+		panels.setPreview(true)
+	}
+	fullscreen.value = !fullscreen.value
+}
 
 const calcPageClass = computed(() => {
 	if (panels.pred && panels.preview) return 'collapsedB'
@@ -112,21 +112,22 @@ q-page(padding
 	:class='calcPageClass'
 	)
 	PredButton(@activate='startLeft' @stop='stopLeft' :class="{'shake-horizontal': isShaking}")
-	.editor
-		.top(@click='toggleMain')
-			.zg Настройка папки "{{ currentFolder?.label }}"
-			.q-gutter-x-sm
-				q-btn(flat round dense color="primary") 
-					q-icon(v-if='main' name="mdi-wizard-hat" color="primary")
-					q-icon(v-else name="mdi-logic-nand" color="primary")
-				q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
-				q-btn.q-ml-md(flat round dense color="primary" @click="toggleFull") 
-					q-icon(v-if='fullscreen' name="mdi-fullscreen-exit" color="primary")
-					q-icon(v-else name="mdi-fullscreen" color="primary")
+	.edito
+		.first
+			.top(@click='toggleMain')
+				.zg Настройка папки "{{ currentFolder?.label }}"
+				.q-gutter-x-sm
+					q-btn(flat round dense color="primary") 
+						q-icon(v-if='main' name="mdi-wizard-hat" color="primary")
+						q-icon(v-else name="mdi-gate-nor" color="primary")
+					q-btn.q-ml-md(flat round dense icon="mdi-content-duplicate" color="primary" @click="") 
+					q-btn.q-ml-md(flat round dense color="primary" @click="toggleFull") 
+						q-icon(v-if='fullscreen' name="mdi-fullscreen-exit" color="primary")
+						q-icon(v-else name="mdi-fullscreen" color="primary")
 
-		transition(name="slide-bottom" mode="out-in")
-			RequestGrid(v-if='main' @button='checkStartSearch' @open='startRight')
-			TextAi(v-else)
+			transition(name="slide-bottom" mode="out-in")
+				RequestGrid(v-if='main' @button='checkStartSearch' @open='startRight')
+				TextAi(v-else)
 
 		Loading(@startPred='startPred' v-model:poisk='isSearching' button :folder='currentFolder?.label')
 
@@ -152,12 +153,19 @@ q-page(padding
 	}
 }
 
-.editor {
+.edito {
 	// width: 100%;
 	margin-top: 0;
 	padding: 0;
-	background: var(--bgLight);
+	// background: var(--bgLight);
 	position: relative;
+}
+
+.first {
+	background: #fff;
+	border-radius: 0.4rem;
+	box-shadow: var(--shad0);
+	min-height: calc(100vh - 120px - 330px);
 }
 
 .top {
