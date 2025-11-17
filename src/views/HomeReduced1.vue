@@ -237,30 +237,12 @@ q-page(padding)
 		)
 			AddButtonNew1(mode='app' @create='create')
 
-		.cen( v-if='tapes.length == 0')
-			Empty(mode='app')
-
 		.it(
 			v-for="item in tapes",
 			:key='item.id'
 			@click='go(item.id)'
 		) {{ item.id }}
 	
-		// ItemReduced(
-		// 	v-model:tapes='tapes',
-		// 	v-model:activeItem="activeItem",
-		// 	:shift="shift"
-		// )
-
-		// Item(
-		// 	v-model:tapes='tapes',
-		// 	v-model:activeItem="activeItem",
-		// 	@navigate="navigate"
-		// 	@createGroup='createGroup'
-		// 	@drag='startDrag'
-		// 	@duplicate="duble"
-		// 	:shift="shift"
-		// )
 
 </template>
 

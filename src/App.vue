@@ -204,8 +204,8 @@ q-layout(view='hHh LpR fFf')
 					)
 					component(:is="Component" :key="topLevelKey(route)")
 
-	// Footer
-	// Fab
+	Footer
+	Fab
 </template>
 
 <style scoped lang="scss">
