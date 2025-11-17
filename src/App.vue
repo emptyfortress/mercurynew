@@ -205,13 +205,6 @@ q-layout(view='hHh LpR fFf')
 				span(v-if='route.name == "home"') Конструктор приложений
 				span(v-else) Настройка приложения "{{ app.label }}"
 
-			.group.ddis(v-if='route.name !== "home"')
-				q-avatar(size='28px' color="positive" text-color="white" @click='refresh') РЛ
-					q-tooltip Роза Львовна
-				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК
-					q-tooltip Сирень Крокодиловна
-				.save Сохранение...
-
 			.lang
 				component(:is='currentLang.icon')
 				q-menu(transition-show="jump-down" transition-hide="jump-up")
@@ -317,17 +310,6 @@ nav a:first-of-type {
 .animate-bounce-alt {
 	animation: bounce-alt 1s linear infinite;
 	transform-origin: center bottom;
-}
-.group {
-	font-size: 0.7rem;
-	display: flex;
-	gap: 0.5rem;
-	justify-content: start;
-	align-items: center;
-	margin-right: 3rem;
-	.q-avatar {
-		cursor: pointer;
-	}
 }
 .save {
 	margin-left: 3rem;
