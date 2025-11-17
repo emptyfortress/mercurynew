@@ -58,7 +58,6 @@ const next = () => {
 
 <style scoped lang="scss">
 .button {
-	// margin-top: 1rem;
 	width: 48px;
 	height: 48px;
 	background: #fff;

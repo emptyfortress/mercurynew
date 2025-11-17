@@ -9,7 +9,6 @@ const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
 const dragging = ref(false)
-const dragId = ref<null | string>(null)
 
 const config = {
 	plugins: [animations()],
@@ -45,7 +44,7 @@ const selected = ref<null | string>(null)
 const indicator = ref<null | HTMLElement>(null)
 
 function select(id: string, event: any) {
-	router.push(`/${id}`)
+	router.push(`/reduce/${id}`)
 	selected.value = id
 	const curApp = tapes.value.find((el: App) => el.id == id)
 	if (curApp) {
