@@ -22,6 +22,17 @@ const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
+			path: '/:id?',
+			name: 'home',
+			component: Home,
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+				save: false,
+			},
+		},
+		{
 			path: '/reduce',
 			name: 'reducedHome',
 			component: HomeReduced1,
@@ -50,17 +61,6 @@ const router = createRouter({
 					},
 				},
 			],
-			meta: {
-				toolbar: false,
-				back: false,
-				count: 0,
-				save: false,
-			},
-		},
-		{
-			path: '/:id?',
-			name: 'home',
-			component: Home,
 			meta: {
 				toolbar: false,
 				back: false,
