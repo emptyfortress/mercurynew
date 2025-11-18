@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import PlusButton from '@/components/PlusButton.vue'
 import { usePanels } from '@/stores/panels'
 import DiagramSvg from '@/components/DiagramSvg.vue'
@@ -26,14 +26,42 @@ const stopRight0 = async () => {
 // NEW: loader visibility from store
 const appsStore = useApps()
 const { showLoader } = storeToRefs(appsStore)
+
+// Local loading state for the skeleton inside .editor
+const loading = ref(false)
+let timer: ReturnType<typeof setTimeout> | null = null
+
+// Watch the store flag and trigger the local loader for 3 seconds
+watch(
+	() => showLoader.value,
+	(newVal) => {
+		if (newVal) {
+			loading.value = true
+			// Clear any previous timer
+			if (timer) clearTimeout(timer)
+			timer = setTimeout(() => {
+				loading.value = false
+				timer = null
+			}, 3000)
+		} else {
+			loading.value = false
+			if (timer) clearTimeout(timer)
+			timer = null
+		}
+	},
+	{ immediate: true }
+)
 </script>
 
 <template lang="pug">
 q-page(padding
 	:class='{ collapsed: panels.right0}'
 	)
-
 	.editor
+		//- Skeleton loader inside .editor when loading
+		div(v-if="loading" class="editor-loader")
+			q-skeleton(type="rect" width="100%" height="100%")
+
 		.zg {{ title }}
 		.center
 			DiagramSvg
@@ -66,13 +94,21 @@ q-page(padding
 	align-items: start;
 	position: relative;
 }
+
+/* Loader skeleton inside .editor */
+.editor-loader {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+
 .zg {
 	font-size: 1.3rem;
 	font-weight: 500;
 	position: absolute;
 	top: 0.5rem;
 }
-
-/* Loader overlay */
-/* Removed .loader style as loader overlay is no longer used */
 </style>
