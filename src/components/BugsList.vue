@@ -53,7 +53,7 @@ q-list.q-mt-lg
 	//- Switch to control loader visibility
 	q-item
 		q-item-section
-			q-item-label Показывать загрузчик
+			q-item-label(@click="showLoader = !showLoader") Показывать загрузчик
 		q-item-section(side)
 			q-toggle(v-model="showLoader" dense)
 
