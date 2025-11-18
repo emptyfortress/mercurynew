@@ -32,8 +32,6 @@ const { showLoader } = storeToRefs(appsStore)
 q-page(padding
 	:class='{ collapsed: panels.right0}'
 	)
-	//- Loader overlay respecting showLoader
-	//- Removed loader overlay as per request
 
 	.editor
 		.zg {{ title }}
