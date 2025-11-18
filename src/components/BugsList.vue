@@ -76,15 +76,15 @@ q-list.q-mt-lg
 	:deep(.q-field--auto-height.q-field--dense .q-field__native) {
 		min-height: 32px;
 	}
-	:deep(
-		.q-field--auto-height.q-field--dense .q-field__control,
-		.q-field__native
-	) {
+	:deep(.q-field--auto-height.q-field--dense .q-field__control, .q-field__native) {
 		min-height: 32px;
 	}
 
 	:deep(.q-field--dense .q-field__marginal) {
 		height: 32px;
 	}
+}
+:deep(.q-item__section--side) {
+	color: $primary !important;
 }
 </style>

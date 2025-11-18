@@ -59,8 +59,18 @@ q-page(padding
 	)
 	.editor
 		//- Loader skeleton inside .editor when loading
-		div(v-if="loading" class="editor-loader")
-			q-skeleton(type="rect" width="100%" height="100%")
+		div(v-if="loading" )
+			.skel(class="editor-loader")
+				q-skeleton(type="circle" width="46px" height="46px")
+				q-skeleton(type="rect" width="120px" height="90px")
+				q-skeleton(type="rect" width="40px" height="40px")
+				q-skeleton(type="rect" width="120px" height="90px")
+				q-skeleton(type="rect" width="120px" height="90px")
+				q-skeleton(type="circle" width="46px" height="46px")
+		.roles(v-if="loading" )
+			q-skeleton(type="text" width="50px")
+			q-skeleton(type="circle" width="46px" height="46px")
+			q-skeleton(type="circle" width="46px" height="46px")
 
 		//- Hide .center when loading, show with fade transition when finished
 		transition(name="fade")
@@ -98,11 +108,6 @@ q-page(padding
 
 /* Loader skeleton inside .editor */
 .editor-loader {
-	position: absolute;
-	inset: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	z-index: 9999;
 }
 
@@ -120,7 +125,20 @@ q-page(padding
 	opacity: 1;
 }
 
-.center {
-	/* existing styles for .center if any */
+.skel {
+	margin: 3rem auto;
+	width: 700px;
+	height: 100px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+.roles {
+	position: absolute;
+	bottom: 2rem;
+	left: 2rem;
+	display: flex;
+	justify-content: start;
+	gap: 2rem;
 }
 </style>
