@@ -2,6 +2,7 @@
 import { useSave } from '@/stores/save'
 import { useReducedMotion } from '@/composable/useReducedMotion'
 import { useApps } from '@/stores/apps'
+import { storeToRefs } from 'pinia'
 
 const { userOverride } = useReducedMotion()
 
@@ -14,7 +15,8 @@ const animationOptions = [
 const store = useSave()
 const emit = defineEmits(['close'])
 
-const { showLoader } = useApps()
+const appsStore = useApps()
+const { showLoader } = storeToRefs(appsStore)
 
 const turn = () => {
 	store.toggle()
