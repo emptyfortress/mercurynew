@@ -58,14 +58,15 @@ q-page(padding
 	:class='{ collapsed: panels.right0}'
 	)
 	.editor
-		//- Skeleton loader inside .editor when loading
+		//- Loader skeleton inside .editor when loading
 		div(v-if="loading" class="editor-loader")
 			q-skeleton(type="rect" width="100%" height="100%")
 
-		.zg {{ title }}
-		.center
-			DiagramSvg
-			Look
+		//- Hide .center when loading, show with fade transition when finished
+		transition(name="fade")
+			div(v-if="!loading" class="center")
+				DiagramSvg
+				Look
 
 	PlusButton(@activate='startRight0' @stop='stopRight0')
 </template>
@@ -105,10 +106,21 @@ q-page(padding
 	z-index: 9999;
 }
 
-.zg {
-	font-size: 1.3rem;
-	font-weight: 500;
-	position: absolute;
-	top: 0.5rem;
+/* Fade transition for .center */
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+.fade-enter-to,
+.fade-leave-from {
+	opacity: 1;
+}
+
+.center {
+	/* existing styles for .center if any */
 }
 </style>
