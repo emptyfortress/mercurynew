@@ -20,6 +20,9 @@ const route = useRoute()
 const activeItem = ref('')
 const shift = useKeyModifier('Shift', { initial: false })
 
+// NEW: loading flag
+const loading = ref(true)
+
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
 	router.push({
@@ -52,18 +55,19 @@ const loadStateFromRoute = () => {
 	}
 }
 // Загружаем состояние при монтировании компонента
-onMounted(loadStateFromRoute)
-//
+onMounted(() => {
+	loadStateFromRoute()
+	// Simulate loading for 2-3 seconds
+	setTimeout(() => {
+		loading.value = false
+	}, 2500)
+})
+
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
 watch(() => route.params.id, loadStateFromRoute)
 
 // other code
 const Div = motion.div
-
-// const dragStatus = ref(false)
-// const setDragStatus = (e: boolean) => {
-// 	dragStatus.value = e
-// }
 
 const config = {
 	plugins: [animations()],
@@ -303,6 +307,9 @@ const startDrag = (e: any) => {
 
 <template lang="pug">
 q-page(padding, @click='action')
+	//- Loader overlay
+	.loader(v-if="loading")
+		q-spinner(color="primary" size="3rem")
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
@@ -369,5 +376,14 @@ q-page(padding, @click='action')
 	width: 170px;
 	display: flex;
 	align-items: center;
+}
+.loader {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.8);
+	z-index: 9999;
 }
 </style>
