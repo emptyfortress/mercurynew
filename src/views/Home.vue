@@ -57,8 +57,8 @@ const loadStateFromRoute = () => {
 // Загружаем состояние при монтировании компонента
 onMounted(() => {
 	loadStateFromRoute()
-	// Show loader on every visit to main route
-	if (route.path === '/') {
+	// Show loader on every visit to main route if enabled
+	if (route.path === '/' && myapps.showLoader) {
 		loading.value = true
 		setTimeout(() => {
 			loading.value = false

@@ -344,6 +344,12 @@ export const useApps = defineStore('apps', () => {
 		groupDrag.value = e
 	}
 
+	// NEW: visibility state for loader
+	const showLoader = ref(false)
+	const setShowLoader = (value: boolean) => {
+		showLoader.value = value
+	}
+
 	const curVersion = (app: App) => {
 		let tmp = app.versions.find((el) => el.current)
 		return tmp ? tmp : app.versions[0]
@@ -393,5 +399,9 @@ export const useApps = defineStore('apps', () => {
 
 		groupDrag,
 		setGroupDrag,
+
+		// expose loader visibility state
+		showLoader,
+		setShowLoader,
 	}
 })
