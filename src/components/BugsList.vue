@@ -53,7 +53,7 @@ q-list.q-mt-lg
 	//- Switch to control loader visibility
 	q-item
 		q-item-section
-			q-item-label(@click="showLoader = !showLoader") Показывать загрузчик
+			q-item-label.loader-label(@click="showLoader = !showLoader") Показывать загрузчик
 		q-item-section(side)
 			q-toggle(v-model="showLoader" dense)
 
@@ -86,5 +86,10 @@ q-list.q-mt-lg
 }
 :deep(.q-item__section--side) {
 	color: $primary !important;
+}
+
+/* Make cursor pointer on the loader label */
+.loader-label:hover {
+	cursor: pointer;
 }
 </style>
