@@ -332,9 +332,9 @@ q-page(padding, @click='action')
 			Empty(mode='app')
 
 		Item(
-			v-model:expanded="expanded",
-			v-model:tapes='tapes',
-			v-model:activeItem="activeItem",
+			v-model:expanded="expanded"
+			v-model:tapes='tapes'
+			v-model:activeItem="activeItem"
 			@navigate="navigate"
 			@createGroup='createGroup'
 			@drag='startDrag'
@@ -378,12 +378,12 @@ q-page(padding, @click='action')
 	align-items: center;
 }
 .loader {
-	position: fixed;
+	position: absolute; /* changed from fixed to absolute */
 	inset: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #fff; /* Opaque white background */
+	background: inherit; /* use same background as q-page */
 	z-index: 9999;
 }
 </style>
