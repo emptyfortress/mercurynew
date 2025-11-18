@@ -21,7 +21,7 @@ const activeItem = ref('')
 const shift = useKeyModifier('Shift', { initial: false })
 
 // NEW: loading flag
-const loading = ref(true)
+const loading = ref(false)
 
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
@@ -57,10 +57,16 @@ const loadStateFromRoute = () => {
 // Загружаем состояние при монтировании компонента
 onMounted(() => {
 	loadStateFromRoute()
-	// Simulate loading for 2-3 seconds
-	setTimeout(() => {
+	// Show loader only on first rendering of main route
+	if (route.path === '/' && !localStorage.getItem('homeLoaderShown')) {
+		loading.value = true
+		setTimeout(() => {
+			loading.value = false
+			localStorage.setItem('homeLoaderShown', 'true')
+		}, 2500)
+	} else {
 		loading.value = false
-	}, 2500)
+	}
 })
 
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
