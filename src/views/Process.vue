@@ -33,8 +33,7 @@ q-page(padding
 	:class='{ collapsed: panels.right0}'
 	)
 	//- Loader overlay respecting showLoader
-	.loader(v-if="showLoader")
-		q-skeleton(type="rect" width="100%" height="100%")
+	//- Removed loader overlay as per request
 
 	.editor
 		.zg {{ title }}
@@ -77,13 +76,5 @@ q-page(padding
 }
 
 /* Loader overlay */
-.loader {
-	position: absolute;
-	inset: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: rgba(255, 255, 255, 0.8);
-	z-index: 9999;
-}
+/* Removed .loader style as loader overlay is no longer used */
 </style>
