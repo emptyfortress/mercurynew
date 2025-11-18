@@ -383,7 +383,7 @@ q-page(padding, @click='action')
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: rgba(255, 255, 255, 0.8);
+	background: #fff; /* Opaque white background */
 	z-index: 9999;
 }
 </style>
