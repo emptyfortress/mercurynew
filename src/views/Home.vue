@@ -383,7 +383,12 @@ q-page(padding, @click='action')
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: inherit; /* use same background as q-page */
+	background: linear-gradient(
+		180deg,
+		#d8e3f1 0%,
+		hsl(210 22% 83% / 1) 52.6%,
+		hsl(199 39% 86% / 1) 100%
+	);
 	z-index: 9999;
 }
 </style>
