@@ -57,12 +57,11 @@ const loadStateFromRoute = () => {
 // Загружаем состояние при монтировании компонента
 onMounted(() => {
 	loadStateFromRoute()
-	// Show loader only on first rendering of main route
-	if (route.path === '/' && !localStorage.getItem('homeLoaderShown')) {
+	// Show loader on every visit to main route
+	if (route.path === '/') {
 		loading.value = true
 		setTimeout(() => {
 			loading.value = false
-			localStorage.setItem('homeLoaderShown', 'true')
 		}, 2500)
 	} else {
 		loading.value = false
