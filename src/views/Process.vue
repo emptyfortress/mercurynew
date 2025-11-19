@@ -141,4 +141,7 @@ q-page(padding
 	justify-content: start;
 	gap: 2rem;
 }
+.q-skeleton {
+	background: hsl(214 27% 88% / 1);
+}
 </style>

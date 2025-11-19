@@ -315,10 +315,9 @@ q-page(padding, @click='action')
 	.loader(v-if="loading")
 		.par1
 			.bl
-				q-skeleton(type="circle" width="48px" height="48px")
-			q-skeleton(type="rect" width="170px" height="170px")
-			q-skeleton(type="rect" width="170px" height="170px")
-			q-skeleton(type="rect" width="170px" height="170px")
+				q-skeleton(type="circle" bordered width="48px" height="48px")
+			template(v-for="n in 4")
+				q-skeleton(type="rect" bordered width="170px" height="170px")
 
 	.parent(ref='parent'
 		:class="{'end': expanded}"
