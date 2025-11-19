@@ -204,17 +204,17 @@ q-page(padding, @click='action')
 		@click.stop='back'
 	)
 
-		// Div.plus(
-		// 	layout
-		// 	:transition='spring'
-		// 	@click.stop
-		// 	@dragover.prevent="onDragEnterPlus"
-		// 	@dragenter.prevent
-		// 	@dragleave="onDragLeavePlus"
-		// 	@drop='onDropPlus'
-		// 	:class="calcPlusClass"
-		// )
-		// 	AddButtonNew1(mode='role' @create='create')
+		Div.plus(
+			layout
+			:transition='spring'
+			@click.stop
+			@dragover.prevent="onDragEnterPlus"
+			@dragenter.prevent
+			@dragleave="onDragLeavePlus"
+			@drop='onDropPlus'
+			:class="calcPlusClass"
+		)
+			AddButtonNew1(mode='role' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='role')
