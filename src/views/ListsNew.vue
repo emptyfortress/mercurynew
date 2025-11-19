@@ -325,7 +325,7 @@ q-page(padding, @click='action')
 .loader {
 	position: absolute;
 	inset: 0;
-	padding-top: 60px;
+	padding-top: 75px;
 	background: linear-gradient(
 		180deg,
 		#d8e3f1 0%,
