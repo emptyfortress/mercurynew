@@ -12,6 +12,7 @@ import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBraces
 import Empty from '@/components/Empty.vue'
 import { useKeyModifier } from '@vueuse/core'
 import { spring } from '@/utils/springConstants'
+import LoaderSkeleton from '@/components/LoaderSkeleton.vue'
 
 const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 const myapps = useApps()
@@ -312,12 +313,8 @@ const startDrag = (e: any) => {
 
 <template lang="pug">
 q-page(padding, @click='action')
-	.loader(v-if="loading")
-		.par1
-			.bl
-				q-skeleton(type="circle" bordered width="48px" height="48px")
-			template(v-for="n in 4")
-				q-skeleton(type="rect" bordered width="170px" height="170px")
+	//- Loader overlay using LoaderSkeleton component
+	LoaderSkeleton(v-if="loading")
 
 	.parent(ref='parent'
 		:class="{'end': expanded}"
@@ -400,17 +397,5 @@ q-page(padding, @click='action')
 	width: 170px;
 	display: flex;
 	align-items: center;
-}
-.loader {
-	position: absolute; /* changed from fixed to absolute */
-	inset: 0;
-	padding-top: 40px;
-	background: linear-gradient(
-		180deg,
-		#d8e3f1 0%,
-		hsl(210 22% 83% / 1) 52.6%,
-		hsl(199 39% 86% / 1) 100%
-	);
-	z-index: 9999;
 }
 </style>
