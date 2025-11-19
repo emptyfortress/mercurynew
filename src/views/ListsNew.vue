@@ -190,7 +190,7 @@ const unsetDragged = () => {
 <template lang="pug">
 q-page(padding, @click='action')
 	//- Skeleton loader overlay
-	LoaderSkeleton(v-if="loading")
+	LoaderSkeleton(v-if="loading" rectHeight='130px')
 
 	.header Папки
 	.parent(ref='parent'
