@@ -345,7 +345,7 @@ export const useApps = defineStore('apps', () => {
 	}
 
 	// NEW: visibility state for loader
-	const showLoader = useStorage('showLoader', true)
+	const showLoader = useStorage('showLoader', false)
 	const setShowLoader = (value: boolean) => {
 		showLoader.value = value
 	}
