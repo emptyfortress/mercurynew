@@ -203,7 +203,6 @@ const setDragged = (e: any) => {
 	dragStatus.value = true
 }
 const unsetDragged = () => {
-	console.log(1111)
 	dragStatus.value = false
 }
 </script>
@@ -213,6 +212,7 @@ q-page(padding, @click='action')
 	//- Skeleton loader overlay
 	LoaderSkeleton(v-if="loading")
 
+	.header Роли
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
