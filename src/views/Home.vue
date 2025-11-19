@@ -314,7 +314,7 @@ const startDrag = (e: any) => {
 <template lang="pug">
 q-page(padding, @click='action')
 	//- Loader overlay using LoaderSkeleton component
-	LoaderSkeleton(v-if="loading")
+	LoaderSkeleton(v-if="loading" paddingTop='42px')
 
 	.parent(ref='parent'
 		:class="{'end': expanded}"
