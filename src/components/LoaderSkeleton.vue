@@ -1,10 +1,10 @@
 <template lang="pug">
-.loader
+.loader(:style="{ paddingTop: props.paddingTop }")
 	.par1
 		.bl
 			q-skeleton(type="circle" bordered width="48px" height="48px")
 		template(v-for="n in 4")
-			q-skeleton(type="rect" bordered :width="rectWidth" :height="rectHeight")
+			q-skeleton(type="rect" bordered :width="props.rectWidth" :height="props.rectHeight")
 </template>
 
 <script setup lang="ts">
@@ -17,6 +17,10 @@ const props = defineProps({
 		type: String,
 		default: '170px',
 	},
+	paddingTop: {
+		type: String,
+		default: '75px',
+	},
 })
 </script>
 
@@ -24,7 +28,6 @@ const props = defineProps({
 .loader {
 	position: absolute;
 	inset: 0;
-	padding-top: 75px;
 	background: linear-gradient(
 		180deg,
 		#d8e3f1 0%,
