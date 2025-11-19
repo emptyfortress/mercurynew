@@ -215,7 +215,7 @@ q-page(padding, @click='action')
 			.bl
 				q-skeleton(type="circle" bordered width="48px" height="48px")
 			template(v-for="n in 4")
-				q-skeleton(type="rect" bordered width="170px" height="170px")
+				q-skeleton(type="rect" bordered width="170px" height="130px")
 
 	.header Формы
 	.parent(ref='parent'
@@ -346,9 +346,7 @@ q-page(padding, @click='action')
 .loader {
 	position: absolute;
 	inset: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	padding-top: 60px;
 	background: linear-gradient(
 		180deg,
 		#d8e3f1 0%,
