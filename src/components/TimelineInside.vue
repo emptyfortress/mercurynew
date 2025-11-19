@@ -4,21 +4,13 @@ import { DataSet } from 'vis-data'
 import { Timeline } from 'vis-timeline/standalone'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
 import { centerWithPadding } from '@/utils/utils'
-import { events } from '@/stores/events'
+import { events, addWorkDays } from '@/stores/events'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 import type { TimelineHiddenDateOption } from 'vis-timeline'
 
-const props = defineProps({
-	selection: {
-		type: String,
-		required: true,
-		default: '',
-	},
-})
-
 const selectionStore = useSelectionStore()
-const { hideWeekends } = storeToRefs(selectionStore)
+const { hideWeekends, current } = storeToRefs(selectionStore)
 
 // Пример зависимостей: стрелки от события -> к событию
 const dependencies: Array<[number, number]> = [
@@ -26,6 +18,11 @@ const dependencies: Array<[number, number]> = [
 	[2, 3],
 	[3, 4],
 	[4, 5],
+	[5, 6],
+	[6, 7],
+	[7, 8],
+	[5, 9],
+	[9, 10],
 ]
 
 // добавляем className: item-<id> чтобы потом легко найти DOM-элемент
@@ -41,8 +38,33 @@ const items = new DataSet(
 		fio: ev.fio,
 		current: ev.current,
 		className: `item-${ev.id}`,
+		editable: ev.editable,
 	}))
 )
+
+// snapshot текущих границ (start/end) всех элементов
+const snapshot = new Map<number, { start: Date | null; end: Date | null }>()
+
+console.log(snapshot)
+
+// console.log(snapshot)
+// защита от рекурсии при cascade-обновлениях
+let isCascade = false
+// const previousRanges = new Map<number, { start: Date | null; end: Date | null }>()
+
+// инициализация snapshot из items
+function buildSnapshot() {
+	snapshot.clear()
+	const all = items.get() as any[]
+	all.forEach((ev: any) => {
+		snapshot.set(ev.id, {
+			start: ev.start ? new Date(ev.start) : null,
+			end: ev.end ? new Date(ev.end) : null,
+		})
+	})
+}
+// вызов один раз при старте
+buildSnapshot()
 
 /* ---------- refs & state ---------- */
 const wrapper = ref<HTMLElement | null>(null) // outer wrapper
@@ -135,39 +157,32 @@ function scheduleRedraw() {
 }
 
 // select by id ***************************
-const selectById = async (id: number) => {
-	if (!timeline) return
+const selectById = (id: number) => {
+	console.log(id)
 	const item = items.get(id)
-	if (!item) return
-
-	// 1️⃣ Снимаем ВСЕ выделения и подсветки
-	document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
-		el.classList.remove('vis-selected', 'highlight')
-	})
-
-	// 2️⃣ Сообщаем vis.js о новом выборе
-	try {
-		timeline.setSelection([id])
-		// timeline.focus(id, { animation: true })
-	} catch (err) {
-		console.warn('Timeline selection error:', err)
+	if (item && !item.className?.includes('vis-late')) {
+		items.update({ id, className: `${item.className || ''} vis-late` })
 	}
+}
 
-	// 3️⃣ Выделяем элемент вручную (для верности)
-	const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-	if (el) el.classList.add('vis-selected')
-
-	// 4️⃣ Обновляем store
-	selectionStore.selectTimeline(item)
-
-	// 5️⃣ Эмитим select для родителя
-	emit('select', item.name)
+const deselectById = (id: number) => {
+	const item = items.get(id)
+	if (item && item.className?.includes('vis-late')) {
+		items.update({ id, className: item.className.replace('vis-late', '').trim() })
+	}
 }
 
 // шаблон для скрытия выходных — можно вынести в константу
 const hiddenWeekendsPattern: TimelineHiddenDateOption[] = [
 	{ start: '2025-10-04 00:00:00', end: '2025-10-06 00:00:00', repeat: 'weekly' },
 ]
+
+// function normalizeDate(date: Date | null): Date | null {
+// 	if (!date) return null
+// 	const d = new Date(date)
+// 	d.setHours(0, 0, 0, 0)
+// 	return d
+// }
 
 onMounted(() => {
 	if (!timelineEl.value || !wrapper.value) return
@@ -178,13 +193,74 @@ onMounted(() => {
 		horizontalScroll: true,
 		verticalScroll: true,
 		margin: { item: 12, axis: 12 },
-		editable: false,
+		editable: {
+			add: false,
+			updateTime: true,
+			updateGroup: false,
+			remove: false,
+			overrideItems: false,
+		},
 		start: new Date(2025, 9, 21),
 		end: new Date(),
 		hiddenDates: hideWeekends.value ? hiddenWeekendsPattern : [],
 		locale: 'ru',
 		xss: {
 			disabled: true,
+		},
+		onMoving: (item: any, callback: (item: any | null) => void) => {
+			const prev = snapshot.get(item.id)
+			if (!prev) return callback(item)
+
+			const prevStart = prev.start ? prev.start.getTime() : null
+			const prevEnd = prev.end ? prev.end.getTime() : null
+			const nowStart = item.start ? new Date(item.start).getTime() : null
+			const nowEnd = item.end ? new Date(item.end).getTime() : null
+
+			const startChanged = prevStart !== null && nowStart !== null && prevStart !== nowStart
+			const endChanged = prevEnd !== null && nowEnd !== null && prevEnd !== nowEnd
+
+			// 🚫 Если изменился старт — блокируем движение (нельзя сдвигать событие)
+			if (startChanged && !endChanged) {
+				return callback(null)
+			}
+
+			// ✅ Если изменился конец — разрешаем (изменение длительности)
+			if (endChanged && !startChanged) {
+				return callback(item)
+			}
+
+			// иначе просто разрешаем (на всякий случай)
+			// return callback(item)
+			return callback(null)
+		},
+		onMove: (item: any, callback: (item: any | null) => void) => {
+			const prev = snapshot.get(item.id)
+			if (!prev) return callback(item)
+
+			const prevEnd = prev.end ? new Date(prev.end) : null
+			const nowEnd = item.end ? new Date(item.end) : null
+
+			if (prevEnd && nowEnd && prevEnd.getTime() !== nowEnd.getTime()) {
+				const deltaDays = computeWorkdayDelta(prevEnd, nowEnd)
+				if (deltaDays !== 0) {
+					isCascade = true
+					try {
+						cascadeShift(item.id, deltaDays)
+					} finally {
+						isCascade = false
+					}
+					buildSnapshot()
+					timeline?.redraw?.()
+					scheduleRedraw()
+				}
+			}
+			// обновляем snapshot этого элемента
+			snapshot.set(item.id, {
+				start: item.start ? new Date(item.start) : null,
+				end: item.end ? new Date(item.end) : null,
+			})
+
+			callback(item)
 		},
 		template: function (item: MyEvent, element: HTMLElement, data: any) {
 			if (item.current) {
@@ -233,6 +309,7 @@ onMounted(() => {
 	// создаём timeline: items, groups
 	timeline = new Timeline(timelineEl.value, items as any, options)
 
+	buildSnapshot() // remove
 	// центрируем окно на все события
 	centerWithPadding(timeline, events, 0.1)
 	// timeline.fit()
@@ -243,15 +320,27 @@ onMounted(() => {
 	const onChange = () => setTimeout(scheduleRedraw, 20) // даём vis время на рендер
 	;(timeline as any).on('changed', onChange)
 	;(timeline as any).on('rangechanged', onChange)
-	window.addEventListener('resize', onChange)
+	window.addEventListener('resize', onChange, { passive: true })
 
 	// первичная отрисовка
 	scheduleRedraw()
 	;(timeline as any).redraw?.()
 
-	// selection ******************************
 	timeline.on('select', (properties) => {
 		const id = properties.items[0]
+
+		// --- сохраняем старые значения start/end для выбранных элементов ---
+		properties.items.forEach((selectedId: number) => {
+			const ev = items.get(selectedId)
+			if (ev) {
+				// обновим snapshot для выбранного элемента
+				snapshot.set(selectedId, {
+					start: ev.start ? new Date(ev.start) : null,
+					end: ev.end ? new Date(ev.end) : null,
+				})
+			}
+		})
+		// ---------------------------------------------------------------
 
 		// снимаем выделение и подсветку со всех событий
 		document.querySelectorAll<HTMLElement>('.vis-item').forEach((el) => {
@@ -261,24 +350,35 @@ onMounted(() => {
 		if (id != null) {
 			// если выбрано событие
 			const el = document.querySelector<HTMLElement>(`.vis-item.item-${id}`)
-
 			el?.classList.add('vis-selected')
 
 			const item = items.get(id) as unknown as MyEvent | undefined
-			console.log('item ', item)
+
 			if (item) {
-				emit('select', item.name)
 				selectionStore.selectTimeline(item)
 			}
 		} else {
 			// если кликнули в пустоту → очищаем выбор
 			selectionStore.clear()
-			emit('select', '')
 		}
 	})
-})
 
-const emit = defineEmits(['select'])
+	// нормализатор payload -> array of ids
+	function normalizeToIds(payload: any): (number | string)[] {
+		if (!payload) return []
+		if (Array.isArray(payload)) return payload
+		if (typeof payload === 'number' || typeof payload === 'string') return [payload]
+		if (payload && typeof payload === 'object') {
+			if ('id' in payload) return [payload.id]
+			if ('items' in payload && Array.isArray(payload.items)) return payload.items
+		}
+		try {
+			return Array.from(payload)
+		} catch (e) {
+			return []
+		}
+	}
+})
 
 onBeforeUnmount(() => {
 	if (timeline) {
@@ -288,35 +388,6 @@ onBeforeUnmount(() => {
 	if (svgOverlay && svgOverlay.parentElement) svgOverlay.parentElement.removeChild(svgOverlay)
 	window.removeEventListener('resize', scheduleRedraw)
 })
-
-watch(
-	() => props.selection,
-	(newVal: string) => {
-		// снимем классы selected/choosen со всех событий
-		const myitems = document.querySelectorAll('.vis-item')
-		nextTick(() => {
-			myitems.forEach((el) => {
-				el.classList.remove('vis-selected')
-				el.classList.remove('highlight')
-			})
-
-			// назначим класс только событию с совпадающим sideId
-			if (newVal) {
-				const selitems = events.filter((el) => el.sideId == newVal)
-
-				if (selitems.length) {
-					selitems.forEach((el) => {
-						const target = document.querySelector(`.item-${el.id}`)
-						if (target) {
-							target.classList.add('highlight')
-						}
-					})
-				}
-			}
-		})
-	},
-	{ immediate: true }
-)
 
 // отслеживаем изменение переменной в сторе и применяем setOptions
 watch(
@@ -328,12 +399,9 @@ watch(
 			hiddenDates: val ? hiddenWeekendsPattern : [],
 		})
 
-		// Дополнительно — форсируем перерасчёт позиций/масштабирования:
-		// получаем текущий видимый window и заново ставим его (без анимации)
 		try {
 			timeline.fit()
 		} catch (e) {
-			// безопасный catch в случае если API чуть отличается
 			console.warn('Timeline refresh after setOptions failed', e)
 		}
 	},
@@ -343,17 +411,135 @@ watch(
 defineExpose({ selectById })
 
 watch(
-	() => selectionStore.programmaticSelectId,
-	async (newId) => {
-		if (newId != null) {
-			await nextTick()
-			selectById(newId)
-			// 💡 после выбора можно сбросить значение,
-			// чтобы не повторять выбор случайно
-			selectionStore.programmaticSelectId = null
+	() => selectionStore.selectedLateFilter,
+	(newVal, oldVal) => {
+		if (newVal && !oldVal) {
+			selectById(2)
+		} else if (!newVal && oldVal) {
+			deselectById(2)
 		}
 	}
 )
+
+watch(current, (val) => {
+	if (val && val.kind == 'bpmn') {
+		const myitems = document.querySelectorAll('.vis-item')
+		myitems.forEach((el) => {
+			el.classList.remove('vis-selected')
+			el.classList.remove('highlight')
+		})
+		// назначим класс только событию с совпадающим sideId
+		const selitems = events.filter((el) => el.sideId == val.id)
+
+		if (selitems.length) {
+			selitems.forEach((el) => {
+				const target = document.querySelector(`.item-${el.id}`)
+				if (target) {
+					target.classList.add('highlight')
+				}
+			})
+		}
+	}
+	if (val == null) {
+		const myitems = document.querySelectorAll('.vis-item')
+		myitems.forEach((el) => {
+			el.classList.remove('vis-selected')
+			el.classList.remove('highlight')
+		})
+	}
+})
+
+// add forecast *********************
+// локально храним какие именно forecast id мы добавили в timeline
+const addedForecastIds = ref<string[]>([])
+
+function scrollToNowWithOffset() {
+	const now = new Date()
+	const range = timeline?.getWindow()
+	if (!range?.start || !range?.end) return
+
+	const windowSize = range.end.getTime() - range.start.getTime()
+	const offsetMs = 2 * 24 * 60 * 60 * 1000 // 2 дня
+	const newStart = new Date(now.getTime() - offsetMs)
+	const newEnd = new Date(newStart.getTime() + windowSize)
+
+	timeline?.setWindow(newStart, newEnd, { animation: true })
+	scheduleRedraw()
+}
+// функция безопасного добавления — идемпотентная
+const safeAddForecasts = (events: any) => {
+	const existingIds = new Set(items.getIds())
+	const toAdd = events.filter((e: any) => !existingIds.has(e.id))
+	if (toAdd.length > 0) {
+		items.add(toAdd)
+		scrollToNowWithOffset()
+		// обновляем список добавленных id (без дубликатов)
+		addedForecastIds.value = Array.from(
+			new Set([...addedForecastIds.value, ...toAdd.map((e: any) => e.id)])
+		)
+	}
+}
+
+// функция безопасного удаления — только те, что реально добавляли
+const safeRemoveForecasts = () => {
+	if (addedForecastIds.value.length === 0) return
+	// проверяем, какие из addedForecastIds реально существуют в items
+	const existingIds = items.getIds()
+	const idsToRemove = addedForecastIds.value.filter((id) => existingIds.includes(id))
+	if (idsToRemove.length > 0) {
+		items.remove(idsToRemove)
+	}
+	addedForecastIds.value = [] // очищаем трекер
+}
+
+// реактивно следим за флагом selectedForecast
+watch(
+	() => selectionStore.selectedForecast,
+	async (isSelected) => {
+		if (isSelected) {
+			// если forecastEvents ещё не загружены, загрузим
+			if (selectionStore.forecastEvents.length === 0) {
+				await selectionStore.loadForecastEvents()
+			}
+			safeAddForecasts(selectionStore.forecastEvents)
+		} else {
+			// снимаем — безопасно удаляем только те ids, которые мы добавили
+			safeRemoveForecasts()
+		}
+	}
+)
+
+// Вычисляем разницу в рабочих днях между датами
+function computeWorkdayDelta(d1: Date, d2: Date): number {
+	const dir = d2 > d1 ? 1 : -1
+	let delta = 0
+	let date = new Date(d1)
+	while ((dir > 0 && date < d2) || (dir < 0 && date > d2)) {
+		date = addWorkDays(date, dir)
+		delta += dir
+	}
+	return delta
+}
+
+// Каскадное обновление всех последующих событий
+function cascadeShift(changedId: number, deltaDays: number) {
+	isCascade = true
+	const all = items.get().sort((a: any, b: any) => a.id - b.id)
+	const index = all.findIndex((ev: any) => ev.id === changedId)
+	if (index === -1) return
+
+	const updates: any[] = []
+	for (let i = index + 1; i < all.length; i++) {
+		const ev = all[i]
+		const newStart = addWorkDays(ev.start, deltaDays)
+		const newEnd = ev.end ? addWorkDays(ev.end, deltaDays) : null
+		updates.push({ id: ev.id, start: newStart, end: newEnd })
+	}
+
+	if (updates.length > 0) {
+		items.update(updates) // одно массовое обновление
+	}
+}
 </script>
 
 <template lang="pug">
@@ -380,6 +566,9 @@ watch(
 		filter: drop-shadow(0 0 6px rgba(138, 43, 226, 0.75)); /* опционально: внешний «хайлайт» */
 		.event-name {
 			font-weight: bold;
+		}
+		&.vis-late {
+			background: linear-gradient(to right, #ffffff 0%, #ffffff 80%, #ff7c00 81%, #ff7f04 100%);
 		}
 	}
 	&.highlight {
@@ -425,5 +614,14 @@ watch(
 }
 :deep(.ic) {
 	font-size: 0.95rem;
+}
+:deep(.vis-item.vis-late) {
+	border-color: red;
+	background: linear-gradient(to right, #daebff 0%, #daebff 80%, #ff7c00 81%, #ff7f04 100%);
+}
+:deep(.vis-item.forecast-item) {
+	background: #f0f0f0;
+	border: 1px dashed #aaa;
+	// transition: all 0.2s ease;
 }
 </style>

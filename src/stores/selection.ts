@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { goodFinish, badFinish } from '@/stores/events'
 
 export type BpmnSelection = {
 	kind: 'bpmn'
@@ -27,10 +28,22 @@ export type Selection = TimelineSelection | BpmnSelection | null
 
 export const useSelectionStore = defineStore('selection', () => {
 	const current = ref<Selection>(null)
-	const programmaticSelectId = ref<number | null>(null)
+	const programmaticSelectId = ref<string | null>(null)
 
 	const selectedLateFilter = ref<boolean>(false)
+
 	const selectedForecast = ref<boolean>(false)
+	const forecastEvents = ref<MyEvent[]>([])
+
+	const loadForecastEvents = async () => {
+		if (current.value && current.value.kind == 'bpmn') {
+			if (current.value.id == 'Event_1yi1uuk' || current.value.id == 'Activity_0obo0kc') {
+				forecastEvents.value = badFinish
+			} else {
+				forecastEvents.value = goodFinish
+			}
+		}
+	}
 
 	// прячем выходные на таймлайне
 	const hideWeekends = ref(true)
@@ -41,16 +54,11 @@ export const useSelectionStore = defineStore('selection', () => {
 
 	const clear = () => {
 		current.value = null
-		selectedLateFilter.value = false
 		selectedForecast.value = false
 	}
 
 	const clearForecast = () => {
 		selectedForecast.value = false
-	}
-
-	const clearLateFilter = () => {
-		selectedLateFilter.value = false
 	}
 
 	const selectBpmn = (element: any) => {
@@ -79,22 +87,18 @@ export const useSelectionStore = defineStore('selection', () => {
 		}
 	}
 
-	const selectById = (id: number) => {
-		programmaticSelectId.value = id
-	}
-
 	return {
 		current,
 		programmaticSelectId,
 		clear,
 		selectBpmn,
 		selectTimeline,
-		selectById,
 		selectedLateFilter,
-		clearLateFilter,
 		hideWeekends,
 		toggleWeekends,
 		selectedForecast,
 		clearForecast,
+		loadForecastEvents,
+		forecastEvents,
 	}
 })

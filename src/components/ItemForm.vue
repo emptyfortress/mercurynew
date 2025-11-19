@@ -3,31 +3,18 @@ import { ref, computed, nextTick } from 'vue'
 import { motion } from 'motion-v'
 import { useRouter } from 'vue-router'
 import CarbonDataFormat from '@/components/icons/CarbonDataFormat.vue'
+import { spring } from '@/utils/springConstants'
 
 const expanded = defineModel('expanded')
 const tapes = defineModel<any[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
 const router = useRouter()
-// const selectedItem = ref<any>(null)
 
 const Div = motion.div
 
 const emit = defineEmits(['navigate', 'duplicate', 'remove', 'drag', 'undrag'])
 
 const action = async (item: App) => {
-	// if (activeItem.value !== '' && activeItem.value == item.id) {
-	// 	expanded.value = false
-	// 	activeItem.value = ''
-	// 	item.expand = false
-	// } else {
-	// 	expanded.value = true
-	// 	activeItem.value = item.id
-	// 	item.expand = true
-	// 	emit('navigate', item.id)
-	//
-	// 	await nextTick()
-	// 	ghostItem.value.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-	// }
 	expanded.value = true
 	activeItem.value = item.id
 	item.expand = true
@@ -46,12 +33,6 @@ const initial = {
 const animate = {
 	opacity: 1,
 	y: 0,
-}
-
-const spring = {
-	type: 'spring',
-	visualDuration: 0.3,
-	bounce: 0.25,
 }
 
 // const $q = useQuasar()

@@ -6,12 +6,13 @@ import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useApps } from '@/stores/apps'
 import Item from '@/components/Item.vue'
-import AddButtonNew from '@/components/common/AddButtonNew.vue'
+import AddButtonNew1 from '@/components/common/AddButtonNew1.vue'
 import { uid, useQuasar } from 'quasar'
 import MdiApplicationBracesOutline from '@/components/icons/MdiApplicationBracesOutline.vue'
 import Empty from '@/components/Empty.vue'
 import { useKeyModifier } from '@vueuse/core'
-// import { versions } from 'process'
+import { spring } from '@/utils/springConstants'
+import LoaderSkeleton from '@/components/LoaderSkeleton.vue'
 
 const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 const myapps = useApps()
@@ -19,6 +20,9 @@ const router = useRouter()
 const route = useRoute()
 const activeItem = ref('')
 const shift = useKeyModifier('Shift', { initial: false })
+
+// NEW: loading flag
+const loading = ref(false)
 
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
@@ -52,24 +56,29 @@ const loadStateFromRoute = () => {
 	}
 }
 // Загружаем состояние при монтировании компонента
-onMounted(loadStateFromRoute)
-//
+onMounted(() => {
+	loadStateFromRoute()
+	// Show loader on every visit to main route if enabled
+	if (route.path === '/' && myapps.showLoader) {
+		loading.value = true
+		setTimeout(() => {
+			loading.value = false
+		}, 2500)
+	} else {
+		loading.value = false
+	}
+})
+
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
 watch(() => route.params.id, loadStateFromRoute)
 
 // other code
 const Div = motion.div
 
-// const dragStatus = ref(false)
-// const setDragStatus = (e: boolean) => {
-// 	dragStatus.value = e
-// }
-
 const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
-	group: 'items',
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('it')
 	},
@@ -109,12 +118,6 @@ const navigate = (id: number) => {
 onUpdated(() => {
 	myapps.setPath('/' + route.params.id.toString())
 })
-
-const spring = {
-	type: 'spring',
-	visualDuration: 0.3,
-	bounce: 0.25,
-}
 
 const $q = useQuasar()
 const create = (e: any) => {
@@ -310,6 +313,9 @@ const startDrag = (e: any) => {
 
 <template lang="pug">
 q-page(padding, @click='action')
+	//- Loader overlay using LoaderSkeleton component
+	LoaderSkeleton(v-if="loading" paddingTop='42px')
+
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
@@ -326,15 +332,15 @@ q-page(padding, @click='action')
 			@drop='onDropPlus'
 			:class="calcPlusClass"
 		)
-			AddButtonNew(mode='app' @create='create')
+			AddButtonNew1(mode='app' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='app')
 
 		Item(
-			v-model:expanded="expanded",
-			v-model:tapes='tapes',
-			v-model:activeItem="activeItem",
+			v-model:expanded="expanded"
+			v-model:tapes='tapes'
+			v-model:activeItem="activeItem"
 			@navigate="navigate"
 			@createGroup='createGroup'
 			@drag='startDrag'
@@ -356,6 +362,21 @@ q-page(padding, @click='action')
 	grid-template-rows: repeat(v-bind(row), 170px);
 	&.end {
 		grid-template-rows: repeat(v-bind(row1), 80px);
+	}
+}
+.par1 {
+	margin-top: 1rem;
+	width: 1100px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: repeat(6, 170px);
+	gap: 1rem;
+	// justify-content: center;
+	// align-items: center;
+	.bl {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 }
 .plus {

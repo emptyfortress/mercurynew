@@ -1,79 +1,35 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSelectionStore } from '@/stores/selection'
+import FluentEyeShow12Filled from '@/components/icons/FluentEyeShow12Filled.vue'
+import ExpansionItem from '@/components/ExpansionItem.vue'
 
 const selectionStore = useSelectionStore()
-const { selectedLateFilter, hideWeekends, current, selectedForecast } = storeToRefs(selectionStore)
-
-const forecast = computed(() => {
-	if (current.value && current.value.kind == 'bpmn') {
-		return current.value?.finished == 'Не начато' ? true : false
-	}
-	return false
-})
-
-// const routeFilters = ['маршрут 1', 'маршрут 2', 'маршрут 3']
-
-// function toggleMainFilter(filter: string) {
-// 	selectMainFilter(filter)
-// }
-
-// function toggleRouteFilter(filter: string) {
-// 	selectRouteFilter(filter)
-// }
+const { selectedLateFilter, hideWeekends } = storeToRefs(selectionStore)
 </script>
 
 <template lang="pug">
-.filt
-	.zag Показать
-	q-chip(clickable
-		v-model:selected='selectedLateFilter'
-		:color="selectedLateFilter ? 'primary' : 'grey-3'"
-		:text-color="selectedLateFilter ? 'white' : 'black'"
-		@click='selectionStore.selectById(2)'
-	) просрочено
-		q-tooltip подсветить просроченные
+ExpansionItem(title="Таймлайн" :icon="FluentEyeShow12Filled")
+	.text-left.q-mb-md
+		q-chip(clickable
+			v-model:selected='selectedLateFilter'
+			:color="selectedLateFilter ? 'primary' : 'grey-3'"
+			:text-color="selectedLateFilter ? 'white' : 'black'"
+		) просрочено
+			q-tooltip подсветить просроченные
 
-	q-chip(clickable
-		:selected="!hideWeekends"
-		:color="!hideWeekends ? 'primary' : 'grey-3'"
-		:text-color="!hideWeekends ? 'white' : 'black'"
-		@click="hideWeekends = !hideWeekends"
-	) выходные
-		q-tooltip показать выходные на шкале
-
-	q-chip(clickable v-if='forecast'
-		:selected="selectedForecast"
-		:color="selectedForecast ? 'primary' : 'grey-3'"
-		:text-color="selectedForecast ? 'white' : 'black'"
-		@click="selectedForecast = !selectedForecast"
-	) прогноз
-		q-tooltip экспериментальная функция
+		q-chip(clickable
+			:selected="!hideWeekends"
+			:color="!hideWeekends ? 'primary' : 'grey-3'"
+			:text-color="!hideWeekends ? 'white' : 'black'"
+			@click="hideWeekends = !hideWeekends"
+		) выходные
+			q-tooltip показать выходные на шкале
 
 </template>
 
 <style scoped lang="scss">
-.filt {
-	text-align: left;
-	margin: 1rem;
-}
-.pr {
-	font-weight: 500;
-	margin-top: 1rem;
-	span {
-		font-weight: 0.7rem;
-		font-weight: 400;
-		margin-left: 1rem;
-		color: #555;
-	}
-}
 :deep(.q-chip__icon.q-chip__icon--left) {
 	display: none;
-}
-.zag {
-	text-align: center;
-	width: 100%;
-	font-weight: 600;
 }
 </style>

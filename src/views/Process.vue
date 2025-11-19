@@ -1,73 +1,95 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref, watch } from 'vue'
 import PlusButton from '@/components/PlusButton.vue'
-import { useMotion } from '@vueuse/motion'
 import { usePanels } from '@/stores/panels'
 import DiagramSvg from '@/components/DiagramSvg.vue'
 import Look from '@/components/Look.vue'
 import { useTitle } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
+import { useApps } from '@/stores/apps'
+import { storeToRefs } from 'pinia'
 
 const app = useStorage('app', localStorage)
 const title = useTitle()
 title.value = 'Процесс: ' + app.value.label
 
-const editor1 = ref<HTMLElement>()
-
 const panels = usePanels()
-
-const full = { width: 1500, x: 0 }
-const rightStart = { width: 1150, x: -175 }
-
-const calcStart = computed(() => {
-	if (!panels.right0) return full
-	if (panels.right0) return rightStart
-})
-
-const { apply: editorAnim, stop } = useMotion(editor1, {
-	initial: calcStart.value,
-	enter: calcStart.value,
-	start: { width: 1500, x: 0, transition: { stiffness: 200, damping: 20 } },
-	shrinkRight: { width: 1150, x: -175, transition: { stiffness: 200, damping: 20 } },
-})
 
 const startRight0 = async () => {
 	panels.setRight0(true)
-	await editorAnim('shrinkRight')
-	stop()
 }
 
 const stopRight0 = async () => {
-	setTimeout(() => {
-		editorAnim('start')
-	}, 400)
-	stop()
+	panels.setRight0(false)
 }
+
+// NEW: loader visibility from store
+const appsStore = useApps()
+const { showLoader } = storeToRefs(appsStore)
+
+// Local loading state for the skeleton inside .editor
+const loading = ref(false)
+let timer: ReturnType<typeof setTimeout> | null = null
+
+// Watch the store flag and trigger the local loader for 3 seconds
+watch(
+	() => showLoader.value,
+	(newVal) => {
+		if (newVal) {
+			loading.value = true
+			// Clear any previous timer
+			if (timer) clearTimeout(timer)
+			timer = setTimeout(() => {
+				loading.value = false
+				timer = null
+			}, 3000)
+		} else {
+			loading.value = false
+			if (timer) clearTimeout(timer)
+			timer = null
+		}
+	},
+	{ immediate: true }
+)
 </script>
 
 <template lang="pug">
-q-page(padding)
+q-page(padding
+	:class='{ collapsed: panels.right0}'
+	)
+	.editor
+		//- Loader skeleton inside .editor when loading
+		div(v-if="loading" )
+			.skel(class="editor-loader")
+				q-skeleton(type="circle" width="46px" height="46px")
+				q-skeleton(type="rect" width="120px" height="90px")
+				q-skeleton(type="rect" width="40px" height="40px")
+				q-skeleton(type="rect" width="120px" height="90px")
+				q-skeleton(type="rect" width="120px" height="90px")
+				q-skeleton(type="circle" width="46px" height="46px")
+		.roles(v-if="loading" )
+			q-skeleton(type="text" width="50px")
+			q-skeleton(type="circle" width="46px" height="46px")
+			q-skeleton(type="circle" width="46px" height="46px")
 
-	.editor(ref='editor1')
-		.zg Процесс
-		.bt
-			q-btn(flat round dense icon="mdi-undo" color="primary") 
-			q-btn(flat round dense icon="mdi-redo" color="primary") 
-		.center
-			DiagramSvg
-			Look
+		//- Hide .center when loading, show with fade transition when finished
+		transition(name="fade")
+			div(v-if="!loading" class="center")
+				DiagramSvg
+				Look
 
-
-		PlusButton(@activate='startRight0' @stop='stopRight0')
-
+	PlusButton(@activate='startRight0' @stop='stopRight0')
 </template>
 
 <style scoped lang="scss">
 .q-page {
-	display: flex;
-	justify-content: center;
-	position: relative;
-	// top: 0;
+	display: grid;
+	grid-template-columns: 1fr 80px;
+	column-gap: 0.5rem;
+	transition: all 0.2s ease;
+	&.collapsed {
+		grid-template-columns: 1fr 390px;
+	}
 }
 
 .text {
@@ -75,22 +97,51 @@ q-page(padding)
 }
 
 .editor {
+	width: 100%;
+	margin-top: 0;
 	padding-top: 4rem;
 	display: flex;
 	justify-content: center;
-	// flex-direction: column;
 	align-items: start;
 	position: relative;
 }
-.zg {
-	font-size: 1.3rem;
-	font-weight: 500;
-	position: absolute;
-	top: 0.5rem;
+
+/* Loader skeleton inside .editor */
+.editor-loader {
+	z-index: 9999;
 }
-.bt {
+
+/* Fade transition for .center */
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+.fade-enter-to,
+.fade-leave-from {
+	opacity: 1;
+}
+
+.skel {
+	margin: 3rem auto;
+	width: 700px;
+	height: 100px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+.roles {
 	position: absolute;
-	top: 0.25rem;
-	right: 0.5rem;
+	bottom: 2rem;
+	left: 2rem;
+	display: flex;
+	justify-content: start;
+	gap: 2rem;
+}
+.q-skeleton {
+	background: hsl(214 27% 88% / 1);
 }
 </style>

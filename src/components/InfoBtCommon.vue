@@ -1,26 +1,38 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useSelectionStore } from '@/stores/selection'
+import PhPersonSimpleRunFill from '@/components/icons/PhPersonSimpleRunFill.vue'
 
-const { selectById } = useSelectionStore()
+const store = useSelectionStore()
+const select = () => {
+	store.programmaticSelectId = 'Activity_0vjxzxe'
+}
+const item1 = ref(true)
 </script>
 
 <template lang="pug">
-.grid
-	.zag Ход процесса
-	label Процесс начат:
-	div 22.09.25 13:07
-	label Процесс длится:
-	div 14 дней 7 часов
-	label Инициатор:
-	div Орлов П.С.
-	label Всего этапов:
-	div 6
-	label Завершено этапов:
-	div 3
-	label Совершено циклов:
-	div 2
-	label Текущий этап:
-	.link(@click='selectById(5)') Рассмотреть заявку
+// .zag Ход процесса
+q-expansion-item(v-model="item1")
+	template(v-slot:header)
+		q-item-section(side)
+			PhPersonSimpleRunFill.ic
+		q-item-section.zg Ход процесса
+
+	.grid
+		label Процесс начат:
+		div 22.09.25 13:07
+		label Процесс длится:
+		div 14 дней 7 часов
+		label Инициатор:
+		div Орлов П.С.
+		label Всего этапов:
+		div 6
+		label Завершено этапов:
+		div 3
+		label Совершено циклов:
+		div 2
+		label Текущий этап:
+		.link(@click='select') Рассмотреть заявку
 </template>
 
 <style scoped lang="scss">
@@ -40,10 +52,15 @@ const { selectById } = useSelectionStore()
 label {
 	color: #666;
 }
-.zag {
-	grid-column: 1/-1;
-	width: 100%;
-	font-weight: 600;
+.ic {
+	font-size: 1.5rem;
+	margin-right: 0.5rem;
+	color: $secondary;
+}
+.zg {
+	text-transform: uppercase;
+	color: $secondary;
+	text-align: left;
 }
 .link {
 	color: $primary;

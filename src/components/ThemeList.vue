@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import frame1 from '@/assets/img/frame1.png'
 import frame2 from '@/assets/img/frame2.png'
 import frame3 from '@/assets/img/frame3.png'
 import frame4 from '@/assets/img/frame4.png'
 import frame5 from '@/assets/img/frame5.png'
 import { useKeys } from '@/stores/keys'
+import { useChangesStore } from '@/stores/changes'
 
 const mykeys = useKeys()
+const changesStore = useChangesStore()
 
 const colors = [
 	{ label: 'По умолчанию', val: 0, pic: frame3 },
@@ -15,6 +18,13 @@ const colors = [
 	{ label: 'Лето', val: 3, pic: frame4 },
 	{ label: 'Водный мир', val: 4, pic: frame5 },
 ]
+
+watch(
+	() => mykeys.theme,
+	() => {
+		changesStore.setHasChanges(true)
+	}
+)
 </script>
 
 <template lang="pug">

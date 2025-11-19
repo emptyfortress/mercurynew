@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, nextTick } from 'vue'
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
 import { usePanels } from '@/stores/panels'
 import BpmnInfo from '@/components/panels/BpmnInfo.vue'
 import TimelineInfo from '@/components/panels/TimelineInfo.vue'
@@ -9,6 +7,7 @@ import CloseButton from '@/components/panels/CloseButton.vue'
 import TopButton from '@/components/panels/TopButton.vue'
 import InfoBtFilters from '@/components/InfoBtFilters.vue'
 import InfoBtCommon from '@/components/InfoBtCommon.vue'
+import { motion } from 'motion-v'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 
@@ -17,23 +16,13 @@ const { current } = storeToRefs(selectionStore)
 
 const panels = usePanels()
 
-gsap.registerPlugin(Flip)
-
 const emit = defineEmits(['activate', 'stop'])
 
 const del = ref(false)
 
 const expand = () => {
 	del.value = true
-	const state = Flip.getState('.button')
 	emit('activate')
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
 	setTimeout(() => {
 		del.value = false
 	}, 800)
@@ -41,15 +30,7 @@ const expand = () => {
 
 const close = () => {
 	emit('stop')
-	const state = Flip.getState('.button')
 	panels.setRight0(false)
-	nextTick(() => {
-		Flip.from(state, {
-			duration: 0.4,
-			ease: 'power3.inOut',
-			delay: 0.2,
-		})
-	})
 }
 
 const calcDelay = computed(() => {
@@ -78,7 +59,7 @@ const calcDelay = computed(() => {
 		:enter='{ opacity: 1 }'
 		:delay='calcDelay')
 
-	q-separator
+	// q-separator
 
 	div(v-if="panels.right0 && !!current"
 		v-motion
@@ -105,11 +86,10 @@ const calcDelay = computed(() => {
 	background: #fff;
 	box-shadow: var(--shad0);
 	border-radius: 24px;
-	position: absolute;
-	top: 0;
-	right: -58px;
 	text-align: center;
 	cursor: pointer;
+	position: relative;
+	transition: all 0.2s ease;
 	.ic {
 		margin-top: 11px;
 	}
@@ -117,7 +97,6 @@ const calcDelay = computed(() => {
 	&.expand {
 		width: 350px;
 		height: calc(100vh - 120px);
-		right: -358px;
 		border-radius: 6px;
 		cursor: default;
 	}

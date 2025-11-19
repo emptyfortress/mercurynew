@@ -4,14 +4,15 @@ import { animations } from '@formkit/drag-and-drop'
 import { motion } from 'motion-v'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { uid, useQuasar } from 'quasar'
-import AddButtonNew from '@/components/common/AddButtonNew.vue'
+import AddButtonNew1 from '@/components/common/AddButtonNew1.vue'
 import ItemForm from '@/components/ItemForm.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
 import TrashSimple from '@/components/common/TrashSimple.vue'
-// import { useList } from '@/stores/list'
 import { useTitle } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
+import { spring } from '@/utils/springConstants'
+import LoaderSkeleton from '@/components/LoaderSkeleton.vue'
 
 const app = useStorage('app', localStorage)
 const title = useTitle()
@@ -20,14 +21,11 @@ title.value = 'Формы: ' + app.value.label
 const router = useRouter()
 const route = useRoute()
 const activeItem = ref('')
-// const list = useList()
-
 const forms = ref([
 	{
 		id: '1',
 		label: 'Создание',
 		expand: false,
-		// avatar: 'create',
 		descr: 'Здесь описание формы',
 		active: false,
 	},
@@ -35,7 +33,6 @@ const forms = ref([
 		id: '2',
 		label: 'Редактирование',
 		expand: false,
-		// avatar: 'edit',
 		descr: 'Здесь описание формы',
 		active: false,
 	},
@@ -43,11 +40,14 @@ const forms = ref([
 		id: '3',
 		label: 'Просмотр',
 		expand: false,
-		// avatar: 'view',
 		descr: 'Здесь описание формы',
 		active: false,
 	},
 ])
+
+// NEW: loading flag for skeleton loader
+const loading = ref(false)
+
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
 	router.push({
@@ -69,8 +69,15 @@ const loadStateFromRoute = () => {
 	}
 }
 // Загружаем состояние при монтировании компонента
-onMounted(loadStateFromRoute)
-//
+onMounted(() => {
+	loadStateFromRoute()
+	// Show loader for 3 seconds on initial mount
+	loading.value = true
+	setTimeout(() => {
+		loading.value = false
+	}, 3000)
+})
+
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
 watch(() => route.params.id, loadStateFromRoute)
 
@@ -165,11 +172,6 @@ const back = () => {
 	router.push('/roles')
 	expanded.value = false
 }
-const spring = {
-	type: 'spring',
-	visualDuration: 0.3,
-	bounce: 0.25,
-}
 const calcPlusClass = computed(() => {
 	if (duple.value) return 'duplicate'
 	if (expanded.value) return 'cl-0'
@@ -207,6 +209,9 @@ const unsetDragged = () => {
 
 <template lang="pug">
 q-page(padding, @click='action')
+	//- Skeleton loader overlay
+	LoaderSkeleton(v-if="loading" rectHeight='130px')
+
 	.header Формы
 	.parent(ref='parent'
 		:class="{'end': expanded}"
@@ -223,7 +228,7 @@ q-page(padding, @click='action')
 			@drop='onDropPlus'
 			:class="calcPlusClass"
 		)
-			AddButtonNew(mode='form' @create='create')
+			AddButtonNew1(mode='form' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='role')

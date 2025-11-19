@@ -1,26 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watch, nextTick } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch, nextTick, computed } from 'vue'
 import SelectableViewer from '@/lib/SelectableViewer'
 import { highlightByDom, unhighlightByDom, highlightNodes } from '@/lib/selectNewHelper'
-// import zay from '@/stores/zayavka1.bpmn?raw'
 import zay1 from '@/stores/zayavka2.bpmn?raw'
 import { useSelectionStore } from '@/stores/selection'
 import { storeToRefs } from 'pinia'
 import myExtension from '@/extensions/my-extension.json'
+import { goodHightlights, badHightlights } from '@/stores/events'
 
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 
-const props = defineProps({
-	selection: {
-		type: String,
-		required: true,
-		default: '',
-	},
-})
-
 const selectionStore = useSelectionStore()
-const { current } = storeToRefs(selectionStore)
+const { current, programmaticSelectId } = storeToRefs(selectionStore)
 const container = ref<HTMLDivElement | null>(null)
 const viewer = ref<SelectableViewer | null>(null)
 
@@ -33,12 +25,7 @@ const nodeMap: Record<string, string> = {
 	'Согласовать заявку': 'Activity_13ysreu',
 	'Исправить заявку': 'Activity_0kpt2qn',
 	'Рассмотреть заявку': 'Activity_0vjxzxe',
-	// 'Обработать отказ': 'Activity_0obo0kc',
-	// 'Принять результаты': 'Activity_1rqtd62',
-	// 'Исполнить заявку': 'Activity_1xr02p6',
 }
-
-const emit = defineEmits(['select'])
 
 let onElementClick: any
 let onSelectionChanged: any
@@ -104,21 +91,6 @@ onMounted(async () => {
 			return boType === 'bpmn:Collaboration' || /collaboration/i.test(id)
 		}
 
-		// обработчик клика на элемент — делегируем выбор selectionService (selection.changed сработает)
-		// onElementClick = (e: any) => {
-		// 	const clickedId = e.element?.id
-		// 	if (!clickedId) return
-		//
-		// 	// снимаем подсветку props.selection (если была)
-		// 	if (currentHighlightedId) {
-		// 		unhighlightByDom(currentHighlightedId)
-		// 		currentHighlightedId = null
-		// 	}
-		//
-		// 	// делегируем выбор в сервис — это вызовет selection.changed
-		// 	selectionService.select([e.element])
-		// }
-
 		// обработчик изменения selection — центр синхронизации со store
 		onSelectionChanged = (e: any) => {
 			const sel = e.newSelection || []
@@ -133,16 +105,15 @@ onMounted(async () => {
 			if (isEmpty) {
 				// вызываем select только если текущий selection реально не пустой
 				const currentSelection = selectionService.get() || []
+
 				if (currentSelection.length > 0) {
 					selectionService.select([])
 				}
 
-				// if (currentHighlightedId) {
-				// 	unhighlightByDom(currentHighlightedId)
-				// 	currentHighlightedId = null
-				// }
-				selectionStore.clear()
-				emit('select', '')
+				if (currentHighlightedId) {
+					unhighlightByDom(currentHighlightedId)
+					currentHighlightedId = null
+				}
 				return
 			}
 
@@ -150,8 +121,6 @@ onMounted(async () => {
 			const element = sel[0]
 			if (allowedTypes.includes(element.type)) {
 				selectionStore.selectBpmn(element.businessObject)
-				selectionStore.clearForecast()
-				emit('select', element.businessObject)
 			}
 		}
 
@@ -162,6 +131,7 @@ onMounted(async () => {
 			if (!allowedTypes.includes(el.type)) {
 				e.stopPropagation() // ❗ останавливаем всплытие и выбор
 				selectionService.select([]) // очистим выбор, если вдруг что-то выбралось
+				selectionStore.clear()
 			}
 		})
 		eventBus.on('selection.changed', onSelectionChanged)
@@ -189,29 +159,8 @@ onBeforeUnmount(() => {
 	}
 })
 
-// watch(current, (val) => {
-// 	if (val && val.kind == 'timeline') {
-// 		console.log(val)
-// 		if (!viewer.value) return
-// 		const selectionService = viewer.value.get('selection') as any
-//
-// 		try {
-// 			selectionService.select([])
-// 			if (currentHighlightedId) {
-// 				unhighlightByDom(currentHighlightedId)
-// 				currentHighlightedId = null
-// 			}
-// 		} catch (err) {
-// 			// ignore
-// 		}
-// 	}
-// })
-
-// слежение за props.selection
-watch(
-	() => props.selection,
-	(newVal) => {
-		console.log('props')
+watch(current, (val) => {
+	if (val && val.kind == 'timeline') {
 		if (!viewer.value) return
 		const selectionService = viewer.value.get('selection') as any
 
@@ -225,45 +174,74 @@ watch(
 			// ignore
 		}
 
-		// новый, безопасный вариант
-		// nextTick(() => {
-		// 	if (!newVal) {
-		// 		// если пришло пустое значение — явно очистим selectionService
-		// 		try {
-		// 			selectionService.select([])
-		// 		} catch (err) {
-		// 			// ignore
-		// 		}
-		//
-		// 		if (currentHighlightedId) {
-		// 			unhighlightByDom(currentHighlightedId)
-		// 			currentHighlightedId = null
-		// 		}
-		//
-		// 		// и больше ничего — это реальная очистка
-		// 		return
-		// 	}
-		// })
+		nextTick(() => {
+			highlightByDom(val.sideId)
+			currentHighlightedId = val.sideId
+		})
+	}
 
-		// если newVal задан — НЕ сбрасываем selectionService через select([]),
-		// а только управляем нашим programmatic highlight (unhighlight/highlight)
-		// if (currentHighlightedId) {
-		// 	unhighlightByDom(currentHighlightedId)
-		// 	currentHighlightedId = null
-		// }
+	if (val == null && currentHighlightedId) {
+		unhighlightByDom(currentHighlightedId)
+	}
+})
+watch(programmaticSelectId, (val) => {
+	if (val) {
+		const selectionService = viewer.value?.get('selection') as any
+		const elementRegistry = viewer.value?.get('elementRegistry') as any
 
-		if (nodeMap[newVal]) {
-			const nodeId = nodeMap[newVal]
-			highlightByDom(nodeId)
-			currentHighlightedId = nodeId
+		const elementToSelect = elementRegistry.get('Activity_0vjxzxe')
+		if (elementToSelect) {
+			selectionService.select(elementToSelect)
 		}
+		nextTick(() => {
+			programmaticSelectId.value = null
+		})
+	}
+})
+
+// подсветка стрелок ************************
+const activeHighlights = new Set<string>()
+const forecastHighlightIds = computed(() => {
+	if (current.value && current.value.id == 'Event_1wwtnaa') {
+		return goodHightlights
+	}
+	if (current.value && current.value.id == 'Event_1yi1uuk') {
+		return badHightlights
+	} else return []
+})
+
+function highlightFlows() {
+	if (!viewer.value) return
+	// for (const id of forecastHighlightIds) {
+	for (const id of forecastHighlightIds.value) {
+		const el = viewer.value.getDomByElementId(id)
+		if (!el) continue
+		el.classList.add('forecast-highlight')
+		activeHighlights.add(id)
+	}
+}
+
+function clearHighlights() {
+	if (!viewer.value) return
+	for (const id of activeHighlights) {
+		const el = viewer.value.getDomByElementId(id)
+		if (el) el.classList.remove('forecast-highlight')
+	}
+	activeHighlights.clear()
+}
+
+watch(
+	() => selectionStore.selectedForecast,
+	(val) => {
+		if (!viewer.value) return
+		if (val) highlightFlows()
+		else clearHighlights()
 	},
 	{ immediate: true }
 )
 </script>
 
 <template lang="pug">
-// div {{props.selection}}
 .canvas(ref="container")
 </template>
 
@@ -275,8 +253,6 @@ watch(
 	background: #f4f4f4;
 }
 
-/* никаких палитр/контекстных меню не будет,
-   но на всякий случай отключим */
 :deep(.djs-palette, .djs-context-pad, .bjs-powered-by) {
 	display: none !important;
 }
@@ -332,5 +308,28 @@ watch(
 	to {
 		stroke-dashoffset: -12; /* отрицательное значение сдвигает штрих */
 	}
+}
+
+@keyframes forecast-glow {
+	0% {
+		stroke: #8a2be2;
+		stroke-width: 2px;
+		filter: drop-shadow(0 0 0 rgba(138, 43, 226, 0.1));
+	}
+	50% {
+		stroke: #b47aff;
+		stroke-width: 3px;
+		filter: drop-shadow(0 0 12px rgba(138, 43, 226, 1));
+	}
+	100% {
+		stroke: #8a2be2;
+		stroke-width: 2px;
+		filter: drop-shadow(0 0 0 rgba(138, 43, 226, 0.1));
+	}
+}
+
+:deep(.forecast-highlight path) {
+	animation: forecast-glow 1.5s infinite ease-in-out;
+	stroke-linecap: round;
 }
 </style>

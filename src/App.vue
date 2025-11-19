@@ -5,34 +5,35 @@ import { useStorage } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
-import { useApps } from '@/stores/apps'
-import { useIdle, useCounter } from '@vueuse/core'
-import { useMotions } from '@vueuse/motion'
-import { useQuasar, date } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
 import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergencyExitSolid.vue'
 import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
-import { useMotion } from '@vueuse/motion'
+import Fab from '@/components/Fab.vue'
+import Footer from '@/components/Footer.vue'
 
 const route = useRoute()
+
+watch(
+	() => route.meta.hideScroll,
+	(hideScroll) => {
+		if (hideScroll) {
+			document.documentElement.style.overflow = 'hidden'
+		} else {
+			document.documentElement.style.overflow = ''
+		}
+	},
+	{ immediate: true }
+)
+
 const router = useRouter()
-const myapps = useApps()
-const motions = useMotions()
 
 const rightDrawer = ref(false)
 
 const app = useStorage('app', localStorage)
 
 const cover = ref(0)
-
-// router.beforeEach((to, from, next) => {
-// 	if (from.meta.count !== undefined) {
-// 		cover.value = to.meta.count - from.meta.count
-// 		next()
-// 	} else next()
-// })
 
 router.beforeEach((to, from, next) => {
 	// Безопасно читаем count (0, если не указан)
@@ -42,24 +43,6 @@ router.beforeEach((to, from, next) => {
 	next()
 })
 
-// const calcLeave = computed(() => {
-// 	if (cover.value == 19) {
-// 		return 'fadeOutLeft'
-// 	}
-// 	if (cover.value == -19) {
-// 		return 'fadeOutRight'
-// 	}
-// 	if (cover.value > 0) {
-// 		return 'fadeOutTop'
-// 	}
-// 	if (cover.value < 0) {
-// 		return 'fadeOutBottom'
-// 	}
-// 	if (cover.value == 0) {
-// 		return ''
-// 	}
-// })
-
 const leaveClass = computed(() => {
 	const v = cover.value
 	if (v === 19) return 'fadeOutLeft'
@@ -68,24 +51,6 @@ const leaveClass = computed(() => {
 	if (v < 0) return 'fadeOutBottom'
 	return 'fadeOutTop' // безопасный дефолт на случай 0/NaN
 })
-
-// const calcEnter = computed(() => {
-// 	if (cover.value == 19) {
-// 		return 'fadeInRight'
-// 	}
-// 	if (cover.value == -19) {
-// 		return 'fadeInLeft'
-// 	}
-// 	if (cover.value > 0) {
-// 		return 'fadeInBottom'
-// 	}
-// 	if (cover.value < 0) {
-// 		return 'fadeInTop'
-// 	}
-// 	if (cover.value == 0) {
-// 		return ''
-// 	}
-// })
 
 const enterClass = computed(() => {
 	const v = cover.value
@@ -105,89 +70,6 @@ const helpMode = ref(false)
 const toggleBug = () => {
 	helpMode.value = false
 	rightDrawer.value = !rightDrawer.value
-}
-const toggleHelp = () => {
-	helpMode.value = true
-	rightDrawer.value = !rightDrawer.value
-}
-
-const buttonRef = ref<HTMLButtonElement | null>(null)
-const isAnimating = ref(true)
-
-const { idle, reset } = useIdle(5000)
-const { inc, count } = useCounter()
-
-const attention = computed(() => {
-	return isAnimating.value && idle.value
-})
-
-watch(idle, async (idleValue) => {
-	if (idleValue) {
-		inc()
-		setTimeout(() => {
-			reset()
-		}, 5000)
-
-		if (count.value == 3 && isAnimating.value) {
-			count.value = 0
-			reset()
-			jump()
-		}
-	}
-})
-
-const { apply } = useMotion(buttonRef, {
-	enter: {
-		x: 0,
-		rotate: 0,
-		scale: 1,
-	},
-	fly1: {
-		x: -600,
-		scale: 1,
-		rotate: 0,
-	},
-	fly2: {
-		scale: 2,
-		rotate: 0,
-	},
-	fly3: {
-		scale: 1,
-		rotate: 0,
-	},
-	fly4: {
-		rotate: 720,
-		duration: 1000,
-	},
-	fly5: {
-		x: 0,
-		rotate: 0,
-	},
-})
-
-const off = () => {
-	isAnimating.value = false
-	toggleHelp()
-}
-const jump = async () => {
-	await apply('fly1')
-	await apply('fly2')
-	await apply('fly3')
-	await apply('fly4')
-	await apply('fly5')
-	reset()
-}
-
-const $q = useQuasar()
-const refresh = () => {
-	notsave.value = !notsave.value
-	// $q.notify({
-	// 	icon: 'mdi-alert',
-	// 	color: 'negative',
-	// 	message: 'Страница изменена другим пользователем. Ваши изменения не сохранены.',
-	// 	position: 'center',
-	// 	progress: true,
-	// })
 }
 
 const lang = [
@@ -213,34 +95,6 @@ const changeLang = (e: any) => {
 }
 const calcClass = (num: number) => {
 	if (currentLang.value.id == num) return 'selected'
-}
-
-const footerState = computed(() => {
-	return route.meta.footer ? true : false
-})
-
-const action = () => {
-	router.push(`/${myapps.currentApp?.id}`)
-}
-
-const localCreated = computed(() => {
-	return date.formatDate(app.value.versions[0].created, 'DD.MM.YY HH:mm')
-})
-const localChanged = computed(() => {
-	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY HH:mm')
-})
-
-const save = ref(true)
-const notsave = ref(false)
-const close = () => {
-	save.value = !save.value
-}
-const close1 = () => {
-	notsave.value = !notsave.value
-}
-
-const goto = () => {
-	router.push('/settings')
 }
 
 const user = [
@@ -299,17 +153,6 @@ q-layout(view='hHh LpR fFf')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
 			q-toolbar-title {{ title }}
-
-			// .group(v-if='route.name !== "home" && route.name !== "version" && route.name !== "assistent"')
-			.group(v-if='route.meta.toolbar')
-				q-avatar(size='28px' color="positive" text-color="white" @click='refresh') РЛ
-					q-tooltip Роза Львовна
-				q-avatar(size='28px' color="warning" text-color="black" @click='refresh') СК
-					q-tooltip Сирень Крокодиловна
-
-				q-btn.save(unelevated color="positive" label="Завершить" icon="mdi-check-bold" @click="action")
-					q-tooltip Завершить настройку
-
 			.lang
 				component(:is='currentLang.icon')
 				q-menu(transition-show="jump-down" transition-hide="jump-up")
@@ -334,8 +177,6 @@ q-layout(view='hHh LpR fFf')
 								component.ic(:is='item.icon')
 							q-item-section {{ item.label }}
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
-			// q-btn(dense flat round icon='mdi-cog' @click='toggleBug')
-			q-btn(ref='buttonRef' dense flat round icon='mdi-information-outline' @click='off' :class='{bounce: attention}')
 
 	Drawer
 	RDrawer(v-model="rightDrawer" :help='helpMode')
@@ -350,39 +191,8 @@ q-layout(view='hHh LpR fFf')
 					)
 					component(:is="Component" :key="topLevelKey(route)")
 
-	q-footer.footer(v-if='footerState')
-		.cent
-			div Версия: {{ app.versions[0].label }}
-			div Автор: {{ app.versions[0].author }}
-			div Создано: {{ localCreated }}
-			div Изменено: {{ localChanged }} (Роза Львовна)
-			div Статус: Черновик
-			.saved
-				q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
-				|Сохранено
-				transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-					.bubble.pos(v-if='save'
-						v-motion='"cube"'
-						:initial="{ y: 200, opacity: 0, }"
-						:enter="{ y: 0, opacity: 1, }"
-						:leave="{ y: 200, opacity: 0, }"
-						:delay=2600
-					)
-						.text-center
-							|Сохранение данных происходит автоматически во всех редакторах.
-							q-btn(flat label="Понятно" @click.stop="close") 
-
-				transition(:css="false" @leave="(el, done) => motions.cube.leave(done)")
-					.bubble.neg(v-if='notsave'
-						v-motion='"cube"'
-						:initial="{ y: 200, opacity: 0, }"
-						:enter="{ y: 0, opacity: 1, }"
-						:leave="{ y: 200, opacity: 0, }"
-					)
-						.text-center
-							|Страница изменена другим пользователем. Ваши изменения не сохранены.
-							q-btn(flat label="Понятно" @click.stop="close1") 
-
+	Footer
+	Fab
 </template>
 
 <style scoped lang="scss">
@@ -494,67 +304,31 @@ nav a:first-of-type {
 :deep(.q-item.selected) {
 	background: var(--selection);
 }
-.footer {
-	background: hsl(202 33% 92% / 1);
-	box-shadow: 0 -1px 4px rgba($color: #000000, $alpha: 0.15);
-	color: #444;
-	padding: 3px 2rem;
-	.cent {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 3rem;
-		font-size: 0.8rem;
-	}
-}
-.saved {
-	position: relative;
-}
 .bubble {
-	width: 34ch;
+	width: 42ch;
 	position: absolute;
-	top: -108px;
-	left: -130px;
+	top: -103px;
+	left: -250px;
 	border-radius: 0.4rem;
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 	padding: 0.5rem;
 	font-size: 0.9rem;
 	color: white;
-	&.pos {
-		background: $positive;
-	}
-	&.neg {
-		left: -156px;
-		width: 40ch;
-		background: $negative;
-	}
-}
-.bubble.pos::after {
-	content: '';
-	position: absolute;
-	left: 50%;
-	bottom: -10px; /* чтобы хвостик «вырос» наружу */
-	transform: translateX(-50%);
-	width: 0;
-	height: 0;
-	border-left: 10px solid transparent;
-	border-right: 10px solid transparent;
-	border-top: 10px solid $positive; /* ▲ треугольник вверх */
-}
-.bubble.neg::after {
-	content: '';
-	position: absolute;
-	left: 50%;
-	bottom: -10px; /* чтобы хвостик «вырос» наружу */
-	transform: translateX(-50%);
-	width: 0;
-	height: 0;
-	border-left: 10px solid transparent;
-	border-right: 10px solid transparent;
-	border-top: 10px solid $negative; /* ▲ треугольник вверх */
+	background: $negative;
 }
 .ic {
 	font-size: 1.5rem;
 	color: $primary;
+}
+.fab {
+	position: fixed;
+	bottom: 2.5rem;
+	right: 7rem;
+}
+.myflex {
+	display: flex;
+}
+.ic {
+	font-size: 1.7rem;
 }
 </style>

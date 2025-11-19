@@ -200,7 +200,7 @@ q-input(v-model="query" dense @clear="query = ''" :placeholder="place")
 			v-if='isLast',
 			unelevated,
 			color="primary",
-			label="Сохранить",
+			label="Добавить",
 			@click="addCond",
 			size="sm"
 			dense,

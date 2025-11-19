@@ -1,10 +1,27 @@
 <script setup lang="ts">
-const list = [
-	{ id: 0, icon: 'mdi-database-outline', label: 'Настройка баз данных', to: '' },
-	{ id: 2, icon: 'mdi-source-branch', label: 'Управление версиями', to: '/version' },
-	{ id: 1, icon: 'mdi-account-key', label: 'Права на публикацию', to: '' },
-	{ id: 3, icon: 'mdi-script-text-outline', label: 'Журнал публикаций', to: '' },
+import { useSave } from '@/stores/save'
+import { useReducedMotion } from '@/composable/useReducedMotion'
+import { useApps } from '@/stores/apps'
+import { storeToRefs } from 'pinia'
+
+const { userOverride } = useReducedMotion()
+
+const animationOptions = [
+	{ value: 'auto', label: 'Авто' },
+	{ value: 'false', label: 'Вкл' },
+	{ value: 'true', label: 'Откл' },
 ]
+
+const store = useSave()
+const emit = defineEmits(['close'])
+
+const appsStore = useApps()
+const { showLoader } = storeToRefs(appsStore)
+
+const turn = () => {
+	store.toggle()
+	emit('close')
+}
 </script>
 
 <template lang="pug">
@@ -27,6 +44,51 @@ q-list.q-mt-lg
 		q-item-section
 			q-item-label Ход исполнения
 
+	q-item(clickable @click='turn')
+		q-item-section(avatar)
+			q-icon(name="mdi-account-circle" color="primary")
+		q-item-section
+			q-item-label Роза Львовна
+
+	//- Switch to control loader visibility
+	q-item
+		q-item-section
+			q-item-label.loader-label(@click="showLoader = !showLoader") Показывать загрузчик
+		q-item-section(side)
+			q-toggle(v-model="showLoader" dense)
+
+	q-item.settings
+		label Анимации: 
+		q-select(v-model="userOverride" :options="animationOptions" dense emit-value map-options outlined)
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.settings {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	:deep(.q-select) {
+		width: 110px;
+	}
+	:deep(.q-field--dense .q-field__control, .q-field__marginal) {
+		height: 32px;
+	}
+	:deep(.q-field--auto-height.q-field--dense .q-field__native) {
+		min-height: 32px;
+	}
+	:deep(.q-field--auto-height.q-field--dense .q-field__control, .q-field__native) {
+		min-height: 32px;
+	}
+
+	:deep(.q-field--dense .q-field__marginal) {
+		height: 32px;
+	}
+}
+:deep(.q-item__section--side) {
+	color: $primary !important;
+}
+
+.loader-label:hover {
+	cursor: pointer;
+}
+</style>

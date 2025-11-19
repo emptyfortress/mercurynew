@@ -4,13 +4,15 @@ import { animations } from '@formkit/drag-and-drop'
 import { motion } from 'motion-v'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { uid, useQuasar } from 'quasar'
-import AddButtonNew from '@/components/common/AddButtonNew.vue'
+import AddButtonNew1 from '@/components/common/AddButtonNew1.vue'
 import ItemRole from '@/components/ItemRole.vue'
 import Empty from '@/components/Empty.vue'
 import { useRouter, useRoute } from 'vue-router'
 import TrashSimple from '@/components/common/TrashSimple.vue'
 import { useTitle } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
+import { spring } from '@/utils/springConstants'
+import LoaderSkeleton from '@/components/LoaderSkeleton.vue'
 
 const app = useStorage('app', localStorage)
 const title = useTitle()
@@ -42,6 +44,10 @@ const roles = ref([
 		avatar: 'avatar5',
 	},
 ])
+
+// NEW: loading flag for skeleton loader
+const loading = ref(false)
+
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
 	router.push({
@@ -63,8 +69,15 @@ const loadStateFromRoute = () => {
 	}
 }
 // Загружаем состояние при монтировании компонента
-onMounted(loadStateFromRoute)
-//
+onMounted(() => {
+	loadStateFromRoute()
+	// Show loader for 3 seconds on initial mount
+	loading.value = true
+	setTimeout(() => {
+		loading.value = false
+	}, 3000)
+})
+
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
 watch(() => route.params.id, loadStateFromRoute)
 
@@ -159,11 +172,6 @@ const back = () => {
 	router.push('/roles')
 	expanded.value = false
 }
-const spring = {
-	type: 'spring',
-	visualDuration: 0.3,
-	bounce: 0.25,
-}
 const calcPlusClass = computed(() => {
 	if (duple.value) return 'duplicate'
 	if (expanded.value) return 'cl-0'
@@ -195,13 +203,15 @@ const setDragged = (e: any) => {
 	dragStatus.value = true
 }
 const unsetDragged = () => {
-	console.log(1111)
 	dragStatus.value = false
 }
 </script>
 
 <template lang="pug">
 q-page(padding, @click='action')
+	//- Skeleton loader overlay
+	LoaderSkeleton(v-if="loading")
+
 	.header Роли
 	.parent(ref='parent'
 		:class="{'end': expanded}"
@@ -218,7 +228,7 @@ q-page(padding, @click='action')
 			@drop='onDropPlus'
 			:class="calcPlusClass"
 		)
-			AddButtonNew(mode='role' @create='create')
+			AddButtonNew1(mode='role' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='role')

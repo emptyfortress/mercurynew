@@ -37,14 +37,47 @@ export const useApps = defineStore('apps', () => {
 			versions: [
 				{
 					id: 0,
-					label: 'Базовая версия',
-					value: 'Базовая версия',
-					descr: 'Стартовая версия приложения',
+					label: 'Базовая',
+					value: 'Базовая',
+					descr: 'Новая версия',
 					author: 'Орлов П.С.',
 					created: 1755513353568,
 					modified: null,
 					published: 0,
 					current: true,
+				},
+				{
+					id: 1,
+					label: 'Начальная',
+					value: 'Начальная',
+					descr: 'Первая версия приложения',
+					author: 'Орлов П.С.',
+					created: 1755512353568,
+					modified: null,
+					published: 1,
+					current: false,
+				},
+				{
+					id: 2,
+					label: 'Нулевая-copy',
+					value: 'Нулевая',
+					descr: 'Стартовая версия приложения',
+					author: 'Орлов П.С.',
+					created: 1755502253568,
+					modified: null,
+					published: 2,
+					current: false,
+				},
+				{
+					id: 3,
+					label: 'Нулевая',
+					value: 'Нулевая',
+					descr: 'Стартовая версия приложения',
+					author: 'Орлов П.С.',
+					created: 1755502253568,
+					modified: null,
+					published: 3,
+					current: false,
 				},
 			],
 		},
@@ -66,8 +99,8 @@ export const useApps = defineStore('apps', () => {
 			versions: [
 				{
 					id: 0,
-					label: 'Базовая версия',
-					value: 'Базовая версия',
+					label: 'Базовая',
+					value: 'Базовая',
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: 1755513353568,
@@ -108,8 +141,8 @@ export const useApps = defineStore('apps', () => {
 					versions: [
 						{
 							id: 0,
-							label: 'Базовая версия',
-							value: 'Базовая версия',
+							label: 'Базовая',
+							value: 'Базовая',
 							descr: 'Стартовая версия приложения',
 							created: 1755513353568,
 							author: 'Орлов П.С.',
@@ -137,8 +170,8 @@ export const useApps = defineStore('apps', () => {
 					versions: [
 						{
 							id: 0,
-							label: 'Базовая версия',
-							value: 'Базовая версия',
+							label: 'Базовая',
+							value: 'Базовая',
 							descr: 'Стартовая версия приложения',
 							author: 'Орлов П.С.',
 							created: 1755513353568,
@@ -166,8 +199,8 @@ export const useApps = defineStore('apps', () => {
 					versions: [
 						{
 							id: 0,
-							label: 'Базовая версия',
-							value: 'Базовая версия',
+							label: 'Базовая',
+							value: 'Базовая',
 							descr: 'Стартовая версия приложения',
 							created: 1755513353568,
 							author: 'Орлов П.С.',
@@ -197,8 +230,8 @@ export const useApps = defineStore('apps', () => {
 			versions: [
 				{
 					id: 0,
-					label: 'Базовая версия',
-					value: 'Базовая версия',
+					label: 'Базовая',
+					value: 'Базовая',
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: 1755513353568,
@@ -226,8 +259,8 @@ export const useApps = defineStore('apps', () => {
 			versions: [
 				{
 					id: 0,
-					label: 'Базовая версия',
-					value: 'Базовая версия',
+					label: 'Базовая',
+					value: 'Базовая',
 					descr: 'Стартовая версия приложения',
 					author: 'Орлов П.С.',
 					created: 1755513353568,
@@ -238,6 +271,10 @@ export const useApps = defineStore('apps', () => {
 			],
 		},
 	])
+
+	const updateApps = (list: App[]) => {
+		apps.value = list
+	}
 
 	function collectGroup1(apps: App[]): App[] {
 		const result: App[] = []
@@ -307,6 +344,12 @@ export const useApps = defineStore('apps', () => {
 		groupDrag.value = e
 	}
 
+	// NEW: visibility state for loader
+	const showLoader = useStorage('showLoader', false)
+	const setShowLoader = (value: boolean) => {
+		showLoader.value = value
+	}
+
 	const curVersion = (app: App) => {
 		let tmp = app.versions.find((el) => el.current)
 		return tmp ? tmp : app.versions[0]
@@ -334,6 +377,7 @@ export const useApps = defineStore('apps', () => {
 		flatApps,
 		db,
 		createApp,
+		updateApps,
 
 		currentApp,
 		setCurrentApp,
@@ -355,5 +399,9 @@ export const useApps = defineStore('apps', () => {
 
 		groupDrag,
 		setGroupDrag,
+
+		// expose loader visibility state
+		showLoader,
+		setShowLoader,
 	}
 })

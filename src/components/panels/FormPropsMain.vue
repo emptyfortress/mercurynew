@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import PropField from '@/components/common/PropField.vue'
+import { ref, watch } from 'vue'
+import { useChangesStore } from '@/stores/changes'
 
-const temp = [
+const changesStore = useChangesStore()
+
+const temp = ref([
 	{
 		id: 0,
 		label: 'Название',
@@ -13,9 +17,17 @@ const temp = [
 		label: 'Тип',
 		main: 'Просмотр',
 		select: true,
-		options: ['Создание', 'Просмотр', 'Read only']
-	}
-]
+		options: ['Создание', 'Просмотр', 'Read only'],
+	},
+])
+
+watch(
+	temp,
+	() => {
+		changesStore.setHasChanges(true)
+	},
+	{ deep: true }
+)
 </script>
 
 <template lang="pug">

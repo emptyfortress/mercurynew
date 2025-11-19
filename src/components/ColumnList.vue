@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useKeys } from '@/stores/keys'
+import { useChangesStore } from '@/stores/changes'
 
 const mykeys = useKeys()
+const changesStore = useChangesStore()
 
 const config = {
 	plugins: [animations()],
@@ -15,6 +18,14 @@ const config = {
 }
 
 const [parent, tapes] = useDragAndDrop(mykeys.columns, config)
+
+watch(
+	tapes,
+	() => {
+		changesStore.setHasChanges(true)
+	},
+	{ deep: true }
+)
 </script>
 
 <template lang="pug">

@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { computed, h } from 'vue'
+import { computed, h, watch } from 'vue'
 import MdiFolderSearchOutline from '@/components/icons/MdiFolderSearchOutline.vue'
 import LsiconClearOutline from '@/components/icons/LsiconClearOutline.vue'
 import TablerSearch from '@/components/icons/TablerSearch.vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useKeys } from '@/stores/keys'
+import { useChangesStore } from '@/stores/changes'
 import { QInput, QChip } from 'quasar'
 
 const mykeys = useKeys()
+const changesStore = useChangesStore()
 
 const config = {
 	plugins: [animations()],
@@ -19,6 +21,14 @@ const config = {
 	},
 }
 const [parent, tapes] = useDragAndDrop(mykeys.keys, config)
+
+watch(
+	tapes,
+	() => {
+		changesStore.setHasChanges(true)
+	},
+	{ deep: true }
+)
 
 const removeItem = (ind: number): void => {
 	tapes.value.splice(ind, 1)
