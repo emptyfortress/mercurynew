@@ -312,9 +312,14 @@ const startDrag = (e: any) => {
 
 <template lang="pug">
 q-page(padding, @click='action')
-	//- Loader overlay
 	.loader(v-if="loading")
-		q-spinner(color="primary" size="3rem")
+		.par1
+			.bl
+				q-skeleton(type="circle" width="48px" height="48px")
+			q-skeleton(type="rect" width="170px" height="170px")
+			q-skeleton(type="rect" width="170px" height="170px")
+			q-skeleton(type="rect" width="170px" height="170px")
+
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
@@ -363,6 +368,21 @@ q-page(padding, @click='action')
 		grid-template-rows: repeat(v-bind(row1), 80px);
 	}
 }
+.par1 {
+	margin-top: 1rem;
+	width: 1100px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: repeat(6, 170px);
+	gap: 1rem;
+	// justify-content: center;
+	// align-items: center;
+	.bl {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}
 .plus {
 	width: 100%;
 	height: 100%;
@@ -385,9 +405,7 @@ q-page(padding, @click='action')
 .loader {
 	position: absolute; /* changed from fixed to absolute */
 	inset: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	padding-top: 40px;
 	background: linear-gradient(
 		180deg,
 		#d8e3f1 0%,

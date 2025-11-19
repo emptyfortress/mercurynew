@@ -88,7 +88,6 @@ q-list.q-mt-lg
 	color: $primary !important;
 }
 
-/* Make cursor pointer on the loader label */
 .loader-label:hover {
 	cursor: pointer;
 }
