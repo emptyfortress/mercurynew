@@ -4,10 +4,16 @@
 		.bl
 			q-skeleton(type="circle" bordered width="48px" height="48px")
 		template(v-for="n in 4")
-			q-skeleton(type="rect" bordered width="170px" height="170px")
+			q-skeleton(type="rect" bordered width="170px" :height="rectHeight")
 </template>
 
 <script setup lang="ts">
+const props = defineProps({
+	rectHeight: {
+		type: String,
+		default: '170px',
+	},
+})
 </script>
 
 <style scoped lang="scss">
