@@ -23,6 +23,9 @@ const route = useRoute()
 const activeItem = ref('')
 const list = useList()
 
+// NEW: loading flag for skeleton loader
+const loading = ref(false)
+
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
 	router.push({
@@ -44,8 +47,15 @@ const loadStateFromRoute = () => {
 	}
 }
 // Загружаем состояние при монтировании компонента
-onMounted(loadStateFromRoute)
-//
+onMounted(() => {
+	loadStateFromRoute()
+	// Show loader for 3 seconds on initial mount
+	loading.value = true
+	setTimeout(() => {
+		loading.value = false
+	}, 3000)
+})
+
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
 watch(() => route.params.id, loadStateFromRoute)
 
@@ -178,6 +188,14 @@ const unsetDragged = () => {
 
 <template lang="pug">
 q-page(padding, @click='action')
+	//- Skeleton loader overlay
+	.loader(v-if="loading")
+		.par1
+			.bl
+				q-skeleton(type="circle" bordered width="48px" height="48px")
+			template(v-for="n in 4")
+				q-skeleton(type="rect" bordered width="170px" height="130px")
+
 	.header Папки
 	.parent(ref='parent'
 		:class="{'end': expanded}"
@@ -301,5 +319,32 @@ q-page(padding, @click='action')
 .val span {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
+}
+
+/* Skeleton loader styles */
+.loader {
+	position: absolute;
+	inset: 0;
+	padding-top: 60px;
+	background: linear-gradient(
+		180deg,
+		#d8e3f1 0%,
+		hsl(210 22% 83% / 1) 52.6%,
+		hsl(199 39% 86% / 1) 100%
+	);
+	z-index: 9999;
+}
+.par1 {
+	margin-top: 1rem;
+	width: 1100px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: repeat(6, 170px);
+	gap: 1rem;
+	.bl {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 }
 </style>
