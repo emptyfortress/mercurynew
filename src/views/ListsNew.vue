@@ -13,6 +13,7 @@ import { useList } from '@/stores/list'
 import { useTitle } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
 import { spring } from '@/utils/springConstants'
+import LoaderSkeleton from '@/components/LoaderSkeleton.vue'
 
 const app = useStorage('app', localStorage)
 const title = useTitle()
@@ -189,12 +190,7 @@ const unsetDragged = () => {
 <template lang="pug">
 q-page(padding, @click='action')
 	//- Skeleton loader overlay
-	.loader(v-if="loading")
-		.par1
-			.bl
-				q-skeleton(type="circle" bordered width="48px" height="48px")
-			template(v-for="n in 4")
-				q-skeleton(type="rect" bordered width="170px" height="130px")
+	LoaderSkeleton(v-if="loading")
 
 	.header Папки
 	.parent(ref='parent'
@@ -319,32 +315,5 @@ q-page(padding, @click='action')
 .val span {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
-}
-
-/* Skeleton loader styles */
-.loader {
-	position: absolute;
-	inset: 0;
-	padding-top: 75px;
-	background: linear-gradient(
-		180deg,
-		#d8e3f1 0%,
-		hsl(210 22% 83% / 1) 52.6%,
-		hsl(199 39% 86% / 1) 100%
-	);
-	z-index: 9999;
-}
-.par1 {
-	margin-top: 1rem;
-	width: 1100px;
-	margin: 0 auto;
-	display: grid;
-	grid-template-columns: repeat(6, 170px);
-	gap: 1rem;
-	.bl {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
 }
 </style>
