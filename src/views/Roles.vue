@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
 import { animations } from '@formkit/drag-and-drop'
 import { motion } from 'motion-v'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
@@ -12,16 +11,12 @@ import { useRouter, useRoute } from 'vue-router'
 import TrashSimple from '@/components/common/TrashSimple.vue'
 import { useTitle } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
-import { useApps } from '@/stores/apps'
 import { spring } from '@/utils/springConstants'
 import LoaderSkeleton from '@/components/LoaderSkeleton.vue'
 
 const app = useStorage('app', localStorage)
 const title = useTitle()
 title.value = 'Роли: ' + app.value.label
-
-const appsStore = useApps()
-const { showLoader: loading } = storeToRefs(appsStore)
 
 const router = useRouter()
 const route = useRoute()
@@ -49,6 +44,9 @@ const roles = ref([
 		avatar: 'avatar5',
 	},
 ])
+
+// NEW: loading flag for skeleton loader
+const loading = ref(false)
 
 // Функция для обновления URL при изменении состояния
 const updateRouteParams = () => {
