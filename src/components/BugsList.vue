@@ -50,7 +50,6 @@ q-list.q-mt-lg
 		q-item-section
 			q-item-label Роза Львовна
 
-	//- Switch to control loader visibility
 	q-item
 		q-item-section
 			q-item-label.loader-label(@click="showLoader = !showLoader") Показывать загрузчик
