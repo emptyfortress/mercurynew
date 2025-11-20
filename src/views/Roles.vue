@@ -11,6 +11,7 @@ import { useRouter, useRoute } from 'vue-router'
 import TrashSimple from '@/components/common/TrashSimple.vue'
 import { useTitle } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
+import { useApps } from '@/stores/apps'
 import { spring } from '@/utils/springConstants'
 import LoaderSkeleton from '@/components/LoaderSkeleton.vue'
 
@@ -20,6 +21,7 @@ title.value = 'Роли: ' + app.value.label
 
 const router = useRouter()
 const route = useRoute()
+const myapps = useApps()
 const activeItem = ref('')
 
 const roles = ref([
@@ -71,11 +73,15 @@ const loadStateFromRoute = () => {
 // Загружаем состояние при монтировании компонента
 onMounted(() => {
 	loadStateFromRoute()
-	// Show loader for 3 seconds on initial mount
-	loading.value = true
-	setTimeout(() => {
+	// Show loader on every visit to roles route if enabled
+	if (route.path === '/roles' && myapps.showLoader) {
+		loading.value = true
+		setTimeout(() => {
+			loading.value = false
+		}, 3000)
+	} else {
 		loading.value = false
-	}, 3000)
+	}
 })
 
 // Загружаем состояние при изменении маршрута (например, при переходе назад/вперед)
