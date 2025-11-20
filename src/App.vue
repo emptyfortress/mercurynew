@@ -12,6 +12,7 @@ import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
 import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
+import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
 
 const route = useRoute()
 
@@ -176,6 +177,20 @@ q-layout(view='hHh LpR fFf')
 							q-item-section(side)
 								component.ic(:is='item.icon')
 							q-item-section {{ item.label }}
+
+			q-btn.q-mx-sm(dense flat round icon='mdi-help-circle-outline')
+				q-menu(transition-show="jump-down" transition-hide="jump-up")
+					q-list
+						q-item(clickable  v-close-popup)
+							q-item-section(side)
+								q-icon(name="mdi-book" color="primary")
+							q-item-section Помощь
+						q-item(clickable  v-close-popup)
+							q-item-section(side)
+								HealthiconsGuideDogfrom.ic
+							q-item-section Гид
+
+
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 
 	Drawer
