@@ -36,6 +36,8 @@ const helpTopics: readonly HelpTopic[] = [
 	{ label: 'Обратная связь', url: '#обратная-связь' }
 ]
 
+const guidedRoutes: readonly string[] = ['/', '/settings', '/publications', '/timeline', '/map']
+
 const emitOk = () => {
 	emit('ok', props.menuLabel)
 	visible.value = false
@@ -64,7 +66,8 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 				li(v-for="topic in helpTopics" :key="topic.url")
 					a(:href="topic.url") {{ topic.label }}
 		q-card-section(v-else)
-			div Гид по интерфейсу.
+			div(v-if="guidedRoutes.includes(routePath)") Гид по интерфейсу.
+			div(v-else) Гид для этой страницы находится в процессе разработки.
 		q-card-section
 			div Current route path: {{ routePath }}
 		q-card-actions(align="right")
