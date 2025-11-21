@@ -3,10 +3,13 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 	q-card
 		q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 		q-card-section.row.items-center.q-pb-none
-			q-icon(name="mdi-book" color="primary" class="q-mr-sm" v-if="menuLabel === 'Помощь'")
-			HealthiconsGuideDogfrom.ic(class="q-mr-sm" v-else)
-			.text-h6(v-if="menuLabel === 'Помощь'") Общая помощь
-			.text-h6(v-else) Интерактивный гид
+			.text-h6(v-if="menuLabel === 'Помощь'")
+				q-icon.q-mr-sm(name="mdi-book" color="primary" size='md')
+				|Общая помощь
+			.text-h6(v-else)
+				HealthiconsGuideDogfrom.ic
+				|Интерактивный гид
+
 		q-card-section(v-if="menuLabel === 'Помощь'")
 			ol
 				li
@@ -92,5 +95,10 @@ ol a {
 
 ol a:hover {
 	text-decoration: underline;
+}
+.ic {
+	font-size: 3.4rem;
+	color: $primary;
+	margin-bottom: -12px;
 }
 </style>
