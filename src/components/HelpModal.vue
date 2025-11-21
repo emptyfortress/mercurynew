@@ -1,3 +1,33 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
+
+const props = defineProps<{
+	menuLabel: string
+}>()
+
+const emit = defineEmits<{
+	ok: [menuLabel: string]
+	cancel: [menuLabel: string]
+}>()
+
+const visible = defineModel<boolean>()
+
+const route = useRoute()
+const routePath = computed(() => route.path)
+
+const emitOk = () => {
+	emit('ok', props.menuLabel)
+	visible.value = false
+}
+
+const emitCancel = () => {
+	emit('cancel', props.menuLabel)
+	visible.value = false
+}
+</script>
+
 <template lang="pug">
 q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 	q-card
@@ -42,36 +72,6 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 			q-btn(flat label="Cancel" color="primary" @click="emitCancel")
 			q-btn(unelevated label="OK" color="primary" @click="emitOk")
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
-
-const props = defineProps<{
-	menuLabel: string
-}>()
-
-const emit = defineEmits<{
-	ok: [menuLabel: string]
-	cancel: [menuLabel: string]
-}>()
-
-const visible = defineModel<boolean>()
-
-const route = useRoute()
-const routePath = computed(() => route.path)
-
-const emitOk = () => {
-	emit('ok', props.menuLabel)
-	visible.value = false
-}
-
-const emitCancel = () => {
-	emit('cancel', props.menuLabel)
-	visible.value = false
-}
-</script>
 
 <style lang="scss" scoped>
 .q-card {
