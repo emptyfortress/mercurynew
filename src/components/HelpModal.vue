@@ -11,15 +11,15 @@ q-dialog(v-model="visible")
 <script setup lang="ts">
 const emit = defineEmits(['ok', 'cancel'])
 
-const visible = defineModel()
+const visible = defineModel<boolean>()
 
 const emitOk = () => {
-  emit('ok')
-  visible.value = false
+	emit('ok')
+	visible.value = false
 }
 
 const emitCancel = () => {
-  emit('cancel')
-  visible.value = false
+	emit('cancel')
+	visible.value = false
 }
 </script>
