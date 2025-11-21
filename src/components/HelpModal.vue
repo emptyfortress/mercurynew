@@ -1,12 +1,12 @@
 <template lang="pug">
 q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
-  q-card
-    q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
-    q-card-section.row.items-center.q-pb-none
-      .text-h6(v-if="menuLabel === 'Помощь'") Общая помощь
-      .text-h6(v-else) Интерактивный гид
-    q-card-section(v-if="menuLabel === 'Помощь'")
-      ol
+	q-card
+		q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
+		q-card-section.row.items-center.q-pb-none
+			.text-h6(v-if="menuLabel === 'Помощь'") Общая помощь
+			.text-h6(v-else) Интерактивный гид
+		q-card-section(v-if="menuLabel === 'Помощь'")
+			ol
 				li
 					a(href="#") Введение в приложение
 				li
@@ -69,26 +69,25 @@ const emitCancel = () => {
 
 <style lang="scss" scoped>
 .q-card {
-	min-width: 400px;
+	min-width: 400px
 }
 
 ol {
-	padding-left: 2rem;
-	margin: 1rem 0;
+	padding-left: 2rem
+	margin: 1rem 0
 }
 
 ol li {
-	margin-bottom: 0.75rem;
-	line-height: 1.4;
+	margin-bottom: 0.75rem
+	line-height: 1.4
 }
 
 ol a {
-	color: $primary;
-	text-decoration: none;
+	color: $primary
+	text-decoration: none
 }
 
 ol a:hover {
-	text-decoration: underline;
+	text-decoration: underline
 }
 </style>
-
