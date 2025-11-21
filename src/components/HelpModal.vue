@@ -9,12 +9,14 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
       ol
         li
           a(href="#") Введение в приложение
+				li
+					a(href="#") Построение bpmn-диаграммы
+				li
+					a(href="#") Настройка ролей
         li
           a(href="#") Работа с формами
         li
           a(href="#") Управление списками
-        li
-          a(href="#") Настройка ролей
         li
           a(href="#") Просмотр изменений
         li
@@ -81,11 +83,11 @@ ol li {
 }
 
 ol a {
-	color: $primary
-	text-decoration: none
+	color: $primary;
+	text-decoration: none;
 }
 
 ol a:hover {
-	text-decoration: underline
+	text-decoration: underline;
 }
 </style>
