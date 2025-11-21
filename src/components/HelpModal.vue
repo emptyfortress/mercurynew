@@ -3,6 +3,11 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
 
+type HelpTopic = {
+	label: string
+	url: string
+}
+
 const props = defineProps<{
 	menuLabel: string
 }>()
@@ -17,18 +22,18 @@ const visible = defineModel<boolean>()
 const route = useRoute()
 const routePath = computed(() => route.path)
 
-const helpTopics: readonly string[] = [
-	'Введение в приложение',
-	'Построение bpmn-диаграммы',
-	'Настройка ролей',
-	'Работа с формами',
-	'Управление списками',
-	'Просмотр изменений',
-	'Экспорт данных',
-	'Импорт шаблонов',
-	'Настройки пользователя',
-	'Помощь по API',
-	'Обратная связь',
+const helpTopics: readonly HelpTopic[] = [
+	{ label: 'Введение в приложение', url: '#введение-в-приложении' },
+	{ label: 'Построение bpmn-диаграммы', url: '#bpmn' },
+	{ label: 'Настройка ролей', url: '#роли' },
+	{ label: 'Работа с формами', url: '#формы' },
+	{ label: 'Управление списками', url: '#списки' },
+	{ label: 'Просмотр изменений', url: '#изменения' },
+	{ label: 'Экспорт данных', url: '#экспорт' },
+	{ label: 'Импорт шаблонов', url: '#импорт' },
+	{ label: 'Настройки пользователя', url: '#настройки' },
+	{ label: 'Помощь по API', url: '#api' },
+	{ label: 'Обратная связь', url: '#обратная-связь' }
 ]
 
 const emitOk = () => {
@@ -56,8 +61,8 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 
 		q-card-section(v-if="menuLabel === 'Помощь'")
 			ol
-				li(v-for="topic in helpTopics" :key="topic")
-					a(href="#") {{ topic }}
+				li(v-for="topic in helpTopics" :key="topic.url")
+					a(:href="topic.url") {{ topic.label }}
 		q-card-section(v-else)
 			div Гид по интерфейсу.
 		q-card-section
@@ -96,4 +101,3 @@ ol a:hover {
 	margin-bottom: -12px;
 }
 </style>
-
