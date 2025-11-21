@@ -37,7 +37,7 @@ const helpTopics: readonly HelpTopic[] = [
 	{ label: 'Обратная связь', url: '#обратная-связь' },
 ]
 
-const guidedRoutes: readonly string[] = ['/', '/process', '/:id?']
+const guidedRoutes: readonly string[] = ['/process', '/form', '/request1/:id', '/:id']
 
 const emitOk = () => {
 	emit('ok', props.menuLabel)
