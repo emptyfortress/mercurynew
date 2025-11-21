@@ -4,8 +4,10 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
     q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
     q-card-section.row.items-center.q-pb-none
       .text-h6 {{ menuLabel }}
-    q-card-section
-      div Help content goes here.
+    q-card-section(v-if="menuLabel === 'Помощь'")
+      div Помощь по приложению.
+    q-card-section(v-else)
+      div Гид по интерфейсу.
     q-card-section
       div Current route path: {{ routePath }}
     q-card-actions(align="right")
