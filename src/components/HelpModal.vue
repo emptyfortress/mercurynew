@@ -37,7 +37,14 @@ const helpTopics: readonly HelpTopic[] = [
 	{ label: 'Обратная связь', url: '#обратная-связь' },
 ]
 
-const guidedRoutes: readonly string[] = ['/process', '/form', '/request1/:id', '/:id']
+const guidedRoutes: readonly string[] = ['/process', '/form', '/request1/:id', '/:id?']
+
+const showGuide = computed(() => {
+	if (routePattern.value === '/:id?') {
+		return routePath.value !== '/'
+	}
+	return guidedRoutes.includes(routePattern.value)
+})
 
 const emitOk = () => {
 	emit('ok', props.menuLabel)
@@ -67,7 +74,7 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 				li(v-for="topic in helpTopics" :key="topic.url")
 					a(:href="topic.url") {{ topic.label }}
 		q-card-section(v-else)
-			div(v-if="guidedRoutes.includes(routePattern)")
+			div(v-if="showGuide")
 				|Гид по интерфейсу страницы
 				span {{ route.name }}
 			div(v-else) Гид для этой страницы находится в процессе разработки.
