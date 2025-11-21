@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
+import Fa7SolidDigging from '@/components/icons/Fa7SolidDigging.vue'
 
 type HelpTopic = {
 	label: string
@@ -64,9 +65,10 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 		q-card-section.row.items-center.q-pb-none
 			.text-h6(v-if="menuLabel === 'Помощь'")
 				q-icon.q-mr-sm(name="mdi-book" color="primary" size='md')
-				|Общая помощь
+				|Документация
 			.text-h6(v-else)
-				HealthiconsGuideDogfrom.ic
+				HealthiconsGuideDogfrom.ic(v-if='showGuide')
+				Fa7SolidDigging.ic1(v-else)
 				|Интерактивный гид
 
 		q-card-section(v-if="menuLabel === 'Помощь'")
@@ -75,14 +77,13 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 					a(:href="topic.url") {{ topic.label }}
 		q-card-section(v-else)
 			div(v-if="showGuide")
-				|Гид по интерфейсу страницы
-				span {{ route.name }}
+				|Запустить гид по интерфейсу страницы
+				span.text-bold.q-ml-sm {{ route.name }}?
+				|<br />Вы можете прерваться в любой момент.
 			div(v-else) Гид для этой страницы находится в процессе разработки.
-		q-card-section
-			div Current route path: {{ routePath }}
 		q-card-actions(align="right")
-			q-btn(flat label="Cancel" color="primary" @click="emitCancel")
-			q-btn(unelevated label="OK" color="primary" @click="emitOk")
+			q-btn(flat label="Закрыть" color="primary" @click="emitCancel")
+			q-btn(v-if='showGuide' unelevated label="Старт" color="primary" @click="emitOk")
 </template>
 
 <style lang="scss" scoped>
@@ -112,5 +113,11 @@ ol a:hover {
 	font-size: 3.4rem;
 	color: $primary;
 	margin-bottom: -12px;
+}
+.ic1 {
+	font-size: 2rem;
+	color: $primary;
+	// margin-bottom: -8px;
+	margin-right: 1rem;
 }
 </style>

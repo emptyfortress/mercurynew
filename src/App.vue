@@ -195,7 +195,7 @@ q-layout(view='hHh LpR fFf')
             q-item(clickable @click="helpLabel = 'Помощь'; showHelpModal = true" v-close-popup)
               q-item-section(side)
                 q-icon(name="mdi-book" color="primary")
-              q-item-section Помощь
+              q-item-section Документация
             q-item(clickable @click="helpLabel = 'Гид'; showHelpModal = true" v-close-popup)
               q-item-section(side)
                 HealthiconsGuideDogfrom.ic
