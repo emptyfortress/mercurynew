@@ -13,7 +13,7 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
       div Current route path: {{ routePath }}
     q-card-actions(align="right")
       q-btn(flat label="Cancel" color="primary" @click="emitCancel")
-      q-btn(flat label="OK" color="primary" @click="emitOk")
+      q-btn(unelevated label="OK" color="primary" @click="emitOk")
 </template>
 
 <script setup lang="ts">
@@ -21,12 +21,12 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const props = defineProps<{
-  menuLabel: string
+	menuLabel: string
 }>()
 
 const emit = defineEmits<{
-  ok: [menuLabel: string]
-  cancel: [menuLabel: string]
+	ok: [menuLabel: string]
+	cancel: [menuLabel: string]
 }>()
 
 const visible = defineModel<boolean>()
@@ -35,12 +35,18 @@ const route = useRoute()
 const routePath = computed(() => route.path)
 
 const emitOk = () => {
-  emit('ok', props.menuLabel)
-  visible.value = false
+	emit('ok', props.menuLabel)
+	visible.value = false
 }
 
 const emitCancel = () => {
-  emit('cancel', props.menuLabel)
-  visible.value = false
+	emit('cancel', props.menuLabel)
+	visible.value = false
 }
 </script>
+
+<style lang="scss" scoped>
+.q-card {
+	min-width: 400px;
+}
+</style>
