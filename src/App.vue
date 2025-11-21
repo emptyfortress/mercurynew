@@ -148,11 +148,12 @@ const title = computed(() => {
 
 // --- Help modal state ---
 const showHelpModal = ref(false)
-const handleOk = () => {
-	console.log('Help modal OK clicked')
+const helpLabel = ref('Помощь')
+const handleOk = (menuLabel: string) => {
+	console.log('Help modal OK clicked', menuLabel)
 }
-const handleCancel = () => {
-	console.log('Help modal Cancel clicked')
+const handleCancel = (menuLabel: string) => {
+	console.log('Help modal Cancel clicked', menuLabel)
 }
 </script>
 
@@ -191,11 +192,11 @@ q-layout(view='hHh LpR fFf')
       q-btn.q-mx-sm(dense flat round icon='mdi-help-circle-outline')
         q-menu(transition-show="jump-down" transition-hide="jump-up")
           q-list
-            q-item(clickable @click="showHelpModal = true" v-close-popup)
+            q-item(clickable @click="helpLabel = 'Помощь'; showHelpModal = true" v-close-popup)
               q-item-section(side)
                 q-icon(name="mdi-book" color="primary")
               q-item-section Помощь
-            q-item(clickable @click="showHelpModal = true" v-close-popup)
+            q-item(clickable @click="helpLabel = 'Гид'; showHelpModal = true" v-close-popup)
               q-item-section(side)
                 HealthiconsGuideDogfrom.ic
               q-item-section Гид
@@ -219,7 +220,7 @@ q-layout(view='hHh LpR fFf')
   Fab
 
   // Help modal component
-  HelpModal(v-model="showHelpModal" @ok="handleOk" @cancel="handleCancel")
+  HelpModal(v-model="showHelpModal" :menu-label="helpLabel" @ok="handleOk" @cancel="handleCancel")
 </template>
 
 <style scoped lang="scss">

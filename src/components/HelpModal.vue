@@ -3,7 +3,7 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
   q-card
     q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
     q-card-section.row.items-center.q-pb-none
-      .text-h6 Help
+      .text-h6 {{ menuLabel }}
     q-card-section
       div Help content goes here.
     q-card-section
@@ -17,7 +17,14 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-const emit = defineEmits(['ok', 'cancel'])
+const props = defineProps<{
+  menuLabel: string
+}>()
+
+const emit = defineEmits<{
+  ok: [menuLabel: string]
+  cancel: [menuLabel: string]
+}>()
 
 const visible = defineModel<boolean>()
 
@@ -25,12 +32,12 @@ const route = useRoute()
 const routePath = computed(() => route.path)
 
 const emitOk = () => {
-  emit('ok')
+  emit('ok', props.menuLabel)
   visible.value = false
 }
 
 const emitCancel = () => {
-  emit('cancel')
+  emit('cancel', props.menuLabel)
   visible.value = false
 }
 </script>
