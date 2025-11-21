@@ -17,6 +17,20 @@ const visible = defineModel<boolean>()
 const route = useRoute()
 const routePath = computed(() => route.path)
 
+const helpTopics: readonly string[] = [
+	'Введение в приложение',
+	'Построение bpmn-диаграммы',
+	'Настройка ролей',
+	'Работа с формами',
+	'Управление списками',
+	'Просмотр изменений',
+	'Экспорт данных',
+	'Импорт шаблонов',
+	'Настройки пользователя',
+	'Помощь по API',
+	'Обратная связь'
+]
+
 const emitOk = () => {
 	emit('ok', props.menuLabel)
 	visible.value = false
@@ -42,28 +56,8 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 
 		q-card-section(v-if="menuLabel === 'Помощь'")
 			ol
-				li
-					a(href="#") Введение в приложение
-				li
-					a(href="#") Построение bpmn-диаграммы
-				li
-					a(href="#") Настройка ролей
-				li
-					a(href="#") Работа с формами
-				li
-					a(href="#") Управление списками
-				li
-					a(href="#") Просмотр изменений
-				li
-					a(href="#") Экспорт данных
-				li
-					a(href="#") Импорт шаблонов
-				li
-					a(href="#") Настройки пользователя
-				li
-					a(href="#") Помощь по API
-				li
-					a(href="#") Обратная связь
+				li(v-for="topic in helpTopics" :key="topic")
+					a(href="#") {{ topic }}
 		q-card-section(v-else)
 			div Гид по интерфейсу.
 		q-card-section
