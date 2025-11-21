@@ -325,6 +325,16 @@ q-page(padding, @click='action')
 		:style='calcStyle'
 	)
 		StagePlayScene(:act-name="'home-tour'" :scene="1")
+			template(#voiceOver="scopedProps")
+				MyTour(
+					:title="'Шаг 1: Добавление'"
+					:content="'Здесь вы можете добавить новое приложение или группу.'"
+					:has-prev-scene="scopedProps?.hasPrevScene"
+					:has-next-scene="scopedProps?.hasNextScene"
+					@prev="scopedProps?.prevScene()"
+					@next="scopedProps?.nextScene()"
+					@done="scopedProps?.cut()"
+				)
 			Div.plus(
 				layout
 				:transition='spring'
@@ -336,41 +346,20 @@ q-page(padding, @click='action')
 				:class="calcPlusClass"
 			)
 				AddButtonNew1(mode='app' @create='create')
-			template(#voiceOver="scopedProps")
-				MyTour(
-					:title="'Шаг 1: Добавление'"
-					:content="'Здесь вы можете добавить новое приложение или группу.'"
-					:has-prev-scene="scopedProps.hasPrevScene"
-					:has-next-scene="scopedProps.hasNextScene"
-					@prev="scopedProps.prevScene()"
-					@next="scopedProps.nextScene()"
-					@done="scopedProps.cut()"
-				)
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='app')
 		
-		StagePlayScene(:act-name="'home-tour'" :scene="2")
-			Item(
-				v-model:expanded="expanded"
-				v-model:tapes='tapes'
-				v-model:activeItem="activeItem"
-				@navigate="navigate"
-				@createGroup='createGroup'
-				@drag='startDrag'
-				@duplicate="duble"
-				:shift="shift"
-			)
-			template(#voiceOver="scopedProps")
-				MyTour(
-					:title="'Шаг 2: Рабочая область'"
-					:content="'Это ваша основная рабочая область, где находятся все приложения. Вы можете перетаскивать их, чтобы изменить порядок.'"
-					:has-prev-scene="scopedProps.hasPrevScene"
-					:has-next-scene="scopedProps.hasNextScene"
-					@prev="scopedProps.prevScene()"
-					@next="scopedProps.nextScene()"
-					@done="scopedProps.cut()"
-				)
+		Item(
+			v-model:expanded="expanded"
+			v-model:tapes='tapes'
+			v-model:activeItem="activeItem"
+			@navigate="navigate"
+			@createGroup='createGroup'
+			@drag='startDrag'
+			@duplicate="duble"
+			:shift="shift"
+		)
 
 </template>
 
