@@ -9,27 +9,17 @@ q-dialog(v-model="visible")
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+const emit = defineEmits(['ok', 'cancel'])
 
-const props = defineProps({
-  modelValue: { type: Boolean, default: false }
-});
-const emit = defineEmits(['update:modelValue', 'ok', 'cancel']);
+const visible = defineModel()
 
-const visible = ref(props.modelValue);
-watch(() => props.modelValue, (val) => {
-  visible.value = val;
-});
-watch(visible, (val) => {
-  emit('update:modelValue', val);
-});
-
-function emitOk() {
-  emit('ok');
-  visible.value = false;
+const emitOk = () => {
+  emit('ok')
+  visible.value = false
 }
-function emitCancel() {
-  emit('cancel');
-  visible.value = false;
+
+const emitCancel = () => {
+  emit('cancel')
+  visible.value = false
 }
 </script>
