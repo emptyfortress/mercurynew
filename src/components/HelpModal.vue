@@ -21,6 +21,7 @@ const visible = defineModel<boolean>()
 
 const route = useRoute()
 const routePath = computed(() => route.path)
+const routePattern = computed(() => route.matched[0]?.path || route.path)
 
 const helpTopics: readonly HelpTopic[] = [
 	{ label: 'Введение в приложение', url: '#введение-в-приложении' },
@@ -36,7 +37,7 @@ const helpTopics: readonly HelpTopic[] = [
 	{ label: 'Обратная связь', url: '#обратная-связь' },
 ]
 
-const guidedRoutes: readonly string[] = ['/', '/process']
+const guidedRoutes: readonly string[] = ['/', '/process', '/:id?']
 
 const emitOk = () => {
 	emit('ok', props.menuLabel)
@@ -66,7 +67,7 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 				li(v-for="topic in helpTopics" :key="topic.url")
 					a(:href="topic.url") {{ topic.label }}
 		q-card-section(v-else)
-			div(v-if="guidedRoutes.includes(routePath)")
+			div(v-if="guidedRoutes.includes(routePattern)")
 				|Гид по интерфейсу страницы
 				span {{ route.name }}
 			div(v-else) Гид для этой страницы находится в процессе разработки.
