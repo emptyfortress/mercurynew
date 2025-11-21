@@ -18,15 +18,15 @@ import HelpModal from '@/components/HelpModal.vue'
 const route = useRoute()
 
 watch(
-  () => route.meta.hideScroll,
-  (hideScroll) => {
-    if (hideScroll) {
-      document.documentElement.style.overflow = 'hidden'
-    } else {
-      document.documentElement.style.overflow = ''
-    }
-  },
-  { immediate: true }
+	() => route.meta.hideScroll,
+	(hideScroll) => {
+		if (hideScroll) {
+			document.documentElement.style.overflow = 'hidden'
+		} else {
+			document.documentElement.style.overflow = ''
+		}
+	},
+	{ immediate: true }
 )
 
 const router = useRouter()
@@ -38,121 +38,121 @@ const app = useStorage('app', localStorage)
 const cover = ref(0)
 
 router.beforeEach((to, from, next) => {
-  // Безопасно читаем count (0, если не указан)
-  const toCount = typeof to.meta.count === 'number' ? to.meta.count : 0
-  const fromCount = typeof from.meta.count === 'number' ? from.meta.count : 0
-  cover.value = toCount - fromCount
-  next()
+	// Безопасно читаем count (0, если не указан)
+	const toCount = typeof to.meta.count === 'number' ? to.meta.count : 0
+	const fromCount = typeof from.meta.count === 'number' ? from.meta.count : 0
+	cover.value = toCount - fromCount
+	next()
 })
 
 const leaveClass = computed(() => {
-  const v = cover.value
-  if (v === 19) return 'fadeOutLeft'
-  if (v === -19) return 'fadeOutRight'
-  if (v > 0) return 'fadeOutTop'
-  if (v < 0) return 'fadeOutBottom'
-  return 'fadeOutTop' // безопасный дефолт на случай 0/NaN
+	const v = cover.value
+	if (v === 19) return 'fadeOutLeft'
+	if (v === -19) return 'fadeOutRight'
+	if (v > 0) return 'fadeOutTop'
+	if (v < 0) return 'fadeOutBottom'
+	return 'fadeOutTop' // безопасный дефолт на случай 0/NaN
 })
 
 const enterClass = computed(() => {
-  const v = cover.value
-  if (v === 19) return 'fadeInRight'
-  if (v === -19) return 'fadeInLeft'
-  if (v > 0) return 'fadeInBottom'
-  if (v < 0) return 'fadeInTop'
-  return 'fadeInBottom' // безопасный дефолт на случай 0/NaN
+	const v = cover.value
+	if (v === 19) return 'fadeInRight'
+	if (v === -19) return 'fadeInLeft'
+	if (v > 0) return 'fadeInBottom'
+	if (v < 0) return 'fadeInTop'
+	return 'fadeInBottom' // безопасный дефолт на случай 0/NaN
 })
 
 const nav = () => {
-  router.push('/')
+	router.push('/')
 }
 
 const helpMode = ref(false)
 
 const toggleBug = () => {
-  helpMode.value = false
-  rightDrawer.value = !rightDrawer.value
+	helpMode.value = false
+	rightDrawer.value = !rightDrawer.value
 }
 
 const lang = [
-  {
-    id: 0,
-    label: 'Русский',
-    icon: CifRu,
-  },
-  {
-    id: 1,
-    label: 'English',
-    icon: CifGb,
-  },
+	{
+		id: 0,
+		label: 'Русский',
+		icon: CifRu,
+	},
+	{
+		id: 1,
+		label: 'English',
+		icon: CifGb,
+	},
 ]
 
 const currentLang = shallowRef({
-  id: 0,
-  label: 'Русский',
-  icon: CifRu,
+	id: 0,
+	label: 'Русский',
+	icon: CifRu,
 })
 const changeLang = (e: any) => {
-  currentLang.value = e
+	currentLang.value = e
 }
 const calcClass = (num: number) => {
-  if (currentLang.value.id == num) return 'selected'
+	if (currentLang.value.id == num) return 'selected'
 }
 
 const user = [
-  {
-    id: 0,
-    icon: OcticonTools,
-    label: 'Настройки конструктора',
-    action: () => router.push('/settings'),
-  },
-  {
-    id: 1,
-    icon: MdiCloudUploadOutline,
-    label: 'Управление публикациями',
-    action: () => router.push('/publications'),
-  },
-  {
-    id: 2,
-    icon: StreamlineEmergencyExitSolid,
-    label: 'Выход',
-    action: undefined,
-  },
+	{
+		id: 0,
+		icon: OcticonTools,
+		label: 'Настройки конструктора',
+		action: () => router.push('/settings'),
+	},
+	{
+		id: 1,
+		icon: MdiCloudUploadOutline,
+		label: 'Управление публикациями',
+		action: () => router.push('/publications'),
+	},
+	{
+		id: 2,
+		icon: StreamlineEmergencyExitSolid,
+		label: 'Выход',
+		action: undefined,
+	},
 ]
 
 const topLevelKey = (route: any) => route.matched[0]?.path || route.path
 
 const title = computed(() => {
-  if (route.matched[0]?.path === '/:id?') {
-    return 'Конструктор приложений'
-  }
+	if (route.matched[0]?.path === '/:id?') {
+		return 'Конструктор приложений'
+	}
 
-  if (route.path.startsWith('/timeline')) {
-    return 'Ход исполнения'
-  }
+	if (route.path.startsWith('/timeline')) {
+		return 'Ход исполнения'
+	}
 
-  if (route.path.startsWith('/settings')) {
-    return 'Настройка конструктора'
-  }
+	if (route.path.startsWith('/settings')) {
+		return 'Настройка конструктора'
+	}
 
-  if (route.path.startsWith('/map')) {
-    return 'Публикация версии'
-  }
+	if (route.path.startsWith('/map')) {
+		return 'Публикация версии'
+	}
 
-  if (route.path.startsWith('/publications')) {
-    return 'Управление публикациями'
-  }
+	if (route.path.startsWith('/publications')) {
+		return 'Управление публикациями'
+	}
 
-  return `Настройка приложения "${app.value.label}"`
+	return `Настройка приложения "${app.value.label}"`
 })
 
 // --- Help modal state ---
 const showHelpModal = ref(false)
 const handleOk = () => {
-  console.log('Help modal OK clicked')
+	console.log('Help modal OK clicked')
 }
 const handleCancel = () => {
-  console.log('Help modal Cancel clicked')
+	console.log('Help modal Cancel clicked')
 }
 </script>
 
@@ -219,143 +219,143 @@ q-layout(view='hHh LpR fFf')
   Fab
 
   // Help modal component
-  HelpModal v-model="showHelpModal" @ok="handleOk" @cancel="handleCancel"
+  HelpModal(v-model="showHelpModal" @ok="handleOk" @cancel="handleCancel")
 </template>
 
 <style scoped lang="scss">
 .home {
-  font-size: 1.5rem;
+	font-size: 1.5rem;
 }
 
 .logo {
-  display: block;
-  margin: 0 auto 2rem;
+	display: block;
+	margin: 0 auto 2rem;
 }
 
 nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+	width: 100%;
+	font-size: 12px;
+	text-align: center;
+	margin-top: 2rem;
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
+	color: var(--color-text);
 }
 
 nav a.router-link-exact-active:hover {
-  background-color: transparent;
+	background-color: transparent;
 }
 
 nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+	display: inline-block;
+	padding: 0 1rem;
+	border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
-  border: 0;
+	border: 0;
 }
 
 @media (min-width: 1024px) {
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+	.logo {
+		margin: 0 2rem 0 0;
+	}
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
+	nav {
+		text-align: left;
+		margin-left: -1rem;
+		font-size: 1rem;
 
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+		padding: 1rem 0;
+		margin-top: 1rem;
+	}
 }
 
 #cont {
-  position: relative;
+	position: relative;
 }
 .bounce {
-  animation: bounce-alt 1s linear 3;
-  animation-fill-mode: none;
+	animation: bounce-alt 1s linear 3;
+	animation-fill-mode: none;
 }
 @keyframes bounce-alt {
-  from,
-  20%,
-  53%,
-  80%,
-  to {
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    transform: translate3d(0, 0, 0);
-  }
-  40%,
-  43% {
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    transform: translate3d(0, -30px, 0);
-  }
-  70% {
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    transform: translate3d(0, -15px, 0);
-  }
-  90% {
-    transform: translate3d(0, -4px, 0);
-  }
+	from,
+	20%,
+	53%,
+	80%,
+	to {
+		animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+		transform: translate3d(0, 0, 0);
+	}
+	40%,
+	43% {
+		animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+		transform: translate3d(0, -30px, 0);
+	}
+	70% {
+		animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+		transform: translate3d(0, -15px, 0);
+	}
+	90% {
+		transform: translate3d(0, -4px, 0);
+	}
 }
 .animate-bounce-alt {
-  animation: bounce-alt 1s linear infinite;
-  transform-origin: center bottom;
+	animation: bounce-alt 1s linear infinite;
+	transform-origin: center bottom;
 }
 .group {
-  font-size: 0.7rem;
-  display: flex;
-  gap: 0.5rem;
-  justify-content: start;
-  align-items: center;
-  margin-right: 3rem;
-  .q-avatar {
-    cursor: pointer;
-  }
+	font-size: 0.7rem;
+	display: flex;
+	gap: 0.5rem;
+	justify-content: start;
+	align-items: center;
+	margin-right: 3rem;
+	.q-avatar {
+		cursor: pointer;
+	}
 }
 .save {
-  margin-left: 3rem;
+	margin-left: 3rem;
 }
 .lang {
-  margin: 0 1rem;
-  margin-top: 5px;
-  cursor: pointer;
-  svg {
-    width: 28px;
-    height: 28px;
-  }
+	margin: 0 1rem;
+	margin-top: 5px;
+	cursor: pointer;
+	svg {
+		width: 28px;
+		height: 28px;
+	}
 }
 :deep(.q-item.selected) {
-  background: var(--selection);
+	background: var(--selection);
 }
 .bubble {
-  width: 42ch;
-  position: absolute;
-  top: -103px;
-  left: -250px;
-  border-radius: 0.4rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  color: white;
-  background: $negative;
+	width: 42ch;
+	position: absolute;
+	top: -103px;
+	left: -250px;
+	border-radius: 0.4rem;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+	padding: 0.5rem;
+	font-size: 0.9rem;
+	color: white;
+	background: $negative;
 }
 .ic {
-  font-size: 1.5rem;
-  color: $primary;
+	font-size: 1.5rem;
+	color: $primary;
 }
 .fab {
-  position: fixed;
-  bottom: 2.5rem;
-  right: 7rem;
+	position: fixed;
+	bottom: 2.5rem;
+	right: 7rem;
 }
 .myflex {
-  display: flex;
+	display: flex;
 }
 .ic {
-  font-size: 1.7rem;
+	font-size: 1.7rem;
 }
 </style>
