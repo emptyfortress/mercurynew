@@ -72,25 +72,25 @@ const emitCancel = () => {
 
 <style lang="scss" scoped>
 .q-card {
-	min-width: 400px
+	min-width: 400px;
 }
 
 ol {
-	padding-left: 2rem
-	margin: 1rem 0
+	padding-left: 2rem;
+	margin: 1rem 0;
 }
 
 ol li {
-	margin-bottom: 0.75rem
-	line-height: 1.4
+	margin-bottom: 0.75rem;
+	line-height: 1.4;
 }
 
 ol a {
-	color: $primary
-	text-decoration: none
+	color: $primary;
+	text-decoration: none;
 }
 
 ol a:hover {
-	text-decoration: underline
+	text-decoration: underline;
 }
 </style>
