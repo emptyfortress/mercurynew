@@ -1,15 +1,11 @@
-<template>
-  <q-dialog v-model="visible">
-    <q-card>
-      <q-card-section>
-        <div>Help content goes here.</div>
-      </q-card-section>
-      <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" @click="emitCancel" />
-        <q-btn flat label="OK" color="primary" @click="emitOk" />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+<template lang="pug">
+q-dialog(v-model="visible")
+  q-card
+    q-card-section
+      div Help content goes here.
+    q-card-actions(align="right")
+      q-btn(flat label="Cancel" color="primary" @click="emitCancel")
+      q-btn(flat label="OK" color="primary" @click="emitOk")
 </template>
 
 <script setup lang="ts">
