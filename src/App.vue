@@ -345,7 +345,7 @@ nav a:first-of-type {
 	background: $negative;
 }
 .ic {
-	font-size: 1.5rem;
+	font-size: 1.7rem;
 	color: $primary;
 }
 .fab {
@@ -355,8 +355,5 @@ nav a:first-of-type {
 }
 .myflex {
 	display: flex;
-}
-.ic {
-	font-size: 1.7rem;
 }
 </style>
