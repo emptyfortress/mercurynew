@@ -1,6 +1,9 @@
 <template lang="pug">
-q-dialog(v-model="visible")
+q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
   q-card
+    q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
+    q-card-section.row.items-center.q-pb-none
+      .text-h6 Help
     q-card-section
       div Help content goes here.
     q-card-section
