@@ -33,10 +33,10 @@ const helpTopics: readonly HelpTopic[] = [
 	{ label: 'Импорт шаблонов', url: '#импорт' },
 	{ label: 'Настройки пользователя', url: '#настройки' },
 	{ label: 'Помощь по API', url: '#api' },
-	{ label: 'Обратная связь', url: '#обратная-связь' }
+	{ label: 'Обратная связь', url: '#обратная-связь' },
 ]
 
-const guidedRoutes: readonly string[] = ['/', '/settings', '/publications', '/timeline', '/map']
+const guidedRoutes: readonly string[] = ['/', '/process']
 
 const emitOk = () => {
 	emit('ok', props.menuLabel)
@@ -66,7 +66,9 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 				li(v-for="topic in helpTopics" :key="topic.url")
 					a(:href="topic.url") {{ topic.label }}
 		q-card-section(v-else)
-			div(v-if="guidedRoutes.includes(routePath)") Гид по интерфейсу.
+			div(v-if="guidedRoutes.includes(routePath)")
+				|Гид по интерфейсу страницы
+				span {{ route.name }}
 			div(v-else) Гид для этой страницы находится в процессе разработки.
 		q-card-section
 			div Current route path: {{ routePath }}
