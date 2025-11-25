@@ -2,8 +2,6 @@
 import { ref, computed, watch, onMounted, onUpdated, markRaw } from 'vue'
 import { motion } from 'motion-v'
 import { animations } from '@formkit/drag-and-drop'
-import { StagePlaySpotlight, StagePlayScene } from 'vue-stage-play'
-import MyTour from '@/components/MyTour.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useApps } from '@/stores/apps'
@@ -317,35 +315,22 @@ const startDrag = (e: any) => {
 q-page(padding, @click='action')
 	//- Loader overlay using LoaderSkeleton component
 	LoaderSkeleton(v-if="loading" paddingTop='42px')
-	StagePlaySpotlight
-
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
 		:style='calcStyle'
 	)
-		StagePlayScene(:act-name="'home-tour'" :scene="1")
-			template(#voiceOver="scopedProps")
-				MyTour(
-					:title="'Шаг 1: Добавление'"
-					:content="'Здесь вы можете добавить новое приложение или группу.'"
-					:has-prev-scene="scopedProps?.hasPrevScene"
-					:has-next-scene="scopedProps?.hasNextScene"
-					@prev="scopedProps?.prevScene()"
-					@next="scopedProps?.nextScene()"
-					@done="scopedProps?.cut()"
-				)
-			Div.plus(
-				layout
-				:transition='spring'
-				@click.stop
-				@dragover.prevent="onDragEnterPlus"
-				@dragenter.prevent
-				@dragleave="onDragLeavePlus"
-				@drop='onDropPlus'
-				:class="calcPlusClass"
-			)
-				AddButtonNew1(mode='app' @create='create')
+		Div.plus(
+			layout
+			:transition='spring'
+			@click.stop
+			@dragover.prevent="onDragEnterPlus"
+			@dragenter.prevent
+			@dragleave="onDragLeavePlus"
+			@drop='onDropPlus'
+			:class="calcPlusClass"
+		)
+			AddButtonNew1(mode='app' @create='create')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='app')

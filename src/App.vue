@@ -2,7 +2,6 @@
 import { ref, computed, shallowRef, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import { useStorage } from '@vueuse/core'
-import { useStagePlay } from 'vue-stage-play'
 import { useRouter, useRoute } from 'vue-router'
 import Drawer from '@/components/Drawer.vue'
 import RDrawer from '@/components/RDrawer.vue'
@@ -150,13 +149,13 @@ const title = computed(() => {
 // --- Help modal state ---
 const showHelpModal = ref(false)
 const helpLabel = ref('Помощь')
-const { action: startTour } = useStagePlay()
+// const { action: startTour } = useStagePlay()
 
 const handleOk = (menuLabel: string) => {
 	console.log('Help modal OK clicked', menuLabel)
-	if (menuLabel === 'Гид') {
-		startTour('home-tour')
-	}
+	// if (menuLabel === 'Гид') {
+	// 	startTour('home-tour')
+	// }
 }
 const handleCancel = (menuLabel: string) => {
 	console.log('Help modal Cancel clicked', menuLabel)
