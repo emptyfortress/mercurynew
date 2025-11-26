@@ -22,6 +22,7 @@
 		"apexcharts": "^5.3.4",
 		"bpmn-js": "^18.6.5",
 		"bpmn-js-token-simulation": "^0.38.1",
+		"driver.js": "^1.4.0",
 		"gsap": "^3.12.5",
 		"moment": "^2.30.1",
 		"motion-v": "^0.13.0",

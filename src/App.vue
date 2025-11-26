@@ -14,8 +14,10 @@ import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
 import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
 import HelpModal from '@/components/HelpModal.vue'
+import { useAppTour } from '@/tour'
 
 const route = useRoute()
+const { startTour } = useAppTour()
 
 watch(
 	() => route.meta.hideScroll,
@@ -151,8 +153,9 @@ const showHelpModal = ref(false)
 const helpLabel = ref('Помощь')
 // const { action: startTour } = useStagePlay()
 
-const handleOk = (menuLabel: string) => {
-	console.log('Help modal OK clicked', menuLabel)
+const handleOk = () => {
+	startTour(route)
+	// console.log('Help modal OK clicked', menuLabel)
 	// if (menuLabel === 'Гид') {
 	// 	startTour('home-tour')
 	// }
