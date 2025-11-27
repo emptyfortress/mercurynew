@@ -279,50 +279,6 @@ nav a:first-of-type {
 #cont {
 	position: relative;
 }
-.bounce {
-	animation: bounce-alt 1s linear 3;
-	animation-fill-mode: none;
-}
-@keyframes bounce-alt {
-	from,
-	20%,
-	53%,
-	80%,
-	to {
-		animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-		transform: translate3d(0, 0, 0);
-	}
-	40%,
-	43% {
-		animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-		transform: translate3d(0, -30px, 0);
-	}
-	70% {
-		animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-		transform: translate3d(0, -15px, 0);
-	}
-	90% {
-		transform: translate3d(0, -4px, 0);
-	}
-}
-.animate-bounce-alt {
-	animation: bounce-alt 1s linear infinite;
-	transform-origin: center bottom;
-}
-.group {
-	font-size: 0.7rem;
-	display: flex;
-	gap: 0.5rem;
-	justify-content: start;
-	align-items: center;
-	margin-right: 3rem;
-	.q-avatar {
-		cursor: pointer;
-	}
-}
-.save {
-	margin-left: 3rem;
-}
 .lang {
 	margin: 0 1rem;
 	margin-top: 5px;
@@ -335,28 +291,8 @@ nav a:first-of-type {
 :deep(.q-item.selected) {
 	background: var(--selection);
 }
-.bubble {
-	width: 42ch;
-	position: absolute;
-	top: -103px;
-	left: -250px;
-	border-radius: 0.4rem;
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-	padding: 0.5rem;
-	font-size: 0.9rem;
-	color: white;
-	background: $negative;
-}
 .ic {
 	font-size: 1.7rem;
 	color: $primary;
-}
-.fab {
-	position: fixed;
-	bottom: 2.5rem;
-	right: 7rem;
-}
-.myflex {
-	display: flex;
 }
 </style>
