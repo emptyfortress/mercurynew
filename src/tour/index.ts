@@ -4,14 +4,16 @@ import type { RouteLocationNormalizedLoaded } from 'vue-router'
 
 import type { DriveStep } from 'driver.js'
 
-import homeSteps from './steps/home'
-import dashboardSteps from './steps/dashboard'
-import settingsSteps from './steps/settings'
+import homeSteps from '@/tour/steps/home'
+import dashboardSteps from '@/tour/steps/dashboard'
+import settingsSteps from '@/tour/steps/settings'
+import processSteps from '@/tour/steps/process'
 
 const stepsMap: Record<string, DriveStep[]> = {
 	'/spot': homeSteps,
 	'/dashboard': dashboardSteps,
 	'/settings': settingsSteps,
+	'/process': processSteps,
 }
 
 let instance: ReturnType<typeof driver> | null = null

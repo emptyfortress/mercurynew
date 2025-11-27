@@ -77,8 +77,7 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 					a(:href="topic.url") {{ topic.label }}
 		q-card-section(v-else)
 			div(v-if="showGuide")
-				|Запустить гид по интерфейсу страницы
-				span.text-bold.q-ml-sm {{ route.name }}?
+				|Запустить гид по интерфейсу страницы?
 				|<br />Вы можете прерваться в любой момент.
 			div(v-else) Гид для этой страницы находится в процессе разработки.
 		q-card-actions(align="right")
@@ -88,7 +87,7 @@ q-dialog(v-model="visible" backdrop-filter="blur(4px) saturate(150%)")
 
 <style lang="scss" scoped>
 .q-card {
-	min-width: 400px;
+	min-width: 300px;
 }
 
 ol {

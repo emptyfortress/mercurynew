@@ -151,14 +151,9 @@ const title = computed(() => {
 // --- Help modal state ---
 const showHelpModal = ref(false)
 const helpLabel = ref('Помощь')
-// const { action: startTour } = useStagePlay()
 
 const handleOk = () => {
 	startTour(route)
-	// console.log('Help modal OK clicked', menuLabel)
-	// if (menuLabel === 'Гид') {
-	// 	startTour('home-tour')
-	// }
 }
 const handleCancel = (menuLabel: string) => {
 	console.log('Help modal Cancel clicked', menuLabel)
@@ -169,7 +164,7 @@ const handleCancel = (menuLabel: string) => {
 q-layout(view='hHh LpR fFf')
   q-header(elevated)
     q-toolbar
-      q-btn(dense flat round @click='nav')
+      q-btn(dense flat round @click='nav' data-tour='home')
         img(src='@/assets/img/kp_logo.svg')
         q-tooltip Домой
       q-toolbar-title {{ title }}
