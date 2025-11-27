@@ -38,7 +38,8 @@ const helpTopics: readonly HelpTopic[] = [
 	{ label: 'Обратная связь', url: '#обратная-связь' },
 ]
 
-const guidedRoutes: readonly string[] = ['/spot', '/process', '/form', '/request1/:id', '/:id?']
+// const guidedRoutes: readonly string[] = ['/spot', '/process', '/form', '/request1/:id', '/:id?']
+const guidedRoutes: readonly string[] = ['/process']
 
 const showGuide = computed(() => {
 	// if (routePattern.value === '/:id?') {
