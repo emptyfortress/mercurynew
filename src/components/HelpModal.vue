@@ -41,9 +41,9 @@ const helpTopics: readonly HelpTopic[] = [
 const guidedRoutes: readonly string[] = ['/spot', '/process', '/form', '/request1/:id', '/:id?']
 
 const showGuide = computed(() => {
-	if (routePattern.value === '/:id?') {
-		return routePath.value !== '/'
-	}
+	// if (routePattern.value === '/:id?') {
+	// 	return routePath.value !== '/'
+	// }
 	return guidedRoutes.includes(routePattern.value)
 })
 
