@@ -13,8 +13,11 @@ import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
 import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
 import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
+import HelpModal from '@/components/HelpModal.vue'
+import { useAppTour } from '@/tour'
 
 const route = useRoute()
+const { startTour } = useAppTour()
 
 watch(
 	() => route.meta.hideScroll,
@@ -144,70 +147,83 @@ const title = computed(() => {
 
 	return `Настройка приложения "${app.value.label}"`
 })
+
+// --- Help modal state ---
+const showHelpModal = ref(false)
+const helpLabel = ref('Помощь')
+
+const handleOk = () => {
+	startTour(route)
+}
+const handleCancel = (menuLabel: string) => {
+	console.log('Help modal Cancel clicked', menuLabel)
+}
 </script>
 
 <template lang="pug">
 q-layout(view='hHh LpR fFf')
-	q-header(elevated)
-		q-toolbar
-			q-btn(dense flat round @click='nav')
-				img(src='@/assets/img/kp_logo.svg')
-				q-tooltip Домой
-			q-toolbar-title {{ title }}
-			.lang
-				component(:is='currentLang.icon')
-				q-menu(transition-show="jump-down" transition-hide="jump-up")
-					q-list
-						q-item(clickable v-for="item in lang" :key='item.id' @click="changeLang(item)" v-close-popup :class="calcClass(item.id)")
-							q-item-section(side)
-								component(:is='item.icon')
-							q-item-section {{ item.label }}
+  q-header(elevated)
+    q-toolbar
+      q-btn(dense flat round @click='nav' data-tour='home')
+        img(src='@/assets/img/kp_logo.svg')
+        q-tooltip Домой
+      q-toolbar-title {{ title }}
+      .lang
+        component(:is='currentLang.icon')
+        q-menu(transition-show="jump-down" transition-hide="jump-up")
+          q-list
+            q-item(clickable v-for="item in lang" :key='item.id' @click="changeLang(item)" v-close-popup :class="calcClass(item.id)")
+              q-item-section(side)
+                component(:is='item.icon')
+              q-item-section {{ item.label }}
 
-			q-avatar(size='md')
-				img(src="https://cdn.quasar.dev/img/avatar.png")
-				q-menu(transition-show="jump-down" transition-hide="jump-up")
-					q-list
-						q-item(clickable  v-close-popup)
-							q-item-section(side)
-								q-avatar(size='26px')
-									img(src="https://cdn.quasar.dev/img/avatar.png")
-							q-item-section Администратор
+      q-avatar(size='md')
+        img(src="https://cdn.quasar.dev/img/avatar.png")
+        q-menu(transition-show="jump-down" transition-hide="jump-up")
+          q-list
+            q-item(clickable  v-close-popup)
+              q-item-section(side)
+                q-avatar(size='26px')
+                  img(src="https://cdn.quasar.dev/img/avatar.png")
+              q-item-section Администратор
 
-						q-item(clickable v-for="item in user" :key='item.id' @click="item.action" v-close-popup)
-							q-item-section(side)
-								component.ic(:is='item.icon')
-							q-item-section {{ item.label }}
+            q-item(clickable v-for="item in user" :key='item.id' @click="item.action" v-close-popup)
+              q-item-section(side)
+                component.ic(:is='item.icon')
+              q-item-section {{ item.label }}
 
-			q-btn.q-mx-sm(dense flat round icon='mdi-help-circle-outline')
-				q-menu(transition-show="jump-down" transition-hide="jump-up")
-					q-list
-						q-item(clickable  v-close-popup)
-							q-item-section(side)
-								q-icon(name="mdi-book" color="primary")
-							q-item-section Помощь
-						q-item(clickable  v-close-popup)
-							q-item-section(side)
-								HealthiconsGuideDogfrom.ic
-							q-item-section Гид
+      q-btn.q-mx-sm(dense flat round icon='mdi-help-circle-outline')
+        q-menu(transition-show="jump-down" transition-hide="jump-up")
+          q-list
+            q-item(clickable @click="helpLabel = 'Помощь'; showHelpModal = true" v-close-popup)
+              q-item-section(side)
+                q-icon(name="mdi-book" color="primary")
+              q-item-section Документация
+            q-item(clickable @click="helpLabel = 'Гид'; showHelpModal = true" v-close-popup)
+              q-item-section(side)
+                HealthiconsGuideDogfrom.ic
+              q-item-section Гид
 
+      q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 
-			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
+  Drawer
+  RDrawer(v-model="rightDrawer" :help='helpMode')
 
-	Drawer
-	RDrawer(v-model="rightDrawer" :help='helpMode')
+  q-page-container
+    #cont
+      router-view(v-slot="{ Component, route }")
+        transition(
+          :leave-active-class="leaveClass"
+          :enter-active-class="enterClass"
+          mode='out-in'
+          )
+          component(:is="Component" :key="topLevelKey(route)")
 
-	q-page-container
-		#cont
-			router-view(v-slot="{ Component, route }")
-				transition(
-					:leave-active-class="leaveClass"
-					:enter-active-class="enterClass"
-					mode='out-in'
-					)
-					component(:is="Component" :key="topLevelKey(route)")
+  Footer
+  Fab
 
-	Footer
-	Fab
+  // Help modal component
+  HelpModal(v-model="showHelpModal" :menu-label="helpLabel" @ok="handleOk" @cancel="handleCancel")
 </template>
 
 <style scoped lang="scss">
@@ -332,7 +348,7 @@ nav a:first-of-type {
 	background: $negative;
 }
 .ic {
-	font-size: 1.5rem;
+	font-size: 1.7rem;
 	color: $primary;
 }
 .fab {
@@ -342,8 +358,5 @@ nav a:first-of-type {
 }
 .myflex {
 	display: flex;
-}
-.ic {
-	font-size: 1.7rem;
 }
 </style>

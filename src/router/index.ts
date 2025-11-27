@@ -78,17 +78,6 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/spot',
-			name: 'spot',
-			component: () => import('@/views/Spotlight.vue'),
-			meta: {
-				toolbar: true,
-				back: false,
-				count: 0,
-				save: false,
-			},
-		},
-		{
 			path: '/iconList',
 			name: 'iconList',
 			component: () => import('@/views/IconList.vue'),

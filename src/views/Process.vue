@@ -57,7 +57,7 @@ watch(
 q-page(padding
 	:class='{ collapsed: panels.right0}'
 	)
-	.editor
+	.editor(data-tour='process-editor')
 		//- Loader skeleton inside .editor when loading
 		div(v-if="loading" )
 			.skel(class="editor-loader")
@@ -75,8 +75,8 @@ q-page(padding
 		//- Hide .center when loading, show with fade transition when finished
 		transition(name="fade")
 			div(v-if="!loading" class="center")
-				DiagramSvg
-				Look
+				DiagramSvg(data-tour='bpmn-diagram')
+				Look(data-tour='bpmn-roles')
 
 	PlusButton(@activate='startRight0' @stop='stopRight0')
 </template>

@@ -27,12 +27,12 @@ const localCreated = computed(() => {
 
 <template lang="pug">
 q-footer.footer(v-if='footerState')
-	.cent
+	.cent(data-tour='footer-main')
 		div Версия: {{ app.versions[0].label }}
 		div Автор: {{ app.versions[0].author }}
 		div Создано: {{ localCreated }}
 
-	.cent
+	.cent(data-tour='footer-save')
 		div(v-if='app.versions[0].modified == null && !hasChanges')
 			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
 			span Все изменения сохранены

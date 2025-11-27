@@ -315,13 +315,11 @@ const startDrag = (e: any) => {
 q-page(padding, @click='action')
 	//- Loader overlay using LoaderSkeleton component
 	LoaderSkeleton(v-if="loading" paddingTop='42px')
-
 	.parent(ref='parent'
 		:class="{'end': expanded}"
 		@click.stop='back'
 		:style='calcStyle'
 	)
-
 		Div.plus(
 			layout
 			:transition='spring'
@@ -336,7 +334,7 @@ q-page(padding, @click='action')
 
 		.cen( v-if='tapes.length == 0')
 			Empty(mode='app')
-
+		
 		Item(
 			v-model:expanded="expanded"
 			v-model:tapes='tapes'

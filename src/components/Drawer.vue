@@ -117,6 +117,7 @@ const toHome = () => {
 q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 
 	q-btn.back(v-if='back'
+		data-tour='back-button'
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
@@ -140,6 +141,7 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 		) 
 
 	.toolbar(v-if="tool"
+		data-tour='toolbar-main'
 		v-motion
 		:initial='{ x: -200, opacity: 0 }'
 		:enter='{ x: 0, opacity: 1, transition: { stiffness: 190, damping: 23, delay: 500 } }'
@@ -154,7 +156,12 @@ q-drawer(v-model='draw' side='left' behavior="desktop" :width="calcWidth")
 					q-item-section(v-if='!mini')
 						q-item-label {{ page.title }}
 
-	q-btn.mini(v-if='tool' flat round color="primary" @click="mini = !mini") 
+	q-btn.mini(
+		data-tour='mini-button'
+		v-if='tool' flat round,
+		color="primary",
+		@click="mini = !mini"
+	) 
 		q-icon(v-if='mini' name="mdi-forwardburger" color="primary")
 		q-icon(v-else name="mdi-backburger" color="primary")
 </template>
