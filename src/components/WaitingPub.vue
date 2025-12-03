@@ -4,7 +4,9 @@ import type { QTableProps } from 'quasar'
 import { date } from 'quasar'
 import SvgSpinnersBarsRotateFade from '@/components/icons/SvgSpinnersBarsRotateFade.vue'
 import MappingDialog from '@/components/MappingDialog.vue'
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const cols: QTableProps['columns'] = [
 	{
 		name: 'created',
@@ -162,8 +164,8 @@ const progress: any = ref([])
 const curDB = ref('')
 const curRow: any = ref()
 const dialog = ref(false)
+
 const prepublish = (e: any, db: string) => {
-	console.log(e)
 	curDB.value = db
 	curRow.value = e
 	dialog.value = !dialog.value
@@ -184,9 +186,16 @@ const publish = () => {
 }
 
 const remove = (row: any) => {
-	let tmp = progress.value.findIndex((el: any) => el.id == row.id)
+	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
 	if (tmp > -1) {
-		progress.value.splice(tmp, 1)
+		rows.value.splice(tmp, 1)
+		setTimeout(() => {
+			$q.notify({
+				icon: 'mdi-cancel',
+				color: 'negative',
+				message: 'Публикация отклонена, версия переведена в статус "Черновик"',
+			})
+		}, 1200)
 	}
 }
 
@@ -199,7 +208,6 @@ const errPub = () => {
 	if (tmp > -1) {
 		rows.value.splice(tmp, 1)
 	}
-	// let fuck = rows.value[tmp]
 	progress.value.push({
 		id: 2,
 		app: 'Служебные записки',
@@ -256,47 +264,11 @@ template(v-if='rows.length')
 								q-item-section(side)
 									q-icon(name="mdi-pencil" color="primary")
 								q-item-section Открыть версию
-							q-item(clickable color="negative")
+							q-item(clickable color="negative" @click='remove(props.row)')
 								q-item-section(side)
-									q-icon(name="mdi-delete-outline" color="negative")
-								q-item-section Отменить публикацию
+									q-icon(name="mdi-cancel" color="negative")
+								q-item-section Отклонить публикацию
 
-br
-template(v-if='progress.length')
-	.h7 В процессе публикации
-	q-table(flat,
-		:columns="cols1"
-		:rows="progress"
-		row-key="id"
-		color="primary"
-		hide-bottom
-		)
-		template(v-slot:body-cell-status='props')
-			q-td.text-center(:props='props')
-				.pub(v-if='props.row.status == 1')
-					SvgSpinnersBarsRotateFade.ic
-					span &nbsp;&nbsp;Публикация
-				.pub(v-if='props.row.status == 2')
-					q-icon(name="mdi-check-bold" color="positive" size="22px")
-					span.q-ml-sm Опубликовано
-				span.red(v-if='props.row.col2 == 0')
-					q-icon(name="mdi-close-octagon" color="negative")
-					|&nbsp;Ошибка
-
-		template(v-slot:body-cell-actions='props')
-			q-td.text-center(:props='props' auto-width)
-				q-btn(flat round color="primary" icon="mdi-delete-outline" @click="remove(props.row)" size='md' dense) 
-				q-btn(flat round color="primary" icon="mdi-dots-vertical" @click="" size='md' dense) 
-					q-menu
-						q-list
-							q-item(clickable)
-								q-item-section(side)
-									q-icon(name="mdi-pencil" color="primary")
-								q-item-section Открыть версию
-							q-item(clickable color="negative")
-								q-item-section(side)
-									q-icon(name="mdi-delete-outline" color="negative")
-								q-item-section Отменить публикацию
 
 MappingDialog(v-model="dialog" :bd='curDB' @publish="publish")
 </template>
