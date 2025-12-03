@@ -69,57 +69,6 @@ const cols: QTableProps['columns'] = [
 	},
 ]
 
-const cols1: QTableProps['columns'] = [
-	{
-		name: 'app',
-		required: true,
-		label: 'Приложениe',
-		align: 'left',
-		field: 'app',
-		sortable: true,
-	},
-	{
-		name: 'version',
-		required: true,
-		label: 'Версия',
-		align: 'left',
-		field: 'version',
-		sortable: true,
-	},
-	{
-		name: 'started',
-		required: true,
-		label: 'Дата старта',
-		align: 'left',
-		field: 'started',
-		sortable: true,
-		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
-	},
-	{
-		name: 'db',
-		required: true,
-		label: 'База данных',
-		align: 'left',
-		field: 'db',
-		sortable: true,
-	},
-	{
-		name: 'status',
-		required: true,
-		label: 'Статус',
-		align: 'left',
-		field: 'status',
-		sortable: true,
-	},
-	{
-		name: 'actions',
-		required: true,
-		label: '',
-		align: 'right',
-		field: 'actions',
-		sortable: false,
-	},
-]
 const rows: any = ref([
 	{
 		id: 0,
@@ -172,10 +121,6 @@ const prepublish = (e: any, db: string) => {
 }
 
 const publish = () => {
-	let tmp = rows.value.findIndex((el: any) => el.id == curRow.value.id)
-	if (tmp > -1) {
-		rows.value.splice(tmp, 1)
-	}
 	curRow.value.started = Date.now()
 	curRow.value.db = curDB.value
 	curRow.value.status = 1
