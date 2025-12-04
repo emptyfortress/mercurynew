@@ -13,6 +13,10 @@ const emit = defineEmits(['reject'])
 
 const reason = ref('')
 
+const onHide = () => {
+	reason.value = ''
+}
+
 const close = () => {
 	modelValue.value = false
 }
@@ -26,7 +30,7 @@ const reject = () => {
 </script>
 
 <template lang="pug">
-q-dialog(v-model="modelValue")
+q-dialog(v-model="modelValue" @hide="onHide")
 	q-card(style="min-width: 500px;")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
