@@ -139,54 +139,38 @@ const prepublish = (e: any, db: string) => {
 
 const publish = () => {
 	curRow.value.db = curDB.value
-	if (curDB.value == 'DV-Main') {
-		curRow.value.loadingMain = true
-		setTimeout(() => {
-			curRow.value.loadingMain = false
-			curRow.value.dvmain = Date.now()
-			$q.notify({
-				icon: 'mdi-check-bold',
-				color: 'positive',
-				message: 'Версия успешно опубликована на сервере DV-Main',
-			})
-			const maxId =
-				logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
-			logEventsStore.events.unshift({
-				id: maxId + 1,
-				date: Date.now(),
-				app: curRow.value.app,
-				user: 'admin',
-				db: curDB.value,
-				event: 'Публикация',
-				result: true,
-				reason: '',
-			})
-		}, 5000)
+	const db = curDB.value
+
+	if (db !== 'DV-Main' && db !== 'DV-Prod') {
+		return
 	}
-	if (curDB.value == 'DV-Prod') {
-		curRow.value.loadingProd = true
-		setTimeout(() => {
-			curRow.value.loadingProd = false
-			curRow.value.dvprod = Date.now()
-			$q.notify({
-				icon: 'mdi-check-bold',
-				color: 'positive',
-				message: 'Версия успешно опубликована на сервере DV-Prod',
-			})
-			const maxId =
-				logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
-			logEventsStore.events.unshift({
-				id: maxId + 1,
-				date: Date.now(),
-				app: curRow.value.app,
-				user: 'admin',
-				db: curDB.value,
-				event: 'Публикация',
-				result: true,
-				reason: '',
-			})
-		}, 5000)
-	}
+
+	const loadingKey = db === 'DV-Main' ? 'loadingMain' : 'loadingProd'
+	const dateKey = db === 'DV-Main' ? 'dvmain' : 'dvprod'
+
+	curRow.value[loadingKey] = true
+
+	setTimeout(() => {
+		curRow.value[loadingKey] = false
+		curRow.value[dateKey] = Date.now()
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: `Версия успешно опубликована на сервере ${db}`,
+		})
+		const maxId =
+			logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+		logEventsStore.events.unshift({
+			id: maxId + 1,
+			date: Date.now(),
+			app: curRow.value.app,
+			user: 'admin',
+			db: db,
+			event: 'Публикация',
+			result: true,
+			reason: '',
+		})
+	}, 5000)
 }
 
 const remove1 = (row: any, reason: string) => {
