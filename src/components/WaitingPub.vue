@@ -230,7 +230,9 @@ const errPub = () => {
 
 const goto = (name: string) => {
 	let tmp = myapps.pathForEvent(name)
-	router.push(tmp)
+	if (tmp) {
+		router.push(tmp)
+	}
 }
 </script>
 

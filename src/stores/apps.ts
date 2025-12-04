@@ -373,7 +373,7 @@ export const useApps = defineStore('apps', () => {
 	}
 
 	const pathForEvent = (app: string) => {
-		let tmp = apps.value.find((el) => el.label == app)
+		let tmp = flatApps.value.find((el) => el.label == app)
 		if (tmp) {
 			return '/' + tmp.id
 		}
