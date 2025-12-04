@@ -54,7 +54,7 @@ const cols: QTableProps['columns'] = [
 	},
 ]
 
-const rows = [
+const events = [
 	{
 		id: 0,
 		date: 1756447083568,
@@ -177,7 +177,7 @@ const page = {
 .h7 Журнал событий
 q-table(flat,
 	:columns="cols"
-	:rows="rows"
+	:rows="events"
 	row-key="id"
 	color="primary"
 	:pagination="page"
