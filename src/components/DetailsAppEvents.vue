@@ -12,6 +12,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	showDbColumn: {
+		type: Boolean,
+		default: true,
+	},
 })
 
 const router = useRouter()
@@ -98,7 +102,9 @@ const cols = computed(() => {
 			sortable: false,
 		},
 	]
-	return allColumns.filter((col) => props.showAppColumn || col.name !== 'app')
+	return allColumns.filter(
+		(col) => (props.showAppColumn || col.name !== 'app') && (props.showDbColumn || col.name !== 'db')
+	)
 })
 const page = {
 	rowsPerPage: 7,
