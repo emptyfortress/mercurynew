@@ -142,10 +142,12 @@ const publish = () => {
 				color: 'positive',
 				message: 'Версия успешно опубликована на сервере DV-Main',
 			})
-			const maxId = logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+			const maxId =
+				logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
 			logEventsStore.events.unshift({
 				id: maxId + 1,
 				date: Date.now(),
+				app: curRow.value.app,
 				user: 'admin',
 				db: curDB.value,
 				event: 'Публикация',
@@ -163,10 +165,12 @@ const publish = () => {
 				color: 'positive',
 				message: 'Версия успешно опубликована на сервере DV-Prod',
 			})
-			const maxId = logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+			const maxId =
+				logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
 			logEventsStore.events.unshift({
 				id: maxId + 1,
 				date: Date.now(),
+				app: curRow.value.app,
 				user: 'admin',
 				db: curDB.value,
 				event: 'Публикация',
