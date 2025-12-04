@@ -184,6 +184,17 @@ const remove1 = (row: any) => {
 	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
 	if (tmp > -1) {
 		rows.value.splice(tmp, 1)
+		const maxId =
+			logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+		logEventsStore.events.unshift({
+			id: maxId + 1,
+			date: Date.now(),
+			app: row.app,
+			user: 'admin',
+			db: '--',
+			event: 'Публикация отклонена',
+			result: false,
+		})
 		setTimeout(() => {
 			$q.notify({
 				icon: 'mdi-cancel',
