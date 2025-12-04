@@ -7,10 +7,9 @@ import ErrDialog from '@/components/ErrDialog.vue'
 import { useQuasar } from 'quasar'
 import { useLogEventsStore } from '@/stores/logevents'
 import { useApps } from '@/stores/apps'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
-// const route = useRoute()
 
 const myapps = useApps()
 
@@ -83,7 +82,7 @@ const rows: any = ref([])
 const rowsStart = [
 	{
 		id: 0,
-		app: 'Заявка на отпуск',
+		app: 'Заявки на отпуск',
 		version: 'Базовая',
 		author: 'Орлов П.С.',
 		created: 1755513353568,
@@ -93,7 +92,7 @@ const rowsStart = [
 	},
 	{
 		id: 3,
-		app: 'Заявка на отпуск',
+		app: 'Заявки на отпуск',
 		version: 'Базовая-copy',
 		author: 'Сирень Крокодиловна',
 		created: 1755513363568,
