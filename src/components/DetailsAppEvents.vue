@@ -54,17 +54,6 @@ const cols: QTableProps['columns'] = [
 	},
 ]
 
-// const rows = [
-// 	{
-// 		id: 0,
-// 		date: 1755533483568,
-// 		user: 'Орлов П.С.',
-// 		db: 'DV-Test',
-// 		event: 'Проверка',
-// 		result: true,
-// 	},
-// ]
-
 const rows = [
 	{
 		id: 0,

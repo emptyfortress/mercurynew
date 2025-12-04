@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import type { QTableProps } from 'quasar'
 import { date } from 'quasar'
-import SvgSpinnersBarsRotateFade from '@/components/icons/SvgSpinnersBarsRotateFade.vue'
 import MappingDialog from '@/components/MappingDialog.vue'
+import ErrDialog from '@/components/ErrDialog.vue'
 import { useQuasar } from 'quasar'
 
 const $q = useQuasar()
@@ -16,6 +16,14 @@ const cols: QTableProps['columns'] = [
 		field: 'created',
 		sortable: true,
 		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
+	},
+	{
+		name: 'author',
+		required: true,
+		label: 'Кто публикует',
+		align: 'left',
+		field: 'author',
+		sortable: true,
 	},
 	{
 		name: 'app',
@@ -31,14 +39,6 @@ const cols: QTableProps['columns'] = [
 		label: 'Версия',
 		align: 'left',
 		field: 'version',
-		sortable: true,
-	},
-	{
-		name: 'author',
-		required: true,
-		label: 'Кто публикует',
-		align: 'left',
-		field: 'author',
 		sortable: true,
 	},
 	{
@@ -69,7 +69,9 @@ const cols: QTableProps['columns'] = [
 	},
 ]
 
-const rows: any = ref([
+const rows: any = ref([])
+
+const rowsStart = [
 	{
 		id: 0,
 		app: 'Заявка на отпуск',
@@ -110,7 +112,11 @@ const rows: any = ref([
 		loadingProd: false,
 		dvmain: 0,
 	},
-])
+]
+
+const load = () => {
+	rows.value = [...rowsStart]
+}
 
 const curDB = ref('')
 const curRow: any = ref()
@@ -150,7 +156,7 @@ const publish = () => {
 	}
 }
 
-const remove = (row: any) => {
+const remove1 = (row: any) => {
 	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
 	if (tmp > -1) {
 		rows.value.splice(tmp, 1)
@@ -163,85 +169,109 @@ const remove = (row: any) => {
 		}, 1200)
 	}
 }
+const remove = (row: any) => {
+	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
+	if (tmp > -1) {
+		rows.value.splice(tmp, 1)
+	}
+}
 
 const dat = (val: number) => {
 	return date.formatDate(val, 'DD.MM.YY HH:mm')
 }
 
+const errModal = ref(false)
+
 const errPub = () => {
-	let tmp = rows.value.findIndex((el: any) => el.id == 2)
-	if (tmp > -1) {
-		rows.value.splice(tmp, 1)
-	}
+	errModal.value = !errModal.value
 }
 </script>
 
 <template lang="pug">
-template(v-if='rows.length')
-	.h7 Ожидают публикации
-	q-table(flat,
-		:columns="cols"
-		:rows="rows"
-		row-key="id"
-		color="primary"
-		hide-bottom
-		)
-		template(v-slot:header-cell-dvmain='props')
-			q-th
-				q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
-				span.text-bold.text-primary {{ props.col.label}}
+.h7(@click='load') Запросы на публикацию ({{rows.length}})
+q-table(flat,
+	:columns="cols"
+	:rows="rows"
+	row-key="id"
+	)
 
-		template(v-slot:header-cell-dvprod='props')
-			q-th
-				q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
-				span.text-bold.text-primary {{ props.col.label}}
+	template(v-slot:no-data)
+		q-icon.q-mr-md(name="mdi-emoticon-cool-outline" color="grey" size='md')
+		span Запросы на публикацию отсутствуют.
 
-		template(v-slot:body-cell-dvmain='props')
-			q-td.text-center(:props='props')
-				q-btn(v-if='props.row.dvmain==undefined' :loading="props.row.loadingMain" flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Main')" size='sm') 
-					template(v-slot:loading)
-						q-spinner-gears(class="on-left" size='24px')
-						span Публикация...
+	template(v-slot:header-cell-dvmain='props')
+		q-th
+			q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
+			span.text-bold.text-primary {{ props.col.label}}
 
-				.red(v-if='props.row.dvmain == 0' @click='errPub')
-					q-icon(name="mdi-close-octagon" color="negative" size='20px')
-					|&nbsp;&nbsp;Ошибка
-				div(v-if='props.row.dvmain')
-					q-icon(name="mdi-check-bold" color="positive" size='20px')
-					|&nbsp;{{ dat(props.row.dvmain) }}
+	template(v-slot:header-cell-dvprod='props')
+		q-th
+			q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
+			span.text-bold.text-primary {{ props.col.label}}
 
-		template(v-slot:body-cell-dvprod='props')
-			q-td.text-center(:props='props')
-				q-btn(v-if='!props.row.dvprod' :loading="props.row.loadingProd" flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Prod')" size='sm') 
-					template(v-slot:loading)
-						q-spinner-gears(class="on-left" size='24px')
-						span Публикация...
-				div(v-else)
-					q-icon(name="mdi-check-bold" color="positive" size='20px')
-					|&nbsp;{{ dat(props.row.dvprod) }}
+	template(v-slot:body-cell-dvmain='props')
+		q-td.text-center(:props='props')
+			q-btn(v-if='props.row.dvmain==undefined' :loading="props.row.loadingMain" flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Main')" size='sm') 
+				template(v-slot:loading)
+					q-spinner-gears(class="on-left" size='24px')
+					span Публикация...
+
+			.red(v-if='props.row.dvmain == 0' @click='errPub')
+				q-icon(name="mdi-close-octagon" color="negative" size='20px')
+				|&nbsp;&nbsp;19.08.25 16:12
+			div(v-if='props.row.dvmain')
+				q-icon(name="mdi-check-bold" color="positive" size='20px')
+				.link {{ dat(props.row.dvmain) }}
+
+	template(v-slot:body-cell-dvprod='props')
+		q-td.text-center(:props='props')
+			q-btn(v-if='!props.row.dvprod' :loading="props.row.loadingProd" flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Prod')" size='sm') 
+				template(v-slot:loading)
+					q-spinner-gears(class="on-left" size='24px')
+					span Публикация...
+			div(v-else)
+				q-icon(name="mdi-check-bold" color="positive" size='20px')
+				.link {{ dat(props.row.dvprod) }}
 
 
-		template(v-slot:body-cell-actions='props')
-			q-td.text-center(:props='props' auto-width)
-				q-btn(flat round color="primary" icon="mdi-dots-vertical" @click.stop size='md' dense) 
-					q-menu
-						q-list
-							q-item(clickable)
-								q-item-section(side)
-									q-icon(name="mdi-pencil" color="primary")
-								q-item-section Открыть версию
-							q-item(clickable color="negative" @click='remove(props.row)')
-								q-item-section(side)
-									q-icon(name="mdi-cancel" color="negative")
-								q-item-section Отклонить публикацию
+	template(v-slot:body-cell-actions='props')
+		q-td.text-center(:props='props' auto-width)
+			q-btn(flat round color="primary" icon="mdi-dots-vertical" @click.stop size='md' dense) 
+				q-menu
+					q-list
+						q-item(clickable)
+							q-item-section(side)
+								q-icon(name="mdi-pencil" color="primary")
+							q-item-section Открыть версию
+						q-item(clickable color="negative" @click='remove(props.row)' v-if='props.row.dvmain && props.row.dvprod')
+							q-item-section(side)
+								q-icon(name="mdi-close" color="primary")
+							q-item-section Очистить
+
+						q-item(clickable color="negative" @click='remove1(props.row)' v-else)
+							q-item-section(side)
+								q-icon(name="mdi-cancel" color="negative")
+							q-item-section Отклонить публикацию
 
 
 MappingDialog(v-model="dialog" :bd='curDB' @publish="publish")
+ErrDialog(v-model="errModal" :bd='curDB' @publish="publish")
 </template>
 
 <style scoped lang="scss">
 .red {
 	color: $negative;
-	font-weight: 600;
+	cursor: pointer;
+	// font-weight: 600;
+}
+.link {
+	color: $primary;
+	text-decoration: underline;
+	margin-left: 0.5rem;
+	display: inline;
+	cursor: pointer;
+}
+:deep(.q-field__control:before) {
+	background: #fff;
 }
 </style>
