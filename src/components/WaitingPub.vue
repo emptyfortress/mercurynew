@@ -205,7 +205,7 @@ const remove1 = (row: any) => {
 			$q.notify({
 				icon: 'mdi-cancel',
 				color: 'negative',
-				message: 'Публикация отклонена, версия переведена в статус "Черновик"',
+				message: 'Публикация отклонена.',
 			})
 		}, 1200)
 	}
