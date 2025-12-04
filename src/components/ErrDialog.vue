@@ -23,15 +23,6 @@ const close = () => {
 	modelValue.value = false
 }
 
-const reset = () => {}
-
-const emit = defineEmits(['publish'])
-
-const publish = () => {
-	emit('publish')
-	close()
-	reset()
-}
 const goto = () => {
 	if (props.row) {
 		let tmp = myapps.pathForEvent(props.row.app)
@@ -40,6 +31,9 @@ const goto = () => {
 			close()
 		}
 	}
+}
+const reject = () => {
+	console.log('reject')
 }
 </script>
 
@@ -59,7 +53,7 @@ q-dialog(v-model="modelValue")
 			q-btn(flat color="primary" label="Открыть версию" @click="goto")
 			q-space
 			q-btn(flat color="primary" label="Закрыть" @click="close")
-			q-btn(unelevated color="primary" label="Отменить публикацию" type="submit")
+			q-btn(unelevated color="primary" label="Отклонить публикацию" @click='reject')
 </template>
 
 <style scoped lang="scss">
