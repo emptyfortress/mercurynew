@@ -187,7 +187,7 @@ const remove1 = (row: any, reason: string) => {
 				app: row.app,
 				user: 'admin',
 				db: '--',
-				event: 'Публикация отклонена',
+				event: 'Отклонение публикации',
 				reason: reason,
 				result: true,
 			})
