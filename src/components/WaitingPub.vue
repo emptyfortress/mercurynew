@@ -200,7 +200,7 @@ const remove1 = (row: any) => {
 				user: 'admin',
 				db: '--',
 				event: 'Публикация отклонена',
-				result: false,
+				result: true,
 			})
 			$q.notify({
 				icon: 'mdi-cancel',
@@ -305,7 +305,7 @@ q-table(flat,
 
 
 MappingDialog(v-model="dialog" :bd='curDB' @publish="publish")
-ErrDialog(v-model="errModal" :bd='curDB' :row="curRow" @publish="publish" @reject="remove1")
+ErrDialog(v-model="errModal" :bd='curDB' :row="curRow" @reject="remove1")
 </template>
 
 <style scoped lang="scss">
