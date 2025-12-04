@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
 import { date } from 'quasar'
 import type { QTableProps } from 'quasar'
 import { storeToRefs } from 'pinia'
@@ -11,6 +12,17 @@ const myapps = useApps()
 
 const logEventsStore = useLogEventsStore()
 const { events } = storeToRefs(logEventsStore)
+
+const isReady = ref(false)
+onMounted(() => {
+	setTimeout(() => {
+		isReady.value = true
+	}, 2000)
+})
+
+const tableRows = computed(() => {
+	return isReady.value ? events.value : []
+})
 
 const goto = (name: string) => {
 	let tmp = myapps.pathForEvent(name)
@@ -87,7 +99,7 @@ const page = {
 .h7 Журнал событий
 q-table(flat,
 	:columns="cols"
-	:rows="events"
+	:rows="tableRows"
 	row-key="id"
 	color="primary"
 	:pagination="page"
