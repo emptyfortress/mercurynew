@@ -38,8 +38,8 @@ const goto = (name: string) => {
 	}
 }
 
-const cols = computed<QTableProps['columns']>(() =>
-	[
+const cols = computed(() => {
+	const allColumns: NonNullable<QTableProps['columns']> = [
 		{
 			name: 'date',
 			required: true,
@@ -97,8 +97,9 @@ const cols = computed<QTableProps['columns']>(() =>
 			field: 'action',
 			sortable: false,
 		},
-	].filter((col) => props.showAppColumn || col.name !== 'app')
-)
+	]
+	return allColumns.filter((col) => props.showAppColumn || col.name !== 'app')
+})
 const page = {
 	rowsPerPage: 7,
 }
