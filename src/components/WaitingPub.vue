@@ -187,7 +187,7 @@ const publish = () => {
 	}
 }
 
-const remove1 = (row: any) => {
+const remove1 = (row: any, reason: string) => {
 	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
 	if (tmp > -1) {
 		rows.value.splice(tmp, 1)
@@ -201,7 +201,8 @@ const remove1 = (row: any) => {
 				user: 'admin',
 				db: '--',
 				event: 'Публикация отклонена',
-				result: true,
+				reason: reason,
+				result: false,
 			})
 			$q.notify({
 				icon: 'mdi-cancel',

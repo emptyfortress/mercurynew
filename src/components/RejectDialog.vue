@@ -18,8 +18,8 @@ const close = () => {
 }
 
 const reject = () => {
-	if (props.row && reason.value) {
-		emit('reject', props.row)
+	if (props.row) {
+		emit('reject', props.row, reason.value)
 		close()
 	}
 }
@@ -38,7 +38,7 @@ q-dialog(v-model="modelValue")
 
 		q-card-actions.q-mx-sm.q-mt-xl(align="right")
 			q-btn(flat color="primary" label="Отмена" v-close-popup)
-			q-btn(unelevated color="primary" label="Отклонить" @click='reject' :disable="!reason")
+			q-btn(unelevated color="primary" label="Отклонить" @click='reject')
 </template>
 
 <style scoped lang="scss">
