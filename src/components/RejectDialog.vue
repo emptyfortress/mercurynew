@@ -34,7 +34,7 @@ q-dialog(v-model="modelValue")
 
 		.q-mx-md
 			div Укажите причину отклонения:
-			q-input.q-mt-md(v-model="reason" type="textarea" outlined autogrow)
+			q-input.q-mt-md(v-model="reason" dense type="textarea" outlined autogrow)
 
 		q-card-actions.q-mx-sm.q-mt-xl(align="right")
 			q-btn(flat color="primary" label="Отмена" v-close-popup)
@@ -43,7 +43,7 @@ q-dialog(v-model="modelValue")
 
 <style scoped lang="scss">
 :deep(.q-field__control:before) {
-	background: #fff;
+	// background: #fff;
 }
 .close {
 	position: absolute;
