@@ -24,6 +24,9 @@ const publish = () => {
 	close()
 	reset()
 }
+const goto = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
@@ -39,7 +42,7 @@ q-dialog(v-model="modelValue")
 			code.code Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi unde qui ducimus odit quisquam? Aliquid rem harum libero ut. Sint enim harum voluptas! Et officiis nobis beatae officia numquam sunt?
 
 		q-card-actions.q-mx-sm.q-mt-xl(align="right")
-			q-btn(flat color="primary" label="Открыть версию" @click="reset")
+			q-btn(flat color="primary" label="Открыть версию" @click="goto")
 			q-space
 			q-btn(flat color="primary" label="Закрыть" @click="close")
 			q-btn(unelevated color="primary" label="Отменить публикацию" type="submit")
