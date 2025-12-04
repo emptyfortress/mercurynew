@@ -18,6 +18,7 @@ const props = defineProps({
 })
 
 const modelValue = defineModel<boolean>()
+const emit = defineEmits(['reject'])
 
 const close = () => {
 	modelValue.value = false
@@ -33,7 +34,10 @@ const goto = () => {
 	}
 }
 const reject = () => {
-	console.log('reject')
+	if (props.row) {
+		emit('reject', props.row)
+		close()
+	}
 }
 </script>
 
