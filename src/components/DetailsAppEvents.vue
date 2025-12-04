@@ -129,7 +129,7 @@ q-table(flat,
 	template(v-slot:body-cell-event='props')
 		q-td(:props='props')
 			span {{ props.row.event }}
-			q-icon.q-ml-md(name="mdi-message-reply-text-outline" color="primary" v-if='props.row.reason.length > 0' size='20px')
+			q-icon.q-ml-md(name="mdi-message-text-outline" color="primary" v-if='props.row.reason.length > 0' size='20px')
 				q-tooltip {{ props.row.reason }}
 
 	template(v-slot:body-cell-action='props')

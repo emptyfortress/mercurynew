@@ -204,7 +204,7 @@ const remove1 = (row: any, reason: string) => {
 				db: '--',
 				event: 'Публикация отклонена',
 				reason: reason,
-				result: false,
+				result: true,
 			})
 			$q.notify({
 				icon: 'mdi-cancel',
