@@ -7,6 +7,13 @@ import { useLogEventsStore } from '@/stores/logevents'
 import { useApps } from '@/stores/apps'
 import { useRouter } from 'vue-router'
 
+const props = defineProps({
+	showAppColumn: {
+		type: Boolean,
+		default: true,
+	},
+})
+
 const router = useRouter()
 const myapps = useApps()
 
@@ -31,65 +38,67 @@ const goto = (name: string) => {
 	}
 }
 
-const cols: QTableProps['columns'] = [
-	{
-		name: 'date',
-		required: true,
-		label: 'Дата',
-		align: 'left',
-		field: 'date',
-		sortable: true,
-		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
-	},
-	{
-		name: 'user',
-		required: true,
-		label: 'Пользователь',
-		align: 'left',
-		field: 'user',
-		sortable: true,
-	},
-	{
-		name: 'app',
-		required: true,
-		label: 'Приложение',
-		align: 'left',
-		field: 'app',
-		sortable: true,
-	},
-	{
-		name: 'db',
-		required: true,
-		label: 'База данных',
-		align: 'left',
-		field: 'db',
-		sortable: true,
-	},
-	{
-		name: 'event',
-		required: true,
-		label: 'Событие',
-		align: 'left',
-		field: 'event',
-		sortable: true,
-	},
-	{
-		name: 'result',
-		required: true,
-		label: 'Результат',
-		align: 'center',
-		field: 'result',
-		sortable: true,
-	},
-	{
-		name: 'action',
-		required: true,
-		label: '',
-		align: 'left',
-		field: 'action',
-		sortable: false,
-	},
-]
+const cols = computed<QTableProps['columns']>(() =>
+	[
+		{
+			name: 'date',
+			required: true,
+			label: 'Дата',
+			align: 'left',
+			field: 'date',
+			sortable: true,
+			format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
+		},
+		{
+			name: 'user',
+			required: true,
+			label: 'Пользователь',
+			align: 'left',
+			field: 'user',
+			sortable: true,
+		},
+		{
+			name: 'app',
+			required: true,
+			label: 'Приложение',
+			align: 'left',
+			field: 'app',
+			sortable: true,
+		},
+		{
+			name: 'db',
+			required: true,
+			label: 'База данных',
+			align: 'left',
+			field: 'db',
+			sortable: true,
+		},
+		{
+			name: 'event',
+			required: true,
+			label: 'Событие',
+			align: 'left',
+			field: 'event',
+			sortable: true,
+		},
+		{
+			name: 'result',
+			required: true,
+			label: 'Результат',
+			align: 'center',
+			field: 'result',
+			sortable: true,
+		},
+		{
+			name: 'action',
+			required: true,
+			label: '',
+			align: 'left',
+			field: 'action',
+			sortable: false,
+		},
+	].filter((col) => props.showAppColumn || col.name !== 'app')
+)
 const page = {
 	rowsPerPage: 7,
 }
