@@ -5,6 +5,7 @@ import { date } from 'quasar'
 import MappingDialog from '@/components/MappingDialog.vue'
 import ErrDialog from '@/components/ErrDialog.vue'
 import RejectDialog from '@/components/RejectDialog.vue'
+import PublicationStatusCell from '@/components/PublicationStatusCell.vue'
 import { useQuasar } from 'quasar'
 import { useLogEventsStore } from '@/stores/logevents'
 import { useApps } from '@/stores/apps'
@@ -253,28 +254,10 @@ q-table(flat,
 			span.text-bold.text-primary {{ props.col.label}}
 
 	template(v-slot:body-cell-dvmain='props')
-		q-td.text-center(:props='props')
-			q-btn(v-if='props.row.dvmain==undefined' :loading="props.row.loadingMain" flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Main')" size='sm') 
-				template(v-slot:loading)
-					q-spinner-gears(class="on-left" size='24px')
-					span Публикация...
-
-			.red(v-if='props.row.dvmain == 0' @click='errPub(props.row)')
-				q-icon(name="mdi-close-octagon" color="negative" size='20px')
-				|&nbsp;&nbsp;19.08.25 16:12
-			div(v-if='props.row.dvmain')
-				q-icon(name="mdi-check-bold" color="positive" size='20px')
-				.link {{ dat(props.row.dvmain) }}
+		PublicationStatusCell(:row="props.row" dbName="DV-Main" @prepublish="prepublish" @errPub="errPub")
 
 	template(v-slot:body-cell-dvprod='props')
-		q-td.text-center(:props='props')
-			q-btn(v-if='!props.row.dvprod' :loading="props.row.loadingProd" flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Prod')" size='sm') 
-				template(v-slot:loading)
-					q-spinner-gears(class="on-left" size='24px')
-					span Публикация...
-			div(v-else)
-				q-icon(name="mdi-check-bold" color="positive" size='20px')
-				.link {{ dat(props.row.dvprod) }}
+		PublicationStatusCell(:row="props.row" dbName="DV-Prod" @prepublish="prepublish")
 
 
 	template(v-slot:body-cell-actions='props')
