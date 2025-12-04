@@ -2,9 +2,19 @@
 import { ref } from 'vue'
 import type { QTableProps } from 'quasar'
 import { date } from 'quasar'
-import SvgSpinnersBarsRotateFade from '@/components/icons/SvgSpinnersBarsRotateFade.vue'
 import MappingDialog from '@/components/MappingDialog.vue'
+import ErrDialog from '@/components/ErrDialog.vue'
+import { useQuasar } from 'quasar'
+import { useLogEventsStore } from '@/stores/logevents'
+import { useApps } from '@/stores/apps'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
+
+const myapps = useApps()
+
+const $q = useQuasar()
+const logEventsStore = useLogEventsStore()
 const cols: QTableProps['columns'] = [
 	{
 		name: 'created',
@@ -16,22 +26,6 @@ const cols: QTableProps['columns'] = [
 		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
 	},
 	{
-		name: 'app',
-		required: true,
-		label: 'Приложениe',
-		align: 'left',
-		field: 'app',
-		sortable: true,
-	},
-	{
-		name: 'version',
-		required: true,
-		label: 'Версия',
-		align: 'left',
-		field: 'version',
-		sortable: true,
-	},
-	{
 		name: 'author',
 		required: true,
 		label: 'Кто публикует',
@@ -40,35 +34,6 @@ const cols: QTableProps['columns'] = [
 		sortable: true,
 	},
 	{
-		name: 'col2',
-		required: true,
-		label: 'DV-Main',
-		align: 'center',
-		field: 'col2',
-		sortable: true,
-		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
-	},
-	{
-		name: 'col3',
-		required: true,
-		label: 'DV-Prod',
-		align: 'center',
-		field: 'col3',
-		sortable: true,
-		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
-	},
-	{
-		name: 'actions',
-		required: true,
-		label: '',
-		align: 'right',
-		field: 'actions',
-		sortable: false,
-	},
-]
-
-const cols1: QTableProps['columns'] = [
-	{
 		name: 'app',
 		required: true,
 		label: 'Приложениe',
@@ -85,29 +50,22 @@ const cols1: QTableProps['columns'] = [
 		sortable: true,
 	},
 	{
-		name: 'started',
+		name: 'dvmain',
 		required: true,
-		label: 'Дата старта',
-		align: 'left',
-		field: 'started',
+		label: 'DV-Main',
+		align: 'center',
+		field: 'dvmain',
 		sortable: true,
 		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
 	},
 	{
-		name: 'db',
+		name: 'dvprod',
 		required: true,
-		label: 'База данных',
-		align: 'left',
-		field: 'db',
+		label: 'DV-Prod',
+		align: 'center',
+		field: 'dvprod',
 		sortable: true,
-	},
-	{
-		name: 'status',
-		required: true,
-		label: 'Статус',
-		align: 'left',
-		field: 'status',
-		sortable: true,
+		format: (val) => (val ? date.formatDate(val, 'DD.MM.YY HH:mm') : ''),
 	},
 	{
 		name: 'actions',
@@ -118,24 +76,29 @@ const cols1: QTableProps['columns'] = [
 		sortable: false,
 	},
 ]
-const rows: any = ref([
+
+const rows: any = ref([])
+
+const rowsStart = [
 	{
 		id: 0,
-		app: 'Заявка на отпуск',
+		app: 'Заявки на отпуск',
 		version: 'Базовая',
 		author: 'Орлов П.С.',
 		created: 1755513353568,
-		col2: 1755514403568,
-		status: 1,
+		dvmain: 1755514403568,
+		loadingMain: false,
+		loadingProd: false,
 	},
 	{
 		id: 3,
-		app: 'Заявка на отпуск',
+		app: 'Заявки на отпуск',
 		version: 'Базовая-copy',
 		author: 'Сирень Крокодиловна',
 		created: 1755513363568,
-		col3: 1755514253568,
-		status: 1,
+		dvprod: 1755514253568,
+		loadingMain: false,
+		loadingProd: false,
 	},
 	{
 		id: 1,
@@ -143,7 +106,8 @@ const rows: any = ref([
 		version: 'Базовая-сopy',
 		author: 'Роза Львовна',
 		created: 1755515353569,
-		status: 2,
+		loadingMain: false,
+		loadingProd: false,
 	},
 
 	{
@@ -152,41 +116,104 @@ const rows: any = ref([
 		version: 'Версия 5',
 		author: 'Лотос Тигрович',
 		created: 1755516353569,
-		status: 1,
-		col2: 0,
+		loadingMain: false,
+		loadingProd: false,
+		dvmain: 0,
 	},
-])
+]
 
-const progress: any = ref([])
+const load = () => {
+	rows.value = [...rowsStart]
+}
 
 const curDB = ref('')
 const curRow: any = ref()
 const dialog = ref(false)
+
 const prepublish = (e: any, db: string) => {
-	console.log(e)
 	curDB.value = db
 	curRow.value = e
 	dialog.value = !dialog.value
 }
 
 const publish = () => {
-	let tmp = rows.value.findIndex((el: any) => el.id == curRow.value.id)
-	if (tmp > -1) {
-		rows.value.splice(tmp, 1)
-	}
-	curRow.value.started = Date.now()
 	curRow.value.db = curDB.value
-	curRow.value.status = 1
-	progress.value.push(curRow.value)
-	setTimeout(() => {
-		curRow.value.status = 2
-	}, 3000)
+	if (curDB.value == 'DV-Main') {
+		curRow.value.loadingMain = true
+		setTimeout(() => {
+			curRow.value.loadingMain = false
+			curRow.value.dvmain = Date.now()
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'positive',
+				message: 'Версия успешно опубликована на сервере DV-Main',
+			})
+			const maxId =
+				logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+			logEventsStore.events.unshift({
+				id: maxId + 1,
+				date: Date.now(),
+				app: curRow.value.app,
+				user: 'admin',
+				db: curDB.value,
+				event: 'Публикация',
+				result: true,
+			})
+		}, 5000)
+	}
+	if (curDB.value == 'DV-Prod') {
+		curRow.value.loadingProd = true
+		setTimeout(() => {
+			curRow.value.loadingProd = false
+			curRow.value.dvprod = Date.now()
+			$q.notify({
+				icon: 'mdi-check-bold',
+				color: 'positive',
+				message: 'Версия успешно опубликована на сервере DV-Prod',
+			})
+			const maxId =
+				logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+			logEventsStore.events.unshift({
+				id: maxId + 1,
+				date: Date.now(),
+				app: curRow.value.app,
+				user: 'admin',
+				db: curDB.value,
+				event: 'Публикация',
+				result: true,
+			})
+		}, 5000)
+	}
 }
 
-const remove = (row: any) => {
-	let tmp = progress.value.findIndex((el: any) => el.id == row.id)
+const remove1 = (row: any) => {
+	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
 	if (tmp > -1) {
-		progress.value.splice(tmp, 1)
+		rows.value.splice(tmp, 1)
+		setTimeout(() => {
+			const maxId =
+				logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+			logEventsStore.events.unshift({
+				id: maxId + 1,
+				date: Date.now(),
+				app: row.app,
+				user: 'admin',
+				db: '--',
+				event: 'Публикация отклонена',
+				result: true,
+			})
+			$q.notify({
+				icon: 'mdi-cancel',
+				color: 'negative',
+				message: 'Публикация отклонена, версия переведена в статус "Черновик"',
+			})
+		}, 1200)
+	}
+}
+const remove = (row: any) => {
+	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
+	if (tmp > -1) {
+		rows.value.splice(tmp, 1)
 	}
 }
 
@@ -194,116 +221,107 @@ const dat = (val: number) => {
 	return date.formatDate(val, 'DD.MM.YY HH:mm')
 }
 
-const errPub = () => {
-	let tmp = rows.value.findIndex((el: any) => el.id == 2)
-	if (tmp > -1) {
-		rows.value.splice(tmp, 1)
+const errModal = ref(false)
+
+const errPub = (row: any) => {
+	curRow.value = row
+	errModal.value = !errModal.value
+}
+
+const goto = (name: string) => {
+	let tmp = myapps.pathForEvent(name)
+	if (tmp) {
+		router.push(tmp)
 	}
-	// let fuck = rows.value[tmp]
-	progress.value.push({
-		id: 2,
-		app: 'Служебные записки',
-		version: 'Версия 5',
-		author: 'Лотос Тигрович',
-		created: 1755516353569,
-		started: Date.now(),
-		db: 'DV-Main',
-		status: 0,
-		col2: 0,
-	})
 }
 </script>
 
 <template lang="pug">
-template(v-if='rows.length')
-	.h7 Ожидают публикации
-	q-table(flat,
-		:columns="cols"
-		:rows="rows"
-		row-key="id"
-		color="primary"
-		hide-bottom
-		)
-		template(v-slot:header-cell-col2='props')
-			q-th
-				q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
-				span.text-bold.text-primary {{ props.col.label}}
-		template(v-slot:header-cell-col3='props')
-			q-th
-				q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
-				span.text-bold.text-primary {{ props.col.label}}
+.h7(@click='load') Запросы на публикацию ({{rows.length}})
+q-table(flat,
+	:columns="cols"
+	:rows="rows"
+	row-key="id"
+	)
 
-		template(v-slot:body-cell-col2='props')
-			q-td.text-center(:props='props')
-				q-btn(v-if='props.row.col2 == undefined' flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Main')" size='sm') 
-				.red(v-if='props.row.col2 == 0' @click='errPub')
-					q-icon(name="mdi-close-octagon" color="negative")
-					|&nbsp;&nbsp;Ошибка
-				div(v-else) {{ dat(props.row.col2) }}
+	template(v-slot:no-data)
+		q-icon.q-mr-md(name="mdi-emoticon-cool-outline" color="grey" size='md')
+		span Запросы на публикацию отсутствуют.
 
-		template(v-slot:body-cell-col3='props')
-			q-td.text-center(:props='props')
-				q-btn(v-if='!props.row.col3' flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Prod')" size='sm') 
-				div(v-else) {{ dat(props.row.col3) }}
+	template(v-slot:header-cell-dvmain='props')
+		q-th
+			q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
+			span.text-bold.text-primary {{ props.col.label}}
+
+	template(v-slot:header-cell-dvprod='props')
+		q-th
+			q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
+			span.text-bold.text-primary {{ props.col.label}}
+
+	template(v-slot:body-cell-dvmain='props')
+		q-td.text-center(:props='props')
+			q-btn(v-if='props.row.dvmain==undefined' :loading="props.row.loadingMain" flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Main')" size='sm') 
+				template(v-slot:loading)
+					q-spinner-gears(class="on-left" size='24px')
+					span Публикация...
+
+			.red(v-if='props.row.dvmain == 0' @click='errPub(props.row)')
+				q-icon(name="mdi-close-octagon" color="negative" size='20px')
+				|&nbsp;&nbsp;19.08.25 16:12
+			div(v-if='props.row.dvmain')
+				q-icon(name="mdi-check-bold" color="positive" size='20px')
+				.link {{ dat(props.row.dvmain) }}
+
+	template(v-slot:body-cell-dvprod='props')
+		q-td.text-center(:props='props')
+			q-btn(v-if='!props.row.dvprod' :loading="props.row.loadingProd" flat color="primary" icon='mdi-cloud-upload' label="Опубликовать" @click="prepublish(props.row, 'DV-Prod')" size='sm') 
+				template(v-slot:loading)
+					q-spinner-gears(class="on-left" size='24px')
+					span Публикация...
+			div(v-else)
+				q-icon(name="mdi-check-bold" color="positive" size='20px')
+				.link {{ dat(props.row.dvprod) }}
 
 
-		template(v-slot:body-cell-actions='props')
-			q-td.text-center(:props='props' auto-width)
-				q-btn(flat round color="primary" icon="mdi-dots-vertical" @click.stop size='md' dense) 
-					q-menu
-						q-list
-							q-item(clickable)
-								q-item-section(side)
-									q-icon(name="mdi-pencil" color="primary")
-								q-item-section Открыть версию
-							q-item(clickable color="negative")
-								q-item-section(side)
-									q-icon(name="mdi-delete-outline" color="negative")
-								q-item-section Отменить публикацию
+	template(v-slot:body-cell-actions='props')
+		q-td.text-center(:props='props' auto-width)
+			q-btn(flat round color="primary" icon="mdi-dots-vertical" @click.stop size='md' dense) 
+				q-menu
+					q-list
+						q-item(clickable @click='goto(props.row.app)')
+							q-item-section(side)
+								q-icon(name="mdi-pencil" color="primary")
+							q-item-section Открыть версию
 
-br
-template(v-if='progress.length')
-	.h7 В процессе публикации
-	q-table(flat,
-		:columns="cols1"
-		:rows="progress"
-		row-key="id"
-		color="primary"
-		hide-bottom
-		)
-		template(v-slot:body-cell-status='props')
-			q-td.text-center(:props='props')
-				.pub(v-if='props.row.status == 1')
-					SvgSpinnersBarsRotateFade.ic
-					span &nbsp;&nbsp;Публикация
-				.pub(v-if='props.row.status == 2')
-					q-icon(name="mdi-check-bold" color="positive" size="22px")
-					span.q-ml-sm Опубликовано
-				span.red(v-if='props.row.col2 == 0')
-					q-icon(name="mdi-close-octagon" color="negative")
-					|&nbsp;Ошибка
+						q-item(clickable color="negative" @click='remove(props.row)' v-if='props.row.dvmain && props.row.dvprod')
+							q-item-section(side)
+								q-icon(name="mdi-close" color="primary")
+							q-item-section Очистить
 
-		template(v-slot:body-cell-actions='props')
-			q-td.text-center(:props='props' auto-width)
-				q-btn(flat round color="primary" icon="mdi-delete-outline" @click="remove(props.row)" size='md' dense) 
-				q-btn(flat round color="primary" icon="mdi-dots-vertical" @click="" size='md' dense) 
-					q-menu
-						q-list
-							q-item(clickable)
-								q-item-section(side)
-									q-icon(name="mdi-pencil" color="primary")
-								q-item-section Открыть версию
-							q-item(clickable color="negative")
-								q-item-section(side)
-									q-icon(name="mdi-delete-outline" color="negative")
-								q-item-section Отменить публикацию
+						q-item(clickable color="negative" @click='remove1(props.row)' v-else)
+							q-item-section(side)
+								q-icon(name="mdi-cancel" color="negative")
+							q-item-section Отклонить публикацию
+
 
 MappingDialog(v-model="dialog" :bd='curDB' @publish="publish")
+ErrDialog(v-model="errModal" :bd='curDB' :row="curRow" @reject="remove1")
 </template>
 
 <style scoped lang="scss">
 .red {
 	color: $negative;
-	font-weight: 600;
+	cursor: pointer;
+	// font-weight: 600;
+}
+.link {
+	color: $primary;
+	text-decoration: underline;
+	margin-left: 0.5rem;
+	display: inline;
+	cursor: pointer;
+}
+:deep(.q-field__control:before) {
+	background: #fff;
 }
 </style>

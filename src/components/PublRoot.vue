@@ -11,7 +11,7 @@ div
 
 	WaitingPub
 	br
-	DetailsAppEvents
+	DetailsAppEvents(:showAppColumn='true')
 
 </template>
 

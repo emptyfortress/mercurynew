@@ -237,7 +237,7 @@ div
 										q-item-section Удалить версию
 
 	br
-	DetailsAppEvents
+	DetailsAppEvents(:showDbColumn='false' :showAppColumn='true')
 
 </template>
 
