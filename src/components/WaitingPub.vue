@@ -5,8 +5,10 @@ import { date } from 'quasar'
 import MappingDialog from '@/components/MappingDialog.vue'
 import ErrDialog from '@/components/ErrDialog.vue'
 import { useQuasar } from 'quasar'
+import { useLogEventsStore } from '@/stores/logevents'
 
 const $q = useQuasar()
+const logEventsStore = useLogEventsStore()
 const cols: QTableProps['columns'] = [
 	{
 		name: 'created',
@@ -140,6 +142,15 @@ const publish = () => {
 				color: 'positive',
 				message: 'Версия успешно опубликована на сервере DV-Main',
 			})
+			const maxId = logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+			logEventsStore.events.unshift({
+				id: maxId + 1,
+				date: Date.now(),
+				user: 'admin',
+				db: curDB.value,
+				event: 'Публикация',
+				result: true,
+			})
 		}, 5000)
 	}
 	if (curDB.value == 'DV-Prod') {
@@ -151,6 +162,15 @@ const publish = () => {
 				icon: 'mdi-check-bold',
 				color: 'positive',
 				message: 'Версия успешно опубликована на сервере DV-Prod',
+			})
+			const maxId = logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+			logEventsStore.events.unshift({
+				id: maxId + 1,
+				date: Date.now(),
+				user: 'admin',
+				db: curDB.value,
+				event: 'Публикация',
+				result: true,
 			})
 		}, 5000)
 	}
