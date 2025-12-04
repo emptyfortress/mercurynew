@@ -25,6 +25,14 @@ const cols: QTableProps['columns'] = [
 		sortable: true,
 	},
 	{
+		name: 'app',
+		required: true,
+		label: 'Приложение',
+		align: 'left',
+		field: 'app',
+		sortable: true,
+	},
+	{
 		name: 'db',
 		required: true,
 		label: 'База данных',
