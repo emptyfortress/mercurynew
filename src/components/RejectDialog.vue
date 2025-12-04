@@ -1,0 +1,54 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const props = defineProps({
+	row: {
+		type: Object,
+		required: true,
+	},
+})
+
+const modelValue = defineModel<boolean>()
+const emit = defineEmits(['reject'])
+
+const reason = ref('')
+
+const close = () => {
+	modelValue.value = false
+}
+
+const reject = () => {
+	if (props.row && reason.value) {
+		emit('reject', props.row)
+		close()
+	}
+}
+</script>
+
+<template lang="pug">
+q-dialog(v-model="modelValue")
+	q-card(style="min-width: 500px;")
+		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
+		q-card-section
+			.text-h6 Отклонить публикацию
+
+		.q-mx-md
+			div Укажите причину отклонения:
+			q-input.q-mt-md(v-model="reason" type="textarea" outlined autogrow)
+
+		q-card-actions.q-mx-sm.q-mt-xl(align="right")
+			q-btn(flat color="primary" label="Отмена" v-close-popup)
+			q-btn(unelevated color="primary" label="Отклонить" @click='reject' :disable="!reason")
+</template>
+
+<style scoped lang="scss">
+:deep(.q-field__control:before) {
+	background: #fff;
+}
+.close {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	z-index: 1;
+}
+</style>

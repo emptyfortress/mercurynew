@@ -4,6 +4,7 @@ import type { QTableProps } from 'quasar'
 import { date } from 'quasar'
 import MappingDialog from '@/components/MappingDialog.vue'
 import ErrDialog from '@/components/ErrDialog.vue'
+import RejectDialog from '@/components/RejectDialog.vue'
 import { useQuasar } from 'quasar'
 import { useLogEventsStore } from '@/stores/logevents'
 import { useApps } from '@/stores/apps'
@@ -222,10 +223,16 @@ const dat = (val: number) => {
 }
 
 const errModal = ref(false)
+const rejectModal = ref(false)
 
 const errPub = (row: any) => {
 	curRow.value = row
 	errModal.value = !errModal.value
+}
+
+const openRejectDialog = (row: any) => {
+	curRow.value = row
+	rejectModal.value = true
 }
 
 const goto = (name: string) => {
@@ -298,14 +305,15 @@ q-table(flat,
 								q-icon(name="mdi-close" color="primary")
 							q-item-section Очистить
 
-						q-item(clickable color="negative" @click='remove1(props.row)' v-else)
+						q-item(clickable color="negative" @click='openRejectDialog(props.row)' v-else)
 							q-item-section(side)
 								q-icon(name="mdi-cancel" color="negative")
 							q-item-section Отклонить публикацию
 
 
 MappingDialog(v-model="dialog" :bd='curDB' @publish="publish")
-ErrDialog(v-model="errModal" :bd='curDB' :row="curRow" @reject="remove1")
+ErrDialog(v-model="errModal" :bd='curDB' :row="curRow" @reject="openRejectDialog")
+RejectDialog(v-model="rejectModal" :row="curRow" @reject="remove1")
 </template>
 
 <style scoped lang="scss">
