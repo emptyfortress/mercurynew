@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import Mapping from '@/components/Mapping.vue'
+import { useApps } from '@/stores/apps'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const myapps = useApps()
 
 const props = defineProps({
 	bd: {
 		type: String,
 		required: true,
 		default: '',
+	},
+	row: {
+		type: Object,
 	},
 })
 
@@ -25,7 +33,13 @@ const publish = () => {
 	reset()
 }
 const goto = () => {
-	console.log(111)
+	if (props.row) {
+		let tmp = myapps.pathForEvent(props.row.app)
+		if (tmp) {
+			router.push(tmp)
+			close()
+		}
+	}
 }
 </script>
 

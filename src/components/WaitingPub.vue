@@ -223,7 +223,8 @@ const dat = (val: number) => {
 
 const errModal = ref(false)
 
-const errPub = () => {
+const errPub = (row: any) => {
+	curRow.value = row
 	errModal.value = !errModal.value
 }
 
@@ -264,7 +265,7 @@ q-table(flat,
 					q-spinner-gears(class="on-left" size='24px')
 					span Публикация...
 
-			.red(v-if='props.row.dvmain == 0' @click='errPub')
+			.red(v-if='props.row.dvmain == 0' @click='errPub(props.row)')
 				q-icon(name="mdi-close-octagon" color="negative" size='20px')
 				|&nbsp;&nbsp;19.08.25 16:12
 			div(v-if='props.row.dvmain')
@@ -304,7 +305,7 @@ q-table(flat,
 
 
 MappingDialog(v-model="dialog" :bd='curDB' @publish="publish")
-ErrDialog(v-model="errModal" :bd='curDB' @publish="publish")
+ErrDialog(v-model="errModal" :bd='curDB' :row="curRow" @publish="publish")
 </template>
 
 <style scoped lang="scss">
