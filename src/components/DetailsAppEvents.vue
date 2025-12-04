@@ -10,7 +10,7 @@ import { useRouter } from 'vue-router'
 const props = defineProps({
 	showAppColumn: {
 		type: Boolean,
-		default: true,
+		default: false,
 	},
 })
 
@@ -24,7 +24,7 @@ const isReady = ref(false)
 onMounted(() => {
 	setTimeout(() => {
 		isReady.value = true
-	}, 2000)
+	}, 1500)
 })
 
 const tableRows = computed(() => {
