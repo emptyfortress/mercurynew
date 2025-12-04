@@ -6,6 +6,13 @@ import MappingDialog from '@/components/MappingDialog.vue'
 import ErrDialog from '@/components/ErrDialog.vue'
 import { useQuasar } from 'quasar'
 import { useLogEventsStore } from '@/stores/logevents'
+import { useApps } from '@/stores/apps'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+// const route = useRoute()
+
+const myapps = useApps()
 
 const $q = useQuasar()
 const logEventsStore = useLogEventsStore()
@@ -184,18 +191,18 @@ const remove1 = (row: any) => {
 	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
 	if (tmp > -1) {
 		rows.value.splice(tmp, 1)
-		const maxId =
-			logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
-		logEventsStore.events.unshift({
-			id: maxId + 1,
-			date: Date.now(),
-			app: row.app,
-			user: 'admin',
-			db: '--',
-			event: 'Публикация отклонена',
-			result: false,
-		})
 		setTimeout(() => {
+			const maxId =
+				logEventsStore.events.length > 0 ? Math.max(...logEventsStore.events.map((e) => e.id)) : -1
+			logEventsStore.events.unshift({
+				id: maxId + 1,
+				date: Date.now(),
+				app: row.app,
+				user: 'admin',
+				db: '--',
+				event: 'Публикация отклонена',
+				result: true,
+			})
 			$q.notify({
 				icon: 'mdi-cancel',
 				color: 'negative',
@@ -219,6 +226,11 @@ const errModal = ref(false)
 
 const errPub = () => {
 	errModal.value = !errModal.value
+}
+
+const goto = (name: string) => {
+	let tmp = myapps.pathForEvent(name)
+	router.push(tmp)
 }
 </script>
 
@@ -274,10 +286,11 @@ q-table(flat,
 			q-btn(flat round color="primary" icon="mdi-dots-vertical" @click.stop size='md' dense) 
 				q-menu
 					q-list
-						q-item(clickable)
+						q-item(clickable @click='goto(props.row.app)')
 							q-item-section(side)
 								q-icon(name="mdi-pencil" color="primary")
 							q-item-section Открыть версию
+
 						q-item(clickable color="negative" @click='remove(props.row)' v-if='props.row.dvmain && props.row.dvprod')
 							q-item-section(side)
 								q-icon(name="mdi-close" color="primary")

@@ -372,12 +372,21 @@ export const useApps = defineStore('apps', () => {
 		list.unshift(e)
 	}
 
+	const pathForEvent = (app: string) => {
+		let tmp = apps.value.find((el) => el.label == app)
+		if (tmp) {
+			return '/' + tmp.id
+		}
+		return ''
+	}
+
 	return {
 		apps,
 		flatApps,
 		db,
 		createApp,
 		updateApps,
+		pathForEvent,
 
 		currentApp,
 		setCurrentApp,
