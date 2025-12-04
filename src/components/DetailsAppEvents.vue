@@ -3,9 +3,22 @@ import { date } from 'quasar'
 import type { QTableProps } from 'quasar'
 import { storeToRefs } from 'pinia'
 import { useLogEventsStore } from '@/stores/logevents'
+import { useApps } from '@/stores/apps'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const myapps = useApps()
 
 const logEventsStore = useLogEventsStore()
 const { events } = storeToRefs(logEventsStore)
+
+const goto = (name: string) => {
+	let tmp = myapps.pathForEvent(name)
+	if (tmp) {
+		router.push(tmp)
+	}
+}
+
 const cols: QTableProps['columns'] = [
 	{
 		name: 'date',
@@ -86,7 +99,13 @@ q-table(flat,
 
 	template(v-slot:body-cell-action='props')
 		q-td.text-right(:props='props' auto-width)
-			q-btn(flat round icon="mdi-dots-vertical" color="primary" dense) 
+			q-btn(flat round icon="mdi-dots-vertical" color="primary" dense)
+				q-menu
+					q-list
+						q-item(clickable @click='goto(props.row.app)')
+							q-item-section(side)
+								q-icon(name="mdi-pencil" color="primary")
+							q-item-section Открыть версию
 </template>
 
 <style scoped lang="scss">
