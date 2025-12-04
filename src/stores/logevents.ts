@@ -11,6 +11,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: '--',
 			event: 'Создание версии',
 			result: true,
+			reason: '',
 		},
 		{
 			id: 1,
@@ -20,6 +21,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Main',
 			event: 'Удаление',
 			result: false,
+			reason: '',
 		},
 		{
 			id: 2,
@@ -29,6 +31,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Prod',
 			event: 'Проверка',
 			result: true,
+			reason: '',
 		},
 		{
 			id: 3,
@@ -38,6 +41,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Test',
 			event: 'Авторизация',
 			result: false,
+			reason: '',
 		},
 		{
 			id: 4,
@@ -47,6 +51,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Prod',
 			event: 'Обновление',
 			result: false,
+			reason: '',
 		},
 		{
 			id: 5,
@@ -56,6 +61,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Main',
 			event: 'Удаление',
 			result: true,
+			reason: '',
 		},
 		{
 			id: 6,
@@ -65,6 +71,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Test',
 			event: 'Проверка',
 			result: false,
+			reason: '',
 		},
 		{
 			id: 7,
@@ -74,6 +81,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Prod',
 			event: 'Авторизация',
 			result: false,
+			reason: '',
 		},
 		{
 			id: 8,
@@ -83,6 +91,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Main',
 			event: 'Обновление',
 			result: false,
+			reason: '',
 		},
 		{
 			id: 9,
@@ -92,6 +101,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Test',
 			event: 'Удаление',
 			result: false,
+			reason: '',
 		},
 		{
 			id: 10,
@@ -101,6 +111,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Prod',
 			event: 'Проверка',
 			result: true,
+			reason: '',
 		},
 		{
 			id: 11,
@@ -110,6 +121,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Main',
 			event: 'Авторизация',
 			result: true,
+			reason: '',
 		},
 		{
 			id: 12,
@@ -119,6 +131,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: 'DV-Test',
 			event: 'Удаление',
 			result: false,
+			reason: '',
 		},
 		{
 			id: 13,
@@ -128,6 +141,7 @@ export const useLogEventsStore = defineStore('logevents', () => {
 			db: '--',
 			event: 'Создание версии',
 			result: true,
+			reason: '',
 		},
 	])
 

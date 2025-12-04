@@ -103,7 +103,8 @@ const cols = computed(() => {
 		},
 	]
 	return allColumns.filter(
-		(col) => (props.showAppColumn || col.name !== 'app') && (props.showDbColumn || col.name !== 'db')
+		(col) =>
+			(props.showAppColumn || col.name !== 'app') && (props.showDbColumn || col.name !== 'db')
 	)
 })
 const page = {
@@ -124,6 +125,12 @@ q-table(flat,
 		q-td.text-center(:props='props')
 			q-icon(v-if='props.row.result' name="mdi-check-bold" color="positive" size="20px")
 			q-icon(v-else name="mdi-close-octagon" color="negative" size="20px")
+
+	template(v-slot:body-cell-event='props')
+		q-td(:props='props')
+			span {{ props.row.event }}
+			q-icon.q-ml-md(name="mdi-message-reply-text-outline" color="primary" v-if='props.row.reason.length > 0' size='20px')
+				q-tooltip {{ props.row.reason }}
 
 	template(v-slot:body-cell-action='props')
 		q-td.text-right(:props='props' auto-width)

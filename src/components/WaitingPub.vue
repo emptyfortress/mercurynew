@@ -159,6 +159,7 @@ const publish = () => {
 				db: curDB.value,
 				event: 'Публикация',
 				result: true,
+				reason: '',
 			})
 		}, 5000)
 	}
@@ -182,6 +183,7 @@ const publish = () => {
 				db: curDB.value,
 				event: 'Публикация',
 				result: true,
+				reason: '',
 			})
 		}, 5000)
 	}
