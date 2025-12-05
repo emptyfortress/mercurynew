@@ -7,6 +7,7 @@ declare module 'vue-router' {
 		toolbar: boolean
 		back: boolean
 		count: number
+		footer?: boolean
 	}
 }
 
@@ -123,6 +124,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 3,
+				footer: true,
 			},
 		},
 		{
@@ -133,6 +135,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 4,
+				footer: true,
 			},
 		},
 		{

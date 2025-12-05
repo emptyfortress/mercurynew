@@ -11,6 +11,7 @@ import { useMotion } from '@vueuse/motion'
 import { useQuasar } from 'quasar'
 import CifRu from '@/components/icons/CifRu.vue'
 import CifGb from '@/components/icons/CifGb.vue'
+import Footer from '@/components/Footer.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -225,6 +226,8 @@ q-layout(view='hHh LpR fFf')
 					mode='out-in'
 					)
 					component(:is="Component")
+
+	Footer
 
 </template>
 
