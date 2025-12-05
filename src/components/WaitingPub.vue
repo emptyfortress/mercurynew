@@ -232,8 +232,10 @@ const goto = (name: string) => {
 </script>
 
 <template lang="pug">
-.h7(@click='load') Запросы на публикацию ({{rows.length}})
-q-table(flat,
+.h7(@click='load')
+	q-icon.q-mr-sm(name="mdi-list-status" size='sm')
+	|Запросы на публикацию ({{rows.length}})
+q-table.q-mt-sm(flat,
 	:columns="cols"
 	:rows="rows"
 	row-key="id"

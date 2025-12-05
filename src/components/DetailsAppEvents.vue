@@ -141,8 +141,10 @@ const onHide = () => {
 </script>
 
 <template lang="pug">
-.h7 Журнал событий
-q-table(flat,
+.h7
+	q-icon.q-mr-sm(name="mdi-script-text-outline" size='sm')
+	|Журнал событий
+q-table.q-mt-sm(flat,
 	:columns="cols"
 	:rows="tableRows"
 	row-key="id"
