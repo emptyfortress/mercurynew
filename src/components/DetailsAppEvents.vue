@@ -190,9 +190,6 @@ q-dialog(v-model="reasonDialog" @hide="onHide")
 </template>
 
 <style scoped lang="scss">
-:deep(.q-field__control:before) {
-	background: #fff;
-}
 .close {
 	position: absolute;
 	top: 0.5rem;
