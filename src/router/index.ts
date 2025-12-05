@@ -13,6 +13,7 @@ declare module 'vue-router' {
 		count: number
 		save?: boolean
 		hideScroll?: boolean
+		footer?: boolean
 	}
 }
 
