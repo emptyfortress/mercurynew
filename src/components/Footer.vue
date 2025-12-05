@@ -13,7 +13,8 @@ const changesStore = useChangesStore()
 const { hasChanges } = storeToRefs(changesStore)
 
 const footerState = computed(() => {
-	return route.meta.footer ? true : false
+	// return route.meta.footer ? true : false
+	return route.meta.footer
 })
 
 const modified = computed(() => {
@@ -30,20 +31,14 @@ const localCreated = computed(() => {
 <template lang="pug">
 q-footer.footer(v-if='footerState')
 	.cent(data-tour='footer-main')
-		div(v-if="app.versions && app.versions.length > 0") Версия: {{ app.versions[0].label }}
-		div(v-if="app.versions && app.versions.length > 0") Автор: {{ app.versions[0].author }}
-		div(v-if="app.versions && app.versions.length > 0") Создано: {{ localCreated }}
+		div Версия: -- название версии --
+		div Автор: -- автор --
+		div Создано: -- дата --
 
 	.cent(data-tour='footer-save')
-		div(v-if='app.versions && app.versions.length > 0 && app.versions[0].modified == null && !hasChanges')
+		div
 			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
 			span Все изменения сохранены
-		div(v-if='app.versions && app.versions.length > 0 && app.versions[0].modified !== null && !hasChanges')
-			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="positive")
-			span Сохранено: {{modified}} -- Орлов П.С.
-		div(v-if='hasChanges')
-			q-icon.q-mr-sm(name="mdi-circle-slice-8" color="negative")
-			span Есть несохраненные изменения (доступ к странице для других пользователей ограничен)
 
 </template>
 

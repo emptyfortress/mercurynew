@@ -22,6 +22,7 @@ const router = createRouter({
 				toolbar: false,
 				back: false,
 				count: 0,
+				footer: false,
 			},
 		},
 		{
@@ -32,6 +33,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 0,
+				footer: false,
 			},
 		},
 		{
@@ -42,6 +44,7 @@ const router = createRouter({
 				toolbar: false,
 				back: false,
 				count: 0,
+				footer: false,
 			},
 		},
 		{
@@ -52,6 +55,7 @@ const router = createRouter({
 				toolbar: true,
 				back: false,
 				count: 0,
+				footer: false,
 			},
 		},
 		{
@@ -62,6 +66,7 @@ const router = createRouter({
 				toolbar: true,
 				back: false,
 				count: 0,
+				footer: false,
 			},
 		},
 
@@ -73,6 +78,7 @@ const router = createRouter({
 				toolbar: false,
 				back: true,
 				count: 1,
+				footer: false,
 			},
 		},
 		{
@@ -83,6 +89,7 @@ const router = createRouter({
 				toolbar: false,
 				back: true,
 				count: 19,
+				footer: false,
 			},
 		},
 		{
@@ -93,6 +100,7 @@ const router = createRouter({
 				toolbar: false,
 				back: true,
 				count: 20,
+				footer: false,
 			},
 		},
 		{
@@ -103,6 +111,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 2,
+				footer: true,
 			},
 		},
 		{
@@ -113,6 +122,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 21,
+				footer: true,
 			},
 		},
 		{
@@ -124,7 +134,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 3,
-				footer: true,
+				footer: false,
 			},
 		},
 		{
@@ -146,6 +156,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 5,
+				footer: false,
 			},
 		},
 		{
@@ -156,6 +167,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 21,
+				footer: true,
 			},
 		},
 		{
@@ -166,6 +178,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 6,
+				footer: true,
 			},
 		},
 		{
@@ -177,6 +190,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 25,
+				footer: true,
 			},
 		},
 		{
@@ -188,6 +202,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 25,
+				footer: true,
 			},
 		},
 		{
@@ -199,6 +214,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 25,
+				footer: false,
 			},
 		},
 		{
@@ -209,6 +225,7 @@ const router = createRouter({
 				toolbar: true,
 				back: false,
 				count: 10,
+				footer: false,
 			},
 		},
 		{
@@ -219,6 +236,7 @@ const router = createRouter({
 				toolbar: true,
 				back: false,
 				count: 30,
+				footer: false,
 			},
 		},
 		{
@@ -229,6 +247,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 10,
+				footer: false,
 			},
 		},
 		{
@@ -239,6 +258,7 @@ const router = createRouter({
 				toolbar: true,
 				back: true,
 				count: 10,
+				footer: false,
 			},
 		},
 		{
@@ -254,6 +274,7 @@ const router = createRouter({
 				toolbar: false,
 				back: true,
 				count: 0,
+				footer: false,
 			},
 		},
 	],
