@@ -4,7 +4,6 @@ import { ref } from 'vue'
 const props = defineProps({
 	row: {
 		type: Object,
-		required: true,
 	},
 })
 
