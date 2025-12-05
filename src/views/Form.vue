@@ -8,6 +8,7 @@ import { useControl } from '@/stores/controls'
 import Toolbar from '@/components/common/Toolbar.vue'
 import { useTitle } from '@vueuse/core'
 import { useStorage } from '@vueuse/core'
+import Fab from '@/components/Fab.vue'
 
 const app = useStorage('app', localStorage)
 const title = useTitle()
@@ -74,6 +75,7 @@ q-page(padding
 
 	PlusButton1(@activate='startRight' @stop='stopRight')
 
+	Fab
 </template>
 
 <style scoped lang="scss">
