@@ -244,12 +244,12 @@ q-table(flat,
 		span Запросы на публикацию отсутствуют.
 
 	template(v-slot:header-cell-dvmain='props')
-		q-th
+		q-th.bg-blue-2
 			q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
 			span.text-bold.text-primary {{ props.col.label}}
 
 	template(v-slot:header-cell-dvprod='props')
-		q-th
+		q-th.bg-blue-2(style='border-left: 1px solid white')
 			q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
 			span.text-bold.text-primary {{ props.col.label}}
 
