@@ -116,6 +116,13 @@ const cols = computed(() => {
 const page = {
 	rowsPerPage: 7,
 }
+
+const reasonDialog = ref(false)
+const currentReason = ref('')
+const showReason = (reason: string) => {
+	currentReason.value = reason
+	reasonDialog.value = true
+}
 </script>
 
 <template lang="pug">
@@ -138,8 +145,13 @@ q-table(flat,
 	template(v-slot:body-cell-event='props')
 		q-td(:props='props')
 			span {{ props.row.event }}
-			q-icon.q-ml-md(name="mdi-message-text-outline" color="primary" v-if='props.row.reason.length > 0' size='20px')
-				q-tooltip {{ props.row.reason }}
+			q-icon.q-ml-md(
+				v-if='props.row.reason'
+				name="mdi-message-text-outline"
+				color="primary"
+				size='20px'
+				@click="showReason(props.row.reason)"
+				style="cursor: pointer")
 
 	template(v-slot:body-cell-action='props')
 		q-td.text-right(:props='props' auto-width)
@@ -150,6 +162,14 @@ q-table(flat,
 							q-item-section(side)
 								q-icon(name="mdi-pencil" color="primary")
 							q-item-section Открыть версию
+q-dialog(v-model="reasonDialog")
+	q-card
+		q-card-section
+			.text-h6 Причина
+		q-card-section.q-pt-none
+			| {{ currentReason }}
+		q-card-actions(align="right")
+			q-btn(flat label="Закрыть" color="primary" v-close-popup)
 </template>
 
 <style scoped lang="scss">
