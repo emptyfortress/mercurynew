@@ -242,6 +242,7 @@ q-table(flat,
 	template(v-slot:no-data)
 		q-icon.q-mr-md(name="mdi-emoticon-cool-outline" color="grey" size='md')
 		span Запросы на публикацию отсутствуют.
+		q-btn.q-ml-xl(flat icon="mdi-cloud-download" color="primary" label="Загрузить тестовые запросы" @click="load" size='sm')
 
 	template(v-slot:header-cell-dvmain='props')
 		q-th.bg-blue-2
