@@ -221,10 +221,6 @@ const remove = (row: any) => {
 	}
 }
 
-const dat = (val: number) => {
-	return date.formatDate(val, 'DD.MM.YY HH:mm')
-}
-
 const errModal = ref(false)
 const rejectModal = ref(false)
 
@@ -273,7 +269,9 @@ q-table.q-mt-sm(flat,
 
 	template(v-slot:body-cell-app='props')
 		q-td(:props='props')
-			div(:class="{ 'text-negative': duplicateApps.has(props.row.app) }") {{ props.row.app }}
+			div(:class="{ 'text-negative': duplicateApps.has(props.row.app) }")
+				span {{ props.row.app }}
+				q-tooltip(v-if='duplicateApps.has(props.row.app)') Конфликт версий
 
 	template(v-slot:body-cell-dvmain='props')
 		PublicationStatusCell(:row="props.row" dbName="DV-Main" @prepublish="prepublish" @errPub="errPub")
