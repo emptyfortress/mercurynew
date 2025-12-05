@@ -181,8 +181,8 @@ const publish = () => {
 	curRow.value[loadingKey] = true
 
 	setTimeout(() => {
-		curRow.value[loadingKey] = false
-		curRow.value[dateKey] = Date.now()
+		curRow.value![loadingKey] = false
+		curRow.value![dateKey] = Date.now()
 		$q.notify({
 			icon: 'mdi-check-bold',
 			color: 'positive',
@@ -193,7 +193,7 @@ const publish = () => {
 		logEventsStore.events.unshift({
 			id: maxId + 1,
 			date: Date.now(),
-			app: curRow.value.app,
+			app: curRow.value!.app,
 			user: 'admin',
 			db: db,
 			event: 'Публикация',
