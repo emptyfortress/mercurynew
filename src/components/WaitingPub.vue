@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { QTableProps } from 'quasar'
 import { date } from 'quasar'
 import MappingDialog from '@/components/MappingDialog.vue'
@@ -80,6 +80,21 @@ const cols: QTableProps['columns'] = [
 ]
 
 const rows: any = ref([])
+
+const duplicateApps = computed(() => {
+	const appCounts = rows.value.reduce((acc: Record<string, number>, row: any) => {
+		acc[row.app] = (acc[row.app] || 0) + 1
+		return acc
+	}, {})
+
+	const duplicates = new Set<string>()
+	for (const app in appCounts) {
+		if (appCounts[app] > 1) {
+			duplicates.add(app)
+		}
+	}
+	return duplicates
+})
 
 const rowsStart = [
 	{
@@ -255,6 +270,10 @@ q-table.q-mt-sm(flat,
 		q-th.bg-blue-2(style='border-left: 1px solid white')
 			q-icon.q-mr-sm(name="mdi-database-outline" color="primary" size="18px")
 			span.text-bold.text-primary {{ props.col.label}}
+
+	template(v-slot:body-cell-app='props')
+		q-td(:props='props')
+			div(:class="{ 'text-negative': duplicateApps.has(props.row.app) }") {{ props.row.app }}
 
 	template(v-slot:body-cell-dvmain='props')
 		PublicationStatusCell(:row="props.row" dbName="DV-Main" @prepublish="prepublish" @errPub="errPub")
