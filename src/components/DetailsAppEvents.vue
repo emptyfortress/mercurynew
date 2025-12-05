@@ -119,9 +119,24 @@ const page = {
 
 const reasonDialog = ref(false)
 const currentReason = ref('')
-const showReason = (reason: string) => {
-	currentReason.value = reason
+const currentRow = ref<any>(null)
+
+const showReason = (row: any) => {
+	currentRow.value = row
+	currentReason.value = row.reason
 	reasonDialog.value = true
+}
+
+const saveReason = () => {
+	if (currentRow.value) {
+		currentRow.value.reason = currentReason.value
+	}
+	reasonDialog.value = false
+}
+
+const onHide = () => {
+	currentRow.value = null
+	currentReason.value = ''
 }
 </script>
 
@@ -150,7 +165,7 @@ q-table(flat,
 				name="mdi-message-text-outline"
 				color="primary"
 				size='20px'
-				@click="showReason(props.row.reason)"
+				@click="showReason(props.row)"
 				style="cursor: pointer")
 
 	template(v-slot:body-cell-action='props')
@@ -162,18 +177,26 @@ q-table(flat,
 							q-item-section(side)
 								q-icon(name="mdi-pencil" color="primary")
 							q-item-section Открыть версию
-q-dialog(v-model="reasonDialog")
-	q-card
+q-dialog(v-model="reasonDialog" @hide="onHide")
+	q-card(style="min-width: 500px;")
+		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
-			.text-h6 Причина
-		q-card-section.q-pt-none
-			| {{ currentReason }}
-		q-card-actions(align="right")
-			q-btn(flat label="Закрыть" color="primary" v-close-popup)
+			.text-h6 Причина отказа в публикации
+		.q-mx-md
+			q-input(v-model="currentReason" dense type="textarea" outlined autogrow)
+		q-card-actions.q-mx-sm.q-mt-xl(align="right")
+			q-btn(flat label="Отмена" color="primary" v-close-popup)
+			q-btn(unelevated label="Сохранить" color="primary" @click="saveReason")
 </template>
 
 <style scoped lang="scss">
 :deep(.q-field__control:before) {
 	background: #fff;
+}
+.close {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	z-index: 1;
 }
 </style>
