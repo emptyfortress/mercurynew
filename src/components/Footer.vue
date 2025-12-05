@@ -13,18 +13,8 @@ const changesStore = useChangesStore()
 const { hasChanges } = storeToRefs(changesStore)
 
 const footerState = computed(() => {
-	// return route.meta.footer ? true : false
-	return route.meta.footer
-})
-
-const modified = computed(() => {
-	if (!app.value.versions || !app.value.versions[0] || !app.value.versions[0].modified) return ''
-	return date.formatDate(app.value.versions[0].modified, 'DD.MM.YY  HH:mm')
-})
-
-const localCreated = computed(() => {
-	if (!app.value.versions || !app.value.versions[0] || !app.value.versions[0].created) return ''
-	return date.formatDate(app.value.versions[0].created, 'DD.MM.YY HH:mm')
+	return route.meta.footer ? true : false
+	// return route.meta.footer
 })
 </script>
 
