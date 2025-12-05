@@ -2,6 +2,19 @@
 import { ref, computed } from 'vue'
 import type { QTableProps } from 'quasar'
 import { date } from 'quasar'
+
+interface WaitingPubRow {
+	id: number
+	app: string
+	version: string
+	author: string
+	created: number
+	dvmain?: number
+	dvprod?: number
+	loadingMain: boolean
+	loadingProd: boolean
+	db?: string
+}
 import MappingDialog from '@/components/MappingDialog.vue'
 import ErrDialog from '@/components/ErrDialog.vue'
 import RejectDialog from '@/components/RejectDialog.vue'
@@ -79,10 +92,10 @@ const cols: QTableProps['columns'] = [
 	},
 ]
 
-const rows: any = ref([])
+const rows = ref<WaitingPubRow[]>([])
 
 const duplicateApps = computed(() => {
-	const appCounts = rows.value.reduce((acc: Record<string, number>, row: any) => {
+	const appCounts = rows.value.reduce((acc: Record<string, number>, row: WaitingPubRow) => {
 		acc[row.app] = (acc[row.app] || 0) + 1
 		return acc
 	}, {})
@@ -144,16 +157,17 @@ const load = () => {
 }
 
 const curDB = ref('')
-const curRow: any = ref()
+const curRow = ref<WaitingPubRow>()
 const dialog = ref(false)
 
-const prepublish = (e: any, db: string) => {
+const prepublish = (e: WaitingPubRow, db: string) => {
 	curDB.value = db
 	curRow.value = e
 	dialog.value = !dialog.value
 }
 
 const publish = () => {
+	if (!curRow.value) return
 	curRow.value.db = curDB.value
 	const db = curDB.value
 
@@ -189,8 +203,8 @@ const publish = () => {
 	}, 5000)
 }
 
-const remove1 = (row: any, reason: string) => {
-	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
+const remove1 = (row: WaitingPubRow, reason: string) => {
+	let tmp = rows.value.findIndex((el) => el.id == row.id)
 	if (tmp > -1) {
 		rows.value.splice(tmp, 1)
 		setTimeout(() => {
@@ -214,8 +228,8 @@ const remove1 = (row: any, reason: string) => {
 		}, 1200)
 	}
 }
-const remove = (row: any) => {
-	let tmp = rows.value.findIndex((el: any) => el.id == row.id)
+const remove = (row: WaitingPubRow) => {
+	let tmp = rows.value.findIndex((el) => el.id == row.id)
 	if (tmp > -1) {
 		rows.value.splice(tmp, 1)
 	}
@@ -224,12 +238,12 @@ const remove = (row: any) => {
 const errModal = ref(false)
 const rejectModal = ref(false)
 
-const errPub = (row: any) => {
+const errPub = (row: WaitingPubRow) => {
 	curRow.value = row
 	errModal.value = !errModal.value
 }
 
-const openRejectDialog = (row: any) => {
+const openRejectDialog = (row: WaitingPubRow) => {
 	curRow.value = row
 	rejectModal.value = true
 }
