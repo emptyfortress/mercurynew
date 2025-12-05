@@ -75,6 +75,7 @@ q-page(padding
 
 	PlusButton1(@activate='startRight' @stop='stopRight')
 
+	// add fab
 	Fab
 </template>
 
