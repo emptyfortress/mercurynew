@@ -9,6 +9,9 @@ import { useChangesStore } from '@/stores/changes'
 import { useStorage } from '@vueuse/core'
 import { useApps } from '@/stores/apps'
 
+const saving = ref(false)
+const canceling = ref(false)
+
 interface PanEvent {
 	isFirst?: boolean
 	isFinal?: boolean
@@ -46,20 +49,30 @@ const moveFab = (ev: PanEvent) => {
 }
 
 const handleSaveChanges = () => {
-	changesStore.setHasChanges(false)
-	if (currentApp.value) {
-		const currentVersion = currentApp.value.versions.find((version) => version.current)
-		if (currentVersion) {
-			currentVersion.modified = new Date().getTime()
-		}
-	}
-	app.value.versions[0].modified = new Date()
+	saving.value = true
 	fabOpened.value = true
+	setTimeout(() => {
+		saving.value = false
+		changesStore.setHasChanges(false)
+		if (currentApp.value) {
+			const currentVersion = currentApp.value.versions.find((version) => version.current)
+			if (currentVersion) {
+				currentVersion.modified = new Date().getTime()
+			}
+		}
+		app.value.versions[0].modified = new Date()
+	}, 2000)
 }
 
 const handleCancelChanges = () => {
+	canceling.value = true
 	fabOpened.value = true
-	// Future cancel/revert logic goes here
+	changesStore.setHasChanges(false)
+	setTimeout(() => {
+		canceling.value = false
+		fabOpened.value = true
+		// Future cancel/revert logic goes here
+	}, 2000)
 }
 
 const Div = motion.div
@@ -114,8 +127,20 @@ q-page-sticky(v-if='route.meta.save && countChanges > 0' position="bottom-right"
 					q-btn(unelevated color="pink-8" label="Снять блокировку" @click.stop="unhide" size='sm')
 
 			template(v-else)
-				q-fab-action(color="primary" label="Сохранить" @click.stop='handleSaveChanges')
-				q-fab-action(color="primary" label="Отменить изменения" @click.stop='handleCancelChanges')
+				q-fab-action(
+					color="primary" 
+					:label="saving ? undefined : 'Сохранить'" 
+					@click.stop='handleSaveChanges'
+					:loading="saving"
+					:disable="!hasChanges"
+				)
+				q-fab-action(
+					color="primary" 
+					:label="canceling ? undefined : 'Отменить изменения'" 
+					@click.stop='handleCancelChanges'
+					:loading="canceling"
+					:disable="!hasChanges"
+				)
 </template>
 
 <style scoped lang="scss">
@@ -156,6 +181,12 @@ q-page-sticky(v-if='route.meta.save && countChanges > 0' position="bottom-right"
 		box-shadow: 0 0 0 0 rgba(180, 0, 255, 0);
 	}
 }
+
+.q-btn--active {
+	transform: translateY(2px);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
 .ic {
 	font-size: 2rem;
 	margin-top: -3px;
