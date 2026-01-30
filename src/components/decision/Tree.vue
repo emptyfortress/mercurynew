@@ -41,7 +41,7 @@ draggable.mtl-tree(
     )
     q-icon(
       v-if="stat.children.length"
-      name="mdi-folder-outline"
+      :name="stat.level === 0 ? 'mdi-puzzle' : 'mdi-folder-outline'"
       size="18px"
       color="grey-7"
       class="mtl-mr"
