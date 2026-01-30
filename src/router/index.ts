@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Group1 from '@/views/Group1.vue'
 import Home from '@/views/Home.vue'
+import Decisions from '@/views/Decisions.vue'
 import HomeReduced1 from '@/views/HomeReduced1.vue'
 import AppLayout from '@/views/AppLayout.vue'
 import AppDetails from '@/components/AppDetails.vue'
@@ -22,8 +23,21 @@ const router = createRouter({
 	routes: [
 		{
 			path: '/:id?',
-			name: 'home',
+			// name: 'home',
+			name: 'apps.home',
 			component: Home,
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+				save: false,
+			},
+		},
+		{
+			path: '/decisions',
+			// name: 'decision',
+			name: 'decisions.home',
+			component: Decisions,
 			meta: {
 				toolbar: false,
 				back: false,

@@ -16,6 +16,12 @@ interface App {
 	multiuser?: boolean
 	master: boolean
 }
+interface Des {
+	id: string
+	label: string
+	descr: string
+	expand: boolean
+}
 
 interface Ver {
 	id: number
