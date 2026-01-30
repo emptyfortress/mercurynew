@@ -42,9 +42,5 @@ draggable.mtl-tree(
       class="mtl-mr"
       @click="stat.open = !stat.open"
     )
-    input.mtl-checkbox.mtl-mr(
-      type="checkbox"
-      v-model="stat.checked"
-    )
     span.mtl-ml {{ node.text }}
 </template>
