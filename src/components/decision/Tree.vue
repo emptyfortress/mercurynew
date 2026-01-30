@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Draggable, OpenIcon } from '@he-tree/vue'
-import { mdiFolder } from '@mdi/js'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
 
@@ -23,11 +22,8 @@ const treeData = ref<TreeNode[]>([
 					{ text: 'Angular' },
 				],
 			},
-			{ text: 'Backend' },
 		],
 	},
-	{ text: 'Photos' },
-	{ text: 'Videos' },
 ])
 </script>
 
@@ -45,8 +41,8 @@ draggable.mtl-tree(
     )
     q-icon(
       v-if="stat.children.length"
-      :name="mdiFolder"
-      size="16px"
+      name="mdi-folder-outline"
+      size="18px"
       color="grey-7"
       class="mtl-mr"
     )
