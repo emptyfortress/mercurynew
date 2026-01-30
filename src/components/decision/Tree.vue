@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Draggable, OpenIcon } from '@he-tree/vue'
+import { mdiFolder } from '@mdi/js'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
 
@@ -41,6 +42,13 @@ draggable.mtl-tree(
       :open="stat.open"
       class="mtl-mr"
       @click="stat.open = !stat.open"
+    )
+    q-icon(
+      v-if="stat.children.length"
+      :name="mdiFolder"
+      size="16px"
+      color="grey-7"
+      class="mtl-mr"
     )
     span.mtl-ml {{ node.text }}
 </template>
