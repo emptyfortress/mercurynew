@@ -1,104 +1,72 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import AddButtonNew1 from '@/components/common/AddButtonNew1.vue'
-import ItemNew from '@/components/ItemNew.vue'
-import { spring } from '@/utils/springConstants'
-import { animations } from '@formkit/drag-and-drop'
-import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { motion } from 'motion-v'
+import Tree from '@/components/decision/Tree.vue'
 
-const initial = {
-	opacity: 0,
-	y: -20,
-}
+const splitterModel = ref(30)
 
-const animate = {
-	opacity: 1,
-	y: 0,
-}
+const selected = ref('Food')
 
-const Div = motion.div
-
-const des = ref([
+const simple = ref([
 	{
-		id: '0',
-		label: 'Решение 1',
-		descr: '',
-		expand: false,
-	},
-	{
-		id: '1',
-		label: 'Решение 2',
-		descr: '',
-		expand: false,
-	},
-	{
-		id: '2',
-		label: 'Решение 3',
-		descr: '',
-		expand: false,
+		label: 'Решения',
+		children: [
+			{ label: 'Food', icon: 'restaurant_menu' },
+			{ label: 'Room service', icon: 'room_service' },
+			{ label: 'Room view', icon: 'photo' },
+		],
 	},
 ])
-
-const config = {
-	plugins: [animations()],
-	dragPlaceholderClass: 'ghost',
-	sortable: true,
-	draggable: (child: HTMLElement) => {
-		return child.classList.contains('it')
-	},
-}
-
-const [parent, tapes] = useDragAndDrop(des.value, config)
-
-watch(tapes, (val) => {
-	if (val) {
-		des.value = tapes.value
-	}
-})
-
-const expanded = ref(false)
-
-const row = computed(() => {
-	return Math.floor(tapes.value.length / 4 + 1)
-})
-const row1 = computed(() => {
-	return tapes.value.length + 1
-})
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.parent(ref='parent')
-		Div.plus(
-			layout
-			:transition='spring'
-		)
-			AddButtonNew1(mode='app')
+	q-splitter(
+		v-model="splitterModel"
+		style="height: 400px"
+	)
+		template(v-slot:before)
+			div.q-pa-md
+				Tree
 
-		ItemNew(
-			v-model:expanded="expanded"
-			v-model:tapes='tapes'
-			v-model:activeItem="activeItem"
-			@navigate="navigate"
-			@duplicate="duble"
-		)
+		template(v-slot:after)
+			q-tab-panels(
+				v-model="selected"
+				animated
+				transition-prev="jump-up"
+				transition-next="jump-up"
+			)
+				q-tab-panel(name="Relax Hotel")
+					div.text-h4.q-mb-md Welcome
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
 
-		// Div.it(
-		// 	v-for="(item, index) in tapes",
-		// 	:key="item.id",
-		// 	:transition="spring"
-		// 	:initial="initial"
-		// 	:animate="animate"
-		// )
-		// 	label {{ item.label }}
+				q-tab-panel(name="Food")
+					div.text-h4.q-mb-md Food
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
+
+				q-tab-panel(name="Room service")
+					div.text-h4.q-mb-md Room service
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
+
+				q-tab-panel(name="Room view")
+					div.text-h4.q-mb-md Room view
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
+					p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
+
+	// q-splitter(
+	//	v-model="splitterModel"
+	//	style="height: 400px")
+	//
+	//	template(v-slot:before)
+	//		q-tree()
+	//	template(v-slot:after) two
+
 </template>
 
 <style scoped lang="scss">
-.parent {
-	grid-template-rows: repeat(v-bind(row), 170px);
-	&.end {
-		grid-template-rows: repeat(v-bind(row1), 80px);
-	}
+.grid {
 }
 </style>
