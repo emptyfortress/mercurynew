@@ -8,6 +8,7 @@ import '@he-tree/vue/style/default.css'
 import { useRouter } from 'vue-router'
 // import CreateDialog from '@/components/CreateDialog.vue'
 import { useForms } from '@/stores/forms'
+import { useSimpleStore } from '@/stores/simpleStore'
 
 interface NodeData {
 	// id: number
@@ -27,6 +28,7 @@ const props = defineProps<{
 
 const router = useRouter()
 const myform = useForms()
+const simpleStore = useSimpleStore()
 
 const myTree = ref(props.treeData)
 
@@ -92,6 +94,8 @@ const select = (n: Stat) => {
 	localStorage.setItem('app', JSON.stringify(n.data))
 	// localStorage.setItem('appname', n.data.text)
 	myform.setCurrentBO(null)
+
+	simpleStore.setSelectedElement(n.data)
 
 	router.push('/decisions/' + n.data.text)
 }
