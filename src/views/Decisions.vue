@@ -25,13 +25,13 @@ q-page(padding)
 						BaseTree(:treeData="myApps")
 
 			template(v-slot:after)
-				router-view(v-slot="{ Component, route }")
+				router-view(v-slot="{ Component }")
 					transition(
-						leave-active-class="slide-bottom"
-						enter-active-class="bounce-top"
-						mode='out-in'
-						)
-							component(:is="Component")
+						enter-active-class="animated jump-up"
+						leave-active-class="animated fade"
+						mode="out-in"
+					)
+						component(:is="Component")
 
 
 
