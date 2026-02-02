@@ -35,8 +35,7 @@ const router = createRouter({
 		},
 		{
 			path: '/decisions',
-			// name: 'decision',
-			name: 'decisions.home',
+			// name: 'decisions.home',
 			component: Decisions,
 			meta: {
 				toolbar: false,
@@ -44,6 +43,21 @@ const router = createRouter({
 				count: 0,
 				save: false,
 			},
+			children: [
+				{
+					path: '',
+					// name: 'emp',
+					name: 'decisions.home',
+					component: () => import('@/components/decision/Empt.vue'),
+				},
+				{
+					path: ':id',
+					// name: 'start',
+					name: 'decisions.start',
+					component: () => import('@/components/decision/Start.vue'),
+					props: true,
+				},
+			],
 		},
 		{
 			path: '/reduce',

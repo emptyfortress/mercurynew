@@ -3,6 +3,9 @@ import { ref, watch, computed } from 'vue'
 import BaseTree from '@/components/decision/BaseTree.vue'
 import { myApps } from '@/stores/decisionTree'
 import { useElementSize } from '@vueuse/core'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const splitterModel = ref(30)
 
@@ -26,58 +29,8 @@ q-page(padding)
 
 			template(v-slot:after)
 				router-view(v-slot="{ Component }")
-					transition(
-						enter-active-class="animated jump-up"
-						leave-active-class="animated fade"
-						mode="out-in"
-					)
-						component(:is="Component")
-
-
-
-	// q-splitter(
-	// 	v-model="splitterModel"
-	// 	style="height: 400px"
-	// )
-	// 	template(v-slot:before)
-	// 		div.q-pa-md
-	// 			Tree
-	//
-	// 	template(v-slot:after)
-	// 		q-tab-panels(
-	// 			v-model="selected"
-	// 			animated
-	// 			transition-prev="jump-up"
-	// 			transition-next="jump-up"
-	// 		)
-	// 			q-tab-panel(name="Relax Hotel")
-	// 				div.text-h4.q-mb-md Welcome
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-	//
-	// 			q-tab-panel(name="Food")
-	// 				div.text-h4.q-mb-md Food
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-	//
-	// 			q-tab-panel(name="Room service")
-	// 				div.text-h4.q-mb-md Room service
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-	//
-	// 			q-tab-panel(name="Room view")
-	// 				div.text-h4.q-mb-md Room view
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-	// 				p Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.
-
-	// q-splitter(
-	//	v-model="splitterModel"
-	//	style="height: 400px")
-	//
-	//	template(v-slot:before)
-	//		q-tree()
-	//	template(v-slot:after) two
+					transition(name="page" mode="out-in")
+						component(:is="Component" :key="route.fullPath")
 
 </template>
 
@@ -95,5 +48,20 @@ q-page(padding)
 	margin-right: 1rem;
 	height: calc(100vh - 180px);
 	position: relative;
+}
+
+.page-enter-active,
+.page-leave-active {
+	transition: all 0.3s ease;
+}
+
+.page-enter-from {
+	opacity: 0;
+	transform: translateY(10px);
+}
+
+.page-leave-to {
+	opacity: 0;
+	transform: translateY(-10px);
 }
 </style>

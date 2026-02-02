@@ -160,14 +160,14 @@ const handleCancel = (menuLabel: string) => {
 }
 
 // const tab = ref('app')
-const activeTab = computed({
-	get() {
-		return route.meta.section
-	},
-	set() {
-		// q-tabs требует setter, но мы управляем через router
-	},
-})
+// const activeTab = computed({
+// 	get() {
+// 		return route.meta.section
+// 	},
+// 	set() {
+// 		// q-tabs требует setter, но мы управляем через router
+// 	},
+// })
 const goApps = () => {
 	router.push('/')
 }
@@ -188,6 +188,16 @@ const section = computed<Section>(() => {
 	// 🔴 ВАЖНО: fallback, а не null
 	return 'apps'
 })
+
+const showTab = computed(() => {
+	if (route.name?.toString().startsWith('apps')) {
+		return true
+	}
+	if (route.name?.toString().startsWith('decisions')) {
+		return true
+	}
+	return false
+})
 </script>
 
 <template lang="pug">
@@ -198,7 +208,7 @@ q-layout(view='hHh LpR fFf')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
 			q-toolbar-title
-				q-tabs.q-ml-md(v-if='route.name == "apps.home" || route.name == "decisions.home"'
+				q-tabs.q-ml-md(v-if='showTab'
 					:key="section"
 					:model-value="section"
 					inline-label

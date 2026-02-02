@@ -12,39 +12,55 @@ interface TreeNode {
 
 const treeData = ref<TreeNode[]>([
 	{
-		text: 'Projects',
+		text: 'Решения',
+		icon: 'mdi-puzzle',
 		children: [
 			{
-				text: 'Frontend',
-				children: [
-					{ text: 'Vue', children: [{ text: 'Nuxt' }] },
-					{ text: 'React', children: [{ text: 'Next' }] },
-					{ text: 'Angular' },
-				],
+				text: 'Docsvision',
+				children: [{ text: 'Vue' }, { text: 'React' }, { text: 'Angular' }],
+			},
+			{
+				text: 'DigitalDesign',
+				children: [{ text: 'Vue' }, { text: 'React' }, { text: 'Angular' }],
+			},
+			{
+				text: 'Партнеры',
+				children: [{ text: 'Vue' }, { text: 'React' }, { text: 'Angular' }],
 			},
 		],
 	},
 ])
+
+const test = (e: any) => {
+	console.log(e)
+}
 </script>
 
 <template lang="pug">
 draggable.mtl-tree(
-  v-model="treeData"
-  tree-line
+	v-model="treeData"
+	tree-line
 )
-  template(#default="{ node, stat }")
-    open-icon(
-      v-if="stat.children.length"
-      :open="stat.open"
-      class="mtl-mr"
-      @click="stat.open = !stat.open"
-    )
-    q-icon(
-      v-if="stat.children.length"
-      :name="stat.level === 0 ? 'mdi-puzzle' : 'mdi-folder-outline'"
-      size="18px"
-      color="grey-7"
-      class="mtl-mr"
-    )
-    span.mtl-ml {{ node.text }}
+	template(#default="{ node, stat }")
+		.node( @click='test(stat)')
+			open-icon(
+				v-if="stat.children.length"
+				:open="stat.open"
+				class="mtl-mr"
+				@click="stat.open = !stat.open"
+			)
+			q-icon(
+				v-if="stat.children.length"
+				:name="stat.level === 1 ? 'mdi-puzzle' : 'mdi-folder-outline'"
+				size="18px"
+				color="secondary"
+				class="mtl-mr"
+			)
+			span.mtl-ml {{ node.text }}
 </template>
+
+<style scoped lang="scss">
+.node {
+	// padding: 2px 0;
+}
+</style>
