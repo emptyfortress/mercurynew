@@ -25,7 +25,7 @@ q-page(padding)
 						BaseTree(:treeData="myApps")
 
 			template(v-slot:after)
-				router-view
+				router-view(transition-prev="jump-up", transition-next="jump-up")
 
 
 	// q-splitter(
