@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export interface TreeElement {
 	id: number
@@ -103,11 +103,17 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		selectedElement.value = null
 	}
 
+	const selectedBranch = computed(() => {
+		if (!selectedType.value) return null
+		return treeData.value.find(branch => branch.text === selectedType.value) || null
+	})
+
 	return {
 		treeData,
 		selectedType,
 		selectedElement,
 		setSelectedElement,
 		clearSelectedElement,
+		selectedBranch,
 	}
 })
