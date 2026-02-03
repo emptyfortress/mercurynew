@@ -23,13 +23,15 @@ const constr0 = [
 	{ id: 4, label: 'Расширенные поля' },
 	{ id: 6, label: 'Метаданные' },
 ]
+
+const setting = ref(false)
 </script>
 
 <template lang="pug">
 .q-ml-md(v-if='selectedElement')
 	h6
 		span.edit {{ selectedElement.text }}
-			q-popup-edit(v-model=" simpleStore.selectedElement.text " buttons title="Название приложения" auto-save v-slot="scope")
+			q-popup-edit(v-model="selectedElement.text " buttons title="Название приложения" auto-save v-slot="scope")
 				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 	.grid(v-if='selectedElement.type == 0')
@@ -42,9 +44,10 @@ const constr0 = [
 				.text-bold {{ item.label }}
 				.text-caption.q-mt-md Этот конструктор делает конструкции.
 
-	// Added QExpansionItem with lorem ipsum text
-	q-expansion-item(label="Настройки вида" caption="Настройки вида" default-opened)
-		div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+		br
+		q-expansion-item(label="Настройки вида" v-model="setting")
+			q-card.sett
+				div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </template>
 
 <style scoped lang="scss">
@@ -69,28 +72,16 @@ const constr0 = [
 		width: 100%;
 		height: 150px;
 		background: #fff;
-		// border-radius: 0.5rem;
 	}
-}
-
-.grid1 {
-	margin-top: 1rem;
-	display: grid;
-	grid-template-columns: auto 1fr;
-	column-gap: 1rem;
 }
 
 .edit {
 	border-bottom: 1px dotted $primary;
 }
 
-.q-tab-panels {
-	background: transparent;
-}
-
-.rd {
-	grid-column: 1 / -1;
-	color: $negative;
-	font-weight: 600;
+.sett {
+	padding: 1rem;
+	border-radius: 0.5rem;
+	min-height: 300px;
 }
 </style>
