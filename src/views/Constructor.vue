@@ -39,9 +39,10 @@ q-page(padding)
 						BaseTree(:treeData="selectedBranch")
 
 			template(v-slot:after)
-				router-view(v-slot="{ Component }")
-					transition(name="page" mode="out-in")
-						component(:is="Component" :key="route.fullPath")
+				div Кто здесь?
+				// router-view(v-slot="{ Component }")
+				// 	transition(name="page" mode="out-in")
+				// 		component(:is="Component" :key="route.fullPath")
 
 </template>
 

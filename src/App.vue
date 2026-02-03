@@ -159,15 +159,6 @@ const handleCancel = (menuLabel: string) => {
 	console.log('Help modal Cancel clicked', menuLabel)
 }
 
-// const tab = ref('app')
-// const activeTab = computed({
-// 	get() {
-// 		return route.meta.section
-// 	},
-// 	set() {
-// 		// q-tabs требует setter, но мы управляем через router
-// 	},
-// })
 const goApps = () => {
 	router.push('/')
 }
@@ -215,7 +206,7 @@ q-layout(view='hHh LpR fFf')
 					align="left"
 				)
 					q-tab(label="Приложения" name='apps' @click="goApps")
-					q-tab(label="Решения" name='decisions' @click="goDecisions")
+					q-tab(label="Конструкторы" name='decisions' @click="goDecisions")
 				span(v-else) {{ title }}
 			.lang
 				component(:is='currentLang.icon')

@@ -2,22 +2,21 @@
 import { ref, reactive, computed, watch, watchEffect, onMounted, nextTick } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
-// import { useStore } from '@/stores/store'
 // import WordHighlighter from 'vue-word-highlighter'
-// import DirMenu from '@/components/DirMenu.vue'
+import DirMenu from '@/components/decision/DirMenu.vue'
 import { useRouter } from 'vue-router'
 // import CreateDialog from '@/components/CreateDialog.vue'
 import { useForms } from '@/stores/forms'
 import { useSimpleStore } from '@/stores/simpleStore'
+import { storeToRefs } from 'pinia'
 
 interface NodeData {
 	// id: number
 	text: string
 	name?: string
-	// descr?: string
+	descr?: string
 	selected?: boolean
 	hidden?: boolean
-	type: number
 	edit?: boolean
 }
 
@@ -29,10 +28,8 @@ const props = defineProps<{
 const router = useRouter()
 const myform = useForms()
 const simpleStore = useSimpleStore()
+// const { selectedBranch } = storeToRefs(treeStore)
 
-const myTree = ref(props.treeData)
-
-// const store = useStore()
 const query = ref('')
 
 const clearFilter = () => {
@@ -84,19 +81,13 @@ watch(query, (newValue) => {
 const tree = ref()
 
 const select = (n: Stat) => {
-	if (n.data.type == 0) return
-
 	tree.value.statsFlat.map((item: Stat) => (item.data.selected = false))
 	n.data.selected = true
-	// store.setCurrentNode(n)
-
-	// console.log(n.data)
-	localStorage.setItem('app', JSON.stringify(n.data))
-	// localStorage.setItem('appname', n.data.text)
-	myform.setCurrentBO(null)
-
 	simpleStore.setSelectedElement(n.data)
 
+	// localStorage.setItem('app', JSON.stringify(n.data))
+	// localStorage.setItem('appname', n.data.text)
+	// myform.setCurrentBO(null)
 	router.push('/decisions/' + n.data.text)
 }
 
@@ -120,17 +111,9 @@ const toggle = (stat: any) => {
 // 	}
 // }
 
-// const addFromMenu = (e: Stat) => {
-// 	store.setCurrentNode(e)
-// 	dialog.value = true
-// }
-
-const addFolder = (e: Stat) => {
-	if (e.data.type === 0) {
-		tree.value.add({ text: 'New folder', hidden: false, type: 0 }, e)
-	} else {
-		tree.value.add({ text: 'New folder', hidden: false, type: 0 }, e.parent)
-	}
+const addFromMenu = (e: Stat) => {
+	simpleStore.setCurrentNode(e)
+	// dialog.value = true
 }
 
 // const remove = (e: Stat) => {
@@ -161,10 +144,10 @@ const setText = (e: Stat, ev: any) => {
 	e.data.edit = false
 }
 
-const isDrop = (e: any) => {
-	if (e.data.type == 0) return true
-	else return false
-}
+// const isDrop = (e: any) => {
+// 	if (e.data.type == 0) return true
+// 	else return false
+// }
 
 // const initial = (stat: any) => {
 // 	if (props.reset == false) {
@@ -179,22 +162,22 @@ const isDrop = (e: any) => {
 <template lang="pug">
 .tr
 	q-form.quick
-		q-input(dense
+		q-input.query(dense
 			v-model="query"
 			autofocus
 			clearable
 			@clear="clearFilter"
 			placeholder="фильтр"
-			).query
+			filled
+			)
 			template(v-slot:prepend)
 				q-icon(name="mdi-magnify")
 
-	Draggable(v-model="myTree"
+	Draggable(v-model="props.treeData"
 		ref="tree"
 		treeLine
 		:treeLineOffset="18"
 		:indent="30"
-		:eachDroppable="isDrop"
 		:watermark="false")
 		template(#default="{ node, stat }")
 			.node(@click="select(stat)" :class="{ 'selected': stat.data.selected }")
@@ -202,20 +185,19 @@ const isDrop = (e: any) => {
 				q-icon(name="mdi-folder-outline" v-if="stat.data.type === 0").fold
 				span {{ node.text }}
 
-				// DirMenu(
-				// 	:stat="stat"
-				// 	@kill="remove(stat)"
-				// 	@add="addFromMenu(stat)"
-				// 	@addFolder="addFolder(stat)"
-				// 	@rename="edit(stat)"
-				// 	@duble="duble(stat)")
-				//
-				// q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
-				// 	q-input(:model-value="stat.data.text"
-				// 	dense
-				// 	autofocus counter
-				// 	@keyup.enter="setText(stat, $event)"
-				// 	)
+				DirMenu(
+					:stat="stat"
+					@kill="remove(stat)"
+					@add="addFromMenu(stat)"
+					@rename="edit(stat)"
+					@duble="duble(stat)")
+
+				q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
+					q-input(:model-value="stat.data.text"
+					dense
+					autofocus counter
+					@keyup.enter="setText(stat, $event)"
+					)
 	q-btn.fab(round icon="mdi-plus" color="primary" @click="dialog = !dialog") 
 	// CreateDialog(v-model="dialog" @create="add")
 </template>
@@ -270,5 +252,8 @@ const isDrop = (e: any) => {
 	&.closed {
 		transform: rotate(-90deg);
 	}
+}
+.query {
+	// background: transparent;
 }
 </style>

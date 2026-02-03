@@ -27,7 +27,7 @@ const myApps = [
 						selected: false,
 					},
 					{
-						id: 'com',
+						id: 'dec',
 						text: 'Мое решение',
 						hidden: false,
 						selected: false,

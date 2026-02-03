@@ -141,6 +141,17 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/constructor/:id',
+			name: 'constructor',
+			component: () => import('@/views/Constructor.vue'),
+			meta: {
+				toolbar: false,
+				back: true,
+				count: 19,
+				save: false,
+			},
+		},
+		{
 			path: '/access',
 			name: 'access',
 			component: () => import('@/views/Access.vue'),

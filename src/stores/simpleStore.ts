@@ -2,13 +2,12 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export interface TreeElement {
-	id: number
+	id: string
 	text: string
 	name?: string
 	descr?: string
 	selected?: boolean
 	hidden?: boolean
-	type: number
 	edit?: boolean
 }
 
@@ -90,12 +89,15 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	])
 
-	const selectedType = ref<string | null>(null)
+	function updateTreeData(value: any[]) {
+		treeData.value = value
+	}
+
+	const selectedType = ref<string | null>('Все')
 
 	const selectedElement = ref<TreeElement | null>(null)
 
 	function setSelectedElement(element: TreeElement | null) {
-		console.log(element)
 		selectedElement.value = element
 	}
 
@@ -104,8 +106,11 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 	}
 
 	const selectedBranch = computed(() => {
-		if (!selectedType.value) return null
-		return treeData.value.find(branch => branch.text === selectedType.value) || null
+		if (selectedType.value === 'Все') {
+			return treeData.value
+		}
+
+		return treeData.value.filter((node) => node.text === selectedType.value)
 	})
 
 	return {
@@ -114,6 +119,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		selectedElement,
 		setSelectedElement,
 		clearSelectedElement,
+		updateTreeData,
 		selectedBranch,
 	}
 })
