@@ -47,7 +47,21 @@ const setting = ref(false)
 		br
 		q-expansion-item(label="Настройки вида" v-model="setting")
 			q-card.sett
-				div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				q-tabs(v-model="tab")
+					q-tab(name="tab1" label="Tab 1")
+					q-tab(name="tab2" label="Tab 2")
+					q-tab(name="tab3" label="Tab 3")
+					q-tab(name="tab4" label="Tab 4")
+
+				q-tab-panels(v-model="tab")
+					q-tab-panel(name="tab1")
+						div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					q-tab-panel(name="tab2")
+						div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					q-tab-panel(name="tab3")
+						div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					q-tab-panel(name="tab4")
+						div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </template>
 
 <style scoped lang="scss">
