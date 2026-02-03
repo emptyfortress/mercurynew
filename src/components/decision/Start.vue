@@ -42,7 +42,9 @@ const constr0 = [
 				.text-bold {{ item.label }}
 				.text-caption.q-mt-md Этот конструктор делает конструкции.
 
-
+	// Added QExpansionItem with lorem ipsum text
+	q-expansion-item(label="Настройки вида" caption="Настройки вида" default-opened)
+		div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </template>
 
 <style scoped lang="scss">
