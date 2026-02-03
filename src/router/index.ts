@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Group1 from '@/views/Group1.vue'
 import Home from '@/views/Home.vue'
 import Decisions from '@/views/Decisions.vue'
+import Databases from '@/components/decision/Databases.vue'
 import HomeReduced1 from '@/views/HomeReduced1.vue'
 import AppLayout from '@/views/AppLayout.vue'
 import AppDetails from '@/components/AppDetails.vue'
@@ -32,6 +33,19 @@ const router = createRouter({
 				count: 0,
 				save: false,
 			},
+		},
+		{
+			path: '/databases',
+			component: () => import('@/components/decision/Databases.vue'),
+			// component: Databases,
+			name: 'decisions',
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+				save: false,
+			},
+			children: [],
 		},
 		{
 			path: '/decisions',

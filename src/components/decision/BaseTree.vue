@@ -9,26 +9,36 @@ import { useRouter } from 'vue-router'
 import { useForms } from '@/stores/forms'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
+import { uid } from 'quasar'
 
 interface NodeData {
 	// id: number
 	text: string
 	name?: string
-	descr?: string
 	selected?: boolean
 	hidden?: boolean
 	edit?: boolean
 }
 
-const props = defineProps<{
-	treeData: NodeData[]
-	reset?: Boolean
-}>()
+// const props = defineProps<{
+// 	treeData: NodeData[]
+// 	reset?: Boolean
+// }>()
 
 const router = useRouter()
 const myform = useForms()
 const simpleStore = useSimpleStore()
-// const { selectedBranch } = storeToRefs(treeStore)
+
+const { selectedBranch } = storeToRefs(simpleStore)
+
+const treeData = computed({
+	get() {
+		return simpleStore.selectedBranch
+	},
+	set(value) {
+		simpleStore.treeData[selectedBranch] = value
+	},
+})
 
 const query = ref('')
 
@@ -88,7 +98,7 @@ const select = (n: Stat) => {
 	// localStorage.setItem('app', JSON.stringify(n.data))
 	// localStorage.setItem('appname', n.data.text)
 	// myform.setCurrentBO(null)
-	router.push('/decisions/' + n.data.text)
+	router.push('/decisions/' + n.data.id)
 }
 
 onMounted(() => {
@@ -112,16 +122,16 @@ const toggle = (stat: any) => {
 // }
 
 const addFromMenu = (e: Stat) => {
-	simpleStore.setCurrentNode(e)
-	// dialog.value = true
+	// simpleStore.addNode(e.data, 'fuck')
+	tree.value.add({ id: uid(), text: 'Новый вид' }, e)
 }
 
-// const remove = (e: Stat) => {
-// 	tree.value.remove(e)
-// 	if (e === store.currentNode) {
-// 		store.setCurrentNode(null)
-// 	}
-// }
+const remove = (e: Stat) => {
+	tree.value.remove(e)
+	// if (e === store.currentNode) {
+	// 	store.setCurrentNode(null)
+	// }
+}
 
 // const duble = (e: Stat) => {
 // 	let temp = {
@@ -157,6 +167,13 @@ const setText = (e: Stat, ev: any) => {
 // 		return stat
 // 	}
 // }
+
+function applyInitialFold(nodes: any[], level = 0) {
+	tree.value.openNodeAndParents(treeData.value[0].children[0])
+}
+onMounted(() => {
+	applyInitialFold()
+})
 </script>
 
 <template lang="pug">
@@ -173,11 +190,12 @@ const setText = (e: Stat, ev: any) => {
 			template(v-slot:prepend)
 				q-icon(name="mdi-magnify")
 
-	Draggable(v-model="props.treeData"
+	Draggable(v-model="treeData"
 		ref="tree"
 		treeLine
 		:treeLineOffset="18"
 		:indent="30"
+		:defaultOpen='false'
 		:watermark="false")
 		template(#default="{ node, stat }")
 			.node(@click="select(stat)" :class="{ 'selected': stat.data.selected }")

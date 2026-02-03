@@ -164,7 +164,7 @@ const goApps = () => {
 }
 
 const goDecisions = () => {
-	router.push('/decisions')
+	router.push('/databases')
 }
 
 type Section = 'apps' | 'decisions'
@@ -206,7 +206,7 @@ q-layout(view='hHh LpR fFf')
 					align="left"
 				)
 					q-tab(label="Приложения" name='apps' @click="goApps")
-					q-tab(label="Конструкторы" name='decisions' @click="goDecisions")
+					q-tab(label="Базы данных" name='decisions' @click="goDecisions")
 				span(v-else) {{ title }}
 			.lang
 				component(:is='currentLang.icon')

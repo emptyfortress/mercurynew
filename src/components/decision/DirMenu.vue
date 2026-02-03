@@ -11,14 +11,13 @@ q-menu(context-menu)
 </template>
 
 <script setup lang="ts">
-
 const props = defineProps<{ stat: Stat }>()
 
-const dis = ((e: number) => {
+const dis = (e: number) => {
 	if (props.stat.data.type === 0 && e === 2) {
 		return true
 	} else return false
-})
+}
 
 const emit = defineEmits(['addFolder', 'add', 'kill', 'duble', 'rename'])
 
@@ -40,12 +39,6 @@ const rename = () => {
 
 const menu = [
 	{
-		id: 0,
-		label: 'Добавить папку',
-		icon: 'mdi-folder-outline',
-		action: addFolder,
-	},
-	{
 		id: 1,
 		label: 'Добавить',
 		icon: 'mdi-plus-circle-outline',
@@ -55,7 +48,6 @@ const menu = [
 	{ id: 3, label: 'Переименовать', icon: 'mdi-pencil', action: rename },
 	{ id: 4, label: 'Удалить', icon: 'mdi-trash-can-outline', action: kill },
 ]
-
 </script>
 
 <style scoped lang="scss">
