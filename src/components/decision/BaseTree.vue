@@ -167,13 +167,20 @@ const setText = (e: Stat, ev: any) => {
 // 		return stat
 // 	}
 // }
-
-function applyInitialFold(nodes: any[], level = 0) {
-	tree.value.openNodeAndParents(treeData.value[0].children[0])
-}
-onMounted(() => {
-	applyInitialFold()
-})
+watch(
+	() => simpleStore.selectedType,
+	() => {
+		if (simpleStore.selectedType == 'Все') {
+			setTimeout(() => {
+				tree.value.closeAll()
+			}, 300)
+		} else {
+			setTimeout(() => {
+				tree.value.openNodeAndParents(treeData.value[0].children[0])
+			}, 300)
+		}
+	}
+)
 </script>
 
 <template lang="pug">
@@ -196,7 +203,7 @@ onMounted(() => {
 		:treeLineOffset="18"
 		:indent="30"
 		:defaultOpen='false'
-		:watermark="false")
+		)
 		template(#default="{ node, stat }")
 			.node(@click="select(stat)" :class="{ 'selected': stat.data.selected }")
 				q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
@@ -226,7 +233,7 @@ onMounted(() => {
 	position: relative;
 }
 .fab {
-	position: absolute;
+	position: fixed;
 	bottom: 1rem;
 	right: 1rem;
 }

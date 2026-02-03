@@ -9,6 +9,7 @@ export interface TreeElement {
 	selected?: boolean
 	hidden: boolean
 	edit?: boolean
+	type?: number
 	children?: TreeElement[]
 }
 
@@ -19,6 +20,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 			text: 'Документ',
 			hidden: false,
 			selected: false,
+			type: 0,
 			children: [
 				{
 					id: 'document.ud',
@@ -298,6 +300,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 			text: 'Задание',
 			hidden: false,
 			selected: false,
+			type: 0,
 			children: [
 				{
 					id: 'task.ud',
@@ -386,6 +389,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 			text: 'Группа заданий',
 			hidden: false,
 			selected: false,
+			type: 0,
 			children: [
 				{
 					id: 'group1',
