@@ -9,7 +9,7 @@ const { selectedElement } = storeToRefs(simpleStore)
 const router = useRouter()
 
 const goto = (id: number) => {
-	router.push(`/constructor/${id}`)
+	router.push('/razmet')
 }
 
 const constr = [
@@ -25,6 +25,8 @@ const constr0 = [
 ]
 
 const setting = ref(false)
+
+const tab = ref('tab1')
 </script>
 
 <template lang="pug">
@@ -39,29 +41,43 @@ const setting = ref(false)
 			.text-bold {{ item.label }}
 
 	template(v-else)
-		.grid
+		.grid1
 			.it(v-for="item in constr" :key='item.id' @click='goto(item.id)')
 				.text-bold {{ item.label }}
 				.text-caption.q-mt-md Этот конструктор делает конструкции.
 
 		br
-		q-expansion-item(label="Настройки вида" v-model="setting")
+		q-expansion-item(
+			label="Настройки вида",
+			v-model="setting",
+			icon='mdi-cog',
+			header-class='ehead'
+		)
 			q-card.sett
-				q-tabs(v-model="tab")
-					q-tab(name="tab1" label="Tab 1")
-					q-tab(name="tab2" label="Tab 2")
-					q-tab(name="tab3" label="Tab 3")
-					q-tab(name="tab4" label="Tab 4")
+				q-tabs(v-model="tab" dense align="left" class="text-primary")
+					q-tab(name="tab1" label="Общие")
+					q-tab(name="tab2" label="Документы")
+					q-tab(name="tab3" label="Экспорт")
+					q-tab(name="tab4" label="Свойства")
+					q-tab(name="tab5" label="Подпись")
+					q-tab(name="tab6" label="Проверка уникальности")
+					q-tab(name="tab7" label="Виды связанных заданий")
 
-				q-tab-panels(v-model="tab")
+				q-tab-panels(v-model="tab" animated)
 					q-tab-panel(name="tab1")
-						div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						.text-h6 Общие
 					q-tab-panel(name="tab2")
-						div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						.text-h6 Документы
 					q-tab-panel(name="tab3")
-						div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						.text-h6 Экспорт
 					q-tab-panel(name="tab4")
-						div Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						.text-h6 Свойства
+					q-tab-panel(name="tab5")
+						.text-h6 Подпись
+					q-tab-panel(name="tab6")
+						.text-h6 Проверка уникальности
+					q-tab-panel(name="tab7")
+						.text-h6 Виды
 </template>
 
 <style scoped lang="scss">
@@ -88,6 +104,19 @@ const setting = ref(false)
 		background: #fff;
 	}
 }
+.grid1 {
+	margin-top: 1rem;
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	// align-items: center;
+	column-gap: 1rem;
+	row-gap: 0.5rem;
+	.it {
+		width: 100%;
+		height: 150px;
+		background: #fff;
+	}
+}
 
 .edit {
 	border-bottom: 1px dotted $primary;
@@ -97,5 +126,10 @@ const setting = ref(false)
 	padding: 1rem;
 	border-radius: 0.5rem;
 	min-height: 300px;
+}
+:deep(.ehead) {
+	text-transform: uppercase;
+	border-bottom: 1px solid $primary;
+	color: $primary;
 }
 </style>

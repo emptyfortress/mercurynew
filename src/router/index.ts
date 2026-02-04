@@ -54,6 +54,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: false,
+				back1: true,
 				count: 0,
 				save: false,
 			},
@@ -72,6 +73,18 @@ const router = createRouter({
 					props: true,
 				},
 			],
+		},
+		{
+			path: '/razmet',
+			name: 'razmet',
+			component: () => import('@/components/decision/Razmet.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				back1: true,
+				count: 19,
+				save: false,
+			},
 		},
 		{
 			path: '/reduce',
