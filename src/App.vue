@@ -164,7 +164,7 @@ const goApps = () => {
 }
 
 const goDecisions = () => {
-	router.push('/databases')
+	router.push('/databases/dvmain')
 }
 
 type Section = 'apps' | 'decisions'
@@ -207,6 +207,7 @@ q-layout(view='hHh LpR fFf')
 				)
 					q-tab(label="Приложения" name='apps' @click="goApps")
 					q-tab(label="DV-main" icon='mdi-server-network-outline' name='decisions' @click="goDecisions")
+					q-btn.q-ml-lg(flat round icon="mdi-plus-circle-outline") 
 				span(v-else) {{ title }}
 			.lang
 				component(:is='currentLang.icon')
