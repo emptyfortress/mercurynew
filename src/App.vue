@@ -206,7 +206,7 @@ q-layout(view='hHh LpR fFf')
 					align="left"
 				)
 					q-tab(label="Приложения" name='apps' @click="goApps")
-					q-tab(label="Базы данных" name='decisions' @click="goDecisions")
+					q-tab(label="DV-main" icon='mdi-server-network-outline' name='decisions' @click="goDecisions")
 				span(v-else) {{ title }}
 			.lang
 				component(:is='currentLang.icon')
