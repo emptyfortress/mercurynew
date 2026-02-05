@@ -219,7 +219,7 @@ watch(
 					@kill="remove(stat)"
 					@add="addFromMenu(stat)"
 					@rename="edit(stat)"
-					@duble="duble(stat)")
+				)
 
 				q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
 					q-input(:model-value="stat.data.text"

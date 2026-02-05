@@ -11,7 +11,7 @@ import { spring } from '@/utils/springConstants'
 import { useReducedMotion } from '@/composable/useReducedMotion'
 
 const expanded = defineModel('expanded')
-const tapes = defineModel<Des[]>('tapes')
+const tapes = defineModel<any[]>('tapes')
 const activeItem = defineModel<string>('activeItem')
 
 const { reducedMotion } = useReducedMotion()
