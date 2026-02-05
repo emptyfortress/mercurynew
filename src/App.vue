@@ -252,8 +252,8 @@ q-layout(view='hHh LpR fFf')
 	RDrawer(v-model="rightDrawer" :help='helpMode')
 
 	q-page-container
-		.bread
-			breadcrumbs
+		.bread(v-if='route.meta.breadcrumbs')
+			Breadcrumbs
 		#cont
 			router-view(v-slot="{ Component, route }")
 				transition(

@@ -28,16 +28,16 @@ q-page(padding)
 		.text-h6.text-center Конструктор карточек
 		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei" )
 			template(v-slot:before)
-				.blo(ref="el")
-					q-scroll-area.list
-						label Выберите тип
-						q-select.q-mb-sm(
-							v-model="selectedType",
-							dense,
-							:options='options'
-							filled
-						)
-						BaseTree(:treeData="selectedBranch")
+				// .blo(ref="el")
+				q-scroll-area.list(ref='el')
+					label Выберите тип
+					q-select.q-mb-sm(
+						v-model="selectedType",
+						dense,
+						:options='options'
+						filled
+					)
+					BaseTree(:treeData="selectedBranch")
 
 			template(v-slot:after)
 				router-view(v-slot="{ Component }")
@@ -53,16 +53,16 @@ q-page(padding)
 }
 
 .list {
-	// height: calc(100vh - 150px);
-	height: 845px;
+	height: calc(100vh - 170px);
+	// height: 845px;
 	padding: 0;
 	margin: 0;
 }
 
-.blo {
-	margin-right: 1rem;
-	// position: relative;
-}
+// .blo {
+// 	margin-right: 1rem;
+// 	// position: relative;
+// }
 
 .page-enter-active,
 .page-leave-active {

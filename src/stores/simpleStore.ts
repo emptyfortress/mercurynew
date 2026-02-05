@@ -402,6 +402,28 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	])
 
+	const flatten = (nodes: TreeElement[]): TreeElement[] => {
+		return nodes.reduce((acc: TreeElement[], node) => {
+			acc.push(node)
+			if (node.children && node.children.length > 0) {
+				acc.push(...flatten(node.children))
+			}
+			return acc
+		}, [])
+	}
+
+	// Оптимизация: создаем плоский массив только при изменении дерева
+	const flatNodes = computed(() => flatten(treeData.value))
+	// Оптимизация: создаем Map для мгновенного поиска O(1) вместо find() O(n)
+	const nodesMap = computed(() => {
+		return new Map(flatNodes.value.map((node) => [node.id, node.text]))
+	})
+
+	// Функция получения имени
+	const getNameById = (id: string): string => {
+		return nodesMap.value.get(id) || id
+	}
+
 	function updateTreeData(value: any[]) {
 		treeData.value = value
 	}
@@ -442,5 +464,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		clearSelectedElement,
 		updateTreeData,
 		selectedBranch,
+		flatNodes,
+		getNameById,
 	}
 })

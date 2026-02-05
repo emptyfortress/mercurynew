@@ -15,7 +15,7 @@ declare module 'vue-router' {
 		save?: boolean
 		hideScroll?: boolean
 		footer?: boolean
-		breadcrumbs?: string[]
+		breadcrumbs?: boolean
 	}
 }
 
@@ -43,6 +43,7 @@ const router = createRouter({
 				back: false,
 				count: 0,
 				save: false,
+				breadcrumbs: true,
 			},
 		},
 
@@ -57,6 +58,7 @@ const router = createRouter({
 				back1: false,
 				count: 0,
 				save: false,
+				breadcrumbs: true,
 			},
 			children: [
 				{
@@ -70,6 +72,7 @@ const router = createRouter({
 						back1: false,
 						count: 0,
 						save: false,
+						breadcrumbs: true,
 					},
 				},
 				{
@@ -83,6 +86,7 @@ const router = createRouter({
 						back1: false,
 						count: 0,
 						save: false,
+						breadcrumbs: true,
 					},
 				},
 			],
@@ -99,6 +103,7 @@ const router = createRouter({
 				back1: false,
 				count: 19,
 				save: false,
+				breadcrumbs: true,
 			},
 		},
 		{

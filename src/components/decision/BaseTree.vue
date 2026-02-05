@@ -5,7 +5,7 @@ import '@he-tree/vue/style/default.css'
 // import WordHighlighter from 'vue-word-highlighter'
 import DirMenu from '@/components/decision/DirMenu.vue'
 import { useRouter, useRoute } from 'vue-router'
-// import CreateDialog from '@/components/CreateDialog.vue'
+import CreateDialog from '@/components/decision/CreateDialog.vue'
 import { useForms } from '@/stores/forms'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
@@ -188,7 +188,7 @@ watch(
 </script>
 
 <template lang="pug">
-.tr
+div
 	q-form.quick
 		q-input.query(dense
 			v-model="query"
@@ -228,14 +228,10 @@ watch(
 					@keyup.enter="setText(stat, $event)"
 					)
 	q-btn.fab(round icon="mdi-plus" color="primary" @click="dialog = !dialog") 
-	// CreateDialog(v-model="dialog" @create="add")
+	CreateDialog(v-model="dialog" mode='vid')
 </template>
 
 <style scoped lang="scss">
-.tr {
-	height: calc(100vh - 180px);
-	position: relative;
-}
 .fab {
 	position: fixed;
 	bottom: 1rem;
