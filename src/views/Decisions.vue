@@ -25,6 +25,7 @@ const options = ['Все', 'Документ', 'Задание', 'Группа �
 <template lang="pug">
 q-page(padding)
 	.container
+		.text-h6.text-center Конструктор карточек
 		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei" )
 			template(v-slot:before)
 				.blo(ref="el")

@@ -1,13 +1,8 @@
 <template lang="pug">
-q-breadcrumbs.text-grey-7.q-pa-sm(separator-color="primary")
-	//- Иконка разделителя
-	template(v-slot:separator)
-		q-icon(size="1.2em" name="mdi-chevron-right")
+q-breadcrumbs.sdvig(separator-color="primary")
 
-	//- Главная (Apps Home)
-	q-breadcrumbs-el(icon="mdi-home" to="/")
+	q-breadcrumbs-el(label='Приложения' to="/")
 
-	//- Динамические крошки
 	q-breadcrumbs-el(
 		v-for="(crumb, index) in breadcrumbs"
 		:key="index"
@@ -23,9 +18,9 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 // Словарь для статичных сегментов
-const staticLabels: Record<string, { label: string; icon: string }> = {
-	dvmain: { label: 'DV-main', icon: 'mdi-database' },
-	razmet: { label: 'Разметка', icon: 'mdi-layers-outline' },
+const staticLabels: Record<string, { label: string }> = {
+	dvmain: { label: 'DV-main' },
+	razmet: { label: 'Разметка' },
 }
 
 const breadcrumbs = computed(() => {
@@ -57,3 +52,9 @@ const breadcrumbs = computed(() => {
 	})
 })
 </script>
+
+<style scoped lang="scss">
+.sdvig {
+	margin-left: 3rem;
+}
+</style>

@@ -12,7 +12,7 @@ const sections = [
 ]
 
 const goto = (e: string) => {
-	router.push({ name: 'cardConstructor', params: { constructorId: e } })
+	router.push({ name: 'Emp', params: { constructorId: e } })
 }
 </script>
 

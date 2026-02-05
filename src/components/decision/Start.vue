@@ -38,7 +38,7 @@ const tab = ref('tab1')
 				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 	.grid(v-if='selectedElement.type == 0')
-		.it(v-for="item in constr0" :key='item.id' @click='')
+		.it(v-for="item in constr0" :key='item.id' @click='goto(item.id)')
 			.text-bold {{ item.label }}
 
 	template(v-else)

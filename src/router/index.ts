@@ -54,7 +54,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: false,
-				back1: true,
+				back1: false,
 				count: 0,
 				save: false,
 			},
@@ -67,7 +67,7 @@ const router = createRouter({
 					meta: {
 						toolbar: false,
 						back: false,
-						back1: true,
+						back1: false,
 						count: 0,
 						save: false,
 					},
@@ -80,7 +80,7 @@ const router = createRouter({
 					meta: {
 						toolbar: false,
 						back: false,
-						back1: true,
+						back1: false,
 						count: 0,
 						save: false,
 					},
@@ -96,7 +96,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: false,
-				back1: true,
+				back1: false,
 				count: 19,
 				save: false,
 			},
