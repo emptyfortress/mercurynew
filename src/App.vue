@@ -15,6 +15,7 @@ import Footer from '@/components/Footer.vue'
 import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
 import HelpModal from '@/components/HelpModal.vue'
 import { useAppTour } from '@/tour'
+import Breadcrumbs from '@/components/decision/Breadcrumbs.vue'
 
 const route = useRoute()
 const { startTour } = useAppTour()
@@ -164,7 +165,7 @@ const goApps = () => {
 }
 
 const goDecisions = () => {
-	router.push('/databases/dvmain')
+	router.push('/dvmain')
 }
 
 type Section = 'apps' | 'decisions'
@@ -251,6 +252,8 @@ q-layout(view='hHh LpR fFf')
 	RDrawer(v-model="rightDrawer" :help='helpMode')
 
 	q-page-container
+		.bread
+			breadcrumbs
 		#cont
 			router-view(v-slot="{ Component, route }")
 				transition(
@@ -335,5 +338,11 @@ nav a:first-of-type {
 .ic {
 	font-size: 1.7rem;
 	color: $primary;
+}
+.bread {
+	background: hsl(216 44% 83% / 1);
+	margin-left: -4rem;
+	font-size: 0.8rem;
+	padding: 4px 15px;
 }
 </style>

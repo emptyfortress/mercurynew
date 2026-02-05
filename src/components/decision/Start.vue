@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
 
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
 const router = useRouter()
+const route = useRoute()
 
 const goto = (id: number) => {
-	router.push('/razmet')
+	router.push({ name: 'razmet', params: { razmet: id } })
 }
 
 const constr = [
@@ -37,13 +38,13 @@ const tab = ref('tab1')
 				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 	.grid(v-if='selectedElement.type == 0')
-		.it(v-for="item in constr0" :key='item.id' @click='goto(item.id)')
+		.it(v-for="item in constr0" :key='item.id' @click='')
 			.text-bold {{ item.label }}
 
 	template(v-else)
 		.grid1
 			.it(v-for="item in constr" :key='item.id' @click='goto(item.id)')
-				.text-bold {{ item.label }}
+				.text-bold {{ item.label }} {{ item.id }}
 				.text-caption.q-mt-md Этот конструктор делает конструкции.
 
 		br

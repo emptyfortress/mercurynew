@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Group1 from '@/views/Group1.vue'
 import Home from '@/views/Home.vue'
 import Decisions from '@/views/Decisions.vue'
-import Databases from '@/components/decision/Databases.vue'
 import HomeReduced1 from '@/views/HomeReduced1.vue'
 import AppLayout from '@/views/AppLayout.vue'
 import AppDetails from '@/components/AppDetails.vue'
@@ -16,6 +15,7 @@ declare module 'vue-router' {
 		save?: boolean
 		hideScroll?: boolean
 		footer?: boolean
+		breadcrumbs?: string[]
 	}
 }
 
@@ -24,7 +24,6 @@ const router = createRouter({
 	routes: [
 		{
 			path: '/:id?',
-			// name: 'home',
 			name: 'apps.home',
 			component: Home,
 			meta: {
@@ -35,22 +34,23 @@ const router = createRouter({
 			},
 		},
 		{
-			path: '/databases',
+			path: '/dvmain',
 			component: () => import('@/components/decision/Databases.vue'),
-			// component: Databases,
 			name: 'decisions',
+			props: true,
 			meta: {
 				toolbar: false,
 				back: false,
 				count: 0,
 				save: false,
 			},
-			children: [],
 		},
+
 		{
-			path: '/decisions',
-			// name: 'decisions.home',
+			path: '/dvmain/:constructorId',
 			component: Decisions,
+			name: 'cardConstructor',
+			props: true,
 			meta: {
 				toolbar: false,
 				back: false,
@@ -61,23 +61,38 @@ const router = createRouter({
 			children: [
 				{
 					path: '',
-					// name: 'emp',
-					name: 'decisions.home',
+					name: 'Emp',
 					component: () => import('@/components/decision/Empt.vue'),
+					props: true,
+					meta: {
+						toolbar: false,
+						back: false,
+						back1: true,
+						count: 0,
+						save: false,
+					},
 				},
 				{
-					path: ':id',
-					// name: 'start',
-					name: 'decisions.start',
+					path: ':viewId',
+					name: 'start',
 					component: () => import('@/components/decision/Start.vue'),
 					props: true,
+					meta: {
+						toolbar: false,
+						back: false,
+						back1: true,
+						count: 0,
+						save: false,
+					},
 				},
 			],
 		},
+
 		{
-			path: '/razmet',
+			path: '/dvmain/:constructorId/:viewId/:razmet',
 			name: 'razmet',
 			component: () => import('@/components/decision/Razmet.vue'),
+			props: true,
 			meta: {
 				toolbar: false,
 				back: false,

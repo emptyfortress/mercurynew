@@ -4,7 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 
 const sections = [
-	{ id: 0, label: 'Конструктор карточек', to: '/decisions' },
+	{ id: 0, label: 'Конструктор карточек', to: 'cards' },
 	{ id: 1, label: 'Поиски и представления', to: '' },
 	{ id: 2, label: 'Процессы', to: '' },
 	{ id: 3, label: 'Справочники', to: '' },
@@ -12,7 +12,7 @@ const sections = [
 ]
 
 const goto = (e: string) => {
-	router.push(e)
+	router.push({ name: 'cardConstructor', params: { constructorId: e } })
 }
 </script>
 

@@ -4,7 +4,7 @@ import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 // import WordHighlighter from 'vue-word-highlighter'
 import DirMenu from '@/components/decision/DirMenu.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 // import CreateDialog from '@/components/CreateDialog.vue'
 import { useForms } from '@/stores/forms'
 import { useSimpleStore } from '@/stores/simpleStore'
@@ -26,6 +26,7 @@ interface NodeData {
 // }>()
 
 const router = useRouter()
+const route = useRoute()
 const myform = useForms()
 const simpleStore = useSimpleStore()
 
@@ -36,7 +37,7 @@ const treeData = computed({
 		return simpleStore.selectedBranch
 	},
 	set(value) {
-		simpleStore.treeData[selectedBranch] = value
+		// simpleStore.treeData[selectedBranch] = value
 	},
 })
 
@@ -98,7 +99,10 @@ const select = (n: Stat) => {
 	// localStorage.setItem('app', JSON.stringify(n.data))
 	// localStorage.setItem('appname', n.data.text)
 	// myform.setCurrentBO(null)
-	router.push('/decisions/' + n.data.id)
+	router.push({
+		name: 'start', // Имя вашего роута из конфигурации
+		params: { viewId: n.data.id },
+	})
 }
 
 onMounted(() => {
