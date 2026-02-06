@@ -10,6 +10,7 @@ import { useForms } from '@/stores/forms'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
 import { uid } from 'quasar'
+import { getMembers } from '@/utils/utils'
 
 interface NodeData {
 	// id: number
@@ -30,7 +31,7 @@ const route = useRoute()
 const myform = useForms()
 const simpleStore = useSimpleStore()
 
-const { selectedBranch } = storeToRefs(simpleStore)
+// const { selectedBranch } = storeToRefs(simpleStore)
 
 const treeData = computed({
 	get() {
@@ -107,6 +108,9 @@ const select = (n: Stat) => {
 
 onMounted(() => {
 	tree.value.statsFlat.map((item: Stat) => (item.data.selected = false))
+	if (route.params.viewId) {
+		open(route.params.viewId.toString())
+	}
 })
 
 const toggle = (stat: any) => {
@@ -185,6 +189,14 @@ watch(
 		}
 	}
 )
+
+const open = (nodeId: string) => {
+	const node = simpleStore.nodesMap.get(nodeId)
+	if (node) {
+		node.selected = true
+	}
+	tree.value.openNodeAndParents(node)
+}
 </script>
 
 <template lang="pug">
@@ -203,6 +215,7 @@ div
 
 	Draggable(v-model="treeData"
 		ref="tree"
+		propKey="id"
 		treeLine
 		:treeLineOffset="18"
 		:indent="30"
@@ -242,11 +255,13 @@ div
 	cursor: pointer;
 
 	&.selected {
-		background: #b1ddfc;
-		color: #1565c0;
+		background: var(--dvviolet);
+		color: var(--dark2);
 
 		&:hover {
-			background: #b1ddfc;
+			background: var(--dvviolet);
+			color: black;
+			// background: var(--violet);
 		}
 	}
 
@@ -277,8 +292,5 @@ div
 	&.closed {
 		transform: rotate(-90deg);
 	}
-}
-.query {
-	// background: transparent;
 }
 </style>

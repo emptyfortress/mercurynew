@@ -416,12 +416,17 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 	const flatNodes = computed(() => flatten(treeData.value))
 	// Оптимизация: создаем Map для мгновенного поиска O(1) вместо find() O(n)
 	const nodesMap = computed(() => {
-		return new Map(flatNodes.value.map((node) => [node.id, node.text]))
+		return new Map(flatNodes.value.map((node) => [node.id, node]))
 	})
 
 	// Функция получения имени
 	const getNameById = (id: string): string => {
-		return nodesMap.value.get(id) || id
+		const node = nodesMap.value.get(id)
+		return node?.text || id
+	}
+
+	const getNodeById = (id: string) => {
+		return nodesMap.value.get(id)
 	}
 
 	function updateTreeData(value: any[]) {
@@ -456,6 +461,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	})
 
+	// console.log('NodesMap internal check:', nodesMap.value)
+
 	return {
 		treeData,
 		selectedType,
@@ -465,6 +472,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		updateTreeData,
 		selectedBranch,
 		flatNodes,
+		nodesMap,
+		getNodeById,
 		getNameById,
 	}
 })
