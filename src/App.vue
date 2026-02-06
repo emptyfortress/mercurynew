@@ -130,6 +130,17 @@ const title = computed(() => {
 		return 'Конструктор приложений'
 	}
 
+	if (route.path.includes('cards') && route.path.includes('0')) {
+		return 'Конструктор разметок'
+	}
+
+	if (route.path.includes('cards')) {
+		return 'Конструктор карточек'
+	}
+	if (route.path.includes('cards') && route.path.includes('0')) {
+		return 'Конструктор разметок'
+	}
+
 	if (route.path.startsWith('/timeline')) {
 		return 'Ход исполнения'
 	}
