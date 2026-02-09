@@ -11,14 +11,16 @@ const props = defineProps({
 const con = computed(() => {
 	switch (props.razmet) {
 		case '0':
-			return 'Конструктор разметок'
+			return 'Конструктор полей'
 		case '1':
 			return 'Конструктор состояний'
 		case '2':
 			return 'Конструктор ролей'
-		case '5':
-			return 'Конструктор разметок для типа'
+		case '3':
+			return 'Конструктор разметок'
 		case '4':
+			return 'Конструктор разметок для типов'
+		case '5':
 			return 'Конструктор расширенных полей'
 		case '6':
 			return 'Метаданные'

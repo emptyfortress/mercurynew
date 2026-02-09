@@ -131,14 +131,29 @@ const title = computed(() => {
 	}
 
 	if (route.path.includes('cards') && route.path.includes('0')) {
+		return 'Конструктор полей'
+	}
+	if (route.path.includes('cards') && route.path.includes('1')) {
+		return 'Конструктор состояний'
+	}
+	if (route.path.includes('cards') && route.path.includes('2')) {
+		return 'Конструктор ролей'
+	}
+	if (route.path.includes('cards') && route.path.includes('3')) {
 		return 'Конструктор разметок'
+	}
+	if (route.path.includes('cards') && route.path.includes('4')) {
+		return 'Конструктор разметок'
+	}
+	if (route.path.includes('cards') && route.path.includes('5')) {
+		return 'Конструктор расширенных полей'
+	}
+	if (route.path.includes('cards') && route.path.includes('5')) {
+		return 'Метаданные'
 	}
 
 	if (route.path.includes('cards')) {
 		return 'Конструктор карточек'
-	}
-	if (route.path.includes('cards') && route.path.includes('0')) {
-		return 'Конструктор разметок'
 	}
 
 	if (route.path.startsWith('/timeline')) {

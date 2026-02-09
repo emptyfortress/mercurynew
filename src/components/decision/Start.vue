@@ -14,14 +14,15 @@ const goto = (id: number) => {
 }
 
 const constr = [
-	{ id: 0, label: 'Разметки' },
-	{ id: 1, label: 'Состояния' },
-	{ id: 2, label: 'Роли' },
+	{ id: 0, label: 'Поля', descr: 'Добавьте доступные поля' },
+	{ id: 1, label: 'Состояния', descr: 'Задайте состояния' },
+	{ id: 2, label: 'Роли', descr: 'Правила определения ролей' },
+	{ id: 3, label: 'Разметки', descr: 'Настройте разметки' },
 ]
 
-const constr0 = [
-	{ id: 5, label: 'Разметки' },
-	{ id: 4, label: 'Расширенные поля' },
+const constrType = [
+	{ id: 4, label: 'Разметки' },
+	{ id: 5, label: 'Расширенные поля' },
 	{ id: 6, label: 'Метаданные' },
 ]
 
@@ -38,14 +39,14 @@ const tab = ref('tab1')
 				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 	.grid(v-if='selectedElement.type == 0')
-		.it(v-for="item in constr0" :key='item.id' @click='goto(item.id)')
+		.it(v-for="item in constrType" :key='item.id' @click='goto(item.id)')
 			.text-bold {{ item.label }}
 
 	template(v-else)
 		.grid1
 			.it(v-for="item in constr" :key='item.id' @click='goto(item.id)')
-				.text-bold {{ item.label }} {{ item.id }}
-				.text-caption.q-mt-md Этот конструктор делает конструкции.
+				.text-bold {{ item.label }}
+				.text-caption.q-mt-md {{ item.descr }}
 
 		br
 		q-expansion-item(
