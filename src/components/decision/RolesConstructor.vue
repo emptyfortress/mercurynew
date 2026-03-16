@@ -50,6 +50,10 @@ const add = (role: { label: string; common: boolean }) => {
 const showDialog = () => {
 	dialog.value = !dialog.value
 }
+
+const goto = (id: string) => {
+	console.log(id)
+}
 </script>
 
 <template lang="pug">
@@ -76,13 +80,15 @@ const showDialog = () => {
 				template(v-slot:body-cell-action="props")
 					q-td(:props="props")
 						q-btn(
-							icon="mdi-pencil"
 							flat
-							round
+							icon="mdi-pencil"
 							dense
 							color="primary"
+							label='Настроить'
+							size='sm'
+							@click='goto(props.row.id)'
 						)
-						q-btn.q-ml-md(
+						q-btn.q-ml-lg(
 							icon="mdi-delete-outline"
 							flat
 							round
