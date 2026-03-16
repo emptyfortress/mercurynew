@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { QTableColumn } from 'quasar'
+import { uid } from 'quasar'
+import RoleDialog from '@/components/decision/RoleDialog.vue'
 
 interface Role {
 	id: string
@@ -9,6 +11,7 @@ interface Role {
 }
 
 const tab = ref('roles')
+const dialog = ref(false)
 
 const roles = ref<Role[]>([
 	{ id: '0', label: 'Все руководители', common: false },
@@ -34,6 +37,17 @@ const pagination = ref({
 
 const remove = (id: string) => {
 	roles.value = roles.value.filter((role) => role.id !== id)
+}
+
+const add = (role: { label: string; common: boolean }) => {
+	roles.value.unshift({
+		id: uid(),
+		...role,
+	})
+}
+
+const showDialog = () => {
+	dialog.value = !dialog.value
 }
 </script>
 
@@ -85,10 +99,14 @@ const remove = (id: string) => {
 				round
 				icon="mdi-plus"
 				color="primary"
+				@click="showDialog"
 			)
+
 
 		q-tab-panel(name="matrix")
 			| Матрица доступа
+
+RoleDialog(v-model="dialog" @add="add")
 </template>
 
 <style scoped lang="scss">
