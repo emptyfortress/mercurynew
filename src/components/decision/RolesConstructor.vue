@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import type { QTableColumn } from 'quasar'
 import { uid } from 'quasar'
 import RoleDialog from '@/components/decision/RoleDialog.vue'
+import { useRouter } from 'vue-router'
 
 interface Role {
 	id: string
@@ -51,8 +52,11 @@ const showDialog = () => {
 	dialog.value = !dialog.value
 }
 
+const router = useRouter()
+
 const goto = (id: string) => {
-	console.log(id)
+	const currentPath = router.currentRoute.value.path
+	router.push(`${currentPath}/${id}`)
 }
 </script>
 
