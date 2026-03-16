@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia'
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
 const router = useRouter()
-const route = useRoute()
+// const route = useRoute()
 
 const goto = (id: number) => {
 	router.push({ name: 'razmet', params: { razmet: id } })

@@ -422,6 +422,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 	// Функция получения имени
 	const getNameById = (id: string): string => {
 		const node = nodesMap.value.get(id)
+		if (id == '2') return 'Конструктор ролей'
 		return node?.text || id
 	}
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import RolesConstructor from '@/components/decision/RolesConstructor.vue'
 
 const props = defineProps({
 	razmet: {
@@ -19,7 +20,7 @@ const con = computed(() => {
 		case '3':
 			return 'Конструктор разметок'
 		case '4':
-			return 'Конструктор разметок для типов'
+			return 'Конструктор разметок'
 		case '5':
 			return 'Конструктор расширенных полей'
 		case '6':
@@ -34,6 +35,7 @@ const con = computed(() => {
 q-page(padding)
 	.container
 		.text-h6 {{ con }}
+		RolesConstructor(v-if='razmet == "2"')
 </template>
 
 <style scoped lang="scss">
