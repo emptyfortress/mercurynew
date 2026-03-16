@@ -40,6 +40,7 @@ const remove = (id: string) => {
 }
 
 const add = (role: { label: string; common: boolean }) => {
+	console.log(role)
 	roles.value.unshift({
 		id: uid(),
 		...role,

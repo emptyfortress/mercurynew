@@ -25,6 +25,8 @@ watch(modelValue, async (val) => {
 })
 
 const submitForm = () => {
+	console.log('add')
+
 	if (form.value.label.trim()) {
 		emit('add', {
 			label: form.value.label,
@@ -50,7 +52,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 			.caption Добавить новую роль
 
 		q-card-section
-			q-form(ref='form' @submit="submitForm")
+			q-form(ref='formRef' @submit="submitForm")
 				.section
 					label Название:
 					q-input(ref="input"
@@ -74,7 +76,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 					:initial="{ opacity: 0 }"
 					:enter='{ opacity: 1, transition: { delay: 200 } }'
 					)
-					q-btn(flat color="primary" label="Отмена" @click="otmena")
+					q-btn(flat color="primary" label="Отмена" @click="otmena" v-close-popup)
 					q-btn(unelevated color="primary" label="Добавить" type='submit' v-close-popup)
 </template>
 
