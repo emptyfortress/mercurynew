@@ -107,6 +107,20 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/dvmain/:constructorId/:viewId/:razmet/:roleId',
+			name: 'roleRule',
+			component: () => import('@/components/decision/RoleRule.vue'),
+			props: true,
+			meta: {
+				toolbar: false,
+				back: false,
+				back1: true,
+				count: 25,
+				save: false,
+				breadcrumbs: true,
+			},
+		},
+		{
 			path: '/reduce',
 			name: 'reducedHome',
 			component: HomeReduced1,

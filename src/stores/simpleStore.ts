@@ -13,7 +13,25 @@ export interface TreeElement {
 	children?: TreeElement[]
 }
 
+export interface Role {
+	id: string
+	label: string
+	common: boolean
+}
+
 export const useSimpleStore = defineStore('simpleStore', () => {
+	const roles = ref<Role[]>([
+		{ id: '0', label: 'Все руководители', common: false },
+		{ id: '1', label: 'Участник задания с отчетом', common: false },
+		{ id: '2', label: 'Участник задания по документу', common: false },
+		{ id: '3', label: 'Регистратор', common: false },
+		{ id: '4', label: 'Ответственный', common: false },
+		{ id: '5', label: 'Системная для WP', common: true },
+		{ id: '6', label: 'Администратор УД', common: true },
+		{ id: '7', label: 'Сотрудник ЛК КЭДО', common: true },
+		{ id: '8', label: 'Все', common: true },
+	])
+
 	const treeData = ref([
 		{
 			id: 'document',
@@ -422,7 +440,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 	// Функция получения имени
 	const getNameById = (id: string): string => {
 		const node = nodesMap.value.get(id)
-		if (id == '2') return 'Конструктор ролей'
+		if (id == '102') return 'Конструктор ролей'
 		return node?.text || id
 	}
 
@@ -432,6 +450,17 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	function updateTreeData(value: any[]) {
 		treeData.value = value
+	}
+
+	function addRole(role: { label: string; common: boolean }) {
+		roles.value.unshift({
+			id: uid(),
+			...role,
+		})
+	}
+
+	function removeRole(id: string) {
+		roles.value = roles.value.filter((role) => role.id !== id)
 	}
 
 	const selectedType = ref<string | null>('Все')
@@ -476,5 +505,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		nodesMap,
 		getNodeById,
 		getNameById,
+		roles,
+		addRole,
+		removeRole,
 	}
 })

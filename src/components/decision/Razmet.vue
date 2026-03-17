@@ -15,7 +15,7 @@ const con = computed(() => {
 			return 'Конструктор полей'
 		case '1':
 			return 'Конструктор состояний'
-		case '2':
+		case '102':
 			return 'Конструктор ролей'
 		case '3':
 			return 'Конструктор разметок'
@@ -35,7 +35,7 @@ const con = computed(() => {
 q-page(padding)
 	.container
 		.text-h6 {{ con }}
-		RolesConstructor(v-if='razmet == "2"')
+		RolesConstructor(v-if='razmet == "102"')
 </template>
 
 <style scoped lang="scss">

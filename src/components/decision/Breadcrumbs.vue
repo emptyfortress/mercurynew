@@ -18,7 +18,10 @@ const breadcrumbs = computed(() => {
 				? segment === 'dvmain'
 					? 'DV-main'
 					: 'Конструктор карточек'
-				: simpleStore.getNameById(segment)
+				: segment === '102' && index === 1
+					? 'Конструктор ролей'
+					: simpleStore.roles.find((role) => role.id === segment)?.label ||
+						simpleStore.getNameById(segment)
 
 		return { label, path }
 	})

@@ -1,30 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { QTableColumn } from 'quasar'
-import { uid } from 'quasar'
 import RoleDialog from '@/components/decision/RoleDialog.vue'
 import { useRouter } from 'vue-router'
-
-interface Role {
-	id: string
-	label: string
-	common: boolean
-}
+import { useSimpleStore } from '@/stores/simpleStore'
 
 const tab = ref('roles')
 const dialog = ref(false)
 
-const roles = ref<Role[]>([
-	{ id: '0', label: 'Все руководители', common: false },
-	{ id: '1', label: 'Участник задания с отчетом', common: false },
-	{ id: '2', label: 'Участник задания по документу', common: false },
-	{ id: '3', label: 'Регистратор', common: false },
-	{ id: '4', label: 'Ответственный', common: false },
-	{ id: '5', label: 'Системная для WP', common: true },
-	{ id: '6', label: 'Администратор УД', common: true },
-	{ id: '7', label: 'Сотрудник ЛК КЭДО', common: true },
-	{ id: '8', label: 'Все', common: true },
-])
+const store = useSimpleStore()
 
 const columns = ref<QTableColumn[]>([
 	{ name: 'label', label: 'Название', field: 'label', align: 'left', sortable: true },
@@ -37,15 +21,12 @@ const pagination = ref({
 })
 
 const remove = (id: string) => {
-	roles.value = roles.value.filter((role) => role.id !== id)
+	store.removeRole(id)
 }
 
 const add = (role: { label: string; common: boolean }) => {
 	console.log(role)
-	roles.value.unshift({
-		id: uid(),
-		...role,
-	})
+	store.addRole(role)
 }
 
 const showDialog = () => {
@@ -72,7 +53,7 @@ const goto = (id: string) => {
 	q-tab-panels(v-model="tab" animated)
 		q-tab-panel(name="roles")
 			q-table(
-				:rows="roles"
+				:rows="store.roles"
 				:columns="columns"
 				:pagination="pagination"
 				row-key="label"
@@ -80,7 +61,7 @@ const goto = (id: string) => {
 			)
 				template(v-slot:body-cell-common="props")
 					q-td(:props="props")
-						q-checkbox(v-model="props.row.common" dense)
+						q-checkbox(v-model="props.row.common" dense disable)
 				template(v-slot:body-cell-action="props")
 					q-td(:props="props")
 						q-btn(
