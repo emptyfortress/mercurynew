@@ -38,11 +38,20 @@ const addGroup = () => {
 const addRule = () => {
 	rows.value.push({
 		id: uid(),
-		parameter: 'test',
-		operation: 'test',
-		value: 'test',
+		parameter: 'Выберите',
+		operation: 'Выберите',
+		value: 'Выберите',
 		group: false,
 	})
+}
+
+const group = ref('И')
+const toggleGroup = () => {
+	group.value == 'И' ? (group.value = 'ИЛИ') : (group.value = 'И')
+}
+
+const removeRow = (id: string) => {
+	console.log(id)
 }
 </script>
 
@@ -75,17 +84,20 @@ q-table.q-mt-md(
 			q-td(auto-width)
 				q-btn(round flat dense color="secondary" :icon="props.expand ? 'remove' : 'add'" @click="props.expand = !props.expand" size='sm') 
 			q-td(colspan='3')
-				|{{ props.row.parameter || 'Новая группа' }}
+				q-btn(unelevated color="primary" :label="group" @click="toggleGroup") 
 			q-td.text-right
-				q-btn(flat round dense icon="mdi-delete-outline" color="grey" @click="" size='sm') 
+				q-btn(flat round dense icon="mdi-delete-outline" color="grey" @click="removeRow(props.row.id)" size='sm') 
 
 		q-tr(v-else :props="props")
 			q-td(auto-width)
-			q-td(:props="props" key='parameter') щту
-			q-td(:props="props" key='operation') дфылво
-			q-td(:props="props" key='value') фдыв
+			q-td(:props="props" key='parameter')
+				q-select(v-model="props.row.parameter" outlined dense)
+			q-td(:props="props" key='operation')
+				q-select(v-model="props.row.operation" outlined dense)
+			q-td(:props="props" key='value')
+				q-select(v-model="props.row.value" outlined dense)
 			q-td(:props="props" key='action')
-				q-btn(flat round dense icon="mdi-delete-outline" color="grey" @click="" size='sm') 
+				q-btn(flat round dense icon="mdi-delete-outline" color="grey" @click="removeRow(props.row.id)" size='sm') 
 </template>
 
 <style scoped lang="scss"></style>
