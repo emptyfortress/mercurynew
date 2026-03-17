@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
+import RoleRuleTable from '@/components//decision/RoleRuleTable.vue'
 
 const props = defineProps({
 	roleId: {
@@ -52,6 +53,10 @@ const reload = () => {
 	common.value = currentRole.value!.common
 	isDirty.value = false
 }
+
+const toggleDirty = () => {
+	isDirty.value = !isDirty.value
+}
 </script>
 
 <template lang="pug">
@@ -64,14 +69,14 @@ q-page(padding)
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" @update:model-value="markDirty")
 
 			.q-gutter-x-sm(v-if='isDirty')
+				q-btn(flat round icon="mdi-lock" color="primary") 
+					q-tooltip Блокировка активна
 				q-btn(@click="reload" flat color="primary" label="Отмена")
 				q-btn(@click="save" color="primary" label="Сохранить")
 
 		q-checkbox.q-my-md(dense label='Общая роль' v-model="common" @update:model-value="markDirty")
-		p Правила определения роли:
-		.q-gutter-x-sm
-			q-btn(unelevated color="positive" label="Создать группу" @click="" size='sm')
-			q-btn(unelevated color="positive" label="Создать правило" @click="" size='sm')
+
+		RoleRuleTable(@dirty='toggleDirty')
 </template>
 
 <style scoped lang="scss">
