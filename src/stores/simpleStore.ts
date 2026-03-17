@@ -463,6 +463,20 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		roles.value = roles.value.filter((role) => role.id !== id)
 	}
 
+	function updateRoleLabel(id: string, label: string) {
+		const role = roles.value.find((role) => role.id === id)
+		if (role) {
+			role.label = label
+		}
+	}
+
+	function updateRoleCommon(id: string, common: boolean) {
+		const role = roles.value.find((role) => role.id === id)
+		if (role) {
+			role.common = common
+		}
+	}
+
 	const selectedType = ref<string | null>('Все')
 
 	const selectedElement = ref<TreeElement | null>(null)
@@ -508,5 +522,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		roles,
 		addRole,
 		removeRole,
+		updateRoleLabel,
+		updateRoleCommon,
 	}
 })
