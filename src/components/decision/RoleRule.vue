@@ -76,7 +76,7 @@ q-page(padding)
 
 		q-checkbox.q-my-md(dense label='Общая роль' v-model="common" @update:model-value="markDirty")
 
-		RoleRuleTable(@dirty='toggleDirty')
+		RoleRuleTable(@dirty='markDirty')
 </template>
 
 <style scoped lang="scss">

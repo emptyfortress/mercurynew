@@ -26,6 +26,7 @@ const pagination = ref({
 const emit = defineEmits(['dirty'])
 
 const addGroup = () => {
+	emit('dirty')
 	rows.value.push({
 		id: uid(),
 		parameter: '',
@@ -36,6 +37,7 @@ const addGroup = () => {
 }
 
 const addRule = () => {
+	emit('dirty')
 	rows.value.push({
 		id: uid(),
 		parameter: 'Выберите',
@@ -51,8 +53,62 @@ const toggleGroup = () => {
 }
 
 const removeRow = (id: string) => {
-	console.log(id)
+	rows.value = rows.value.filter((row) => row.id !== id)
+	emit('dirty')
 }
+
+const options1 = [
+	{ label: 'Все', value: 'all' },
+	{ label: 'Я', value: 'me' },
+	{ label: 'Руководитель', value: 'manager' },
+	{ label: 'Подчиненные', value: 'subordinates' },
+	{ label: 'Все подчиненные', value: 'all_subordinates' },
+	{ label: 'Все подчиненные временно замещаемого', value: 'temp_replacement_subordinates' },
+	{ label: 'Все подчиненные постоянно замещаемого', value: 'permanent_replacement_subordinates' },
+	{ label: 'Заместитель', value: 'deputy' },
+	{ label: 'Замещаемый', value: 'replaced' },
+	{ label: 'Я – первый активный заместитель', value: 'me_first_active_deputy' },
+	{
+		label: 'Я – первый активный постоянный заместитель',
+		value: 'me_first_active_permanent_deputy',
+	},
+	{ label: 'Я – первый активный временный заместитель', value: 'me_first_active_temp_deputy' },
+	{
+		label: 'Я – первый активный заместитель исполнения',
+		value: 'me_first_active_execution_deputy',
+	},
+	{
+		label: 'Я – первый активный заместитель ответственного исполнения',
+		value: 'me_first_active_responsible_execution_deputy',
+	},
+	{ label: 'Я – первый активный заместитель подписи', value: 'me_first_active_sign_deputy' },
+	{
+		label: 'Я – временный заместитель в период неактивности замещаемого',
+		value: 'me_temp_deputy_inactive_period',
+	},
+	{ label: 'Я – постоянный заместитель', value: 'me_permanent_deputy' },
+	{ label: 'Я – заместитель подписи', value: 'me_sign_deputy' },
+	{ label: 'Сегодня', value: 'today' },
+	{ label: 'Сейчас', value: 'now' },
+	{ label: 'Поле', value: 'field' },
+]
+const options2 = [
+	{ label: 'Равно', value: 'equals' },
+	{ label: 'Не равно', value: 'not_equals' },
+	{ label: 'Является руководителем', value: 'is_manager' },
+	{ label: 'В том же подразделении', value: 'same_department' },
+	{ label: 'В группе с подчиненными', value: 'group_with_subordinates' },
+	{ label: 'Не в группе', value: 'not_in_group' },
+	{ label: 'В группе из поля карточки', value: 'group_from_card_field' },
+	{ label: 'В группу из поля карточки поверхностно', value: 'group_from_card_field_shallow' },
+	{ label: 'В подразделении из поля карточки', value: 'department_from_card_field' },
+	{
+		label: 'В подразделении из поля карточки поверхностно',
+		value: 'department_from_card_field_shallow',
+	},
+	{ label: 'В подразделении без подчиненных', value: 'department_without_subordinates' },
+	{ label: 'Не в подразделении', value: 'not_in_department' },
+]
 </script>
 
 <template lang="pug">
@@ -86,18 +142,26 @@ q-table.q-mt-md(
 			q-td(colspan='3')
 				q-btn(unelevated color="primary" :label="group" @click="toggleGroup") 
 			q-td.text-right
-				q-btn(flat round dense icon="mdi-delete-outline" color="grey" @click="removeRow(props.row.id)" size='sm') 
+				q-btn(flat round dense icon="mdi-delete-outline" color="grey" size='sm') 
+					q-menu
+						q-list
+							q-item(clickable @click="removeRow(props.row.id)" ).pink
+								q-item-section Удалить
 
 		q-tr(v-else :props="props")
 			q-td(auto-width)
 			q-td(:props="props" key='parameter')
-				q-select(v-model="props.row.parameter" outlined dense)
+				q-select(v-model="props.row.parameter" outlined dense :options='options1' emit-value map-options)
 			q-td(:props="props" key='operation')
-				q-select(v-model="props.row.operation" outlined dense)
+				q-select(v-model="props.row.operation" outlined dense :options='options2' emit-value map-options)
 			q-td(:props="props" key='value')
 				q-select(v-model="props.row.value" outlined dense)
 			q-td(:props="props" key='action')
-				q-btn(flat round dense icon="mdi-delete-outline" color="grey" @click="removeRow(props.row.id)" size='sm') 
+				q-btn(flat round dense icon="mdi-delete-outline" color="grey" size='sm') 
+					q-menu
+						q-list
+							q-item(clickable @click="removeRow(props.row.id)" ).pink
+								q-item-section Удалить
 </template>
 
 <style scoped lang="scss"></style>
