@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 
 const props = defineProps({
@@ -16,32 +16,62 @@ const currentRole = computed(() => {
 	return store.roles.find((role) => role.id === props.roleId)
 })
 
-const roleLabel = computed(() => {
-	return currentRole.value?.label || props.roleId
-})
+// Local editable copies
+const roleLabel = ref('')
+const common = ref(false)
+const isDirty = ref(false)
 
-const updateLabel = (newLabel: string) => {
-	store.updateRoleLabel(props.roleId, newLabel)
+// Initialize local copies from store
+watch(
+	currentRole,
+	(role) => {
+		if (role) {
+			roleLabel.value = role.label
+			common.value = role.common
+		}
+	},
+	{ immediate: true }
+)
+
+// Mark as dirty when user changes anything
+const markDirty = () => {
+	isDirty.value = true
 }
 
-const updateCommon = (common: boolean) => {
-	store.updateRoleCommon(props.roleId, common)
+// Save changes to store
+const save = () => {
+	if (props.roleId) {
+		store.updateRoleLabel(props.roleId, roleLabel.value)
+		store.updateRoleCommon(props.roleId, common.value)
+		isDirty.value = false
+	}
+}
+
+const reload = () => {
+	roleLabel.value = currentRole.value!.label
+	common.value = currentRole.value!.common
+	isDirty.value = false
 }
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.container
-		.text-h6
-			span.edit {{ roleLabel }}
-				q-popup-edit(v-model="roleLabel" @save="updateLabel" auto-save v-slot="scope")
-					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+		.row.justify-between
+			.text-h6
+				span.edit {{ roleLabel }}
+					q-popup-edit(v-model="roleLabel" auto-save v-slot="scope")
+						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" @update:model-value="markDirty")
 
-		q-checkbox.q-my-md(dense label='Общая роль' :model-value="currentRole?.common" @update:model-value="updateCommon")
+			.q-gutter-x-sm(v-if='isDirty')
+				q-btn(@click="reload" flat color="primary" label="Отмена")
+				q-btn(@click="save" color="primary" label="Сохранить")
+
+		q-checkbox.q-my-md(dense label='Общая роль' v-model="common" @update:model-value="markDirty")
 		p Правила определения роли:
 		.q-gutter-x-sm
-			q-btn(unelevated color="primary" label="Отмена" @click="" size='sm') 
-			q-btn(unelevated color="primary" label="Отмена" @click="" size='sm')
+			q-btn(unelevated color="positive" label="Создать группу" @click="" size='sm')
+			q-btn(unelevated color="positive" label="Создать правило" @click="" size='sm')
 </template>
 
 <style scoped lang="scss">
