@@ -39,8 +39,8 @@ const addRule = () => {
 	rows.value.push({
 		id: uid(),
 		parameter: 'test',
-		operation: '',
-		value: '',
+		operation: 'test',
+		value: 'test',
 		group: false,
 	})
 }
@@ -61,6 +61,31 @@ q-table.q-mt-md(
 	flat
 	hide-pagination
 )
+	template(v-slot:header="props")
+		q-tr(:props="props")
+			q-th(auto-width)
+			q-th(
+				v-for="col in props.cols"
+				:key="col.name"
+				:props="props"
+			)
+				| {{ col.label }}
+	template(v-slot:body="props")
+		q-tr(v-if="props.row.group" :props="props")
+			q-td(auto-width)
+				q-btn(round flat dense color="secondary" :icon="props.expand ? 'remove' : 'add'" @click="props.expand = !props.expand" size='sm') 
+			q-td(colspan='3')
+				|{{ props.row.parameter || 'Новая группа' }}
+			q-td.text-right
+				q-btn(flat round dense icon="mdi-delete-outline" color="grey" @click="" size='sm') 
+
+		q-tr(v-else :props="props")
+			q-td(auto-width)
+			q-td(:props="props" key='parameter') щту
+			q-td(:props="props" key='operation') дфылво
+			q-td(:props="props" key='value') фдыв
+			q-td(:props="props" key='action')
+				q-btn(flat round dense icon="mdi-delete-outline" color="grey" @click="" size='sm') 
 </template>
 
 <style scoped lang="scss"></style>
