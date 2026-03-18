@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
-import RoleRuleTable from '@/components//decision/RoleRuleTable.vue'
+import Puzzle from '@/components/decision/Puzzle.vue'
 
 const props = defineProps({
 	roleId: {
@@ -54,9 +54,9 @@ const reload = () => {
 	isDirty.value = false
 }
 
-const toggleDirty = () => {
-	isDirty.value = !isDirty.value
-}
+// const toggleDirty = () => {
+// 	isDirty.value = !isDirty.value
+// }
 </script>
 
 <template lang="pug">
@@ -76,7 +76,7 @@ q-page(padding)
 
 		q-checkbox.q-my-md(dense label='Общая роль' v-model="common" @update:model-value="markDirty")
 
-		RoleRuleTable(@dirty='markDirty')
+		Puzzle(@dirty='markDirty')
 </template>
 
 <style scoped lang="scss">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-	options?: string[]
+	options?: any[]
 	checkbox?: boolean
 	label?: string
 	info?: string
@@ -9,6 +9,8 @@ interface Props {
 	readonly?: boolean
 	after?: boolean
 	prepend?: boolean
+	emitValue?: boolean
+	mapOptions?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -23,10 +25,12 @@ const main = defineModel<string>('main')
 
 <template lang="pug">
 div
-	label(v-if='props.label') {{ props.label }}:
+	.label(v-if='props.label') {{ props.label }}:
 	q-select(
 		v-model="main",
 		outlined,  dense,
+		:emit-value='props.emitValue',
+		:map-options='props.mapOptions',
 		:options="props.options"
 		:disable="props.disable"
 		:readonly="props.readonly"
@@ -59,5 +63,9 @@ div
 
 :deep(.q-field--dense .q-field__marginal) {
 	height: 32px;
+}
+.label {
+	font-size: 0.8rem;
+	color: hsl(198 23% 53% / 1);
 }
 </style>

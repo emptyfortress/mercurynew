@@ -5,7 +5,6 @@ import RoleDialog from '@/components/decision/RoleDialog.vue'
 import { useRouter } from 'vue-router'
 import { useSimpleStore } from '@/stores/simpleStore'
 
-const tab = ref('roles')
 const dialog = ref(false)
 
 const store = useSimpleStore()
@@ -25,7 +24,6 @@ const remove = (id: string) => {
 }
 
 const add = (role: { label: string; common: boolean }) => {
-	console.log(role)
 	store.addRole(role)
 }
 
@@ -39,64 +37,56 @@ const goto = (id: string) => {
 	const currentPath = router.currentRoute.value.path
 	router.push(`${currentPath}/${id}`)
 }
+const goto1 = () => {
+	const currentPath = router.currentRoute.value.path
+	router.push(`${currentPath}/matrix`)
+}
 </script>
 
 <template lang="pug">
-.q-tabs
-	q-tabs(
-		v-model="tab"
-		align="left"
-	)
-		q-tab(name="roles" label="Роли")
-		q-tab(name="matrix" label="Матрица доступа")
-
-	q-tab-panels(v-model="tab" animated)
-		q-tab-panel(name="roles")
-			q-table(
-				:rows="store.roles"
-				:columns="columns"
-				:pagination="pagination"
-				row-key="label"
+q-btn.q-my-md(unelevated color="primary" icon='mdi-plus-circle' label="Новая роль" @click="showDialog") 
+q-table(
+	:rows="store.roles"
+	:columns="columns"
+	:pagination="pagination"
+	row-key="label"
+	flat
+)
+	template(v-slot:body-cell-common="props")
+		q-td(:props="props")
+			q-checkbox(v-model="props.row.common" dense disable)
+	template(v-slot:body-cell-action="props")
+		q-td(:props="props")
+			q-btn(
 				flat
-			)
-				template(v-slot:body-cell-common="props")
-					q-td(:props="props")
-						q-checkbox(v-model="props.row.common" dense disable)
-				template(v-slot:body-cell-action="props")
-					q-td(:props="props")
-						q-btn(
-							flat
-							icon="mdi-pencil"
-							dense
-							color="primary"
-							label='Настроить'
-							size='sm'
-							@click='goto(props.row.id)'
-						)
-						q-btn.q-ml-lg(
-							icon="mdi-delete-outline"
-							flat
-							round
-							dense
-							color="primary"
-						)
-							q-menu
-								q-list
-									q-item(clickable @click="remove(props.row.id)" ).pink
-										q-item-section Удалить
-
-
-			q-btn.q-mt-md(
-				fab
-				round
-				icon="mdi-plus"
+				icon="mdi-pencil"
+				dense
 				color="primary"
-				@click="showDialog"
+				label='Настроить'
+				size='sm'
+				@click='goto(props.row.id)'
 			)
+			q-btn.q-mx-lg(
+				flat
+				icon="mdi-lock-smart"
+				dense
+				color="primary"
+				label='Матрица доступа'
+				size='sm'
+				@click='goto1'
+			)
+			q-btn(
+				icon="mdi-delete-outline"
+				flat
+				round
+				dense
+				color="primary"
+			)
+				q-menu
+					q-list
+						q-item(clickable @click="remove(props.row.id)" ).pink
+							q-item-section Удалить
 
-
-		q-tab-panel(name="matrix")
-			| Матрица доступа
 
 RoleDialog(v-model="dialog" @add="add")
 </template>
