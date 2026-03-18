@@ -67,23 +67,28 @@ watch(searchQuery, (val) => filterTree(val))
 
 <template lang="pug">
 q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
-	q-card(style="min-width: 400px; height: 80vh;")
+	q-card(style="min-width: 400px;")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
-		q-card-section
+		q-card-section.q-py-md
 			.text-h6(@click='test') Поле карточки
 			q-input(v-model="searchQuery" outlined dense clearable @clear="searchQuery = ''")
 				template(v-slot:prepend)
 					q-icon(name='mdi-magnify')
 
-		q-card-section
-			BaseTree(ref="tree"
-				treeLine
-				v-model="cardSections"
-				class='mtl-tree'
-				)
-				template(#default="{ node, stat }")
-					q-icon.trig(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }")
-					span {{ node.text }}
+		q-card-section.q-pa-none
+			q-scroll-area(style="height: calc(80vh - 160px);")
+				BaseTree.q-pa-md(ref="tree"
+					treeLine
+					v-model="cardSections"
+					class='mtl-tree'
+					)
+					template(#default="{ node, stat }")
+						q-icon.trig(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }")
+						span {{ node.text }}
+
+		q-card-actions(align='right')
+			q-btn(flat label="Отмена" v-close-popup color="primary")
+			q-btn(unelevated label="Подтвердить" color="primary" @click="modelValue = false")
 </template>
 
 <style scoped lang="scss">
@@ -95,5 +100,9 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 	&.closed {
 		transform: rotate(-90deg);
 	}
+}
+:deep(.q-card__actions) {
+	margin-right: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 </style>
