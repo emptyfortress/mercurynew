@@ -7,15 +7,11 @@ import { cardSections } from '@/stores/cardSections'
 
 const modelValue = defineModel<boolean>()
 
-const toggle = (e: Stat) => {
-	e.open = !e.open
-}
+// const toggle = (e: Stat) => {
+// 	e.open = !e.open
+// }
 
 const tree = ref()
-
-const test = () => {
-	tree.value.openNodeAndParents(cardSections[0])
-}
 
 const openOnlyRoot = () => {
 	tree.value?.closeAll()
@@ -79,6 +75,12 @@ const handleNodeClick = (stat: any) => {
 		}
 	}
 }
+
+const emit = defineEmits(['save'])
+const save = () => {
+	emit('save', selectedNode.value.data.text)
+	modelValue.value = false
+}
 </script>
 
 <template lang="pug">
@@ -86,7 +88,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 	q-card(style="min-width: 400px;")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section.q-py-md
-			.text-h6(@click='test') Поле карточки
+			.text-h6 Поле карточки
 			q-input(v-model="searchQuery" outlined dense clearable @clear="searchQuery = ''")
 				template(v-slot:prepend)
 					q-icon(name='mdi-magnify')
@@ -105,7 +107,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 
 		q-card-actions(align='right')
 			q-btn(flat label="Отмена" v-close-popup color="primary")
-			q-btn(unelevated label="Подтвердить" color="primary" @click="modelValue = false")
+			q-btn(unelevated label="Подтвердить" color="primary" @click="save")
 </template>
 
 <style scoped lang="scss">

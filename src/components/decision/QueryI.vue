@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import ChoosePoleDialog from '@/components/decision/ChoosePoleDialog.vue'
+import ChooseValueDialog from '@/components/decision/ChooseValueDialog.vue'
 
 const par = ref()
 const oper = ref()
@@ -28,41 +29,60 @@ watch(val, (val) => {
 	}
 })
 const options1 = [
-	{ label: 'Все', value: 'all' },
-	{ label: 'Я', value: 'me' },
-	{ label: 'Руководитель', value: 'manager' },
-	{ label: 'Подчиненные', value: 'subordinates' },
-	{ label: 'Все подчиненные', value: 'all_subordinates' },
-	{ label: 'Все подчиненные временно замещаемого', value: 'temp_replacement_subordinates' },
-	{ label: 'Все подчиненные постоянно замещаемого', value: 'permanent_replacement_subordinates' },
-	{ label: 'Заместитель', value: 'deputy' },
-	{ label: 'Замещаемый', value: 'replaced' },
-	{ label: 'Я – первый активный заместитель', value: 'me_first_active_deputy' },
+	{ label: 'Все', value: 'all', type: 0 },
+	{ label: 'Я', value: 'me', type: 1 },
+	{ label: 'Руководитель', value: 'manager', type: 1 },
+	{ label: 'Подчиненные', value: 'subordinates', type: 1 },
+	{ label: 'Все подчиненные', value: 'all_subordinates', type: 1 },
+	{
+		label: 'Все подчиненные временно замещаемого',
+		value: 'temp_replacement_subordinates',
+		type: 1,
+	},
+	{
+		label: 'Все подчиненные постоянно замещаемого',
+		value: 'permanent_replacement_subordinates',
+		type: 1,
+	},
+	{ label: 'Заместитель', value: 'deputy', type: 1 },
+	{ label: 'Замещаемый', value: 'replaced', type: 1 },
+	{ label: 'Я – первый активный заместитель', value: 'me_first_active_deputy', type: 1 },
 	{
 		label: 'Я – первый активный постоянный заместитель',
 		value: 'me_first_active_permanent_deputy',
+		type: 1,
 	},
-	{ label: 'Я – первый активный временный заместитель', value: 'me_first_active_temp_deputy' },
+	{
+		label: 'Я – первый активный временный заместитель',
+		value: 'me_first_active_temp_deputy',
+		type: 1,
+	},
 	{
 		label: 'Я – первый активный заместитель исполнения',
 		value: 'me_first_active_execution_deputy',
+		type: 1,
 	},
 	{
 		label: 'Я – первый активный заместитель ответственного исполнения',
 		value: 'me_first_active_responsible_execution_deputy',
+		type: 1,
 	},
-	{ label: 'Я – первый активный заместитель подписи', value: 'me_first_active_sign_deputy' },
+	{
+		label: 'Я – первый активный заместитель подписи',
+		value: 'me_first_active_sign_deputy',
+		type: 1,
+	},
 	{
 		label: 'Я – временный заместитель в период неактивности замещаемого',
 		value: 'me_temp_deputy_inactive_period',
+		type: 1,
 	},
-	{ label: 'Я – постоянный заместитель', value: 'me_permanent_deputy' },
-	{ label: 'Я – заместитель подписи', value: 'me_sign_deputy' },
-	{ label: 'Сегодня', value: 'today' },
-	{ label: 'Сейчас', value: 'now' },
-	{ label: 'Поле', value: 'field' },
+	{ label: 'Я – постоянный заместитель', value: 'me_permanent_deputy', type: 1 },
+	{ label: 'Я – заместитель подписи', value: 'me_sign_deputy', type: 1 },
+	{ label: 'Сегодня', value: 'today', type: 2 },
+	{ label: 'Сейчас', value: 'now', type: 2 },
+	{ label: 'Поле', value: 'field', type: 3 },
 ]
-
 const options2 = [
 	{ label: 'Равно', value: 'equals' },
 	{ label: 'Не равно', value: 'not_equals' },
@@ -80,6 +100,15 @@ const options2 = [
 	{ label: 'В подразделении без подчиненных', value: 'department_without_subordinates' },
 	{ label: 'Не в подразделении', value: 'not_in_department' },
 ]
+
+const setParam = (e: string) => {
+	par.value = e
+}
+
+const valDialog = ref(false)
+const calcType = computed(() => {
+	return par.value?.type
+})
 </script>
 
 <template lang="pug">
@@ -87,9 +116,10 @@ const options2 = [
 	.myrow
 		q-select(outlined label='Параметр' :options='options1' dense v-model='par')
 		q-select(outlined label='Операция' :options='options2' dense v-model='oper')
-		q-select(outlined label='Значение' :options='options1' dense v-model='val')
+		q-select(outlined label='Значение' dense v-model='val' @click='valDialog = true')
 
-ChoosePoleDialog(v-model="poleDialog")
+ChoosePoleDialog(v-model="poleDialog" @save='setParam')
+ChooseValueDialog(v-model="valDialog" :type='calcType')
 </template>
 
 <style scoped lang="scss">
@@ -109,7 +139,6 @@ ChoosePoleDialog(v-model="poleDialog")
 .myrow {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	// align-items: top;
 	column-gap: 1rem;
 	width: 100%;
 	row-gap: 0.5rem;
