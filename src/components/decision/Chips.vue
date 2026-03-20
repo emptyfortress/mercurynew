@@ -33,6 +33,7 @@ const user = ref('')
 		clickable
 		v-for='chip in chips'
 		:key='chip.id'
+		color='hsl(211 34% 79% / 1)'
 		v-model:selected='chip.selected'
 	) {{ chip.label }}
 </template>
@@ -41,6 +42,9 @@ const user = ref('')
 .chips-container {
 	// display: flex;
 	// flex-wrap: wrap;
+}
+:deep(.q-chip) {
+	background: hsl(211 34% 79% / 1);
 }
 :deep(.q-chip--selected) {
 	background: $primary;

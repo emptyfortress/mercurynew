@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import Chips from '@/components/decision/Chips.vue'
 import { useMatrixStore } from '@/stores/matrix'
+import type { QTableColumn } from 'quasar'
 
 const tab = ref<'role' | 'state' | 'operation'>('role')
 
@@ -10,11 +11,16 @@ const isDirty = ref(true)
 const matrixStore = useMatrixStore()
 
 const tableColumns = computed(() => {
-	return matrixStore.states.map((state) => ({
-		name: state.id,
-		label: state.label,
-		field: state.id,
-	}))
+	return [
+		{ name: 'label', label: 'Операция', field: 'label', align: 'left', sortable: true },
+		...matrixStore.states.map((state) => ({
+			name: state.id,
+			label: state.label,
+			field: state.id,
+			align: 'center',
+			sortable: true,
+		})),
+	] as QTableColumn[]
 })
 
 const tableRows = computed(() => {
@@ -59,12 +65,18 @@ q-page(padding)
 					bordered
 					:pagination='{ rowsPerPage: 0 }'
 				)
-					// template(v-slot:bodyCell='cell')
-					// 	q-checkbox(
-					// 		v-if='cell.col.name !== "id"'
-					// 		:model-value='cell.row[cell.col.name]'
-					// 		@update:model-value='matrixStore.setAccess("admin", cell.row.id, cell.col.name, $event)'
-					// 	)
+
+					template(v-slot:body-cell-label="props")
+						q-td(:props='props') {{ props.value }}
+
+					template(v-slot:body-cell='cell')
+						q-td
+							.text-center
+								q-checkbox(
+									dense,
+									:model-value='cell.row[cell.col.name]',
+									@update:model-value='matrixStore.setAccess("admin", cell.row.id, cell.col.name, $event)'
+								)
 
 			q-tab-panel(name='state')
 				Chips(type='state')
@@ -75,7 +87,14 @@ q-page(padding)
 
 <style scoped lang="scss">
 .container {
-	// max-width: 1200px;
 	margin: 0 2rem;
+}
+:deep(.q-tab-panel) {
+	padding: 1rem 0;
+	// background: transparent;
+}
+:deep(.q-tab-panels) {
+	border-top: 1px solid #aaa;
+	background: transparent;
 }
 </style>

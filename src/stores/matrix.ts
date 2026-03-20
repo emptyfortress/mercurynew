@@ -62,11 +62,11 @@ export const useMatrixStore = defineStore('matrix', () => {
 
 	function initAccessMatrix() {
 		accessMatrix.value = {}
-		roles.value.forEach(role => {
+		roles.value.forEach((role) => {
 			accessMatrix.value[role.id] = {}
-			operations.value.forEach(operation => {
+			operations.value.forEach((operation) => {
 				accessMatrix.value[role.id][operation.id] = {}
-				states.value.forEach(state => {
+				states.value.forEach((state) => {
 					accessMatrix.value[role.id][operation.id][state.id] = false
 				})
 			})
