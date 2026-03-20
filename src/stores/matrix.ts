@@ -57,8 +57,8 @@ export const useMatrixStore = defineStore('matrix', () => {
 		{ selected: false, id: 'archive', label: 'Архивирование' },
 	])
 
-	// 3D array: [roleId][operationId][stateId]
-	const accessMatrix = ref<Record<string, Record<string, Record<string, boolean>>>>({})
+	// 3D array: [roleId][operationId][stateId] - values: undefined | true | false
+	const accessMatrix = ref<Record<string, Record<string, Record<string, boolean | undefined>>>>({})
 
 	function initAccessMatrix() {
 		accessMatrix.value = {}
@@ -67,23 +67,35 @@ export const useMatrixStore = defineStore('matrix', () => {
 			operations.value.forEach((operation) => {
 				accessMatrix.value[role.id][operation.id] = {}
 				states.value.forEach((state) => {
-					accessMatrix.value[role.id][operation.id][state.id] = false
+					accessMatrix.value[role.id][operation.id][state.id] = undefined
 				})
 			})
 		})
 	}
 
-	function setAccess(roleId: string, operationId: string, stateId: string, value: boolean) {
-		if (accessMatrix.value[roleId]?.[operationId]?.[stateId] !== undefined) {
+	function setAccess(
+		roleId: string,
+		operationId: string,
+		stateId: string,
+		value: boolean | undefined
+	) {
+		if (accessMatrix.value[roleId]?.[operationId] !== undefined) {
 			accessMatrix.value[roleId][operationId][stateId] = value
 		}
 	}
 
-	function getAccess(roleId: string, operationId: string, stateId: string): boolean {
-		return accessMatrix.value[roleId]?.[operationId]?.[stateId] ?? false
+	function getAccess(roleId: string, operationId: string, stateId: string): boolean | undefined {
+		return accessMatrix.value[roleId]?.[operationId]?.[stateId]
+	}
+
+	function toggleAccess(roleId: string, operationId: string, stateId: string) {
+		const current = getAccess(roleId, operationId, stateId)
+		// Cycle: undefined -> true -> false -> undefined
+		const next = current === undefined ? true : current === true ? false : undefined
+		setAccess(roleId, operationId, stateId, next)
 	}
 
 	initAccessMatrix()
 
-	return { roles, states, operations, accessMatrix, setAccess, getAccess }
+	return { roles, states, operations, accessMatrix, setAccess, getAccess, toggleAccess }
 })

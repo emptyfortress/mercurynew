@@ -31,10 +31,16 @@ const tableRows = computed(() => {
 				acc[state.id] = matrixStore.getAccess('admin', operation.id, state.id)
 				return acc
 			},
-			{} as Record<string, boolean>
+			{} as Record<string, boolean | undefined>
 		),
 	}))
 })
+
+function getCheckboxColor(value: boolean): string {
+	if (value === true) return 'teal'
+	if (value === false) return 'pink'
+	return 'grey-6'
+}
 </script>
 
 <template lang="pug">
@@ -74,8 +80,13 @@ q-page(padding)
 							.text-center
 								q-checkbox(
 									dense,
-									:model-value='cell.row[cell.col.name]',
-									@update:model-value='matrixStore.setAccess("admin", cell.row.id, cell.col.name, $event)'
+									checked-icon='mdi-check-bold'
+									unchecked-icon='mdi-close-thick'
+									indeterminate-icon='mdi-checkbox-blank-outline'
+									:model-value='cell.row[cell.col.name]'
+									toggle-indeterminate
+									:color='getCheckboxColor(cell.row[cell.col.name])'
+									@click.prevent='matrixStore.toggleAccess("admin", cell.row.id, cell.col.name)'
 								)
 
 			q-tab-panel(name='state')
@@ -91,10 +102,12 @@ q-page(padding)
 }
 :deep(.q-tab-panel) {
 	padding: 1rem 0;
-	// background: transparent;
 }
 :deep(.q-tab-panels) {
 	border-top: 1px solid #aaa;
 	background: transparent;
+}
+:deep(.q-checkbox__inner--falsy .q-icon) {
+	color: var(--q-negative);
 }
 </style>
