@@ -21,7 +21,7 @@ export interface State {
 
 export const useMatrixStore = defineStore('matrix', () => {
 	const roles = ref<Role[]>([
-		{ selected: false, id: 'admin', label: 'Администратор' },
+		{ selected: true, id: 'admin', label: 'Администратор' },
 		{ selected: false, id: 'manager', label: 'Автор' },
 		{ selected: false, id: 'executor', label: 'Исполнитель' },
 		{ selected: false, id: 'observer', label: 'Наблюдатель' },
@@ -32,7 +32,7 @@ export const useMatrixStore = defineStore('matrix', () => {
 	])
 
 	const states = ref<State[]>([
-		{ selected: false, id: 'draft', label: 'Черновик' },
+		{ selected: true, id: 'draft', label: 'Черновик' },
 		{ selected: false, id: 'active', label: 'Активен' },
 		{ selected: false, id: 'pending', label: 'Ожидание' },
 		{ selected: false, id: 'approved', label: 'Согласован' },
@@ -43,7 +43,7 @@ export const useMatrixStore = defineStore('matrix', () => {
 	])
 
 	const operations = ref<Operation[]>([
-		{ selected: false, id: 'create', label: 'Создание' },
+		{ selected: true, id: 'create', label: 'Создание' },
 		{ selected: false, id: 'read', label: 'Чтение' },
 		{ selected: false, id: 'update', label: 'Обновление' },
 		{ selected: false, id: 'delete', label: 'Удаление' },

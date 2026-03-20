@@ -8,19 +8,48 @@ const props = defineProps<{
 	type: ChipType
 }>()
 
+const emit = defineEmits<{
+	multiSelect: [ids: string[]]
+}>()
+
 const matrixStore = useMatrixStore()
 
 const chips = computed(() => {
-	if (props.type === 'role') {
-		return matrixStore.roles
-	} else if (props.type === 'state') {
-		return matrixStore.states
-	} else {
-		return matrixStore.operations
-	}
+	if (props.type === 'role') return matrixStore.roles
+	if (props.type === 'state') return matrixStore.states
+	return matrixStore.operations
 })
 
 const user = ref('')
+
+function handleChipClick(clickedId: string, event: Event) {
+	const mouseEvent = event as MouseEvent
+	if (mouseEvent.shiftKey) {
+		// Shift: toggle clicked chip, but ensure at least one remains selected
+		const clickedChip = chips.value.find((c) => c.id === clickedId)!
+		const selectedCount = chips.value.filter((c) => c.selected).length
+
+		if (clickedChip.selected && selectedCount === 1) {
+			// Last selected — don't deselect
+			return
+		}
+
+		clickedChip.selected = !clickedChip.selected
+	} else {
+		// Normal click: select only this chip
+		chips.value.forEach((c) => {
+			c.selected = c.id === clickedId
+		})
+	}
+
+	const selected = chips.value.filter((c) => c.selected)
+	if (selected.length > 1) {
+		emit(
+			'multiSelect',
+			selected.map((c) => c.id)
+		)
+	}
+}
 </script>
 
 <template lang="pug">
@@ -33,16 +62,12 @@ const user = ref('')
 		clickable
 		v-for='chip in chips'
 		:key='chip.id'
-		color='hsl(211 34% 79% / 1)'
-		v-model:selected='chip.selected'
+		:selected='chip.selected'
+		@click='handleChipClick(chip.id, $event)'
 	) {{ chip.label }}
 </template>
 
 <style scoped lang="scss">
-.chips-container {
-	// display: flex;
-	// flex-wrap: wrap;
-}
 :deep(.q-chip) {
 	background: hsl(211 34% 79% / 1);
 }
