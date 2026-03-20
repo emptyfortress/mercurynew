@@ -57,5 +57,33 @@ export const useMatrixStore = defineStore('matrix', () => {
 		{ selected: false, id: 'archive', label: 'Архивирование' },
 	])
 
-	return { roles, states, operations }
+	// 3D array: [roleId][operationId][stateId]
+	const accessMatrix = ref<Record<string, Record<string, Record<string, boolean>>>>({})
+
+	function initAccessMatrix() {
+		accessMatrix.value = {}
+		roles.value.forEach(role => {
+			accessMatrix.value[role.id] = {}
+			operations.value.forEach(operation => {
+				accessMatrix.value[role.id][operation.id] = {}
+				states.value.forEach(state => {
+					accessMatrix.value[role.id][operation.id][state.id] = false
+				})
+			})
+		})
+	}
+
+	function setAccess(roleId: string, operationId: string, stateId: string, value: boolean) {
+		if (accessMatrix.value[roleId]?.[operationId]?.[stateId] !== undefined) {
+			accessMatrix.value[roleId][operationId][stateId] = value
+		}
+	}
+
+	function getAccess(roleId: string, operationId: string, stateId: string): boolean {
+		return accessMatrix.value[roleId]?.[operationId]?.[stateId] ?? false
+	}
+
+	initAccessMatrix()
+
+	return { roles, states, operations, accessMatrix, setAccess, getAccess }
 })
