@@ -10,7 +10,7 @@ const isDirty = ref(true)
 const matrixStore = useMatrixStore()
 
 const tableColumns = computed(() => {
-	return matrixStore.states.map(state => ({
+	return matrixStore.states.map((state) => ({
 		name: state.id,
 		label: state.label,
 		field: state.id,
@@ -18,12 +18,15 @@ const tableColumns = computed(() => {
 })
 
 const tableRows = computed(() => {
-	return matrixStore.operations.map(operation => ({
+	return matrixStore.operations.map((operation) => ({
 		...operation,
-		...matrixStore.states.reduce((acc, state) => {
-			acc[state.id] = matrixStore.getAccess('admin', operation.id, state.id)
-			return acc
-		}, {} as Record<string, boolean>),
+		...matrixStore.states.reduce(
+			(acc, state) => {
+				acc[state.id] = matrixStore.getAccess('admin', operation.id, state.id)
+				return acc
+			},
+			{} as Record<string, boolean>
+		),
 	}))
 })
 </script>
@@ -56,12 +59,12 @@ q-page(padding)
 					bordered
 					:pagination='{ rowsPerPage: 0 }'
 				)
-					template(v-slot:bodyCell='cell')
-						q-checkbox(
-							v-if='cell.col.name !== "id"'
-							:model-value='cell.row[cell.col.name]'
-							@update:model-value='matrixStore.setAccess("admin", cell.row.id, cell.col.name, $event)'
-						)
+					// template(v-slot:bodyCell='cell')
+					// 	q-checkbox(
+					// 		v-if='cell.col.name !== "id"'
+					// 		:model-value='cell.row[cell.col.name]'
+					// 		@update:model-value='matrixStore.setAccess("admin", cell.row.id, cell.col.name, $event)'
+					// 	)
 
 			q-tab-panel(name='state')
 				Chips(type='state')
