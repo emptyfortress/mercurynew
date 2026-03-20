@@ -1,0 +1,61 @@
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+
+export interface Role {
+	selected: boolean
+	id: string
+	label: string
+}
+
+export interface Operation {
+	selected: boolean
+	id: string
+	label: string
+}
+
+export interface State {
+	selected: boolean
+	id: string
+	label: string
+}
+
+export const useMatrixStore = defineStore('matrix', () => {
+	const roles = ref<Role[]>([
+		{ selected: false, id: 'admin', label: 'Администратор' },
+		{ selected: false, id: 'manager', label: 'Автор' },
+		{ selected: false, id: 'executor', label: 'Исполнитель' },
+		{ selected: false, id: 'observer', label: 'Наблюдатель' },
+		{ selected: false, id: 'auditor', label: 'Аудитор' },
+		{ selected: false, id: 'developer', label: 'Разработчик' },
+		{ selected: false, id: 'analyst', label: 'Аналитик' },
+		{ selected: false, id: 'guest', label: 'Гость' },
+	])
+
+	const states = ref<State[]>([
+		{ selected: false, id: 'draft', label: 'Черновик' },
+		{ selected: false, id: 'active', label: 'Активен' },
+		{ selected: false, id: 'pending', label: 'Ожидание' },
+		{ selected: false, id: 'approved', label: 'Согласован' },
+		{ selected: false, id: 'rejected', label: 'Отклонен' },
+		{ selected: false, id: 'completed', label: 'Завершен' },
+		{ selected: false, id: 'archived', label: 'Архивирован' },
+		{ selected: false, id: 'cancelled', label: 'Отменен' },
+	])
+
+	const operations = ref<Operation[]>([
+		{ selected: false, id: 'create', label: 'Создание' },
+		{ selected: false, id: 'read', label: 'Чтение' },
+		{ selected: false, id: 'update', label: 'Обновление' },
+		{ selected: false, id: 'delete', label: 'Удаление' },
+		{ selected: false, id: 'approve', label: 'Согласование' },
+		{ selected: false, id: 'reject', label: 'Отклонение' },
+		{ selected: false, id: 'delegate', label: 'Делегирование' },
+		{ selected: false, id: 'comment', label: 'Комментирование' },
+		{ selected: false, id: 'export', label: 'Экспорт' },
+		{ selected: false, id: 'import', label: 'Импорт' },
+		{ selected: false, id: 'share', label: 'Поделиться' },
+		{ selected: false, id: 'archive', label: 'Архивирование' },
+	])
+
+	return { roles, states, operations }
+})

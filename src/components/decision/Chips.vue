@@ -1,22 +1,37 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import { computed, ref } from 'vue'
+import { useMatrixStore } from '@/stores/matrix'
 
-const roles = reactive([
-	{ selected: false, id: 'admin', label: 'Администратор' },
-	{ selected: false, id: 'manager', label: 'Автор' },
-	{ selected: false, id: 'executor', label: 'Исполнитель' },
-	{ selected: false, id: 'observer', label: 'Наблюдатель' },
-	{ selected: false, id: 'auditor', label: 'Аудитор' },
-	{ selected: false, id: 'developer', label: 'Разработчик' },
-	{ selected: false, id: 'analyst', label: 'Аналитик' },
-	{ selected: false, id: 'guest', label: 'Гость' },
-])
+type ChipType = 'role' | 'operation' | 'state'
+
+const props = defineProps<{
+	type: ChipType
+}>()
+
+const matrixStore = useMatrixStore()
+
+const chips = computed(() => {
+	if (props.type === 'role') {
+		return matrixStore.roles
+	} else if (props.type === 'state') {
+		return matrixStore.states
+	} else {
+		return matrixStore.operations
+	}
+})
+
+const user = ref('')
 </script>
 
 <template lang="pug">
 .chips-container
+	q-select.right(v-if='props.type == "role"' v-model='user' label='Справочник сотрудников' dense outlined)
+		template(v-slot:prepend)
+			q-icon(name="mdi-magnify")
+
 	q-chip(
-		v-for='chip in roles'
+		clickable
+		v-for='chip in chips'
 		:key='chip.id'
 		v-model:selected='chip.selected'
 	) {{ chip.label }}
@@ -24,8 +39,8 @@ const roles = reactive([
 
 <style scoped lang="scss">
 .chips-container {
-	display: flex;
-	flex-wrap: wrap;
+	// display: flex;
+	// flex-wrap: wrap;
 }
 :deep(.q-chip--selected) {
 	background: $primary;
@@ -33,5 +48,9 @@ const roles = reactive([
 	i {
 		color: white;
 	}
+}
+.right {
+	min-width: 260px;
+	float: right;
 }
 </style>
