@@ -3,11 +3,11 @@ import { ref } from 'vue'
 import type { QTableColumn } from 'quasar'
 import RoleDialog from '@/components/decision/RoleDialog.vue'
 import { useRouter } from 'vue-router'
-import { useSimpleStore } from '@/stores/simpleStore'
+import { useMatrixStore } from '@/stores/matrix'
 
 const dialog = ref(false)
 
-const store = useSimpleStore()
+const matrixStore = useMatrixStore()
 
 const columns = ref<QTableColumn[]>([
 	{ name: 'label', label: 'Название', field: 'label', align: 'left', sortable: true },
@@ -20,11 +20,11 @@ const pagination = ref({
 })
 
 const remove = (id: string) => {
-	store.removeRole(id)
+	matrixStore.removeRole(id)
 }
 
 const add = (role: { label: string; common: boolean }) => {
-	store.addRole(role)
+	matrixStore.addRole(role)
 }
 
 const showDialog = () => {
@@ -44,12 +44,12 @@ const goto1 = () => {
 </script>
 
 <template lang="pug">
-q-btn.q-my-md(unelevated color="primary" icon='mdi-plus-circle' label="Новая роль" @click="showDialog") 
+q-btn.q-my-md(unelevated color="primary" icon='mdi-plus-circle' label="Новая роль" @click="showDialog")
 q-table(
-	:rows="store.roles"
+	:rows="matrixStore.roles"
 	:columns="columns"
 	:pagination="pagination"
-	row-key="label"
+	row-key="id"
 	flat
 )
 	template(v-slot:body-cell-common="props")

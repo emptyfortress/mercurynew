@@ -5,6 +5,7 @@ export interface Role {
 	selected: boolean
 	id: string
 	label: string
+	common?: boolean
 }
 
 export interface Operation {
@@ -21,14 +22,14 @@ export interface State {
 
 export const useMatrixStore = defineStore('matrix', () => {
 	const roles = ref<Role[]>([
-		{ selected: true, id: 'admin', label: 'Администратор' },
-		{ selected: false, id: 'manager', label: 'Автор' },
-		{ selected: false, id: 'executor', label: 'Исполнитель' },
-		{ selected: false, id: 'observer', label: 'Наблюдатель' },
-		{ selected: false, id: 'auditor', label: 'Аудитор' },
-		{ selected: false, id: 'developer', label: 'Разработчик' },
-		{ selected: false, id: 'analyst', label: 'Аналитик' },
-		{ selected: false, id: 'guest', label: 'Гость' },
+		{ selected: true, id: 'admin', label: 'Администратор', common: true },
+		{ selected: false, id: 'manager', label: 'Автор', common: false },
+		{ selected: false, id: 'executor', label: 'Исполнитель', common: false },
+		{ selected: false, id: 'observer', label: 'Наблюдатель', common: false },
+		{ selected: false, id: 'auditor', label: 'Аудитор', common: false },
+		{ selected: false, id: 'developer', label: 'Разработчик', common: false },
+		{ selected: false, id: 'analyst', label: 'Аналитик', common: false },
+		{ selected: false, id: 'guest', label: 'Гость', common: true },
 	])
 
 	const states = ref<State[]>([
@@ -95,7 +96,72 @@ export const useMatrixStore = defineStore('matrix', () => {
 		setAccess(roleId, operationId, stateId, next)
 	}
 
+	function addRole(role: { label: string; common?: boolean }) {
+		const id = role.label.toLowerCase().replace(/\s+/g, '_')
+		const newRole: Role = {
+			selected: false,
+			id,
+			label: role.label,
+			common: role.common ?? false,
+		}
+		roles.value.push(newRole)
+		// Initialize access matrix for the new role
+		accessMatrix.value[id] = {}
+		operations.value.forEach((operation) => {
+			accessMatrix.value[id][operation.id] = {}
+			states.value.forEach((state) => {
+				accessMatrix.value[id][operation.id][state.id] = undefined
+			})
+		})
+	}
+
+	function removeRole(roleId: string) {
+		const index = roles.value.findIndex((r) => r.id === roleId)
+		if (index !== -1) {
+			roles.value.splice(index, 1)
+			delete accessMatrix.value[roleId]
+		}
+	}
+
+	function updateRoleLabel(roleId: string, label: string) {
+		const role = roles.value.find((r) => r.id === roleId)
+		if (role) {
+			role.label = label
+		}
+	}
+
+	function updateRoleCommon(roleId: string, common: boolean) {
+		const role = roles.value.find((r) => r.id === roleId)
+		if (role) {
+			role.common = common
+		}
+	}
+
+	function getNameById(id: string): string {
+		if (id === '102') return 'Конструктор ролей'
+		const role = roles.value.find((r) => r.id === id)
+		if (role) return role.label
+		const operation = operations.value.find((o) => o.id === id)
+		if (operation) return operation.label
+		const state = states.value.find((s) => s.id === id)
+		if (state) return state.label
+		return id
+	}
+
 	initAccessMatrix()
 
-	return { roles, states, operations, accessMatrix, setAccess, getAccess, toggleAccess }
+	return {
+		roles,
+		states,
+		operations,
+		accessMatrix,
+		setAccess,
+		getAccess,
+		toggleAccess,
+		addRole,
+		removeRole,
+		updateRoleLabel,
+		updateRoleCommon,
+		getNameById,
+	}
 })

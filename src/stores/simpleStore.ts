@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { uid } from 'quasar'
 
 export interface TreeElement {
 	id: string
@@ -13,25 +12,7 @@ export interface TreeElement {
 	children?: TreeElement[]
 }
 
-export interface Role {
-	id: string
-	label: string
-	common: boolean
-}
-
 export const useSimpleStore = defineStore('simpleStore', () => {
-	const roles = ref<Role[]>([
-		{ id: '0', label: 'Все руководители', common: false },
-		{ id: '1', label: 'Участник задания с отчетом', common: false },
-		{ id: '2', label: 'Участник задания по документу', common: false },
-		{ id: '3', label: 'Регистратор', common: false },
-		{ id: '4', label: 'Ответственный', common: false },
-		{ id: '5', label: 'Системная для WP', common: true },
-		{ id: '6', label: 'Администратор УД', common: true },
-		{ id: '7', label: 'Сотрудник ЛК КЭДО', common: true },
-		{ id: '8', label: 'Все', common: true },
-	])
-
 	const treeData = ref([
 		{
 			id: 'document',
@@ -452,31 +433,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		treeData.value = value
 	}
 
-	function addRole(role: { label: string; common: boolean }) {
-		roles.value.unshift({
-			id: uid(),
-			...role,
-		})
-	}
-
-	function removeRole(id: string) {
-		roles.value = roles.value.filter((role) => role.id !== id)
-	}
-
-	function updateRoleLabel(id: string, label: string) {
-		const role = roles.value.find((role) => role.id === id)
-		if (role) {
-			role.label = label
-		}
-	}
-
-	function updateRoleCommon(id: string, common: boolean) {
-		const role = roles.value.find((role) => role.id === id)
-		if (role) {
-			role.common = common
-		}
-	}
-
 	const selectedType = ref<string | null>('Все')
 
 	const selectedElement = ref<TreeElement | null>(null)
@@ -519,10 +475,5 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		nodesMap,
 		getNodeById,
 		getNameById,
-		roles,
-		addRole,
-		removeRole,
-		updateRoleLabel,
-		updateRoleCommon,
 	}
 })

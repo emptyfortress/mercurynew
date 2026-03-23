@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useSimpleStore } from '@/stores/simpleStore'
+import { useMatrixStore } from '@/stores/matrix'
 import Puzzle from '@/components/decision/Puzzle.vue'
 
 const props = defineProps({
@@ -11,10 +11,10 @@ const props = defineProps({
 	},
 })
 
-const store = useSimpleStore()
+const matrixStore = useMatrixStore()
 
 const currentRole = computed(() => {
-	return store.roles.find((role) => role.id === props.roleId)
+	return matrixStore.roles.find((role) => role.id === props.roleId)
 })
 
 // Local editable copies
@@ -28,7 +28,7 @@ watch(
 	(role) => {
 		if (role) {
 			roleLabel.value = role.label
-			common.value = role.common
+			common.value = role.common ?? false
 		}
 	},
 	{ immediate: true }
@@ -42,15 +42,15 @@ const markDirty = () => {
 // Save changes to store
 const save = () => {
 	if (props.roleId) {
-		store.updateRoleLabel(props.roleId, roleLabel.value)
-		store.updateRoleCommon(props.roleId, common.value)
+		matrixStore.updateRoleLabel(props.roleId, roleLabel.value)
+		matrixStore.updateRoleCommon(props.roleId, common.value)
 		isDirty.value = false
 	}
 }
 
 const reload = () => {
 	roleLabel.value = currentRole.value!.label
-	common.value = currentRole.value!.common
+	common.value = currentRole.value!.common ?? false
 	isDirty.value = false
 }
 

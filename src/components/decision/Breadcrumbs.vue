@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useSimpleStore } from '@/stores/simpleStore'
+import { useMatrixStore } from '@/stores/matrix'
 
 const route = useRoute()
-const simpleStore = useSimpleStore()
+const matrixStore = useMatrixStore()
 
 const breadcrumbs = computed(() => {
 	// Получаем массив сегментов (фильтруем пустые и динамический :id главной страницы)
@@ -20,8 +20,8 @@ const breadcrumbs = computed(() => {
 					: 'Конструктор карточек'
 				: segment === '102' && index === 1
 					? 'Конструктор ролей'
-					: simpleStore.roles.find((role) => role.id === segment)?.label ||
-						simpleStore.getNameById(segment)
+					: matrixStore.roles.find((role) => role.id === segment)?.label ||
+						matrixStore.getNameById(segment)
 
 		return { label, path }
 	})

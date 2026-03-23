@@ -19,8 +19,8 @@ const con = computed(() => {
 			return 'Конструктор ролей'
 		case '3':
 			return 'Конструктор разметок'
-		case '4':
-			return 'Конструктор разметок'
+		case '103':
+			return 'Матрица доступа'
 		case '5':
 			return 'Конструктор расширенных полей'
 		case '6':
