@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import Chips from '@/components/decision/Chips.vue'
 import { useMatrixStore } from '@/stores/matrix'
 import type { QTableColumn } from 'quasar'
@@ -10,7 +11,16 @@ const props = defineProps<{
 	type: TableType
 }>()
 
+const route = useRoute()
 const matrixStore = useMatrixStore()
+
+onMounted(() => {
+	const roleId = route.query.role as string | undefined
+
+	matrixStore.roles.forEach((r, i) => {
+		r.selected = roleId ? r.id === roleId : i === 0
+	})
+})
 
 const tableColumns = computed(() => {
 	if (props.type === 'role') {
@@ -51,36 +61,42 @@ const tableColumns = computed(() => {
 
 const tableRows = computed(() => {
 	if (props.type === 'role') {
-		const selectedRole = matrixStore.roles.find((r) => r.selected)?.id || 'admin'
+		const selectedRoles = matrixStore.roles.filter((r) => r.selected).map((r) => r.id)
 		return matrixStore.operations.map((operation) => ({
 			...operation,
 			...matrixStore.states.reduce(
 				(acc, state) => {
-					acc[state.id] = matrixStore.getAccess(selectedRole, operation.id, state.id)
+					acc[state.id] = mergeAccess(
+						selectedRoles.map((roleId) => matrixStore.getAccess(roleId, operation.id, state.id))
+					)
 					return acc
 				},
 				{} as Record<string, boolean | undefined>
 			),
 		}))
 	} else if (props.type === 'operation') {
-		const selectedOperation = matrixStore.operations.find((o) => o.selected)?.id || 'create'
+		const selectedOperations = matrixStore.operations.filter((o) => o.selected).map((o) => o.id)
 		return matrixStore.roles.map((role) => ({
 			...role,
 			...matrixStore.states.reduce(
 				(acc, state) => {
-					acc[state.id] = matrixStore.getAccess(role.id, selectedOperation, state.id)
+					acc[state.id] = mergeAccess(
+						selectedOperations.map((opId) => matrixStore.getAccess(role.id, opId, state.id))
+					)
 					return acc
 				},
 				{} as Record<string, boolean | undefined>
 			),
 		}))
 	} else {
-		const selectedState = matrixStore.states.find((s) => s.selected)?.id || 'draft'
+		const selectedStates = matrixStore.states.filter((s) => s.selected).map((s) => s.id)
 		return matrixStore.roles.map((role) => ({
 			...role,
 			...matrixStore.operations.reduce(
 				(acc, operation) => {
-					acc[operation.id] = matrixStore.getAccess(role.id, operation.id, selectedState)
+					acc[operation.id] = mergeAccess(
+						selectedStates.map((stateId) => matrixStore.getAccess(role.id, operation.id, stateId))
+					)
 					return acc
 				},
 				{} as Record<string, boolean | undefined>
@@ -171,10 +187,27 @@ function invertCol(colId: string) {
 		tableRows.value.forEach((row) => matrixStore.toggleAccess(row.id, colId, selectedState))
 	}
 }
+
+// multiselect
+const isMultiSelect = computed(() => {
+	if (props.type === 'role') return matrixStore.roles.filter((r) => r.selected).length > 1
+	if (props.type === 'operation') return matrixStore.operations.filter((o) => o.selected).length > 1
+	return matrixStore.states.filter((s) => s.selected).length > 1
+})
+
+// Вычисляет результирующий доступ по приоритету: false (deny) > true (allow) > undefined (unset)
+function mergeAccess(values: (boolean | undefined)[]): boolean | undefined {
+	if (values.some((v) => v === false)) return false
+	if (values.some((v) => v === true)) return true
+	return undefined
+}
 </script>
 
 <template lang="pug">
 Chips(:type='props.type')
+
+.multi(v-if='isMultiSelect')
+	span Выбрано несколько ролей — отображаются объединённые права доступа. Для редактирования выберите одну роль.
 
 q-table.q-mt-md(
 	:rows='tableRows'
@@ -183,6 +216,7 @@ q-table.q-mt-md(
 	flat
 	bordered
 	:pagination='{ rowsPerPage: 0 }'
+	:class='{ "multi-select-table": isMultiSelect }'
 )
 
 	template(v-slot:header-cell='headerProps')
@@ -190,6 +224,7 @@ q-table.q-mt-md(
 			span {{ headerProps.col.label }}
 			template(v-if='headerProps.col.name !== "label"')
 				q-btn.col-menu-btn(
+					v-if='!isMultiSelect'
 					flat
 					round
 					dense
@@ -213,6 +248,7 @@ q-table.q-mt-md(
 		q-td.label-cell(:props='cellProps')
 			span {{ cellProps.value }}
 			q-btn.row-menu-btn(
+				v-if='!isMultiSelect'
 				flat
 				round
 				dense
@@ -242,7 +278,8 @@ q-table.q-mt-md(
 					:model-value='cell.row[cell.col.name]'
 					toggle-indeterminate
 					:color='getCheckboxColor(cell.row[cell.col.name])'
-					@click.prevent='handleCheckboxClick(cell.row, cell.col)'
+					:disable='isMultiSelect'
+					@click.prevent='!isMultiSelect && handleCheckboxClick(cell.row, cell.col)'
 				)
 </template>
 
@@ -280,6 +317,18 @@ q-table.q-mt-md(
 
 	&:hover .col-menu-btn {
 		opacity: 1;
+	}
+}
+.multi-select-table {
+	background: #eee;
+}
+.multi {
+	margin-top: 0.5rem;
+	span {
+		display: inline-block;
+		border: 1px solid red;
+		background: pink;
+		padding: 3px 1rem;
 	}
 }
 </style>

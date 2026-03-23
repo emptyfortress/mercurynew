@@ -37,9 +37,15 @@ const goto = (id: string) => {
 	const currentPath = router.currentRoute.value.path
 	router.push(`${currentPath}/${id}`)
 }
-const goto1 = () => {
+
+// const goto1 = () => {
+// 	const currentPath = router.currentRoute.value.path
+// 	router.push(`${currentPath}/matrix`)
+// }
+
+const goto1 = (roleId: string) => {
 	const currentPath = router.currentRoute.value.path
-	router.push(`${currentPath}/matrix`)
+	router.push(`${currentPath}/matrix?role=${roleId}`)
 }
 </script>
 
@@ -73,7 +79,7 @@ q-table(
 				color="primary"
 				label='Матрица доступа'
 				size='sm'
-				@click='goto1'
+				@click='goto1(props.row.id)'
 			)
 			q-btn(
 				icon="mdi-delete-outline"
