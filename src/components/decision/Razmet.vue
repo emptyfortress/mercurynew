@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import RolesConstructor from '@/components/decision/RolesConstructor.vue'
+import Matrix from '@/components/decision/Matrix.vue'
 
 const props = defineProps({
 	razmet: {
@@ -32,10 +33,12 @@ const con = computed(() => {
 </script>
 
 <template lang="pug">
-q-page(padding)
-	.container
-		.text-h6 {{ con }}
-		RolesConstructor(v-if='razmet == "102"')
+div
+	Matrix(v-if='razmet == "103"')
+	q-page(padding v-else)
+		.container
+			.text-h6 {{ con }}
+			RolesConstructor(v-if='razmet == "102"')
 </template>
 
 <style scoped lang="scss">
