@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Chips from '@/components/decision/Chips.vue'
 import { useMatrixStore } from '@/stores/matrix'
@@ -201,6 +201,79 @@ function mergeAccess(values: (boolean | undefined)[]): boolean | undefined {
 	if (values.some((v) => v === true)) return true
 	return undefined
 }
+
+// copy-paste rows **********************************************
+// null = буфер пуст, string = id строки/столбца-источника, Record = сами значения
+const clipboard = ref<{
+	type: 'row' | 'col'
+	sourceLabel: string
+	values: Record<string, boolean | undefined>
+} | null>(null)
+
+function copyRow(row: any) {
+	const colIds = getRowColIds()
+	clipboard.value = {
+		type: 'row',
+		sourceLabel: row.label,
+		values: Object.fromEntries(colIds.map((id) => [id, row[id]])),
+	}
+}
+
+function copyCol(colId: string, colLabel: string) {
+	clipboard.value = {
+		type: 'col',
+		sourceLabel: colLabel,
+		values: Object.fromEntries(
+			tableRows.value.map((row) => [row.id, (row as Record<string, any>)[colId]])
+		),
+	}
+}
+
+function pasteRow(row: any) {
+	if (!clipboard.value || clipboard.value.type !== 'row') return
+	const colIds = getRowColIds()
+	if (props.type === 'role') {
+		const selectedRole = matrixStore.roles.find((r) => r.selected)?.id || 'admin'
+		colIds.forEach((stateId) =>
+			matrixStore.setAccess(selectedRole, row.id, stateId, clipboard.value!.values[stateId])
+		)
+	} else if (props.type === 'operation') {
+		const selectedOperation = matrixStore.operations.find((o) => o.selected)?.id || 'create'
+		colIds.forEach((stateId) =>
+			matrixStore.setAccess(row.id, selectedOperation, stateId, clipboard.value!.values[stateId])
+		)
+	} else {
+		const selectedState = matrixStore.states.find((s) => s.selected)?.id || 'draft'
+		colIds.forEach((operationId) =>
+			matrixStore.setAccess(
+				row.id,
+				operationId,
+				selectedState,
+				clipboard.value!.values[operationId]
+			)
+		)
+	}
+}
+
+function pasteCol(colId: string) {
+	if (!clipboard.value || clipboard.value.type !== 'col') return
+	if (props.type === 'role') {
+		const selectedRole = matrixStore.roles.find((r) => r.selected)?.id || 'admin'
+		tableRows.value.forEach((row) =>
+			matrixStore.setAccess(selectedRole, row.id, colId, clipboard.value!.values[row.id])
+		)
+	} else if (props.type === 'operation') {
+		const selectedOperation = matrixStore.operations.find((o) => o.selected)?.id || 'create'
+		tableRows.value.forEach((row) =>
+			matrixStore.setAccess(row.id, selectedOperation, colId, clipboard.value!.values[row.id])
+		)
+	} else {
+		const selectedState = matrixStore.states.find((s) => s.selected)?.id || 'draft'
+		tableRows.value.forEach((row) =>
+			matrixStore.setAccess(row.id, colId, selectedState, clipboard.value!.values[row.id])
+		)
+	}
+}
 </script>
 
 <template lang="pug">
@@ -243,6 +316,17 @@ q-table.q-mt-md(
 							q-separator
 							q-item(clickable @click='invertCol(headerProps.col.name)')
 								q-item-section Инвертировать
+							q-separator
+							q-item(clickable @click='copyCol(headerProps.col.name, headerProps.col.label)')
+								q-item-section Скопировать права столбца
+							q-item(
+								clickable
+								:disable='!clipboard || clipboard.type !== "col"'
+								@click='pasteCol(headerProps.col.name)'
+							)
+								q-item-section
+									| Вставить права в столбец
+									span.text-grey-6(v-if='clipboard?.type === "col"')  ({{ clipboard.sourceLabel }})
 
 	template(v-slot:body-cell-label='cellProps')
 		q-td.label-cell(:props='cellProps')
@@ -266,6 +350,17 @@ q-table.q-mt-md(
 						q-separator
 						q-item(clickable @click='invertRow(cellProps.row)')
 							q-item-section Инвертировать
+						q-separator
+						q-item(clickable @click='copyRow(cellProps.row)')
+							q-item-section Скопировать права строки
+						q-item(
+							clickable
+							:disable='!clipboard || clipboard.type !== "row"'
+							@click='pasteRow(cellProps.row)'
+						)
+							q-item-section
+								| Вставить права в строку
+								span.text-grey-6(v-if='clipboard?.type === "row"')  ({{ clipboard.sourceLabel }})
 
 	template(v-slot:body-cell='cell')
 		q-td
