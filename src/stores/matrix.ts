@@ -34,7 +34,7 @@ export const useMatrixStore = defineStore('matrix', () => {
 
 	const states = ref<State[]>([
 		{ selected: true, id: 'draft', label: 'Черновик' },
-		{ selected: false, id: 'active', label: 'Активен' },
+		{ selected: false, id: 'active', label: 'В работе' },
 		{ selected: false, id: 'pending', label: 'Ожидание' },
 		{ selected: false, id: 'approved', label: 'Согласован' },
 		{ selected: false, id: 'rejected', label: 'Отклонен' },

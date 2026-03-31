@@ -111,6 +111,7 @@ onMounted(() => {
 	if (route.params.viewId) {
 		open(route.params.viewId.toString())
 	}
+	tree.value.openNodeAndParents(treeData.value[0].children[0])
 })
 
 const toggle = (stat: any) => {
@@ -175,6 +176,7 @@ const setText = (e: Stat, ev: any) => {
 // 		return stat
 // 	}
 // }
+
 watch(
 	() => simpleStore.selectedType,
 	() => {
