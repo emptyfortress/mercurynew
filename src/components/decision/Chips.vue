@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useMatrixStore } from '@/stores/matrix'
 
 type ChipType = 'role' | 'operation' | 'state'
@@ -41,23 +41,42 @@ function handleSelectChange(selected: { id: string; label: string }) {
 	})
 }
 
+const expanded = ref(false)
 const rule = ref(false)
 const user = ref('')
 const card = ref('')
+
+const userOptions = [
+	'Иванов И. И.',
+	'Петрова А. С.',
+	'Сидоров Д. А.',
+	'Кузнецова М. В.',
+	'Смирнов А. Н.',
+]
+const cardOptions = ['Заявка', 'Договор', 'Задание', 'Служебная записка']
+
+const isRuleDisabled = computed(() => !user.value || !card.value)
+
+watch([user, card], ([newUser, newCard]) => {
+	if (!newUser || !newCard) {
+		rule.value = false
+	}
+})
 </script>
 
 <template lang="pug">
 .chips-container
 
 	.right(v-if='props.type == "role"')
-		q-expansion-item(icon='mdi-account-tie' label="Фильтр ролей" header-class="text-primary" v-model='rule')
+		q-expansion-item(icon='mdi-account-tie' header-class="text-primary" v-model='expanded')
 			template(v-slot:header)
+				q-item-section(side)
+					q-checkbox(dense v-model="rule" @click.stop :disable="isRuleDisabled")
 				q-item-section
-					q-checkbox(dense v-model="rule" label="Фильтр ролей")
+					span.text-primary(@click.stop='expanded = !expanded') Фильтр ролей
 			q-card
-				q-select(v-model="user" label='Сотрудник' outlined dense)
-				q-select(v-model="card" label='Карточка' outlined dense)
-				q-btn(flat round color="primary" icon='mdi-check-bold') 
+				q-select(v-model="user" label='Сотрудник' outlined dense :options="userOptions" clearable)
+				q-select(v-model="card" label='Карточка' outlined dense :options="cardOptions" clearable)
 
 	//- Режим селектора (> 10 элементов)
 
@@ -110,7 +129,7 @@ const card = ref('')
 		background: transparent;
 		padding: 0.5rem;
 		display: grid;
-		grid-template-columns: 1fr 1fr auto;
+		grid-template-columns: 1fr 1fr;
 		column-gap: 0.5rem;
 	}
 	:deep(.q-expansion-item--expanded) {
