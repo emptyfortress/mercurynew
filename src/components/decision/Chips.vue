@@ -8,6 +8,8 @@ const props = defineProps<{
 	type: ChipType
 }>()
 
+const modelValue = defineModel()
+
 const matrixStore = useMatrixStore()
 
 const chips = computed(() => {
@@ -59,7 +61,7 @@ const isRuleDisabled = computed(() => !user.value || !card.value)
 
 watch([user, card], ([newUser, newCard]) => {
 	if (!newUser || !newCard) {
-		rule.value = false
+		modelValue.value = false
 	}
 })
 </script>
@@ -71,7 +73,7 @@ watch([user, card], ([newUser, newCard]) => {
 		q-expansion-item(icon='mdi-account-tie' header-class="text-primary" v-model='expanded')
 			template(v-slot:header)
 				q-item-section(side)
-					q-checkbox(dense v-model="rule" @click.stop :disable="isRuleDisabled")
+					q-checkbox(dense v-model="modelValue" @click.stop :disable="isRuleDisabled")
 				q-item-section
 					span.text-primary(@click.stop='expanded = !expanded') Фильтр ролей
 			q-card
@@ -107,6 +109,10 @@ watch([user, card], ([newUser, newCard]) => {
 			@click='handleChipClick(chip.id)'
 		) {{ chip.label }}
 
+	.multi(v-if='modelValue')
+		span Отображаются объединённые права доступа для данного сотрудника и карточки. Редактирование в этом режиме невозможно.
+
+
 	.clear
 </template>
 
@@ -140,5 +146,15 @@ watch([user, card], ([newUser, newCard]) => {
 }
 .clear {
 	clear: both;
+}
+
+.multi {
+	margin-top: 1rem;
+	span {
+		display: inline-block;
+		border: 1px solid red;
+		background: pink;
+		padding: 3px 1rem;
+	}
 }
 </style>

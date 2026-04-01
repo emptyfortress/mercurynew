@@ -189,11 +189,12 @@ function invertCol(colId: string) {
 }
 
 // multiselect
-const isMultiSelect = computed(() => {
-	if (props.type === 'role') return matrixStore.roles.filter((r) => r.selected).length > 1
-	if (props.type === 'operation') return matrixStore.operations.filter((o) => o.selected).length > 1
-	return matrixStore.states.filter((s) => s.selected).length > 1
-})
+// const isMultiSelect = computed(() => {
+// 	if (props.type === 'role') return matrixStore.roles.filter((r) => r.selected).length > 1
+// 	if (props.type === 'operation') return matrixStore.operations.filter((o) => o.selected).length > 1
+// 	return matrixStore.states.filter((s) => s.selected).length > 1
+// })
+const isMultiSelect = ref(false)
 
 // Вычисляет результирующий доступ по приоритету: false (deny) > true (allow) > undefined (unset)
 function mergeAccess(values: (boolean | undefined)[]): boolean | undefined {
@@ -277,10 +278,7 @@ function pasteCol(colId: string) {
 </script>
 
 <template lang="pug">
-Chips(:type='props.type')
-
-.multi(v-if='isMultiSelect')
-	span Выбрано несколько ролей — отображаются объединённые права доступа. Для редактирования выберите одну роль.
+Chips(:type='props.type' v-model='isMultiSelect')
 
 q-table.q-mt-md(
 	:rows='tableRows'
