@@ -48,7 +48,7 @@ const rule = ref(false)
 .chips-container
 
 	.right(v-if='props.type == "role"')
-		q-expansion-item(icon='mdi-account-tie' label="Фильтр ролей" header-class="text-primary")
+		q-expansion-item(icon='mdi-account-tie' label="Фильтр ролей" header-class="text-primary" v-model='rule')
 			template(v-slot:header)
 				q-item-section
 					q-checkbox(dense v-model="rule" label="Фильтр ролей")
@@ -100,6 +100,10 @@ const rule = ref(false)
 .right {
 	float: right;
 	width: 500px;
+	margin-top: -8px;
+	.q-card {
+		background: transparent;
+	}
 }
 .clear {
 	clear: both;
