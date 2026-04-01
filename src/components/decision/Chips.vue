@@ -8,10 +8,6 @@ const props = defineProps<{
 	type: ChipType
 }>()
 
-const emit = defineEmits<{
-	multiSelect: [ids: string[]]
-}>()
-
 const matrixStore = useMatrixStore()
 
 const chips = computed(() => {
@@ -20,51 +16,74 @@ const chips = computed(() => {
 	return matrixStore.operations
 })
 
-const user = ref('')
+const useSelect = computed(() => chips.value.length > 10)
 
-function handleChipClick(clickedId: string, event: Event) {
-	const mouseEvent = event as MouseEvent
-	if (mouseEvent.shiftKey) {
-		// Shift: toggle clicked chip, but ensure at least one remains selected
-		const clickedChip = chips.value.find((c) => c.id === clickedId)!
-		const selectedCount = chips.value.filter((c) => c.selected).length
+const selectedChip = computed(() => chips.value.find((c) => c.selected) ?? chips.value[0])
 
-		if (clickedChip.selected && selectedCount === 1) {
-			// Last selected — don't deselect
-			return
-		}
+const filteredChips = ref(chips.value)
 
-		clickedChip.selected = !clickedChip.selected
-	} else {
-		// Normal click: select only this chip
-		chips.value.forEach((c) => {
-			c.selected = c.id === clickedId
-		})
-	}
-
-	const selected = chips.value.filter((c) => c.selected)
-	if (selected.length > 1) {
-		emit(
-			'multiSelect',
-			selected.map((c) => c.id)
-		)
-	}
+function filterChips(val: string, update: (fn: () => void) => void) {
+	update(() => {
+		const needle = val.toLowerCase()
+		filteredChips.value = chips.value.filter((c) => c.label.toLowerCase().includes(needle))
+	})
 }
+
+function handleChipClick(clickedId: string) {
+	chips.value.forEach((c) => {
+		c.selected = c.id === clickedId
+	})
+}
+
+function handleSelectChange(selected: { id: string; label: string }) {
+	chips.value.forEach((c) => {
+		c.selected = c.id === selected.id
+	})
+}
+
+const rule = ref(false)
 </script>
 
 <template lang="pug">
 .chips-container
-	q-select.right(v-if='props.type == "role"' v-model='user' label='Справочник сотрудников' dense outlined)
-		template(v-slot:prepend)
-			q-icon(name="mdi-magnify")
 
-	q-chip(
-		clickable
-		v-for='chip in chips'
-		:key='chip.id'
-		:selected='chip.selected'
-		@click='handleChipClick(chip.id, $event)'
-	) {{ chip.label }}
+	.right(v-if='props.type == "role"')
+		q-expansion-item(icon='mdi-account-tie' label="Фильтр ролей" header-class="text-primary")
+			template(v-slot:header)
+				q-item-section
+					q-checkbox(dense v-model="rule" label="Фильтр ролей")
+			q-card Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laudantium consectetur impedit error amet illo est voluptatem hic! Odio amet laboriosam officia, quidem, architecto alias, dolore numquam esse dignissimos dicta labore.
+
+	//- Режим селектора (> 10 элементов)
+
+	q-select(
+		v-if='useSelect'
+		:model-value='selectedChip'
+		:options='filteredChips'
+		option-label='label'
+		option-value='id'
+		dense
+		outlined
+		use-input
+		hide-selected
+		fill-input
+		input-debounce='0'
+		style='max-width: 320px'
+		@update:model-value='handleSelectChange'
+		@filter='filterChips'
+	)
+
+	//- Режим чипов (≤ 10 элементов)
+	template(v-else)
+		q-chip(
+			clickable
+			v-for='chip in chips'
+			:key='chip.id'
+			:selected='chip.selected'
+			@click='handleChipClick(chip.id)'
+		) {{ chip.label }}
+
+	.clear
 </template>
 
 <style scoped lang="scss">
@@ -79,7 +98,10 @@ function handleChipClick(clickedId: string, event: Event) {
 	}
 }
 .right {
-	min-width: 260px;
 	float: right;
+	width: 500px;
+}
+.clear {
+	clear: both;
 }
 </style>
