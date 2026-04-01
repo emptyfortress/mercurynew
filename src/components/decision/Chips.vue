@@ -42,6 +42,8 @@ function handleSelectChange(selected: { id: string; label: string }) {
 }
 
 const rule = ref(false)
+const user = ref('')
+const card = ref('')
 </script>
 
 <template lang="pug">
@@ -52,7 +54,10 @@ const rule = ref(false)
 			template(v-slot:header)
 				q-item-section
 					q-checkbox(dense v-model="rule" label="Фильтр ролей")
-			q-card Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laudantium consectetur impedit error amet illo est voluptatem hic! Odio amet laboriosam officia, quidem, architecto alias, dolore numquam esse dignissimos dicta labore.
+			q-card
+				q-select(v-model="user" label='Сотрудник' outlined dense)
+				q-select(v-model="card" label='Карточка' outlined dense)
+				q-btn(flat round color="primary" icon='mdi-check-bold') 
 
 	//- Режим селектора (> 10 элементов)
 
@@ -103,6 +108,15 @@ const rule = ref(false)
 	margin-top: -8px;
 	.q-card {
 		background: transparent;
+		padding: 0.5rem;
+		display: grid;
+		grid-template-columns: 1fr 1fr auto;
+		column-gap: 0.5rem;
+	}
+	:deep(.q-expansion-item--expanded) {
+		border: 1px solid $secondary;
+		border-radius: 4px;
+		background: #e3eaf2;
 	}
 }
 .clear {
