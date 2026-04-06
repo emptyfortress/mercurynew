@@ -62,42 +62,42 @@ const tableColumns = computed(() => {
 
 const tableRows = computed(() => {
 	if (props.type === 'role') {
-		const selectedRoles = matrixStore.roles.filter((r) => r.selected).map((r) => r.id)
+		const selectedRole = matrixStore.roles.find((r) => r.selected)
 		return matrixStore.operations.map((operation) => ({
 			...operation,
 			...matrixStore.states.reduce(
 				(acc, state) => {
-					acc[state.id] = mergeAccess(
-						selectedRoles.map((roleId) => matrixStore.getAccess(roleId, operation.id, state.id))
-					)
+					acc[state.id] = selectedRole
+						? matrixStore.getAccess(selectedRole.id, operation.id, state.id)
+						: undefined
 					return acc
 				},
 				{} as Record<string, boolean | undefined>
 			),
 		}))
 	} else if (props.type === 'operation') {
-		const selectedOperations = matrixStore.operations.filter((o) => o.selected).map((o) => o.id)
+		const selectedOperation = matrixStore.operations.find((o) => o.selected)
 		return matrixStore.roles.map((role) => ({
 			...role,
 			...matrixStore.states.reduce(
 				(acc, state) => {
-					acc[state.id] = mergeAccess(
-						selectedOperations.map((opId) => matrixStore.getAccess(role.id, opId, state.id))
-					)
+					acc[state.id] = selectedOperation
+						? matrixStore.getAccess(role.id, selectedOperation.id, state.id)
+						: undefined
 					return acc
 				},
 				{} as Record<string, boolean | undefined>
 			),
 		}))
 	} else {
-		const selectedStates = matrixStore.states.filter((s) => s.selected).map((s) => s.id)
+		const selectedState = matrixStore.states.find((s) => s.selected)
 		return matrixStore.roles.map((role) => ({
 			...role,
 			...matrixStore.operations.reduce(
 				(acc, operation) => {
-					acc[operation.id] = mergeAccess(
-						selectedStates.map((stateId) => matrixStore.getAccess(role.id, operation.id, stateId))
-					)
+					acc[operation.id] = selectedState
+						? matrixStore.getAccess(role.id, operation.id, selectedState.id)
+						: undefined
 					return acc
 				},
 				{} as Record<string, boolean | undefined>
@@ -187,15 +187,6 @@ function invertCol(colId: string) {
 		const selectedState = matrixStore.states.find((s) => s.selected)?.id || 'draft'
 		tableRows.value.forEach((row) => matrixStore.toggleAccess(row.id, colId, selectedState))
 	}
-}
-
-// const isMultiSelect = ref(false)
-
-// Вычисляет результирующий доступ по приоритету: false (deny) > true (allow) > undefined (unset)
-function mergeAccess(values: (boolean | undefined)[]): boolean | undefined {
-	if (values.some((v) => v === false)) return false
-	if (values.some((v) => v === true)) return true
-	return undefined
 }
 
 // copy-paste rows **********************************************
