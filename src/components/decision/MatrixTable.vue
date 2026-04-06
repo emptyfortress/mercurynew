@@ -264,7 +264,7 @@ function pasteCol(colId: string) {
 </script>
 
 <template lang="pug">
-Chips(:type='props.type' :filter='props.filter')
+Chips(:type='props.type')
 
 q-table.q-mt-md(
 	:rows='tableRows'

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export interface Role {
 	selected: boolean
@@ -21,7 +21,7 @@ export interface State {
 }
 
 export const useMatrixStore = defineStore('matrix', () => {
-	const roles = ref<Role[]>([
+	const _roles = ref<Role[]>([
 		{ selected: true, id: 'admin', label: 'Администратор', common: true },
 		{ selected: false, id: 'manager', label: 'Автор', common: false },
 		{ selected: false, id: 'executor', label: 'Исполнитель', common: false },
@@ -31,6 +31,15 @@ export const useMatrixStore = defineStore('matrix', () => {
 		{ selected: false, id: 'analyst', label: 'Аналитик', common: false },
 		{ selected: false, id: 'guest', label: 'Гость', common: true },
 	])
+
+	const roles = computed(() => {
+		if (roleFilterEnabled.value) {
+			_roles.value.map((el) => (el.selected = false))
+			_roles.value[0].selected = true
+			return _roles.value.slice(0, 3)
+		}
+		return _roles.value
+	})
 
 	const states = ref<State[]>([
 		{ selected: true, id: 'draft', label: 'Черновик' },
@@ -58,12 +67,14 @@ export const useMatrixStore = defineStore('matrix', () => {
 		{ selected: false, id: 'archive', label: 'Архивирование' },
 	])
 
+	const roleFilterEnabled = ref(false)
+
 	// 3D array: [roleId][operationId][stateId] - values: undefined | true | false
 	const accessMatrix = ref<Record<string, Record<string, Record<string, boolean | undefined>>>>({})
 
 	function initAccessMatrix() {
 		accessMatrix.value = {}
-		roles.value.forEach((role) => {
+		_roles.value.forEach((role) => {
 			accessMatrix.value[role.id] = {}
 			operations.value.forEach((operation) => {
 				accessMatrix.value[role.id][operation.id] = {}
@@ -104,7 +115,7 @@ export const useMatrixStore = defineStore('matrix', () => {
 			label: role.label,
 			common: role.common ?? false,
 		}
-		roles.value.push(newRole)
+		_roles.value.push(newRole)
 		// Initialize access matrix for the new role
 		accessMatrix.value[id] = {}
 		operations.value.forEach((operation) => {
@@ -116,22 +127,22 @@ export const useMatrixStore = defineStore('matrix', () => {
 	}
 
 	function removeRole(roleId: string) {
-		const index = roles.value.findIndex((r) => r.id === roleId)
+		const index = _roles.value.findIndex((r) => r.id === roleId)
 		if (index !== -1) {
-			roles.value.splice(index, 1)
+			_roles.value.splice(index, 1)
 			delete accessMatrix.value[roleId]
 		}
 	}
 
 	function updateRoleLabel(roleId: string, label: string) {
-		const role = roles.value.find((r) => r.id === roleId)
+		const role = _roles.value.find((r) => r.id === roleId)
 		if (role) {
 			role.label = label
 		}
 	}
 
 	function updateRoleCommon(roleId: string, common: boolean) {
-		const role = roles.value.find((r) => r.id === roleId)
+		const role = _roles.value.find((r) => r.id === roleId)
 		if (role) {
 			role.common = common
 		}
@@ -139,7 +150,7 @@ export const useMatrixStore = defineStore('matrix', () => {
 
 	function getNameById(id: string): string {
 		if (id === '102') return 'Конструктор ролей'
-		const role = roles.value.find((r) => r.id === id)
+		const role = _roles.value.find((r) => r.id === id)
 		if (role) return role.label
 		const operation = operations.value.find((o) => o.id === id)
 		if (operation) return operation.label
@@ -155,6 +166,7 @@ export const useMatrixStore = defineStore('matrix', () => {
 		states,
 		operations,
 		accessMatrix,
+		roleFilterEnabled,
 		setAccess,
 		getAccess,
 		toggleAccess,

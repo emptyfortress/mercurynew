@@ -6,10 +6,7 @@ type ChipType = 'role' | 'operation' | 'state'
 
 const props = defineProps<{
 	type: ChipType
-	filter: Boolean
 }>()
-
-// const modelValue = defineModel()
 
 const matrixStore = useMatrixStore()
 
@@ -77,8 +74,8 @@ function handleSelectChange(selected: { id: string; label: string }) {
 			@click='handleChipClick(chip.id)'
 		) {{ chip.label }}
 
-	.multi(v-if='props.filter')
-		span Внимание! Включен фильтр ролей, таблица показывает данные для выбранных роли и карточки.
+	.multi(v-if='matrixStore.roleFilterEnabled')
+		span Внимание! Включен фильтр ролей, таблица показывает неполные данные.
 
 </template>
 
