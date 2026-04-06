@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useMatrixStore } from '@/stores/matrix'
 
 type ChipType = 'role' | 'operation' | 'state'
 
 const props = defineProps<{
 	type: ChipType
+	filter: Boolean
 }>()
 
-const modelValue = defineModel()
+// const modelValue = defineModel()
 
 const matrixStore = useMatrixStore()
 
@@ -42,43 +43,10 @@ function handleSelectChange(selected: { id: string; label: string }) {
 		c.selected = c.id === selected.id
 	})
 }
-
-const expanded = ref(false)
-const rule = ref(false)
-const user = ref('')
-const card = ref('')
-
-const userOptions = [
-	'Иванов И. И.',
-	'Петрова А. С.',
-	'Сидоров Д. А.',
-	'Кузнецова М. В.',
-	'Смирнов А. Н.',
-]
-const cardOptions = ['Заявка', 'Договор', 'Задание', 'Служебная записка']
-
-const isRuleDisabled = computed(() => !user.value || !card.value)
-
-watch([user, card], ([newUser, newCard]) => {
-	if (!newUser || !newCard) {
-		modelValue.value = false
-	}
-})
 </script>
 
 <template lang="pug">
 .chips-container
-
-	.right(v-if='props.type == "role"')
-		q-expansion-item(icon='mdi-account-tie' header-class="text-primary" v-model='expanded')
-			template(v-slot:header)
-				q-item-section(side)
-					q-checkbox(dense v-model="modelValue" @click.stop :disable="isRuleDisabled")
-				q-item-section
-					span.text-primary(@click.stop='expanded = !expanded') Фильтр ролей
-			q-card
-				q-select(v-model="user" label='Сотрудник' outlined dense :options="userOptions" clearable)
-				q-select(v-model="card" label='Карточка' outlined dense :options="cardOptions" clearable)
 
 	//- Режим селектора (> 10 элементов)
 
@@ -109,11 +77,9 @@ watch([user, card], ([newUser, newCard]) => {
 			@click='handleChipClick(chip.id)'
 		) {{ chip.label }}
 
-	.multi(v-if='modelValue')
-		span Отображаются объединённые права доступа для данного сотрудника и карточки. Редактирование в этом режиме невозможно.
+	.multi(v-if='props.filter')
+		span Внимание! Включен фильтр ролей, таблица показывает данные для выбранных роли и карточки.
 
-
-	.clear
 </template>
 
 <style scoped lang="scss">
@@ -126,26 +92,6 @@ watch([user, card], ([newUser, newCard]) => {
 	i {
 		color: white;
 	}
-}
-.right {
-	float: right;
-	width: 500px;
-	margin-top: -8px;
-	.q-card {
-		background: transparent;
-		padding: 0.5rem;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		column-gap: 0.5rem;
-	}
-	:deep(.q-expansion-item--expanded) {
-		border: 1px solid $secondary;
-		border-radius: 4px;
-		background: #e3eaf2;
-	}
-}
-.clear {
-	clear: both;
 }
 
 .multi {

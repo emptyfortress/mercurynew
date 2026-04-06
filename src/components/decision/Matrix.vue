@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import MatrixTable from '@/components/decision/MatrixTable.vue'
+import RoleFilterExpansion from '@/components/decision/RoleFilterExpansion.vue'
 
 const tab = ref<'role' | 'state' | 'operation'>('role')
 
 const isDirty = ref(true)
+const filterEnabled = ref(false)
 </script>
 
 <template lang="pug">
@@ -18,6 +20,8 @@ q-page(padding)
 				q-btn(@click="" flat color="primary" label="Отмена")
 				q-btn(@click="" color="primary" label="Сохранить")
 
+		RoleFilterExpansion(v-model="filterEnabled")
+
 		q-tabs(v-model='tab' class='q-mt-md' align='left')
 			q-tab(name='role' label='Роль')
 			q-tab(name='state' label='Состояние')
@@ -25,13 +29,13 @@ q-page(padding)
 
 		q-tab-panels(v-model='tab' animated)
 			q-tab-panel(name='role')
-				MatrixTable(type='role')
+				MatrixTable(type='role' :filter='filterEnabled')
 
 			q-tab-panel(name='state')
-				MatrixTable(type='state')
+				MatrixTable(type='state' :filter='filterEnabled')
 
 			q-tab-panel(name='operation')
-				MatrixTable(type='operation')
+				MatrixTable(type='operation' :filter='filterEnabled')
 </template>
 
 <style scoped lang="scss">

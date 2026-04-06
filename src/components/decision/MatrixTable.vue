@@ -9,6 +9,7 @@ type TableType = 'role' | 'operation' | 'state'
 
 const props = defineProps<{
 	type: TableType
+	filter: Boolean
 }>()
 
 const route = useRoute()
@@ -188,13 +189,7 @@ function invertCol(colId: string) {
 	}
 }
 
-// multiselect
-// const isMultiSelect = computed(() => {
-// 	if (props.type === 'role') return matrixStore.roles.filter((r) => r.selected).length > 1
-// 	if (props.type === 'operation') return matrixStore.operations.filter((o) => o.selected).length > 1
-// 	return matrixStore.states.filter((s) => s.selected).length > 1
-// })
-const isMultiSelect = ref(false)
+// const isMultiSelect = ref(false)
 
 // Вычисляет результирующий доступ по приоритету: false (deny) > true (allow) > undefined (unset)
 function mergeAccess(values: (boolean | undefined)[]): boolean | undefined {
@@ -278,7 +273,7 @@ function pasteCol(colId: string) {
 </script>
 
 <template lang="pug">
-Chips(:type='props.type' v-model='isMultiSelect')
+Chips(:type='props.type' :filter='props.filter')
 
 q-table.q-mt-md(
 	:rows='tableRows'
@@ -287,7 +282,7 @@ q-table.q-mt-md(
 	flat
 	bordered
 	:pagination='{ rowsPerPage: 0 }'
-	:class='{ "multi-select-table": isMultiSelect }'
+	:class='{ "multi-select-table": props.filter }'
 )
 
 	template(v-slot:header-cell='headerProps')
@@ -295,7 +290,6 @@ q-table.q-mt-md(
 			span {{ headerProps.col.label }}
 			template(v-if='headerProps.col.name !== "label"')
 				q-btn.col-menu-btn(
-					v-if='!isMultiSelect'
 					flat
 					round
 					dense
@@ -330,7 +324,6 @@ q-table.q-mt-md(
 		q-td.label-cell(:props='cellProps')
 			span {{ cellProps.value }}
 			q-btn.row-menu-btn(
-				v-if='!isMultiSelect'
 				flat
 				round
 				dense
@@ -371,8 +364,7 @@ q-table.q-mt-md(
 					:model-value='cell.row[cell.col.name]'
 					toggle-indeterminate
 					:color='getCheckboxColor(cell.row[cell.col.name])'
-					:disable='isMultiSelect'
-					@click.prevent='!isMultiSelect && handleCheckboxClick(cell.row, cell.col)'
+					@click.prevent='handleCheckboxClick(cell.row, cell.col)'
 				)
 </template>
 
@@ -413,7 +405,7 @@ q-table.q-mt-md(
 	}
 }
 .multi-select-table {
-	background: #eee;
+	border: 1px solid red;
 }
 .multi {
 	margin-top: 0.5rem;
