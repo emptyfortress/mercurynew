@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { is } from 'quasar'
 import { computed, ref, watch } from 'vue'
+import EmployeeDialog from './EmployeeDialog.vue'
+import CardDialog from './CardDialog.vue'
 
 const modelValue = defineModel<boolean>()
 
@@ -22,6 +23,31 @@ watch([user, card], ([newUser, newCard]) => {
 const label = computed(() => {
 	return modelValue.value ? 'Сбросить' : 'Применить'
 })
+
+const employeeDialog = ref<InstanceType<typeof EmployeeDialog>>()
+const cardDialog = ref(false)
+
+function handleUserSelect(val: string) {
+	if (val === '-- выбрать --') {
+		employeeDialog.value?.open()
+		user.value = ''
+	}
+}
+
+function handleCardSelect(val: string) {
+	if (val === '-- выбрать --') {
+		cardDialog.value = true
+		card.value = ''
+	}
+}
+
+function onEmployeeSelect(value: string) {
+	user.value = value
+}
+
+function onCardSelect(value: string) {
+	card.value = value
+}
 </script>
 
 <template lang="pug">
@@ -34,9 +60,12 @@ q-expansion-item(icon='mdi-account-tie' header-class="text-primary" v-model='exp
 	q-card
 		p Для просмотра прав доступа сотрудника к конкретной карточке  - выберите его из справочника и укажите карточку.
 		.selector
-			q-select(v-model="user" label='Сотрудник' outlined dense :options="userOptions" clearable)
-			q-select(v-model="card" label='Карточка' outlined dense :options="cardOptions" clearable)
-			q-btn(unelevated color="primary" :label="label" @click="modelValue = !modelValue" :disable="isRuleDisabled") 
+			q-select(v-model="user" label='Сотрудник' outlined dense :options="userOptions" clearable @update:model-value="handleUserSelect")
+			q-select(v-model="card" label='Карточка' outlined dense :options="cardOptions" clearable @update:model-value="handleCardSelect")
+			q-btn(unelevated color="primary" :label="label" @click="modelValue = !modelValue" :disable="isRuleDisabled")
+
+	EmployeeDialog(ref='employeeDialog' @select='onEmployeeSelect')
+	CardDialog(v-model='cardDialog' @select='onCardSelect') 
 </template>
 
 <style scoped lang="scss">
