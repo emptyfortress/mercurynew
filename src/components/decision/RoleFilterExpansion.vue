@@ -8,14 +8,8 @@ const expanded = ref(false)
 const user = ref('')
 const card = ref('')
 
-const userOptions = [
-	'Иванов И. И.',
-	'Петрова А. С.',
-	'Сидоров Д. А.',
-	'Кузнецова М. В.',
-	'Смирнов А. Н.',
-]
-const cardOptions = ['Заявка', 'Договор', 'Задание', 'Служебная записка']
+const userOptions = ['Иванов И. И.', '-- выбрать --']
+const cardOptions = ['Договор с ООО "Ромашка"', '-- выбрать --']
 
 const isRuleDisabled = computed(() => !user.value || !card.value)
 
