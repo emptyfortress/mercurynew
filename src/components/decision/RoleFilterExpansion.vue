@@ -43,6 +43,7 @@ function handleCardSelect(val: string) {
 
 function onEmployeeSelect(value: string) {
 	user.value = value
+	employeeDialog.value = false
 }
 
 function onCardSelect(value: string) {
