@@ -11,18 +11,18 @@ const cols: QTableProps['columns'] = [
 		field: 'number',
 		sortable: true,
 	},
-	{
-		name: 'numberi',
-		required: true,
-		label: 'Номер исх.',
-		align: 'left',
-		field: 'numberi',
-		sortable: true,
-	},
+	// {
+	// 	name: 'numberi',
+	// 	required: true,
+	// 	label: 'Номер исх.',
+	// 	align: 'left',
+	// 	field: 'numberi',
+	// 	sortable: true,
+	// },
 	{
 		name: 'datai',
 		required: true,
-		label: 'Дата исх.',
+		label: 'Дата',
 		align: 'left',
 		field: 'datai',
 		sortable: true,
@@ -152,12 +152,18 @@ q-table(
 	:rows='rows'
 	row-key='number'
 )
+	template(v-slot:header='props')
+		q-tr(:props='props')
+			q-th(v-for="col in props.cols" :key="col.name" :props="props") {{ col.label }}
+			q-th(auto-width)
 	template(v-slot:body='props')
-		tr(
+		q-tr(
 			@click='toggleRow(props.row)'
 			:class='{ selected: isRowSelected(props.row) }'
 		)
-			td.q-td(v-for='col in props.cols' :key='col.name') {{ props.row[col.field] }}
+			q-td(v-for='col in props.cols' :key='col.name') {{ props.row[col.field] }}
+			q-td(auto-width)
+				q-btn(flat round icon="mdi-open-in-new" color="primary" dense) 
 	template(v-slot:no-data)
 		.center
 			.col
