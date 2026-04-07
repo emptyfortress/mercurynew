@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import CardSelector from './CardSelector.vue'
 
 const emit = defineEmits<{
 	select: [value: string]
@@ -13,7 +14,6 @@ const selectedNode = ref<string | null>(null)
 function confirmSelect() {
 	if (selectedNode.value) {
 		emit('select', selectedNode.value)
-		// dialog.value?.hide()
 	}
 }
 
@@ -69,6 +69,12 @@ const filteredTree = computed(() => {
 })
 
 const splitter = ref(25)
+const cardSelected = ref(false)
+
+const close = () => {
+	modelValue.value = false
+	emit('select', 'Карточка из дерева')
+}
 </script>
 
 <template lang="pug">
@@ -98,8 +104,9 @@ q-dialog(v-model="modelValue")
 				template(v-slot:after)
 					.q-px-md(v-if='selectedNode')
 						.text-h6 {{ selectedNode}}
-					.q-pa-md.text-grey-6(v-else) Выберите папку
-					q-card-actions(align='right')
+						CardSelector(@close="close")
+					.q-pa-md.text-grey-6(v-else) Выберите папку и карточку
+					q-card-actions(align='right' v-if='cardSelected')
 						q-btn(flat label='Отмена' v-close-popup color='grey-7')
 						q-btn(unelevated label='Выбрать' color='primary' @click='confirmSelect' :disable='!selectedNode')
 </template>

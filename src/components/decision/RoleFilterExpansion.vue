@@ -24,12 +24,12 @@ const label = computed(() => {
 	return modelValue.value ? 'Сбросить' : 'Применить'
 })
 
-const employeeDialog = ref<InstanceType<typeof EmployeeDialog>>()
+const employeeDialog = ref(false)
 const cardDialog = ref(false)
 
 function handleUserSelect(val: string) {
 	if (val === '-- выбрать --') {
-		employeeDialog.value?.open()
+		employeeDialog.value = true
 		user.value = ''
 	}
 }
@@ -64,7 +64,7 @@ q-expansion-item(icon='mdi-account-tie' header-class="text-primary" v-model='exp
 			q-select(v-model="card" label='Карточка' outlined dense :options="cardOptions" clearable @update:model-value="handleCardSelect")
 			q-btn(unelevated color="primary" :label="label" @click="modelValue = !modelValue" :disable="isRuleDisabled")
 
-	EmployeeDialog(ref='employeeDialog' @select='onEmployeeSelect')
+	EmployeeDialog(v-model='employeeDialog' @select='onEmployeeSelect')
 	CardDialog(v-model='cardDialog' @select='onCardSelect') 
 </template>
 

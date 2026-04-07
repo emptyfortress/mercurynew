@@ -5,7 +5,7 @@ const emit = defineEmits<{
 	select: [value: string]
 }>()
 
-const dialog = ref<InstanceType<(typeof import('quasar'))['QDialog']>>()
+const modelValue = defineModel<boolean>()
 const search = ref('')
 
 const employees = [
@@ -16,20 +16,13 @@ const employees = [
 	{ id: '5', label: 'Смирнов А. Н.' },
 ]
 
-function open() {
-	dialog.value?.show()
-}
-
 function selectEmployee(emp: { id: string; label: string }) {
 	emit('select', emp.label)
-	dialog.value?.hide()
 }
-
-defineExpose({ open })
 </script>
 
 <template lang="pug">
-q-dialog(ref='dialog')
+q-dialog(v-model="modelValue")
 	q-card.employee-dialog
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
