@@ -16,9 +16,13 @@ import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
 import HelpModal from '@/components/HelpModal.vue'
 import { useAppTour } from '@/tour'
 import Breadcrumbs from '@/components/decision/Breadcrumbs.vue'
+import HugeiconsChatBot from '@/components/icons/HugeiconsChatBot.vue'
+import BotDrawer from '@/components/BotDrawer.vue'
+import { useBotStore } from '@/stores/bot'
 
 const route = useRoute()
 const { startTour } = useAppTour()
+const botStore = useBotStore()
 
 watch(
 	() => route.meta.hideScroll,
@@ -272,10 +276,14 @@ q-layout(view='hHh LpR fFf')
 								HealthiconsGuideDogfrom.ic
 							q-item-section Гид
 
+			q-btn.bot(dense flat round @click='botStore.toggleBot')
+				HugeiconsChatBot
+
 			q-btn(dense flat round icon='mdi-menu' @click='toggleBug')
 
 	Drawer
 	RDrawer(v-model="rightDrawer" :help='helpMode')
+	BotDrawer
 
 	q-page-container
 		.bread(v-if='route.meta.breadcrumbs')
@@ -370,5 +378,9 @@ nav a:first-of-type {
 	margin-left: -4rem;
 	font-size: 0.8rem;
 	padding: 4px 15px;
+}
+.bot svg {
+	width: 1.7rem;
+	height: 1.7rem;
 }
 </style>

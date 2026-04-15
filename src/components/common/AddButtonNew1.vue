@@ -3,6 +3,11 @@ import { ref, computed, nextTick, markRaw } from 'vue'
 import IconList from '@/components/IconList.vue'
 import IconRoleList from '@/components/IconRoleList.vue'
 import MdiApplicationBracesOutline from '@/components/icons/list/MdiApplicationBracesOutline.vue'
+import { useRouter } from 'vue-router'
+import { useApps } from '@/stores/apps'
+
+const router = useRouter()
+// const route = useRoute()
 
 const props = defineProps({
 	mode: {
@@ -56,6 +61,9 @@ const resetForm = () => {
 	group.value = false
 	cancelPress()
 }
+
+const myapps = useApps()
+
 const submitForm = () => {
 	emit('create', {
 		label: model.value,
@@ -64,9 +72,19 @@ const submitForm = () => {
 		group: group.value == true ? 2 : 1,
 		avatar: avatar.value,
 	})
-	resetForm()
 	add()
 	input.value.resetValidation()
+	if (bot.value) {
+		myapps.setCurrentApp({
+			label: model.value,
+			description: model1.value,
+			pic: icon.value,
+			group: group.value == true ? 2 : 1,
+			avatar: avatar.value,
+		})
+		router.push('/ai')
+	}
+	resetForm()
 }
 
 const otmena = () => {
@@ -158,6 +176,8 @@ function createGroup(): void {
 	group.value = true
 	add()
 }
+
+const bot = ref(false)
 </script>
 
 <template lang="pug">
@@ -225,6 +245,8 @@ function createGroup(): void {
 					:initial="{ opacity: 0 }"
 					:enter='{ opacity: 1, transition: { delay: 200 } }'
 					)
+					q-checkbox(v-model="bot" label='ИИ-ассистент')
+					q-space
 					q-btn(flat color="primary" label="Отмена" @click="otmena") 
 					q-btn(unelevated color="primary" label="Создать" type='submit') 
 

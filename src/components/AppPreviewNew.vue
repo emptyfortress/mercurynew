@@ -7,12 +7,14 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import AddDialog from '@/components/AddDialog.vue'
 import VersionList0 from '@/components/VersionList0.vue'
 import { useVersion } from '@/stores/version'
-// import SvgSpinnersBarsRotateFade from '@/components/icons/SvgSpinnersBarsRotateFade.vue'
 import MappingDialog from '@/components/MappingDialog.vue'
+import HugeiconsChatBot from '@/components/icons/HugeiconsChatBot.vue'
+import { useBotStore } from '@/stores/bot'
 
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
+const botStore = useBotStore()
 
 const props = defineProps<{
 	item: App
@@ -35,18 +37,10 @@ const navigate = () => {
 }
 
 const navigate1 = async () => {
-	if (myver.curVersion.published > 0) {
-		mode.value = 'edit'
-		dialog.value = true
-	} else {
-		const path = route.fullPath.toString()
-		await router.push('/process')
-		myapps.setCurrentApp(props.item)
-		myapps.currentApp!.master = false
-		myapps.setGroupPath(group.value ? path : '')
-		myapps.setPath(group.value ? '' : path)
-		myapps.curVersion(props.item).modified = Date.now()
-	}
+	await router.push('/ai')
+	myapps.setCurrentApp(props.item)
+	myapps.currentApp!.master = false
+	myapps.curVersion(props.item).modified = Date.now()
 }
 
 const openUrl = () => {
@@ -203,7 +197,11 @@ const showDate = (val: number | null) => {
 			.val {{ props.item.author}}
 			label Создано:
 			.val {{ showDate(props.item.created)}}
-		q-btn.q-mt-sm(v-if='props.item.master' unelevated color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" size='sm') 
+		.q-gutter-x-xs
+			q-btn.q-mt-sm(v-if='props.item.master' unelevated color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" size='sm') 
+			q-btn.bot(v-if='props.item.master' unelevated color="primary" @click="navigate1" size='sm') 
+				HugeiconsChatBot
+				label ИИ ассистент
 
 
 	br
@@ -216,6 +214,14 @@ const showDate = (val: number | null) => {
 </template>
 
 <style scoped lang="scss">
+.bot {
+	margin-top: 0.5rem;
+	svg {
+		width: 1.2rem;
+		height: 1.2rem;
+		margin-right: 0.5rem;
+	}
+}
 .fill {
 	font-size: 0.8rem;
 }
