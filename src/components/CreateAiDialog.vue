@@ -40,11 +40,11 @@ q-dialog(v-model="modelValue" full-height persistent)
 			.input
 				q-input(v-model="query" type='textarea' outlined autogrow :placeholder='place')
 					template(v-slot:append)
-						q-btn.mic(unelevated round :size="calcSize" icon="mdi-microphone" @click="toggleVoice" :class="{ active: voice }") 
+						q-btn.mic(unelevated round :size="calcSize" icon="mdi-microphone" @click="toggleVoice" :class="{ active: voice }")
 							.wave
 
 			// .search Вы всегда сможете дополнить и уточнить свой запрос.
-			// 	q-btn(outline color="primary" icon-right='mdi-arrow-right' label="Отправить" @click="ask") 
+			// 	q-btn(outline color="primary" icon-right='mdi-arrow-right' label="Отправить" @click="ask")
 		q-card-section
 			p(v-for="n in 10" :key="n") Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet earum aspernatur incidunt nostrum, repellat quos vitae velit voluptatum facere rem cumque, maiores officia quibusdam fugiat, laboriosam natus! Quaerat, repellendus voluptatem.
 </template>
@@ -118,5 +118,9 @@ q-dialog(v-model="modelValue" full-height persistent)
 	justify-content: space-between;
 	align-items: center;
 	font-size: 0.9rem;
+}
+
+.q-card {
+	overflow-y: auto;
 }
 </style>
