@@ -8,13 +8,11 @@ import AddDialog from '@/components/AddDialog.vue'
 import VersionList0 from '@/components/VersionList0.vue'
 import { useVersion } from '@/stores/version'
 import MappingDialog from '@/components/MappingDialog.vue'
-import HugeiconsChatBot from '@/components/icons/HugeiconsChatBot.vue'
 import { useBotStore } from '@/stores/bot'
 
 const myapps = useApps()
 const router = useRouter()
 const route = useRoute()
-const botStore = useBotStore()
 
 const props = defineProps<{
 	item: App
@@ -28,20 +26,20 @@ const group = computed(() => {
 	return route.fullPath.toString().split('/')[1] == 'folder' ? true : false
 })
 
-const navigate = () => {
-	const path = route.fullPath.toString()
-	myapps.setGroupPath(group.value ? path : '')
-	myapps.setPath(group.value ? '' : path)
-	router.push('/assistent')
-	myapps.setCurrentApp(props.item)
-}
+// const navigate = () => {
+// 	const path = route.fullPath.toString()
+// 	myapps.setGroupPath(group.value ? path : '')
+// 	myapps.setPath(group.value ? '' : path)
+// 	router.push('/assistent')
+// 	myapps.setCurrentApp(props.item)
+// }
 
-const navigate1 = async () => {
-	await router.push('/ai')
-	myapps.setCurrentApp(props.item)
-	myapps.currentApp!.master = false
-	myapps.curVersion(props.item).modified = Date.now()
-}
+// const navigate1 = async () => {
+// 	await router.push('/ai')
+// 	myapps.setCurrentApp(props.item)
+// 	myapps.currentApp!.master = false
+// 	myapps.curVersion(props.item).modified = Date.now()
+// }
 
 const openUrl = () => {
 	mode.value = 'check'
@@ -197,12 +195,7 @@ const showDate = (val: number | null) => {
 			.val {{ props.item.author}}
 			label Создано:
 			.val {{ showDate(props.item.created)}}
-		.q-gutter-x-xs
-			q-btn.q-mt-sm(v-if='props.item.master' unelevated color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" size='sm') 
-			q-btn.bot(v-if='props.item.master' unelevated color="primary" @click="navigate1" size='sm') 
-				HugeiconsChatBot
-				label ИИ ассистент
-
+		// q-btn.q-mt-sm(v-if='props.item.master' unelevated color="primary" label='Мастер' icon='mdi-magic-staff' @click="navigate" size='sm') 
 
 	br
 	VersionList0(:versions="props.item.versions" :item='props.item')

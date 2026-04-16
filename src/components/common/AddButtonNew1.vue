@@ -1,254 +1,25 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, markRaw } from 'vue'
-import IconList from '@/components/IconList.vue'
-import IconRoleList from '@/components/IconRoleList.vue'
-import MdiApplicationBracesOutline from '@/components/icons/list/MdiApplicationBracesOutline.vue'
-import { useRouter } from 'vue-router'
-import { useApps } from '@/stores/apps'
-
-const router = useRouter()
-// const route = useRoute()
-
-const props = defineProps({
-	mode: {
-		type: String,
-		required: true,
-		default: 'app',
-	},
-})
-
-const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
-
-const header = computed(() => {
-	switch (props.mode) {
-		case 'role':
-			return 'Новая роль'
-		case 'form':
-			return 'Новая форма'
-		case 'list':
-			return 'Новая папка'
-		default:
-			if (group.value) return 'Новая группа'
-			return 'Новое приложение'
-	}
-})
-
-const input = ref()
-const form = ref()
+import { ref } from 'vue'
+import AddAiDialog from '@/components/AddAiDialog.vue'
+import CreateAiDialog from '@/components/CreateAiDialog.vue'
 
 const adding = ref(false)
-const group = ref(false)
-
-const add = () => {
-	adding.value = !adding.value
-
-	nextTick(() => {
-		if (adding.value == true) {
-			input.value.focus()
-		}
-	})
-}
 
 const emit = defineEmits(['create'])
-const model = ref(null)
-const model1 = ref(null)
 
-const resetForm = () => {
-	nextTick(() => {
-		input.value.resetValidation()
-	})
-	model.value = null
-	group.value = false
-	cancelPress()
+function createApplication(e: any): void {
+	emit('create', e)
 }
-
-const myapps = useApps()
-
-const submitForm = () => {
-	emit('create', {
-		label: model.value,
-		description: model1.value,
-		pic: icon.value,
-		group: group.value == true ? 2 : 1,
-		avatar: avatar.value,
-	})
-	add()
-	input.value.resetValidation()
-	if (bot.value) {
-		myapps.setCurrentApp({
-			label: model.value,
-			description: model1.value,
-			pic: icon.value,
-			group: group.value == true ? 2 : 1,
-			avatar: avatar.value,
-		})
-		router.push('/ai')
-	}
-	resetForm()
-}
-
-const otmena = () => {
-	add()
-	resetForm()
-	input.value.resetValidation()
-}
-
-const trans = ref(true)
-const start = { opacity: 0, rotate: -720, scale: 0.5 }
-const second = { opacity: 1, rotate: 0, scale: 1, transition: { delay: 500 } }
-
-const calcStart = computed(() => {
-	return trans.value ? start : { opacity: 1, rotate: 0, scale: 1 }
-})
-const calcFinish = computed(() => {
-	return trans.value ? second : { opacity: 1, rotate: 0, scale: 1 }
-})
-
-const icon = ref(MdiApplicationBracesOutline1)
-const avatar = ref('src/assets/img/avatar/avatar1.svg')
-const setIcon = (e: any) => {
-	icon.value = e
-}
-
-const setRoleIcon = (e: string) => {
-	avatar.value = e
-}
-
-const holdTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
-const wasLongPress = ref(false)
-const HOLD_DELAY = 700 // длительность удержания в мс
-const intervalStep = 10
-const progress = ref(0)
-
-let holdTimer: ReturnType<typeof setTimeout> | null = null
-let progressInterval: ReturnType<typeof setInterval> | null = null
-
-// SVG circle calculations
-const radius = 18
-const circumference = 2 * Math.PI * radius
-
-const progressOffset = computed(() => {
-	return circumference - (progress.value / 100) * circumference
-})
-
-function startPress(): void {
-	wasLongPress.value = false
-	progress.value = 0
-	let steps = HOLD_DELAY / intervalStep
-	let currentStep = 0
-
-	progressInterval = setInterval(() => {
-		currentStep++
-		progress.value = (currentStep / steps) * 100
-	}, intervalStep)
-
-	holdTimer = setTimeout(() => {
-		wasLongPress.value = true
-		createGroup()
-		cancelPress()
-	}, HOLD_DELAY)
-}
-
-function endPress(): void {
-	if (!wasLongPress.value) {
-		cancelPress()
-		createApplication()
-	}
-}
-
-function cancelPress(): void {
-	if (holdTimer) {
-		clearTimeout(holdTimer)
-		holdTimer = null
-	}
-	if (progressInterval) {
-		clearInterval(progressInterval)
-		progressInterval = null
-	}
-	progress.value = 0
-}
-
-function createApplication(): void {
-	add()
-}
-
-function createGroup(): void {
-	group.value = true
-	add()
-}
-
-const bot = ref(false)
+const aiDialog = ref(false)
 </script>
 
 <template lang="pug">
-.fucking(
-	@mousedown="startPress"
-	@mouseup="endPress"
-	@mouseleave="cancelPress"
-	@touchstart="startPress"
-	@touchend="endPress"
-)
+.fucking(@click='adding = true')
 	.button
 		q-icon(name="mdi-plus" color="white" size="24px")
 
-		svg(class="progress-ring" width="41" height="41")
-			circle(
-        class="progress-ring__circle"
-        :stroke-dasharray="circumference"
-        :stroke-dashoffset="progressOffset"
-        stroke="#a6a5fc"
-        stroke-width="4"
-        fill="transparent"
-        r="18"
-        cx="20"
-        cy="21")
-
-	q-dialog(v-model="adding")
-		q-card(style="width: 420px;")
-			q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
-
-			q-form(ref='form' @submit="submitForm")
-				q-card-section
-					.hd {{ header }}
-
-				q-card-section
-					label Название:
-					q-input(ref="input"
-						v-model="model"
-						autofocus
-						dense
-						clearable
-						outlined
-						:rules="[val => !!val || 'Это обязательное поле']"
-						hint='Название должно быть уникальным'
-						)
-
-
-				q-card-section(v-if='!group && props.mode == "app" || props.mode == "list" || props.mode == "form"')
-					label Описание:
-					q-input(
-						v-model="model1"
-						dense
-						clearable
-						outlined
-						hint='Описание не обязательно'
-						)
-
-					q-card-section
-						IconList(v-if="props.mode == 'app'" @select='setIcon')
-
-				q-card-section(v-if="props.mode == 'role'")
-					IconRoleList(@select='setRoleIcon')
-
-				q-card-actions(align="right" v-if='adding'
-					v-motion
-					:initial="{ opacity: 0 }"
-					:enter='{ opacity: 1, transition: { delay: 200 } }'
-					)
-					q-checkbox(v-model="bot" label='ИИ-ассистент')
-					q-space
-					q-btn(flat color="primary" label="Отмена" @click="otmena") 
-					q-btn(unelevated color="primary" label="Создать" type='submit') 
+	AddAiDialog(v-model="adding" @create="createApplication" @goAi="aiDialog = true")
+	CreateAiDialog(v-model="aiDialog")
 
 </template>
 
@@ -276,53 +47,5 @@ const bot = ref(false)
 	align-items: center;
 	cursor: pointer;
 	position: relative;
-}
-.progress-ring {
-	position: absolute;
-	top: 0;
-	left: 0;
-	transform: rotate(-90deg); /* начинать с верха */
-	z-index: 1;
-}
-
-.progress-ring__circle {
-	transition: stroke-dashoffset 0.1s linear;
-}
-
-.hd {
-	font-size: 1.2rem;
-	text-align: center;
-}
-
-.close {
-	z-index: 100;
-	position: absolute;
-	top: -1.2rem;
-	right: -1.2rem;
-}
-
-label {
-	font-weight: 600;
-}
-
-.icon {
-	margin-left: 0.5rem;
-	display: flex;
-	gap: 0.5rem;
-	align-items: center;
-	.ic {
-		font-size: 1.7rem;
-		color: var(--icon);
-		cursor: pointer;
-	}
-}
-.ii {
-	display: grid;
-	grid-template-columns: repeat(4, auto);
-	font-size: 1.8rem;
-	color: var(--icon);
-	.selected {
-		background: var(--selection);
-	}
 }
 </style>
