@@ -121,8 +121,9 @@ onUpdated(() => {
 
 const $q = useQuasar()
 const create = (e: any) => {
+	let myid = uid()
 	let tmp = {
-		id: uid(),
+		id: myid,
 		label: e.label,
 		descr: e.description,
 		expand: false,
@@ -167,6 +168,9 @@ const create = (e: any) => {
 				message: 'Добавлена группа',
 			})
 		}, 1200)
+	}
+	if (e.label == 'Командировки') {
+		router.push(`/${myid}`)
 	}
 }
 

@@ -19,7 +19,7 @@ const aiDialog = ref(false)
 		q-icon(name="mdi-plus" color="white" size="24px")
 
 	AddAiDialog(v-model="adding" @create="createApplication" @goAi="aiDialog = true")
-	CreateAiDialog(v-model="aiDialog")
+	CreateAiDialog(v-model="aiDialog" @create='createApplication')
 
 </template>
 

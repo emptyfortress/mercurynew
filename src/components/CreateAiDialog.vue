@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, markRaw } from 'vue'
 import ChatOutput from '@/components/ChatOutput1.vue'
+import MdiApplicationBracesOutline from '@/components/icons/list/MdiApplicationBracesOutline.vue'
 
+const MdiApplicationBracesOutline1 = markRaw(MdiApplicationBracesOutline)
 const modelValue = defineModel<boolean>()
 const query = ref('')
 const result = ref(false)
@@ -18,11 +20,20 @@ const ask = () => {
 		place.value = 'Дополнительные уточнения и пожелания'
 	}, 3000)
 }
+
+const emit = defineEmits(['create'])
 const create = () => {
 	showLoader.value = true
 	setTimeout(() => {
 		modelValue.value = false
 		showLoader.value = false
+		emit('create', {
+			label: 'Командировки',
+			description: 'Простое приложение учета и согласования командировок сотрудников.',
+			pic: MdiApplicationBracesOutline1,
+			group: 1,
+		})
+		result.value = false
 	}, 4000)
 }
 </script>
@@ -44,6 +55,7 @@ q-dialog(v-model="modelValue" persistent)
 		q-scroll-area.auto(v-if='result')
 			ChatOutput
 
+		.shad(v-if='result')
 		q-card-section
 			q-linear-progress(indeterminate color="primary" v-if='loading')
 			.input
@@ -116,5 +128,10 @@ q-dialog(v-model="modelValue" persistent)
 		padding: 0.5rem;
 		border-radius: 4px;
 	}
+}
+.shad {
+	background: #fff;
+	padding: 3px;
+	box-shadow: 0 -6px 4px rgba(0, 0, 0, 0.2) !important;
 }
 </style>
