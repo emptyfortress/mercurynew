@@ -6,6 +6,7 @@ const modelValue = defineModel<boolean>()
 const query = ref('')
 const result = ref(false)
 const loading = ref(false)
+const showLoader = ref(false)
 const place = ref('Опишите ваше приложение как можно подробнее')
 
 const ask = () => {
@@ -18,18 +19,24 @@ const ask = () => {
 	}, 3000)
 }
 const create = () => {
-	modelValue.value = false
+	showLoader.value = true
+	setTimeout(() => {
+		modelValue.value = false
+		showLoader.value = false
+	}, 3000)
 }
 </script>
 
 <template lang="pug">
 q-dialog(v-model="modelValue" persistent)
-	q-card(style="width: 700px; max-width: 80vw")
+	q-card(style="width: 700px; max-width: 80vw; position: relative")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
 			.text-h6
 				span ИИ-ассистент
 
+		.spin-overlay(v-if="showLoader")
+			q-spinner(size="100px" color="primary")
 
 		q-scroll-area.auto(v-if='result')
 			ChatOutput
@@ -41,8 +48,8 @@ q-dialog(v-model="modelValue" persistent)
 					template(v-slot:append v-if='query.length')
 						q-btn.send(flat color="primary" padding='xs' size='lg' icon="mdi-arrow-up-box" @click="ask")
 			.text-right.q-mt-sm
-				q-btn(v-if='result' flat color="primary" label="Отмена" @click="create") 
-				q-btn(v-if='result' unelevated color="primary" label="Создать приложение" @click="create") 
+				q-btn(v-if='result' flat color="primary" label="Отмена" @click="create" :disable="showLoader") 
+				q-btn(v-if='result' unelevated color="primary" label="Создать приложение" @click="create" :disable="showLoader") 
 
 </template>
 
@@ -78,8 +85,21 @@ q-dialog(v-model="modelValue" persistent)
 .auto {
 	height: calc(90vh - 200px);
 	padding: 0 1rem;
-	// min-height: 200px;
-	// height: 800px;
-	// overflow-y: auto;
+}
+.spin {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 100;
+}
+.spin-overlay {
+	position: absolute;
+	inset: 0; /* top/right/bottom/left: 0 */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 100;
+	background: rgba(255, 255, 255, 0.6); /* опционально: затемнение */
 }
 </style>
