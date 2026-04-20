@@ -23,7 +23,7 @@ const create = () => {
 	setTimeout(() => {
 		modelValue.value = false
 		showLoader.value = false
-	}, 3000)
+	}, 4000)
 }
 </script>
 
@@ -37,7 +37,9 @@ q-dialog(v-model="modelValue" persistent)
 
 		.spin-overlay(v-if="showLoader")
 			q-spinner(size="100px" color="primary")
-			div.loading-text Создаю приложение. Это может занять некоторое время. Не закрывайте окно до окончания.
+			.loading-text
+				span Создаю приложение. Это может занять некоторое время.<br />
+				span Не закрывайте окно до окончания.
 
 		q-scroll-area.auto(v-if='result')
 			ChatOutput
@@ -106,8 +108,13 @@ q-dialog(v-model="modelValue" persistent)
 }
 .loading-text {
 	margin-top: 1rem;
-	font-size: 1.1rem;
-	color: #333;
+	font-size: 1rem;
 	text-align: center;
+	span {
+		color: #eee;
+		background: #333;
+		padding: 0.5rem;
+		border-radius: 4px;
+	}
 }
 </style>

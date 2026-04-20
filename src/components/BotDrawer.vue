@@ -37,7 +37,7 @@ q-drawer(v-model='botStore.botOpen' side='right' :width="450" overlay persistent
 			span Sonnet 4.6
 		div
 			q-btn(flat round icon="mdi-cog-outline" color="primary" @click="" size='md' dense) 
-			q-btn(flat round icon="mdi-close" color="primary" dense) 
+			q-btn(flat round icon="mdi-close" color="primary" dense @click='botStore.toggleBot') 
 	q-btn-group(push)
 		q-btn(push label="История"  icon='mdi-history' @click='setMode(1)') 
 		q-btn(push label="Поиск"  icon='mdi-magnify' @click='setMode(2)') 
