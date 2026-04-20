@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import ChatOutput from '@/components/ChatOutput.vue'
+import ChatOutput from '@/components/ChatOutput1.vue'
 
 const modelValue = defineModel<boolean>()
 const query = ref('')
@@ -14,7 +14,7 @@ const ask = () => {
 		loading.value = false
 		result.value = true
 		query.value = ''
-		place.value = 'Я правильно понял задачу? Создаем приложение?'
+		place.value = 'Дополнительные уточнения и пожелания'
 	}, 3000)
 }
 const create = () => {
@@ -41,6 +41,7 @@ q-dialog(v-model="modelValue" persistent)
 					template(v-slot:append v-if='query.length')
 						q-btn.send(flat color="primary" padding='xs' size='lg' icon="mdi-arrow-up-box" @click="ask")
 			.text-right.q-mt-sm
+				q-btn(v-if='result' flat color="primary" label="Отмена" @click="create") 
 				q-btn(v-if='result' unelevated color="primary" label="Создать приложение" @click="create") 
 
 </template>
