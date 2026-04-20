@@ -37,6 +37,7 @@ q-dialog(v-model="modelValue" persistent)
 
 		.spin-overlay(v-if="showLoader")
 			q-spinner(size="100px" color="primary")
+			div.loading-text Создаю приложение. Это может занять некоторое время. Не закрывайте окно до окончания.
 
 		q-scroll-area.auto(v-if='result')
 			ChatOutput
@@ -97,9 +98,16 @@ q-dialog(v-model="modelValue" persistent)
 	position: absolute;
 	inset: 0; /* top/right/bottom/left: 0 */
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	z-index: 100;
 	background: rgba(255, 255, 255, 0.6); /* опционально: затемнение */
+}
+.loading-text {
+	margin-top: 1rem;
+	font-size: 1.1rem;
+	color: #333;
+	text-align: center;
 }
 </style>
