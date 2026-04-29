@@ -59,7 +59,7 @@ q-dialog(v-model="modelValue" persistent)
 		q-card-section
 			q-linear-progress(indeterminate color="primary" v-if='loading')
 			.input
-				q-input(v-model="query" type='textarea' outlined autogrow :placeholder='place')
+				q-input(v-model="query" type='textarea' outlined autogrow :placeholder='place' autofocus)
 					template(v-slot:append v-if='query.length')
 						q-btn.send(flat color="primary" padding='xs' size='lg' icon="mdi-arrow-up-box" @click="ask")
 			.text-right.q-mt-sm
