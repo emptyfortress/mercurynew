@@ -89,24 +89,9 @@ q-dialog(v-model="modelValue" persistent)
 	min-height: 100px;
 }
 
-.search {
-	margin-top: 0.5rem;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	font-size: 0.9rem;
-}
-
 .auto {
 	height: calc(90vh - 200px);
 	padding: 0 1rem;
-}
-.spin {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	z-index: 100;
 }
 .spin-overlay {
 	position: absolute;
