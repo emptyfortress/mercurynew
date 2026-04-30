@@ -9,6 +9,7 @@ const sections = [
 	{ id: 2, label: 'Процессы', to: '' },
 	{ id: 3, label: 'Справочники', to: '' },
 	{ id: 4, label: 'Нумераторы', to: '' },
+	{ id: 5, label: 'Папки', to: '' },
 ]
 
 const goto = (e: string) => {
