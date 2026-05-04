@@ -64,29 +64,29 @@ q-page(padding)
 
 <style scoped lang="scss">
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
+	max-width: 1400px;
+	margin: 0 auto;
 }
 
 .list {
-  height: calc(100vh - 170px);
-  padding: 0;
-  margin: 0;
+	height: calc(100vh - 170px);
+	padding: 0;
+	margin: 0;
 }
 
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.3s ease;
+	transition: all 0.3s ease;
 }
 
 .page-enter-from {
-  opacity: 0;
-  transform: translateY(10px);
+	opacity: 0;
+	transform: translateY(10px);
 }
 
 .page-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
+	opacity: 0;
+	transform: translateY(-10px);
 }
 </style>
-</tool_call>
+
