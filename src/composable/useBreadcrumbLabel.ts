@@ -48,4 +48,4 @@ export function useBreadcrumbLabel() {
 
 	return { resolveLabel }
 }
-</tool_call>
+
