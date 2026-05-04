@@ -66,15 +66,9 @@ q-page(padding)
 
 .list {
 	height: calc(100vh - 170px);
-	// height: 845px;
 	padding: 0;
 	margin: 0;
 }
-
-// .blo {
-// 	margin-right: 1rem;
-// 	// position: relative;
-// }
 
 .page-enter-active,
 .page-leave-active {
