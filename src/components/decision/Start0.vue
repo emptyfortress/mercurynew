@@ -13,4 +13,3 @@ const isFolder = computed(() => selectedElement.value?.sourceType === 'folderDat
 
 <template lang="pug">
 component(:is="isFolder ? FolderStart : Start")
-</template>
