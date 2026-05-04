@@ -401,6 +401,153 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	])
 
+	const folderData = ref([
+		{
+			id: 'root',
+			text: 'Каталог папок',
+			virtual: false,
+			children: [
+				{
+					id: 'f0',
+					text: 'Виртуальная папка',
+					virtual: true,
+				},
+				{
+					id: 'f1',
+					text: 'Доверенность',
+					virtual: false,
+					children: [
+						{ id: 'f1-1', text: 'Создать доверенность', virtual: false },
+						{ id: 'f1-2', text: 'Журнал доверенностей', virtual: false },
+					],
+				},
+				{
+					id: 'f2',
+					text: 'Договоры',
+					virtual: false,
+					children: [
+						{ id: 'f2-1', text: 'Проекты договоров', virtual: false },
+						{ id: 'f2-2', text: 'Подписанные договоры', virtual: false },
+						{ id: 'f2-3', text: 'Архив', virtual: false },
+					],
+				},
+				{
+					id: 'f3',
+					text: 'Документы',
+					virtual: false,
+					children: [
+						{ id: 'f3-1', text: 'Входящие', virtual: false },
+						{ id: 'f3-2', text: 'Исходящие', virtual: false },
+					],
+				},
+				{
+					id: 'f4',
+					text: 'КЭДО',
+					virtual: false,
+					children: [
+						{ id: 'f4-1', text: 'Заявления', virtual: false },
+						{ id: 'f4-2', text: 'Приказы', virtual: false },
+						{ id: 'f4-3', text: 'Архив КЭДО', virtual: false },
+					],
+				},
+				{
+					id: 'f5',
+					text: 'Отчеты',
+					virtual: false,
+					children: [
+						{ id: 'f5-1', text: 'Финансовые отчеты', virtual: false },
+						{ id: 'f5-2', text: 'Аналитика', virtual: false },
+					],
+				},
+				{
+					id: 'f6',
+					text: 'Папки подразделений',
+					virtual: false,
+					children: [
+						{ id: 'f6-1', text: 'Отдел продаж', virtual: false },
+						{ id: 'f6-2', text: 'Бухгалтерия', virtual: false },
+						{ id: 'f6-3', text: 'HR', virtual: false },
+					],
+				},
+				{
+					id: 'f7',
+					text: 'Папки пользователей',
+					virtual: false,
+					children: [
+						{ id: 'f7-1', text: 'Мои документы', virtual: false },
+						{ id: 'f7-2', text: 'Общие', virtual: false },
+					],
+				},
+				{
+					id: 'f8',
+					text: 'Почтовый клиент',
+					virtual: false,
+					children: [
+						{ id: 'f8-1', text: 'Входящие письма', virtual: false },
+						{ id: 'f8-2', text: 'Отправленные', virtual: false },
+						{ id: 'f8-3', text: 'Черновики', virtual: false },
+					],
+				},
+				{
+					id: 'f9',
+					text: 'РЕШЕНИЯ',
+					virtual: false,
+					children: [
+						{ id: 'f9-1', text: 'Текущие решения', virtual: false },
+						{ id: 'f9-2', text: 'Архив решений', virtual: false },
+					],
+				},
+				{
+					id: 'f10',
+					text: 'Служебные',
+					virtual: false,
+					children: [
+						{ id: 'f10-1', text: 'Служебные записки', virtual: false },
+						{ id: 'f10-2', text: 'Распоряжения', virtual: false },
+					],
+				},
+				{
+					id: 'f11',
+					text: 'Структура папок',
+					virtual: false,
+					children: [
+						{ id: 'f11-1', text: 'Шаблоны', virtual: false },
+						{ id: 'f11-2', text: 'Настройки', virtual: false },
+					],
+				},
+				{
+					id: 'f12',
+					text: 'Усовершенствованное согласование',
+					virtual: false,
+					children: [
+						{ id: 'f12-1', text: 'Маршруты согласования', virtual: false },
+						{ id: 'f12-2', text: 'История согласований', virtual: false },
+						{ id: 'f12-3', text: 'Настройки', virtual: false },
+					],
+				},
+				{
+					id: 'f13',
+					text: 'ЭДО',
+					virtual: false,
+					children: [
+						{ id: 'f13-1', text: 'Входящие ЭДО', virtual: false },
+						{ id: 'f13-2', text: 'Исходящие ЭДО', virtual: false },
+					],
+				},
+				{
+					id: 'f14',
+					text: 'Экспериментальный',
+					virtual: false,
+					children: [
+						{ id: 'f14-1', text: 'Тестовые функции', virtual: false },
+						{ id: 'f14-2', text: 'Песочница', virtual: false },
+						{ id: 'f14-3', text: 'Прототипы', virtual: false },
+					],
+				},
+			],
+		},
+	])
+
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
 		return nodes.reduce((acc: TreeElement[], node) => {
 			acc.push(node)
@@ -420,6 +567,12 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	// Функция получения имени
 	const getNameById = (id: string): string => {
+		const node = nodesMap.value.get(id)
+		if (id == '102') return 'Конструктор ролей'
+		return node?.text || id
+	}
+	// Функция получения имени папки
+	const getNameByFolderId = (id: string): string => {
 		const node = nodesMap.value.get(id)
 		if (id == '102') return 'Конструктор ролей'
 		return node?.text || id
@@ -465,6 +618,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	return {
 		treeData,
+		folderData,
 		selectedType,
 		selectedElement,
 		setSelectedElement,

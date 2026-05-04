@@ -1,6 +1,7 @@
 export const BREADCRUMB_OVERRIDES: Record<string, string> = {
 	dvmain: 'База решений',
 	cards: 'Конструктор карточек',
+	folders: 'Каталог папок',
 	'0': 'Конструктор полей',
 	'1': 'Поиски и представления',
 	'2': 'Процессы',

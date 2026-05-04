@@ -5,11 +5,11 @@ const router = useRouter()
 
 const sections = [
 	{ id: 0, label: 'Конструктор карточек', to: 'cards' },
+	{ id: 5, label: 'Каталог папок', to: 'folders' },
 	{ id: 1, label: 'Поиски и представления', to: '' },
 	{ id: 2, label: 'Процессы', to: '' },
 	{ id: 3, label: 'Справочники', to: '' },
 	{ id: 4, label: 'Нумераторы', to: '' },
-	{ id: 5, label: 'Папки', to: '' },
 ]
 
 const goto = (e: string) => {
