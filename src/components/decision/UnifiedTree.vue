@@ -60,6 +60,7 @@ watch(query, (newValue) => {
 const select = (n: any) => {
 	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
 	n.data.selected = true
+	n.data.sourceType = props.sourceType
 	simpleStore.setSelectedElement(n.data)
 	router.push({
 		name: 'start',
@@ -231,4 +232,3 @@ div
 	}
 }
 </style>
-
