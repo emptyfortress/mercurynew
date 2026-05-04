@@ -12,10 +12,17 @@ export function useBreadcrumbLabel() {
 			return BREADCRUMB_OVERRIDES[segment]
 		}
 
-		// 2. Затем simpleStore (viewId — дерево типов документов)
-		const treeNode = simpleStore.getNodeById(segment)
+		// 2. Затем simpleStore: сначала treeData, затем folderData
+		const treeNode = simpleStore.treeData.find((n) => n.id === segment)
 		if (treeNode) {
 			return treeNode.text
+		}
+
+		const folderNode = simpleStore.folderData[0]
+			? findInTree(simpleStore.folderData, segment)
+			: undefined
+		if (folderNode) {
+			return folderNode.text
 		}
 
 		// 3. Затем matrixStore (razmet, roleId)
@@ -28,5 +35,17 @@ export function useBreadcrumbLabel() {
 		return segment
 	}
 
+	function findInTree(nodes: any[], id: string): any | undefined {
+		for (const node of nodes) {
+			if (node.id === id) return node
+			if (node.children?.length) {
+				const found = findInTree(node.children, id)
+				if (found) return found
+			}
+		}
+		return undefined
+	}
+
 	return { resolveLabel }
 }
+</tool_call>
