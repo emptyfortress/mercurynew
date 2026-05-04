@@ -13,11 +13,13 @@ export function useBreadcrumbLabel() {
 		}
 
 		// 2. Затем simpleStore: сначала treeData, затем folderData
-		const treeNode = simpleStore.treeData.find((n) => n.id === segment)
+		// treeData — плоский массив (flatNodes), а не корневой массив, поэтому ищем в нём
+		const treeNode = simpleStore.flatNodes.find((n) => n.id === segment)
 		if (treeNode) {
 			return treeNode.text
 		}
 
+		// folderData — вложенная структура, ищем рекурсивно
 		const folderNode = simpleStore.folderData[0]
 			? findInTree(simpleStore.folderData, segment)
 			: undefined
@@ -48,4 +50,4 @@ export function useBreadcrumbLabel() {
 
 	return { resolveLabel }
 }
-
+</tool_call>
