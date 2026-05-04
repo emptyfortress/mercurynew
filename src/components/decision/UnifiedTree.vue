@@ -223,4 +223,3 @@ div
   }
 }
 </style>
-</tool_call>
