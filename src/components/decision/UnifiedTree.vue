@@ -13,7 +13,7 @@ const props = defineProps<{
 	filterField?: string
 	showTypeSelector?: boolean
 	mode?: string
-}>)
+}>()
 
 const router = useRouter()
 const route = useRoute()
@@ -145,10 +145,7 @@ div
     template(#default="{ node, stat }")
       .node(
         @click="select(stat)"
-        :class="{
-          'selected': stat.data.selected,
-          'first-folder-root': props.sourceType === 'folderData' && node.id === 'root'
-        }"
+        :class="{ 'selected': stat.data.selected, 'first-folder-root': props.sourceType === 'folderData' && node.id === 'root' }"
       )
         q-icon(
           name="mdi-chevron-down"
@@ -204,8 +201,9 @@ div
 		background: #edf0f8;
 	}
 
-	&.first-folder-root {
-		font-weight: 700;
+	&.first-folder-root span {
+		font-weight: bold;
+		font-size: 1.12rem;
 	}
 }
 
@@ -233,3 +231,4 @@ div
 	}
 }
 </style>
+
