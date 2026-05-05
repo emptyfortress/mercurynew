@@ -15,51 +15,42 @@ const el = ref<HTMLElement | null>(null)
 const { width, height } = useElementSize(el)
 
 const hei = computed(() => `height: ${height.value}px;`)
-const options = ['Все', 'Документ', 'Задание', 'Группа заданий']
 </script>
 
 <template lang="pug">
 q-page(padding)
-  .container(v-if='route.params.constructorId === "cards"')
-    .text-h6.text-center Конструктор карточек
-    q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei")
-      template(v-slot:before)
-        q-scroll-area.list(ref='el')
-          label Выберите тип
-          q-select.q-mb-sm(
-            v-model="selectedType"
-            dense
-            :options="options"
-            filled
-          )
-          UnifiedTree(
-            sourceType="selectedBranch"
-            filterField="text"
-            :showTypeSelector="true"
-            mode="vid"
-          )
+	.container(v-if='route.params.constructorId === "cards"')
+		.text-h6.text-center Конструктор карточек
+		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei")
+			template(v-slot:before)
+				q-scroll-area.list(ref='el')
+					UnifiedTree(
+						sourceType="selectedBranch"
+						filterField="text"
+						:showTypeSelector="true"
+						mode="vid"
+					)
 
-      template(v-slot:after)
-        router-view(v-slot="{ Component }")
-          transition(name="page" mode="out-in")
-            component(:is="Component" :key="route.fullPath")
+			template(v-slot:after)
+				router-view(v-slot="{ Component }")
+					transition(name="page" mode="out-in")
+						component(:is="Component" :key="route.fullPath")
 
-  .container(v-if='route.params.constructorId === "folders"')
-    .text-h6.text-center Каталог папок
-    q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei")
-      template(v-slot:before)
-        q-scroll-area.list(ref='el')
-          UnifiedTree(
-            sourceType="folderData"
-            filterField="text"
-            :showTypeSelector="false"
-            mode="vid"
-          )
+	.container(v-if='route.params.constructorId === "folders"')
+		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei")
+			template(v-slot:before)
+				q-scroll-area.list(ref='el')
+					UnifiedTree(
+						sourceType="folderData"
+						filterField="text"
+						:showTypeSelector="false"
+						mode="vid"
+					)
 
-      template(v-slot:after)
-        router-view(v-slot="{ Component }")
-          transition(name="page" mode="out-in")
-            component(:is="Component" :key="route.fullPath")
+			template(v-slot:after)
+				router-view(v-slot="{ Component }")
+					transition(name="page" mode="out-in")
+						component(:is="Component" :key="route.fullPath")
 </template>
 
 <style scoped lang="scss">

@@ -8,8 +8,14 @@ import FolderStart from '@/components/decision/FolderStart.vue'
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
 
-const isFolder = computed(() => selectedElement.value?.sourceType === 'folderData')
+// const isFolder = computed(() => selectedElement.value?.sourceType === 'folderData')
+
+const componentName = computed(() => {
+	if (!selectedElement.value) return 'div'
+	return selectedElement.value.sourceType === 'folderData' ? FolderStart : Start
+})
 </script>
 
 <template lang="pug">
-component(:is="isFolder ? FolderStart : Start")
+component(:is="componentName")
+</template>

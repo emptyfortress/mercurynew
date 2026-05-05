@@ -78,21 +78,7 @@ const router = createRouter({
 				{
 					path: ':viewId',
 					name: 'start',
-					component: () => import('@/components/decision/Start.vue'),
-					props: true,
-					meta: {
-						toolbar: false,
-						back: false,
-						back1: false,
-						count: 0,
-						save: false,
-						breadcrumbs: true,
-					},
-				},
-				{
-					path: ':viewId',
-					name: 'folderStart',
-					component: () => import('@/components/decision/FolderStart.vue'),
+					component: () => import('@/components/decision/Start0.vue'),
 					props: true,
 					meta: {
 						toolbar: false,
@@ -494,4 +480,4 @@ const router = createRouter({
 })
 
 export default router
-</tool_call>
+
