@@ -587,6 +587,23 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		treeData.value = value
 	}
 
+	function updateSelectedElement(updated: any) {
+		function walk(nodes: TreeElement[]): boolean {
+			for (let i = 0; i < nodes.length; i++) {
+				if (nodes[i].id === updated.id) {
+					nodes[i] = { ...nodes[i], ...updated }
+					return true
+				}
+				if (nodes[i].children && walk(nodes[i].children)) {
+					return true
+				}
+			}
+			return false
+		}
+
+		walk(treeData.value)
+	}
+
 	const selectedType = ref<string | null>('Все')
 
 	const selectedElement = ref<TreeElement | null>(null)
@@ -625,6 +642,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		setSelectedElement,
 		clearSelectedElement,
 		updateTreeData,
+		updateSelectedElement,
 		selectedBranch,
 		flatNodes,
 		nodesMap,
