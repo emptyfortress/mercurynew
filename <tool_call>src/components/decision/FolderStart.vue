@@ -33,6 +33,7 @@ watch(selectedElement, (newVal) => {
 const saveChanges = () => {
 	if (selectedElement.value) {
 		selectedElement.value.text = name.value
+		simpleStore.updateSelectedElement(selectedElement.value)
 	}
 }
 
