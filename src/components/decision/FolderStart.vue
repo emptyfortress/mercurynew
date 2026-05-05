@@ -77,27 +77,10 @@ const saveChanges = () => {
 	column-gap: 0.5rem;
 	row-gap: 0.5rem;
 	align-items: center;
-	.it {
-		width: 100%;
-		height: 150px;
-		background: #fff;
-		padding: 1rem;
-		border-radius: 0.5rem;
-		cursor: pointer;
-		transition: background 0.2s;
-
-		&:hover {
-			background: #f5f5f5;
-		}
-	}
 }
 
-.edit {
-	border-bottom: 1px dotted var(--q-primary);
-}
 :deep(.q-tab-panels) {
 	background: transparent;
 	min-height: 400px;
 }
 </style>
-
