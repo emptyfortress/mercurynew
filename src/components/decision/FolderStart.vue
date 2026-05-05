@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
+import ChooseCardTree from '@/components/decision/ChooseCardTree.vue'
 
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
@@ -24,6 +25,34 @@ const saveChanges = () => {
 		simpleStore.updateSelectedElement(selectedElement.value)
 	}
 }
+
+const view = ref('дайджест')
+const link = ref('')
+const card = ref('Карточка 1')
+const optimize = ref(true)
+const show = ref(1)
+const showOption = [
+	{ value: 1, label: 'Папку' },
+	{ value: 2, label: 'Карточку' },
+	{ value: 3, label: 'URL' },
+]
+const renew = ref(true)
+const autorenew = ref(1)
+const autoOption = [
+	{ value: 1, label: 'Выключено' },
+	{ value: 2, label: 'Стандартная' },
+	{ value: 3, label: 'Специальное' },
+]
+const quan = ref(40)
+const unread = ref(true)
+const first = ref(true)
+const access = ref(1)
+const accessOption = [
+	{ value: 1, label: 'Все карточки' },
+	{ value: 2, label: 'Постранично' },
+	{ value: 3, label: 'Отключить' },
+]
+const gran = ref(false)
 </script>
 
 <template lang="pug">
@@ -32,7 +61,7 @@ const saveChanges = () => {
 		q-icon(name="mdi-folder-outline" color="primary")
 		span.q-ml-md {{ selectedElement.text }}
 
-	q-tabs.q-mt-md(v-model="tab" dense align="left" class="text-primary")
+	q-tabs(v-model="tab" dense align="left" class="text-primary")
 		q-tab(name="tab1" label="Общие")
 		q-tab(name="tab2" label="Тип папки")
 		q-tab(name="tab3" label="Карточки")
@@ -44,20 +73,46 @@ const saveChanges = () => {
 	q-tab-panels(v-model="tab" animated)
 		q-tab-panel(name="tab1")
 			.grid
-				div Название
+				.label Название
 				q-input(v-model="name" dense outlined)
-				div Тип папки
+				.label Тип папки
 				div Стандартная
-				div Размещение
+				.label Размещение
 				div Каталог папок
-				div Автор
+				.label Автор
 				div Орлов П.С.
-				div Создана
+				.label Создана
 				div 23 апреля 2026 г.
+				.label Представление по умолчанию
+				.flex.items-center.q-gutter-x-lg
+					q-select(dense v-model="view" outlined :options='["Дайджест", "Папка", "Поиск"]')
+					q-checkbox(v-model="optimize" dense label="Оптимизировать загрузку представления")
+				.label Карточка папки
+				q-select(dense v-model="card" outlined :options='["Карточка 1", "Карточка 2", "Карточка 3"]')
+				.label Ссылка
+				q-input(v-model="link" dense outlined)
+				.label Показывать по умолчанию
+				div
+					q-option-group(v-model="show" :options="showOption" dense color="primary" inline)
+				.label Обновление
+				q-checkbox(label='Обновлять при входе в папку' dense v-model="renew")
+				.label Автообновление
+				q-option-group(v-model="autorenew" dense :options="autoOption" color="primary" inline)
+				.label Количество записей
+				.flex.items-center.q-gutter-x-lg
+					q-input(v-model="quan" type='number' dense outlined)
+					q-checkbox(v-model="gran" dense label="Не ограничивать")
+				.label Напрочитанные карточки
+				q-checkbox(label='Подсвечивать' dense v-model="unread")
+				.label Клиентская сортировка
+				q-checkbox(label='Не применять при первой загрузке' dense v-model="first")
+				.label Проверка прав доступа
+				q-option-group(v-model="access" dense :options="accessOption" color="primary" inline)
 		q-tab-panel(name="tab2")
 			.text-h6 Тип
+			div Тип папки решили пока не трогать.<br /> По сути - это набор настроек (представления, карточки и тп) для папки.<br /> Можно настраивать, а можно выбрать тип и настройки применятся.
 		q-tab-panel(name="tab3")
-			.text-h6 Карточки
+			ChooseCardTree
 		q-tab-panel(name="tab4")
 			.text-h6 Представление
 		q-tab-panel(name="tab5")
@@ -73,10 +128,19 @@ const saveChanges = () => {
 <style scoped lang="scss">
 .grid {
 	display: grid;
-	grid-template-columns: 120px 200px;
+	grid-template-columns: 220px 1fr;
 	column-gap: 0.5rem;
 	row-gap: 0.5rem;
 	align-items: center;
+	.label {
+		color: #555;
+		&:after {
+			content: ':';
+		}
+	}
+	.q-field {
+		width: 260px;
+	}
 }
 
 :deep(.q-tab-panels) {

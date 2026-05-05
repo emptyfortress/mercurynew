@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch, watchEffect, onMounted, nextTick } from 'vue'
-import { Draggable } from '@he-tree/vue'
+import { BaseTree } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
-// import WordHighlighter from 'vue-word-highlighter'
-import DirMenu from '@/components/decision/DirMenu.vue'
-import { useRouter, useRoute } from 'vue-router'
-import CreateDialog from '@/components/decision/CreateDialog.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
-import { uid } from 'quasar'
 
-const router = useRouter()
-const route = useRoute()
 const simpleStore = useSimpleStore()
 
 const query = ref('')
@@ -20,17 +13,11 @@ const clearFilter = () => {
 	tree.value.statsFlat.map((item: Stat) => (item.hidden = false))
 }
 
-const dialog = ref(false)
-
-const action = () => {
-	dialog.value = !dialog.value
-}
-
 watch(query, (newValue) => {
 	if (newValue !== '') {
 		tree.value.statsFlat.map((stat: Stat) => {
 			stat.hidden = true
-			if (stat.data.label.toLowerCase().includes(query.value.toLowerCase())) {
+			if (stat.data.text.toLowerCase().includes(query.value.toLowerCase())) {
 				stat.hidden = false
 				for (const parentStat of tree.value.iterateParent(stat, { withSelf: false })) {
 					parentStat.hidden = false
@@ -42,102 +29,54 @@ watch(query, (newValue) => {
 
 const tree = ref()
 
-const select = (n: Stat) => {
-	tree.value.statsFlat.map((item: Stat) => (item.data.selected = false))
-	n.data.selected = true
-	simpleStore.setSelectedElement(n.data)
-
-	router.push({
-		name: 'start', // Имя вашего роута из конфигурации
-		params: { viewId: n.data.id },
-	})
-}
-
 onMounted(() => {
-	tree.value.statsFlat.map((item: Stat) => (item.data.selected = false))
-	if (route.params.viewId) {
-		open(route.params.viewId.toString())
-	}
-	tree.value.openNodeAndParents(simpleStore.folderData[0])
+	tree.value.openNodeAndParents(simpleStore.treeData[0])
 })
 
 const toggle = (stat: any) => {
 	stat.open = !stat.open
 }
-
-const addFromMenu = (e: Stat) => {
-	tree.value.add({ id: uid(), text: 'Новый вид' }, e)
-}
-
-const remove = (e: Stat) => {
-	tree.value.remove(e)
-}
-
-const edit = (e: Stat) => {
-	e.data.edit = true
-}
-
-const setText = (e: Stat, ev: any) => {
-	e.data.text = ev.target.value
-	e.data.edit = false
-}
-
-const open = (nodeId: string) => {
-	const node = simpleStore.nodesMap.get(nodeId)
-	if (node) {
-		node.selected = true
-	}
-	tree.value.openNodeAndParents(node)
-}
 </script>
 
 <template lang="pug">
-div
-	q-form.quick
-		q-input.query(dense
-			v-model="query"
-			autofocus
-			clearable
-			@clear="clearFilter"
-			placeholder="фильтр"
-			filled
-			)
-			template(v-slot:prepend)
-				q-icon(name="mdi-magnify")
-
-	Draggable(v-model="simpleStore.folderData"
-		ref="tree"
-		propKey="id"
-		treeLine
-		:treeLineOffset="18"
-		:indent="30"
-		:defaultOpen='false'
-		)
-		template(#default="{ node, stat }")
-			.node(@click="select(stat)" :class="{ 'selected': stat.data.selected }")
-				q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
-				q-icon(v-if='node.virtual' name="mdi-folder-search-outline").fold
-				q-icon(v-else name="mdi-folder-outline").fold
-				span {{ node.text }}
-
-				DirMenu(
-					:stat="stat"
-					@kill="remove(stat)"
-					@add="addFromMenu(stat)"
-					@rename="edit(stat)"
+.mygrid
+	div
+		q-form.quick
+			q-input.query(dense
+				v-model="query"
+				autofocus
+				clearable
+				@clear="clearFilter"
+				placeholder="фильтр"
+				filled
 				)
+				template(v-slot:prepend)
+					q-icon(name="mdi-magnify")
 
-				q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
-					q-input(:model-value="stat.data.text"
-					dense
-					autofocus counter
-					@keyup.enter="setText(stat, $event)"
-					)
-	q-btn.fab(round icon="mdi-plus" color="primary" @click="dialog = !dialog") 
-	CreateDialog(v-model="dialog" mode='vid')
+		BaseTree(v-model="simpleStore.treeData"
+			ref="tree"
+			propKey="id"
+			treeLine
+			:treeLineOffset="18"
+			:indent="30"
+			:defaultOpen='false'
+			)
+			template(#default="{ node, stat }")
+				.node(@click.stop="toggle(stat)")
+					q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
+					q-checkbox(v-model='stat.checked' dense size='sm' color='primary')
+					span.q-ml-sm {{ node.text }}
+	div here goes selected nodes
+
+
 </template>
 
 <style scoped lang="scss">
+.mygrid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	column-gap: 1rem;
+}
 .fab {
 	position: fixed;
 	bottom: 1rem;
