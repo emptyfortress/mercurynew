@@ -66,7 +66,8 @@ const toggle = (stat: any) => {
 					q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
 					q-checkbox(v-model='stat.checked' dense size='sm' color='primary')
 					span.q-ml-sm {{ node.text }}
-	div here goes selected nodes
+	div
+		q-list
 
 
 </template>
