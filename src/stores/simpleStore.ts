@@ -10,6 +10,7 @@ export interface TreeElement {
 	edit?: boolean
 	type?: number
 	children?: TreeElement[]
+	sourceType?: 'folderData' | 'treeData'
 }
 
 export const useSimpleStore = defineStore('simpleStore', () => {
