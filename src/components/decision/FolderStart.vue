@@ -1,45 +1,96 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
-import { useRouter, useRoute } from 'vue-router'
+// import { useRouter, useRoute } from 'vue-router'
 
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
-const router = useRouter()
-const route = useRoute()
+// const router = useRouter()
+// const route = useRoute()
 
-const goto = (id: number) => {
-	router.push({ name: 'folderStart', params: { viewId: route.params.viewId, razmet: id } })
+// const goto = (id: number) => {
+// 	router.push({ name: 'folderStart', params: { viewId: route.params.viewId, razmet: id } })
+// }
+
+// const folderItems = [
+// 	{ id: 1, label: 'Создать папку', descr: 'Добавьте новую папку' },
+// 	{ id: 2, label: 'Настройки папки', descr: 'Управляйте свойствами' },
+// 	{ id: 3, label: 'Права доступа', descr: 'Настройте доступ' },
+// 	{ id: 4, label: 'История изменений', descr: 'Просмотрите историю' },
+// ]
+
+const tab = ref('tab1')
+const name = ref()
+onMounted(() => {
+	name.value = selectedElement.value?.text
+})
+
+const cancelChanges = () => {
+	if (selectedElement.value) {
+		name.value = selectedElement.value.text
+	}
 }
 
-const folderItems = [
-	{ id: 1, label: 'Создать папку', descr: 'Добавьте новую папку' },
-	{ id: 2, label: 'Настройки папки', descr: 'Управляйте свойствами' },
-	{ id: 3, label: 'Права доступа', descr: 'Настройте доступ' },
-	{ id: 4, label: 'История изменений', descr: 'Просмотрите историю' },
-]
+const saveChanges = () => {
+	if (selectedElement.value) {
+		selectedElement.value.text = name.value
+		simpleStore.updateSelectedElement(selectedElement.value)
+	}
+}
 </script>
 
 <template lang="pug">
 .q-ml-md(v-if='selectedElement')
 	h6
-		span.edit {{ selectedElement.text }}
-			q-popup-edit(v-model="selectedElement.text" buttons title="Название папки" auto-save v-slot="scope")
-				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+		q-icon(name="mdi-folder-outline" color="primary")
+		span.q-ml-md {{ selectedElement.text }}
 
-	.grid1
-		.it(v-for="item in folderItems" :key='item.id' @click='goto(item.id)')
-			.text-bold {{ item.label }}
-			.text-caption.q-mt-md {{ item.descr }}
+	q-tabs.q-mt-md(v-model="tab" dense align="left" class="text-primary")
+		q-tab(name="tab1" label="Общие")
+		q-tab(name="tab2" label="Тип папки")
+		q-tab(name="tab3" label="Карточки")
+		q-tab(name="tab4" label="Представление")
+		q-tab(name="tab5" label="Шаблоны")
+		q-tab(name="tab6" label="Безопасность")
+		q-tab(name="tab7" label="Другие")
+
+	q-tab-panels(v-model="tab" animated)
+		q-tab-panel(name="tab1")
+			.grid
+				div Название
+				q-input(v-model="name" dense outlined)
+				div Тип папки
+				div Стандартная
+				div Размещение
+				div Каталог папок
+				div Автор
+				div Орлов П.С.
+				div Создана
+				div 23 апреля 2026 г.
+		q-tab-panel(name="tab2")
+			.text-h6 Тип
+		q-tab-panel(name="tab3")
+			.text-h6 Карточки
+		q-tab-panel(name="tab4")
+			.text-h6 Представление
+		q-tab-panel(name="tab5")
+			.text-h6 Шаблоны
+		q-tab-panel(name="tab6")
+			.text-h6 Другие
+
+	q-card-actions(align='center')
+		q-btn(flat color="primary" label="Отмена" @click="cancelChanges") 
+		q-btn(unelevated color="primary" label="Сохранить" @click="saveChanges") 
 </template>
 
 <style scoped lang="scss">
-.grid1 {
-	margin-top: 1rem;
+.grid {
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
-	column-gap: 1rem;
+	grid-template-columns: 120px 200px;
+	column-gap: 0.5rem;
 	row-gap: 0.5rem;
+	align-items: center;
 	.it {
 		width: 100%;
 		height: 150px;
@@ -58,5 +109,8 @@ const folderItems = [
 .edit {
 	border-bottom: 1px dotted var(--q-primary);
 }
+:deep(.q-tab-panels) {
+	background: transparent;
+	min-height: 400px;
+}
 </style>
-</tool_call>
