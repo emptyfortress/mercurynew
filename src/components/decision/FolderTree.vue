@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, watchEffect, onMounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { BaseTree } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import { useSimpleStore } from '@/stores/simpleStore'
@@ -36,6 +36,11 @@ onMounted(() => {
 const toggle = (stat: any) => {
 	stat.open = !stat.open
 }
+
+const selectedNodes = computed(() => {
+	if (!tree.value?.statsFlat) return []
+	return tree.value.statsFlat.filter((stat: Stat) => stat.checked)
+})
 </script>
 
 <template lang="pug">
@@ -67,7 +72,14 @@ const toggle = (stat: any) => {
 					q-checkbox(v-model='stat.checked' dense size='sm' color='primary')
 					span.q-ml-sm {{ node.text }}
 	div
-		q-list
+		q-list(bordered separator)
+			q-item(v-for="node in selectedNodes" :key="node.data.id" clickable)
+				q-item-section(avatar)
+					q-icon(name="mdi-check-circle" color="primary")
+				q-item-section
+					q-item-label {{ node.data.text }}
+				q-item-section(side)
+					q-btn(dense flat round icon="mdi-close" @click="node.checked = false")
 
 
 </template>
