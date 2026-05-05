@@ -7,9 +7,9 @@ const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
 
 const tab = ref('tab1')
-const name = ref()
+const name = ref('')
 onMounted(() => {
-	name.value = selectedElement.value?.text
+	name.value = selectedElement.value?.text ?? ''
 })
 
 const cancelChanges = () => {
@@ -19,8 +19,8 @@ const cancelChanges = () => {
 }
 
 const saveChanges = () => {
-	if (selectedElement.value) {
-		selectedElement.value.text = name.value
+	if (selectedElement.value && name.value.trim()) {
+		selectedElement.value.text = name.value.trim()
 		simpleStore.updateSelectedElement(selectedElement.value)
 	}
 }
