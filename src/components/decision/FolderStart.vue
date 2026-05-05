@@ -2,23 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
-// import { useRouter, useRoute } from 'vue-router'
 
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
-// const router = useRouter()
-// const route = useRoute()
-
-// const goto = (id: number) => {
-// 	router.push({ name: 'folderStart', params: { viewId: route.params.viewId, razmet: id } })
-// }
-
-// const folderItems = [
-// 	{ id: 1, label: 'Создать папку', descr: 'Добавьте новую папку' },
-// 	{ id: 2, label: 'Настройки папки', descr: 'Управляйте свойствами' },
-// 	{ id: 3, label: 'Права доступа', descr: 'Настройте доступ' },
-// 	{ id: 4, label: 'История изменений', descr: 'Просмотрите историю' },
-// ]
 
 const tab = ref('tab1')
 const name = ref()
@@ -114,3 +100,4 @@ const saveChanges = () => {
 	min-height: 400px;
 }
 </style>
+</tool_call>
