@@ -77,11 +77,6 @@ const toggle = (stat: any) => {
 	grid-template-columns: repeat(2, 1fr);
 	column-gap: 1rem;
 }
-.fab {
-	position: fixed;
-	bottom: 1rem;
-	right: 1rem;
-}
 .node {
 	padding: 4px 8px;
 	cursor: pointer;
@@ -107,12 +102,6 @@ const toggle = (stat: any) => {
 }
 .quick {
 	margin-bottom: 0.5rem;
-}
-
-.fold {
-	font-size: 1.3rem;
-	margin-right: 0.5rem;
-	color: $primary;
 }
 
 .trig {
