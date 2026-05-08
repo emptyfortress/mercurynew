@@ -10,7 +10,7 @@ const only = ref(false)
 <template lang="pug">
 q-checkbox(v-model="only" dense label='Только выбранные типы карточек могут быть созданы в данной папке')
 br
-FolderTree(:data="simpleStore.treeData")
+FolderTree(:data="simpleStore.treeData" :isDisabled='!only')
 </template>
 
 <style scoped lang="scss"></style>

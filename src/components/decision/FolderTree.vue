@@ -5,6 +5,7 @@ import '@he-tree/vue/style/default.css'
 
 const props = defineProps<{
 	data: any[]
+	isDisabled?: boolean
 }>()
 
 const query = ref('')
@@ -70,7 +71,7 @@ const selectedNodes = computed(() => {
 			template(#default="{ node, stat }")
 				.node(@click.stop="toggle(stat)")
 					q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
-					q-checkbox(v-model='stat.checked' dense size='sm' color='primary')
+					q-checkbox(v-model='stat.checked' dense size='sm' color='primary' :disable='props.isDisabled')
 					span.q-ml-sm {{ node.text }}
 	div
 		q-list(bordered separator dense)
