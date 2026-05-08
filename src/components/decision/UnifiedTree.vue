@@ -108,6 +108,10 @@ onMounted(() => {
 		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
 	}
 })
+
+const create = (data: any) => {
+	console.log(data)
+}
 </script>
 
 <template lang="pug">
@@ -175,7 +179,7 @@ div
           )
 
   q-btn.fab(round icon="mdi-plus" color="primary" @click="dialog = !dialog")
-  CreateDialog(v-model="dialog" :mode="mode || 'vid'")
+  CreateDialog(v-model="dialog" :mode="mode || 'vid'" @create='create')
 </template>
 
 <style scoped lang="scss">
