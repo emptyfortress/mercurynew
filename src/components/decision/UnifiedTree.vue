@@ -118,15 +118,12 @@ const create = (data: any) => {
 	}
 
 	if (simpleStore.selectedElement) {
-		// Add inside selected node
-		if (!simpleStore.selectedElement.children) {
-			simpleStore.selectedElement.children = []
-		}
-		simpleStore.selectedElement.children.push(newFolder)
+		const tmp = tree.value.getStat(simpleStore.selectedElement)
+		tree.value.add(newFolder, tmp)
 	} else {
-		// Add at the end of the tree
-		treeData.value.push(newFolder)
+		tree.value.add(newFolder, tree.value.rootChildren[0])
 	}
+	select(tree.value.getStat(newFolder))
 }
 </script>
 
