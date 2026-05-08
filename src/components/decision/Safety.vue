@@ -13,24 +13,30 @@ const columns = [
 
 const rows = ref([
 	{
-		user: 'John Doe',
-		full: false,
-		read: false,
-		change: false,
-		remove: false,
-		own: false,
-		special: false,
+		user: 'Everyone',
+		full: undefined,
+		read: undefined,
+		change: undefined,
+		remove: undefined,
+		own: undefined,
+		special: undefined,
 	},
 	{
-		user: 'Jane Smith',
-		full: false,
-		read: false,
-		change: false,
-		remove: false,
-		own: false,
-		special: false,
+		user: 'Power user',
+		full: undefined,
+		read: undefined,
+		change: undefined,
+		remove: undefined,
+		own: undefined,
+		special: undefined,
 	},
 ])
+
+function getCheckboxColor(value: boolean): string {
+	if (value === true) return 'teal'
+	if (value === false) return 'pink'
+	return 'grey-6'
+}
 </script>
 
 <template lang="pug">
@@ -40,7 +46,19 @@ q-table(:rows="rows" :columns="columns" row-key="user" flat)
 			template(v-if="props.col.name === 'user'")
 				| {{ props.value }}
 			template(v-else)
-				q-checkbox(dense v-model="props.row[props.col.field]")
+				q-checkbox(
+					dense,
+					checked-icon='mdi-check-bold'
+					unchecked-icon='mdi-close-thick'
+					indeterminate-icon='mdi-checkbox-blank-outline'
+					toggle-indeterminate
+					v-model="props.row[props.col.field]"
+					:color='getCheckboxColor(props.row[props.col.field])'
+				)
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.q-checkbox__inner--falsy .q-icon) {
+	color: var(--q-negative);
+}
+</style>
