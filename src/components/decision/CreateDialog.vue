@@ -88,6 +88,7 @@ q-dialog(v-model="modelValue")
 				FormKit(v-if='props.mode == "form"' type="checkbox" name="creation" label="Форма создания")
 
 				FormKit(v-if='props.mode == "status"'  type="text" autofocus name="name" label="Название"  help="Назовите статус" validation="required|length:3")
+				FormKit(v-if='props.mode == "folder"' type="text" autofocus name="name" label="Название" validation="required|length:3")
 </template>
 
 <style scoped lang="scss"></style>
