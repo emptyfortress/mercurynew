@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { uid } from 'quasar'
-// import { useRoles } from '@/stores/roles'
-// import { useForms } from '@/stores/forms'
-// import { useStorage } from '@vueuse/core'
 
 const props = defineProps({
 	mode: {
@@ -11,22 +8,13 @@ const props = defineProps({
 		default: 'app',
 	},
 })
-// const icon = ref(3)
 const modelValue = defineModel<boolean>()
-// const myform = useForms()
-
-// const name = ref('Мое приложение')
-// const descr = ref('')
 
 const close = () => {
 	modelValue.value = false
 }
 
 const emit = defineEmits(['create'])
-
-// const allroles = useStorage('roles', {})
-
-// const myrole = useRoles()
 
 const create = (data: any) => {
 	if (props.mode == 'app') {
@@ -40,8 +28,6 @@ const create = (data: any) => {
 	if (props.mode == 'role') {
 		data.id = uid()
 		data.selected = false
-		// myrole.addRole(data)
-		// allroles.value.push(data)
 		close()
 	}
 	if (props.mode == 'form') {
@@ -62,15 +48,12 @@ const create = (data: any) => {
 				fieldList: [],
 			},
 		}
-		// myform.createForm(tmp)
 		close()
 	}
 	if (props.mode == 'status') {
-		// myform.addStatus(data.name)
 		close()
 	}
 }
-// const card = ref(true)
 </script>
 
 <template lang="pug">
