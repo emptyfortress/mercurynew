@@ -123,7 +123,9 @@ const create = (data: any) => {
 	} else {
 		tree.value.add(newFolder, tree.value.rootChildren[0])
 	}
-	select(tree.value.getStat(newFolder))
+	const newStat = tree.value.getStat(newFolder)
+	tree.value.openNodeAndParents(newStat)
+	select(newStat)
 }
 </script>
 
