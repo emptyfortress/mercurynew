@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import type { QTableColumn } from 'quasar'
 
-const columns = [
+const columns: QTableColumn[] = [
 	{ name: 'user', label: 'Пользователь или группа', field: 'user', align: 'left' },
 	{ name: 'full', label: 'Полный доступ', field: 'full', align: 'center' },
 	{ name: 'read', label: 'Чтение', field: 'read', align: 'center' },
