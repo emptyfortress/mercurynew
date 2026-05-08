@@ -55,6 +55,8 @@ q-table(:rows="rows" :columns="columns" row-key="user" flat)
 					v-model="props.row[props.col.field]"
 					:color='getCheckboxColor(props.row[props.col.field])'
 				)
+	template(v-slot:bottom)
+		.text-center.text-grey Dummy text in bottom slot
 </template>
 
 <style scoped lang="scss">
