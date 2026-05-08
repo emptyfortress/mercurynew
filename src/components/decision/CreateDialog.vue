@@ -54,8 +54,12 @@ const create = (data: any) => {
 		close()
 	}
 	if (props.mode == 'folder') {
-		data.id = uid()
-		emit('create', data)
+		const folderData = {
+			id: uid(),
+			name: data.name,
+			isVirtual: data.isVirtual,
+		}
+		emit('create', folderData)
 		close()
 	}
 }
