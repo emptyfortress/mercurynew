@@ -549,6 +549,157 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	])
 
+	const viewData = ref([
+		{
+			id: '1',
+			text: 'Представления',
+			children: [
+				{
+					id: '1-1',
+					text: 'Docsvision Showcase',
+					children: [
+						{
+							id: '1-1-1',
+							text: 'Задания',
+							children: [
+								{
+									id: '1-1-1-1',
+									text: 'Мои задания',
+								},
+								{
+									id: '1-1-1-2',
+									text: 'Просроченные задания',
+								},
+							],
+						},
+						{
+							id: '1-1-2',
+							text: 'Структура папок',
+							children: [
+								{
+									id: '1-1-2-1',
+									text: 'Календари сотрудников',
+									children: [
+										{
+											id: '1-1-2-1-1',
+											text: 'Календарь отдела продаж',
+										},
+									],
+								},
+								{
+									id: '1-1-2-2',
+									text: 'Отчет по сотрудникам',
+									children: [
+										{
+											id: '1-1-2-2-1',
+											text: 'Ежемесячный отчет',
+										},
+										{
+											id: '1-1-2-2-2',
+											text: 'Годовой отчет',
+										},
+									],
+								},
+							],
+						},
+					],
+				},
+			],
+		},
+		{
+			id: '2',
+			text: 'Документы',
+			children: [
+				{
+					id: '2-1',
+					text: 'Входящие документы',
+				},
+				{
+					id: '2-2',
+					text: 'Исходящие документы',
+				},
+			],
+		},
+		{
+			id: '3',
+			text: 'Задания',
+			children: [
+				{
+					id: '3-1',
+					text: 'Активные задания',
+				},
+				{
+					id: '3-2',
+					text: 'Архив заданий',
+				},
+			],
+		},
+		{
+			id: '4',
+			text: 'КЭДО',
+			children: [
+				{
+					id: '4-1',
+					text: 'Заявления сотрудников',
+				},
+				{
+					id: '4-2',
+					text: 'Кадровые документы',
+				},
+			],
+		},
+		{
+			id: '5',
+			text: 'МИД',
+			children: [
+				{
+					id: '5-1',
+					text: 'Межведомственные документы',
+				},
+			],
+		},
+		{
+			id: '6',
+			text: 'Отчеты',
+			children: [
+				{
+					id: '6-1',
+					text: 'Все задания - Диаграмма Динамика входящих',
+					children: [
+						{
+							id: '6-1-1',
+							text: 'Отчет за месяц',
+						},
+					],
+				},
+				{
+					id: '6-2',
+					text: 'Задания_Все задания Для диаграмм',
+					children: [
+						{
+							id: '6-2-1',
+							text: 'Статистика выполнения',
+						},
+						{
+							id: '6-2-2',
+							text: 'Сводный анализ',
+						},
+					],
+				},
+				{
+					id: '6-3',
+					text: 'Ознакомление',
+					children: [
+						{
+							id: '6-3-1',
+							text: 'Ознакомленные сотрудники',
+						},
+					],
+				},
+			],
+		},
+	])
+
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
 		return nodes.reduce((acc: TreeElement[], node) => {
 			acc.push(node)
@@ -638,6 +789,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 	return {
 		treeData,
 		folderData,
+		viewData,
 		selectedType,
 		selectedElement,
 		setSelectedElement,
