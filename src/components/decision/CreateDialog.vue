@@ -89,6 +89,7 @@ q-dialog(v-model="modelValue")
 
 				FormKit(v-if='props.mode == "status"'  type="text" autofocus name="name" label="Название"  help="Назовите статус" validation="required|length:3")
 				FormKit(v-if='props.mode == "folder"' type="text" autofocus name="name" label="Название" validation="required|length:3")
+				FormKit(v-if='props.mode == "folder"' type="checkbox" name="isVirtual" label="Виртуальная папка")
 </template>
 
 <style scoped lang="scss"></style>
