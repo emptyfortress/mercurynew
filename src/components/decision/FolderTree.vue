@@ -2,17 +2,12 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { BaseTree } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
-import { useSimpleStore } from '@/stores/simpleStore'
 
 const props = defineProps<{
-	data?: any[]
+	data: any[]
 }>()
 
-const simpleStore = useSimpleStore()
-
 const query = ref('')
-
-const treeData = computed(() => props.data ?? simpleStore.treeData)
 
 const clearFilter = () => {
 	query.value = ''
@@ -36,7 +31,7 @@ watch(query, (newValue) => {
 const tree = ref()
 
 onMounted(() => {
-	tree.value.openNodeAndParents(treeData.value[0])
+	tree.value.openNodeAndParents(props.data[0])
 })
 
 const toggle = (stat: any) => {
@@ -64,7 +59,7 @@ const selectedNodes = computed(() => {
 				template(v-slot:prepend)
 					q-icon(name="mdi-magnify")
 
-		BaseTree(v-model="treeData"
+		BaseTree(v-model="props.data"
 			ref="tree"
 			propKey="id"
 			treeLine
