@@ -41,6 +41,7 @@
 		"vuedraggable": "^4.1.0"
 	},
 	"devDependencies": {
+		"@formkit/themes": "^2.0.0",
 		"@quasar/vite-plugin": "^1.8.0",
 		"@tsconfig/node20": "^20.1.4",
 		"@types/node": "^20.17.0",
