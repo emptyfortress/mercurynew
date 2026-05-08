@@ -11,6 +11,7 @@ export interface TreeElement {
 	type?: number
 	children?: TreeElement[]
 	sourceType?: 'folderData' | 'treeData'
+	virtual?: boolean
 }
 
 export const useSimpleStore = defineStore('simpleStore', () => {

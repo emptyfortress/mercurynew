@@ -79,7 +79,7 @@ const folderType = ref('Стандартная')
 				.label Название
 				.flex.items-center.q-gutter-x-lg
 					q-input(v-model="name" dense outlined)
-					q-checkbox(v-if='simpleStore.selectedElement.virtual' v-model="simpleStore.selectedElement.virtual" dense label="Виртуальная" disable)
+					q-checkbox(v-if='simpleStore.selectedElement?.virtual' v-model="simpleStore.selectedElement.virtual" dense label="Виртуальная" disable)
 				.label Тип папки
 				q-select(dense v-model="folderType" outlined :options='["Стандартная", "Тип 1", "Тип 2"]')
 				.label Размещение
