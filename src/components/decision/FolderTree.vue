@@ -72,7 +72,7 @@ const selectedNodes = computed(() => {
 					q-checkbox(v-model='stat.checked' dense size='sm' color='primary')
 					span.q-ml-sm {{ node.text }}
 	div
-		q-list(bordered separator)
+		q-list(bordered separator dense)
 			q-item(v-for="node in selectedNodes" :key="node.data.id" clickable)
 				q-item-section(avatar)
 					q-icon(name="mdi-check-circle" color="primary")

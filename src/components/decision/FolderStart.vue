@@ -53,6 +53,7 @@ const accessOption = [
 	{ value: 3, label: 'Отключить' },
 ]
 const gran = ref(false)
+const folderType = ref('Стандартная')
 </script>
 
 <template lang="pug">
@@ -76,7 +77,7 @@ const gran = ref(false)
 				.label Название
 				q-input(v-model="name" dense outlined)
 				.label Тип папки
-				div Стандартная
+				q-select(dense v-model="folderType" outlined :options='["Стандартная", "Тип 1", "Тип 2"]')
 				.label Размещение
 				div Каталог папок
 				.label Автор
