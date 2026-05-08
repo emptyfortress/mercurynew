@@ -10,7 +10,7 @@ const only = ref(false)
 <template lang="pug">
 q-checkbox(v-model="only" dense label='В папке будут доступны только выбранные представления')
 br
-FolderTree(:data="simpleStore.viewData")
+FolderTree(:data="simpleStore.viewData" :isDisabled='!only')
 </template>
 
 <style scoped lang="scss"></style>

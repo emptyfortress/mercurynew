@@ -4,6 +4,7 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
 import ChooseCardTree from '@/components/decision/ChooseCardTree.vue'
 import ChooseCardView from '@/components/decision/ChooseCardView.vue'
+import Safety from '@/components/decision/Safety.vue'
 
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
@@ -122,6 +123,8 @@ const folderType = ref('Стандартная')
 		q-tab-panel(name="tab5")
 			.text-h6 Шаблоны
 		q-tab-panel(name="tab6")
+			Safety
+		q-tab-panel(name="tab7")
 			.text-h6 Другие
 
 	q-card-actions(align='center')
