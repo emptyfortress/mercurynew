@@ -110,7 +110,23 @@ onMounted(() => {
 })
 
 const create = (data: any) => {
-	console.log(data)
+	const newFolder = {
+		id: data.id,
+		text: data.name,
+		virtual: data.isVirtual ?? false,
+		children: [],
+	}
+
+	if (simpleStore.selectedElement) {
+		// Add inside selected node
+		if (!simpleStore.selectedElement.children) {
+			simpleStore.selectedElement.children = []
+		}
+		simpleStore.selectedElement.children.push(newFolder)
+	} else {
+		// Add at the end of the tree
+		treeData.value.push(newFolder)
+	}
 }
 </script>
 
