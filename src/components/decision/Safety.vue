@@ -37,6 +37,10 @@ function getCheckboxColor(value: boolean): string {
 	if (value === false) return 'pink'
 	return 'grey-6'
 }
+
+const username = ref(null)
+
+const options = ['иванов', 'петров', 'сидоров', 'кузнецов']
 </script>
 
 <template lang="pug">
@@ -56,11 +60,17 @@ q-table(:rows="rows" :columns="columns" row-key="user" flat)
 					:color='getCheckboxColor(props.row[props.col.field])'
 				)
 	template(v-slot:bottom)
-		.text-center.text-grey Dummy text in bottom slot
+			.q-mr-md Добавить сотрудника
+			q-select(v-model="username" label='ФИО, группа' dense outlined :options='options')
+			q-space
+			q-btn(unelevated color="secondary" label="Выключить наследование" size='sm') 
 </template>
 
 <style scoped lang="scss">
 :deep(.q-checkbox__inner--falsy .q-icon) {
 	color: var(--q-negative);
+}
+:deep(.q-select) {
+	min-width: 200px;
 }
 </style>
