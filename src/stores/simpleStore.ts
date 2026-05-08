@@ -594,7 +594,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 					nodes[i] = { ...nodes[i], ...updated }
 					return true
 				}
-				if (nodes[i].children && nodes[i].children.length > 0 && walk(nodes[i].children!)) {
+				const children = nodes[i].children
+				if (children && children.length > 0 && walk(children)) {
 					return true
 				}
 			}
