@@ -57,7 +57,7 @@ const create = (data: any) => {
 		const folderData = {
 			id: uid(),
 			name: data.name,
-			isVirtual: data.isVirtual,
+			isVirtual: data.isVirtual ?? false,
 		}
 		emit('create', folderData)
 		close()
