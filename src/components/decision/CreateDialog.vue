@@ -53,6 +53,11 @@ const create = (data: any) => {
 	if (props.mode == 'status') {
 		close()
 	}
+	if (props.mode == 'folder') {
+		data.id = uid()
+		emit('create', data)
+		close()
+	}
 }
 </script>
 
