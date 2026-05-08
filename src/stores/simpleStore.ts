@@ -594,7 +594,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 					nodes[i] = { ...nodes[i], ...updated }
 					return true
 				}
-				if (nodes[i].children && walk(nodes[i].children)) {
+				if (nodes[i].children && nodes[i].children.length > 0 && walk(nodes[i].children!)) {
 					return true
 				}
 			}
@@ -648,5 +648,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		nodesMap,
 		getNodeById,
 		getNameById,
+		getNameByFolderId,
 	}
 })
