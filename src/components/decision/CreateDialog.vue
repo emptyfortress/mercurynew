@@ -84,6 +84,7 @@ q-dialog(v-model="modelValue")
 			.text-h6(v-if="props.mode == 'form'") Создать форму
 			.text-h6(v-if="props.mode == 'status'") Новый статус
 			.text-h6(v-if="props.mode == 'vid'") Создать новую карточку
+			.text-h6(v-if="props.mode == 'folder'") Создать папку
 
 		q-card-section
 			FormKit(type="form" id="newapp" submit-label="Создать" @submit="create")

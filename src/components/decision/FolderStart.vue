@@ -64,7 +64,7 @@ const folderType = ref('Стандартная')
 
 	q-tabs(v-model="tab" dense align="left" class="text-primary")
 		q-tab(name="tab1" label="Общие")
-		q-tab(name="tab2" label="Тип папки")
+		// q-tab(name="tab2" label="Тип папки")
 		q-tab(name="tab3" label="Карточки")
 		q-tab(name="tab4" label="Представление")
 		q-tab(name="tab5" label="Шаблоны")
@@ -109,9 +109,9 @@ const folderType = ref('Стандартная')
 				q-checkbox(label='Не применять при первой загрузке' dense v-model="first")
 				.label Проверка прав доступа
 				q-option-group(v-model="access" dense :options="accessOption" color="primary" inline)
-		q-tab-panel(name="tab2")
-			.text-h6 Тип
-			div Тип папки решили пока не трогать.<br /> По сути - это набор настроек (представления, карточки и тп) для папки.<br /> Можно настраивать, а можно выбрать тип и настройки применятся.
+		// q-tab-panel(name="tab2")
+		// 	.text-h6 Тип
+		// 	div Тип папки решили пока не трогать.<br /> По сути - это набор настроек (представления, карточки и тп) для папки.<br /> Можно настраивать, а можно выбрать тип и настройки применятся.
 		q-tab-panel(name="tab3")
 			ChooseCardTree
 		q-tab-panel(name="tab4")

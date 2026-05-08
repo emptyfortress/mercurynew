@@ -44,7 +44,7 @@ q-page(padding)
 						sourceType="folderData"
 						filterField="text"
 						:showTypeSelector="false"
-						mode="vid"
+						mode="folder"
 					)
 
 			template(v-slot:after)
@@ -80,4 +80,3 @@ q-page(padding)
 	transform: translateY(-10px);
 }
 </style>
-
