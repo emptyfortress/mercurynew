@@ -30,6 +30,15 @@ const rows = ref([
 		own: undefined,
 		special: undefined,
 	},
+	{
+		user: 'Dummy text row',
+		full: undefined,
+		read: undefined,
+		change: undefined,
+		remove: undefined,
+		own: undefined,
+		special: undefined,
+	},
 ])
 
 function getCheckboxColor(value: boolean): string {
