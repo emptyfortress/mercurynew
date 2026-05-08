@@ -2,39 +2,39 @@
 import { ref } from 'vue'
 
 const columns = [
-	{ name: 'name', label: 'Name', field: 'name', align: 'left' },
-	{ name: 'age', label: 'Age', field: 'age', align: 'left' },
-	{ name: 'email', label: 'Email', field: 'email', align: 'left' },
-	{ name: 'phone', label: 'Phone', field: 'phone', align: 'left' },
-	{ name: 'city', label: 'City', field: 'city', align: 'left' },
-	{ name: 'status', label: 'Status', field: 'status', align: 'left' },
-	{ name: 'role', label: 'Role', field: 'role', align: 'left' },
+	{ name: 'user', label: 'Пользователь или группа', field: 'user', align: 'left' },
+	{ name: 'full', label: 'Полный доступ', field: 'full', align: 'left' },
+	{ name: 'read', label: 'Чтение', field: 'read', align: 'left' },
+	{ name: 'change', label: 'Изменение', field: 'change', align: 'left' },
+	{ name: 'remove', label: 'Удаление', field: 'remove', align: 'left' },
+	{ name: 'own', label: 'Владение', field: 'own', align: 'left' },
+	{ name: 'special', label: 'Особые', field: 'special', align: 'left' },
 ]
 
 const rows = [
 	{
-		name: 'John Doe',
-		age: 28,
-		email: 'john@example.com',
-		phone: '555-1234',
-		city: 'New York',
-		status: 'Active',
-		role: 'Admin',
+		user: 'John Doe',
+		full: false,
+		read: false,
+		change: false,
+		remove: false,
+		own: false,
+		special: false,
 	},
 	{
-		name: 'Jane Smith',
-		age: 34,
-		email: 'jane@example.com',
-		phone: '555-5678',
-		city: 'Los Angeles',
-		status: 'Inactive',
-		role: 'User',
+		user: 'Jane Smith',
+		full: false,
+		read: false,
+		change: false,
+		remove: false,
+		own: false,
+		special: false,
 	},
 ]
 </script>
 
 <template lang="pug">
-q-table(:rows="rows" :columns="columns" row-key="name")
+q-table(:rows="rows" :columns="columns" row-key="name" flat)
 </template>
 
 <style scoped lang="scss"></style>
