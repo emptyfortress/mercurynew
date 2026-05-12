@@ -4,6 +4,7 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
 import ChooseCardTree from '@/components/decision/ChooseCardTree.vue'
 import ChooseCardView from '@/components/decision/ChooseCardView.vue'
+import ChooseTemplate from '@/components/decision/ChooseTemplate.vue'
 import Safety from '@/components/decision/Safety.vue'
 
 const simpleStore = useSimpleStore()
@@ -121,7 +122,7 @@ const folderType = ref('Стандартная')
 		q-tab-panel(name="tab4")
 			ChooseCardView
 		q-tab-panel(name="tab5")
-			.text-h6 Шаблоны
+			ChooseTemplate
 		q-tab-panel(name="tab6")
 			Safety
 		q-tab-panel(name="tab7")
