@@ -31,10 +31,11 @@ const list = ref([
 q-checkbox(v-model="only" dense label='В папке будут доступны только выбранные шаблоны')
 q-separator(spaced)
 q-list
-	q-item(v-for="item in list" :key='item.id' clickable @click='item.mod = !item.mod' :disable='!only')
+	q-item(v-for="item in list" :key='item.id' clickable :disable='!only' tag="label" v-ripple)
 		q-item-section(side)
 			q-checkbox(v-model='item.mod' dense :disable='!only')
-		q-item-section {{ item.label }}
+		q-item-section
+			q-item-label {{ item.label }}
 </template>
 
 <style scoped lang="scss"></style>

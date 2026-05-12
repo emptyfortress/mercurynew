@@ -81,7 +81,7 @@ const selectedNodes = computed(() => {
 				q-item-section
 					q-item-label {{ node.data.text }}
 				q-item-section(side)
-					q-btn(dense flat round icon="mdi-close" @click="node.checked = false")
+					q-btn(dense flat round icon="mdi-close" @click="node.checked = false" size="sm")
 
 
 </template>
