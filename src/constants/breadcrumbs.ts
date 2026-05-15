@@ -3,6 +3,7 @@ export const BREADCRUMB_OVERRIDES: Record<string, string> = {
 	cards: 'Конструктор карточек',
 	folders: 'Каталог папок',
 	webframe: 'Рабочая область',
+	menu: 'Главное меню',
 	'0': 'Конструктор полей',
 	'1': 'Поиски и представления',
 	'2': 'Процессы',
