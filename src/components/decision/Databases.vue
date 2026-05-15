@@ -5,11 +5,12 @@ const router = useRouter()
 
 const sections = [
 	{ id: 0, label: 'Конструктор карточек', to: 'cards' },
-	{ id: 5, label: 'Каталог папок', to: 'folders' },
-	{ id: 1, label: 'Поиски и представления', to: '' },
-	{ id: 2, label: 'Процессы', to: '' },
-	{ id: 3, label: 'Справочники', to: '' },
-	{ id: 4, label: 'Нумераторы', to: '' },
+	{ id: 1, label: 'Каталог папок', to: 'folders' },
+	{ id: 2, label: 'Рабочая область', to: 'webframe' },
+	{ id: 3, label: 'Поиски и представления', to: '' },
+	{ id: 4, label: 'Процессы', to: '' },
+	{ id: 5, label: 'Справочники', to: '' },
+	{ id: 6, label: 'Нумераторы', to: '' },
 ]
 
 const goto = (e: string) => {
@@ -21,7 +22,12 @@ const goto = (e: string) => {
 q-page(padding)
 	.hd Конструкторы сервера DV-Main
 	.container
-		.it.constr(v-for="item in sections" :key='item.id' @click='goto(item.to)')
+		.it.constr(
+			v-for="item in sections",
+			:key='item.id',
+			:class="{dis : item.id > 2}"
+			@click='goto(item.to)'
+		)
 			div {{ item.label }}
 
 </template>
@@ -44,5 +50,8 @@ q-page(padding)
 	width: 100%;
 	height: 100px;
 	background: #fff;
+	&.dis {
+		opacity: 0.5;
+	}
 }
 </style>

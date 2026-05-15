@@ -48,6 +48,20 @@ const router = createRouter({
 		},
 
 		{
+			path: '/dvmain/webframe/menu',
+			name: 'Menu',
+			component: () => import('@/components/decision/MainMenu.vue'),
+			props: true,
+			meta: {
+				toolbar: false,
+				back: false,
+				back1: false,
+				count: 0,
+				save: false,
+				breadcrumbs: true,
+			},
+		},
+		{
 			path: '/dvmain/:constructorId',
 			component: Decisions,
 			name: 'cardConstructor',
@@ -480,4 +494,3 @@ const router = createRouter({
 })
 
 export default router
-

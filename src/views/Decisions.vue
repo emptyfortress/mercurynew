@@ -2,19 +2,20 @@
 import { ref, computed } from 'vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
 import { useElementSize } from '@vueuse/core'
-import { useRoute } from 'vue-router'
-import { useSimpleStore } from '@/stores/simpleStore'
-import { storeToRefs } from 'pinia'
+import { useRouter, useRoute } from 'vue-router'
 
 const route = useRoute()
-const simpleStore = useSimpleStore()
-const { selectedType } = storeToRefs(simpleStore)
+const router = useRouter()
 
 const splitterModel = ref(25)
 const el = ref<HTMLElement | null>(null)
 const { width, height } = useElementSize(el)
 
 const hei = computed(() => `height: ${height.value}px;`)
+
+const mainMenu = () => {
+	router.push('/dvmain/webframe/menu')
+}
 </script>
 
 <template lang="pug">
@@ -51,9 +52,30 @@ q-page(padding)
 				router-view(v-slot="{ Component }")
 					transition(name="page" mode="out-in")
 						component(:is="Component" :key="route.fullPath")
+
+	.container(v-if='route.params.constructorId === "webframe"')
+		.text-h6.text-center Настройка рабочей области
+		.grid
+			.it.dis Верхняя панель
+			.it(@click="mainMenu") Главное меню
+			.it.dis Дашборд (главная страница)
 </template>
 
 <style scoped lang="scss">
+.grid {
+	max-width: 1100px;
+	margin: 1rem auto;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	column-gap: 1rem;
+	row-gap: 1rem;
+}
+.it {
+	height: 100px;
+	&.dis {
+		opacity: 0.5;
+	}
+}
 .container {
 	max-width: 1400px;
 	margin: 0 auto;
