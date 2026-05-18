@@ -159,6 +159,9 @@ const title = computed(() => {
 	if (route.path.includes('cards')) {
 		return 'Конструктор карточек'
 	}
+	if (route.path.includes('webframe')) {
+		return 'Настройка рабочей области'
+	}
 
 	if (route.path.startsWith('/timeline')) {
 		return 'Ход исполнения'

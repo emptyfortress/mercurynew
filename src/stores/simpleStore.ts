@@ -701,6 +701,139 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	])
 
+	const menuData = ref([
+		{
+			id: 'root',
+			text: 'Библиотека элементов',
+			children: [
+				{
+					id: 'divider',
+					text: 'Разделитель',
+					virtual: false,
+					children: [],
+				},
+				{
+					id: 'group',
+					text: 'Группа',
+					virtual: false,
+					children: [],
+				},
+				{
+					id: 'button',
+					text: 'Кнопка',
+					virtual: false,
+					children: [],
+				},
+				{
+					id: 'folders',
+					text: 'Каталог папок',
+					virtual: false,
+					children: [
+						{
+							id: 'f0',
+							text: 'Виртуальная папка',
+							virtual: true,
+						},
+						{
+							id: 'f1',
+							text: 'Доверенность',
+							virtual: false,
+							type: 0,
+							children: [
+								{ id: 'f1-1', text: 'Создать доверенность', type: 0, virtual: false },
+								{ id: 'f1-2', text: 'Журнал доверенностей', type: 0, virtual: false },
+							],
+						},
+						{
+							id: 'f2',
+							text: 'Договоры',
+							virtual: false,
+							type: 0,
+							children: [
+								{ id: 'f2-1', text: 'Проекты договоров', virtual: false, type: 0 },
+								{ id: 'f2-2', text: 'Подписанные договоры', virtual: false, type: 0 },
+								{ id: 'f2-3', text: 'Архив', virtual: false, type: 0 },
+							],
+						},
+						{
+							id: 'f3',
+							text: 'Документы',
+							virtual: false,
+							type: 0,
+							children: [
+								{ id: 'f3-1', text: 'Входящие', virtual: false, type: 0 },
+								{ id: 'f3-2', text: 'Исходящие', virtual: false, type: 0 },
+							],
+						},
+						{
+							id: 'f4',
+							text: 'КЭДО',
+							virtual: false,
+							type: 0,
+							children: [
+								{ id: 'f4-1', text: 'Заявления', virtual: false, type: 0 },
+								{ id: 'f4-2', text: 'Приказы', virtual: false, type: 0 },
+								{ id: 'f4-3', text: 'Архив КЭДО', virtual: false, type: 0 },
+							],
+						},
+						{
+							id: 'f5',
+							text: 'Отчеты',
+							virtual: false,
+							type: 0,
+							children: [
+								{ id: 'f5-1', text: 'Финансовые отчеты', virtual: false, type: 0 },
+								{ id: 'f5-2', text: 'Аналитика', virtual: false, type: 0 },
+							],
+						},
+						{
+							id: 'f6',
+							text: 'Папки подразделений',
+							type: 0,
+							virtual: false,
+							children: [
+								{ id: 'f6-1', text: 'Отдел продаж', virtual: false, type: 0 },
+								{ id: 'f6-2', text: 'Бухгалтерия', virtual: false, type: 0 },
+								{ id: 'f6-3', text: 'HR', virtual: false, type: 0 },
+							],
+						},
+						{
+							id: 'f7',
+							text: 'Папки пользователей',
+							type: 0,
+							virtual: false,
+							children: [
+								{ id: 'f7-1', text: 'Мои документы', virtual: false, type: 0 },
+								{ id: 'f7-2', text: 'Общие', virtual: false, type: 0 },
+							],
+						},
+					],
+				},
+			],
+		},
+	])
+
+	const menuPreview = ref([
+		{
+			id: 'glav',
+			text: 'Главная',
+			type: 'button',
+			icon: 'mdi-home-roof',
+		},
+		{
+			id: 'history',
+			text: 'Недавние карточки',
+			type: 'button',
+			icon: 'mdi-history',
+		},
+		{
+			id: 'search',
+			text: 'Поиск',
+			type: 'button',
+			icon: 'mdi-magnify',
+		},
+	])
+
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
 		return nodes.reduce((acc: TreeElement[], node) => {
 			acc.push(node)
@@ -791,6 +924,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		treeData,
 		folderData,
 		viewData,
+		menuData,
+		menuPreview,
 		selectedType,
 		selectedElement,
 		setSelectedElement,
