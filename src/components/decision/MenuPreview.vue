@@ -8,8 +8,14 @@ const simpleStore = useSimpleStore()
 const preview = ref()
 
 const select = (n: Stat) => {
-	preview.value.statsFlat.map((item: Stat) => (item.data.selected = false))
-	n.data.selected = true
+	// Toggle selection: if already selected, deselect it
+	if (n.data.selected) {
+		n.data.selected = false
+	} else {
+		// Otherwise, deselect all and select this one
+		preview.value.statsFlat.map((item: Stat) => (item.data.selected = false))
+		n.data.selected = true
+	}
 }
 </script>
 
