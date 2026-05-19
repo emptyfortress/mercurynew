@@ -61,6 +61,7 @@ div
 				q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
 				q-icon(name="mdi-folder-outline" v-if="stat.data.type === 0").fold
 				q-icon(v-if="node.virtual" name="mdi-folder-search-outline").fold
+				q-icon(v-if="node.icon" :name="node.icon").fold
 				span {{ node.text }}
 </template>
 

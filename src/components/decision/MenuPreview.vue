@@ -11,16 +11,21 @@ const select = (n: Stat) => {
 	// Toggle selection: if already selected, deselect it
 	if (n.data.selected) {
 		n.data.selected = false
+		simpleStore.selectedMenuItem = null
 	} else {
 		// Otherwise, deselect all and select this one
 		preview.value.statsFlat.map((item: Stat) => (item.data.selected = false))
 		n.data.selected = true
+		simpleStore.selectedMenuItem = n
 	}
 }
 </script>
 
 <template lang="pug">
 .q-mx-lg
+	.flex.justify-between
+		q-btn(flat color="primary" label="Загрузить" @click="")  
+		q-btn(flat color="primary" label="Сохранить" @click="")  
 	Draggable(v-model="simpleStore.menuPreview"
 		ref="preview"
 		propKey="id"

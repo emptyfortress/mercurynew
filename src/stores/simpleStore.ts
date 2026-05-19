@@ -707,8 +707,27 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 			text: 'Библиотека элементов',
 			children: [
 				{
+					id: 'main',
+					text: 'Кнопка Главная',
+					virtual: false,
+					icon: 'mdi-button-cursor',
+				},
+				{
+					id: 'history',
+					text: 'Кнопка Недавние карточки',
+					icon: 'mdi-button-cursor',
+					virtual: false,
+				},
+				{
+					id: 'search',
+					text: 'Кнопка Поиск',
+					icon: 'mdi-button-cursor',
+					virtual: false,
+				},
+				{
 					id: 'divider',
 					text: 'Разделитель',
+					icon: 'mdi-minus',
 					virtual: false,
 					children: [],
 				},
@@ -716,6 +735,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 					id: 'group',
 					text: 'Группа',
 					virtual: false,
+					icon: 'mdi-folder-outline',
 					children: [],
 				},
 				{
@@ -834,6 +854,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	])
 
+	const selectedMenuItem = ref<any>(null)
+
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
 		return nodes.reduce((acc: TreeElement[], node) => {
 			acc.push(node)
@@ -928,6 +950,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		menuPreview,
 		selectedType,
 		selectedElement,
+		selectedMenuItem,
 		setSelectedElement,
 		clearSelectedElement,
 		updateTreeData,
