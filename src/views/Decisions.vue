@@ -45,6 +45,12 @@ const tableData = ref([
 	{ uid: uid(), name: 'КЭДО меню', author: 'admin', date: '2024-01-20' },
 ])
 
+const selectedRow = ref<{ uid: string; name: string; author: string; date: string } | null>(null)
+
+const selectRow = (row: { uid: string; name: string; author: string; date: string }) => {
+	selectedRow.value = row
+}
+
 const duplicateTableItem = (row: { uid: string; name: string; author: string; date: string }) => {
 	const newItem = {
 		uid: uid(),
@@ -153,6 +159,9 @@ q-page(padding)
 						row-key="uid"
 						flat
 						hide-bottom
+						:selected="selectedRow"
+						selection="single"
+						@update:selected="selectRow"
 					)
 						template(v-slot:body-cell-actions='props')
 							q-td(:props="props")
