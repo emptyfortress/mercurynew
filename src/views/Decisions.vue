@@ -48,7 +48,11 @@ const tableData = ref([
 const selectedRow = ref()
 
 const selectRow = (row: any) => {
-	selectedRow.value = row
+	if (selectedRow.value && selectedRow.value.uid === row.uid) {
+		selectedRow.value = null
+	} else {
+		selectedRow.value = row
+	}
 }
 
 const duplicateTableItem = (row: { uid: string; name: string; author: string; date: string }) => {
