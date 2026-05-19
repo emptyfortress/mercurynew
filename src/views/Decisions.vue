@@ -40,8 +40,8 @@ const tableColumns = [
 ]
 
 const tableData = [
-	{ name: 'Элемент 1', author: 'admin', date: '2024-01-15' },
-	{ name: 'Элемент 2', author: 'admin', date: '2024-01-20' },
+	{ name: 'Меню по умолчанию', author: 'admin', date: '2024-01-15' },
+	{ name: 'КЭДО меню', author: 'admin', date: '2024-01-20' },
 ]
 </script>
 
@@ -108,6 +108,7 @@ q-page(padding)
 						:columns="tableColumns"
 						row-key="name"
 						flat
+						hide-bottom
 					)
 						template(v-slot:body-cell-actions='props')
 							q-td(:props="props")
