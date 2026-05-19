@@ -54,7 +54,7 @@ const duplicateTableItem = (row: { name: string; author: string; date: string })
 }
 
 const deleteTableItem = (name: string) => {
-	tableData.value = tableData.value.filter(item => item.name !== name)
+	tableData.value = tableData.value.filter((item) => item.name !== name)
 }
 </script>
 
@@ -129,11 +129,11 @@ q-page(padding)
 								q-btn(flat round dense icon="mdi-dots-vertical" size='sm') 
 									q-menu
 										q-list
-											q-item(clickable @click="duplicateTableItem(props.row)")
+											q-item(clickable @click="duplicateTableItem(props.row)" v-close-popup)
 												q-item-section(side)
 													q-icon(name="mdi-content-duplicate" color="primary")
 												q-item-section Дублировать
-											q-item(clickable @click="deleteTableItem(props.row.name)")
+											q-item(clickable @click="deleteTableItem(props.row.name)" v-close-popup)
 												q-item-section(side)
 													q-icon(name="mdi-delete-outline" color="negative")
 												q-item-section Удалить
