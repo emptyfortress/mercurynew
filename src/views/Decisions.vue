@@ -39,10 +39,23 @@ const tableColumns = [
 	{ name: 'actions', label: '', field: 'actions', align: 'right' as const },
 ]
 
-const tableData = [
+const tableData = ref([
 	{ name: 'Меню по умолчанию', author: 'admin', date: '2024-01-15' },
 	{ name: 'КЭДО меню', author: 'admin', date: '2024-01-20' },
-]
+])
+
+const duplicateTableItem = (row: { name: string; author: string; date: string }) => {
+	const newItem = {
+		name: `${row.name} (копия)`,
+		author: row.author,
+		date: new Date().toISOString().split('T')[0],
+	}
+	tableData.value.push(newItem)
+}
+
+const deleteTableItem = (name: string) => {
+	tableData.value = tableData.value.filter(item => item.name !== name)
+}
 </script>
 
 <template lang="pug">
@@ -116,11 +129,11 @@ q-page(padding)
 								q-btn(flat round dense icon="mdi-dots-vertical" size='sm') 
 									q-menu
 										q-list
-											q-item(clickable)
+											q-item(clickable @click="duplicateTableItem(props.row)")
 												q-item-section(side)
 													q-icon(name="mdi-content-duplicate" color="primary")
 												q-item-section Дублировать
-											q-item(clickable)
+											q-item(clickable @click="deleteTableItem(props.row.name)")
 												q-item-section(side)
 													q-icon(name="mdi-delete-outline" color="negative")
 												q-item-section Удалить
