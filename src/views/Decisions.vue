@@ -58,6 +58,10 @@ const duplicateTableItem = (row: { uid: string; name: string; author: string; da
 const deleteTableItem = (uid: string) => {
 	tableData.value = tableData.value.filter((item) => item.uid !== uid)
 }
+
+const create = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
@@ -116,9 +120,18 @@ q-page(padding)
 			div
 				div(v-if='selectedListItem == null') Ничего не выбрано
 				div(v-if='selectedListItem == 0')
-					.text-bold Главное меню
-					div Выберите меню для настройки или создайте новое
-					q-table(
+					.flex.justify-between.items-center
+						.text-bold Главное меню
+						q-btn(
+							unelevated,
+							color="primary",
+							icon="mdi-plus-circle-outline",
+							label="Создать",
+							@click="create",
+							size='sm'
+						) 
+			
+					q-table.q-mt-md(
 						:rows="tableData"
 						:columns="tableColumns"
 						row-key="uid"
