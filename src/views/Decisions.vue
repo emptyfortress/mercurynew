@@ -33,9 +33,9 @@ const select = (n: number) => {
 const selectedListItem = ref<null | number>(0)
 
 const tableColumns = [
-	{ name: 'name', label: 'Название', field: 'name', align: 'left' as const },
-	{ name: 'author', label: 'Автор', field: 'author', align: 'left' as const },
-	{ name: 'date', label: 'Дата', field: 'date', align: 'left' as const },
+	{ name: 'name', label: 'Название', field: 'name', align: 'left' as const, sortable: true },
+	{ name: 'author', label: 'Автор', field: 'author', align: 'left' as const, sortable: true },
+	{ name: 'date', label: 'Дата', field: 'date', align: 'left' as const, sortable: true },
 	{ name: 'actions', label: '', field: 'actions', align: 'right' as const },
 ]
 
