@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
 import { useElementSize } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
+import { uid } from 'quasar'
 import LucideLayoutTemplate from '@/components/icons/LucideLayoutTemplate.vue'
 import IconParkSolidPageTemplate from '@/components/icons/IconParkSolidPageTemplate.vue'
 
@@ -40,12 +41,13 @@ const tableColumns = [
 ]
 
 const tableData = ref([
-	{ name: 'Меню по умолчанию', author: 'admin', date: '2024-01-15' },
-	{ name: 'КЭДО меню', author: 'admin', date: '2024-01-20' },
+	{ uid: uid(), name: 'Меню по умолчанию', author: 'admin', date: '2024-01-15' },
+	{ uid: uid(), name: 'КЭДО меню', author: 'admin', date: '2024-01-20' },
 ])
 
-const duplicateTableItem = (row: { name: string; author: string; date: string }) => {
+const duplicateTableItem = (row: { uid: string; name: string; author: string; date: string }) => {
 	const newItem = {
+		uid: uid(),
 		name: `${row.name} (копия)`,
 		author: row.author,
 		date: new Date().toISOString().split('T')[0],
@@ -53,8 +55,8 @@ const duplicateTableItem = (row: { name: string; author: string; date: string })
 	tableData.value.push(newItem)
 }
 
-const deleteTableItem = (name: string) => {
-	tableData.value = tableData.value.filter((item) => item.name !== name)
+const deleteTableItem = (uid: string) => {
+	tableData.value = tableData.value.filter((item) => item.uid !== uid)
 }
 </script>
 
@@ -119,7 +121,7 @@ q-page(padding)
 					q-table(
 						:rows="tableData"
 						:columns="tableColumns"
-						row-key="name"
+						row-key="uid"
 						flat
 						hide-bottom
 					)
@@ -133,7 +135,7 @@ q-page(padding)
 												q-item-section(side)
 													q-icon(name="mdi-content-duplicate" color="primary")
 												q-item-section Дублировать
-											q-item(clickable @click="deleteTableItem(props.row.name)" v-close-popup)
+											q-item(clickable @click="deleteTableItem(props.row.uid)" v-close-popup)
 												q-item-section(side)
 													q-icon(name="mdi-delete-outline" color="negative")
 												q-item-section Удалить
