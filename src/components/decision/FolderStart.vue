@@ -57,6 +57,7 @@ const accessOption = [
 ]
 const gran = ref(false)
 const folderType = ref('Стандартная')
+const searchZapros = ref('Запрос 1')
 </script>
 
 <template lang="pug">
@@ -80,6 +81,12 @@ const folderType = ref('Стандартная')
 				.flex.items-center.q-gutter-x-lg
 					q-input(v-model="name" dense outlined)
 					q-checkbox(v-if='simpleStore.selectedElement?.virtual' v-model="simpleStore.selectedElement.virtual" dense label="Виртуальная" disable)
+
+				template(v-if='simpleStore.selectedElement?.virtual')
+					.label Поисковый запрос
+					q-select(dense v-model="searchZapros" outlined :options='["Запрос 1", "Запрос 2", "Запрос 3", "Запрос 4", "Запрос 5"]')
+	
+
 				.label Тип папки
 				q-select(dense v-model="folderType" outlined :options='["Стандартная", "Тип 1", "Тип 2"]')
 				.label Размещение
