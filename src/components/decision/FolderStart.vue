@@ -58,6 +58,8 @@ const accessOption = [
 const gran = ref(false)
 const folderType = ref('Стандартная')
 const searchZapros = ref('Запрос 1')
+
+const dialog = ref(false)
 </script>
 
 <template lang="pug">
@@ -68,7 +70,6 @@ const searchZapros = ref('Запрос 1')
 
 	q-tabs(v-model="tab" dense align="left" class="text-primary")
 		q-tab(name="tab1" label="Общие")
-		// q-tab(name="tab2" label="Тип папки")
 		q-tab(name="tab3" label="Карточки")
 		q-tab(name="tab4" label="Представление")
 		q-tab(name="tab5" label="Шаблоны")
@@ -84,7 +85,9 @@ const searchZapros = ref('Запрос 1')
 
 				template(v-if='simpleStore.selectedElement?.virtual')
 					.label Поисковый запрос
-					q-select(dense v-model="searchZapros" outlined :options='["Запрос 1", "Запрос 2", "Запрос 3", "Запрос 4", "Запрос 5"]')
+				.flex.items-center.q-gutter-x-sm
+						q-select(dense v-model="searchZapros" outlined :options='["Запрос 1", "Запрос 2", "Запрос 3", "Запрос 4", "Запрос 5"]')
+						q-btn(outline dense icon="mdi-dots-horizontal" color="primary" @click="dialog = !dialog") 
 	
 
 				.label Тип папки
