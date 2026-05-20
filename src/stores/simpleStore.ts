@@ -856,6 +856,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	const selectedMenuItem = ref<any>(null)
 
+	const selectedMenuRow = ref()
+
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
 		return nodes.reduce((acc: TreeElement[], node) => {
 			acc.push(node)
@@ -940,8 +942,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	})
 
-	// console.log('NodesMap internal check:', nodesMap.value)
-
 	return {
 		treeData,
 		folderData,
@@ -951,6 +951,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		selectedType,
 		selectedElement,
 		selectedMenuItem,
+		selectedMenuRow,
 		setSelectedElement,
 		clearSelectedElement,
 		updateTreeData,

@@ -6,6 +6,9 @@ const { width, height } = useElementSize(el)
 import LibMenu from '@/components/decision/LibMenu.vue'
 import MenuPreview from '@/components/decision/MenuPreview.vue'
 import MenuProperty from '@/components/decision/MenuProperty.vue'
+import { useSimpleStore } from '@/stores/simpleStore'
+
+const simpleStore = useSimpleStore()
 
 const splitterModel = ref(35)
 const splitterModel1 = ref(55)
@@ -15,7 +18,7 @@ const hei = computed(() => `height: ${height.value}px;`)
 
 <template lang="pug">
 q-page(padding)
-	.hd Главное меню
+	.hd {{ simpleStore.selectedMenuRow.name }}
 	.container
 		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei")
 			template(v-slot:before)

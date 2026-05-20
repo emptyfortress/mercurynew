@@ -1,16 +1,12 @@
 <script setup lang="ts">
-const props = defineProps({
-	menu: {
-		type: String,
-		required: true,
-		default: '',
-	},
-})
+import { useSimpleStore } from '@/stores/simpleStore'
+
+const simpleStore = useSimpleStore()
 </script>
 
 <template lang="pug">
 .text-h6
-	|{{ props.menu}}
+	|{{ simpleStore.selectedMenuRow.name }}
 	span (условия выбора)
 </template>
 

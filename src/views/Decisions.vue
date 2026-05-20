@@ -7,9 +7,11 @@ import { useRouter, useRoute } from 'vue-router'
 import { uid } from 'quasar'
 import LucideLayoutTemplate from '@/components/icons/LucideLayoutTemplate.vue'
 import IconParkSolidPageTemplate from '@/components/icons/IconParkSolidPageTemplate.vue'
+import { useSimpleStore } from '@/stores/simpleStore'
 
 const route = useRoute()
 const router = useRouter()
+const simpleStore = useSimpleStore()
 
 const splitterModel = ref(25)
 const el = ref<HTMLElement | null>(null)
@@ -17,8 +19,9 @@ const { width, height } = useElementSize(el)
 
 const hei = computed(() => `height: ${height.value}px;`)
 
-const mainMenu = () => {
+const mainMenu = (row: any) => {
 	router.push('/dvmain/webframe/menu')
+	simpleStore.selectedMenuRow = row
 }
 
 const list = ref([
@@ -46,13 +49,13 @@ const tableData = ref([
 	{ uid: uid(), name: 'КЭДО меню', author: 'admin', date: '2024-01-20' },
 ])
 
-const selectedRow = ref()
+// const selectedRow = ref()
 
 const selectRow = (row: any) => {
-	if (selectedRow.value && selectedRow.value.uid === row.uid) {
-		selectedRow.value = null
+	if (simpleStore.selectedMenuRow && simpleStore.selectedMenuRow.uid === row.uid) {
+		simpleStore.selectedMenuRow = null
 	} else {
-		selectedRow.value = row
+		simpleStore.selectedMenuRow = row
 	}
 }
 
@@ -64,7 +67,7 @@ const duplicateTableItem = (row: { uid: string; name: string; author: string; da
 		date: new Date().toISOString().split('T')[0],
 	}
 	tableData.value.push(newItem)
-	selectedRow.value = newItem
+	simpleStore.selectedMenuRow = newItem
 }
 
 const deleteTableItem = (uid: string) => {
@@ -89,12 +92,12 @@ const createMenu = () => {
 		}
 		tableData.value.push(tmp)
 		createDialog.value = false
-		selectedRow.value = tmp
+		simpleStore.selectedMenuRow = tmp
 	}
 }
 
 const calcClass = (uid: string) => {
-	if (selectedRow.value && selectedRow.value.uid == uid) {
+	if (simpleStore.selectedMenuRow && simpleStore.selectedMenuRow.uid == uid) {
 		return 'selectedtr'
 	}
 	return ''
@@ -183,7 +186,7 @@ q-page(padding)
 								q-td(:props='props' key="date") {{ props.row.date }}
 
 								q-td(:props="props" key='actions')
-									q-btn.q-mr-md(flat round dense icon="mdi-pencil" size='sm' @click="mainMenu") 
+									q-btn.q-mr-md(flat round dense icon="mdi-pencil" size='sm' @click.stop="mainMenu(props.row)") 
 									q-btn(flat round dense icon="mdi-dots-vertical" size='sm' @click.stop) 
 										q-menu
 											q-list
@@ -200,7 +203,7 @@ q-page(padding)
 					<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m18.9 21l-5.475-5.475l2.1-2.1L21 18.9zM5.1 21L3 18.9L9.9 12l-1.7-1.7l-.7.7l-1.275-1.275v2.05l-.7.7L2.5 9.45l.7-.7h2.05L4 7.5l3.55-3.55q.5-.5 1.075-.725T9.8 3t1.175.225t1.075.725l-2.3 2.3L11 7.5l-.7.7L12 9.9l2.25-2.25q-.1-.275-.162-.575t-.063-.6q0-1.475 1.013-2.488t2.487-1.012q.375 0 .713.075t.687.225L16.45 5.75l1.8 1.8l2.475-2.475q.175.35.238.687t.062.713q0 1.475-1.012 2.488t-2.488 1.012q-.3 0-.6-.05t-.575-.175z"/></svg>
 					div Раздел в разработке
 
-			MenuCondition(v-if='selectedRow' :menu='selectedRow.name')
+			MenuCondition(v-if='simpleStore.selectedMenuRow')
 
 	q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")
 		q-card(style="min-width: 350px")
