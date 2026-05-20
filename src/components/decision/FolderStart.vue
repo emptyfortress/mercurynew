@@ -107,8 +107,6 @@ const searchZapros = ref('Запрос 1')
 					q-checkbox(v-model="gran" dense label="Не ограничивать")
 				.label Напрочитанные карточки
 				q-checkbox(label='Подсвечивать' dense v-model="unread")
-				.label Клиентская сортировка
-				q-checkbox(label='Не применять при первой загрузке' dense v-model="first")
 				.label Проверка прав доступа
 				q-option-group(v-model="access" dense :options="accessOption" color="primary" inline)
 		q-tab-panel(name="tab3")
