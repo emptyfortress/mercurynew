@@ -72,7 +72,6 @@ const folderType = ref('Стандартная')
 		q-tab(name="tab4" label="Представление")
 		q-tab(name="tab5" label="Шаблоны")
 		q-tab(name="tab6" label="Безопасность")
-		q-tab(name="tab7" label="Другие")
 
 	q-tab-panels(v-model="tab" animated)
 		q-tab-panel(name="tab1")
@@ -93,15 +92,6 @@ const folderType = ref('Стандартная')
 				.flex.items-center.q-gutter-x-lg
 					q-select(dense v-model="view" outlined :options='["Дайджест", "Папка", "Поиск"]')
 					q-checkbox(v-model="optimize" dense label="Оптимизировать загрузку представления")
-				.label Карточка папки
-				q-select(dense v-model="card" outlined :options='["Карточка 1", "Карточка 2", "Карточка 3"]')
-				.label Ссылка
-				q-input(v-model="link" dense outlined)
-				.label Показывать по умолчанию
-				div
-					q-option-group(v-model="show" :options="showOption" dense color="primary" inline)
-				.label Обновление
-				q-checkbox(label='Обновлять при входе в папку' dense v-model="renew")
 				.label Автообновление
 				q-option-group(v-model="autorenew" dense :options="autoOption" color="primary" inline)
 				.label Количество записей
@@ -122,9 +112,6 @@ const folderType = ref('Стандартная')
 			ChooseTemplate
 		q-tab-panel(name="tab6")
 			Safety
-		q-tab-panel(name="tab7")
-			.text-h6 Другие
-			div Тут непонятно что будет. Все настройки уже присутствуют на странице Общие.
 
 	q-card-actions(align='center')
 		q-btn(flat color="primary" label="Отмена" @click="cancelChanges") 
@@ -136,7 +123,7 @@ const folderType = ref('Стандартная')
 	display: grid;
 	grid-template-columns: 220px 1fr;
 	column-gap: 0.5rem;
-	row-gap: 0.5rem;
+	row-gap: 1rem;
 	align-items: center;
 	.label {
 		color: #555;

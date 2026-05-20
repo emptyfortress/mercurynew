@@ -13,7 +13,7 @@ const clearFilter = () => {
 	tree.value.statsFlat.map((item: Stat) => (item.hidden = false))
 }
 
-const treeData = ref([])
+const treeData = ref(simpleStore.menuData)
 
 const toggle = (stat: any) => {
 	stat.open = !stat.open
@@ -44,7 +44,7 @@ div
 			)
 			template(v-slot:prepend)
 				q-icon(name="mdi-magnify")
-	BaseTree(v-model="simpleStore.menuData"
+	BaseTree(v-model="treeData"
 		ref="tree"
 		propKey="id"
 		treeLine
