@@ -53,7 +53,7 @@ const searchZapros = ref('Запрос 1')
 
 const dialog = ref(false)
 
-const tree = [
+const tree = ref([
 	{
 		id: 1,
 		text: 'Договоры',
@@ -122,7 +122,8 @@ const tree = [
 			},
 		],
 	},
-]
+])
+
 const select = (stat: any) => {
 	if (stat.children.length) {
 		stat.open = !stat.open
