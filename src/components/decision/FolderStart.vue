@@ -124,6 +124,15 @@ const dialog = ref(false)
 	q-card-actions(align='center')
 		q-btn(flat color="primary" label="Отмена" @click="cancelChanges") 
 		q-btn(unelevated color="primary" label="Сохранить" @click="saveChanges") 
+
+q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
+	q-card(style="min-width: 400px;")
+		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
+		q-card-section
+			.text-h6 Поисковые запросы
+			.caption Выберите нужный запрос из дерева
+
+		q-card-section test
 </template>
 
 <style scoped lang="scss">
