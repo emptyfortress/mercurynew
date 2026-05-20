@@ -162,6 +162,9 @@ const title = computed(() => {
 	if (route.path.includes('webframe')) {
 		return 'Настройка рабочей области'
 	}
+	if (route.path.includes('folders')) {
+		return 'Настройка папок'
+	}
 
 	if (route.path.startsWith('/timeline')) {
 		return 'Ход исполнения'
