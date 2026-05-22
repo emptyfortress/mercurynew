@@ -31,7 +31,7 @@ q-page(padding)
 			template(v-slot:after)
 				router-view(v-slot="{ Component }")
 					transition(name="page" mode="out-in")
-						component(:is="Component" :key="route.fullPath)
+						component(:is="Component" :key="route.fullPath")
 
 	.container(v-if='route.params.constructorId === "folders"')
 		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei")
@@ -47,7 +47,7 @@ q-page(padding)
 			template(v-slot:after)
 				router-view(v-slot="{ Component }")
 					transition(name="page" mode="out-in")
-						component(:is="Component" :key="route.fullPath)
+						component(:is="Component" :key="route.fullPath")
 
 
 	Webframe(v-if='route.params.constructorId === "webframe"')

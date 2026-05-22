@@ -55,7 +55,7 @@ const router = createRouter({
 			meta: {
 				toolbar: false,
 				back: false,
-				back1: false,
+				back1: true,
 				count: 0,
 				save: false,
 				breadcrumbs: true,

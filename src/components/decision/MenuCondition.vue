@@ -5,9 +5,7 @@ const simpleStore = useSimpleStore()
 </script>
 
 <template lang="pug">
-.text-h6
-	|{{ simpleStore.selectedMenuRow.name }}
-	span (условия выбора)
+div dummy text
 </template>
 
 <style scoped lang="scss">
