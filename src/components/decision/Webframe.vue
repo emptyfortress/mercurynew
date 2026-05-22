@@ -112,7 +112,7 @@ const mainMenu = (row: any) => {
 	router.push('/dvmain/webframe/menu')
 	simpleStore.selectedMenuRow = row
 }
-const tab = ref('setup')
+const tab = ref('condition')
 </script>
 
 <template lang="pug">
@@ -144,12 +144,11 @@ const tab = ref('setup')
 				q-tab-panels(v-model="tab" animated)
 					q-tab-panel(name='setup')
 						q-btn(
-							unelevated,
+							flat,
 							color="primary",
-							icon="mdi-plus-circle-outline",
+							icon="mdi-plus-circle",
 							label="Создать разметку",
 							@click="create",
-							size='sm'
 						) 
 						q-table.q-mt-md(
 							:rows="tableData"
