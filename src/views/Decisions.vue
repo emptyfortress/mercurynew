@@ -31,7 +31,7 @@ q-page(padding)
 			template(v-slot:after)
 				router-view(v-slot="{ Component }")
 					transition(name="page" mode="out-in")
-						component(:is="Component" :key="route.fullPath")
+						component(:is="Component" :key="route.fullPath)
 
 	.container(v-if='route.params.constructorId === "folders"')
 		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei")
@@ -47,7 +47,7 @@ q-page(padding)
 			template(v-slot:after)
 				router-view(v-slot="{ Component }")
 					transition(name="page" mode="out-in")
-						component(:is="Component" :key="route.fullPath")
+						component(:is="Component" :key="route.fullPath)
 
 
 	Webframe(v-if='route.params.constructorId === "webframe"')
@@ -55,25 +55,7 @@ q-page(padding)
 </template>
 
 <style scoped lang="scss">
-.grid {
-	margin: 2rem auto;
-	display: grid;
-	grid-template-columns: 220px 1fr 1fr;
-	column-gap: 3rem;
-	row-gap: 1rem;
-}
-.q-item,
-.q-item__section--side {
-	color: var(--dark);
-}
-.selected {
-	background: var(--selection);
-}
 .container {
-	max-width: 1400px;
-	margin: 0 auto;
-}
-.container1 {
 	max-width: 1400px;
 	margin: 0 auto;
 }
@@ -97,8 +79,5 @@ q-page(padding)
 .page-leave-to {
 	opacity: 0;
 	transform: translateY(-10px);
-}
-.selectedtr {
-	background: var(--selection);
 }
 </style>
