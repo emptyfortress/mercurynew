@@ -47,13 +47,13 @@ const [parent, tapes] = useDragAndDrop(test.value, config)
 		.div {{index + 1}}
 		div
 			q-chip(
-				v-for="(value, key) in item"
+				v-for="key in ['mode', 'state', 'role', 'device']"
 				:key="key"
-				:label="`${propertyLabels[key]}: ${value}`"
+				:label="`${propertyLabels[key]}: ${item[key]}`"
 				dense
 			)
 		q-icon(name="mdi-arrow-right" color="primary" size="20px")
-		q-chip(label="layout")
+		q-chip(:label="item.layout" dense)
 		q-btn(flat round icon="mdi-close" color="secondary" @click="" dense size="sm")
 </template>
 
