@@ -9,6 +9,7 @@ const layouts = ref([
 		expanded: true,
 		conditions: [
 			{
+				id: 0,
 				mode: 'Создание',
 				state: 'Любое',
 				role: 'Любая',
@@ -16,6 +17,7 @@ const layouts = ref([
 				layout: 'Исходящий УД (создание)',
 			},
 			{
+				id: 1,
 				mode: 'Редактирование',
 				state: 'Любое',
 				role: 'Любая',
@@ -23,6 +25,7 @@ const layouts = ref([
 				layout: 'Исходящий УД (создание)',
 			},
 			{
+				id: 2,
 				mode: 'Просмотр',
 				state: 'Любое',
 				role: 'Любая',
@@ -36,6 +39,7 @@ const layouts = ref([
 		label: 'Договоры',
 		conditions: [
 			{
+				id: 3,
 				mode: 'Создание',
 				state: 'Любое',
 				role: 'Любая',
@@ -43,6 +47,7 @@ const layouts = ref([
 				layout: 'Договоры (создание)',
 			},
 			{
+				id: 4,
 				mode: 'Редактирование',
 				state: 'Любое',
 				role: 'Любая',
@@ -50,6 +55,7 @@ const layouts = ref([
 				layout: 'Договоры (создание)',
 			},
 			{
+				id: 5,
 				mode: 'Просмотр',
 				state: 'Любое',
 				role: 'Любая',
@@ -63,6 +69,7 @@ const layouts = ref([
 		label: 'Стандартное',
 		conditions: [
 			{
+				id: 6,
 				mode: 'Создание',
 				state: 'Любое',
 				role: 'Любая',
@@ -70,6 +77,7 @@ const layouts = ref([
 				layout: 'Стандарт (создание)',
 			},
 			{
+				id: 7,
 				mode: 'Редактирование',
 				state: 'Любое',
 				role: 'Любая',
@@ -77,6 +85,7 @@ const layouts = ref([
 				layout: 'Стандарт (создание)',
 			},
 			{
+				id: 8,
 				mode: 'Просмотр',
 				state: 'Любое',
 				role: 'Любая',
@@ -106,7 +115,17 @@ const createApp = () => {
 
 const appName = ref('')
 const sel = ref('')
-// const fuck = ref([true, false, false])
+
+const addCond = (item: any) => {
+	item.conditions.push({
+		id: Date.now(),
+		mode: 'Любой',
+		state: 'Любое',
+		role: 'Любая',
+		device: 'Любое',
+		layout: '',
+	})
+}
 </script>
 
 <template lang="pug">
@@ -121,10 +140,10 @@ q-expansion-item.my-expansion(v-for="item in layouts" :key="item.id" switchToggl
 				q-menu
 					q-list
 						q-item(clickable @click="remove(item.id)").pink
-							q-item-section Удалить
+							q-item-section Удалить решение
 	.inside
 		SolutionRule(:condition='item.conditions')
-		q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить условие" @click="") 
+		q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить условие" @click="addCond(item)") 
 
 
 q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")

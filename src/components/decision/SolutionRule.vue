@@ -4,6 +4,7 @@ import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
 
 interface Condition {
+	id: number
 	mode: string
 	state: string
 	role: string
@@ -38,6 +39,21 @@ const config = {
 }
 
 const [parent, tapes] = useDragAndDrop(test.value, config)
+
+const conditionKeys = ['mode', 'state', 'role', 'device'] as const
+type ConditionKey = (typeof conditionKeys)[number]
+const chipColors: Record<ConditionKey, string> = {
+	mode: 'blue-2',
+	state: 'orange-3',
+	role: 'pink-2',
+	device: 'deep-purple-2',
+}
+
+const remCondition = (item: Condition) => {
+	console.log(item)
+	console.log(tapes.value)
+	tapes.value = tapes.value.filter((el: Condition) => el.id !== item.id)
+}
 </script>
 
 <template lang="pug">
@@ -46,18 +62,37 @@ const [parent, tapes] = useDragAndDrop(test.value, config)
 		.han
 		.div {{index + 1}}
 		div
-			q-chip(
-				v-for="key in ['mode', 'state', 'role', 'device']"
+			q-chip.mychip(
+				v-for="key in conditionKeys"
 				:key="key"
-				:label="`${propertyLabels[key]}: ${item[key]}`"
+				:color="chipColors[key]"
 				dense
 			)
+				span.text-caption.text-grey-8 {{ propertyLabels[key] }}:&nbsp;
+				span.text-body2 {{ item[key] }}
+
+				q-menu
+					q-list(dense)
+						q-item(clickable)
+							q-item-section dummy text
+
 		q-icon(name="mdi-arrow-right" color="primary" size="20px")
-		q-chip(:label="item.layout" dense)
-		q-btn(flat round icon="mdi-close" color="secondary" @click="" dense size="sm")
+		div
+			q-chip.mychip(dense color="green-2" v-if='item.layout.length > 0')
+				q-icon(name="mdi-circle-medium" color="teal-9" size="sk")
+				label.text-teal-9 {{ item.layout }}
+			q-chip(v-else dense) Не задано
+				q-menu
+					q-list(dense)
+						q-item(clickable)
+							q-item-section Удалить
+		q-btn(flat round icon="mdi-close" color="secondary" @click="remCondition(item)" dense size="sm")
 </template>
 
 <style scoped lang="scss">
+.mychip {
+	border: 1px solid #888;
+}
 .han {
 	width: 20px;
 	height: 100%;
@@ -67,7 +102,7 @@ const [parent, tapes] = useDragAndDrop(test.value, config)
 }
 .cond {
 	display: grid;
-	grid-template-columns: 20px 10px 1fr 20px 150px auto;
+	grid-template-columns: 20px 10px 1fr 20px 250px auto;
 	padding-right: 0.25rem;
 	// justify-items: start;
 	align-items: center;
@@ -77,7 +112,7 @@ const [parent, tapes] = useDragAndDrop(test.value, config)
 	border: 1px solid #ccc;
 }
 .gh {
-	background: hsl(213 38% 81% / 1) !important;
+	background: hsl(213 38% 85% / 1) !important;
 	box-shadow: none !important;
 	border: none !important;
 	// height: 50px;
