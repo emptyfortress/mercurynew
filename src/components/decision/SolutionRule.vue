@@ -50,8 +50,6 @@ const chipColors: Record<ConditionKey, string> = {
 }
 
 const remCondition = (item: Condition) => {
-	console.log(item)
-	console.log(tapes.value)
 	tapes.value = tapes.value.filter((el: Condition) => el.id !== item.id)
 }
 
@@ -88,6 +86,7 @@ const updateValue = (item: Condition, key: ConditionKey, value: string) => {
 							v-for="value in valueOptions[key]"
 							:key="value"
 							clickable
+							v-close-popup
 							@click="updateValue(item, key, value)"
 						)
 							q-item-section {{ value }}
@@ -122,7 +121,7 @@ const updateValue = (item: Condition, key: ConditionKey, value: string) => {
 	padding-right: 0.25rem;
 	// justify-items: start;
 	align-items: center;
-	column-gap: 1rem;
+	column-gap: 0.5rem;
 	height: 41px;
 	background: var(--bgLight);
 	border: 1px solid #ccc;

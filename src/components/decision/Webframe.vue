@@ -205,8 +205,8 @@ q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(1
 .grid {
 	margin: 2rem auto;
 	display: grid;
-	grid-template-columns: 250px 1fr;
-	column-gap: 3rem;
+	grid-template-columns: 220px 1fr;
+	column-gap: 2rem;
 	row-gap: 1rem;
 }
 .selected {

@@ -132,9 +132,9 @@ const addCond = (item: any) => {
 q-btn.q-mb-md(flat color="primary" label="Добавить решение" icon="mdi-plus-circle" @click="createDialog = !createDialog") 
 q-expansion-item.my-expansion(v-for="item in layouts" :key="item.id" switchToggleSide v-model="item.expanded")
 	template(v-slot:header)
-		q-item-section {{ item.label }}
+		q-item-section.text-bold.text-primary {{ item.label }}
 		q-item-section
-		q-item-section правил: {{ item.conditions.length }}
+		q-item-section условий: {{ item.conditions.length }}
 		q-item-section(side)
 			q-btn(flat round icon="mdi-delete-outline" color="primary" @click.stop dense) 
 				q-menu
