@@ -102,6 +102,7 @@ const updateLayout = (item: Condition, value: string) => {
 							:key="value"
 							clickable
 							v-close-popup
+							:class="{ selected: item[key] === value }"
 							@click="updateValue(item, key, value)"
 						)
 							q-item-section {{ value }}
@@ -118,6 +119,7 @@ const updateLayout = (item: Condition, value: string) => {
 							:key="value"
 							clickable
 							v-close-popup
+							:class="{ selected: item.layout === value }"
 							@click="updateLayout(item, value)"
 						)
 							q-item-section {{ value }}
@@ -129,6 +131,7 @@ const updateLayout = (item: Condition, value: string) => {
 							:key="value"
 							clickable
 							v-close-popup
+							:class="{ selected: item.layout === value }"
 							@click="updateLayout(item, value)"
 						)
 							q-item-section {{ value }}
