@@ -75,6 +75,22 @@ const updateLayout = (item: Condition, value: string) => {
 const isDefaultValue = (item: Condition, key: ConditionKey) => {
 	return item[key] === valueOptions[key][0]
 }
+
+const emit = defineEmits(['update'])
+
+const conditionIdCounter = ref(1000)
+const addCond = () => {
+	const newId = conditionIdCounter.value++
+	const newCondition = {
+		id: newId,
+		mode: 'Любой',
+		state: 'Любое',
+		role: 'Любая',
+		device: 'Любое',
+		layout: '',
+	}
+	tapes.value.push(newCondition)
+}
 </script>
 
 <template lang="pug">
@@ -134,6 +150,7 @@ const isDefaultValue = (item: Condition, key: ConditionKey) => {
 						)
 							q-item-section {{ value }}
 		q-btn(flat round icon="mdi-close" color="secondary" @click="remCondition(index)" dense size="sm")
+q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить условие" @click="addCond") 
 </template>
 
 <style scoped lang="scss">

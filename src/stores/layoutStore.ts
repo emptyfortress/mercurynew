@@ -11,7 +11,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			date: '2024-01-15',
 			app: 'По умолчанию',
 		},
-		{ uid: uid(), name: 'КЭДО меню', author: 'admin', date: '2024-01-20', app: 'кэдо' },
+		{ uid: uid(), name: 'КЭДО меню', author: 'admin', date: '2024-01-20', app: 'КЭДО' },
 		{ uid: uid(), name: 'Меню админа', author: 'admin', date: '2024-01-20', app: '' },
 	])
 

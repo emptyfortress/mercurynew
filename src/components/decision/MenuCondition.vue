@@ -9,7 +9,7 @@ const layouts = ref([
 		expanded: false,
 		conditions: [
 			{
-				id: 0,
+				id: 1,
 				mode: 'Создание',
 				state: 'Любое',
 				role: 'Любая',
@@ -17,7 +17,7 @@ const layouts = ref([
 				layout: 'Меню по умолчанию',
 			},
 			{
-				id: 1,
+				id: 2,
 				mode: 'Редактирование',
 				state: 'Любое',
 				role: 'Любая',
@@ -25,7 +25,7 @@ const layouts = ref([
 				layout: 'Меню по умолчанию',
 			},
 			{
-				id: 2,
+				id: 3,
 				mode: 'Просмотр',
 				state: 'Любое',
 				role: 'Любая',
@@ -35,11 +35,11 @@ const layouts = ref([
 		],
 	},
 	{
-		id: 1,
+		id: 4,
 		label: 'КЭДО',
 		conditions: [
 			{
-				id: 3,
+				id: 5,
 				mode: 'Создание',
 				state: 'Любое',
 				role: 'Любая',
@@ -47,7 +47,7 @@ const layouts = ref([
 				layout: 'Меню админа',
 			},
 			{
-				id: 4,
+				id: 6,
 				mode: 'Редактирование',
 				state: 'Любое',
 				role: 'Любая',
@@ -55,7 +55,7 @@ const layouts = ref([
 				layout: 'Меню по умолчанию',
 			},
 			{
-				id: 5,
+				id: 7,
 				mode: 'Просмотр',
 				state: 'Любое',
 				role: 'Любая',
@@ -65,8 +65,6 @@ const layouts = ref([
 		],
 	},
 ])
-
-const conditionIdCounter = ref(1000)
 
 const remove = (id: number) => {
 	layouts.value = layouts.value.filter((item: any) => item.id !== id)
@@ -88,21 +86,9 @@ const createApp = () => {
 const appName = ref('')
 const sel = ref('')
 
-const addCond = (item: any) => {
-	const newId = conditionIdCounter.value++
-	const newCondition = {
-		id: newId,
-		mode: 'Любой',
-		state: 'Любое',
-		role: 'Любая',
-		device: 'Любое',
-		layout: '',
-	}
-	const layoutIndex = layouts.value.findIndex((layout) => layout.id === item.id)
-	if (layoutIndex !== -1) {
-		layouts.value[layoutIndex].conditions.push(newCondition)
-	}
-}
+// const update = (e: any) => {
+// 	console.log(e)
+// }
 </script>
 
 <template lang="pug">
@@ -120,8 +106,6 @@ q-expansion-item.my-expansion(v-for="item in layouts" :key="item.id" switchToggl
 							q-item-section Удалить решение
 	.inside
 		SolutionRule(:condition='item.conditions')
-		q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить условие" @click="addCond(item)") 
-
 
 q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")
 	q-card(style="min-width: 350px")
