@@ -46,7 +46,7 @@ const chipColors: Record<ConditionKey, string> = {
 	mode: 'blue-2',
 	state: 'orange-3',
 	role: 'pink-2',
-	device: 'deep-purple-2',
+	device: 'cyan-2',
 }
 
 const remCondition = (index: number) => {
