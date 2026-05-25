@@ -60,8 +60,20 @@ const valueOptions: Record<ConditionKey, string[]> = {
 	device: ['Любое', 'Десктоп', 'Мобильный', 'Планшет'],
 }
 
+const layoutOptions = [
+	'Исходящий УД (создание)',
+	'Договоры (создание)',
+	'Стандарт (создание)',
+	'Отчеты (создание)',
+	'Настройки (создание)',
+]
+
 const updateValue = (item: Condition, key: ConditionKey, value: string) => {
 	item[key] = value
+}
+
+const updateLayout = (item: Condition, value: string) => {
+	item.layout = value
 }
 </script>
 
@@ -96,11 +108,27 @@ const updateValue = (item: Condition, key: ConditionKey, value: string) => {
 			q-chip.mychip(dense color="green-2" v-if='item.layout.length > 0')
 				q-icon(name="mdi-circle-medium" color="teal-9" size="sk")
 				label.text-teal-9 {{ item.layout }}
+				q-menu
+					q-list(dense)
+						q-item(
+							v-for="value in layoutOptions"
+							:key="value"
+							clickable
+							v-close-popup
+							@click="updateLayout(item, value)"
+						)
+							q-item-section {{ value }}
 			q-chip(v-else dense) Не задано
 				q-menu
 					q-list(dense)
-						q-item(clickable)
-							q-item-section Удалить
+						q-item(
+							v-for="value in layoutOptions"
+							:key="value"
+							clickable
+							v-close-popup
+							@click="updateLayout(item, value)"
+						)
+							q-item-section {{ value }}
 		q-btn(flat round icon="mdi-close" color="secondary" @click="remCondition(item)" dense size="sm")
 </template>
 
