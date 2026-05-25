@@ -49,8 +49,8 @@ const chipColors: Record<ConditionKey, string> = {
 	device: 'deep-purple-2',
 }
 
-const remCondition = (item: Condition) => {
-	tapes.value = tapes.value.filter((el: Condition) => el.id !== item.id)
+const remCondition = (index: number) => {
+	tapes.value.splice(index, 1)
 }
 
 const valueOptions: Record<ConditionKey, string[]> = {
@@ -135,7 +135,7 @@ const updateLayout = (item: Condition, value: string) => {
 							@click="updateLayout(item, value)"
 						)
 							q-item-section {{ value }}
-		q-btn(flat round icon="mdi-close" color="secondary" @click="remCondition(item)" dense size="sm")
+		q-btn(flat round icon="mdi-close" color="secondary" @click="remCondition(index)" dense size="sm")
 </template>
 
 <style scoped lang="scss">
