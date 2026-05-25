@@ -62,10 +62,13 @@ const valueOptions: Record<ConditionKey, string[]> = {
 
 const layoutOptions = [
 	'Исходящий УД (создание)',
+	'Исходящий УД (просмотр)',
 	'Договоры (создание)',
+	'Договоры (просмотр)',
 	'Стандарт (создание)',
-	'Отчеты (создание)',
-	'Настройки (создание)',
+	'Стандарт (просмотр)',
+	'Отчеты (просмотр)',
+	'Настройки (редактирование)',
 ]
 
 const updateValue = (item: Condition, key: ConditionKey, value: string) => {
@@ -167,5 +170,8 @@ const updateLayout = (item: Condition, value: string) => {
 	&:after {
 		display: none;
 	}
+}
+.selected {
+	background: var(--selection);
 }
 </style>
