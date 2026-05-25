@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import MenuCondition from '@/components/decision/MenuCondition.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { useRouter, useRoute } from 'vue-router'
@@ -24,6 +24,13 @@ const select = (n: number) => {
 
 const selectedListItem = ref<null | number>(0)
 
+const header = computed(() => {
+	if (selectedListItem.value == 0) return 'главного меню'
+	if (selectedListItem.value == 1) return 'верхней панели'
+	if (selectedListItem.value == 1) return 'дашборда'
+	return 'фона приложения'
+})
+
 const tableColumns = [
 	{
 		name: 'name',
@@ -38,7 +45,7 @@ const tableColumns = [
 	{ name: 'actions', label: '', field: 'actions', align: 'right' as const },
 ]
 
-const tableData = ref([
+const layoutData = ref([
 	{
 		uid: uid(),
 		name: 'Меню по умолчанию',
@@ -47,15 +54,8 @@ const tableData = ref([
 		app: 'По умолчанию',
 	},
 	{ uid: uid(), name: 'КЭДО меню', author: 'admin', date: '2024-01-20', app: 'кэдо' },
+	{ uid: uid(), name: 'Меню админа', author: 'admin', date: '2024-01-20', app: '' },
 ])
-
-// const selectRow = (row: any) => {
-// 	if (simpleStore.selectedMenuRow && simpleStore.selectedMenuRow.uid === row.uid) {
-// 		simpleStore.selectedMenuRow = null
-// 	} else {
-// 		simpleStore.selectedMenuRow = row
-// 	}
-// }
 
 const duplicateTableItem = (row: {
 	uid: string
@@ -71,12 +71,12 @@ const duplicateTableItem = (row: {
 		date: new Date().toISOString().split('T')[0],
 		app: '',
 	}
-	tableData.value.push(newItem)
+	layoutData.value.push(newItem)
 	simpleStore.selectedMenuRow = newItem
 }
 
 const deleteTableItem = (uid: string) => {
-	tableData.value = tableData.value.filter((item) => item.uid !== uid)
+	layoutData.value = layoutData.value.filter((item) => item.uid !== uid)
 }
 
 const createDialog = ref(false)
@@ -96,7 +96,7 @@ const createMenu = () => {
 			date: new Date().toISOString().split('T')[0],
 			app: '',
 		}
-		tableData.value.push(tmp)
+		layoutData.value.push(tmp)
 		createDialog.value = false
 		simpleStore.selectedMenuRow = tmp
 	}
@@ -112,12 +112,12 @@ const mainMenu = (row: any) => {
 	router.push('/dvmain/webframe/menu')
 	simpleStore.selectedMenuRow = row
 }
-const tab = ref('condition')
+const tab = ref('setup')
 </script>
 
 <template lang="pug">
 .container1
-	.text-h5.text-center Настройка рабочей области
+	.text-h5.text-center Настройка {{ header }}
 
 	.grid
 		div
@@ -138,7 +138,7 @@ const tab = ref('condition')
 			div(v-if='selectedListItem == 0')
 
 				q-tabs(v-model="tab" align="left" activeColor="primary" indicatorColor="primary")
-					q-tab(name='setup' label="Главное меню")
+					q-tab(name='setup' label="Разметки")
 					q-tab(name='condition' label="Условия выбора")
 
 				q-tab-panels(v-model="tab" animated)
@@ -151,7 +151,7 @@ const tab = ref('condition')
 							@click="create",
 						) 
 						q-table.q-mt-md(
-							:rows="tableData"
+							:rows="layoutData"
 							:columns="tableColumns"
 							row-key="uid"
 							flat

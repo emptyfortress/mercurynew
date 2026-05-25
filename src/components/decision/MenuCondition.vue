@@ -6,7 +6,7 @@ const layouts = ref([
 	{
 		id: 0,
 		label: 'Управление делами',
-		expanded: true,
+		expanded: false,
 		conditions: [
 			{
 				id: 0,
@@ -14,7 +14,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Исходящий УД (создание)',
+				layout: 'Меню по умолчанию',
 			},
 			{
 				id: 1,
@@ -22,7 +22,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Исходящий УД (создание)',
+				layout: 'Меню по умолчанию',
 			},
 			{
 				id: 2,
@@ -30,7 +30,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Исходящий УД (создание)',
+				layout: 'КЭДО меню',
 			},
 		],
 	},
@@ -44,7 +44,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Договоры (создание)',
+				layout: 'Меню админа',
 			},
 			{
 				id: 4,
@@ -52,7 +52,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Договоры (создание)',
+				layout: 'Меню по умолчанию',
 			},
 			{
 				id: 5,
@@ -60,7 +60,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Договоры (создание)',
+				layout: 'Меню по умолчанию',
 			},
 		],
 	},
@@ -74,7 +74,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Стандарт (создание)',
+				layout: 'Меню по умолчанию',
 			},
 			{
 				id: 7,
@@ -82,7 +82,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Стандарт (создание)',
+				layout: 'КЭДО меню',
 			},
 			{
 				id: 8,
@@ -90,7 +90,7 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
-				layout: 'Стандарт (создание)',
+				layout: 'КЭДО меню',
 			},
 		],
 	},

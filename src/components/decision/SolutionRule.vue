@@ -60,16 +60,7 @@ const valueOptions: Record<ConditionKey, string[]> = {
 	device: ['Любое', 'Десктоп', 'Мобильный', 'Планшет'],
 }
 
-const layoutOptions = [
-	'Исходящий УД (создание)',
-	'Исходящий УД (просмотр)',
-	'Договоры (создание)',
-	'Договоры (просмотр)',
-	'Стандарт (создание)',
-	'Стандарт (просмотр)',
-	'Отчеты (просмотр)',
-	'Настройки (редактирование)',
-]
+const layoutOptions = ['Меню по умолчанию', 'КЭДО меню', 'Меню админа']
 
 const updateValue = (item: Condition, key: ConditionKey, value: string) => {
 	item[key] = value
@@ -114,7 +105,7 @@ const isDefaultValue = (item: Condition, key: ConditionKey) => {
 
 		q-icon(name="mdi-arrow-right" color="primary" size="20px")
 		div
-			q-chip.mychip(dense color="green-2" v-if='item.layout.length > 0')
+			q-chip.lastchip(dense color="green-2" v-if='item.layout.length > 0')
 				q-icon(name="mdi-circle-medium" color="teal-9" size="sk")
 				label.text-teal-9 {{ item.layout }}
 				q-menu
@@ -144,6 +135,9 @@ const isDefaultValue = (item: Condition, key: ConditionKey) => {
 </template>
 
 <style scoped lang="scss">
+.lastchip {
+	border: 1px solid teal;
+}
 .mychip {
 	&.has-border {
 		border: 1px solid #888;
