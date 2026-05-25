@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
+import { useLayoutStore } from '@/stores/layoutStore'
 
 interface Condition {
 	id: number
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const layoutStore = useLayoutStore()
 
 const test = ref(props.condition)
 
@@ -60,7 +62,7 @@ const valueOptions: Record<ConditionKey, string[]> = {
 	device: ['Любое', 'Десктоп', 'Мобильный', 'Планшет'],
 }
 
-const layoutOptions = ['Меню по умолчанию', 'КЭДО меню', 'Меню админа']
+const layoutOptions = computed(() => layoutStore.layoutData.map((item) => item.name))
 
 const updateValue = (item: Condition, key: ConditionKey, value: string) => {
 	item[key] = value
