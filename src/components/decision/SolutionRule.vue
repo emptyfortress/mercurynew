@@ -54,6 +54,17 @@ const remCondition = (item: Condition) => {
 	console.log(tapes.value)
 	tapes.value = tapes.value.filter((el: Condition) => el.id !== item.id)
 }
+
+const valueOptions: Record<ConditionKey, string[]> = {
+	mode: ['Создание', 'Редактирование', 'Просмотр', 'Любой'],
+	state: ['Любое', 'Активный', 'Завершен', 'Отменен'],
+	role: ['Любая', 'Администратор', 'Пользователь', 'Гость'],
+	device: ['Любое', 'Десктоп', 'Мобильный', 'Планшет'],
+}
+
+const updateValue = (item: Condition, key: ConditionKey, value: string) => {
+	item[key] = value
+}
 </script>
 
 <template lang="pug">
@@ -73,8 +84,13 @@ const remCondition = (item: Condition) => {
 
 				q-menu
 					q-list(dense)
-						q-item(clickable)
-							q-item-section dummy text
+						q-item(
+							v-for="value in valueOptions[key]"
+							:key="value"
+							clickable
+							@click="updateValue(item, key, value)"
+						)
+							q-item-section {{ value }}
 
 		q-icon(name="mdi-arrow-right" color="primary" size="20px")
 		div
