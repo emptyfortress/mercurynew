@@ -161,8 +161,6 @@ const updateLayout = (item: Condition, value: string) => {
 	background: hsl(213 38% 85% / 1) !important;
 	box-shadow: none !important;
 	border: none !important;
-	// height: 50px;
-	// width: 100%;
 	* {
 		display: none;
 	}
