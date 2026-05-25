@@ -78,6 +78,10 @@ const updateValue = (item: Condition, key: ConditionKey, value: string) => {
 const updateLayout = (item: Condition, value: string) => {
 	item.layout = value
 }
+
+const isDefaultValue = (item: Condition, key: ConditionKey) => {
+	return item[key] === valueOptions[key][0]
+}
 </script>
 
 <template lang="pug">
@@ -89,7 +93,7 @@ const updateLayout = (item: Condition, value: string) => {
 			q-chip.mychip(
 				v-for="key in conditionKeys"
 				:key="key"
-				:color="chipColors[key]"
+				:color="isDefaultValue(item, key) ? 'grey-4' : chipColors[key]"
 				dense
 			)
 				span.text-caption.text-grey-8 {{ propertyLabels[key] }}:&nbsp;
