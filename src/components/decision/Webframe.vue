@@ -46,14 +46,14 @@ const tableColumns = [
 	{ name: 'actions', label: '', field: 'actions', align: 'right' as const },
 ]
 
-const duplicateTableItem = (row: {
+const duplicateLayout = (row: {
 	uid: string
 	name: string
 	author: string
 	date: string
 	comment: string
 }) => {
-	layoutStore.duplicateTableItem(row)
+	layoutStore.duplicateLayout(row)
 }
 
 const deleteTableItem = (uid: string) => {
@@ -142,7 +142,7 @@ const tab = ref('setup')
 									q-td(:props='props' key="app") {{ props.row.app }}
 
 									q-td(:props="props" key='actions')
-										q-btn.q-mr-md(flat round dense icon="mdi-content-duplicate" @click.stop="duplicateTableItem(props.row)") 
+										q-btn.q-mr-md(flat round dense icon="mdi-content-duplicate" @click.stop="duplicateLayout(props.row)") 
 										q-btn(flat round dense color="negative" icon="mdi-delete-outline" @click.stop) 
 											q-menu
 												q-list

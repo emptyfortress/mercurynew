@@ -1,3 +1,4 @@
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { uid } from 'quasar'
 
@@ -14,7 +15,7 @@ export const useLayoutStore = defineStore('layout', () => {
 		{ uid: uid(), name: 'Меню админа', author: 'admin', date: '2024-01-20', app: '' },
 	])
 
-	const duplicateTableItem = (row: {
+	const duplicateLayout = (row: {
 		uid: string
 		name: string
 		author: string
@@ -49,7 +50,7 @@ export const useLayoutStore = defineStore('layout', () => {
 
 	return {
 		layoutData,
-		duplicateTableItem,
+		duplicateLayout,
 		deleteTableItem,
 		createTableItem,
 	}
