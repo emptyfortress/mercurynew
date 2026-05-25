@@ -6,24 +6,28 @@ const layouts = ref([
 	{
 		id: 0,
 		label: 'Управление делами',
+		expanded: true,
 		conditions: [
 			{
 				mode: 'Создание',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Исходящий УД (создание)',
 			},
 			{
 				mode: 'Редактирование',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Исходящий УД (создание)',
 			},
 			{
 				mode: 'Просмотр',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Исходящий УД (создание)',
 			},
 		],
 	},
@@ -36,18 +40,21 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Договоры (создание)',
 			},
 			{
 				mode: 'Редактирование',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Договоры (создание)',
 			},
 			{
 				mode: 'Просмотр',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Договоры (создание)',
 			},
 		],
 	},
@@ -60,18 +67,21 @@ const layouts = ref([
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Стандарт (создание)',
 			},
 			{
 				mode: 'Редактирование',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Стандарт (создание)',
 			},
 			{
 				mode: 'Просмотр',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
+				layout: 'Стандарт (создание)',
 			},
 		],
 	},
@@ -96,24 +106,25 @@ const createApp = () => {
 
 const appName = ref('')
 const sel = ref('')
+// const fuck = ref([true, false, false])
 </script>
 
 <template lang="pug">
 q-btn.q-mb-md(flat color="primary" label="Добавить решение" icon="mdi-plus-circle" @click="createDialog = !createDialog") 
-q-list(v-for="item in layouts" :key="item.id")
-	q-expansion-item.my-expansion(switchToggleSide)
-		template(v-slot:header)
-			q-item-section {{ item.label }}
-			q-item-section
-			q-item-section правил: {{ item.conditions.length }}
-			q-item-section(side)
-				q-btn(flat round icon="mdi-delete-outline" color="primary" @click.stop dense) 
-					q-menu
-						q-list
-							q-item(clickable @click="remove(item.id)").pink
-								q-item-section Удалить
-		.inside
-			SolutionRule(:condition='item.conditions')
+q-expansion-item.my-expansion(v-for="item in layouts" :key="item.id" switchToggleSide v-model="item.expanded")
+	template(v-slot:header)
+		q-item-section {{ item.label }}
+		q-item-section
+		q-item-section правил: {{ item.conditions.length }}
+		q-item-section(side)
+			q-btn(flat round icon="mdi-delete-outline" color="primary" @click.stop dense) 
+				q-menu
+					q-list
+						q-item(clickable @click="remove(item.id)").pink
+							q-item-section Удалить
+	.inside
+		SolutionRule(:condition='item.conditions')
+		q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить условие" @click="") 
 
 
 q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")
