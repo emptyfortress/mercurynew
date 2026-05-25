@@ -94,6 +94,7 @@ const isDefaultValue = (item: Condition, key: ConditionKey) => {
 				v-for="key in conditionKeys"
 				:key="key"
 				:color="isDefaultValue(item, key) ? 'grey-4' : chipColors[key]"
+				:class="{ 'has-border': !isDefaultValue(item, key) }"
 				dense
 			)
 				span.text-caption.text-grey-8 {{ propertyLabels[key] }}:&nbsp;
@@ -144,7 +145,9 @@ const isDefaultValue = (item: Condition, key: ConditionKey) => {
 
 <style scoped lang="scss">
 .mychip {
-	border: 1px solid #888;
+	&.has-border {
+		border: 1px solid #888;
+	}
 }
 .han {
 	width: 20px;
