@@ -90,14 +90,18 @@ const sel = ref('')
 
 const addCond = (item: any) => {
 	const newId = conditionIdCounter.value++
-	item.conditions.push({
+	const newCondition = {
 		id: newId,
 		mode: 'Любой',
 		state: 'Любое',
 		role: 'Любая',
 		device: 'Любое',
 		layout: '',
-	})
+	}
+	const layoutIndex = layouts.value.findIndex((layout) => layout.id === item.id)
+	if (layoutIndex !== -1) {
+		layouts.value[layoutIndex].conditions.push(newCondition)
+	}
 }
 </script>
 
