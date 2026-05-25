@@ -2,12 +2,13 @@
 import { ref, computed } from 'vue'
 import MenuCondition from '@/components/decision/MenuCondition.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
+import { useLayoutStore } from '@/stores/layoutStore'
 import { useRouter, useRoute } from 'vue-router'
-import { uid } from 'quasar'
 import LucideLayoutTemplate from '@/components/icons/LucideLayoutTemplate.vue'
 import IconParkSolidPageTemplate from '@/components/icons/IconParkSolidPageTemplate.vue'
 
 const simpleStore = useSimpleStore()
+const layoutStore = useLayoutStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -45,18 +46,6 @@ const tableColumns = [
 	{ name: 'actions', label: '', field: 'actions', align: 'right' as const },
 ]
 
-const layoutData = ref([
-	{
-		uid: uid(),
-		name: 'Меню по умолчанию',
-		author: 'admin',
-		date: '2024-01-15',
-		app: 'По умолчанию',
-	},
-	{ uid: uid(), name: 'КЭДО меню', author: 'admin', date: '2024-01-20', app: 'кэдо' },
-	{ uid: uid(), name: 'Меню админа', author: 'admin', date: '2024-01-20', app: '' },
-])
-
 const duplicateTableItem = (row: {
 	uid: string
 	name: string
@@ -64,19 +53,11 @@ const duplicateTableItem = (row: {
 	date: string
 	comment: string
 }) => {
-	const newItem = {
-		uid: uid(),
-		name: `${row.name} (копия)`,
-		author: row.author,
-		date: new Date().toISOString().split('T')[0],
-		app: '',
-	}
-	layoutData.value.push(newItem)
-	simpleStore.selectedMenuRow = newItem
+	layoutStore.duplicateTableItem(row)
 }
 
 const deleteTableItem = (uid: string) => {
-	layoutData.value = layoutData.value.filter((item) => item.uid !== uid)
+	layoutStore.deleteTableItem(uid)
 }
 
 const createDialog = ref(false)
@@ -89,16 +70,9 @@ const create = () => {
 
 const createMenu = () => {
 	if (newMenuName.value.trim()) {
-		let tmp = {
-			uid: uid(),
-			name: newMenuName.value.trim(),
-			author: 'admin',
-			date: new Date().toISOString().split('T')[0],
-			app: '',
-		}
-		layoutData.value.push(tmp)
+		const newItem = layoutStore.createTableItem(newMenuName.value)
 		createDialog.value = false
-		simpleStore.selectedMenuRow = tmp
+		simpleStore.selectedMenuRow = newItem
 	}
 }
 
@@ -151,7 +125,7 @@ const tab = ref('setup')
 							@click="create",
 						) 
 						q-table.q-mt-md(
-							:rows="layoutData"
+							:rows="layoutStore.layoutData"
 							:columns="tableColumns"
 							row-key="uid"
 							flat
