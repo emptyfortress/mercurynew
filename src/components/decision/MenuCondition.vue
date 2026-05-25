@@ -5,7 +5,7 @@ import SolutionRule from '@/components/decision/SolutionRule.vue'
 const layouts = ref([
 	{
 		id: 0,
-		label: 'Управление делами',
+		label: 'По умолчанию',
 		expanded: false,
 		conditions: [
 			{
@@ -36,7 +36,7 @@ const layouts = ref([
 	},
 	{
 		id: 1,
-		label: 'Договоры',
+		label: 'КЭДО',
 		conditions: [
 			{
 				id: 3,
@@ -61,36 +61,6 @@ const layouts = ref([
 				role: 'Любая',
 				device: 'Любое',
 				layout: 'Меню по умолчанию',
-			},
-		],
-	},
-	{
-		id: 2,
-		label: 'Стандартное',
-		conditions: [
-			{
-				id: 6,
-				mode: 'Создание',
-				state: 'Любое',
-				role: 'Любая',
-				device: 'Любое',
-				layout: 'Меню по умолчанию',
-			},
-			{
-				id: 7,
-				mode: 'Редактирование',
-				state: 'Любое',
-				role: 'Любая',
-				device: 'Любое',
-				layout: 'КЭДО меню',
-			},
-			{
-				id: 8,
-				mode: 'Просмотр',
-				state: 'Любое',
-				role: 'Любая',
-				device: 'Любое',
-				layout: 'КЭДО меню',
 			},
 		],
 	},
