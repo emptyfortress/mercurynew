@@ -66,6 +66,8 @@ const layouts = ref([
 	},
 ])
 
+const conditionIdCounter = ref(1000)
+
 const remove = (id: number) => {
 	layouts.value = layouts.value.filter((item: any) => item.id !== id)
 }
@@ -87,8 +89,9 @@ const appName = ref('')
 const sel = ref('')
 
 const addCond = (item: any) => {
+	const newId = conditionIdCounter.value++
 	item.conditions.push({
-		id: Date.now(),
+		id: newId,
 		mode: 'Любой',
 		state: 'Любое',
 		role: 'Любая',
