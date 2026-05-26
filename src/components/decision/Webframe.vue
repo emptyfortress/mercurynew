@@ -120,7 +120,7 @@ const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test
 					label Решение:
 					q-select.decision(v-model="layoutStore.currentDecision" dense outlined :options="desisionList")
 					q-tab(name='setup' label="Разметки")
-					q-tab(name='condition' label="Условия выбора")
+					q-tab(name='condition' label="Условия выбора разметок")
 
 				q-tab-panels(v-model="tab" animated)
 					q-tab-panel(name='setup')

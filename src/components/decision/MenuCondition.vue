@@ -102,22 +102,28 @@ const remove = (id: number) => {
 	layouts.value = layouts.value.filter((item: any) => item.id !== id)
 }
 
-// const createDialog = ref(false)
+const activateLayout = (activatedId: number, value: boolean) => {
+	if (!value) return
 
-// const createApp = () => {
-// 	if (appName.value.trim()) {
-// 		let tmp = {
-// 			id: Date.now(),
-// 			label: appName.value.trim(),
-// 			conditions: [],
-// 		}
-// 		layouts.value.push(tmp)
-// 		createDialog.value = false
-// 	}
-// }
+	// Выключаем все остальные чекбоксы и сворачиваем их
+	layouts.value.forEach((item) => {
+		if (item.id !== activatedId) {
+			item.isActive = false
+			item.expanded = false
+		}
+	})
 
-// const appName = ref('')
-// const sel = ref('')
+	// Находим активированный элемент и перемещаем его на первое место
+	const index = layouts.value.findIndex((item) => item.id === activatedId)
+	if (index > 0) {
+		const [activated] = layouts.value.splice(index, 1)
+		activated.expanded = true
+		layouts.value.unshift(activated)
+	} else {
+		// Уже первый — просто раскрываем
+		layouts.value[0].expanded = true
+	}
+}
 </script>
 
 <template lang="pug">
@@ -127,7 +133,12 @@ q-expansion-item.my-expansion(v-for="item in layouts" :key="item.id" switchToggl
 		q-item-section.text-bold.text-primary {{ item.label }}
 		q-item-section условий: {{ item.conditions.length }}
 		q-item-section
-			q-checkbox(v-model='item.isActive' label='isActive' dense)
+			q-checkbox(
+				v-model='item.isActive',
+				label='isActive',
+				dense
+				@update:modelValue="activateLayout(item.id, $event)"
+			)
 		q-item-section(side)
 			q-btn(flat round icon="mdi-delete-outline" color="primary" @click.stop dense :disable='item.id == 8') 
 				q-menu
@@ -137,23 +148,6 @@ q-expansion-item.my-expansion(v-for="item in layouts" :key="item.id" switchToggl
 	.inside
 		SolutionRule(:condition='item.conditions')
 
-// q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")
-	q-card(style="min-width: 350px")
-		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
-		q-card-section
-			.text-h6 Добавить решение
-			q-input.q-mt-md(
-				v-model="appName"
-				label="Название"
-				dense
-				outlined
-				autofocus
-				@keyup.enter="createApp"
-			)
-			q-select.q-mt-md(v-model="sel" outlined dense label="Решение" :options="['решение1', 'решение2','решение3']")
-		q-card-actions(align="right")
-			q-btn(flat label="Отмена" v-close-popup)
-			q-btn(unelevated color="primary" label="Создать" @click="createApp")
 </template>
 
 <style scoped lang="scss">
