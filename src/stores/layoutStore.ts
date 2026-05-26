@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 import { uid } from 'quasar'
 
 export const useLayoutStore = defineStore('layout', () => {
+	const currentDecision = ref('По умолчанию')
+
 	const layoutData = ref([
 		{
 			uid: uid(),
@@ -10,9 +12,40 @@ export const useLayoutStore = defineStore('layout', () => {
 			author: 'admin',
 			date: '2024-01-15',
 			app: 'По умолчанию',
+			use: true,
 		},
-		{ uid: uid(), name: 'КЭДО меню', author: 'admin', date: '2024-01-20', app: 'КЭДО' },
-		{ uid: uid(), name: 'Меню админа', author: 'admin', date: '2024-01-20', app: '' },
+		{
+			uid: uid(),
+			name: 'Меню КЭДО',
+			author: 'admin',
+			date: '2024-01-20',
+			app: 'КЭДО',
+			use: true,
+		},
+		{
+			uid: uid(),
+			name: 'Меню админа',
+			author: 'admin',
+			date: '2024-01-20',
+			app: 'По умолчанию',
+			use: true,
+		},
+		{
+			uid: uid(),
+			name: 'Меню мобильное',
+			author: 'admin',
+			date: '2024-01-20',
+			app: 'По умолчанию',
+			use: true,
+		},
+		{
+			uid: uid(),
+			name: 'Меню планшет',
+			author: 'admin',
+			date: '2024-01-20',
+			app: 'По умолчанию',
+			use: false,
+		},
 	])
 
 	const duplicateLayout = (row: {
@@ -20,7 +53,8 @@ export const useLayoutStore = defineStore('layout', () => {
 		name: string
 		author: string
 		date: string
-		comment: string
+		app: string
+		use: boolean
 	}) => {
 		const newItem = {
 			uid: uid(),
@@ -28,6 +62,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			author: row.author,
 			date: new Date().toISOString().split('T')[0],
 			app: '',
+			use: false,
 		}
 		layoutData.value.push(newItem)
 	}
@@ -43,12 +78,14 @@ export const useLayoutStore = defineStore('layout', () => {
 			author: 'admin',
 			date: new Date().toISOString().split('T')[0],
 			app: '',
+			use: false,
 		}
 		layoutData.value.push(newItem)
 		return newItem
 	}
 
 	return {
+		currentDecision,
 		layoutData,
 		duplicateLayout,
 		deleteTableItem,

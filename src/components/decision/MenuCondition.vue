@@ -4,59 +4,91 @@ import SolutionRule from '@/components/decision/SolutionRule.vue'
 
 const layouts = ref([
 	{
-		id: 0,
+		id: 1,
 		label: 'По умолчанию',
-		expanded: false,
+		expanded: true,
+		isActive: false,
 		conditions: [
-			{
-				id: 1,
-				mode: 'Создание',
-				state: 'Любое',
-				role: 'Любая',
-				device: 'Любое',
-				layout: 'Меню по умолчанию',
-			},
 			{
 				id: 2,
-				mode: 'Редактирование',
+				mode: 'Любой',
 				state: 'Любое',
-				role: 'Любая',
-				device: 'Любое',
-				layout: 'Меню по умолчанию',
-			},
-			{
-				id: 3,
-				mode: 'Просмотр',
-				state: 'Любое',
-				role: 'Любая',
-				device: 'Любое',
-				layout: 'КЭДО меню',
-			},
-		],
-	},
-	{
-		id: 4,
-		label: 'КЭДО',
-		conditions: [
-			{
-				id: 5,
-				mode: 'Создание',
-				state: 'Любое',
-				role: 'Любая',
+				role: 'admin',
 				device: 'Любое',
 				layout: 'Меню админа',
 			},
 			{
-				id: 6,
-				mode: 'Редактирование',
+				id: 3,
+				mode: 'Любой',
+				state: 'Любое',
+				role: 'Пользователь',
+				device: 'Мобильный',
+				layout: 'Меню мобильное',
+			},
+			{
+				id: 4,
+				mode: 'Любой',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
 				layout: 'Меню по умолчанию',
 			},
+		],
+	},
+	{
+		id: 5,
+		label: 'КЭДО',
+		isActive: false,
+		conditions: [
+			{
+				id: 6,
+				mode: 'Любой',
+				state: 'Любое',
+				role: 'admin',
+				device: 'Любое',
+				layout: 'Меню админа',
+			},
 			{
 				id: 7,
-				mode: 'Просмотр',
+				mode: 'Любой',
+				state: 'Любое',
+				role: 'Любая',
+				device: 'Любое',
+				layout: 'Меню КЭДО',
+			},
+		],
+	},
+	{
+		id: 8,
+		label: 'DVshowcase',
+		isActive: false,
+		conditions: [
+			{
+				id: 9,
+				mode: 'Любой',
+				state: 'Любое',
+				role: 'admin',
+				device: 'Любое',
+				layout: 'Меню админа',
+			},
+			{
+				id: 10,
+				mode: 'Любой',
+				state: 'Любое',
+				role: 'Любая',
+				device: 'Любое',
+				layout: 'Меню по умолчанию',
+			},
+		],
+	},
+	{
+		id: 11,
+		label: 'test',
+		isActive: false,
+		conditions: [
+			{
+				id: 12,
+				mode: 'Любой',
 				state: 'Любое',
 				role: 'Любая',
 				device: 'Любое',
@@ -69,37 +101,35 @@ const layouts = ref([
 const remove = (id: number) => {
 	layouts.value = layouts.value.filter((item: any) => item.id !== id)
 }
-const createDialog = ref(false)
 
-const createApp = () => {
-	if (appName.value.trim()) {
-		let tmp = {
-			id: Date.now(),
-			label: appName.value.trim(),
-			conditions: [],
-		}
-		layouts.value.push(tmp)
-		createDialog.value = false
-	}
-}
+// const createDialog = ref(false)
 
-const appName = ref('')
-const sel = ref('')
-
-// const update = (e: any) => {
-// 	console.log(e)
+// const createApp = () => {
+// 	if (appName.value.trim()) {
+// 		let tmp = {
+// 			id: Date.now(),
+// 			label: appName.value.trim(),
+// 			conditions: [],
+// 		}
+// 		layouts.value.push(tmp)
+// 		createDialog.value = false
+// 	}
 // }
+
+// const appName = ref('')
+// const sel = ref('')
 </script>
 
 <template lang="pug">
-q-btn.q-mb-md(flat color="primary" label="Добавить решение" icon="mdi-plus-circle" @click="createDialog = !createDialog") 
+
 q-expansion-item.my-expansion(v-for="item in layouts" :key="item.id" switchToggleSide v-model="item.expanded")
 	template(v-slot:header)
 		q-item-section.text-bold.text-primary {{ item.label }}
-		q-item-section
 		q-item-section условий: {{ item.conditions.length }}
+		q-item-section
+			q-checkbox(v-model='item.isActive' label='isActive' dense)
 		q-item-section(side)
-			q-btn(flat round icon="mdi-delete-outline" color="primary" @click.stop dense) 
+			q-btn(flat round icon="mdi-delete-outline" color="primary" @click.stop dense :disable='item.id == 8') 
 				q-menu
 					q-list
 						q-item(clickable @click="remove(item.id)").pink
@@ -107,7 +137,7 @@ q-expansion-item.my-expansion(v-for="item in layouts" :key="item.id" switchToggl
 	.inside
 		SolutionRule(:condition='item.conditions')
 
-q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")
+// q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")
 	q-card(style="min-width: 350px")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section

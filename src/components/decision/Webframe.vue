@@ -9,7 +9,7 @@ import IconParkSolidPageTemplate from '@/components/icons/IconParkSolidPageTempl
 
 const simpleStore = useSimpleStore()
 const layoutStore = useLayoutStore()
-const route = useRoute()
+// const route = useRoute()
 const router = useRouter()
 
 const list = ref([
@@ -35,7 +35,7 @@ const header = computed(() => {
 const tableColumns = [
 	{
 		name: 'name',
-		label: 'Название разметки',
+		label: 'Название',
 		field: 'name',
 		align: 'left' as const,
 		sortable: true,
@@ -43,6 +43,7 @@ const tableColumns = [
 	{ name: 'author', label: 'Автор', field: 'author', align: 'left' as const, sortable: true },
 	{ name: 'date', label: 'Дата создания', field: 'date', align: 'left' as const, sortable: true },
 	{ name: 'app', label: 'Решение', field: 'app', align: 'left' as const, sortable: true },
+	{ name: 'use', label: 'Используется', field: 'use', align: 'center' as const, sortable: true },
 	{ name: 'actions', label: '', field: 'actions', align: 'right' as const },
 ]
 
@@ -51,7 +52,8 @@ const duplicateLayout = (row: {
 	name: string
 	author: string
 	date: string
-	comment: string
+	app: string
+	use: boolean
 }) => {
 	layoutStore.duplicateLayout(row)
 }
@@ -76,17 +78,20 @@ const createMenu = () => {
 	}
 }
 
-const calcClass = (uid: string) => {
-	if (simpleStore.selectedMenuRow && simpleStore.selectedMenuRow.uid == uid) {
-		return 'selectedtr'
-	}
-	return ''
-}
+// const calcClass = (uid: string) => {
+// 	if (simpleStore.selectedMenuRow && simpleStore.selectedMenuRow.uid == uid) {
+// 		return 'selectedtr'
+// 	}
+// 	return ''
+// }
+
 const mainMenu = (row: any) => {
 	router.push('/dvmain/webframe/menu')
 	simpleStore.selectedMenuRow = row
 }
-const tab = ref('setup')
+const tab = ref('condition')
+
+const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test']
 </script>
 
 <template lang="pug">
@@ -112,25 +117,31 @@ const tab = ref('setup')
 			div(v-if='selectedListItem == 0')
 
 				q-tabs(v-model="tab" align="left" activeColor="primary" indicatorColor="primary")
+					label Решение:
+					q-select.decision(v-model="layoutStore.currentDecision" dense outlined :options="desisionList")
 					q-tab(name='setup' label="Разметки")
 					q-tab(name='condition' label="Условия выбора")
 
 				q-tab-panels(v-model="tab" animated)
 					q-tab-panel(name='setup')
-						q-btn(
-							flat,
-							color="primary",
-							icon="mdi-plus-circle",
-							label="Создать разметку",
-							@click="create",
-						) 
-						q-table.q-mt-md(
+						q-table.q-mb-md(
 							:rows="layoutStore.layoutData"
 							:columns="tableColumns"
 							row-key="uid"
 							flat
 							hide-bottom
 						)
+							template(v-slot:top)
+								.text-h6 Разметки
+								q-space
+								q-btn(
+									flat,
+									color="primary",
+									icon="mdi-plus-circle",
+									label="Создать разметку",
+									@click="create",
+								) 
+
 							template(v-slot:body='props')
 								q-tr(:props="props" @click='mainMenu(props.row)')
 									q-td(:props='props' key="name")
@@ -140,14 +151,17 @@ const tab = ref('setup')
 									q-td(:props='props' key="author") {{ props.row.author }}
 									q-td(:props='props' key="date") {{ props.row.date }}
 									q-td(:props='props' key="app") {{ props.row.app }}
+									q-td(:props='props' key="use")
+										q-icon(v-if='props.row.use' name="mdi-check-bold" color="teal" size="sm")
 
 									q-td(:props="props" key='actions')
 										q-btn.q-mr-md(flat round dense icon="mdi-content-duplicate" @click.stop="duplicateLayout(props.row)") 
-										q-btn(flat round dense color="negative" icon="mdi-delete-outline" @click.stop) 
+										q-btn.q-mr-md(flat round dense color="negative" icon="mdi-delete-outline" @click.stop) 
 											q-menu
 												q-list
 													q-item(clickable @click="deleteTableItem(props.row.uid)" v-close-popup).pink
 														q-item-section Удалить
+										q-btn(flat round dense color="primary" icon="mdi-chevron-right" @click.stop) 
 
 					q-tab-panel(name='condition')
 						MenuCondition()
@@ -208,5 +222,9 @@ q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(1
 .link {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
+}
+.decision {
+	margin-left: 1rem;
+	margin-right: 6rem;
 }
 </style>

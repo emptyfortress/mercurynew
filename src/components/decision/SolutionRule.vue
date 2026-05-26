@@ -76,7 +76,7 @@ const isDefaultValue = (item: Condition, key: ConditionKey) => {
 	return item[key] === valueOptions[key][0]
 }
 
-const emit = defineEmits(['update'])
+// const emit = defineEmits(['update'])
 
 const conditionIdCounter = ref(1000)
 const addCond = () => {
@@ -91,11 +91,36 @@ const addCond = () => {
 	}
 	tapes.value.push(newCondition)
 }
+
+const isFirstDefault = computed(() => {
+	const first = tapes.value[0]
+	if (!first) return false
+	return (
+		first.mode === 'Любой' &&
+		first.state === 'Любое' &&
+		first.role === 'Любая' &&
+		first.device === 'Любое'
+	)
+})
+
+const defaultThresholdIndex = computed(() => {
+	return tapes.value.findIndex(
+		(item) =>
+			item.mode === 'Любой' &&
+			item.state === 'Любое' &&
+			item.role === 'Любая' &&
+			item.device === 'Любое'
+	)
+})
 </script>
 
 <template lang="pug">
 .q-gutter-sm(ref='parent')
-	.cond(v-for="(item, index) in tapes" :key="item.mode")
+	.cond(
+		v-for="(item, index) in tapes",
+		:key="item.id",
+		:class="{ notwork: defaultThresholdIndex !== -1 && index > defaultThresholdIndex }"
+	)
 		.han
 		.div {{index + 1}}
 		div
@@ -150,6 +175,7 @@ const addCond = () => {
 						)
 							q-item-section {{ value }}
 		q-btn(flat round icon="mdi-close" color="secondary" @click="remCondition(index)" dense size="sm")
+
 q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить условие" @click="addCond") 
 </template>
 
@@ -173,7 +199,6 @@ q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить усл
 	display: grid;
 	grid-template-columns: 20px 10px 1fr 20px 250px auto;
 	padding-right: 0.25rem;
-	// justify-items: start;
 	align-items: center;
 	column-gap: 0.5rem;
 	height: 41px;
@@ -194,5 +219,9 @@ q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить усл
 }
 .selected {
 	background: var(--selection);
+}
+.notwork {
+	opacity: 0.4;
+	// pointer-events: none; // если нужно заблокировать взаимодействие
 }
 </style>
