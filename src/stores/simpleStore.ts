@@ -1,7 +1,8 @@
-import { defineStore } from 'pinia'
+<script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useStorage } from '@vueuse/core'
 
-export interface TreeElement {
+interface TreeElement {
 	id: string
 	text: string
 	name?: string
@@ -723,18 +724,21 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 					text: 'Кнопка / Закрепить',
 					icon: 'mdi-button-cursor',
 					virtual: false,
+					children: [],
 				},
 				{
 					id: 'history',
 					text: 'Кнопка / Недавние карточки',
 					icon: 'mdi-button-cursor',
 					virtual: false,
+					children: [],
 				},
 				{
 					id: 'search',
 					text: 'Кнопка / Поиск',
 					icon: 'mdi-button-cursor',
 					virtual: false,
+					children: [],
 				},
 				{
 					id: 'divider',
@@ -868,7 +872,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	const selectedMenuItem = ref<any>(null)
 
-	const selectedMenuRow = ref()
+	const selectedMenuRow = useStorage('selectedMenuRow', null)
 
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
 		return nodes.reduce((acc: TreeElement[], node) => {
