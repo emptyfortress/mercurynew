@@ -708,19 +708,31 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 			children: [
 				{
 					id: 'main',
-					text: 'Кнопка Главная',
+					text: 'Кнопка / Главная',
 					virtual: false,
 					icon: 'mdi-button-cursor',
 				},
 				{
+					id: 'conf',
+					text: 'Кнопка / Настройки',
+					virtual: false,
+					icon: 'mdi-button-cursor',
+				},
+				{
+					id: 'pin',
+					text: 'Кнопка / Закрепить',
+					icon: 'mdi-button-cursor',
+					virtual: false,
+				},
+				{
 					id: 'history',
-					text: 'Кнопка Недавние карточки',
+					text: 'Кнопка / Недавние карточки',
 					icon: 'mdi-button-cursor',
 					virtual: false,
 				},
 				{
 					id: 'search',
-					text: 'Кнопка Поиск',
+					text: 'Кнопка / Поиск',
 					icon: 'mdi-button-cursor',
 					virtual: false,
 				},
