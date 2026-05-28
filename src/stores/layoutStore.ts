@@ -61,7 +61,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: `${row.name} (копия)`,
 			author: row.author,
 			date: new Date().toISOString().split('T')[0],
-			app: '',
+			app: currentDecision.value,
 			use: false,
 		}
 		layoutData.value.push(newItem)
@@ -77,7 +77,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: name.trim(),
 			author: 'admin',
 			date: new Date().toISOString().split('T')[0],
-			app: '',
+			app: currentDecision.value,
 			use: false,
 		}
 		layoutData.value.push(newItem)

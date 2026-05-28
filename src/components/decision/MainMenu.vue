@@ -47,4 +47,7 @@ q-page(padding)
 	padding: 0;
 	margin: 0;
 }
+.q-chip {
+	border: 1px solid #333;
+}
 </style>

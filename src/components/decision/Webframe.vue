@@ -9,7 +9,6 @@ import IconParkSolidPageTemplate from '@/components/icons/IconParkSolidPageTempl
 
 const simpleStore = useSimpleStore()
 const layoutStore = useLayoutStore()
-// const route = useRoute()
 const router = useRouter()
 
 const list = ref([
@@ -78,18 +77,11 @@ const createMenu = () => {
 	}
 }
 
-// const calcClass = (uid: string) => {
-// 	if (simpleStore.selectedMenuRow && simpleStore.selectedMenuRow.uid == uid) {
-// 		return 'selectedtr'
-// 	}
-// 	return ''
-// }
-
 const mainMenu = (row: any) => {
 	router.push('/dvmain/webframe/menu')
 	simpleStore.selectedMenuRow = row
 }
-const tab = ref('condition')
+const tab = ref('setup')
 
 const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test']
 </script>
@@ -130,6 +122,7 @@ const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test
 							row-key="uid"
 							flat
 							hide-bottom
+							:rowsPerPageOptions="[0]"
 						)
 							template(v-slot:top)
 								.text-h6 Разметки
@@ -163,6 +156,13 @@ const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test
 														q-item-section Удалить
 										q-btn(flat round dense color="primary" icon="mdi-chevron-right" @click.stop) 
 
+						// .bgitem
+						// 	.icon
+						// 	label menu item
+						// .bgitem.active
+						// 	.icon
+						// 	label active item
+
 					q-tab-panel(name='condition')
 						MenuCondition()
 
@@ -190,6 +190,38 @@ q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(1
 </template>
 
 <style scoped lang="scss">
+.container1 {
+	--mykey: #e1251b;
+}
+.bgitem {
+	width: 200px;
+	height: 50px;
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	padding: 0.5rem;
+	border: 1px solid var(--mykey);
+	color: var(--mykey);
+	.icon {
+		display: inline-block;
+		mask-image: url(@/assets/img/folder.svg);
+		mask-size: contain;
+		mask-repeat: no-repeat;
+		-webkit-mask-size: contain;
+		-webkit-mask-repeat: no-repeat;
+		background-color: var(--mykey); /* обычное состояние */
+		width: 32px;
+		height: 32px;
+	}
+}
+.bgitem.active {
+	background: var(--mykey);
+	color: #fff;
+	.icon {
+		background-color: #fff;
+	}
+}
+
 .grid {
 	margin: 2rem auto;
 	display: grid;

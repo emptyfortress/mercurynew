@@ -30,6 +30,10 @@ onMounted(() => {
 		tree.value.openNodeAndParents(firstNode.children?.[3] || firstNode)
 	}
 })
+
+const drag = (node: any) => {
+	return !node.children
+}
 </script>
 
 <template lang="pug">
@@ -55,7 +59,7 @@ div
 		template(#default="{ node, stat }")
 			.node(
 				@click="toggle(stat)",
-				:draggable="true"
+				:draggable="drag(node)"
 				:class="{ 'first-folder-root': node.id === 'root' }"
 			)
 				q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig

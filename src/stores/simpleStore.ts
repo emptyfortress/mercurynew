@@ -1,4 +1,4 @@
-<script setup lang="ts">
+import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useStorage } from '@vueuse/core'
 
@@ -708,57 +708,91 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 			text: 'Библиотека элементов',
 			children: [
 				{
-					id: 'main',
-					text: 'Кнопка / Главная',
+					id: 'container',
+					text: 'Контейнер',
 					virtual: false,
-					icon: 'mdi-button-cursor',
+					icon: 'mdi-contain',
 				},
 				{
-					id: 'conf',
-					text: 'Кнопка / Настройки',
+					id: 'group',
+					text: 'Группа',
 					virtual: false,
-					icon: 'mdi-button-cursor',
-				},
-				{
-					id: 'pin',
-					text: 'Кнопка / Закрепить',
-					icon: 'mdi-button-cursor',
-					virtual: false,
+					icon: 'mdi-arrow-expand-down',
 					children: [],
 				},
 				{
-					id: 'history',
-					text: 'Кнопка / Недавние карточки',
-					icon: 'mdi-button-cursor',
+					id: 'buttons',
+					text: 'Кнопки',
 					virtual: false,
-					children: [],
+					children: [
+						{
+							id: 'main',
+							text: 'Кнопка / Главная',
+							virtual: false,
+							icon: 'mdi-button-cursor',
+						},
+						{
+							id: 'conf',
+							text: 'Кнопка / Настройки',
+							virtual: false,
+							icon: 'mdi-button-cursor',
+						},
+						{
+							id: 'pin',
+							text: 'Кнопка / Закрепить',
+							icon: 'mdi-button-cursor',
+							virtual: false,
+						},
+						{
+							id: 'history',
+							text: 'Кнопка / Недавние карточки',
+							icon: 'mdi-button-cursor',
+							virtual: false,
+						},
+						{
+							id: 'search',
+							text: 'Кнопка / Поиск',
+							icon: 'mdi-button-cursor',
+							virtual: false,
+						},
+						{
+							id: 'button',
+							text: 'Кнопка',
+							icon: 'mdi-button-cursor',
+							virtual: false,
+						},
+					],
 				},
 				{
-					id: 'search',
-					text: 'Кнопка / Поиск',
-					icon: 'mdi-button-cursor',
-					virtual: false,
-					children: [],
+					id: 'link',
+					text: 'Ссылки',
+					children: [
+						{
+							id: 'link1',
+							text: 'Внешняя ссылка',
+							icon: 'mdi-link',
+						},
+						{
+							id: 'link2',
+							text: 'Страница web-клиента',
+							icon: 'mdi-link',
+						},
+						{
+							id: 'link3',
+							text: 'Ссылка HTML',
+							icon: 'mdi-link',
+						},
+					],
+				},
+				{
+					id: 'script',
+					text: 'Пользовательский скрипт',
 				},
 				{
 					id: 'divider',
 					text: 'Разделитель',
 					icon: 'mdi-minus',
 					virtual: false,
-					children: [],
-				},
-				{
-					id: 'group',
-					text: 'Группа',
-					virtual: false,
-					icon: 'mdi-folder-outline',
-					children: [],
-				},
-				{
-					id: 'button',
-					text: 'Кнопка',
-					virtual: false,
-					children: [],
 				},
 				{
 					id: 'folders',
@@ -774,7 +808,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 							id: 'f1',
 							text: 'Доверенность',
 							virtual: false,
-							type: 0,
 							children: [
 								{ id: 'f1-1', text: 'Создать доверенность', type: 0, virtual: false },
 								{ id: 'f1-2', text: 'Журнал доверенностей', type: 0, virtual: false },
@@ -784,7 +817,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 							id: 'f2',
 							text: 'Договоры',
 							virtual: false,
-							type: 0,
 							children: [
 								{ id: 'f2-1', text: 'Проекты договоров', virtual: false, type: 0 },
 								{ id: 'f2-2', text: 'Подписанные договоры', virtual: false, type: 0 },
@@ -795,7 +827,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 							id: 'f3',
 							text: 'Документы',
 							virtual: false,
-							type: 0,
 							children: [
 								{ id: 'f3-1', text: 'Входящие', virtual: false, type: 0 },
 								{ id: 'f3-2', text: 'Исходящие', virtual: false, type: 0 },
@@ -805,7 +836,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 							id: 'f4',
 							text: 'КЭДО',
 							virtual: false,
-							type: 0,
 							children: [
 								{ id: 'f4-1', text: 'Заявления', virtual: false, type: 0 },
 								{ id: 'f4-2', text: 'Приказы', virtual: false, type: 0 },
@@ -816,7 +846,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 							id: 'f5',
 							text: 'Отчеты',
 							virtual: false,
-							type: 0,
 							children: [
 								{ id: 'f5-1', text: 'Финансовые отчеты', virtual: false, type: 0 },
 								{ id: 'f5-2', text: 'Аналитика', virtual: false, type: 0 },
@@ -825,7 +854,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 						{
 							id: 'f6',
 							text: 'Папки подразделений',
-							type: 0,
 							virtual: false,
 							children: [
 								{ id: 'f6-1', text: 'Отдел продаж', virtual: false, type: 0 },
@@ -836,7 +864,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 						{
 							id: 'f7',
 							text: 'Папки пользователей',
-							type: 0,
 							virtual: false,
 							children: [
 								{ id: 'f7-1', text: 'Мои документы', virtual: false, type: 0 },
@@ -872,7 +899,14 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	const selectedMenuItem = ref<any>(null)
 
-	const selectedMenuRow = useStorage('selectedMenuRow', null)
+	const selectedMenuRow = useStorage('selectedMenuRow', {
+		uid: 'verylongid',
+		name: 'Меню по умолчанию',
+		author: 'admin',
+		date: '2024-01-15',
+		app: 'По умолчанию',
+		use: true,
+	})
 
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
 		return nodes.reduce((acc: TreeElement[], node) => {
