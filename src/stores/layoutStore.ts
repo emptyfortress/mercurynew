@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { uid } from 'quasar'
 
 export const useLayoutStore = defineStore('layout', () => {
-	const currentDecision = ref('По умолчанию')
+	const currentProject = ref('По умолчанию')
 
 	const layoutData = ref([
 		{
@@ -11,7 +11,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: 'Меню по умолчанию',
 			author: 'admin',
 			date: '2024-01-15',
-			app: 'По умолчанию',
+			project: 'По умолчанию',
 			use: true,
 		},
 		{
@@ -19,7 +19,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: 'Меню КЭДО',
 			author: 'admin',
 			date: '2024-01-20',
-			app: 'КЭДО',
+			project: 'КЭДО',
 			use: true,
 		},
 		{
@@ -27,7 +27,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: 'Меню админа',
 			author: 'admin',
 			date: '2024-01-20',
-			app: 'По умолчанию',
+			project: 'По умолчанию',
 			use: true,
 		},
 		{
@@ -35,7 +35,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: 'Меню мобильное',
 			author: 'admin',
 			date: '2024-01-20',
-			app: 'По умолчанию',
+			project: 'По умолчанию',
 			use: true,
 		},
 		{
@@ -43,7 +43,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: 'Меню планшет',
 			author: 'admin',
 			date: '2024-01-20',
-			app: 'По умолчанию',
+			project: 'По умолчанию',
 			use: false,
 		},
 	])
@@ -53,7 +53,7 @@ export const useLayoutStore = defineStore('layout', () => {
 		name: string
 		author: string
 		date: string
-		app: string
+		project: string
 		use: boolean
 	}) => {
 		const newItem = {
@@ -61,7 +61,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: `${row.name} (копия)`,
 			author: row.author,
 			date: new Date().toISOString().split('T')[0],
-			app: currentDecision.value,
+			project: currentProject.value,
 			use: false,
 		}
 		layoutData.value.push(newItem)
@@ -77,7 +77,7 @@ export const useLayoutStore = defineStore('layout', () => {
 			name: name.trim(),
 			author: 'admin',
 			date: new Date().toISOString().split('T')[0],
-			app: currentDecision.value,
+			project: currentProject.value,
 			use: false,
 		}
 		layoutData.value.push(newItem)
@@ -85,7 +85,7 @@ export const useLayoutStore = defineStore('layout', () => {
 	}
 
 	return {
-		currentDecision,
+		currentProject,
 		layoutData,
 		duplicateLayout,
 		deleteTableItem,

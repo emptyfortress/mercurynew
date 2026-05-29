@@ -904,7 +904,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		name: 'Меню по умолчанию',
 		author: 'admin',
 		date: '2024-01-15',
-		app: 'По умолчанию',
+		project: 'По умолчанию',
 		use: true,
 	})
 
