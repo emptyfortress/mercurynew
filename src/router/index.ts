@@ -50,7 +50,8 @@ const router = createRouter({
 		{
 			path: '/dvmain/webframe/menu',
 			name: 'Menu',
-			component: () => import('@/components/decision/MainMenu.vue'),
+			// component: () => import('@/components/decision/MainMenu.vue'),
+			component: () => import('@/components/decision/MainMenu1.vue'),
 			props: true,
 			meta: {
 				toolbar: false,

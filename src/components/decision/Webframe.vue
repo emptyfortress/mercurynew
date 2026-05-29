@@ -41,7 +41,7 @@ const tableColumns = [
 	},
 	{ name: 'author', label: 'Автор', field: 'author', align: 'left' as const, sortable: true },
 	{ name: 'date', label: 'Дата создания', field: 'date', align: 'left' as const, sortable: true },
-	{ name: 'app', label: 'Решение', field: 'app', align: 'left' as const, sortable: true },
+	{ name: 'project', label: 'Проект', field: 'project', align: 'left' as const, sortable: true },
 	{ name: 'use', label: 'Используется', field: 'use', align: 'center' as const, sortable: true },
 	{ name: 'actions', label: '', field: 'actions', align: 'right' as const },
 ]
@@ -51,7 +51,7 @@ const duplicateLayout = (row: {
 	name: string
 	author: string
 	date: string
-	app: string
+	project: string
 	use: boolean
 }) => {
 	layoutStore.duplicateLayout(row)
@@ -63,6 +63,7 @@ const deleteTableItem = (uid: string) => {
 
 const createDialog = ref(false)
 const newMenuName = ref('')
+const newMenuProject = ref()
 
 const create = () => {
 	newMenuName.value = ''
@@ -83,7 +84,7 @@ const mainMenu = (row: any) => {
 }
 const tab = ref('setup')
 
-const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test']
+const projectList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test']
 </script>
 
 <template lang="pug">
@@ -109,8 +110,6 @@ const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test
 			div(v-if='selectedListItem == 0')
 
 				q-tabs(v-model="tab" align="left" activeColor="primary" indicatorColor="primary")
-					label Решение:
-					q-select.decision(v-model="layoutStore.currentDecision" dense outlined :options="desisionList")
 					q-tab(name='setup' label="Разметки")
 					q-tab(name='condition' label="Условия выбора разметок")
 
@@ -143,7 +142,7 @@ const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test
 												q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 									q-td(:props='props' key="author") {{ props.row.author }}
 									q-td(:props='props' key="date") {{ props.row.date }}
-									q-td(:props='props' key="app") {{ props.row.app }}
+									q-td(:props='props' key="project") {{ props.row.project }}
 									q-td(:props='props' key="use")
 										q-icon(v-if='props.row.use' name="mdi-check-bold" color="teal" size="sm")
 
@@ -155,13 +154,6 @@ const desisionList = ['По умолчанию', 'КЭДО', 'DVshowcase', 'test
 													q-item(clickable @click="deleteTableItem(props.row.uid)" v-close-popup).pink
 														q-item-section Удалить
 										q-btn(flat round dense color="primary" icon="mdi-chevron-right" @click.stop) 
-
-						// .bgitem
-						// 	.icon
-						// 	label menu item
-						// .bgitem.active
-						// 	.icon
-						// 	label active item
 
 					q-tab-panel(name='condition')
 						MenuCondition()
@@ -176,9 +168,19 @@ q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(1
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
 			.text-h6 Создать разметку
-			q-input.q-mt-md(
+			.q-mt-md Название:
+			q-input(
 				v-model="newMenuName"
 				label="Название"
+				dense
+				outlined
+				autofocus
+				@keyup.enter="createMenu"
+			)
+			.q-mt-md Проект:
+			q-select(
+				v-model="layoutStore.currentProject"
+				:options="projectList"
 				dense
 				outlined
 				autofocus
