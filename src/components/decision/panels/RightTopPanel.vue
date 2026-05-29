@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 <template lang="pug">
 .panel-content
-  p Право-верх
+  p Здесь DOM дерево
 </template>
 
 <style scoped lang="scss">

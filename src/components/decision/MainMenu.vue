@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useElementSize } from '@vueuse/core'
-const el = ref<HTMLElement | null>(null)
-const { width, height } = useElementSize(el)
 import LibMenu from '@/components/decision/LibMenu.vue'
 import MenuPreview from '@/components/decision/MenuPreview.vue'
 import MenuProperty from '@/components/decision/MenuProperty.vue'
@@ -13,6 +11,8 @@ const simpleStore = useSimpleStore()
 const splitterModel = ref(35)
 const splitterModel1 = ref(55)
 
+const el = ref<HTMLElement | null>(null)
+const { width, height } = useElementSize(el)
 const hei = computed(() => `height: ${height.value}px;`)
 </script>
 
