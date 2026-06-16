@@ -70,6 +70,11 @@ const enterClass = computed(() => {
 	return 'fadeInBottom' // безопасный дефолт на случай 0/NaN
 })
 
+function resetLayout() {
+	localStorage.removeItem('dv-layout-mainmenu')
+	window.location.reload()
+}
+
 const nav = () => {
 	router.push('/')
 }
@@ -244,8 +249,10 @@ q-layout(view='hHh LpR fFf')
 				)
 					q-tab(label="Приложения" name='apps' @click="goApps")
 					q-tab(label="DV-main" icon='mdi-server-network-outline' name='decisions' @click="goDecisions")
-					q-btn.q-ml-lg(flat round icon="mdi-plus-circle-outline") 
+					q-btn.q-ml-lg(flat round icon="mdi-plus-circle-outline")
 				span(v-else) {{ title }}
+			q-btn.reset(v-if="route.path === '/dvmain/webframe/menu'" color="white" text-color="negative" @click="resetLayout" label="Restore default layout" size="md")
+			q-space
 			.lang
 				component(:is='currentLang.icon')
 				q-menu(transition-show="jump-down" transition-hide="jump-up")
@@ -388,5 +395,8 @@ nav a:first-of-type {
 .bot svg {
 	width: 1.7rem;
 	height: 1.7rem;
+}
+.reset {
+	border: 1px solid white;
 }
 </style>
