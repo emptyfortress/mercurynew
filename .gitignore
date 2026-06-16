@@ -30,3 +30,8 @@ coverage
 *.tsbuildinfo
 .aider*
 .claude/worktrees
+.claude/settings.local.json
+.claude/agent-memory-local/
+.claude/sessions/
+.claude/conversations/
+.claude/checkpoints/
