@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, markRaw, type Component } from 'vue'
+import { markRaw } from 'vue'
 import { DockviewVue, themeLight } from 'dockview-vue'
 import type { DockviewApi, DockviewReadyEvent, SerializedDockview } from 'dockview-vue'
 import MainPanel from './panels/MainPanel.vue'
