@@ -1,6 +1,6 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { uid } from 'quasar'
+import { ref } from 'vue'
 
 export const useLayoutStore = defineStore('layout', () => {
 	const currentProject = ref('По умолчанию')
