@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import SolutionRule from '@/components/decision/SolutionRule.vue'
+import { ref } from 'vue'
 
 const layouts = ref([
 	{
