@@ -86,6 +86,9 @@ function onReady(event: DockviewReadyEvent) {
 	height: 100% !important;
 }
 :deep(.dockview-theme-light) {
-	--dv-group-view-background-color: transparent;
+	// --dv-group-view-background-color: transparent;
+}
+.layout-container {
+	--dv-tab-group-color-grey: red;
 }
 </style>

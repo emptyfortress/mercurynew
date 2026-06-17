@@ -90,7 +90,7 @@ div
 
 	&.first-folder-root span {
 		font-weight: bold;
-		font-size: 1.12rem;
+		// font-size: 1.12rem;
 	}
 }
 .quick {
