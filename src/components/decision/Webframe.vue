@@ -112,12 +112,12 @@ const mainMenu = (row: any) => {
     div
       div(v-if="selectedListItem == 0")
         q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
-          q-route-tab(
+          q-tab(
             name="setup"
             label="Разметки"
             :to="{ name: $route.name, query: { ...$route.query, tab: 'setup' } }"
           )
-          q-route-tab(
+          q-tab(
             name="condition"
             label="Условия выбора разметок"
             :to="{ name: $route.name, query: { ...$route.query, tab: 'condition' } }"
