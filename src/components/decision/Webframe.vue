@@ -38,6 +38,23 @@ const header = computed(() => {
 	}
 })
 
+const getRouteTab = () => {
+	const value = route.query.tab
+	return Array.isArray(value) ? value[0] : value
+}
+
+const activeTab = computed({
+	get: () => getRouteTab() || 'setup',
+	set: (val: string) => {
+		router.replace({
+			query: {
+				...route.query,
+				tab: val,
+			},
+		})
+	},
+})
+
 const tableColumns = [
 	{ name: 'name', label: 'Название', field: 'name', align: 'left' as const, sortable: true },
 	{ name: 'author', label: 'Автор', field: 'author', align: 'left' as const, sortable: true },
@@ -94,7 +111,7 @@ const mainMenu = (row: any) => {
 
     div
       div(v-if="selectedListItem == 0")
-        q-tabs(align="left" activeColor="primary" indicatorColor="primary")
+        q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
           q-route-tab(
             name="setup"
             label="Разметки"
@@ -106,7 +123,7 @@ const mainMenu = (row: any) => {
             :to="{ name: $route.name, query: { ...$route.query, tab: 'condition' } }"
           )
 
-        q-tab-panels(v-model="$route.query.tab" animated)
+        q-tab-panels(v-model="activeTab" animated)
           q-tab-panel(name="setup")
             q-table.q-mb-md(
               :rows="layoutStore.layoutData"
