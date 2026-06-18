@@ -112,16 +112,8 @@ const mainMenu = (row: any) => {
     div
       div(v-if="selectedListItem == 0")
         q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
-          q-tab(
-            name="setup"
-            label="Разметки"
-            :to="{ name: $route.name, query: { ...$route.query, tab: 'setup' } }"
-          )
-          q-tab(
-            name="condition"
-            label="Условия выбора разметок"
-            :to="{ name: $route.name, query: { ...$route.query, tab: 'condition' } }"
-          )
+          q-tab(name="setup" label="Разметки")
+          q-tab(name="condition" label="Условия выбора разметок")
 
         q-tab-panels(v-model="activeTab" animated)
           q-tab-panel(name="setup")
