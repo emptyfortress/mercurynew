@@ -114,6 +114,8 @@ const open = (nodeId: string) => {
 }
 
 onMounted(() => {
+	simpleStore.clearSelectedElement()
+
 	if (!tree.value?.statsFlat) return
 	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
 	if (route.params.viewId) {
