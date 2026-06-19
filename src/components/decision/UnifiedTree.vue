@@ -25,11 +25,15 @@ const dialog = ref(false)
 
 const treeData = computed({
 	get() {
+		if (props.sourceType === 'poisk') {
+			return simpleStore.poiskData
+		}
+
 		return props.sourceType === 'folderData' ? simpleStore.folderData : simpleStore.selectedBranch
 	},
 	set(value) {
 		// he-tree writes back full tree; store handles mutation internally for selectedBranch.
-		// folderData is not settable via this pattern currently.
+		// folderData and poiskData are not settable via this pattern currently.
 	},
 })
 
