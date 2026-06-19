@@ -3,6 +3,35 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Common Commands
+
+* Commit messages: Always prefix with `claude:` to identify who made the commit
+
+1. **Install dependencies**
+   ```sh
+   npm install
+   ```
+
+2. **Start development server**
+   ```sh
+   npm run dev
+   ```
+   (Runs Vite with hot–reload.)
+
+3. **Build for production**
+   ```sh
+   npm run build
+   ```
+   (Runs `vue-tsc` type–check then `vite build`.)
+
+4. **Preview a production build**
+   ```sh
+   npm run preview
+   ```
+
+5. **Type–check only**
+   ```sh
+   npm run type-check
+   ```
 1. **Install dependencies**
    ```sh
    npm install
