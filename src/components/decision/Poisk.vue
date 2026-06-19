@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import ZaprosMainPoisk from '@/components/decision/ZaprosMain-poisk.vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
 
 const splitterModel = ref(15)
@@ -24,20 +25,18 @@ div
 						:showTypeSelector="false"
 						mode="folder"
 					)
+
 		template(v-slot:after)
 			q-splitter(v-model="splitterModel1" :limits="[0, 100]" :style="hei" )
 				template(v-slot:before)
 					.main
 						q-scroll-area.list
-							div center
-							// ZaprosMain(:splitter="splitterModel"
-							// 	@maximize="splitterModel = 0"
-							// 	@reset="splitterModel = 30")
+							ZaprosMainPoisk(:splitter="splitterModel" @maximize="splitterModel = 0" @reset="splitterModel = 30")
+
 				template(v-slot:after)
-					.tree
-						q-scroll-area.list
-							div right
-							// FieldTree()
+					q-scroll-area.list
+						div right
+						// FieldTree()
 </template>
 
 <style scoped lang="scss">
