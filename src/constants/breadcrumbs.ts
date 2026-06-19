@@ -4,6 +4,7 @@ export const BREADCRUMB_OVERRIDES: Record<string, string> = {
 	folders: 'Каталог папок',
 	webframe: 'Рабочая область',
 	menu: 'Главное меню',
+	search: 'Конструктор поисковых запросов',
 	'0': 'Конструктор полей',
 	'1': 'Поиски и представления',
 	'2': 'Процессы',

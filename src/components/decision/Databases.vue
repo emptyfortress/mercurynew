@@ -7,7 +7,7 @@ const sections = [
 	{ id: 0, label: 'Конструктор карточек', to: 'cards' },
 	{ id: 1, label: 'Каталог папок', to: 'folders' },
 	{ id: 2, label: 'Рабочая область', to: 'webframe' },
-	{ id: 3, label: 'Поиски и представления', to: '' },
+	{ id: 3, label: 'Поиски и представления', to: 'search' },
 	{ id: 4, label: 'Процессы', to: '' },
 	{ id: 5, label: 'Справочники', to: '' },
 	{ id: 6, label: 'Нумераторы', to: '' },
@@ -25,7 +25,7 @@ q-page(padding)
 		.it.constr(
 			v-for="item in sections",
 			:key='item.id',
-			:class="{dis : item.id > 2}"
+			:class="{dis : item.id > 3}"
 			@click='goto(item.to)'
 		)
 			div {{ item.label }}
