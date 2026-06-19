@@ -20,7 +20,7 @@ div
 			.blo
 				q-scroll-area.list
 					UnifiedTree(
-						sourceType="folderData"
+						sourceType="poisk"
 						filterField="text"
 						:showTypeSelector="false"
 						mode="folder"

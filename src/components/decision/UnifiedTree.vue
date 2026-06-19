@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import DirMenu from '@/components/decision/DirMenu.vue'
@@ -114,8 +114,6 @@ const open = (nodeId: string) => {
 }
 
 onMounted(() => {
-	simpleStore.clearSelectedElement()
-
 	if (!tree.value?.statsFlat) return
 	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
 	if (route.params.viewId) {
@@ -125,6 +123,10 @@ onMounted(() => {
 	if (firstNode) {
 		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
 	}
+})
+
+onUnmounted(() => {
+	simpleStore.clearSelectedElement()
 })
 
 const create = (data: any) => {
