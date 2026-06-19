@@ -40,7 +40,7 @@ const sourceData = computed(() => {
 
 const treeData = computed({
 	get: () => sourceData.value,
-	set: (value) => {
+	set: (value: any) => {
 		if (activeSourceType.value !== 'selectedBranch') {
 			return
 		}
