@@ -4,26 +4,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Common Commands
 
-* Commit messages: Always prefix with `claude:` to identify who made the commit
+- Commit messages: Always prefix with `claude:` to identify who made the commit
 
 1. **Install dependencies**
+
    ```sh
    npm install
    ```
 
 2. **Start development server**
+
    ```sh
    npm run dev
    ```
+
    (Runs Vite with hot–reload.)
 
 3. **Build for production**
+
    ```sh
    npm run build
    ```
+
    (Runs `vue-tsc` type–check then `vite build`.)
 
 4. **Preview a production build**
+
    ```sh
    npm run preview
    ```
@@ -32,30 +38,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    ```sh
    npm run type-check
    ```
-1. **Install dependencies**
+6. **Install dependencies**
    ```sh
    npm install
    ```
-2. **Start development server**
+7. **Start development server**
    ```sh
    npm run dev
    ```
    (Runs Vite with hot‑reload.)
-3. **Build for production**
+8. **Build for production**
    ```sh
    npm run build
    ```
    (Runs `vue-tsc` type‑check then `vite build`.)
-4. **Preview a production build**
+9. **Preview a production build**
    ```sh
    npm run preview
    ```
-5. **Type‑check only**
-   ```sh
-   npm run type-check
-   ```
+10. **Type‑check only**
+    ```sh
+    npm run type-check
+    ```
 
 ## High‑Level Architecture
+
 The project is a **Mercury‑style navigation** demo for a BPM editor, built with Vue 3.5 and the Quasar UI framework. The key architectural pieces are:
 
 - **UI Layer** – Vue components under `src/components/` (common, decision, icons, panels, etc.) leveraging `<script setup>` and Pug templates.
@@ -67,6 +74,7 @@ The project is a **Mercury‑style navigation** demo for a BPM editor, built wit
 - **Build Pipeline** – Vite for fast dev/build, `vue-tsc` for strict type‑checking, and Vercel (`vercel.json`) for deployment.
 
 ## Project Structure (important landmarks)
+
 ```
 mercurynew/
 ├─ src/
@@ -95,9 +103,11 @@ mercurynew/
 ├─ vite.config.ts
 └─ vercel.json
 ```
+
 Only the top‑level folders are listed; individual files are discoverable via the IDE.
 
 ## Development Conventions (from `QWEN.md`)
+
 - **Indentation**: 1 tab (as defined in `.prettierrc.cjs`).
 - **Quotes**: Single quotes (`'`).
 - **Semicolons**: Omitted.
@@ -111,6 +121,7 @@ Only the top‑level folders are listed; individual files are discoverable via t
 - **Testing**: No test framework is configured yet; place future Jest/Vitest tests under `src/**/__tests__/`.
 
 ## Key Features to Keep in Mind
+
 1. **Flip Navigation** – GSAP Flip plugin for continuity during view transitions.
 2. **BPMN Integration** – `bpmn-js` for diagram rendering and token simulation.
 3. **Drag‑and‑Drop** – Multiple libraries (`@formkit/drag-and-drop`, `vue-draggable-resizable`, `vuedraggable`).
@@ -118,7 +129,20 @@ Only the top‑level folders are listed; individual files are discoverable via t
 5. **Onboarding Tours** – `driver.js` configurations located in `src/tour/`.
 6. **Responsive Layout** – Quasar grid/layout components, SCSS utilities.
 
+## Rules for work with Quasar components
+
+1. When writter in pug syntax quasar components often use multiple lines. Be very carefull with indentation, it may broke component.
+2. Don't mess with template slots of quasar components. Do not remove it, as you did.
+3. Don't change attributes of quasar components. For example: do not change v-model:selected attribute to :selected. It brokes components.
+4. When in doubt - ask me before change.
+
+## Rules for complex migration tasks
+
+1. When temporaly insert placeholder in complicated migration or edit tasks - use prefix 'Claude: wip' in comments above such placeholder
+2. Notify me that you use placeholder
+
 When Claude Code operates on this repo, it should:
+
 - Follow the coding style above.
 - Prefer Pinia for shared state and keep stores small and focused.
 - Use the existing route meta conventions for new pages.
@@ -126,4 +150,5 @@ When Claude Code operates on this repo, it should:
 - Respect the `.reduce‑motion` class for accessibility.
 
 ---
-*Generated for Claude Code to quickly understand build commands, project layout, conventions, and core architecture.*
+
+_Generated for Claude Code to quickly understand build commands, project layout, conventions, and core architecture._
