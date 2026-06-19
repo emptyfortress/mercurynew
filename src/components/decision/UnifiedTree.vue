@@ -8,8 +8,10 @@ import CreateDialog from '@/components/decision/CreateDialog.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
 
+type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk'
+
 const props = defineProps<{
-	sourceType?: 'selectedBranch' | 'folderData' | 'poisk'
+	sourceType?: TreeSourceType
 	filterField?: string
 	showTypeSelector?: boolean
 	mode?: string
@@ -23,17 +25,27 @@ const tree = ref()
 const query = ref('')
 const dialog = ref(false)
 
-const treeData = computed({
-	get() {
-		if (props.sourceType === 'poisk') {
+const activeSourceType = computed<TreeSourceType>(() => props.sourceType ?? 'selectedBranch')
+
+const sourceData = computed(() => {
+	switch (activeSourceType.value) {
+		case 'poisk':
 			return simpleStore.poiskData
+		case 'folderData':
+			return simpleStore.folderData
+		default:
+			return simpleStore.selectedBranch
+	}
+})
+
+const treeData = computed({
+	get: () => sourceData.value,
+	set: (value) => {
+		if (activeSourceType.value !== 'selectedBranch') {
+			return
 		}
 
-		return props.sourceType === 'folderData' ? simpleStore.folderData : simpleStore.selectedBranch
-	},
-	set(value) {
-		// he-tree writes back full tree; store handles mutation internally for selectedBranch.
-		// folderData and poiskData are not settable via this pattern currently.
+		simpleStore.selectedBranch = value
 	},
 })
 
@@ -64,7 +76,7 @@ watch(query, (newValue) => {
 const select = (n: any) => {
 	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
 	n.data.selected = true
-	n.data.sourceType = props.sourceType
+	n.data.sourceType = activeSourceType.value
 	simpleStore.setSelectedElement(n.data)
 	router.push({
 		name: 'start',
@@ -107,7 +119,7 @@ onMounted(() => {
 	if (route.params.viewId) {
 		open(route.params.viewId.toString())
 	}
-	const firstNode = treeData.value[0]
+	const firstNode = sourceData.value[0]
 	if (firstNode) {
 		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
 	}
@@ -169,7 +181,7 @@ div
     template(#default="{ node, stat }")
       .node(
         @click="select(stat)"
-        :class="{ 'selected': stat.data.selected, 'first-folder-root': props.sourceType === 'folderData' && node.id === 'root' }"
+        :class="{ 'selected': stat.data.selected, 'first-folder-root': activeSourceType === 'folderData' && node.id === 'root' }"
       )
         q-icon(
           name="mdi-chevron-down"
