@@ -9,7 +9,7 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
 
 const props = defineProps<{
-	sourceType?: 'selectedBranch' | 'folderData'
+	sourceType?: 'selectedBranch' | 'folderData' | 'poisk'
 	filterField?: string
 	showTypeSelector?: boolean
 	mode?: string
