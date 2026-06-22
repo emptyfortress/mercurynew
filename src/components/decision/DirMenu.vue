@@ -38,12 +38,8 @@ const rename = () => {
 }
 
 const menu = [
-	{
-		id: 1,
-		label: 'Добавить',
-		icon: 'mdi-plus-circle-outline',
-		action: add,
-	},
+	{ id: 0, label: 'Добавить папку', icon: 'mdi-folder-plus-outline', action: addFolder },
+	{ id: 1, label: 'Добавить', icon: 'mdi-plus-circle-outline', action: add },
 	{ id: 2, label: 'Дублировать', icon: 'mdi-plus-circle-multiple-outline', action: duble },
 	{ id: 3, label: 'Переименовать', icon: 'mdi-pencil', action: rename },
 	{ id: 4, label: 'Удалить', icon: 'mdi-trash-can-outline', action: kill },

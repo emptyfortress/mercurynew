@@ -23,7 +23,7 @@ div
 						sourceType="poisk"
 						filterField="text"
 						:showTypeSelector="false"
-						mode="folder"
+						mode="poisk"
 					)
 
 		template(v-slot:after)

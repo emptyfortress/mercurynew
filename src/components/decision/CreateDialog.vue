@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { uid } from 'quasar'
+import { useSimpleStore } from '@/stores/simpleStore'
 
 const props = defineProps({
 	mode: {
 		type: String,
 		default: 'app',
 	},
+	mode1: {
+		type: Boolean,
+		default: false,
+	},
 })
 const modelValue = defineModel<boolean>()
+
+const simpleStore = useSimpleStore()
 
 const close = () => {
 	modelValue.value = false
@@ -77,6 +84,9 @@ q-dialog(v-model="modelValue")
 			.text-h6(v-if="props.mode == 'status'") Новый статус
 			.text-h6(v-if="props.mode == 'vid'") Создать новую карточку
 			.text-h6(v-if="props.mode == 'folder'") Создать папку
+			.text-h6(v-if="props.mode == 'poisk' && props.mode1") Создать папку
+			.text-h6(v-if="props.mode == 'poisk' && !props.mode1") Создать запрос
+			div {{ simpleStore.selectedElement?.text }}
 
 		q-card-section
 			FormKit(type="form" id="newapp" submit-label="Создать" @submit="create")

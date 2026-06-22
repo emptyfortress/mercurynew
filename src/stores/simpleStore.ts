@@ -5,6 +5,7 @@ import { useStorage } from '@vueuse/core'
 interface TreeElement {
 	id: string
 	text: string
+	text1?: string
 	name?: string
 	selected?: boolean
 	hidden: boolean
@@ -878,6 +879,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	const poiskData = ref([
 		{
+			id: 'root',
 			text: 'Поиски DV',
 			text1: '',
 			selected: false,
@@ -886,6 +888,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 			fields: [],
 			children: [
 				{
+					id: 'dogovor',
 					text: 'Договоры',
 					selected: false,
 					text1: 'Поиск договоров до 100 тыс. руб',
@@ -894,6 +897,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 					fields: [],
 				},
 				{
+					id: 'docs',
 					text: 'Мои документы',
 					selected: false,
 					text1: 'Поиск моих документов. Я - автор',
@@ -1001,6 +1005,11 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		selectedElement.value = element
 	}
 
+	const currentNode = ref()
+	const setCurrentNode = (e: any) => {
+		currentNode.value = e
+	}
+
 	function clearSelectedElement() {
 		selectedElement.value = null
 	}
@@ -1042,5 +1051,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		getNodeById,
 		getNameById,
 		getNameByFolderId,
+		currentNode,
+		setCurrentNode,
 	}
 })

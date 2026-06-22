@@ -78,10 +78,13 @@ const select = (n: any) => {
 	n.data.selected = true
 	n.data.sourceType = activeSourceType.value
 	simpleStore.setSelectedElement(n.data)
-	router.push({
-		name: 'start',
-		params: { viewId: n.data.id },
-	})
+	simpleStore.setCurrentNode(n)
+	if (props.sourceType !== 'poisk') {
+		router.push({
+			name: 'start',
+			params: { viewId: n.data.id },
+		})
+	}
 }
 
 const toggle = (stat: any) => {
@@ -92,8 +95,14 @@ const addFromMenu = (e: any) => {
 	tree.value.add({ id: uid(), text: 'Новый вид' }, e)
 }
 
-const remove = (e: any) => {
-	tree.value.remove(e)
+const remove = (e: Stat | null) => {
+	if (e) {
+		tree.value.remove(e)
+	} else {
+		const flat = tree.value.statsFlat
+		const stat = flat.find((n: any) => n.data.text === 'Мои документы')
+		tree.value.remove(stat)
+	}
 }
 
 const edit = (e: any) => {
@@ -147,74 +156,89 @@ const create = (data: any) => {
 	tree.value.openNodeAndParents(newStat)
 	select(newStat)
 }
+
+const poiskFold = ref(false)
+const poisk = () => {
+	poiskFold.value = false
+	dialog.value = !dialog.value
+}
+
+const fold = () => {
+	poiskFold.value = true
+	dialog.value = !dialog.value
+}
 </script>
 
 <template lang="pug">
 div
-  q-form.quick
-    q-input.query(
-      dense
-      v-model="query"
-      autofocus
-      clearable
-      @clear="clearFilter"
-      placeholder="фильтр"
-      filled
-    )
-      template(v-slot:prepend)
-        q-icon(name="mdi-magnify")
+	q-form.quick
+		q-input.query(
+			dense
+			v-model="query"
+			autofocus
+			clearable
+			@clear="clearFilter"
+			placeholder="фильтр"
+			filled
+		)
+			template(v-slot:prepend)
+				q-icon(name="mdi-magnify")
 
-    q-form.quick(v-if="showTypeSelector")
-      label Выберите тип
-      q-select.q-mb-sm(
-        v-model="simpleStore.selectedType"
-        dense
-        :options="['Все', 'Документ', 'Задание', 'Группа заданий']"
-        filled
-      )
+		q-form.quick(v-if="showTypeSelector")
+			label Выберите тип
+			q-select.q-mb-sm(
+				v-model="simpleStore.selectedType"
+				dense
+				:options="['Все', 'Документ', 'Задание', 'Группа заданий']"
+				filled
+			)
 
-  Draggable(
-    v-model="treeData"
-    ref="tree"
-    propKey="id"
-    treeLine
-    :treeLineOffset="18"
-    :indent="30"
-    :defaultOpen="false"
-  )
-    template(#default="{ node, stat }")
-      .node(
-        @click="select(stat)"
-        :class="{ 'selected': stat.data.selected, 'first-folder-root': activeSourceType === 'folderData' && node.id === 'root' }"
-      )
-        q-icon(
-          name="mdi-chevron-down"
-          v-if="stat.children.length"
-          @click.stop="toggle(stat)"
-          :class="{ 'closed': !stat.open }"
-        ).trig
-        q-icon(v-if="node.virtual" name="mdi-folder-search-outline").fold
-        q-icon(v-else name="mdi-folder-outline").fold
-        span {{ node.text }}
+	Draggable(
+		v-model="treeData"
+		ref="tree"
+		propKey="id"
+		treeLine
+		:treeLineOffset="18"
+		:indent="30"
+		:defaultOpen="false"
+	)
+		template(#default="{ node, stat }")
+			.node(
+				@click="select(stat)"
+				:class="{ 'selected': stat.data.selected, 'first-folder-root': activeSourceType === 'folderData' && node.id === 'root' }"
+			)
+				q-icon(
+					name="mdi-chevron-down"
+					v-if="stat.children.length"
+					@click.stop="toggle(stat)"
+					:class="{ 'closed': !stat.open }"
+				).trig
+				q-icon(v-if="node.virtual" name="mdi-folder-search-outline").fold
+				q-icon(v-if='node.type == 0' name="mdi-folder-outline").fold
+				q-icon(v-if='sourceType == "folderData"' name="mdi-folder-outline").fold
+				span {{ node.text }}
 
-        DirMenu(
-          :stat="stat"
-          @kill="remove(stat)"
-          @add="addFromMenu(stat)"
-          @rename="edit(stat)"
-        )
+				DirMenu(
+					:stat="stat"
+					@kill="remove(stat)"
+					@add="addFromMenu(stat)"
+					@rename="edit(stat)"
+				)
 
-        q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
-          q-input(
-            :model-value="stat.data.text"
-            dense
-            autofocus
-            counter
-            @keyup.enter="setText(stat, $event)"
-          )
+				q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
+					q-input(
+						:model-value="stat.data.text"
+						dense
+						autofocus
+						counter
+						@keyup.enter="setText(stat, $event)"
+					)
 
-  q-btn.fab(round icon="mdi-plus" color="primary" @click="dialog = !dialog")
-  CreateDialog(v-model="dialog" :mode="mode || 'vid'" @create='create')
+	q-fab.fab(v-if='props.mode == "poisk"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
+		q-fab-action(color="primary" icon="mdi-magnify" external-label label="Запрос" label-position="left" @click="poisk")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
+	q-btn.fab(v-else round icon="mdi-plus" color="primary" @click="dialog = !dialog")
+	CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='poiskFold' @create='create')
 </template>
 
 <style scoped lang="scss">

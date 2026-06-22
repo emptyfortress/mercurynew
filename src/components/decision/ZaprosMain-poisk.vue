@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { useStore as useStoreMer } from '@/stores/useStore-mercy'
+// import { useStore as useStoreMer } from '@/stores/useStoreMercy'
+import { useSimpleStore } from '@/stores/simpleStore'
 import { useEditor as useEditorMer } from '@/stores/useEditor-mercy'
 import { useDrag as useDragMer } from '@/stores/useDrag-mercy'
 import QueryItem from '@/components/decision/QueryItem-poisk.vue'
@@ -13,7 +14,7 @@ const props = defineProps({
 
 const emit = defineEmits(['maximize', 'reset'])
 
-const store = useStoreMer()
+const store = useSimpleStore()
 const editor = useEditorMer()
 const drag = useDragMer()
 
@@ -23,10 +24,10 @@ const switchSidebar = () => {
 	} else emit('reset')
 }
 const remove = () => {
-	store.toggleDel()
+	console.log(store.selectedElement?.id)
 }
 const double = () => {
-	store.toggleDub()
+	console.log(store.selectedElement?.id)
 }
 
 const preview = ref(false)
@@ -65,23 +66,26 @@ const toggleCreate = () => {
 			q-btn(flat round dense @click="switchSidebar")
 				q-icon(name="mdi-forwardburger" v-if="props.splitter === 0")
 				q-icon(name="mdi-backburger" v-else)
-			template(v-if="store.currentNode?.data.type == 1")
-				.zg {{ store.currentNode.data.text }}
-					q-popup-edit(v-model="store.currentNode.data.text" auto-save v-slot="scope")
+			template(v-if="store.selectedElement?.type == 1")
+				.zg {{ store.selectedElement.text }}
+					q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+
 			div(v-else)
 				div Выберите запрос слева или создайте новый.
 				br
 				q-btn(unelevated color="primary" @click="toggleCreate") Создать новый запрос
+
 			.btngroup
-				q-btn(v-if="store.currentNode?.data.type == 1" outline size="10px" color="primary" :disable="!store.currentNode" @click="double") Дублировать
-		template(v-if="store.currentNode?.data.type == 1")
-			.descr {{ store.currentNode.data.text1 }}
-				q-popup-edit(v-model="store.currentNode.data.text1" auto-save v-slot="scope")
+				q-btn(v-if="store.selectedElement?.type == 1" outline size="10px" color="primary" @click="double") Дублировать
+
+		template(v-if="store.selectedElement?.type == 1")
+			.descr {{ store.selectedElement?.text1 }}
+				q-popup-edit(v-model="store.selectedElement.text1" auto-save v-slot="scope")
 					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 			QueryItem(:preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
 	.q-mt-lg
-		.row.justify-between(v-if="store.currentNode?.data.type == 1")
+		.row.justify-between(v-if="store.selectedElement?.type == 1")
 			q-btn(flat color="primary" label="Удалить поиск" icon="mdi-trash-can-outline")
 				q-menu(anchor="bottom right" self="top right")
 					q-list
@@ -120,4 +124,3 @@ const toggleCreate = () => {
 	border-bottom: 1px dotted var(--q-primary);
 }
 </style>
-
