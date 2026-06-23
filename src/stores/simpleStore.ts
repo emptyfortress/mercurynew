@@ -8,7 +8,7 @@ interface TreeElement {
 	text1?: string
 	name?: string
 	selected?: boolean
-	hidden: boolean
+	hidden?: boolean
 	edit?: boolean
 	type?: number
 	children?: TreeElement[]

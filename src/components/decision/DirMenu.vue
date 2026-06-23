@@ -12,7 +12,7 @@ q-menu(context-menu)
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ stat: Stat; mode: String }>()
+const props = defineProps<{ stat: Stat; mode?: String }>()
 
 const emit = defineEmits(['addFolder', 'add', 'kill', 'duble', 'rename'])
 
@@ -38,7 +38,7 @@ const menu = [
 		label: 'Добавить папку',
 		icon: 'mdi-folder-plus-outline',
 		action: addFolder,
-		hidden: () => (props.mode == 'vid') | (props.mode == 'folder'),
+		hidden: () => props.mode == 'vid' || props.mode == 'folder',
 	},
 	{ id: 1, label: 'Добавить', icon: 'mdi-plus-circle-outline', action: add },
 	{

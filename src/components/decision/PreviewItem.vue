@@ -19,7 +19,7 @@ export type PreviewItem = {
 }
 const props = defineProps<{
 	item: PreviewItem
-	index: number
+	index: number | string
 }>()
 
 const isRadio = computed(() => {

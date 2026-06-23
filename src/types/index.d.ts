@@ -193,6 +193,7 @@ interface NodeData {
 	kind?: number
 	synparents: string[]
 	syn: string[]
+	and?: boolean
 }
 
 type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'

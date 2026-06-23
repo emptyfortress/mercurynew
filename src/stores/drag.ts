@@ -5,15 +5,16 @@ export const useDrag = defineStore({
 	state: () => ({
 		currentDrag: null as null | NodeData,
 		dragNode: null as null | NodeData,
-		treeKey: '',
+		treeKey: '' as string | null,
 		focus: false,
 		kind: 0,
+		flag: false,
 	}),
 	actions: {
 		setCurrentDrag(node: NodeData | null) {
 			this.currentDrag = node
 		},
-		setTreeKey(key: string) {
+		setTreeKey(key: string | null) {
 			this.treeKey = key
 		},
 		setDragNode(node: NodeData) {
@@ -27,4 +28,3 @@ export const useDrag = defineStore({
 		},
 	},
 })
-

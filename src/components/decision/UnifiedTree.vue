@@ -15,7 +15,7 @@ const props = defineProps<{
 	sourceType?: TreeSourceType
 	filterField?: string
 	showTypeSelector?: boolean
-	mode?: string
+	mode?: string | undefined
 }>()
 
 const router = useRouter()
