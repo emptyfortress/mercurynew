@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
+import { ref, computed, onMounted, watch, watchEffect, onUnmounted, nextTick } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import DirMenu from '@/components/decision/DirMenu.vue'
@@ -7,6 +7,7 @@ import { useRouter, useRoute } from 'vue-router'
 import CreateDialog from '@/components/decision/CreateDialog.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
+import { useChips } from '@/stores/chips'
 
 type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk'
 
@@ -92,17 +93,41 @@ const toggle = (stat: any) => {
 }
 
 const addFromMenu = (e: any) => {
-	tree.value.add({ id: uid(), text: 'Новый вид' }, e)
+	const tmp = { id: uid(), text: 'Новое имя' }
+	if (props.mode == 'poisk' && e.data.type == 0) {
+		tree.value.add(tmp, e)
+	}
+	if (props.mode == 'poisk' && e.data.type == 1) {
+		tree.value.add(tmp, e.parent)
+	} else {
+		tree.value.add(tmp, e)
+	}
+	nextTick()
+	const newStat = tree.value.getStat(tmp)
+	tree.value.openNodeAndParents(newStat)
+	select(newStat)
 }
 
-const remove = (e: Stat | null) => {
-	if (e) {
-		tree.value.remove(e)
-	} else {
-		const flat = tree.value.statsFlat
-		const stat = flat.find((n: any) => n.data.text === 'Мои документы')
-		tree.value.remove(stat)
+const addFolderFromMenu = (e: any) => {
+	const tmp = { id: uid(), text: 'Новая папка', type: 0 }
+	if (props.mode == 'poisk' && e.data.type == 0) {
+		tree.value.add(tmp, e)
 	}
+	if (props.mode == 'poisk' && e.data.type == 1) {
+		tree.value.add(tmp, e.parent)
+	} else {
+		tree.value.add(tmp, e)
+	}
+	nextTick()
+	const newStat = tree.value.getStat(tmp)
+	tree.value.openNodeAndParents(newStat)
+	select(newStat)
+}
+
+const remove = (e: Stat) => {
+	tree.value.remove(e)
+	simpleStore.setCurrentNode(null)
+	simpleStore.setSelectedElement(null)
 }
 
 const edit = (e: any) => {
@@ -140,21 +165,47 @@ onUnmounted(() => {
 
 const create = (data: any) => {
 	const newFolder = {
-		id: data.id,
+		id: uid(),
 		text: data.name,
 		virtual: data.isVirtual ?? false,
+		type: data.type,
 		children: [],
 	}
+	if (props.mode == 'poisk') {
+		if (simpleStore.selectedElement) {
+			const selectedStat = tree.value.getStat(simpleStore.selectedElement)
+			if (selectedStat.data.type === 0) {
+				tree.value.add(newFolder, selectedStat)
+			} else {
+				tree.value.add(newFolder, selectedStat.parent)
+			}
+		} else {
+			tree.value.add(newFolder, tree.value.rootChildren[0])
+		}
 
-	if (simpleStore.selectedElement) {
-		const tmp = tree.value.getStat(simpleStore.selectedElement)
-		tree.value.add(newFolder, tmp)
+		nextTick()
+		const newStat = tree.value.getStat(newFolder)
+		tree.value.openNodeAndParents(newStat)
+		select(newStat)
 	} else {
-		tree.value.add(newFolder, tree.value.rootChildren[0])
+		const newFolder = {
+			id: uid(),
+			text: data.name,
+			virtual: data.isVirtual ?? false,
+			type: data.type,
+			children: [],
+		}
+		if (simpleStore.selectedElement) {
+			const tmp = tree.value.getStat(simpleStore.selectedElement)
+			tree.value.add(newFolder, tmp)
+		} else {
+			tree.value.add(newFolder, tree.value.rootChildren[0])
+		}
+		nextTick()
+		const newStat = tree.value.getStat(newFolder)
+		tree.value.openNodeAndParents(newStat)
+		select(newStat)
 	}
-	const newStat = tree.value.getStat(newFolder)
-	tree.value.openNodeAndParents(newStat)
-	select(newStat)
 }
 
 const poiskFold = ref(false)
@@ -167,6 +218,48 @@ const fold = () => {
 	poiskFold.value = true
 	dialog.value = !dialog.value
 }
+
+// migration FieldTree
+const mychips = useChips()
+
+watch(
+	() => mychips.count,
+	() => {
+		let temp = {
+			id: uid(),
+			text: mychips.newSearchItem,
+			text1: 'Описание поиска',
+			hidden: false,
+			selected: true,
+			type: 1,
+		}
+		tree.value.add(temp, tree.value.rootChildren[0])
+		select(tree.value.getStat(temp))
+		simpleStore.setCurrentNode(tree.value.getStat(temp))
+	}
+)
+
+watchEffect(() => {
+	if (simpleStore.deleteRequest === true) {
+		tree.value.remove(simpleStore.currentNode)
+		simpleStore.setCurrentNode(null)
+		simpleStore.setSelectedElement(null)
+		simpleStore.toggleDelete()
+	}
+
+	if (simpleStore.duplicateRequest === true) {
+		let temp = {
+			text: simpleStore.currentNode!.data.text + '-copy',
+			text1: simpleStore.currentNode!.data.text1,
+			hidden: false,
+			type: 1,
+		}
+		tree.value.add(temp, simpleStore.currentNode!.parent)
+		let one = tree.value.getStat(temp)
+		select(one)
+		simpleStore.toggleDuplicate()
+	}
+})
 </script>
 
 <template lang="pug">
@@ -219,9 +312,11 @@ div
 				span {{ node.text }}
 
 				DirMenu(
+					:mode='props.mode'
 					:stat="stat"
 					@kill="remove(stat)"
 					@add="addFromMenu(stat)"
+					@addFolder="addFolderFromMenu(stat)"
 					@rename="edit(stat)"
 				)
 

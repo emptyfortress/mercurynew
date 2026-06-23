@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useChips } from '@/stores/chips'
+import { useSimpleStore } from '@/stores/simpleStore'
 
 const props = defineProps({
 	create: { type: Boolean, default: false },
 })
 
 const modelValue = defineModel<boolean>()
+const simpleStore = useSimpleStore()
 
 const mychips = useChips()
 
@@ -57,6 +59,7 @@ const setTree = () => {
 }
 
 const searchName = ref('Новый поиск')
+
 const createSearch = () => {
 	mychips.setNewItem(searchName.value)
 	setTree()
@@ -92,7 +95,7 @@ q-dialog(v-model="modelValue")
         q-input(dense filled v-model="searchName" clearable autofocus)
     q-card-actions.q-ma-md(align="right")
       q-btn(flat color="primary" label="Отмена" v-close-popup)
-      q-btn(v-if="props.create" unelevated color="primary" label="Создать" @click="createSearch" :disable="searchName.length < 2")
+      q-btn(v-if="props.create" unelevated color="primary" label="Создать" @click="createSearch" :disable="searchName.length < 2" v-close-popup)
       q-btn(v-else unelevated color="primary" label="Применить" @click="setTree")
 </template>
 

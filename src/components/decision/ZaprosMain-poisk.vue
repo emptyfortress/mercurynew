@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-// import { useStore as useStoreMer } from '@/stores/useStoreMercy'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { useEditor as useEditorMer } from '@/stores/useEditor-mercy'
 import { useDrag as useDragMer } from '@/stores/useDrag-mercy'
@@ -23,11 +22,13 @@ const switchSidebar = () => {
 		emit('maximize')
 	} else emit('reset')
 }
+
 const remove = () => {
-	console.log(store.selectedElement?.id)
+	store.toggleDelete()
 }
+
 const double = () => {
-	console.log(store.selectedElement?.id)
+	store.toggleDuplicate()
 }
 
 const preview = ref(false)
@@ -66,6 +67,7 @@ const toggleCreate = () => {
 			q-btn(flat round dense @click="switchSidebar")
 				q-icon(name="mdi-forwardburger" v-if="props.splitter === 0")
 				q-icon(name="mdi-backburger" v-else)
+
 			template(v-if="store.selectedElement?.type == 1")
 				.zg {{ store.selectedElement.text }}
 					q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")

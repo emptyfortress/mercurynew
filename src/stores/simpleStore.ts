@@ -17,6 +17,16 @@ interface TreeElement {
 }
 
 export const useSimpleStore = defineStore('simpleStore', () => {
+	const deleteRequest = ref(false)
+	const toggleDelete = () => {
+		deleteRequest.value = !deleteRequest.value
+	}
+
+	const duplicateRequest = ref(false)
+	const toggleDuplicate = () => {
+		duplicateRequest.value = !duplicateRequest.value
+	}
+
 	const treeData = ref([
 		{
 			id: 'document',
@@ -909,6 +919,19 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	])
 
+	// const createPoisk = () => {
+	// 	poiskData.value.push({
+	// 		id: 'fuck',
+	// 		text: 'fuck',
+	// 		text1: '',
+	// 		selected: true,
+	// 		hidden: false,
+	// 		type: 1,
+	// 		fields: [],
+	// 		children: [],
+	// 	})
+	// }
+
 	const menuPreview = ref([
 		{
 			id: 'glav',
@@ -1030,6 +1053,14 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	})
 
+	function removeById(array: any[], id: string): any[] {
+		return array.reduce((prev, curr) => {
+			if (curr.id === id) return prev
+			const children = curr.children ? removeById(curr.children, id) : curr.children
+			return [...prev, { ...curr, children }]
+		}, [])
+	}
+
 	return {
 		treeData,
 		folderData,
@@ -1053,5 +1084,10 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		getNameByFolderId,
 		currentNode,
 		setCurrentNode,
+		removeById,
+		deleteRequest,
+		toggleDelete,
+		duplicateRequest,
+		toggleDuplicate,
 	}
 })

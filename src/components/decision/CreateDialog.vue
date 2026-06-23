@@ -25,7 +25,6 @@ const emit = defineEmits(['create'])
 
 const create = (data: any) => {
 	if (props.mode == 'app') {
-		data.id = +new Date()
 		data.text = data.name
 		data.type = 1
 		data.version = '0.0.0'
@@ -33,13 +32,11 @@ const create = (data: any) => {
 		close()
 	}
 	if (props.mode == 'role') {
-		data.id = uid()
 		data.selected = false
 		close()
 	}
 	if (props.mode == 'form') {
 		let tmp = {
-			id: uid(),
 			label: data.name,
 			value: data.name,
 			desc: data.descr,
@@ -62,11 +59,35 @@ const create = (data: any) => {
 	}
 	if (props.mode == 'folder') {
 		const folderData = {
-			id: uid(),
 			name: data.name,
 			isVirtual: data.isVirtual ?? false,
 		}
 		emit('create', folderData)
+		close()
+	}
+	if (props.mode == 'vid') {
+		const cardData = {
+			name: data.name,
+			isVirtual: data.isVirtual ?? false,
+		}
+		emit('create', cardData)
+		close()
+	}
+
+	if (props.mode == 'poisk' && !props.mode1) {
+		const newFolder = {
+			name: data.name,
+			type: 1,
+		}
+		emit('create', newFolder)
+		close()
+	}
+	if (props.mode == 'poisk' && props.mode1) {
+		const newFolder = {
+			name: data.name,
+			type: 0,
+		}
+		emit('create', newFolder)
 		close()
 	}
 }
@@ -109,6 +130,8 @@ q-dialog(v-model="modelValue")
 				FormKit(v-if='props.mode == "status"'  type="text" autofocus name="name" label="Название"  help="Назовите статус" validation="required|length:3")
 				FormKit(v-if='props.mode == "folder"' type="text" autofocus name="name" label="Название" validation="required|length:3")
 				FormKit(v-if='props.mode == "folder"' type="checkbox" name="isVirtual" label="Виртуальная папка")
+
+				FormKit(v-if='props.mode == "poisk"'  type="text" autofocus name="name" label="Название" validation="required|length:3")
 </template>
 
 <style scoped lang="scss"></style>

@@ -162,4 +162,37 @@ interface MyEvent {
 	editable?: any
 }
 
+interface NodeData {
+	id: string
+	text: string
+	text1: string
+	text2: string
+	text3?: string
+	inp?: string
+	edit?: boolean
+	attribute?: boolean
+	selected?: boolean
+	restrict?: boolean
+	icon?: string
+	type: number
+	typ?: boolean
+	drop?: boolean
+	drag?: boolean
+	parents?: string[]
+	fields: Select[]
+	man?: boolean
+	date?: boolean
+	state?: boolean
+	ruk?: boolean
+	vis?: boolean
+	check?: boolean
+	sort?: boolean
+	label?: string
+	inp?: boolean
+	focus?: boolean
+	kind?: number
+	synparents: string[]
+	syn: string[]
+}
+
 type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'

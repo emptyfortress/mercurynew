@@ -1,7 +1,8 @@
 <template lang="pug">
 q-menu(context-menu)
 	q-list
-		q-item(v-for="item in menu" :disable="dis(item.id)" :key="item.id" clickable v-close-popup @click="item.action")
+	template(v-for="item in menu" :key="item.id")
+		q-item(v-if="!item.hidden?.()" clickable v-close-popup @click="item.action")
 			q-item-section(avatar)
 				q-icon(:name="item.icon")
 			q-item-section
@@ -11,13 +12,7 @@ q-menu(context-menu)
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ stat: Stat }>()
-
-const dis = (e: number) => {
-	if (props.stat.data.type === 0 && e === 2) {
-		return true
-	} else return false
-}
+const props = defineProps<{ stat: Stat; mode: String }>()
 
 const emit = defineEmits(['addFolder', 'add', 'kill', 'duble', 'rename'])
 
@@ -38,9 +33,21 @@ const rename = () => {
 }
 
 const menu = [
-	{ id: 0, label: 'Добавить папку', icon: 'mdi-folder-plus-outline', action: addFolder },
+	{
+		id: 0,
+		label: 'Добавить папку',
+		icon: 'mdi-folder-plus-outline',
+		action: addFolder,
+		hidden: () => (props.mode == 'vid') | (props.mode == 'folder'),
+	},
 	{ id: 1, label: 'Добавить', icon: 'mdi-plus-circle-outline', action: add },
-	{ id: 2, label: 'Дублировать', icon: 'mdi-plus-circle-multiple-outline', action: duble },
+	{
+		id: 2,
+		label: 'Дублировать',
+		icon: 'mdi-plus-circle-multiple-outline',
+		action: duble,
+		hidden: () => props.stat.data.type === 0,
+	},
 	{ id: 3, label: 'Переименовать', icon: 'mdi-pencil', action: rename },
 	{ id: 4, label: 'Удалить', icon: 'mdi-trash-can-outline', action: kill },
 ]

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import ZaprosMainPoisk from '@/components/decision/ZaprosMain-poisk.vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
+import FieldTree from '@/components/decision/FieldTree.vue'
 
 const splitterModel = ref(15)
 const splitterModel1 = ref(80)
@@ -35,11 +36,13 @@ div
 
 				template(v-slot:after)
 					q-scroll-area.list
-						div right
-						// FieldTree()
+						FieldTree()
 </template>
 
 <style scoped lang="scss">
+:deep(.q-splitter__separator) {
+	background-color: transparent;
+}
 .blo {
 	margin-right: 0.5rem;
 	height: calc(100vh - 180px);
