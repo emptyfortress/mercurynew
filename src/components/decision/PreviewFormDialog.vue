@@ -76,7 +76,7 @@ q-dialog(v-model="modelValue" persistent)
 			q-card-section.q-pt-none
 				.grid
 					template(v-for="( item, index ) in myFlatTree" :key="item.id")
-						PreviewItem(:item="item" :index="index")
+						PreviewItem(:item="item" :index="Number(index)")
 
 				template(v-if="empty")
 					.text-subtitle1
