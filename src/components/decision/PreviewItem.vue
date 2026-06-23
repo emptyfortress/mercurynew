@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { values } from '@/stores/select'
 
-type PreviewItem = {
+export type PreviewItem = {
 	id: string
 	parents: string[]
 	type: number
@@ -19,7 +19,7 @@ type PreviewItem = {
 }
 const props = defineProps<{
 	item: PreviewItem
-	index: Number
+	index: number
 }>()
 
 const isRadio = computed(() => {

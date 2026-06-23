@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
 import PreviewItem from '@/components/decision/PreviewItem.vue'
+import type { PreviewItem as PreviewItemType } from '@/components/decision/PreviewItem.vue'
 
 const modelValue = defineModel<boolean>()
 const props = defineProps<{
@@ -27,7 +28,7 @@ const getMembers = (members: any): any => {
 const myFlatTree = computed(() => {
 	return getMembers(props.tree)
 		.filter((el: any) => el.type == 1 || el.type == 0)
-		.map((item: any) => {
+		.map((item: any): PreviewItemType => {
 			return {
 				id: uid(),
 				parents: item.parents,
@@ -75,7 +76,7 @@ q-dialog(v-model="modelValue" persistent)
 			q-card-section.q-pt-none
 				.grid
 					template(v-for="( item, index ) in myFlatTree" :key="item.id")
-						PreviewItem(:item="item" :index="index")
+						PreviewItem(:item="item" :index="( index as number )")
 
 				template(v-if="empty")
 					.text-subtitle1
