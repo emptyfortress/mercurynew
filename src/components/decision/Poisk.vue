@@ -35,7 +35,7 @@ div
 							ZaprosMainPoisk(:splitter="splitterModel" @maximize="splitterModel = 0" @reset="splitterModel = 30")
 
 				template(v-slot:after)
-					q-scroll-area.list
+					q-scroll-area.list1
 						FieldTree()
 </template>
 
@@ -50,6 +50,12 @@ div
 
 .list {
 	height: 100%;
+}
+.list1 {
+	height: 100%;
+	background: var(--bg-panel);
+	border: 1px solid var(--my-border-color);
+	padding: 0.5rem;
 }
 
 .main {

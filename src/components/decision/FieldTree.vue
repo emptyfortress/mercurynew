@@ -102,8 +102,8 @@ const selChip = () => {
 </script>
 
 <template lang="pug">
-.pan
-	q-input.q-mx-md.q-mb-md( ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter")
+div
+	q-input.search( ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter")
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")
 	.oper(v-if="!props.layout")
@@ -131,10 +131,11 @@ const selChip = () => {
 </template>
 
 <style scoped lang="scss">
-.pan {
-	padding: 0.5rem;
-	background: var(--bg-panel);
-	border: 1px solid var(--my-border-color);
+.search {
+	margin-bottom: 1rem;
+	:deep(.q-field__control:before) {
+		background: transparent;
+	}
 }
 .node {
 	width: 100%;
@@ -142,13 +143,15 @@ const selChip = () => {
 	cursor: pointer;
 	font-size: 0.9rem;
 	background: transparent;
-	// background: var(--bg-main);
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	&:hover {
+		background: #ecf0f4;
+	}
 }
 :deep(.q-tree__arrow) {
 	font-size: 19px;

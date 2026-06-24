@@ -58,7 +58,7 @@ const setTree = () => {
 	}, 200)
 }
 
-const searchName = ref('Новый поиск')
+const searchName = ref('Мой поиск')
 
 const createSearch = () => {
 	mychips.setNewItem(searchName.value)
@@ -91,7 +91,7 @@ q-dialog(v-model="modelValue")
             q-chip(v-model:selected="mychips.chips[5].ticked" @click="add(mychips.chips[5])") Командировка
     q-card-section(v-if="props.create")
       .inp
-        label Название поиска:
+        label Название запроса:
         q-input(dense filled v-model="searchName" clearable autofocus)
     q-card-actions.q-ma-md(align="right")
       q-btn(flat color="primary" label="Отмена" v-close-popup)
