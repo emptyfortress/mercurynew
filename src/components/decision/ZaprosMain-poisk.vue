@@ -6,6 +6,10 @@ import { useDrag as useDragMer } from '@/stores/useDrag-mercy'
 import QueryItem from '@/components/decision/QueryItem-poisk.vue'
 import PreviewDialog from '@/components/decision/PreviewDialog-poisk.vue'
 import ChipModal from '@/components/decision/ChipModal-poisk.vue'
+import CommonTab from '@/components/decision/CommonTab.vue'
+import QueryTab from '@/components/decision/QueryTab.vue'
+import SafetyTab from '@/components/decision/SafetyTab.vue'
+import AdditionTab from '@/components/decision/AdditionTab.vue'
 
 const props = defineProps({
 	splitter: Number,
@@ -98,10 +102,14 @@ const isFolder = computed(() => {
         q-tab(name='addition' label='Дополнительно' v-if='!isFolder')
 
       q-tab-panels(v-model="tabs" animated)
-        q-tab-panel(name='common') common
-        q-tab-panel(name='query') query
-        q-tab-panel(name='safety') safety
-        q-tab-panel(name='addition') addition
+        q-tab-panel(name='common')
+          CommonTab
+        q-tab-panel(name='query')
+          QueryTab
+        q-tab-panel(name='safety')
+          SafetyTab
+        q-tab-panel(name='addition')
+          AdditionTab
 
       // QueryItem(:preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
   .q-mt-lg
