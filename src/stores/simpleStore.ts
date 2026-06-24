@@ -14,6 +14,7 @@ interface TreeElement {
 	children?: TreeElement[]
 	sourceType?: 'folderData' | 'treeData'
 	virtual?: boolean
+	author?: string
 }
 
 export const useSimpleStore = defineStore('simpleStore', () => {
@@ -895,6 +896,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 			selected: false,
 			hidden: false,
 			type: 0,
+			author: 'System',
 			fields: [],
 			children: [
 				{
@@ -904,6 +906,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 					text1: 'Поиск договоров до 100 тыс. руб',
 					hidden: false,
 					type: 1,
+					author: 'admin',
 					fields: [],
 				},
 				{
@@ -913,6 +916,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 					text1: 'Поиск моих документов. Я - автор',
 					hidden: false,
 					type: 1,
+					author: 'user123',
 					fields: [],
 				},
 			],

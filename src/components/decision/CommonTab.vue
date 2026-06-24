@@ -20,7 +20,7 @@ const creationDate = computed(() => {
 })
 
 const author = computed(() => {
-	return store.selectedElement?.text1 || 'System'
+	return store.selectedElement?.author || 'System'
 })
 
 const description = computed({
