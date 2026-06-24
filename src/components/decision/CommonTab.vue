@@ -1,10 +1,38 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { useSimpleStore } from '@/stores/simpleStore'
 
-const name = ref('Sample Query Name')
-const creationDate = ref('2024-01-15')
-const author = ref('John Doe')
-const description = ref('This is a sample description for the query.')
+const store = useSimpleStore()
+
+const name = computed({
+	get() {
+		return store.selectedElement?.text || ''
+	},
+	set(value: string) {
+		if (store.selectedElement) {
+			store.updateSelectedElement({ ...store.selectedElement, text: value })
+		}
+	}
+})
+
+const creationDate = computed(() => {
+	return '2024-01-15'
+})
+
+const author = computed(() => {
+	return store.selectedElement?.text1 || 'System'
+})
+
+const description = computed({
+	get() {
+		return store.selectedElement?.text1 || ''
+	},
+	set(value: string) {
+		if (store.selectedElement) {
+			store.updateSelectedElement({ ...store.selectedElement, text1: value })
+		}
+	}
+})
 </script>
 
 <template lang="pug">
