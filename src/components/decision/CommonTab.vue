@@ -12,7 +12,7 @@ const name = computed({
 		if (store.selectedElement) {
 			store.updateSelectedElement({ ...store.selectedElement, text: value })
 		}
-	}
+	},
 })
 
 const creationDate = computed(() => {
@@ -31,7 +31,7 @@ const description = computed({
 		if (store.selectedElement) {
 			store.updateSelectedElement({ ...store.selectedElement, text1: value })
 		}
-	}
+	},
 })
 </script>
 

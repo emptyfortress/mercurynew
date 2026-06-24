@@ -919,19 +919,6 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		},
 	])
 
-	// const createPoisk = () => {
-	// 	poiskData.value.push({
-	// 		id: 'fuck',
-	// 		text: 'fuck',
-	// 		text1: '',
-	// 		selected: true,
-	// 		hidden: false,
-	// 		type: 1,
-	// 		fields: [],
-	// 		children: [],
-	// 	})
-	// }
-
 	const menuPreview = ref([
 		{
 			id: 'glav',
