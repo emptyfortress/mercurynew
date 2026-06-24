@@ -7,8 +7,7 @@ import QueryItem from '@/components/decision/QueryItem-poisk.vue'
 import PreviewDialog from '@/components/decision/PreviewDialog-poisk.vue'
 import ChipModal from '@/components/decision/ChipModal-poisk.vue'
 import CommonTab from '@/components/decision/CommonTab.vue'
-import QueryTab from '@/components/decision/QueryTab.vue'
-import SafetyTab from '@/components/decision/SafetyTab.vue'
+import Safety from '@/components/decision/Safety.vue'
 import AdditionTab from '@/components/decision/AdditionTab.vue'
 
 const props = defineProps({
@@ -72,59 +71,51 @@ const isFolder = computed(() => {
 
 <template lang="pug">
 .layout1
-  div
-    .row.items-start.justify-between
-      q-btn(flat round dense @click="switchSidebar")
-        q-icon(name="mdi-forwardburger" v-if="props.splitter === 0")
-        q-icon(name="mdi-backburger" v-else)
+	div
+		.row.items-start.justify-between
+			q-btn(flat round dense @click="switchSidebar")
+				q-icon(name="mdi-forwardburger" v-if="props.splitter === 0")
+				q-icon(name="mdi-backburger" v-else)
 
-      template(v-if="store.selectedElement")
-        .zg
-          q-icon(v-if='isFolder' name="mdi-folder-outline")
-          q-icon(v-else name="mdi-magnify")
-          span {{ store.selectedElement.text }}
-            q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")
-              q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+			template(v-if="store.selectedElement")
+				.zg
+					q-icon(v-if='isFolder' name="mdi-folder-outline")
+					q-icon(v-else name="mdi-magnify")
+					span {{ store.selectedElement.text }}
+						q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")
+							q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
-      div(v-else)
-        div Выберите запрос слева или создайте новый.
-        br
-        q-btn(unelevated color="primary" @click="toggleCreate") Создать новый запрос
+			div(v-else)
+				div Выберите запрос слева или создайте новый.
+				br
+				q-btn(unelevated color="primary" @click="toggleCreate") Создать новый запрос
 
-      .btngroup
-        q-btn(:disable="isFolder" outline size="10px" color="primary" @click="double") Дублировать
+			.btngroup
+				q-btn(:disable="isFolder" outline size="10px" color="primary" @click="double") Дублировать
 
-    template( v-if='store.selectedElement' )
-      q-tabs(v-model="tabs" align="left" dense color="primary" class="text-primary")
-        q-tab(name='common' label='Общие')
-        q-tab(name='query' label='Запрос' v-if='!isFolder')
-        q-tab(name='safety' label='Безопасность')
-        q-tab(name='addition' label='Дополнительно' v-if='!isFolder')
+		template( v-if='store.selectedElement' )
+			q-tabs(v-model="tabs" align="left" dense color="primary" class="text-primary")
+				q-tab(name='common' label='Общие')
+				q-tab(name='query' label='Запрос' v-if='!isFolder')
+				q-tab(name='safety' label='Безопасность')
+				q-tab(name='addition' label='Дополнительно' v-if='!isFolder')
 
-      q-tab-panels(v-model="tabs" animated)
-        q-tab-panel(name='common')
-          CommonTab
-        q-tab-panel(name='query')
-          QueryTab
-        q-tab-panel(name='safety')
-          SafetyTab
-        q-tab-panel(name='addition')
-          AdditionTab
+			q-tab-panels(v-model="tabs" animated)
+				q-tab-panel(name='common')
+					CommonTab
+				q-tab-panel(name='query')
+					QueryItem(:preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
+					.row.justify-between.q-mx-lg
+						q-btn(unelevated color="primary" label="Сохранить")
+						q-btn(flat color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
+				q-tab-panel(name='safety')
+					Safety
+					q-btn.q-mt-md(unelevated color="primary" label="Сохранить")
+				q-tab-panel(name='addition')
+					AdditionTab
 
-      // QueryItem(:preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
-  .q-mt-lg
-    .row.justify-between(v-if="store.selectedElement?.type == 1")
-      q-btn(flat color="primary" label="Удалить поиск" icon="mdi-trash-can-outline")
-        q-menu(anchor="bottom right" self="top right")
-          q-list
-            q-item.pink(clickable @click="remove" v-close-popup)
-              q-item-section Удалить
-      div
-        q-btn(flat color="primary" label="Применить" icon="mdi-check-bold" @click="togglePreviewForm")
-        q-btn(unelevated color="primary" label="Сохранить" icon="mdi-content-save")
-
-  PreviewDialog(v-model="preview" :loading="loading")
-  ChipModal(v-model="dialogCreate" create)
+	PreviewDialog(v-model="preview" :loading="loading")
+	ChipModal(v-model="dialogCreate" create)
 
 </template>
 
@@ -166,5 +157,8 @@ const isFolder = computed(() => {
 
 :deep(.q-tab-panels) {
 	background: transparent;
+}
+:deep(.q-tab-panel) {
+	padding: 1rem 0;
 }
 </style>

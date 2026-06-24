@@ -170,7 +170,7 @@ const hideFirst = computed(() => {
 </template>
 <style scoped lang="scss">
 .con {
-	margin: 1rem 2rem;
+	margin: 0.5rem 2rem;
 }
 .zero {
 	display: flex;

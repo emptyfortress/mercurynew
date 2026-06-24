@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 
 const store = useSimpleStore()
 
-const name = computed({
-	get() {
-		return store.selectedElement?.text || ''
-	},
-	set(value: string) {
-		if (store.selectedElement) {
-			store.updateSelectedElement({ ...store.selectedElement, text: value })
-		}
-	},
+const name = ref('Название')
+const descr = ref('Описание')
+
+onMounted(() => {
+	name.value = store.currentNode.data.text
+	descr.value = store.currentNode.data.text1
+})
+
+watchEffect(() => {
+	if (store.currentNode) {
+		name.value = store.currentNode.data.text
+		descr.value = store.currentNode.data.text1
+	}
 })
 
 const creationDate = computed(() => {
@@ -23,25 +27,13 @@ const author = computed(() => {
 	return store.selectedElement?.author || 'System'
 })
 
-const description = computed({
-	get() {
-		return store.selectedElement?.text1 || ''
-	},
-	set(value: string) {
-		if (store.selectedElement) {
-			store.updateSelectedElement({ ...store.selectedElement, text1: value })
-		}
-	},
-})
-
 const save = () => {
-	// The computed setters already update the store, but we can add
-	// additional logic here if needed (e.g., validation, API calls)
-	console.log('Saved:', {
-		text: name.value,
-		text1: description.value,
-		author: author.value,
-	})
+	store.currentNode.data.text = name.value
+	store.currentNode.data.text1 = descr.value
+}
+
+const kill = () => {
+	store.toggleDelete()
 }
 </script>
 
@@ -55,9 +47,14 @@ const save = () => {
 		.col-12.col-sm-6
 			q-input(v-model="author" label="Author" outlined dense readonly)
 		.col-12
-			q-input(v-model="description" label="Description" type="textarea" outlined dense)
-		.col-12
-			q-btn(unelevated color="primary" label="Save" @click="save")
+			q-input(v-model="descr" label="Description" type="textarea" outlined dense)
+		.col-12.row.justify-between
+			q-btn(unelevated color="primary" label="Сохранить" @click="save")
+			q-btn(flat color="negative" label="Удалить" icon="mdi-delete-outline" :disable="store.selectedElement?.type == 0")
+				q-menu(anchor="bottom right" self="top right")
+					q-list
+						q-item.pink(clickable @click="kill" v-close-popup)
+							q-item-section Удалить
 </template>
 
 <style scoped lang="scss"></style>
