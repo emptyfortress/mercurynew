@@ -6,24 +6,60 @@ const check2 = ref(false)
 const check3 = ref(false)
 const check4 = ref(false)
 const check5 = ref(false)
+
+const labels = [
+	'Добавить к результатам поиска карточки, принадлежащие к одной теме обработки с найденным',
+	'Добавить к результатам поиска карточки, связанные с найденными карточками',
+	'Искать в архивированных карточках',
+	'Искать в удаленных карточках',
+	'Включить в результаты поиска все карточки указанных типов из выбранных папок без ограничений на их атрибуты',
+]
+
+const step1 = ref(2)
+const step2 = ref(2)
+const step21 = ref('Все')
+const step22 = ref('Все')
 </script>
 
 <template lang="pug">
 .q-pa-md
 	.row.q-col-gutter-md
 		.col-12
-			.text-h6 Additional Options
+			.text-bold Дополнительные настройки
 		.col-12
-			q-checkbox(v-model="check1" label="Check 1")
+			q-checkbox(v-model="check1" :label="labels[0]")
+			.myflex(v-if='check1')
+				div не более, чем в
+				q-input(dense v-model="step1" type="number" outlined)
+				div шагах
 		.col-12
-			q-checkbox(v-model="check2" label="Check 2")
+			q-checkbox(v-model="check2" :label="labels[1]")
+			.myflex(v-if='check2')
+				div не более, чем
+				q-input(dense v-model="step2" type="number" outlined)
+				div ссылками
+				q-select.q-ml-xl(dense outlined v-model="step21" label="Тип ссылок")
+				q-select(dense outlined v-model="step22" label="Направление")
+
 		.col-12
-			q-checkbox(v-model="check3" label="Check 3")
+			q-checkbox(v-model="check3" :label="labels[2]")
 		.col-12
-			q-checkbox(v-model="check4" label="Check 4")
+			q-checkbox(v-model="check4" :label="labels[3]")
 		.col-12
-			q-checkbox(v-model="check5" label="Check 5")
+			q-checkbox(v-model="check5" :label="labels[4]")
 </template>
 
 <style scoped lang="scss">
+.q-input {
+	width: 60px;
+}
+.myflex {
+	margin-left: 3rem;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	.q-select {
+		width: 200px;
+	}
+}
 </style>
