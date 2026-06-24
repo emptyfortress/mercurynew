@@ -33,6 +33,16 @@ const description = computed({
 		}
 	},
 })
+
+const save = () => {
+	// The computed setters already update the store, but we can add
+	// additional logic here if needed (e.g., validation, API calls)
+	console.log('Saved:', {
+		text: name.value,
+		text1: description.value,
+		author: author.value,
+	})
+}
 </script>
 
 <template lang="pug">
@@ -46,6 +56,8 @@ const description = computed({
 			q-input(v-model="author" label="Author" outlined dense readonly)
 		.col-12
 			q-input(v-model="description" label="Description" type="textarea" outlined dense)
+		.col-12
+			q-btn(unelevated color="primary" label="Save" @click="save")
 </template>
 
 <style scoped lang="scss"></style>
