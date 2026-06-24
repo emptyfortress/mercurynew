@@ -15,10 +15,9 @@ const description = ref('This is a sample description for the query.')
 		.col-12.col-sm-6
 			q-input(v-model="creationDate" label="Creation Date" outlined dense readonly)
 		.col-12.col-sm-6
-			q-input(v-model="author" label="Author" outlined dense)
+			q-input(v-model="author" label="Author" outlined dense readonly)
 		.col-12
 			q-input(v-model="description" label="Description" type="textarea" outlined dense)
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
