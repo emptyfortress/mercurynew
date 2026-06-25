@@ -97,8 +97,10 @@ const isFolder = computed(() => {
 			q-tabs(v-model="tabs" align="left" dense color="primary" class="text-primary")
 				q-tab(name='common' label='Общие')
 				q-tab(name='query' label='Запрос' v-if='!isFolder')
+				q-tab(name='folders' label='Область поиска' v-if='!isFolder')
 				q-tab(name='safety' label='Безопасность')
 				q-tab(name='addition' label='Дополнительно' v-if='!isFolder')
+				q-tab(name='xml' label='XML' v-if='!isFolder')
 
 			q-tab-panels(v-model="tabs" animated)
 				q-tab-panel(name='common')
@@ -108,11 +110,14 @@ const isFolder = computed(() => {
 					.row.justify-between.q-mx-lg
 						q-btn(unelevated color="primary" label="Сохранить")
 						q-btn(flat color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
+				q-tab-panel(name='folders')
+					.text-center Здесь выбор папки (только физические).<br /> Ждем опрос - нужно ли делать?
 				q-tab-panel(name='safety')
 					Safety
 					q-btn.q-mt-md(unelevated color="primary" label="Сохранить")
 				q-tab-panel(name='addition')
 					AdditionTab
+				q-tab-panel(name='xml') Здесь xml-запрос
 
 	PreviewDialog(v-model="preview" :loading="loading")
 	ChipModal(v-model="dialogCreate" create)

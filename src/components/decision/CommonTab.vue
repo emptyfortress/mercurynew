@@ -41,13 +41,13 @@ const kill = () => {
 .q-pa-md
 	.row.q-col-gutter-md
 		.col-12
-			q-input(v-model="name" label="Name" outlined dense)
+			q-input(v-model="name" label="Название" outlined dense)
 		.col-12.col-sm-6
-			q-input(v-model="creationDate" label="Creation Date" outlined dense readonly)
+			q-input(v-model="creationDate" label="Дата создания" outlined dense readonly)
 		.col-12.col-sm-6
-			q-input(v-model="author" label="Author" outlined dense readonly)
+			q-input(v-model="author" label="Автор" outlined dense readonly)
 		.col-12
-			q-input(v-model="descr" label="Description" type="textarea" outlined dense)
+			q-input(v-model="descr" label="Описание" type="textarea" outlined dense)
 		.col-12.row.justify-between
 			q-btn(unelevated color="primary" label="Сохранить" @click="save")
 			q-btn(flat color="negative" label="Удалить" icon="mdi-delete-outline" :disable="store.selectedElement?.type == 0")

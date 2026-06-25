@@ -27,6 +27,12 @@ const step22 = ref('Все')
 		.col-12
 			.text-bold Дополнительные настройки
 		.col-12
+			q-checkbox(v-model="check3" :label="labels[2]")
+		.col-12
+			q-checkbox(v-model="check4" :label="labels[3]")
+		.col-12
+			q-checkbox(v-model="check5" :label="labels[4]")
+		.col-12
 			q-checkbox(v-model="check1" :label="labels[0]")
 			.myflex(v-if='check1')
 				div не более, чем в
@@ -41,12 +47,6 @@ const step22 = ref('Все')
 				q-select.q-ml-xl(dense outlined v-model="step21" label="Тип ссылок")
 				q-select(dense outlined v-model="step22" label="Направление")
 
-		.col-12
-			q-checkbox(v-model="check3" :label="labels[2]")
-		.col-12
-			q-checkbox(v-model="check4" :label="labels[3]")
-		.col-12
-			q-checkbox(v-model="check5" :label="labels[4]")
 </template>
 
 <style scoped lang="scss">
