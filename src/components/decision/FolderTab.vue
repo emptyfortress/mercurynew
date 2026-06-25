@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import FolderTree from '@/components/decision/FolderTree.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 
 const simpleStore = useSimpleStore()
@@ -87,6 +86,7 @@ const tree = [
 ]
 const group = ref('all')
 const only = ref(false)
+const ticked = ref([])
 </script>
 
 <template lang="pug">
@@ -95,7 +95,7 @@ const only = ref(false)
 	q-radio(v-model="group" val="selected" label="Искать в выбранных папках")
 	q-checkbox(v-model="only" dense label='Включая подпапки')
 
-FolderTree(:data="tree" :isDisabled='group == "all"' open)
+q-tree(:nodes="tree" :selected="selectedFolder" :ticked="ticked" tick-strategy="strict" node-key="id")
 
 q-btn(unelevated color="primary" label="Сохранить")
 </template>
