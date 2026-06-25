@@ -64,7 +64,7 @@ const toggleCreate = () => {
 	dialogCreate.value = !dialogCreate.value
 }
 
-const tabs = ref('common')
+const tabs = ref('query')
 
 const isFolder = computed(() => {
 	return store.selectedElement?.type == 0

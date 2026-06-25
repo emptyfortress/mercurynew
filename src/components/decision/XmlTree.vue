@@ -1,9 +1,3 @@
-<template lang="pug">
-.xml-tree
-  XmlNode(v-if="tree" :node="tree")
-  .xml-error(v-else-if="error") {{ error }}
-</template>
-
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 import XmlNode from './XmlNode.vue'
@@ -41,6 +35,17 @@ watchEffect(() => {
 	}
 })
 </script>
+
+<template lang="pug">
+.q-gutter-sm
+	q-btn(flat color="primary" label="Импорт") 
+	q-btn(flat color="primary" label="Экспорт") 
+.xml-tree
+	XmlNode(v-if="tree" :node="tree")
+	.xml-error(v-else-if="error") {{ error }}
+
+q-btn.q-mt-md(unelevated color="primary" label="Сохранить") 
+</template>
 
 <style scoped lang="scss">
 .xml-error {

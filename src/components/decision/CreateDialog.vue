@@ -107,7 +107,6 @@ q-dialog(v-model="modelValue")
 			.text-h6(v-if="props.mode == 'folder'") Создать папку
 			.text-h6(v-if="props.mode == 'poisk' && props.mode1") Создать папку
 			.text-h6(v-if="props.mode == 'poisk' && !props.mode1") Создать запрос
-			div {{ simpleStore.selectedElement?.text }}
 
 		q-card-section
 			FormKit(type="form" id="newapp" submit-label="Создать" @submit="create")
