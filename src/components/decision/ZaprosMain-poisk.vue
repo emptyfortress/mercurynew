@@ -10,6 +10,7 @@ import CommonTab from '@/components/decision/CommonTab.vue'
 import Safety from '@/components/decision/Safety.vue'
 import AdditionTab from '@/components/decision/AdditionTab.vue'
 import FolderTab from '@/components/decision/FolderTab.vue'
+import XmlTree from '@/components/decision/XmlTree.vue'
 
 const props = defineProps({
 	splitter: Number,
@@ -68,6 +69,19 @@ const tabs = ref('common')
 const isFolder = computed(() => {
 	return store.selectedElement?.type == 0
 })
+
+const testXml = `
+<catalog>
+  <book id="1">
+    <title>Vue 3</title>
+    <author>Evan You</author>
+  </book>
+  <book id="2">
+    <title>TypeScript</title>
+    <author>Anders</author>
+  </book>
+</catalog>
+`
 </script>
 
 <template lang="pug">
@@ -118,7 +132,8 @@ const isFolder = computed(() => {
 					q-btn.q-mt-md(unelevated color="primary" label="Сохранить")
 				q-tab-panel(name='addition')
 					AdditionTab
-				q-tab-panel(name='xml') Здесь xml-запрос
+				q-tab-panel(name='xml')
+					XmlTree(:xml="testXml")
 
 	PreviewDialog(v-model="preview" :loading="loading")
 	ChipModal(v-model="dialogCreate" create)

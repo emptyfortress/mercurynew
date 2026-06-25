@@ -6,6 +6,7 @@ import '@he-tree/vue/style/default.css'
 const props = defineProps<{
 	data: any[]
 	isDisabled?: boolean
+	open?: boolean
 }>()
 
 const query = ref('')
@@ -32,7 +33,9 @@ watch(query, (newValue) => {
 const tree = ref()
 
 onMounted(() => {
-	tree.value.openNodeAndParents(props.data[0])
+	if (!props.open) {
+		tree.value.openNodeAndParents(props.data[0])
+	}
 })
 
 const toggle = (stat: any) => {
@@ -66,7 +69,7 @@ const selectedNodes = computed(() => {
 			treeLine
 			:treeLineOffset="18"
 			:indent="30"
-			:defaultOpen='false'
+			:defaultOpen='props.open'
 			)
 			template(#default="{ node, stat }")
 				.node(@click.stop="toggle(stat)")
