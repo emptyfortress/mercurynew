@@ -9,6 +9,7 @@ import ChipModal from '@/components/decision/ChipModal-poisk.vue'
 import CommonTab from '@/components/decision/CommonTab.vue'
 import Safety from '@/components/decision/Safety.vue'
 import AdditionTab from '@/components/decision/AdditionTab.vue'
+import FolderTab from '@/components/decision/FolderTab.vue'
 
 const props = defineProps({
 	splitter: Number,
@@ -111,7 +112,7 @@ const isFolder = computed(() => {
 						q-btn(unelevated color="primary" label="Сохранить")
 						q-btn(flat color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
 				q-tab-panel(name='folders')
-					.text-center Здесь выбор папки (только физические).<br /> Ждем опрос - нужно ли делать?
+					FolderTab
 				q-tab-panel(name='safety')
 					Safety
 					q-btn.q-mt-md(unelevated color="primary" label="Сохранить")
