@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useSimpleStore } from '@/stores/simpleStore'
+// import { useSimpleStore } from '@/stores/simpleStore'
 
-const simpleStore = useSimpleStore()
+// const simpleStore = useSimpleStore()
 
-const selectedFolder = ref(null)
+// const selectedFolder = ref(null)
 
 const tree = [
 	{
@@ -95,7 +95,13 @@ const ticked = ref([])
 	q-radio(v-model="group" val="selected" label="Искать в выбранных папках")
 	q-checkbox(v-model="only" dense label='Включая подпапки')
 
-q-tree(:nodes="tree" :selected="selectedFolder" :ticked="ticked" tick-strategy="strict" node-key="id")
+q-tree(
+	:nodes="tree",
+	v-model:ticked="ticked",
+	tick-strategy="strict",
+	node-key="id"
+	label-key='text'
+)
 
 q-btn(unelevated color="primary" label="Сохранить")
 </template>
