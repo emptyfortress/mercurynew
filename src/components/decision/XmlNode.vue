@@ -87,7 +87,7 @@ function toggle() {
 }
 
 .xml-bracket {
-	color: hsl(234 12% 55% / 1);
+	color: hsl(234 12% 65% / 1);
 }
 .xml-tagname {
 	color: #89b4fa;
