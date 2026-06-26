@@ -3,7 +3,9 @@ import { computed, ref } from 'vue'
 import ZaprosMainPoisk from '@/components/decision/ZaprosMain-poisk.vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
 import FieldTree from '@/components/decision/FieldTree.vue'
+import { useSimpleStore } from '@/stores/simpleStore'
 
+const simpleStore = useSimpleStore()
 const splitterModel = ref(15)
 const splitterModel1 = ref(80)
 
@@ -11,7 +13,14 @@ const hei = computed(() => {
 	return 'height: ' + (window.innerHeight - 180) + 'px;'
 })
 
-const tabs = ref('query')
+const tabs = ref('common')
+
+const isTreeVisible = computed(() => {
+	if (simpleStore.selectedElement && tabs.value == 'query') {
+		return true
+	}
+	return false
+})
 </script>
 
 <template lang="pug">
@@ -38,7 +47,7 @@ div
 
 				template(v-slot:after)
 					q-scroll-area.list1
-						FieldTree(v-if='tabs == "query"')
+						FieldTree(v-if='isTreeVisible')
 </template>
 
 <style scoped lang="scss">

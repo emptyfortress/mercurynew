@@ -12,7 +12,7 @@ import {
 import { useDrag } from '@/stores/drag'
 import { useChips } from '@/stores/chips'
 
-import ChipModal from '@/components/decision/ChipModal-poisk.vue'
+import ChipModal from '@/components/decision/ChipModal-new.vue'
 
 const props = defineProps({
 	layout: {
@@ -103,6 +103,7 @@ const selChip = () => {
 
 <template lang="pug">
 div
+	.hd Поля
 	q-input.search( ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter")
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")
@@ -175,5 +176,9 @@ div
 }
 .q-checkbox {
 	font-size: 0.9rem;
+}
+.hd {
+	text-align: center;
+	font-weight: 600;
 }
 </style>

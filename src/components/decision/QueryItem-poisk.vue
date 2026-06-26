@@ -216,7 +216,7 @@ const hideFirst = computed(() => {
 }
 .empty {
 	text-align: center;
-	color: var(--green);
+	color: $negative;
 	border: 1px solid var(--my-border-color);
 	padding: 1rem;
 	border-radius: 4px;

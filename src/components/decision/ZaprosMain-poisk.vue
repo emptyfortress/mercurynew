@@ -5,7 +5,7 @@ import { useEditor as useEditorMer } from '@/stores/useEditor-mercy'
 import { useDrag as useDragMer } from '@/stores/useDrag-mercy'
 import QueryItem from '@/components/decision/QueryItem-poisk.vue'
 import PreviewDialog from '@/components/decision/PreviewDialog-poisk.vue'
-import ChipModal from '@/components/decision/ChipModal-poisk.vue'
+import ChipModal from '@/components/decision/ChipModal-new.vue'
 import CommonTab from '@/components/decision/CommonTab.vue'
 import Safety from '@/components/decision/Safety.vue'
 import AdditionTab from '@/components/decision/AdditionTab.vue'
@@ -95,7 +95,7 @@ const testXml = `
 			template(v-if="store.selectedElement")
 				.zg
 					q-icon(v-if='isFolder' name="mdi-folder-outline")
-					q-icon(v-else name="mdi-magnify")
+					q-icon(v-else name="mdi-text-search-variant")
 					span {{ store.selectedElement.text }}
 						q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")
 							q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
@@ -109,7 +109,7 @@ const testXml = `
 				q-btn(:disable="isFolder" outline size="10px" color="primary" @click="double") Дублировать
 
 		template( v-if='store.selectedElement' )
-			q-tabs(v-model="tabs" align="left" dense color="primary" class="text-primary")
+			q-tabs.q-mt-md(v-model="tabs" align="left" dense color="primary" class="text-primary")
 				q-tab(name='common' label='Общие')
 				q-tab(name='query' label='Запрос' v-if='!isFolder')
 				q-tab(name='folders' label='Область поиска' v-if='!isFolder')
@@ -151,9 +151,7 @@ const testXml = `
 .zg {
 	font-size: 1rem;
 	text-transform: uppercase;
-	padding: 0.5rem;
 	.q-icon {
-		// margin-top: -0.4rem;
 		margin-right: 0.6rem;
 		font-size: 1.3rem;
 		color: $primary;
@@ -181,5 +179,11 @@ const testXml = `
 }
 :deep(.q-tab-panel) {
 	padding: 1rem 0;
+}
+.cat {
+	color: $primary;
+	font-size: 1.4rem;
+	margin-right: 0.6rem;
+	transform: translateY(4px);
 }
 </style>
