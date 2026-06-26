@@ -37,14 +37,14 @@ watchEffect(() => {
 </script>
 
 <template lang="pug">
-.q-gutter-sm
+.q-gutter-x-sm
 	q-btn(flat color="primary" label="Импорт") 
 	q-btn(flat color="primary" label="Экспорт") 
 .xml-tree
 	XmlNode(v-if="tree" :node="tree")
 	.xml-error(v-else-if="error") {{ error }}
 
-q-btn.q-mt-md(unelevated color="primary" label="Сохранить") 
+q-btn(unelevated color="primary" label="Сохранить") 
 </template>
 
 <style scoped lang="scss">
@@ -55,6 +55,7 @@ q-btn.q-mt-md(unelevated color="primary" label="Сохранить")
 .xml-tree {
 	background: #1e1e2e;
 	padding: 16px;
+	margin: 0.5rem 0;
 	border-radius: 8px;
 }
 </style>

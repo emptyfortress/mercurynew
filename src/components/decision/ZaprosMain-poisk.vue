@@ -16,6 +16,8 @@ const props = defineProps({
 	splitter: Number,
 })
 
+const tabs = defineModel<string>()
+
 const emit = defineEmits(['maximize', 'reset'])
 
 const store = useSimpleStore()
@@ -63,8 +65,6 @@ const dialogCreate = ref(false)
 const toggleCreate = () => {
 	dialogCreate.value = !dialogCreate.value
 }
-
-const tabs = ref('query')
 
 const isFolder = computed(() => {
 	return store.selectedElement?.type == 0

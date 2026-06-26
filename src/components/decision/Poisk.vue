@@ -10,6 +10,8 @@ const splitterModel1 = ref(80)
 const hei = computed(() => {
 	return 'height: ' + (window.innerHeight - 180) + 'px;'
 })
+
+const tabs = ref('query')
 </script>
 
 <template lang="pug">
@@ -32,11 +34,11 @@ div
 				template(v-slot:before)
 					.main
 						q-scroll-area.list
-							ZaprosMainPoisk(:splitter="splitterModel" @maximize="splitterModel = 0" @reset="splitterModel = 30")
+							ZaprosMainPoisk(v-model="tabs" :splitter="splitterModel" @maximize="splitterModel = 0" @reset="splitterModel = 30")
 
 				template(v-slot:after)
 					q-scroll-area.list1
-						FieldTree()
+						FieldTree(v-if='tabs == "query"')
 </template>
 
 <style scoped lang="scss">
@@ -59,8 +61,6 @@ div
 }
 
 .main {
-	// border: 1px solid var(--my-border-color);
-	// background: var(--bg-panel);
 	border: 1px solid var(--my-border-color);
 	background: var(--bg-panel);
 	height: 100%;

@@ -1,10 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// import { useSimpleStore } from '@/stores/simpleStore'
-
-// const simpleStore = useSimpleStore()
-
-// const selectedFolder = ref(null)
 
 const tree = [
 	{
@@ -93,6 +88,7 @@ const tree = [
 const group = ref('all')
 const only = ref(false)
 const ticked = ref([])
+const expanded = ref([0, 2])
 </script>
 
 <template lang="pug">
@@ -104,6 +100,7 @@ const ticked = ref([])
 q-tree(
 	:nodes="tree",
 	v-model:ticked="ticked",
+	v-model:expanded="expanded"
 	tick-strategy="strict",
 	node-key="id"
 	label-key='text'
