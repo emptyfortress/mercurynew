@@ -54,7 +54,7 @@ const setTree = () => {
 	mychips.count = (mychips.count ?? 0) + 1
 	setTimeout(() => {
 		mychips.toggleUpdateTree()
-		mychips.setNewItem('')
+		mychips.setNewItem({ text: '', text1: '' })
 	}, 200)
 }
 
@@ -62,12 +62,12 @@ const searchName = ref('Мой поиск')
 const descr = ref('Тест')
 
 const createSearch = () => {
+	setTree()
 	let tmp = {
 		text: searchName.value,
 		text1: descr.value,
 	}
 	mychips.setNewItem(tmp)
-	setTree()
 }
 </script>
 

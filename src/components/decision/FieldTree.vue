@@ -115,7 +115,7 @@ div
 	q-checkbox.q-mb-md(v-model="common" dense label="Отображать общие свойства")
 	div
 		label Показать:
-		q-chip.q-ml-md(v-model:selected="chip" size="12px" @click="selChip" color="primary") {{ lab }}
+		q-chip.q-ml-md(clickable :selected="true" size="12px" @click="selChip" color="primary") {{ lab }}
 	q-tree(ref="tree"
 		:nodes="myfields"
 		dense
