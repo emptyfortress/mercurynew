@@ -62,7 +62,11 @@ const searchName = ref('Мой поиск')
 const descr = ref('Тест')
 
 const createSearch = () => {
-	mychips.setNewItem(searchName.value)
+	let tmp = {
+		text: searchName.value,
+		text1: descr.value,
+	}
+	mychips.setNewItem(tmp)
 	setTree()
 }
 </script>
@@ -70,10 +74,9 @@ const createSearch = () => {
 <template lang="pug">
 q-dialog(v-model="modelValue")
 	q-card
-		q-card-section.row.items-center.q-pb-none
+		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
+		q-card-section.q-pb-none
 			.text-h6 Выберите тип карточек для поиска
-			q-space
-			q-btn(icon="mdi-close" flat round dense v-close-popup)
 
 		q-card-section
 			.grid

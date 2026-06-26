@@ -5,6 +5,7 @@ import '@he-tree/vue/style/default.css'
 import DirMenu from '@/components/decision/DirMenu.vue'
 import { useRouter, useRoute } from 'vue-router'
 import CreateDialog from '@/components/decision/CreateDialog.vue'
+import ChipModalNew from '@/components/decision/ChipModal-new.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
 import { useChips } from '@/stores/chips'
@@ -25,6 +26,7 @@ const simpleStore = useSimpleStore()
 const tree = ref()
 const query = ref('')
 const dialog = ref(false)
+const dialog1 = ref(false)
 
 const activeSourceType = computed<TreeSourceType>(() => props.sourceType ?? 'selectedBranch')
 
@@ -210,8 +212,8 @@ const create = (data: any) => {
 
 const poiskFold = ref(false)
 const poisk = () => {
-	poiskFold.value = false
-	dialog.value = !dialog.value
+	// poiskFold.value = false
+	dialog1.value = !dialog1.value
 }
 
 const fold = () => {
@@ -227,8 +229,9 @@ watch(
 	() => {
 		let temp = {
 			id: uid(),
-			text: mychips.newSearchItem,
-			text1: 'Описание поиска',
+			text: mychips.newSearchItem.text,
+			text1: mychips.newSearchItem.text1,
+			// text1: 'Описание поиска',
 			hidden: false,
 			selected: true,
 			type: 1,
@@ -334,6 +337,7 @@ div
 		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
 	q-btn.fab(v-else round icon="mdi-plus" color="primary" @click="dialog = !dialog")
 	CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='poiskFold' @create='create')
+	ChipModalNew(v-model="dialog1" create)
 </template>
 
 <style scoped lang="scss">

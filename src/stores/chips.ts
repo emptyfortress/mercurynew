@@ -42,7 +42,7 @@ export const useChips = defineStore({
 		] as Chip[],
 		rows: [] as Option[],
 		updateTree: false,
-		newSearchItem: '',
+		newSearchItem: { text: '', text1: '' },
 		count: 0,
 		selectedRow: null as null | Option,
 	}),
@@ -60,7 +60,7 @@ export const useChips = defineStore({
 		toggleUpdateTree() {
 			this.updateTree = !this.updateTree
 		},
-		setNewItem(e: string) {
+		setNewItem(e: any) {
 			this.newSearchItem = e
 		},
 	},
