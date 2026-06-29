@@ -6,8 +6,9 @@ const router = useRouter()
 const sections = [
 	{ id: 0, label: 'Конструктор карточек', to: 'cards' },
 	{ id: 1, label: 'Каталог папок', to: 'folders' },
+	{ id: 3, label: 'Поиски', to: 'search' },
+	{ id: 3, label: 'Представления', to: 'views' },
 	{ id: 2, label: 'Рабочая область', to: 'webframe' },
-	{ id: 3, label: 'Поиски и представления', to: 'search' },
 	{ id: 4, label: 'Процессы', to: '' },
 	{ id: 5, label: 'Справочники', to: '' },
 	{ id: 6, label: 'Нумераторы', to: '' },

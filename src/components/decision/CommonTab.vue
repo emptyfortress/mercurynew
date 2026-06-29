@@ -26,15 +26,6 @@ const creationDate = computed(() => {
 const author = computed(() => {
 	return store.selectedElement?.author || 'System'
 })
-
-const save = () => {
-	store.currentNode.data.text = name.value
-	store.currentNode.data.text1 = descr.value
-}
-
-const kill = () => {
-	store.toggleDelete()
-}
 </script>
 
 <template lang="pug">
@@ -48,13 +39,7 @@ const kill = () => {
 			q-input(v-model="author" label="Автор" outlined dense readonly)
 		.col-12
 			q-input(v-model="descr" label="Описание" type="textarea" outlined dense)
-		.col-12.row.justify-between
-			q-btn(unelevated color="primary" label="Сохранить" @click="save")
-			q-btn(flat color="negative" label="Удалить" icon="mdi-delete-outline" :disable="store.selectedElement?.type == 0")
-				q-menu(anchor="bottom right" self="top right")
-					q-list
-						q-item.pink(clickable @click="kill" v-close-popup)
-							q-item-section Удалить
+
 </template>
 
 <style scoped lang="scss"></style>

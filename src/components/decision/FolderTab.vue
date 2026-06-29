@@ -7,7 +7,6 @@ const group = ref('all')
 const only = ref(false)
 const ticked = ref<number[]>([])
 const expanded = ref([0, 2])
-const treeRef = ref()
 
 // Собрать все id потомков узла (рекурсивно)
 function collectDescendantIds(node: FolderNode): number[] {
@@ -68,18 +67,13 @@ watch(
 	},
 	{ deep: true }
 )
-
-// const tickedTexts = computed(() => ticked.value.map((id) => findNode(tree, id)?.text ?? ''))
-// const tickedNodes = computed(
-// 	() => ticked.value.map((id) => findNode(tree, id)).filter(Boolean) as FolderNode[]
-// )
 </script>
 
 <template lang="pug">
 .row.items-center.q-gutter-x-xl
 	q-radio(v-model="group" val="all" label="Искать во всех папках")
 	q-radio(v-model="group" val="selected" label="Искать в выбранных папках")
-	q-checkbox(v-model="only" dense label='Включая подпапки')
+	q-checkbox(v-if='group == "selected"' v-model="only" dense label='Включая подпапки')
 
 q-tree(
 	:nodes="tree",
@@ -90,10 +84,22 @@ q-tree(
 	label-key='text'
 )
 
-q-card-actions(align='center')
-	q-btn(round flat color="primary" icon='mdi-lock')
-	q-btn(flat color="primary" label="Отмена")
-	q-btn(unelevated color="primary" label="Сохранить")
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.q-tree__node--disabled) {
+	opacity: 1 !important; // убрать затемнение если мешает
+	pointer-events: all !important;
+
+	.q-tree__arrow {
+		pointer-events: all !important;
+		opacity: 1 !important;
+		cursor: pointer !important;
+	}
+
+	.q-tree__tickbox {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+</style>

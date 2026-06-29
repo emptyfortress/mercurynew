@@ -85,28 +85,34 @@ const testXml = `
 </script>
 
 <template lang="pug">
+.all(v-if='!store.selectedElement')
+	.empt
+		div Выберите запрос слева или создайте новый.
+		br
+		q-btn(unelevated color="primary" @click="toggleCreate") Создать новый запрос
 .layout1
 	div
 		.row.items-start.justify-between
-			q-btn(flat round dense @click="switchSidebar")
-				q-icon(name="mdi-forwardburger" v-if="props.splitter === 0")
-				q-icon(name="mdi-backburger" v-else)
+			.row.items-center
+				q-btn(flat round dense @click="switchSidebar" color="primary")
+					q-icon(name="mdi-forwardburger" v-if="props.splitter === 0")
+					q-icon(name="mdi-backburger" v-else)
 
-			template(v-if="store.selectedElement")
-				.zg
-					q-icon(v-if='isFolder' name="mdi-folder-outline")
-					q-icon(v-else name="mdi-text-search-variant")
-					span {{ store.selectedElement.text }}
-						q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")
-							q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+				.zg(v-if="store.selectedElement") {{ store.selectedElement.text }}
+					q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")
+						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
-			div(v-else)
-				div Выберите запрос слева или создайте новый.
-				br
-				q-btn(unelevated color="primary" @click="toggleCreate") Создать новый запрос
-
-			.btngroup
-				q-btn(:disable="isFolder" outline size="10px" color="primary" @click="double") Дублировать
+			.btngroup(v-if='store.selectedElement')
+				q-btn(unelevated color="primary" label="Сохранить" size="sm") 
+				q-btn(outline color="primary" label="Отмена" size="sm") 
+				q-btn(round flat color="primary" icon="mdi-sync" size="sm") 
+				q-chip(size='sm' color="amber") Есть изменения
+				q-chip(size='sm' color="blue-grey-3" icon="mdi-lock") Заблокировано вами
+				q-btn(flat round color="negative" icon="mdi-delete-outline" size="sm") 
+					q-menu
+						q-list
+							q-item.pink(clickable @click="store.toggleDelete")
+								q-item-section Удалить
 
 		template( v-if='store.selectedElement' )
 			q-tabs.q-mt-md(v-model="tabs" align="left" dense color="primary" class="text-primary")
@@ -122,12 +128,8 @@ const testXml = `
 					CommonTab
 				q-tab-panel(name='query')
 					QueryItem(:preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
-					.row.justify-between.q-mx-lg
-						.q-gutter-x-sm
-							q-btn(unelevated color="primary" label="Сохранить")
-							q-btn(flat color="primary" label="Отмена")
-							q-btn(round flat color="primary" icon='mdi-lock')
-						q-btn(flat color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
+					.row.justify-center.q-mx-lg
+						q-btn(unelevated color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
 				q-tab-panel(name='folders')
 					FolderTab
 				q-tab-panel(name='safety')
@@ -160,23 +162,25 @@ const testXml = `
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: center;
+	position: relative;
+}
+.empt {
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translateX(-50%);
+	text-align: center;
 }
 
 .zg {
 	font-size: 1rem;
 	text-transform: uppercase;
-	.q-icon {
-		margin-right: 0.6rem;
-		font-size: 1.3rem;
-		color: $primary;
-	}
-	span {
-		font-weight: 600;
-		color: $primary;
-		padding-bottom: 0;
-		border-bottom: 1px dotted var(--q-primary);
-	}
+	margin-left: 1rem;
+	font-weight: 600;
+	color: $primary;
+	padding-bottom: 0;
+	border-bottom: 1px dotted var(--q-primary);
 }
 
 .descr {
@@ -195,10 +199,7 @@ const testXml = `
 :deep(.q-tab-panel) {
 	padding: 1rem 0;
 }
-.cat {
-	color: $primary;
-	font-size: 1.4rem;
-	margin-right: 0.6rem;
-	transform: translateY(4px);
+.btngroup > * {
+	margin-right: 0.25rem;
 }
 </style>

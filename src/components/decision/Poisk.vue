@@ -25,7 +25,7 @@ const isTreeVisible = computed(() => {
 
 <template lang="pug">
 div
-	.text-h5.text-center Конструктор поисковых запросов
+	.text-h6.text-center Конструктор поисковых запросов
 
 	q-splitter(v-model="splitterModel" :limits="[0, 100]" :style="hei" )
 		template(v-slot:before)
@@ -48,7 +48,6 @@ div
 				template(v-slot:after)
 					q-scroll-area.list1
 						FieldTree(v-show='isTreeVisible')
-						// FieldTree()
 </template>
 
 <style scoped lang="scss">
