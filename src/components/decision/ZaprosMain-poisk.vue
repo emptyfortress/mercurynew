@@ -123,20 +123,32 @@ const testXml = `
 				q-tab-panel(name='query')
 					QueryItem(:preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
 					.row.justify-between.q-mx-lg
-						q-btn(unelevated color="primary" label="Сохранить")
+						.q-gutter-x-sm
+							q-btn(unelevated color="primary" label="Сохранить")
+							q-btn(flat color="primary" label="Отмена")
+							q-btn(round flat color="primary" icon='mdi-lock')
 						q-btn(flat color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
 				q-tab-panel(name='folders')
 					FolderTab
 				q-tab-panel(name='safety')
 					Safety
 					q-card-actions(align='center')
+						q-btn(round flat color="primary" icon='mdi-lock')
 						q-btn(flat color="primary" label="Отмена")
 						q-btn(unelevated color="primary" label="Сохранить")
 
 				q-tab-panel(name='addition')
 					AdditionTab
+					q-card-actions(align='center')
+						q-btn(round flat color="primary" icon='mdi-lock')
+						q-btn(flat color="primary" label="Отмена")
+						q-btn(unelevated color="primary" label="Сохранить")
 				q-tab-panel(name='xml')
 					XmlTree(:xml="testXml")
+					q-card-actions(align='center')
+						q-btn(round flat color="primary" icon='mdi-lock')
+						q-btn(flat color="primary" label="Отмена")
+						q-btn(unelevated color="primary" label="Сохранить")
 
 	PreviewDialog(v-model="preview" :loading="loading")
 	ChipModal(v-model="dialogCreate" create)

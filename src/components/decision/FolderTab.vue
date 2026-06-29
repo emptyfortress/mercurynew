@@ -91,6 +91,7 @@ q-tree(
 )
 
 q-card-actions(align='center')
+	q-btn(round flat color="primary" icon='mdi-lock')
 	q-btn(flat color="primary" label="Отмена")
 	q-btn(unelevated color="primary" label="Сохранить")
 </template>
