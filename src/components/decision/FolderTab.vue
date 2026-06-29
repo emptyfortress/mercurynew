@@ -27,9 +27,15 @@ function findNode(nodes: FolderNode[], id: number): FolderNode | null {
 }
 
 // Сбросить disabled у всех узлов
+// function clearDisabled(nodes: FolderNode[]) {
+// 	for (const node of nodes) {
+// 		delete node.disabled
+// 		if (node.children) clearDisabled(node.children)
+// 	}
+// }
 function clearDisabled(nodes: FolderNode[]) {
 	for (const node of nodes) {
-		delete node.disabled
+		delete node.locked
 		if (node.children) clearDisabled(node.children)
 	}
 }
@@ -61,7 +67,7 @@ watch(
 			for (const did of descendantIds) {
 				if (!ticked.value.includes(did)) ticked.value.push(did)
 				const descendant = findNode(tree, did)
-				if (descendant) descendant.disabled = true
+				if (descendant) descendant.locked = true
 			}
 		}
 	},
@@ -83,6 +89,17 @@ q-tree(
 	node-key="id"
 	label-key='text'
 )
+	template(#default-header="prop")
+		q-checkbox(
+			v-if="!prop.node.noTick"
+			:model-value="ticked.includes(prop.node.id)"
+			:disable="prop.node.disabled"
+			:class="{ 'q-checkbox--disabled': prop.node.locked }"
+			dense
+			class="q-mr-sm"
+			@update:model-value="val => val ? ticked.push(prop.node.id) : ticked.splice(ticked.indexOf(prop.node.id), 1)"
+		)
+		span {{ prop.node.text }}
 
 </template>
 
@@ -101,5 +118,11 @@ q-tree(
 		opacity: 0.5;
 		pointer-events: none;
 	}
+}
+:deep(.q-tree__tickbox) {
+	display: none;
+}
+.q-checkbox--disabled {
+	opacity: 0.5;
 }
 </style>

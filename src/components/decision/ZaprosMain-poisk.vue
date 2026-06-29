@@ -134,23 +134,11 @@ const testXml = `
 					FolderTab
 				q-tab-panel(name='safety')
 					Safety
-					q-card-actions(align='center')
-						q-btn(round flat color="primary" icon='mdi-lock')
-						q-btn(flat color="primary" label="Отмена")
-						q-btn(unelevated color="primary" label="Сохранить")
 
 				q-tab-panel(name='addition')
 					AdditionTab
-					q-card-actions(align='center')
-						q-btn(round flat color="primary" icon='mdi-lock')
-						q-btn(flat color="primary" label="Отмена")
-						q-btn(unelevated color="primary" label="Сохранить")
 				q-tab-panel(name='xml')
 					XmlTree(:xml="testXml")
-					q-card-actions(align='center')
-						q-btn(round flat color="primary" icon='mdi-lock')
-						q-btn(flat color="primary" label="Отмена")
-						q-btn(unelevated color="primary" label="Сохранить")
 
 	PreviewDialog(v-model="preview" :loading="loading")
 	ChipModal(v-model="dialogCreate" create)

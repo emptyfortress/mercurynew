@@ -5,6 +5,7 @@ export interface FolderNode {
 	text: string
 	noTick?: boolean
 	disabled?: boolean
+	locked?: boolean
 	children?: FolderNode[]
 }
 
