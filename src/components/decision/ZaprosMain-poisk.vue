@@ -5,7 +5,7 @@ import { useEditor as useEditorMer } from '@/stores/useEditor-mercy'
 import { useDrag as useDragMer } from '@/stores/useDrag-mercy'
 import QueryItem from '@/components/decision/QueryItem-poisk.vue'
 import PreviewDialog from '@/components/decision/PreviewDialog-poisk.vue'
-import ChipModal from '@/components/decision/ChipModal-poisk.vue'
+import ChipModal from '@/components/decision/ChipModal-new.vue'
 import CommonTab from '@/components/decision/CommonTab.vue'
 import Safety from '@/components/decision/Safety.vue'
 import AdditionTab from '@/components/decision/AdditionTab.vue'
@@ -129,7 +129,10 @@ const testXml = `
 					FolderTab
 				q-tab-panel(name='safety')
 					Safety
-					q-btn.q-mt-md(unelevated color="primary" label="Сохранить")
+					q-card-actions(align='center')
+						q-btn(flat color="primary" label="Отмена")
+						q-btn(unelevated color="primary" label="Сохранить")
+
 				q-tab-panel(name='addition')
 					AdditionTab
 				q-tab-panel(name='xml')

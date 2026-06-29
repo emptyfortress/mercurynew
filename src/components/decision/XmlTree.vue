@@ -44,7 +44,9 @@ watchEffect(() => {
 	XmlNode(v-if="tree" :node="tree")
 	.xml-error(v-else-if="error") {{ error }}
 
-q-btn(unelevated color="primary" label="Сохранить") 
+q-card-actions(align='center')
+	q-btn(flat color="primary" label="Отмена")
+	q-btn(unelevated color="primary" label="Сохранить")
 </template>
 
 <style scoped lang="scss">

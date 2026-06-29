@@ -94,7 +94,6 @@ const myfields = computed(() => {
 })
 const expanded = ref(['type'])
 const common = ref(false)
-const chip = ref(true)
 const chipsModal = ref(false)
 const selChip = () => {
 	chipsModal.value = !chipsModal.value
