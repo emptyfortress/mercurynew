@@ -170,6 +170,12 @@ const title = computed(() => {
 	if (route.path.includes('folders')) {
 		return 'Настройка папок'
 	}
+	if (route.path.includes('search')) {
+		return 'Настройка поисковых запросов'
+	}
+	if (route.path.includes('views')) {
+		return 'Настройка представлений'
+	}
 
 	if (route.path.startsWith('/timeline')) {
 		return 'Ход исполнения'
