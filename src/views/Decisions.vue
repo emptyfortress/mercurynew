@@ -5,6 +5,7 @@ import { useElementSize } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import Webframe from '@/components/decision/Webframe.vue'
 import Poisk from '@/components/decision/Poisk.vue'
+import Views from '@/components/decision/Views.vue'
 
 const route = useRoute()
 
@@ -53,6 +54,7 @@ q-page(padding)
 
 	Webframe(v-if='route.params.constructorId === "webframe"')
 	Poisk(v-if='route.params.constructorId === "search"')
+	Views(v-if='route.params.constructorId === "views"')
 
 </template>
 

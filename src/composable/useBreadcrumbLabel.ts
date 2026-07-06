@@ -27,6 +27,11 @@ export function useBreadcrumbLabel() {
 			return folderNode.text
 		}
 
+		const viewNode = simpleStore.viewData[0] ? findInTree(simpleStore.viewData, segment) : undefined
+		if (viewNode) {
+			return viewNode.text
+		}
+
 		// 3. Затем matrixStore (razmet, roleId)
 		const matrixLabel = matrixStore.getNameById(segment)
 		if (matrixLabel !== segment) {
@@ -50,4 +55,3 @@ export function useBreadcrumbLabel() {
 
 	return { resolveLabel }
 }
-
