@@ -9,6 +9,7 @@ import ChipModalNew from '@/components/decision/ChipModal-new.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
 import { useChips } from '@/stores/chips'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 export type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk' | 'views'
 
@@ -161,9 +162,9 @@ onMounted(() => {
 	}
 })
 
-onUnmounted(() => {
-	simpleStore.clearSelectedElement()
-})
+// onUnmounted(() => {
+// 	simpleStore.clearSelectedElement()
+// })
 
 const create = (data: any) => {
 	const newFolder = {
@@ -231,7 +232,6 @@ watch(
 			id: uid(),
 			text: mychips.newSearchItem.text,
 			text1: mychips.newSearchItem.text1,
-			// text1: 'Описание поиска',
 			hidden: false,
 			selected: true,
 			type: 1,
@@ -241,6 +241,15 @@ watch(
 		simpleStore.setCurrentNode(tree.value.getStat(temp))
 	}
 )
+
+onBeforeRouteUpdate((to, from) => {
+	const wasOnDetail = from.matched.length == 2
+	const isOnListRoot = to.matched.length === 2 && to.name === 'Emp'
+
+	if (wasOnDetail && isOnListRoot) {
+		simpleStore.currentNode.data.selected = false
+	}
+})
 
 watchEffect(() => {
 	if (simpleStore.deleteRequest === true) {
