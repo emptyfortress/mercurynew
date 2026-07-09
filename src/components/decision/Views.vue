@@ -48,7 +48,7 @@ div
 
 				template(v-slot:after)
 					q-scroll-area.list1
-						FieldTree(v-show='isTreeVisible' layout)
+						// FieldTree(v-show='isTreeVisible' layout)
 
 </template>
 
