@@ -150,12 +150,12 @@ const mainMenu = (row: any) => {
 
 									q-td(:props="props" key="actions")
 										q-btn.q-mr-md(flat round dense icon="mdi-content-duplicate" @click.stop="duplicateLayout(props.row)")
-										q-btn.q-mr-md(flat round dense color="negative" icon="mdi-delete-outline" @click.stop)
+										q-btn(flat round dense color="negative" icon="mdi-delete-outline" @click.stop)
 											q-menu
 												q-list
 													q-item(clickable @click="deleteTableItem(props.row.uid)" v-close-popup).pink
 														q-item-section Удалить
-											q-btn(flat round dense color="primary" icon="mdi-chevron-right" @click.stop)
+										q-btn(flat round dense color="primary" icon="mdi-chevron-right" @click.stop)
 
 					q-tab-panel(name="condition")
 						MenuCondition()
