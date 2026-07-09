@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import RolesConstructor from '@/components/decision/RolesConstructor.vue'
 import Matrix from '@/components/decision/Matrix.vue'
+import { useSimpleStore } from '@/stores/simpleStore'
 
 const props = defineProps({
 	razmet: {
@@ -9,6 +10,8 @@ const props = defineProps({
 		required: true,
 	},
 })
+
+const simpleStore = useSimpleStore()
 
 const con = computed(() => {
 	switch (props.razmet) {
@@ -40,6 +43,8 @@ div
 		.container
 			.text-h6 {{ con }}
 			RolesConstructor(v-if='razmet == "102"')
+
+			div {{ simpleStore.selectedElement }}
 </template>
 
 <style scoped lang="scss">
