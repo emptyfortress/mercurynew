@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useStorage } from '@vueuse/core'
+import type { TreeSourceType } from '@/components/decision/UnifiedTree.vue'
 
 interface TreeElement {
 	id: string
@@ -12,7 +13,7 @@ interface TreeElement {
 	edit?: boolean
 	type?: number
 	children?: TreeElement[]
-	sourceType?: 'folderData' | 'treeData'
+	sourceType?: TreeSourceType
 	virtual?: boolean
 	author?: string
 }

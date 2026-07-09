@@ -10,7 +10,7 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
 import { useChips } from '@/stores/chips'
 
-type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk'
+export type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk' | 'views'
 
 const props = defineProps<{
 	sourceType?: TreeSourceType

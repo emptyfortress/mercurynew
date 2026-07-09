@@ -30,8 +30,9 @@ const isFolder = computed(() => {
 })
 
 const save = () => {
-	store.currentNode.data.text = store.tempNode.text
-	store.currentNode.data.text1 = store.tempNode.text1
+	console.log('save')
+	// store.currentNode.data.text = store.tempNode.text
+	// store.currentNode.data.text1 = store.tempNode.text1
 }
 </script>
 
