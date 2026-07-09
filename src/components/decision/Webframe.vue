@@ -92,110 +92,110 @@ const mainMenu = (row: any) => {
 
 <template lang="pug">
 .container1
-  .text-h5.text-center Настройка {{ header }}
+	.text-h5.text-center Настройка {{ header }}
 
-  .grid
-    div
-      q-list(separator)
-        q-item(
-          clickable,
-          v-for="item in list",
-          :key="item.id",
-          :class="{ selected: item.id == selectedListItem }",
-          @click="select(item.id)"
-        )
-          q-item-section(side)
-            IconParkSolidPageTemplate(v-if="item.id == 0")
-            LucideLayoutTemplate(v-else)
-          q-item-section {{ item.label }}
+	.grid
+		div
+			q-list(separator)
+				q-item(
+					clickable,
+					v-for="item in list",
+					:key="item.id",
+					:class="{ selected: item.id == selectedListItem }",
+					@click="select(item.id)"
+				)
+					q-item-section(side)
+						IconParkSolidPageTemplate(v-if="item.id == 0")
+						LucideLayoutTemplate(v-else)
+					q-item-section {{ item.label }}
 
-    div
-      div(v-if="selectedListItem == 0")
-        q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
-          q-tab(name="setup" label="Разметки")
-          q-tab(name="condition" label="Условия выбора разметок")
+		div
+			div(v-if="selectedListItem == 0")
+				q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
+					q-tab(name="setup" label="Разметки")
+					q-tab(name="condition" label="Условия выбора разметок")
 
-        q-tab-panels(v-model="activeTab" animated)
-          q-tab-panel(name="setup")
-            q-table.q-mb-md(
-              :rows="layoutStore.layoutData"
-              :columns="tableColumns"
-              row-key="uid"
-              flat
-              hide-bottom
-              :rows-per-page-options="[0]"
-            )
-              template(v-slot:top)
-                .text-h6 Разметки
-                q-space
-                q-btn(
-                  flat,
-                  color="primary",
-                  icon="mdi-plus-circle",
-                  label="Создать разметку",
-                  @click="create"
-                )
+				q-tab-panels(v-model="activeTab" animated)
+					q-tab-panel(name="setup")
+						q-table.q-mb-md(
+							:rows="layoutStore.layoutData"
+							:columns="tableColumns"
+							row-key="uid"
+							flat
+							hide-bottom
+							:rows-per-page-options="[0]"
+						)
+							template(v-slot:top)
+								.text-h6 Разметки
+								q-space
+								q-btn(
+									flat,
+									color="primary",
+									icon="mdi-plus-circle",
+									label="Создать разметку",
+									@click="create"
+								)
 
-              template(v-slot:body="props")
-                q-tr(:props="props" @click="mainMenu(props.row)")
-                  q-td(:props="props" key="name")
-                    span.link(@click.stop) {{ props.row.name }}
-                      q-popup-edit(v-model="props.row.name" auto-save v-slot="scope")
-                        q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
-                  q-td(:props="props" key="author") {{ props.row.author }}
-                  q-td(:props="props" key="date") {{ props.row.date }}
-                  q-td(:props="props" key="project") {{ props.row.project }}
-                  q-td(:props="props" key="use")
-                    q-icon(v-if="props.row.use" name="mdi-check-bold" color="teal" size="sm")
+							template(v-slot:body="props")
+								q-tr(:props="props" @click="mainMenu(props.row)")
+									q-td(:props="props" key="name")
+										span.link(@click.stop) {{ props.row.name }}
+											q-popup-edit(v-model="props.row.name" auto-save v-slot="scope")
+												q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+									q-td(:props="props" key="author") {{ props.row.author }}
+									q-td(:props="props" key="date") {{ props.row.date }}
+									q-td(:props="props" key="project") {{ props.row.project }}
+									q-td(:props="props" key="use")
+										q-icon(v-if="props.row.use" name="mdi-check-bold" color="teal" size="sm")
 
-                  q-td(:props="props" key="actions")
-                    q-btn.q-mr-md(flat round dense icon="mdi-content-duplicate" @click.stop="duplicateLayout(props.row)")
-                    q-btn.q-mr-md(flat round dense color="negative" icon="mdi-delete-outline" @click.stop)
-                      q-menu
-                        q-list
-                          q-item(clickable @click="deleteTableItem(props.row.uid)" v-close-popup).pink
-                            q-item-section Удалить
-                      q-btn(flat round dense color="primary" icon="mdi-chevron-right" @click.stop)
+									q-td(:props="props" key="actions")
+										q-btn.q-mr-md(flat round dense icon="mdi-content-duplicate" @click.stop="duplicateLayout(props.row)")
+										q-btn.q-mr-md(flat round dense color="negative" icon="mdi-delete-outline" @click.stop)
+											q-menu
+												q-list
+													q-item(clickable @click="deleteTableItem(props.row.uid)" v-close-popup).pink
+														q-item-section Удалить
+											q-btn(flat round dense color="primary" icon="mdi-chevron-right" @click.stop)
 
-          q-tab-panel(name="condition")
-            MenuCondition()
+					q-tab-panel(name="condition")
+						MenuCondition()
 
-      div(v-if="selectedListItem && selectedListItem > 0")
-        svg(
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-        )
-          path(fill="currentColor" d="M18.9 21l-5.475-5.475l2.1-2.1L21 18.9zM5.1 21L3 18.9L9.9 12l-1.7-1.7l-.7.7l-1.275-1.275v2.05l-.7.7L2.5 9.45l.7-.7h2.05L4 7.5l3.55-3.55q.5-.5 1.075-.725T9.8 3t1.175.225t1.075.725l-2.3 2.3L11 7.5l-.7.7L12 9.9l2.25-2.25q-.1-.275-.162-.575t-.063-.6q0-1.475 1.013-2.488t2.487-1.012q.375 0 .713.075t.687.225L16.45 5.75l1.8 1.8l2.475-2.475q.175.35.238.687t.062.713q0 1.475-1.012 2.488t-2.488 1.012q-.3 0-.6-.05t-.575-.175z")
-        div Раздел в разработке
+			div(v-if="selectedListItem && selectedListItem > 0")
+				svg(
+					xmlns="http://www.w3.org/2000/svg"
+					width="32"
+					height="32"
+					viewBox="0 0 24 24"
+				)
+					path(fill="currentColor" d="M18.9 21l-5.475-5.475l2.1-2.1L21 18.9zM5.1 21L3 18.9L9.9 12l-1.7-1.7l-.7.7l-1.275-1.275v2.05l-.7.7L2.5 9.45l.7-.7h2.05L4 7.5l3.55-3.55q.5-.5 1.075-.725T9.8 3t1.175.225t1.075.725l-2.3 2.3L11 7.5l-.7.7L12 9.9l2.25-2.25q-.1-.275-.162-.575t-.063-.6q0-1.475 1.013-2.488t2.487-1.012q.375 0 .713.075t.687.225L16.45 5.75l1.8 1.8l2.475-2.475q.175.35.238.687t.062.713q0 1.475-1.012 2.488t-2.488 1.012q-.3 0-.6-.05t-.575-.175z")
+				div Раздел в разработке
 
-    q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")
-      q-card(style="min-width: 350px")
-        q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
-        q-card-section
-          .text-h6 Создать разметку
-          .q-mt-md Название:
-          q-input(
-            v-model="newMenuName"
-            label="Название"
-            dense
-            outlined
-            autofocus
-            @keyup.enter="createMenu"
-          )
-          .q-mt-md Проект:
-          q-select(
-            v-model="layoutStore.currentProject"
-            :options="projectList"
-            dense
-            outlined
-            autofocus
-            @keyup.enter="createMenu"
-          )
-        q-card-actions(align="right")
-          q-btn(flat label="Отмена" v-close-popup)
-          q-btn(unelevated color="primary" label="Создать" @click="createMenu")
+		q-dialog(v-model="createDialog" persistent backdrop-filter="blur(4px) saturate(150%)")
+			q-card(style="min-width: 350px")
+				q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
+				q-card-section
+					.text-h6 Создать разметку
+					.q-mt-md Название:
+					q-input(
+						v-model="newMenuName"
+						label="Название"
+						dense
+						outlined
+						autofocus
+						@keyup.enter="createMenu"
+					)
+					.q-mt-md Проект:
+					q-select(
+						v-model="layoutStore.currentProject"
+						:options="projectList"
+						dense
+						outlined
+						autofocus
+						@keyup.enter="createMenu"
+					)
+				q-card-actions(align="right")
+					q-btn(flat label="Отмена" v-close-popup)
+					q-btn(unelevated color="primary" label="Создать" @click="createMenu")
 </template>
 
 <style scoped lang="scss">
@@ -269,4 +269,3 @@ const mainMenu = (row: any) => {
 	margin-right: 6rem;
 }
 </style>
-
