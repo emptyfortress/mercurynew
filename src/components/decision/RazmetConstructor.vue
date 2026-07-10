@@ -29,6 +29,13 @@ const activeTab = computed({
 
 const active = ref('Документооборот')
 
+const removeView = (viewId: string) => {
+	const project = razmetStore.projects.find(p => p.views.some(v => v.id === viewId))
+	if (project) {
+		project.views = project.views.filter(v => v.id !== viewId)
+	}
+}
+
 const columns: QTableColumn[] = [
 	{ name: 'name', label: 'Разметка', field: 'name', align: 'left', sortable: true },
 	{ name: 'type', label: 'Тип', field: 'type', align: 'left', sortable: true },
@@ -79,7 +86,7 @@ div
 								.q-gutter-x-sm
 									q-btn(flat round icon="mdi-pencil" size="sm")
 									q-btn(flat round icon="mdi-content-copy" size="sm")
-									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative")
+									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative" @click="removeView(props.row.id)")
 </template>
 
 <style scoped lang="scss">
