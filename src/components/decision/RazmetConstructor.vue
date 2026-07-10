@@ -35,6 +35,7 @@ const columns: QTableColumn[] = [
 	{ name: 'author', label: 'Автор', field: 'author', align: 'left', sortable: true },
 	{ name: 'createdAt', label: 'Создано', field: 'createdAt', align: 'left', sortable: true },
 	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center', sortable: true },
+	{ name: 'actions', label: '', field: 'actions', align: 'center' },
 ]
 </script>
 
@@ -73,6 +74,11 @@ div
 									span(@click.stop) {{ props.row.name }}
 										q-popup-edit(v-model="props.row.name" auto-save v-slot="scope")
 											q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+						template(v-slot:body-cell-actions="props")
+							q-td(:props="props")
+								q-btn(flat round icon="mdi-pencil" size="sm")
+								q-btn(flat round icon="mdi-content-copy" size="sm")
+								q-btn(flat round icon="mdi-delete" size="sm" color="negative")
 </template>
 
 <style scoped lang="scss">

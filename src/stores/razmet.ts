@@ -57,7 +57,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 		},
 		{
 			name: 'Кадры',
-			expanded: true,
+			expanded: false,
 			views: [
 				{
 					id: 'view-006',
@@ -109,7 +109,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 		},
 		{
 			name: 'Поддержка',
-			expanded: true,
+			expanded: false,
 			views: [
 				{
 					id: 'view-011',
