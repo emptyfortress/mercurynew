@@ -30,7 +30,7 @@ const activeTab = computed({
 const active = ref('Документооборот')
 
 const columns: QTableColumn[] = [
-	{ name: 'name', label: 'Название', field: 'name', align: 'left', sortable: true },
+	{ name: 'name', label: 'Разметка', field: 'name', align: 'left', sortable: true },
 	{ name: 'type', label: 'Тип', field: 'type', align: 'left', sortable: true },
 	{ name: 'author', label: 'Автор', field: 'author', align: 'left', sortable: true },
 	{ name: 'createdAt', label: 'Создано', field: 'createdAt', align: 'left', sortable: true },
@@ -75,10 +75,11 @@ div
 										q-popup-edit(v-model="props.row.name" auto-save v-slot="scope")
 											q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 						template(v-slot:body-cell-actions="props")
-							q-td(:props="props")
-								q-btn(flat round icon="mdi-pencil" size="sm")
-								q-btn(flat round icon="mdi-content-copy" size="sm")
-								q-btn(flat round icon="mdi-delete" size="sm" color="negative")
+							q-td.text-right(:props="props")
+								.q-gutter-x-sm
+									q-btn(flat round icon="mdi-pencil" size="sm")
+									q-btn(flat round icon="mdi-content-copy" size="sm")
+									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative")
 </template>
 
 <style scoped lang="scss">
@@ -124,5 +125,8 @@ div
 	span {
 		border-bottom: 1px dotted $primary;
 	}
+}
+:deep(.q-field__control:before) {
+	background: white;
 }
 </style>
