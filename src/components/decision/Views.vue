@@ -14,7 +14,7 @@ const hei = computed(() => {
 	return 'height: ' + (window.innerHeight - 180) + 'px;'
 })
 
-const tabs = ref('columns')
+const tabs = ref('common')
 
 const isTreeVisible = computed(() => {
 	if (simpleStore.selectedElement && tabs.value == 'columns') {

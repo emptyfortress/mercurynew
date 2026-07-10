@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import ChipModal from '@/components/decision/ChipModal-new.vue'
 import CommonTab from '@/components/decision/CommonTab.vue'
-import ColumnsTab1 from '@/components/decision/ColumnsTab.vue'
+import ColumnsTab from '@/components/decision/ColumnsTab.vue'
 
 const props = defineProps({
 	splitter: Number,
@@ -79,7 +79,7 @@ div
 			q-tab-panel(name='common')
 				CommonTab
 			q-tab-panel(name='columns')
-				ColumnsTab1
+				ColumnsTab
 
 
 ChipModal(v-model="dialogCreate" create mode="views")
