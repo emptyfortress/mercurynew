@@ -112,7 +112,7 @@ div
 				.text-h6 Новая разметка
 				.text-body2.q-mt-md Это диалоговое окно для создания новой разметки.
 			q-card-actions(align="right")
-				q-btn(flat label="Отмена" v-close-popup)
+				q-btn(flat label="Отмена" v-close-popup color="primary")
 				q-btn(unelevated color="primary" label="Создать" v-close-popup)
 	
 </template>
