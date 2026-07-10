@@ -6,6 +6,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 		{
 			name: 'Документооборот',
 			expanded: true,
+			pagination: 1,
 			views: [
 				{
 					id: 'view-001',
@@ -36,6 +37,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 		{
 			name: 'Закупки',
 			expanded: false,
+			pagination: 1,
 			views: [
 				{
 					id: 'view-004',
@@ -58,6 +60,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 		{
 			name: 'Кадры',
 			expanded: false,
+			pagination: 1,
 			views: [
 				{
 					id: 'view-006',
@@ -88,6 +91,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 		{
 			name: 'Продажи',
 			expanded: false,
+			pagination: 1,
 			views: [
 				{
 					id: 'view-009',
@@ -110,6 +114,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 		{
 			name: 'Поддержка',
 			expanded: false,
+			pagination: 1,
 			views: [
 				{
 					id: 'view-011',
