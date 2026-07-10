@@ -92,8 +92,9 @@ div
 												q-item.pink(clickable @click="removeView(props.row.id)")
 													q-item-section Удалить
 						template(v-slot:bottom)
-							.q-pa-sm
+							.row.items-center.justify-between.q-pa-sm
 								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm")
+								q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links color="primary" size="sm")
 	
 </template>
 
