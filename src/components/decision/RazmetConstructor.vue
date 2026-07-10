@@ -29,6 +29,10 @@ const activeTab = computed({
 
 const active = ref('Документооборот')
 const createDialog = ref(false)
+const newViewName = ref('')
+const newViewType = ref('просмотр')
+
+const typeOptions = ['просмотр', 'редактирование', 'создание']
 
 const removeView = (viewId: string) => {
 	const project = razmetStore.projects.find((p) => p.views.some((v) => v.id === viewId))
@@ -106,11 +110,15 @@ div
 									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space)
 
 	q-dialog(v-model="createDialog" persistent)
-		q-card(style="min-width: 350px")
+		q-card(style="min-width: 400px")
 			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 			q-card-section
 				.text-h6 Новая разметка
-				.text-body2.q-mt-md Это диалоговое окно для создания новой разметки.
+			q-card-section
+				q-form
+					.q-gutter-md
+						q-input(v-model="newViewName" label="Название" dense)
+						q-select(v-model="newViewType" :options="typeOptions" label="Тип" dense)
 			q-card-actions(align="right")
 				q-btn(flat label="Отмена" v-close-popup color="primary")
 				q-btn(unelevated color="primary" label="Создать" v-close-popup)
