@@ -30,11 +30,11 @@ const activeTab = computed({
 const active = ref('Документооборот')
 
 const columns: QTableColumn[] = [
-	{ name: 'name', label: 'Название', field: 'name', align: 'left' },
-	{ name: 'type', label: 'Тип', field: 'type', align: 'left' },
-	{ name: 'author', label: 'Автор', field: 'author', align: 'left' },
-	{ name: 'createdAt', label: 'Создано', field: 'createdAt', align: 'left' },
-	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center' },
+	{ name: 'name', label: 'Название', field: 'name', align: 'left', sortable: true },
+	{ name: 'type', label: 'Тип', field: 'type', align: 'left', sortable: true },
+	{ name: 'author', label: 'Автор', field: 'author', align: 'left', sortable: true },
+	{ name: 'createdAt', label: 'Создано', field: 'createdAt', align: 'left', sortable: true },
+	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center', sortable: true },
 ]
 </script>
 
