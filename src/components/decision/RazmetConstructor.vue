@@ -31,6 +31,7 @@ const active = ref('Документооборот')
 const createDialog = ref(false)
 const newViewName = ref('')
 const newViewType = ref('Просмотр')
+const currentProject = ref<string | null>(null)
 
 const typeOptions = ['Просмотр', 'Редактирование', 'Создание']
 
@@ -41,7 +42,8 @@ const removeView = (viewId: string) => {
 	}
 }
 
-const createView = () => {
+const createView = (projectName: string) => {
+	currentProject.value = projectName
 	createDialog.value = true
 }
 
@@ -107,7 +109,7 @@ div
 													q-item-section Удалить
 						template(v-slot:bottom)
 							.bottom
-								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="createView")
+								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="createView(item.name)")
 								q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links flat active-color="primary" size="sm")
 								.row.items-center
 									.text-caption.q-mr-sm Строк в таблице:
@@ -118,7 +120,7 @@ div
 			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 			q-card-section
 				.text-h6 Новая разметка
-				.text-caption Разметка будет создана в проекте (here must be project.name)
+				.text-caption(v-if="currentProject") Разметка будет создана в проекте: {{ currentProject }}
 
 			q-form(ref='form' @submit="submitForm")
 				q-card-section
