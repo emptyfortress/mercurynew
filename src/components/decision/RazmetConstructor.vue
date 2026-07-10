@@ -30,9 +30,9 @@ const activeTab = computed({
 const active = ref('Документооборот')
 
 const removeView = (viewId: string) => {
-	const project = razmetStore.projects.find(p => p.views.some(v => v.id === viewId))
+	const project = razmetStore.projects.find((p) => p.views.some((v) => v.id === viewId))
 	if (project) {
-		project.views = project.views.filter(v => v.id !== viewId)
+		project.views = project.views.filter((v) => v.id !== viewId)
 	}
 }
 
@@ -86,7 +86,12 @@ div
 								.q-gutter-x-sm
 									q-btn(flat round icon="mdi-pencil" size="sm")
 									q-btn(flat round icon="mdi-content-copy" size="sm")
-									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative" @click="removeView(props.row.id)")
+									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative")
+										q-menu
+											q-list
+												q-item.pink(clickable @click="removeView(props.row.id)")
+													q-item-section Удалить
+	
 </template>
 
 <style scoped lang="scss">
