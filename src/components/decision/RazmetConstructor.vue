@@ -42,10 +42,7 @@ const removeView = (viewId: string) => {
 	}
 }
 
-const createView = (projectName: string) => {
-	currentProject.value = projectName
-	createDialog.value = true
-}
+const submitViewForm = () => {}
 
 const columns: QTableColumn[] = [
 	{ name: 'name', label: 'Разметка', field: 'name', align: 'left', sortable: true },
@@ -55,10 +52,6 @@ const columns: QTableColumn[] = [
 	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center', sortable: true },
 	{ name: 'actions', label: '', field: 'actions', align: 'center' },
 ]
-
-const submitForm = () => {
-	console.log(111)
-}
 </script>
 
 <template lang="pug">
@@ -109,7 +102,7 @@ div
 													q-item-section Удалить
 						template(v-slot:bottom)
 							.bottom
-								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="createView(item.name)")
+								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="createDialog = true")
 								q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links flat active-color="primary" size="sm")
 								.row.items-center
 									.text-caption.q-mr-sm Строк в таблице:
@@ -124,10 +117,10 @@ div
 					|Разметка будет создана в проекте:
 					span.text-bold.q-ml-sm {{ currentProject }}
 
-			q-form(ref='form' @submit="submitForm")
+			q-form(@submit="submitViewForm")
 				q-card-section
 					label Название:
-					q-input(ref="input"
+					q-input(
 						v-model="newViewName"
 						autofocus
 						dense
@@ -135,14 +128,14 @@ div
 						outlined
 						:rules="[val => !!val || 'Это обязательное поле']"
 						hint='Название должно быть уникальным'
-						)
+					)
 					br
 					label Тип разметки:
 					q-select(outlined v-model="newViewType" :options="typeOptions" dense)
 
 			q-card-actions(align="right")
 				q-btn(flat label="Отмена" v-close-popup color="primary")
-				q-btn(unelevated color="primary" label="Создать" v-close-popup)
+				q-btn(unelevated color="primary" label="Создать" v-close-popup type="submit")
 	
 </template>
 
