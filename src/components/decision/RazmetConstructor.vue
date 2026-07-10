@@ -107,12 +107,13 @@ div
 
 	q-dialog(v-model="createDialog" persistent)
 		q-card(style="min-width: 350px")
+			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 			q-card-section
 				.text-h6 Новая разметка
 				.text-body2.q-mt-md Это диалоговое окно для создания новой разметки.
 			q-card-actions(align="right")
 				q-btn(flat label="Отмена" v-close-popup)
-				q-btn(unelevated color="primary" label="OK" v-close-popup)
+				q-btn(unelevated color="primary" label="Создать" v-close-popup)
 	
 </template>
 
