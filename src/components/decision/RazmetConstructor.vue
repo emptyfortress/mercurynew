@@ -53,6 +53,7 @@ div
 								span {{ item.views.length}}
 						q-item-section
 							q-radio(v-model="active" :val="item.name" label="Активный проект")
+					.inside placeholder for expanded panel
 </template>
 
 <style scoped lang="scss">
@@ -89,5 +90,8 @@ div
 }
 .q-expansion-item--expanded {
 	background: #fff;
+}
+.inside {
+	padding: 1rem;
 }
 </style>
