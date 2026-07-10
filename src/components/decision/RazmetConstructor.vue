@@ -31,7 +31,7 @@ const active = ref('Документооборот')
 const createDialog = ref(false)
 const newViewName = ref('')
 const newViewType = ref('Просмотр')
-const currentProject = ref<string | null>(null)
+const currentProject = ref<string | null>('Документооборот')
 
 const typeOptions = ['Просмотр', 'Редактирование', 'Создание']
 
@@ -42,7 +42,32 @@ const removeView = (viewId: string) => {
 	}
 }
 
-const submitViewForm = () => {}
+const onReset = () => {
+	newViewName.value = ''
+	newViewType.value = 'Просмотр'
+}
+
+const submitViewForm = () => {
+	if (!newViewName.value.trim()) return
+	if (!currentProject.value) return
+
+	const project = razmetStore.projects.find((p) => p.name === currentProject.value)
+	if (!project) return
+
+	const newView = {
+		id: `view-${Date.now()}`,
+		name: newViewName.value.trim(),
+		type: newViewType.value,
+		author: 'Текущий пользователь',
+		createdAt: new Date().toISOString().split('T')[0],
+		isUsed: false,
+	}
+
+	project.views.push(newView)
+	newViewName.value = ''
+	newViewType.value = 'Просмотр'
+	createDialog.value = false
+}
 
 const columns: QTableColumn[] = [
 	{ name: 'name', label: 'Разметка', field: 'name', align: 'left', sortable: true },
@@ -52,6 +77,11 @@ const columns: QTableColumn[] = [
 	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center', sortable: true },
 	{ name: 'actions', label: '', field: 'actions', align: 'center' },
 ]
+
+const showDialog = (e: string) => {
+	currentProject.value = e
+	createDialog.value = !createDialog.value
+}
 </script>
 
 <template lang="pug">
@@ -102,7 +132,7 @@ div
 													q-item-section Удалить
 						template(v-slot:bottom)
 							.bottom
-								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="createDialog = true")
+								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="showDialog(item.name)")
 								q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links flat active-color="primary" size="sm")
 								.row.items-center
 									.text-caption.q-mr-sm Строк в таблице:
@@ -117,7 +147,7 @@ div
 					|Разметка будет создана в проекте:
 					span.text-bold.q-ml-sm {{ currentProject }}
 
-			q-form(@submit="submitViewForm")
+			q-form(@submit="submitViewForm" @reset='onReset')
 				q-card-section
 					label Название:
 					q-input(
@@ -133,9 +163,9 @@ div
 					label Тип разметки:
 					q-select(outlined v-model="newViewType" :options="typeOptions" dense)
 
-			q-card-actions(align="right")
-				q-btn(flat label="Отмена" v-close-popup color="primary")
-				q-btn(unelevated color="primary" label="Создать" v-close-popup type="submit")
+				q-card-actions(align="right")
+					q-btn(flat label="Отмена" v-close-popup color="primary" type="reset")
+					q-btn(unelevated color="primary" label="Создать" v-close-popup type="submit")
 	
 </template>
 
