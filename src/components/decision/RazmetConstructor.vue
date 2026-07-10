@@ -28,12 +28,17 @@ const activeTab = computed({
 })
 
 const active = ref('Документооборот')
+const createDialog = ref(false)
 
 const removeView = (viewId: string) => {
 	const project = razmetStore.projects.find((p) => p.views.some((v) => v.id === viewId))
 	if (project) {
 		project.views = project.views.filter((v) => v.id !== viewId)
 	}
+}
+
+const createView = () => {
+	createDialog.value = true
 }
 
 const columns: QTableColumn[] = [
@@ -94,11 +99,20 @@ div
 													q-item-section Удалить
 						template(v-slot:bottom)
 							.bottom
-								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm")
+								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="createView")
 								q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links flat active-color="primary" size="sm")
 								.row.items-center
 									.text-caption.q-mr-sm Строк в таблице:
 									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space)
+
+	q-dialog(v-model="createDialog" persistent)
+		q-card(style="min-width: 350px")
+			q-card-section
+				.text-h6 Новая разметка
+				.text-body2.q-mt-md Это диалоговое окно для создания новой разметки.
+			q-card-actions(align="right")
+				q-btn(flat label="Отмена" v-close-popup)
+				q-btn(unelevated color="primary" label="OK" v-close-popup)
 	
 </template>
 
