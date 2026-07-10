@@ -70,6 +70,7 @@ div
 								span {{ item.views.length}}
 						q-item-section
 							q-radio(v-model="active" :val="item.name" label="Активный проект")
+
 					q-table(:rows="item.views" :columns="columns" row-key="id" flat)
 						template(v-slot:body-cell-isUsed="props")
 							q-td(:props="props")
@@ -93,14 +94,20 @@ div
 													q-item-section Удалить
 						template(v-slot:bottom)
 							.bottom
-								.row.items-center
-									q-select(v-model="item.pagination" :options="[5, 10, 15, 20]" dense style="width: 80px" hide-bottom-space)
-									q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links color="primary" size="sm")
 								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm")
+								q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links flat active-color="primary" size="sm")
+								.row.items-center
+									.text-caption.q-mr-sm Строк в таблице:
+									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space)
 	
 </template>
 
 <style scoped lang="scss">
+:deep(.q-field__native.row.items-center) {
+	span {
+		margin-left: 14px;
+	}
+}
 .project {
 	span {
 		font-weight: 600;
@@ -151,5 +158,6 @@ div
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 }
 </style>
