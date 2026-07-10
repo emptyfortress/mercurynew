@@ -67,6 +67,12 @@ div
 							q-td(:props="props")
 								q-badge(v-if="props.value" color="positive" label="Да")
 								q-badge(v-else color="grey" label="Нет")
+						template(v-slot:body-cell-name='props')
+							q-td(:props="props")
+								.name
+									span(@click.stop) {{ item.name }}
+										q-popup-edit(v-model="item.name" auto-save v-slot="scope")
+											q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 </template>
 
 <style scoped lang="scss">
@@ -106,5 +112,11 @@ div
 }
 .inside {
 	padding: 1rem;
+}
+.name {
+	color: $primary;
+	span {
+		border-bottom: 1px dotted $primary;
+	}
 }
 </style>
