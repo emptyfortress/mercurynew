@@ -30,9 +30,9 @@ const activeTab = computed({
 const active = ref('Документооборот')
 const createDialog = ref(false)
 const newViewName = ref('')
-const newViewType = ref('просмотр')
+const newViewType = ref('Просмотр')
 
-const typeOptions = ['просмотр', 'редактирование', 'создание']
+const typeOptions = ['Просмотр', 'Редактирование', 'Создание']
 
 const removeView = (viewId: string) => {
 	const project = razmetStore.projects.find((p) => p.views.some((v) => v.id === viewId))
@@ -53,6 +53,10 @@ const columns: QTableColumn[] = [
 	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center', sortable: true },
 	{ name: 'actions', label: '', field: 'actions', align: 'center' },
 ]
+
+const submitForm = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
@@ -114,11 +118,24 @@ div
 			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 			q-card-section
 				.text-h6 Новая разметка
-			q-card-section
-				q-form
-					.q-gutter-md
-						q-input(v-model="newViewName" label="Название" dense)
-						q-select(v-model="newViewType" :options="typeOptions" label="Тип" dense)
+				.text-caption Разметка будет создана в проекте (here must be project.name)
+
+			q-form(ref='form' @submit="submitForm")
+				q-card-section
+					label Название:
+					q-input(ref="input"
+						v-model="newViewName"
+						autofocus
+						dense
+						clearable
+						outlined
+						:rules="[val => !!val || 'Это обязательное поле']"
+						hint='Название должно быть уникальным'
+						)
+					br
+					label Тип разметки:
+					q-select(outlined v-model="newViewType" :options="typeOptions" dense)
+
 			q-card-actions(align="right")
 				q-btn(flat label="Отмена" v-close-popup color="primary")
 				q-btn(unelevated color="primary" label="Создать" v-close-popup)
@@ -126,11 +143,6 @@ div
 </template>
 
 <style scoped lang="scss">
-:deep(.q-field__native.row.items-center) {
-	span {
-		margin-left: 14px;
-	}
-}
 .project {
 	span {
 		font-weight: 600;
@@ -174,13 +186,18 @@ div
 		border-bottom: 1px dotted $primary;
 	}
 }
-:deep(.q-field__control:before) {
-	background: white;
-}
 .bottom {
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	:deep(.q-field__native.row.items-center) {
+		span {
+			margin-left: 14px;
+		}
+	}
+	:deep(.q-field__control:before) {
+		background: white;
+	}
 }
 </style>
