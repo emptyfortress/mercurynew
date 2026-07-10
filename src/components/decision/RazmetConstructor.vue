@@ -93,8 +93,10 @@ div
 													q-item-section Удалить
 						template(v-slot:bottom)
 							.bottom
+								.row.items-center
+									q-select(v-model="item.pagination" :options="[5, 10, 15, 20]" dense style="width: 80px" hide-bottom-space)
+									q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links color="primary" size="sm")
 								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm")
-								q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links color="primary" size="sm")
 	
 </template>
 
