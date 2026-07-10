@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import RolesConstructor from '@/components/decision/RolesConstructor.vue'
 import Matrix from '@/components/decision/Matrix.vue'
-import { useSimpleStore } from '@/stores/simpleStore'
+import RazmetConstructor from '@/components/decision/RazmetConstructor.vue'
 
 const props = defineProps({
 	razmet: {
@@ -10,8 +10,6 @@ const props = defineProps({
 		required: true,
 	},
 })
-
-const simpleStore = useSimpleStore()
 
 const con = computed(() => {
 	switch (props.razmet) {
@@ -21,7 +19,6 @@ const con = computed(() => {
 			return 'Конструктор состояний'
 		case '102':
 			return 'Конструктор ролей'
-		// case '3':
 		case '12':
 			return 'Конструктор разметок'
 		case '103':
@@ -41,10 +38,11 @@ div
 	Matrix(v-if='razmet == "103"')
 	q-page(padding v-else)
 		.container
-			.text-h6 {{ con }}
+			.text-h6(v-if='razmet !== "12"') {{ con }}
 			RolesConstructor(v-if='razmet == "102"')
+			RazmetConstructor(v-if='razmet == "12"')
 
-			div {{ simpleStore.selectedElement }}
+			// div {{ simpleStore.selectedElement }}
 </template>
 
 <style scoped lang="scss">
