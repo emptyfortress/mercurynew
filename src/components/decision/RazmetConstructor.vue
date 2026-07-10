@@ -35,6 +35,7 @@ const newViewType = ref('Просмотр')
 const currentProject = ref<string | null>('Документооборот')
 const duplicateView = ref<{ id: string; name: string; type: string; project: string } | null>(null)
 const duplicateProject = ref<string>('Документооборот')
+const lastDuplicateProject = ref<string>('')
 const duplicateName = ref('')
 
 const typeOptions = ['Просмотр', 'Редактирование', 'Создание']
@@ -47,7 +48,7 @@ const duplicateViewForm = () => {
 	const newView = {
 		id: `view-${Date.now()}`,
 		name: duplicateName.value.trim(),
-		type: duplicateView.value?.type || 'просмотр',
+		type: duplicateView.value?.type || 'Просмотр',
 		author: 'Текущий пользователь',
 		createdAt: new Date().toISOString().split('T')[0],
 		isUsed: false,
@@ -57,15 +58,16 @@ const duplicateViewForm = () => {
 	if (!targetProject) return
 
 	targetProject.views.push(newView)
+	targetProject.expanded = true
+	lastDuplicateProject.value = duplicateProject.value
 	duplicateName.value = ''
-	duplicateProject.value = 'Документооборот'
 	duplicateView.value = null
 	duplicateDialog.value = false
 }
 
 const openDuplicateDialog = (view: { id: string; name: string; type: string }) => {
 	duplicateView.value = { id: view.id, name: view.name, type: view.type, project: currentProject.value || 'Документооборот' }
-	duplicateProject.value = currentProject.value || 'Документооборот'
+	duplicateProject.value = lastDuplicateProject.value || currentProject.value || 'Документооборот'
 	duplicateName.value = `${view.name} (копия)`
 	duplicateDialog.value = true
 }
@@ -89,16 +91,10 @@ const submitViewForm = () => {
 	const project = razmetStore.projects.find((p) => p.name === currentProject.value)
 	if (!project) return
 
-	const typeMap: Record<string, string> = {
-		Просмотр: 'просмотр',
-		Редактирование: 'редактирование',
-		Создание: 'создание',
-	}
-
 	const newView = {
 		id: `view-${Date.now()}`,
 		name: newViewName.value.trim(),
-		type: typeMap[newViewType.value] || newViewType.value.toLowerCase(),
+		type: newViewType.value,
 		author: 'Текущий пользователь',
 		createdAt: new Date().toISOString().split('T')[0],
 		isUsed: false,
@@ -110,11 +106,18 @@ const submitViewForm = () => {
 	createDialog.value = false
 }
 
+const formatDate = (val: string) => {
+	const [y, m, d] = val.split('-').map(Number)
+	return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(
+		new Date(y, m - 1, d),
+	)
+}
+
 const columns: QTableColumn[] = [
 	{ name: 'name', label: 'Разметка', field: 'name', align: 'left', sortable: true },
 	{ name: 'type', label: 'Тип', field: 'type', align: 'left', sortable: true },
 	{ name: 'author', label: 'Автор', field: 'author', align: 'left', sortable: true },
-	{ name: 'createdAt', label: 'Создано', field: 'createdAt', align: 'left', sortable: true },
+	{ name: 'createdAt', label: 'Создано', field: 'createdAt', align: 'left', sortable: true, format: formatDate },
 	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center', sortable: true },
 	{ name: 'actions', label: '', field: 'actions', align: 'center' },
 ]
