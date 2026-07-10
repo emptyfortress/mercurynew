@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { useRazmetStore } from '@/stores/razmet'
+import type { QTableColumn } from 'quasar'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,7 +29,7 @@ const activeTab = computed({
 
 const active = ref('Документооборот')
 
-const columns = [
+const columns: QTableColumn[] = [
 	{ name: 'name', label: 'Название', field: 'name', align: 'left' },
 	{ name: 'type', label: 'Тип', field: 'type', align: 'left' },
 	{ name: 'author', label: 'Автор', field: 'author', align: 'left' },
