@@ -29,6 +29,7 @@ const activeTab = computed({
 
 const active = ref('Документооборот')
 const createDialog = ref(false)
+const duplicateDialog = ref(false)
 const newViewName = ref('')
 const newViewType = ref('Просмотр')
 const currentProject = ref<string | null>('Документооборот')
@@ -148,7 +149,7 @@ div
 							q-td.text-right(:props="props")
 								.q-gutter-x-sm
 									q-btn(flat round icon="mdi-pencil" size="sm")
-									q-btn(flat round icon="mdi-content-copy" size="sm")
+									q-btn(flat round icon="mdi-content-copy" size="sm" @click="duplicateDialog = true")
 									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative")
 										q-menu
 											q-list
@@ -190,7 +191,18 @@ div
 				q-card-actions(align="right")
 					q-btn(flat label="Отмена" v-close-popup color="primary" type="reset")
 					q-btn(unelevated color="primary" label="Создать" v-close-popup type="submit")
-	
+
+	q-dialog(v-model="duplicateDialog" persistent)
+		q-card(style="min-width: 400px")
+			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
+			q-card-section
+				.text-h6 Скопировать разметку
+				.text-caption Выберите проект назначения для копирования разметки и ее название
+
+			q-card-actions(align="right")
+				q-btn(flat label="Отмена" v-close-popup color="primary")
+				q-btn(unelevated color="primary" label="Скопировать" v-close-popup)
+
 </template>
 
 <style scoped lang="scss">
@@ -252,3 +264,4 @@ div
 	}
 }
 </style>
+
