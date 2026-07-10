@@ -33,8 +33,42 @@ const duplicateDialog = ref(false)
 const newViewName = ref('')
 const newViewType = ref('Просмотр')
 const currentProject = ref<string | null>('Документооборот')
+const duplicateView = ref<{ id: string; name: string; type: string; project: string } | null>(null)
+const duplicateProject = ref<string>('Документооборот')
+const duplicateName = ref('')
 
 const typeOptions = ['Просмотр', 'Редактирование', 'Создание']
+
+const duplicateViewForm = () => {
+	if (!duplicateName.value.trim() || !duplicateProject.value) return
+	const originalView = duplicateView.value
+	if (!originalView) return
+
+	const newView = {
+		id: `view-${Date.now()}`,
+		name: duplicateName.value.trim(),
+		type: duplicateView.value?.type || 'просмотр',
+		author: 'Текущий пользователь',
+		createdAt: new Date().toISOString().split('T')[0],
+		isUsed: false,
+	}
+
+	const targetProject = razmetStore.projects.find((p) => p.name === duplicateProject.value)
+	if (!targetProject) return
+
+	targetProject.views.push(newView)
+	duplicateName.value = ''
+	duplicateProject.value = 'Документооборот'
+	duplicateView.value = null
+	duplicateDialog.value = false
+}
+
+const openDuplicateDialog = (view: { id: string; name: string; type: string }) => {
+	duplicateView.value = { id: view.id, name: view.name, type: view.type, project: currentProject.value || 'Документооборот' }
+	duplicateProject.value = currentProject.value || 'Документооборот'
+	duplicateName.value = `${view.name} (копия)`
+	duplicateDialog.value = true
+}
 
 const removeView = (viewId: string) => {
 	const project = razmetStore.projects.find((p) => p.views.some((v) => v.id === viewId))
@@ -55,10 +89,16 @@ const submitViewForm = () => {
 	const project = razmetStore.projects.find((p) => p.name === currentProject.value)
 	if (!project) return
 
+	const typeMap: Record<string, string> = {
+		Просмотр: 'просмотр',
+		Редактирование: 'редактирование',
+		Создание: 'создание',
+	}
+
 	const newView = {
 		id: `view-${Date.now()}`,
 		name: newViewName.value.trim(),
-		type: newViewType.value,
+		type: typeMap[newViewType.value] || newViewType.value.toLowerCase(),
 		author: 'Текущий пользователь',
 		createdAt: new Date().toISOString().split('T')[0],
 		isUsed: false,
@@ -149,7 +189,7 @@ div
 							q-td.text-right(:props="props")
 								.q-gutter-x-sm
 									q-btn(flat round icon="mdi-pencil" size="sm")
-									q-btn(flat round icon="mdi-content-copy" size="sm" @click="duplicateDialog = true")
+									q-btn(flat round icon="mdi-content-copy" size="sm" @click="openDuplicateDialog(props.row)")
 									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative")
 										q-menu
 											q-list
@@ -199,9 +239,27 @@ div
 				.text-h6 Скопировать разметку
 				.text-caption Выберите проект назначения для копирования разметки и ее название
 
-			q-card-actions(align="right")
-				q-btn(flat label="Отмена" v-close-popup color="primary")
-				q-btn(unelevated color="primary" label="Скопировать" v-close-popup)
+			q-form(@submit="duplicateViewForm")
+				q-card-section
+					label Проект:
+					q-select(
+						v-model="duplicateProject"
+						:options="razmetStore.projects.map(p => p.name)"
+						dense
+						outlined
+					)
+					br
+					label Название:
+					q-input(
+						v-model="duplicateName"
+						dense
+						outlined
+						:rules="[val => !!val || 'Это обязательное поле']"
+					)
+
+				q-card-actions(align="right")
+					q-btn(flat label="Отмена" v-close-popup color="primary" type="reset")
+					q-btn(unelevated color="primary" label="Скопировать" v-close-popup type="submit")
 
 </template>
 
