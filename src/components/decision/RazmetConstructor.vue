@@ -27,6 +27,14 @@ const activeTab = computed({
 })
 
 const active = ref('Документооборот')
+
+const columns = [
+	{ name: 'name', label: 'Название', field: 'name', align: 'left' },
+	{ name: 'type', label: 'Тип', field: 'type', align: 'left' },
+	{ name: 'author', label: 'Автор', field: 'author', align: 'left' },
+	{ name: 'createdAt', label: 'Создано', field: 'createdAt', align: 'left' },
+	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center' },
+]
 </script>
 
 <template lang="pug">
@@ -53,7 +61,11 @@ div
 								span {{ item.views.length}}
 						q-item-section
 							q-radio(v-model="active" :val="item.name" label="Активный проект")
-					.inside placeholder for expanded panel
+					q-table(:rows="item.views" :columns="columns" row-key="id" flat)
+						template(v-slot:body-cell-isUsed="props")
+							q-td(:props="props")
+								q-badge(v-if="props.value" color="positive" label="Да")
+								q-badge(v-else color="grey" label="Нет")
 </template>
 
 <style scoped lang="scss">
