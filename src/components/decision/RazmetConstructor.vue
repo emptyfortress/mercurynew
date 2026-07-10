@@ -120,7 +120,9 @@ div
 			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 			q-card-section
 				.text-h6 Новая разметка
-				.text-caption(v-if="currentProject") Разметка будет создана в проекте: {{ currentProject }}
+				.text-caption(v-if="currentProject")
+					|Разметка будет создана в проекте:
+					span.text-bold.q-ml-sm {{ currentProject }}
 
 			q-form(ref='form' @submit="submitForm")
 				q-card-section
