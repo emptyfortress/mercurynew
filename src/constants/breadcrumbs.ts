@@ -19,4 +19,6 @@ export const BREADCRUMB_OVERRIDES: Record<string, string> = {
 	'26': 'Метаданные',
 	matrix: 'Матрица доступа',
 	'103': 'Матрица доступа',
+	docs: 'Мои документы',
+	dogovor: 'Договор',
 }

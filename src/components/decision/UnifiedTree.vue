@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, watchEffect, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, watchEffect, nextTick, onUnmounted } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import DirMenu from '@/components/decision/DirMenu.vue'
@@ -10,6 +10,7 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
 import { useChips } from '@/stores/chips'
 import { onBeforeRouteUpdate } from 'vue-router'
+import { onBeforeRouteLeave } from 'vue-router'
 
 export type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk' | 'views'
 
@@ -83,12 +84,16 @@ const select = (n: any) => {
 	n.data.sourceType = activeSourceType.value
 	simpleStore.setSelectedElement(n.data)
 	simpleStore.setCurrentNode(n)
-	if (props.sourceType !== 'poisk') {
-		router.push({
-			name: 'start',
-			params: { viewId: n.data.id },
-		})
-	}
+	router.push({
+		name: 'start',
+		params: { viewId: n.data.id },
+	})
+	// if (props.sourceType !== 'poisk') {
+	// 	router.push({
+	// 		name: 'start',
+	// 		params: { viewId: n.data.id },
+	// 	})
+	// }
 }
 
 const toggle = (stat: any) => {
@@ -161,10 +166,6 @@ onMounted(() => {
 		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
 	}
 })
-
-// onUnmounted(() => {
-// 	simpleStore.clearSelectedElement()
-// })
 
 const create = (data: any) => {
 	const newFolder = {
@@ -248,6 +249,9 @@ onBeforeRouteUpdate((to, from) => {
 
 	if (wasOnDetail && isOnListRoot) {
 		simpleStore.currentNode.data.selected = false
+		setTimeout(() => {
+			simpleStore.clearSelectedElement()
+		}, 200)
 	}
 })
 
@@ -270,6 +274,15 @@ watchEffect(() => {
 		let one = tree.value.getStat(temp)
 		select(one)
 		simpleStore.toggleDuplicate()
+	}
+})
+
+onBeforeRouteLeave((to, from) => {
+	if (from.name == 'start' && to.name == 'decisions') {
+		simpleStore.clearSelectedElement()
+	}
+	if (from.name == 'Emp' && to.name == 'decisions') {
+		simpleStore.clearSelectedElement()
 	}
 })
 </script>

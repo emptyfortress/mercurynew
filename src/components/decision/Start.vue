@@ -5,7 +5,7 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
 
 const simpleStore = useSimpleStore()
-const { selectedElement } = storeToRefs(simpleStore)
+const { currentNode } = storeToRefs(simpleStore)
 const router = useRouter()
 // const route = useRoute()
 
@@ -33,13 +33,13 @@ const tab = ref('tab1')
 </script>
 
 <template lang="pug">
-.q-ml-md(v-if='selectedElement')
+.q-ml-md(v-if='currentNode')
 	h6
-		span.edit {{ selectedElement.text }}
-			q-popup-edit(v-model="selectedElement.text " buttons title="Название приложения" auto-save v-slot="scope")
+		span.edit {{ currentNode.data.text }}
+			q-popup-edit(v-model="currentNode.data.text " buttons title="Название приложения" auto-save v-slot="scope")
 				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
-	.grid(v-if='selectedElement.type == 0')
+	.grid(v-if='currentNode.data.type == 0')
 		.it(v-for="item in constrType" :key='item.id' @click='goto(item.id)')
 			.text-bold {{ item.label }}
 

@@ -6,7 +6,8 @@ import Start from '@/components/decision/Start.vue'
 import FolderStart from '@/components/decision/FolderStart.vue'
 
 const simpleStore = useSimpleStore()
-const { selectedElement } = storeToRefs(simpleStore)
+// const { selectedElement } = storeToRefs(simpleStore)
+const { currentNode, selectedElement } = storeToRefs(simpleStore)
 
 // const isFolder = computed(() => selectedElement.value?.sourceType === 'folderData')
 

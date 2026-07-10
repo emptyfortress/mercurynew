@@ -1021,8 +1021,17 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 	}
 
 	const currentNode = ref()
+
+	const tempNode = ref({
+		text: 'Название',
+		text1: 'Описание',
+	})
+
 	const setCurrentNode = (e: any) => {
 		currentNode.value = e
+	}
+	const setTempNode = (e: any) => {
+		tempNode.value = e
 	}
 
 	function clearSelectedElement() {
@@ -1081,5 +1090,7 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		toggleDelete,
 		duplicateRequest,
 		toggleDuplicate,
+		tempNode,
+		setTempNode,
 	}
 })

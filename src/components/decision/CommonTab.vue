@@ -4,18 +4,10 @@ import { useSimpleStore } from '@/stores/simpleStore'
 
 const store = useSimpleStore()
 
-const name = ref('Название')
-const descr = ref('Описание')
-
-onMounted(() => {
-	name.value = store.currentNode.data.text
-	descr.value = store.currentNode.data.text1
-})
-
 watchEffect(() => {
 	if (store.currentNode) {
-		name.value = store.currentNode.data.text
-		descr.value = store.currentNode.data.text1
+		store.tempNode.text = store.currentNode.data.text
+		store.tempNode.text1 = store.currentNode.data.text1
 	}
 })
 
@@ -32,13 +24,13 @@ const author = computed(() => {
 .q-pa-md
 	.row.q-col-gutter-md
 		.col-12
-			q-input(v-model="name" label="Название" outlined dense)
+			q-input(v-model="store.tempNode.text" label="Название" outlined dense)
 		.col-12.col-sm-6
 			q-input(v-model="creationDate" label="Дата создания" outlined dense readonly)
 		.col-12.col-sm-6
 			q-input(v-model="author" label="Автор" outlined dense readonly)
 		.col-12
-			q-input(v-model="descr" label="Описание" type="textarea" outlined dense)
+			q-input(v-model="store.tempNode.text1" label="Описание" type="textarea" outlined dense)
 
 </template>
 

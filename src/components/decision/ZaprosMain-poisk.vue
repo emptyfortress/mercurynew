@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onUnmounted } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { useEditor as useEditorMer } from '@/stores/useEditor-mercy'
 import { useDrag as useDragMer } from '@/stores/useDrag-mercy'
@@ -82,6 +82,11 @@ const testXml = `
   </book>
 </catalog>
 `
+
+const save = () => {
+	store.currentNode.data.text = store.tempNode.text
+	store.currentNode.data.text1 = store.tempNode.text1
+}
 </script>
 
 <template lang="pug">
@@ -103,7 +108,7 @@ const testXml = `
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
 			.btngroup(v-if='store.selectedElement')
-				q-btn(unelevated color="primary" label="Сохранить" size="sm") 
+				q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="save") 
 				q-btn(outline color="primary" label="Отмена" size="sm") 
 				q-btn(round flat color="primary" icon="mdi-sync" size="sm") 
 				q-chip(size='sm' color="amber") Есть изменения
