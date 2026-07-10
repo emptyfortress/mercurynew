@@ -82,6 +82,26 @@ const showDialog = (e: string) => {
 	currentProject.value = e
 	createDialog.value = !createDialog.value
 }
+
+const activateProject = (activatedId: string, value: boolean) => {
+	console.log(activatedId)
+	// Выключаем все остальные чекбоксы и сворачиваем их
+	razmetStore.projects.forEach((item) => {
+		if (item.name !== activatedId) {
+			item.expanded = false
+		}
+	})
+	// Находим активированный элемент и перемещаем его на первое место
+	const index = razmetStore.projects.findIndex((item) => item.name === activatedId)
+	if (index > 0) {
+		const [activated] = razmetStore.projects.splice(index, 1)
+		activated.expanded = true
+		razmetStore.projects.unshift(activated)
+	} else {
+		// Уже первый — просто раскрываем
+		razmetStore.projects[0].expanded = true
+	}
+}
 </script>
 
 <template lang="pug">
@@ -107,7 +127,11 @@ div
 								|Разметок:
 								span {{ item.views.length}}
 						q-item-section
-							q-radio(v-model="active" :val="item.name" label="Активный проект")
+							q-radio(
+								v-model="active",
+								:val="item.name",
+								@update:modelValue="activateProject(item.name, $event)"
+								label="Активный проект")
 
 					q-table(:rows="item.views" :columns="columns" row-key="id" flat)
 						template(v-slot:body-cell-isUsed="props")
