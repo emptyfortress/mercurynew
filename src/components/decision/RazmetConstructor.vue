@@ -66,7 +66,12 @@ const duplicateViewForm = () => {
 }
 
 const openDuplicateDialog = (view: { id: string; name: string; type: string }) => {
-	duplicateView.value = { id: view.id, name: view.name, type: view.type, project: currentProject.value || 'Документооборот' }
+	duplicateView.value = {
+		id: view.id,
+		name: view.name,
+		type: view.type,
+		project: currentProject.value || 'Документооборот',
+	}
 	duplicateProject.value = lastDuplicateProject.value || currentProject.value || 'Документооборот'
 	duplicateName.value = `${view.name} (копия)`
 	duplicateDialog.value = true
@@ -108,16 +113,25 @@ const submitViewForm = () => {
 
 const formatDate = (val: string) => {
 	const [y, m, d] = val.split('-').map(Number)
-	return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(
-		new Date(y, m - 1, d),
-	)
+	return new Intl.DateTimeFormat('ru-RU', {
+		day: 'numeric',
+		month: 'long',
+		year: 'numeric',
+	}).format(new Date(y, m - 1, d))
 }
 
 const columns: QTableColumn[] = [
 	{ name: 'name', label: 'Разметка', field: 'name', align: 'left', sortable: true },
 	{ name: 'type', label: 'Тип', field: 'type', align: 'left', sortable: true },
 	{ name: 'author', label: 'Автор', field: 'author', align: 'left', sortable: true },
-	{ name: 'createdAt', label: 'Создано', field: 'createdAt', align: 'left', sortable: true, format: formatDate },
+	{
+		name: 'createdAt',
+		label: 'Создано',
+		field: 'createdAt',
+		align: 'left',
+		sortable: true,
+		format: formatDate,
+	},
 	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center', sortable: true },
 	{ name: 'actions', label: '', field: 'actions', align: 'center' },
 ]
@@ -151,7 +165,6 @@ const activateProject = (activatedId: string, value: boolean) => {
 <template lang="pug">
 div
 	.zg
-		|Разметки для вида
 		span {{ store.selectedElement?.text }}
 	q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
 		q-tab(name="setup" label="Разметки")
@@ -205,6 +218,9 @@ div
 								.row.items-center
 									.text-caption.q-mr-sm Строк в таблице:
 									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space)
+
+		q-tab-panel(name="condition")
+			div Condition here
 
 	q-dialog(v-model="createDialog" persistent)
 		q-card(style="min-width: 400px")
@@ -325,4 +341,3 @@ div
 	}
 }
 </style>
-
