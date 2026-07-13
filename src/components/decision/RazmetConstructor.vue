@@ -5,11 +5,33 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import { useRazmetStore } from '@/stores/razmet'
 import type { QTableColumn } from 'quasar'
 import RazmetCondition from './RazmetCondition.vue'
+import { useQuasar } from 'quasar'
 
 const route = useRoute()
+const $q = useQuasar()
+
+// Helper to get paginated rows for a project
+const paginatedViews = (project: any) => {
+	const page = project.pagination ?? 1
+	const perPage = project.rowsPerPage ?? 10
+	const start = (page - 1) * perPage
+	return project.views.slice(start, start + perPage)
+}
+
+// Reset to first page when rows-per-page changes
+const onRowsPerPageChange = (project: any, value: number) => {
+	project.rowsPerPage = value
+	project.pagination = 1
+}
 const router = useRouter()
 const store = useSimpleStore()
 const razmetStore = useRazmetStore()
+
+// Ensure pagination fields exist on each project
+razmetStore.projects.forEach((p) => {
+	p.pagination ??= 1
+	p.rowsPerPage ??= 10
+})
 
 const getRouteTab = () => {
 	const value = route.query.tab
@@ -63,6 +85,30 @@ const duplicateViewForm = () => {
 	duplicateName.value = ''
 	duplicateView.value = null
 	duplicateDialog.value = false
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Разметка дублирована',
+			timeout: 4500,
+			actions: [
+				{
+					label: 'Закрыть',
+					color: 'white',
+					handler: () => {
+						/* ... */
+					},
+				},
+				{
+					label: 'Перейти',
+					color: 'white',
+					handler: () => {
+						/* ... */
+					},
+				},
+			],
+		})
+	}, 800)
 }
 
 const openDuplicateDialog = (view: { id: string; name: string; type: string }) => {
@@ -109,6 +155,30 @@ const submitViewForm = () => {
 	newViewName.value = ''
 	newViewType.value = 'Просмотр'
 	createDialog.value = false
+	setTimeout(() => {
+		$q.notify({
+			icon: 'mdi-check-bold',
+			color: 'positive',
+			message: 'Добавлена разметка',
+			timeout: 4500,
+			actions: [
+				{
+					label: 'Закрыть',
+					color: 'white',
+					handler: () => {
+						/* ... */
+					},
+				},
+				{
+					label: 'Перейти',
+					color: 'white',
+					handler: () => {
+						/* ... */
+					},
+				},
+			],
+		})
+	}, 800)
 }
 
 const formatDate = (val: string) => {
@@ -140,6 +210,10 @@ const showDialog = (e: string) => {
 	currentProject.value = e
 	createDialog.value = !createDialog.value
 }
+
+const page = {
+	rowsPerPage: 2,
+}
 </script>
 
 <template lang="pug">
@@ -164,7 +238,7 @@ div
 								|Разметок:
 								span {{ item.views.length}}
 
-					q-table(:rows="item.views" :columns="columns" row-key="id" flat)
+					q-table(:rows="paginatedViews(item)" :columns="columns" row-key="id" flat )
 						template(v-slot:body-cell-isUsed="props")
 							q-td(:props="props")
 								q-badge(v-if="props.value" color="positive" label="Да")
@@ -191,7 +265,18 @@ div
 								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="showDialog(item.name)")
 								.row.items-center
 									.text-caption.q-mr-sm Строк в таблице:
-									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space)
+									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space @update:model-value="onRowsPerPageChange(item, $event)")
+									q-pagination(
+										v-model="item.pagination",
+										:max="Math.ceil(item.views.length / item.rowsPerPage)",
+										dense,
+										direction-links,
+										flat,
+										color="grey",
+										active-color="grey",
+										style="margin-left: 48px"
+										size="sm"
+									)
 
 		q-tab-panel(name="condition")
 			RazmetCondition 
