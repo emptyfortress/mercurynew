@@ -45,10 +45,10 @@ const [parent, tapes] = useDragAndDrop(test.value, config)
 const conditionKeys = ['mode', 'state', 'role', 'device'] as const
 type ConditionKey = (typeof conditionKeys)[number]
 const chipColors: Record<ConditionKey, string> = {
-	mode: 'blue-1',
-	state: 'orange-1',
-	role: 'pink-1',
-	device: 'cyan-1',
+	mode: 'blue-9',
+	state: 'blue-9',
+	role: 'blue-9',
+	device: 'blue-9',
 }
 
 const remCondition = (index: number) => {
@@ -127,7 +127,7 @@ const defaultThresholdIndex = computed(() => {
 			q-chip.mychip(
 				v-for="key in conditionKeys"
 				:key="key"
-				:color="isDefaultValue(item, key) ? 'grey-4' : chipColors[key]"
+				:color="isDefaultValue(item, key) ? 'grey-4' : 'blue-2'"
 				:class="{ 'has-border': !isDefaultValue(item, key) }"
 				dense
 			)
@@ -148,9 +148,9 @@ const defaultThresholdIndex = computed(() => {
 
 		q-icon(name="mdi-arrow-right" color="primary" size="20px")
 		div
-			q-chip.lastchip(dense color="green-1" v-if='item.layout.length > 0')
-				q-icon(name="mdi-circle-medium" color="teal-9" size="sk")
-				label.text-teal-9 {{ item.layout }}
+			q-chip.lastchip(dense color="blue-2" v-if='item.layout.length > 0')
+				q-icon(name="mdi-circle-medium" color="blue-9" size="sk")
+				label.text-blue-9 {{ item.layout }}
 				q-menu
 					q-list(dense)
 						q-item(
@@ -181,11 +181,12 @@ q-btn(flat icon="mdi-plus-circle" color="primary" label="Добавить усл
 
 <style scoped lang="scss">
 .lastchip {
-	border: 1px solid teal;
+	border: 1px solid $blue-4;
 }
 .mychip {
 	&.has-border {
-		border: 1px solid #888;
+		// border: 1px solid #b6a1dd;
+		border: 1px solid $blue-4;
 	}
 }
 .han {
