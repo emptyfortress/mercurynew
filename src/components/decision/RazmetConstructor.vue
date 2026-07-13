@@ -28,7 +28,6 @@ const activeTab = computed({
 	},
 })
 
-const active = ref('Документооборот')
 const createDialog = ref(false)
 const duplicateDialog = ref(false)
 const newViewName = ref('')
@@ -141,26 +140,6 @@ const showDialog = (e: string) => {
 	currentProject.value = e
 	createDialog.value = !createDialog.value
 }
-
-const activateProject = (activatedId: string, value: boolean) => {
-	console.log(activatedId)
-	// Выключаем все остальные чекбоксы и сворачиваем их
-	razmetStore.projects.forEach((item) => {
-		if (item.name !== activatedId) {
-			item.expanded = false
-		}
-	})
-	// Находим активированный элемент и перемещаем его на первое место
-	const index = razmetStore.projects.findIndex((item) => item.name === activatedId)
-	if (index > 0) {
-		const [activated] = razmetStore.projects.splice(index, 1)
-		activated.expanded = true
-		razmetStore.projects.unshift(activated)
-	} else {
-		// Уже первый — просто раскрываем
-		razmetStore.projects[0].expanded = true
-	}
-}
 </script>
 
 <template lang="pug">
@@ -185,13 +164,6 @@ div
 								|Разметок:
 								span {{ item.views.length}}
 
-						q-item-section
-							q-radio(
-								v-model="active",
-								:val="item.name",
-								@update:modelValue="activateProject(item.name, $event)"
-								label="Активный проект")
-
 					q-table(:rows="item.views" :columns="columns" row-key="id" flat)
 						template(v-slot:body-cell-isUsed="props")
 							q-td(:props="props")
@@ -213,10 +185,10 @@ div
 											q-list
 												q-item.pink(clickable @click="removeView(props.row.id)")
 													q-item-section Удалить
+
 						template(v-slot:bottom)
 							.bottom
 								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="showDialog(item.name)")
-								q-pagination(v-model="item.pagination" :max="1" direction-links boundary-links flat active-color="primary" size="sm")
 								.row.items-center
 									.text-caption.q-mr-sm Строк в таблице:
 									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space)
