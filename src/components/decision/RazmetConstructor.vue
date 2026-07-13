@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { useRazmetStore } from '@/stores/razmet'
 import type { QTableColumn } from 'quasar'
+import RazmetCondition from './RazmetCondition.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -220,7 +221,7 @@ div
 									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space)
 
 		q-tab-panel(name="condition")
-			div Condition here
+			RazmetCondition 
 
 	q-dialog(v-model="createDialog" persistent)
 		q-card(style="min-width: 400px")
