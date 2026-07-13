@@ -4,6 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Common Commands
 
+### Prompt conventions
+- When I write `@file_name` in a prompt, it signals that the referenced file has been modified. Claude should reread the file to get the latest contents before proceeding.
+
+
+
 - Commit messages: Always prefix with `claude:` to identify who made the commit
 
 1. **Install dependencies**
