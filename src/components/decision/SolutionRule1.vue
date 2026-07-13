@@ -45,10 +45,10 @@ const [parent, tapes] = useDragAndDrop(test.value, config)
 const conditionKeys = ['mode', 'state', 'role', 'device'] as const
 type ConditionKey = (typeof conditionKeys)[number]
 const chipColors: Record<ConditionKey, string> = {
-	mode: 'blue-2',
-	state: 'orange-3',
-	role: 'pink-2',
-	device: 'cyan-2',
+	mode: 'blue-1',
+	state: 'orange-1',
+	role: 'pink-1',
+	device: 'cyan-1',
 }
 
 const remCondition = (index: number) => {
@@ -148,7 +148,7 @@ const defaultThresholdIndex = computed(() => {
 
 		q-icon(name="mdi-arrow-right" color="primary" size="20px")
 		div
-			q-chip.lastchip(dense color="green-2" v-if='item.layout.length > 0')
+			q-chip.lastchip(dense color="green-1" v-if='item.layout.length > 0')
 				q-icon(name="mdi-circle-medium" color="teal-9" size="sk")
 				label.text-teal-9 {{ item.layout }}
 				q-menu
