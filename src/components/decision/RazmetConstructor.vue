@@ -166,7 +166,7 @@ const activateProject = (activatedId: string, value: boolean) => {
 <template lang="pug">
 div
 	.zg
-		span {{ store.selectedElement?.text }}
+		span {{ store.selectedElement?.text || 'Вид документа'}}
 	q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
 		q-tab(name="setup" label="Разметки")
 		q-tab(name="condition" label="Условия выбора разметок")
@@ -184,6 +184,7 @@ div
 							.project
 								|Разметок:
 								span {{ item.views.length}}
+
 						q-item-section
 							q-radio(
 								v-model="active",

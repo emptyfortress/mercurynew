@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRazmetStore } from '@/stores/razmet'
+import SolutionRule1 from '@/components/decision/SolutionRule1.vue'
 
 defineProps<{
 	conditionData?: Record<string, unknown>
@@ -41,14 +42,16 @@ q-list
 					span {{ item.name}}
 			q-item-section
 				.project
-					|Разметок:
-					span {{ item.views.length}}
+					|условий:
+					span {{ item.conditions.length}}
 			q-item-section
 				q-radio(
 					v-model="active",
 					:val="item.name",
 					@update:modelValue="activateProject(item.name, $event)"
 					label="Активный проект")
+		.inside
+			SolutionRule1(:condition='item.conditions')
 </template>
 
 <style scoped lang="scss">
@@ -94,6 +97,9 @@ q-list
 	span {
 		border-bottom: 1px dotted $primary;
 	}
+}
+.inside {
+	padding: 1rem;
 }
 </style>
 

@@ -8,6 +8,32 @@ export const useRazmetStore = defineStore('razmet', () => {
 			expanded: true,
 			pagination: 1,
 			rowsPerPage: 5,
+			conditions: [
+				{
+					id: 1,
+					mode: 'Любой',
+					state: 'Любое',
+					role: 'admin',
+					device: 'Любое',
+					layout: '',
+				},
+				{
+					id: 2,
+					mode: 'Просмотр',
+					state: 'В работе',
+					role: 'Исполнитель',
+					device: 'Десктоп',
+					layout: '',
+				},
+				{
+					id: 3,
+					mode: 'Редактирование',
+					state: 'На согласовании',
+					role: 'Контролер',
+					device: 'Планшет',
+					layout: '',
+				},
+			],
 			views: [
 				{
 					id: 'view-001',
@@ -40,6 +66,24 @@ export const useRazmetStore = defineStore('razmet', () => {
 			expanded: false,
 			pagination: 1,
 			rowsPerPage: 5,
+			conditions: [
+				{
+					id: 4,
+					mode: 'Создание',
+					state: 'Черновик',
+					role: 'Автор',
+					device: 'Десктоп',
+					layout: '',
+				},
+				{
+					id: 5,
+					mode: 'Просмотр',
+					state: 'В работе',
+					role: 'Пользователь',
+					device: 'Мобильный',
+					layout: '',
+				},
+			],
 			views: [
 				{
 					id: 'view-004',
@@ -64,6 +108,40 @@ export const useRazmetStore = defineStore('razmet', () => {
 			expanded: false,
 			pagination: 1,
 			rowsPerPage: 5,
+			conditions: [
+				{
+					id: 6,
+					mode: 'Редактирование',
+					state: 'Делегировано',
+					role: 'Исполнитель',
+					device: 'Любое',
+					layout: '',
+				},
+				{
+					id: 7,
+					mode: 'Просмотр',
+					state: 'На согласовании',
+					role: 'Контролер',
+					device: 'Десктоп',
+					layout: '',
+				},
+				{
+					id: 8,
+					mode: 'Любой',
+					state: 'Любое',
+					role: 'admin',
+					device: 'Любое',
+					layout: '',
+				},
+				{
+					id: 9,
+					mode: 'Создание',
+					state: 'Черновик',
+					role: 'Автор',
+					device: 'Планшет',
+					layout: '',
+				},
+			],
 			views: [
 				{
 					id: 'view-006',
@@ -96,6 +174,24 @@ export const useRazmetStore = defineStore('razmet', () => {
 			expanded: false,
 			pagination: 1,
 			rowsPerPage: 5,
+			conditions: [
+				{
+					id: 10,
+					mode: 'Редактирование',
+					state: 'В работе',
+					role: 'Автор',
+					device: 'Десктоп',
+					layout: '',
+				},
+				{
+					id: 11,
+					mode: 'Просмотр',
+					state: 'Отменено',
+					role: 'Гость',
+					device: 'Мобильный',
+					layout: '',
+				},
+			],
 			views: [
 				{
 					id: 'view-009',
@@ -120,6 +216,32 @@ export const useRazmetStore = defineStore('razmet', () => {
 			expanded: false,
 			pagination: 1,
 			rowsPerPage: 5,
+			conditions: [
+				{
+					id: 12,
+					mode: 'Любой',
+					state: 'В работе',
+					role: 'Пользователь',
+					device: 'Любое',
+					layout: '',
+				},
+				{
+					id: 13,
+					mode: 'Просмотр',
+					state: 'Делегировано',
+					role: 'Исполнитель',
+					device: 'Планшет',
+					layout: '',
+				},
+				{
+					id: 14,
+					mode: 'Создание',
+					state: 'На согласовании',
+					role: 'Автор',
+					device: 'Десктоп',
+					layout: '',
+				},
+			],
 			views: [
 				{
 					id: 'view-011',
