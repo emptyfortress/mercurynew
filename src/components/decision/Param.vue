@@ -10,6 +10,10 @@ const emit = defineEmits(['kill'])
 const par = computed(() => {
 	return props.stat.data.parents
 })
+
+const kill = () => {
+	emit('kill')
+}
 </script>
 
 <template lang="pug">
@@ -20,6 +24,8 @@ const par = computed(() => {
 				div {{ item }}
 				.q-mx-sm >
 			div {{ props.stat.data.text}}
+	.but
+		q-btn.close(flat round icon="mdi-close" @click="kill" size="sm")
 </template>
 
 <style scoped lang="scss">
@@ -40,6 +46,20 @@ const par = computed(() => {
 	height: 100%;
 	&:hover {
 		border-color: #a142f4;
+	}
+	.close {
+		position: absolute;
+		right: 0.5rem;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.but {
+		display: none;
+	}
+	&:hover {
+		.but {
+			display: block;
+		}
 	}
 }
 .txt {

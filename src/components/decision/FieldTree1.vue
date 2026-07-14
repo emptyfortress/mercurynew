@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import WordHighlighter from 'vue-word-highlighter'
-import { fields, operators } from '@/stores/fields-poisk'
+import { fields } from '@/stores/fields-poisk'
 import {
 	getMembers,
 	// filterByLabel,
@@ -11,27 +11,18 @@ import {
 } from '@/utils/utils'
 import { useDrag } from '@/stores/drag'
 import { useChips } from '@/stores/chips'
-// import { useDndStore } from '@/stores/dnd'
+import { useDndStore } from '@/stores/dnd'
 import ChipModal from '@/components/decision/ChipModal-new.vue'
 
-// const dndStore = useDndStore()
+const dndStore = useDndStore()
 
-// function onExternalDragStart(e: DragEvent, p: { id: string; text: string }) {
-// 	dndStore.setExternalDragPayload(p)
-// 	e.dataTransfer?.setData('text/plain', JSON.stringify(p)) // для инициации drag, обязателен
-// 	e.dataTransfer!.effectAllowed = 'all'
-// }
-
-const dragstart = (e: NodeData) => {
-	drag.setCurrentDrag(e)
-}
-const dragsend = () => {
-	drag.setCurrentDrag(null)
+function onExternalDragStart(node: any) {
+	dndStore.setExternalDragPayload(node)
 }
 
-// function onExternalDragEnd() {
-// 	dndStore.clearExternalDragPayload()
-// }
+function onExternalDragEnd() {
+	dndStore.clearExternalDragPayload()
+}
 
 const props = defineProps({
 	layout: {
@@ -77,19 +68,6 @@ const clearFilter = () => {
 	query.value = ''
 }
 
-// const dragstart = (e: NodeData) => {
-// 	drag.setCurrentDrag(e)
-// }
-
-const dragstart1 = (e: NodeData) => {
-	console.log(e)
-}
-const dragend = () => {
-	// if (!!drag.dragNode && !!drag.dragNode.parents && drag.treeKey !== drag.dragNode.parents[1]) {
-	// 	drag.setTreeKey(drag.dragNode.parents[1])
-	// }
-	// drag.setCurrentDrag(null)
-}
 watch(query, () => {
 	if (query.value.length > 1) {
 		tree.value.expandAll()
@@ -129,10 +107,6 @@ div
 	q-input.search( ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter")
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")
-	// .oper(v-if="!props.layout")
-		div(v-for="item in operators" :key="item.id" draggable="true" @dragstart="dragstart(item)" @dragend="dragend")
-			q-icon(:name="item.icon" )
-			span Оператор {{ item.text}}
 
 	q-checkbox.q-mb-md(v-model="common" dense label="Отображать общие свойства")
 	div
@@ -148,7 +122,7 @@ div
 		icon="mdi-chevron-right" )
 		template(v-slot:default-header="prop")
 			q-icon(v-if="!prop.node.drag" name="mdi-folder-outline")
-			.node(:draggable="prop.node.drag" @dragstart="dragstart(prop.node)" @dragend="onExternalDragEnd" :class="{grey : prop.node.drag}" )
+			.node(:draggable="prop.node.drag" @dragstart="onExternalDragStart(prop.node)" @dragend="onExternalDragEnd" :class="{grey : prop.node.drag}" )
 				WordHighlighter(:query="query" ) {{ prop.node.text }}
 	ChipModal(v-model="chipsModal" @tree="setTree" )
 </template>

@@ -49,7 +49,7 @@ const coltype = ref(null)
 	.row.items-center.q-gutter-x-sm
 		label Тип данных:
 		q-select(dense filled v-model="coltype" :options='options')
-	q-checkbox(v-model='sort' label='Сортировка' dense)
+	// q-checkbox(v-model='sort' label='Сортировка' dense)
 
 	.but
 		q-btn.close(flat round icon="mdi-close" @click="kill" size="sm")

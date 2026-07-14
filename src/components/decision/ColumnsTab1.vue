@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { Draggable, dragContext } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
+import '@he-tree/vue/style/material-design.css'
 import { useDndStore } from '@/stores/dnd'
 import Column from '@/components/decision/Column.vue'
 import Param from '@/components/decision/Param.vue'
@@ -71,8 +72,8 @@ function eachDraggable() {
 }
 
 function externalDataHandler(_event: DragEvent): ParamNode | null {
-	const payload = drag.currentDrag
-	// const payload = dndStore.externalDragPayload
+	console.log('external')
+	const payload = dndStore.externalDragPayload
 	if (!payload) return null
 	return {
 		id: payload.id ?? `param-${Date.now()}`,
@@ -138,6 +139,10 @@ Draggable.q-mt-md(
 	:external-data-handler='externalDataHandler'
 	:max-level='2'
 	@change='repairTree'
+	:indent="40"
+	treeLine
+	:treeLineOffset="20"
+	class="mtl-tree"
 	)
 
 	template(#default='{ stat, node, index }')
