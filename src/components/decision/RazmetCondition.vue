@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRazmetStore } from '@/stores/razmet'
 import SolutionRule1 from '@/components/decision/SolutionRule1.vue'
+import SolutionRuleKadry from '@/components/decision/SolutionRuleKadry.vue'
+import MaterialSymbolsEditOffOutline from '@/components/icons/MaterialSymbolsEditOffOutline.vue'
 
 defineProps<{
 	conditionData?: Record<string, unknown>
@@ -30,6 +32,10 @@ const activateProject = (activatedId: string, value: boolean) => {
 		razmetStore.projects[0].expanded = true
 	}
 }
+
+const isDisabled = (item: any) => {
+	return item.name == 'Кадры' ? true : false
+}
 </script>
 
 <template lang="pug">
@@ -37,25 +43,34 @@ q-list
 	q-expansion-item.my-expansion(v-for="item in razmetStore.projects" :key="item.name" v-model="item.expanded" switchToggleSide)
 		template(v-slot:header)
 			q-item-section
-				.project
+				.project(:class="{disab : isDisabled(item)}")
 					|Проект:
 					span {{ item.name}}
 			q-item-section
-				.project
+				.project(:class="{disab : isDisabled(item)}")
 					|условий:
 					span {{ item.conditions.length}}
-			q-item-section
+			q-item-section(v-if='isDisabled(item)')
+				.dis.q-gutter-x-sm
+					MaterialSymbolsEditOffOutline.ic
+					span Только для чтения
+
+			q-item-section(v-else)
 				q-radio(
 					v-model="active",
 					:val="item.name",
 					@update:modelValue="activateProject(item.name, $event)"
 					label="Активный проект")
 		.inside
-			SolutionRule1(:condition='item.conditions')
+			SolutionRuleKadry(v-if='item.name == "Кадры"' :condition='item.conditions')
+			SolutionRule1(v-else :condition='item.conditions')
 </template>
 
 <style scoped lang="scss">
 .project {
+	&.disab {
+		color: $blue-grey-5;
+	}
 	span {
 		font-weight: 600;
 		margin-left: 0.5rem;
@@ -101,5 +116,11 @@ q-list
 .inside {
 	padding: 1rem;
 }
+.dis {
+	color: $blue-grey-7;
+}
+.ic {
+	font-size: 1.2rem;
+	margin-bottom: -0.25rem;
+}
 </style>
-

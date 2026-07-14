@@ -6,6 +6,7 @@ import { useRazmetStore } from '@/stores/razmet'
 import type { QTableColumn } from 'quasar'
 import RazmetCondition from './RazmetCondition.vue'
 import { useQuasar } from 'quasar'
+import MaterialSymbolsEditOffOutline from '@/components/icons/MaterialSymbolsEditOffOutline.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -238,6 +239,10 @@ const page = {
 	rowsPerPage: 0,
 	rowsPerPageLabel: 'Записей на стр.',
 }
+
+const isDisabled = (item: any) => {
+	return item.name == 'Кадры' ? true : false
+}
 </script>
 
 <template lang="pug">
@@ -281,11 +286,16 @@ div
 				q-expansion-item.my-expansion(v-for="item in razmetStore.projects" :key="item.name" v-model="item.expanded" switchToggleSide)
 					template(v-slot:header)
 						q-item-section
-							.project
+							.project(:class="{disab : isDisabled(item)}")
 								|Проект:
 								span {{ item.name}}
+								span.q-ml-md(v-if='isDisabled(item)') 
+									span (
+									MaterialSymbolsEditOffOutline.ic
+									span Только для чтения)
+
 						q-item-section
-							.project
+							.project(:class="{disab : isDisabled(item)}")
 								|Разметок:
 								span {{ item.views.length}}
 
@@ -296,16 +306,17 @@ div
 								q-badge(v-else color="grey" label="Нет")
 						template(v-slot:body-cell-name='props')
 							q-td(:props="props")
-								.name
+								.name(:class='{disabled: isDisabled(item)}')
 									span(@click.stop) {{ props.row.name }}
-										q-popup-edit(v-model="props.row.name" auto-save v-slot="scope")
+										q-popup-edit(v-if='!isDisabled(item)' v-model="props.row.name" auto-save v-slot="scope")
 											q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 						template(v-slot:body-cell-actions="props")
 							q-td.text-right(:props="props")
 								.q-gutter-x-sm
-									q-btn(flat round icon="mdi-pencil" size="sm" @click="goto()")
+									q-btn(v-if='isDisabled(item)' flat round icon="mdi-eye" size="sm" @click="goto()")
+									q-btn(v-else flat round icon="mdi-pencil" size="sm" @click="goto()")
 									q-btn(flat round icon="mdi-content-copy" size="sm" @click="openDuplicateDialog(props.row)")
-									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative")
+									q-btn(v-if='!isDisabled(item)' flat round icon="mdi-delete-outline" size="sm" color="negative")
 										q-menu
 											q-list
 												q-item.pink(clickable @click="removeView(props.row.id)")
@@ -313,7 +324,7 @@ div
 
 						template(v-slot:bottom)
 							.bottom
-								q-btn(unelevated color="primary" label="Создать разметку" icon="mdi-plus" size="sm" @click="showDialog(item.name)")
+								q-btn(unelevated color="primary" label="Создать разметку" :disable='isDisabled(item)' icon="mdi-plus" size="sm" @click="showDialog(item.name)")
 								.row.items-center
 									.text-caption.q-mr-sm Строк в таблице:
 									q-select(v-model="item.rowsPerPage" :options="[2, 5, 10, 15, 20]" dense style="width: 60px" hide-bottom-space @update:model-value="onRowsPerPageChange(item, $event)")
@@ -394,6 +405,9 @@ div
 
 <style scoped lang="scss">
 .project {
+	&.disab {
+		color: $blue-grey-5;
+	}
 	span {
 		font-weight: 600;
 		margin-left: 0.5rem;
@@ -435,6 +449,12 @@ div
 	span {
 		border-bottom: 1px dotted $primary;
 	}
+	&.disabled {
+		span {
+			color: initial;
+			border: none;
+		}
+	}
 }
 .bottom {
 	width: 100%;
@@ -449,5 +469,9 @@ div
 	:deep(.q-field__control:before) {
 		background: white;
 	}
+}
+.ic {
+	font-size: 1.1rem;
+	margin-bottom: -3px;
 }
 </style>
