@@ -42,7 +42,6 @@ div
 			RolesConstructor(v-if='razmet == "102"')
 			RazmetConstructor(v-if='razmet == "12"')
 
-			// div {{ simpleStore.selectedElement }}
 </template>
 
 <style scoped lang="scss">

@@ -150,6 +150,20 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/dvmain/:constructorId/:viewId/12/constructor',
+			name: 'layoutConstructor',
+			component: () => import('@/components/decision/LayoutConstructorWithPanels.vue'),
+			props: true,
+			meta: {
+				toolbar: false,
+				back: false,
+				back1: false,
+				count: 19,
+				save: false,
+				breadcrumbs: true,
+			},
+		},
+		{
 			path: '/reduce',
 			name: 'reducedHome',
 			component: HomeReduced1,

@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useRazmetStore = defineStore('razmet', () => {
@@ -15,7 +15,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'Любое',
 					role: 'admin',
 					device: 'Любое',
-					layout: '',
+					layout: 'Общий список',
 				},
 				{
 					id: 2,
@@ -23,7 +23,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'В работе',
 					role: 'Исполнитель',
 					device: 'Десктоп',
-					layout: '',
+					layout: 'Активные тендеры',
 				},
 				{
 					id: 3,
@@ -31,7 +31,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'На согласовании',
 					role: 'Контролер',
 					device: 'Планшет',
-					layout: '',
+					layout: 'Просроченные документы',
 				},
 			],
 			views: [
@@ -73,7 +73,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'Черновик',
 					role: 'Автор',
 					device: 'Десктоп',
-					layout: '',
+					layout: 'Общий список',
 				},
 				{
 					id: 5,
@@ -81,7 +81,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'В работе',
 					role: 'Пользователь',
 					device: 'Мобильный',
-					layout: '',
+					layout: 'Сделки',
 				},
 			],
 			views: [
@@ -115,7 +115,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'Делегировано',
 					role: 'Исполнитель',
 					device: 'Любое',
-					layout: '',
+					layout: 'Сделки',
 				},
 				{
 					id: 7,
@@ -123,7 +123,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'На согласовании',
 					role: 'Контролер',
 					device: 'Десктоп',
-					layout: '',
+					layout: 'Воронка продаж',
 				},
 				{
 					id: 8,
@@ -131,7 +131,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'Любое',
 					role: 'admin',
 					device: 'Любое',
-					layout: '',
+					layout: 'Общий список',
 				},
 				{
 					id: 9,
@@ -139,7 +139,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 					state: 'Черновик',
 					role: 'Автор',
 					device: 'Планшет',
-					layout: '',
+					layout: 'Отчеты SLA',
 				},
 			],
 			views: [
@@ -271,5 +271,7 @@ export const useRazmetStore = defineStore('razmet', () => {
 		},
 	])
 
-	return { projects }
+	const allViews = computed(() => projects.value.flatMap((project) => project.views))
+
+	return { projects, allViews }
 })

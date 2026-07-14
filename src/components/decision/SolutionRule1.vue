@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useLayoutStore } from '@/stores/layoutStore'
+import { useRazmetStore } from '@/stores/razmet'
 
 interface Condition {
 	id: number
@@ -19,6 +20,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const layoutStore = useLayoutStore()
+const razmetStore = useRazmetStore()
 
 const test = ref(props.condition)
 
@@ -62,7 +64,7 @@ const valueOptions: Record<ConditionKey, string[]> = {
 	device: ['Любое', 'Десктоп', 'Мобильный', 'Планшет'],
 }
 
-const layoutOptions = computed(() => layoutStore.layoutData.map((item) => item.name))
+const layoutOptions = computed(() => razmetStore.allViews.map((view) => view.name))
 
 const updateValue = (item: Condition, key: ConditionKey, value: string) => {
 	item[key] = value

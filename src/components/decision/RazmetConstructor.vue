@@ -7,6 +7,7 @@ import type { QTableColumn } from 'quasar'
 import RazmetCondition from './RazmetCondition.vue'
 import { useQuasar } from 'quasar'
 
+const router = useRouter()
 const route = useRoute()
 const $q = useQuasar()
 
@@ -23,7 +24,6 @@ const onRowsPerPageChange = (project: any, value: number) => {
 	project.rowsPerPage = value
 	project.pagination = 1
 }
-const router = useRouter()
 const store = useSimpleStore()
 const razmetStore = useRazmetStore()
 
@@ -211,8 +211,9 @@ const showDialog = (e: string) => {
 	createDialog.value = !createDialog.value
 }
 
-const page = {
-	rowsPerPage: 2,
+const goto = (e: string) => {
+	let path = route.fullPath + '/constructor'
+	router.push(path)
 }
 </script>
 
@@ -252,7 +253,7 @@ div
 						template(v-slot:body-cell-actions="props")
 							q-td.text-right(:props="props")
 								.q-gutter-x-sm
-									q-btn(flat round icon="mdi-pencil" size="sm")
+									q-btn(flat round icon="mdi-pencil" size="sm" @click="goto(props.row.id)")
 									q-btn(flat round icon="mdi-content-copy" size="sm" @click="openDuplicateDialog(props.row)")
 									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative")
 										q-menu

@@ -21,4 +21,5 @@ export const BREADCRUMB_OVERRIDES: Record<string, string> = {
 	'103': 'Матрица доступа',
 	docs: 'Мои документы',
 	dogovor: 'Договор',
+	constructor: 'Название разметки',
 }
