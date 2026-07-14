@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
 import ViewEditor from '@/components/decision/ViewEditor.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
-import FieldTree from '@/components/decision/FieldTree.vue'
+import FieldTree1 from '@/components/decision/FieldTree1.vue'
 
 const simpleStore = useSimpleStore()
 
@@ -48,7 +48,7 @@ div
 
 				template(v-slot:after)
 					q-scroll-area.list1
-						// FieldTree(v-show='isTreeVisible' layout)
+						FieldTree1(v-show='isTreeVisible' layout)
 
 </template>
 
