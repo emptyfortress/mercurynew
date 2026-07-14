@@ -222,10 +222,13 @@ div
 	.zg
 		span {{ store.selectedElement?.text || 'Вид документа'}}
 	q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
-		q-tab(name="setup" label="Разметки")
+		q-tab(name="list" label="Разметки")
+		q-tab(name="setup" label="Проекты")
 		q-tab(name="condition" label="Условия выбора разметок")
 
 	q-tab-panels(v-model="activeTab" animated)
+		q-tab-panel(name="list")
+
 		q-tab-panel(name="setup")
 			q-list
 				q-expansion-item.my-expansion(v-for="item in razmetStore.projects" :key="item.name" v-model="item.expanded" switchToggleSide)
