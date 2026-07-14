@@ -271,7 +271,10 @@ export const useRazmetStore = defineStore('razmet', () => {
 		},
 	])
 
-	const allViews = computed(() => projects.value.flatMap((project) => project.views))
+	const allViews = computed(() =>
+	projects.value.flatMap((project) =>
+		project.views.map((view) => ({ ...view, parent: project.name }))
+	))
 
 	return { projects, allViews }
 })

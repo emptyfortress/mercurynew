@@ -206,14 +206,37 @@ const columns: QTableColumn[] = [
 	{ name: 'actions', label: '', field: 'actions', align: 'center' },
 ]
 
+const allViewsColumns: QTableColumn[] = [
+	{ name: 'name', label: 'Разметка', field: 'name', align: 'left', sortable: true },
+	{ name: 'parent', label: 'Проект', field: 'parent', align: 'left', sortable: true },
+	{ name: 'type', label: 'Тип', field: 'type', align: 'left', sortable: true },
+	{ name: 'author', label: 'Автор', field: 'author', align: 'left', sortable: true },
+	{
+		name: 'createdAt',
+		label: 'Создано',
+		field: 'createdAt',
+		align: 'left',
+		sortable: true,
+		format: formatDate,
+	},
+	{ name: 'isUsed', label: 'Используется', field: 'isUsed', align: 'center', sortable: true },
+	{ name: 'actions', label: '', field: 'actions', align: 'right', sortable: false },
+]
+
 const showDialog = (e: string) => {
 	currentProject.value = e
 	createDialog.value = !createDialog.value
 }
 
-const goto = (e: string) => {
-	let path = route.fullPath + '/constructor'
+const goto = () => {
+	let path = route.path + '/constructor'
 	router.push(path)
+}
+
+const page = {
+	page: 1,
+	rowsPerPage: 0,
+	rowsPerPageLabel: 'Записей на стр.',
 }
 </script>
 
@@ -222,12 +245,36 @@ div
 	.zg
 		span {{ store.selectedElement?.text || 'Вид документа'}}
 	q-tabs(v-model="activeTab" align="left" activeColor="primary" indicatorColor="primary")
-		q-tab(name="list" label="Разметки")
 		q-tab(name="setup" label="Проекты")
+		q-tab(name="list" label="Разметки")
 		q-tab(name="condition" label="Условия выбора разметок")
 
 	q-tab-panels(v-model="activeTab" animated)
 		q-tab-panel(name="list")
+				q-table(
+					:rows="razmetStore.allViews"
+					:columns="allViewsColumns"
+					row-key="id"
+					flat
+					:pagination='page'
+					rowsPerPageLabel="Записей на стр."
+				)
+					template(v-slot:body-cell-isUsed="props")
+						q-td(:props="props")
+							q-badge(v-if="props.value" color="positive" label="Да")
+							q-badge(v-else color="grey" label="Нет")
+
+					template(v-slot:body-cell-name='props')
+						q-td(:props="props")
+							.name
+								span(@click.stop) {{ props.row.name }}
+									q-popup-edit(v-model="props.row.name" auto-save v-slot="scope")
+										q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+
+					template(v-slot:body-cell-actions="props")
+						q-td.text-right(:props="props")
+							.q-gutter-x-sm
+								q-btn(flat round icon="mdi-pencil" size="sm" @click="goto()")
 
 		q-tab-panel(name="setup")
 			q-list
@@ -256,7 +303,7 @@ div
 						template(v-slot:body-cell-actions="props")
 							q-td.text-right(:props="props")
 								.q-gutter-x-sm
-									q-btn(flat round icon="mdi-pencil" size="sm" @click="goto(props.row.id)")
+									q-btn(flat round icon="mdi-pencil" size="sm" @click="goto()")
 									q-btn(flat round icon="mdi-content-copy" size="sm" @click="openDuplicateDialog(props.row)")
 									q-btn(flat round icon="mdi-delete-outline" size="sm" color="negative")
 										q-menu
