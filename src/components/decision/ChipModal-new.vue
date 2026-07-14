@@ -76,7 +76,7 @@ q-dialog(v-model="modelValue")
 	q-card
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section.q-pb-none
-			.text-h6 Выберите тип карточек для поиска
+			.text-h6 Выберите тип карточек
 
 		q-card-section
 			.grid
