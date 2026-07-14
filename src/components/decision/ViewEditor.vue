@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import ChipModal from '@/components/decision/ChipModal-new.vue'
 import CommonTab from '@/components/decision/CommonTab.vue'
-import ColumnsTab from '@/components/decision/ColumnsTab.vue'
+import ColumnsTab1 from '@/components/decision/ColumnsTab1.vue'
 
 const props = defineProps({
 	splitter: Number,
@@ -69,7 +69,6 @@ div
 		q-tabs.q-mt-md(v-model="tabs" align="left" dense color="primary" class="text-primary")
 			q-tab(name='common' label='Общие')
 			q-tab(name='columns' label='Колонки' v-if='!isFolder')
-			// q-tab(name='header' label='Шапка' v-if='!isFolder')
 			q-tab(name='sort' label='Сортировки' v-if='!isFolder')
 			q-tab(name='group' label='Группировка' v-if='!isFolder')
 			q-tab(name='filter' label='Фильтрация' v-if='!isFolder')
@@ -79,7 +78,7 @@ div
 			q-tab-panel(name='common')
 				CommonTab
 			q-tab-panel(name='columns')
-				ColumnsTab
+				ColumnsTab1
 
 
 ChipModal(v-model="dialogCreate" create mode="views")
