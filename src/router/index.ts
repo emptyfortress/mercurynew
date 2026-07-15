@@ -5,6 +5,7 @@ import Decisions from '@/views/Decisions.vue'
 import HomeReduced1 from '@/views/HomeReduced1.vue'
 import AppLayout from '@/views/AppLayout.vue'
 import AppDetails from '@/components/AppDetails.vue'
+import devRoutes from '@/dev/routes'
 
 declare module 'vue-router' {
 	interface RouteMeta {
@@ -22,6 +23,7 @@ declare module 'vue-router' {
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
+		...(import.meta.env.DEV ? devRoutes : []),
 		{
 			path: '/:id?',
 			name: 'apps.home',
