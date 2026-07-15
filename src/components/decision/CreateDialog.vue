@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { uid } from 'quasar'
+// import { ref } from 'vue'
+// import { uid } from 'quasar'
 import { useSimpleStore } from '@/stores/simpleStore'
 
 const props = defineProps({
@@ -90,6 +90,22 @@ const create = (data: any) => {
 		emit('create', newFolder)
 		close()
 	}
+	if (props.mode == 'view' && !props.mode1) {
+		const newFolder = {
+			name: data.name,
+			type: 1,
+		}
+		emit('create', newFolder)
+		close()
+	}
+	if (props.mode == 'view' && props.mode1) {
+		const newFolder = {
+			name: data.name,
+			type: 0,
+		}
+		emit('create', newFolder)
+		close()
+	}
 }
 </script>
 
@@ -107,6 +123,8 @@ q-dialog(v-model="modelValue")
 			.text-h6(v-if="props.mode == 'folder'") Создать папку
 			.text-h6(v-if="props.mode == 'poisk' && props.mode1") Создать папку
 			.text-h6(v-if="props.mode == 'poisk' && !props.mode1") Создать запрос
+			.text-h6(v-if="props.mode == 'view' && props.mode1") Создать папку
+			.text-h6(v-if="props.mode == 'view' && !props.mode1") Создать представление
 
 		q-card-section
 			FormKit(type="form" id="newapp" submit-label="Создать" @submit="create")
@@ -131,6 +149,8 @@ q-dialog(v-model="modelValue")
 				FormKit(v-if='props.mode == "folder"' type="checkbox" name="isVirtual" label="Виртуальная папка")
 
 				FormKit(v-if='props.mode == "poisk"'  type="text" autofocus name="name" label="Название" validation="required|length:3")
+
+				FormKit(v-if='props.mode == "view"'  type="text" autofocus name="name" label="Название" validation="required|length:3")
 </template>
 
 <style scoped lang="scss"></style>

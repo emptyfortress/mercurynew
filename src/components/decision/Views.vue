@@ -33,10 +33,10 @@ div
 			.blo
 				q-scroll-area.list
 					UnifiedTree(
-						sourceType="views"
+						sourceType="view"
 						filterField="text"
 						:showTypeSelector="false"
-						mode="views"
+						mode="view"
 					)
 
 		template(v-slot:after)

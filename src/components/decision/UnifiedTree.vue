@@ -12,7 +12,7 @@ import { useChips } from '@/stores/chips'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 
-export type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk' | 'views'
+export type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk' | 'view'
 
 const props = defineProps<{
 	sourceType?: TreeSourceType
@@ -38,7 +38,7 @@ const sourceData = computed(() => {
 			return simpleStore.poiskData
 		case 'folderData':
 			return simpleStore.folderData
-		case 'views':
+		case 'view':
 			return simpleStore.viewData
 		default:
 			return simpleStore.selectedBranch
@@ -208,20 +208,17 @@ const create = (data: any) => {
 	}
 }
 
-const poiskFold = ref(false)
+const folderMode = ref(false)
 const poisk = () => {
-	// poiskFold.value = false
 	dialog1.value = !dialog1.value
 }
 
 const fold = () => {
-	poiskFold.value = true
+	folderMode.value = true
 	dialog.value = !dialog.value
 }
-
-const viewFold = ref(false)
-const fold1 = () => {
-	viewFold.value = true
+const view = () => {
+	folderMode.value = false
 	dialog.value = !dialog.value
 }
 
@@ -360,13 +357,13 @@ div
 		q-fab-action(color="primary" icon="mdi-magnify" external-label label="Запрос" label-position="left" @click="poisk")
 		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
 
-	q-fab.fab(v-else-if='props.mode == "views"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
+	q-fab.fab(v-else-if='props.mode == "view"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
 		q-fab-action(color="primary" icon="mdi-view-compact-outline" external-label label="Представление" label-position="left" @click="view")
-		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold1")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
 
 	q-btn.fab(v-else round icon="mdi-plus" color="primary" @click="dialog = !dialog")
 
-	CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='poiskFold' @create='create')
+	CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='folderMode' @create='create')
 	ChipModalNew(v-model="dialog1" create)
 </template>
 
