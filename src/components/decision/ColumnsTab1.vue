@@ -6,7 +6,11 @@ import '@he-tree/vue/style/material-design.css'
 import { useDndStore } from '@/stores/dnd'
 import Column from '@/components/decision/Column.vue'
 import Param from '@/components/decision/Param.vue'
-import { useDrag } from '@/stores/drag'
+// import { useDrag } from '@/stores/drag'
+
+const props = defineProps<{
+	initialTree?: TreeNode[]
+}>()
 
 type NodeType = 'column' | 'param'
 
@@ -28,10 +32,11 @@ type TreeNode = ColumnNode | ParamNode
 
 const dndStore = useDndStore()
 
-const treeData = ref<TreeNode[]>([])
+const treeData = ref(props.initialTree ?? [])
+
 const treeRef = ref<InstanceType<typeof Draggable> | null>(null)
 
-const drag = useDrag()
+// const drag = useDrag()
 
 let colCounter = 0
 function addColumn() {
