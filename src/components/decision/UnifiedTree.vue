@@ -38,6 +38,8 @@ const sourceData = computed(() => {
 			return simpleStore.poiskData
 		case 'folderData':
 			return simpleStore.folderData
+		case 'views':
+			return simpleStore.viewData
 		default:
 			return simpleStore.selectedBranch
 	}
@@ -88,12 +90,6 @@ const select = (n: any) => {
 		name: 'start',
 		params: { viewId: n.data.id },
 	})
-	// if (props.sourceType !== 'poisk') {
-	// 	router.push({
-	// 		name: 'start',
-	// 		params: { viewId: n.data.id },
-	// 	})
-	// }
 }
 
 const toggle = (stat: any) => {
@@ -220,6 +216,12 @@ const poisk = () => {
 
 const fold = () => {
 	poiskFold.value = true
+	dialog.value = !dialog.value
+}
+
+const viewFold = ref(false)
+const fold1 = () => {
+	viewFold.value = true
 	dialog.value = !dialog.value
 }
 
@@ -357,7 +359,13 @@ div
 	q-fab.fab(v-if='props.mode == "poisk"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
 		q-fab-action(color="primary" icon="mdi-magnify" external-label label="Запрос" label-position="left" @click="poisk")
 		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
+
+	q-fab.fab(v-else-if='props.mode == "views"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
+		q-fab-action(color="primary" icon="mdi-view-compact-outline" external-label label="Представление" label-position="left" @click="view")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold1")
+
 	q-btn.fab(v-else round icon="mdi-plus" color="primary" @click="dialog = !dialog")
+
 	CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='poiskFold' @create='create')
 	ChipModalNew(v-model="dialog1" create)
 </template>
