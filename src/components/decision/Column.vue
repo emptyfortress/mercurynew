@@ -5,6 +5,8 @@ const props = defineProps<{
 	stat: Stat
 }>()
 
+console.log(props.stat)
+
 const emit = defineEmits(['kill', 'toggle'])
 
 const editText = ref(props.stat.data.text)
@@ -17,7 +19,8 @@ const par = computed(() => {
 	return props.stat.data.parents
 })
 
-const sort = ref(false)
+const hidden = ref(false)
+const html = ref(false)
 const toggle = () => {
 	emit('toggle')
 }
@@ -47,9 +50,10 @@ const coltype = ref(null)
 			q-popup-edit(v-model="props.stat.data.text" auto-save v-slot="scope")
 				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 	.row.items-center.q-gutter-x-sm
-		label Тип данных:
-		q-select(dense filled v-model="coltype" :options='options')
-	// q-checkbox(v-model='sort' label='Сортировка' dense)
+		q-select(dense filled v-model="coltype" label="Тип данных" :options='options')
+		q-checkbox.q-ml-md(v-model='hidden' label='Скрыть' dense)
+		q-checkbox.q-ml-md(v-model='html' label='HTML' dense)
+		q-select(dense filled v-model="coltype" label="Формат вывода" :options='options')
 
 	.but
 		q-btn.close(flat round icon="mdi-close" @click="kill" size="sm")
@@ -61,7 +65,7 @@ const coltype = ref(null)
 	position: relative;
 	transition: 0.2s ease transform;
 	display: grid;
-	grid-template-columns: auto 1fr 1fr 0.5fr 80px;
+	grid-template-columns: auto 1fr 2fr 60px;
 	justify-content: start;
 	align-items: center;
 	background: var(--node);
@@ -91,7 +95,7 @@ const coltype = ref(null)
 	}
 }
 :deep(.q-field__control, .q-field__native) {
-	min-width: 150px;
+	min-width: 180px;
 }
 .edit {
 	margin-left: 1rem;
