@@ -1,21 +1,5 @@
 import { uid } from 'quasar'
-// import { Kind } from '@/stores/enum'
-
-enum Kind {
-	String,
-	Text,
-	Date,
-	Org,
-	Num,
-	Man,
-	Status,
-	Link,
-	Phone,
-	Email,
-	Bool,
-	Key,
-	Goal,
-}
+import { Kind } from '@/types/enum'
 
 const operators = [
 	{
@@ -3376,6 +3360,17 @@ const fields = [
 			{
 				id: uid(),
 				parents: ['ГЗ'],
+				text: 'Мое виртуальное поле',
+				kind: Kind.Virtual,
+				type: 1,
+				hidden: false,
+				selected: false,
+				drag: true,
+				inp: true,
+			},
+			{
+				id: uid(),
+				parents: ['ГЗ'],
 				text: 'Докумeнт',
 				kind: Kind.Link,
 				type: 1,
@@ -3387,7 +3382,7 @@ const fields = [
 				id: uid(),
 				parents: ['ГЗ'],
 				text: 'Исполнители',
-				kind: Kind.Man,
+				kind: Kind.Table,
 				man: true,
 				type: 1,
 				hidden: false,

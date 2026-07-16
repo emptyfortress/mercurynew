@@ -17,6 +17,8 @@ enum Kind {
 	Selector,
 	Selector1,
 	Selector2,
+	Table,
+	Virtual,
 }
 
 export { Kind }
