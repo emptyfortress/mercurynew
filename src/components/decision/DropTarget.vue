@@ -20,22 +20,23 @@ const dragDepth = ref(0)
 const isHovering = computed(() => dragDepth.value > 0)
 const isHoverTarget = computed(() => isDropTarget.value && isHovering.value)
 
-// const onDragEnter = () => {
-// 	if (!isDropTarget.value) return
-// 	dragDepth.value++
-// }
-// const onDragLeave = () => {
-// 	if (!isDropTarget.value) return
-// 	dragDepth.value = Math.max(0, dragDepth.value - 1)
-// }
-// const onDrop = () => {
-// 	dragDepth.value = 0
-// 	// тут же логика приёма дропа
-// 	console.log('drop', props.item)
-// }
+const onDragEnter = () => {
+	if (!isDropTarget.value) return
+	dragDepth.value++
+}
+const onDragLeave = () => {
+	if (!isDropTarget.value) return
+	dragDepth.value = Math.max(0, dragDepth.value - 1)
+}
+const onDrop = () => {
+	dragDepth.value = 0
+	// тут же логика приёма дропа
+	console.log('drop', props.item)
+}
 
+const emit = defineEmits(['kill'])
 const kill = () => {
-	console.log('kill')
+	emit('kill')
 }
 </script>
 
@@ -43,7 +44,12 @@ const kill = () => {
 q-expansion-item.my-expansion(
 	v-model="expanded",
 	switchToggleSide,
+	expandIconToggle
+	:ripple='false'
 	:class="{ drop: isDropTarget, 'drop-hover': isHoverTarget }",
+	@dragenter.stop="onDragEnter"
+	@dragover.prevent.stop
+	@drop.stop="onDrop"
 )
 	template(v-slot:header)
 		q-item-section
@@ -53,7 +59,13 @@ q-expansion-item.my-expansion(
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 		q-item-section(side)
 			.but
-				q-btn.close(flat round color="primary" icon="mdi-close" @click="kill" size="sm")
+				q-btn.close(flat round color="primary" icon="mdi-close" size="sm")
+					q-menu
+						q-list
+							q-item.pink(clickable @click="kill")
+								q-item-section(side)
+									q-icon(name="mdi-delete-outline" color="negative")
+								q-item-section Удалить
 </template>
 
 <style scoped lang="scss">
@@ -109,5 +121,8 @@ q-expansion-item.my-expansion(
 	span {
 		border-bottom: 1px dotted $primary;
 	}
+}
+:deep(.q-expansion-item__toggle-focus + .q-expansion-item__toggle-icon) {
+	margin-top: 0;
 }
 </style>
