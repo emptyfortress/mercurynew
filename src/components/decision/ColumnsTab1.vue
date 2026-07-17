@@ -55,23 +55,19 @@ const remove = (index: number) => {
 	tapes.value.splice(index, 1)
 }
 
-const config = {
+const buildConfig = (disabled: boolean) => ({
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
-	draggable: (child: HTMLElement) => {
-		return child.classList.contains('my-expansion')
-	},
-	disabled: false,
-}
-
-const [parent, tapes, updateConfig] = useDragAndDrop(treeData.value, config)
+	draggable: (child: HTMLElement) => child.classList.contains('my-expansion'),
+	disabled,
+})
+const [parent, tapes, updateConfig] = useDragAndDrop(treeData.value, buildConfig(false))
 
 watch(
 	() => dndStore.externalDragPayload,
 	(payload) => {
-		// payload != null → идёт внешний драг → отключаем DnD-систему formkit на списке
-		updateConfig({ disabled: payload != null })
+		updateConfig(buildConfig(payload != null))
 	}
 )
 

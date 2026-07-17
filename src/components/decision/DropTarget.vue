@@ -22,10 +22,17 @@ interface Dropped {
 const expanded = ref(false)
 const dndStore = useDndStore()
 
+// const isDropTarget = computed(() => {
+// 	return (
+// 		dndStore.externalDragPayload != null && dndStore.externalDragPayload.kind === props.item.kind
+// 	)
+// })
+
 const isDropTarget = computed(() => {
-	return (
-		dndStore.externalDragPayload != null && dndStore.externalDragPayload.kind === props.item.kind
-	)
+	if (dndStore.externalDragPayload == null) return false
+	// если тип колонки ещё не задан — принимаем любой kind
+	if (props.item.kind == null) return true
+	return dndStore.externalDragPayload.kind === props.item.kind
 })
 
 // счётчик, чтобы dragenter/dragleave от вложенных элементов не сбивали подсветку
@@ -45,8 +52,9 @@ const onDragLeave = () => {
 // const field = ref<Dropped | null>(null)
 const onDrop = () => {
 	dragDepth.value = 0
-	// тут же логика приёма дропа
-	// field.value = dndStore.externalDragPayload
+	if (props.item.kind == null && dndStore.externalDragPayload != null) {
+		props.item.kind = dndStore.externalDragPayload.kind
+	}
 	emit('drop')
 }
 
@@ -93,7 +101,7 @@ q-expansion-item.my-expansion(
 		q-item-section
 			.project
 				q-icon(v-if='!props.item.children.length' name="mdi-alert-outline" color="warning" size='sm')
-					q-tooltip Колонка не настроена
+					q-tooltip Не задано поле для колонки
 				span(@click.prevent) {{ props.item.text || 'Колонка'}}
 					q-popup-edit(v-model="props.item.text" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
