@@ -1,23 +1,18 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { Kind } from '@/types/enum'
+import { useDndStore } from '@/stores/dnd'
 
 const props = defineProps<{
 	stat: Stat
 }>()
 
-console.log(props.stat)
-
-const emit = defineEmits(['kill', 'toggle'])
-
-const editText = ref(props.stat.data.text)
+const emit = defineEmits(['kill', 'toggle', 'drop'])
+const dndStore = useDndStore()
 
 const kill = () => {
 	emit('kill')
 }
-
-const par = computed(() => {
-	return props.stat.data.parents
-})
 
 const hidden = ref(false)
 const html = ref(false)
@@ -25,24 +20,37 @@ const toggle = () => {
 	emit('toggle')
 }
 const options = [
-	{ id: 1, label: 'Текст', value: 'Текст' },
-	{ id: 2, label: 'Многострочный текст', value: 'Многострочный текст' },
-	{ id: 3, label: 'Целое число', value: 'Целое число' },
-	{ id: 4, label: 'Дробное число', value: 'Дробное число' },
-	{ id: 5, label: 'Логический (Да/Нет)', value: 'Логический (Да/Нет)' },
-	{ id: 6, label: 'Дата', value: 'Дата' },
-	{ id: 7, label: 'Дата и время', value: 'Дата и время' },
-	{ id: 8, label: 'Список', value: 'Список' },
-	{ id: 9, label: 'Справочник', value: 'Справочник' },
-	{ id: 10, label: 'Файл', value: 'Файл' },
-	{ id: 11, label: 'Пользователь', value: 'Пользователь' },
-	{ id: 12, label: 'Документ', value: 'Документ' },
+	{ id: 1, label: 'Строка', value: Kind.String },
+	{ id: 2, label: 'Текст', value: Kind.Text },
+	{ id: 3, label: 'Дата', value: Kind.Date },
+	{ id: 4, label: 'Организация', value: Kind.Org },
+	{ id: 5, label: 'Сотрудник', value: Kind.Man },
+	{ id: 6, label: 'Статус', value: Kind.Status },
+	{ id: 7, label: 'Линк', value: Kind.Link },
+	{ id: 8, label: 'Телефон', value: Kind.Phone },
+	{ id: 9, label: 'Email', value: Kind.Email },
+	{ id: 10, label: 'Число', value: Kind.Num },
+	{ id: 11, label: 'Логический тип', value: Kind.Bool },
+	{ id: 12, label: 'Таблица', value: Kind.Table },
+	{ id: 13, label: 'Виртуальное поле', value: Kind.Virtual },
 ]
-const coltype = ref(null)
+const format = ref('Стандартный формат')
+
+const isDropTarget = computed(() => {
+	return (
+		dndStore.externalDragPayload != null &&
+		dndStore.externalDragPayload.kind === props.stat.data.kind
+	)
+})
+
+const onDrop = () => {
+	console.log('drop')
+	// emit('drop', dndStore.externalDragPayload)
+}
 </script>
 
 <template lang="pug">
-.node
+.node(:class="{drop: isDropTarget}")
 	q-btn(v-if='props.stat.children.length' flat round dense icon="mdi-chevron-down" color="primary" @click.stop="toggle" size='sm' :class='{rot: !stat.open}') 
 	div(style='width: 24px' v-else)
 	.edit
@@ -50,10 +58,10 @@ const coltype = ref(null)
 			q-popup-edit(v-model="props.stat.data.text" auto-save v-slot="scope")
 				q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 	.row.items-center.q-gutter-x-sm
-		q-select(dense filled v-model="coltype" label="Тип данных" :options='options')
+		q-select(dense filled v-model="props.stat.data.kind" label="Тип данных" :options='options' map-options emit-value)
 		q-checkbox.q-ml-md(v-model='hidden' label='Скрыть' dense)
 		q-checkbox.q-ml-md(v-model='html' label='HTML' dense)
-		q-select(dense filled v-model="coltype" label="Формат вывода" :options='options')
+		q-select(dense filled v-model='format' label="Формат вывода" disable)
 
 	.but
 		q-btn.close(flat round icon="mdi-close" @click="kill" size="sm")
@@ -65,7 +73,7 @@ const coltype = ref(null)
 	position: relative;
 	transition: 0.2s ease transform;
 	display: grid;
-	grid-template-columns: auto 1fr 2fr 60px;
+	grid-template-columns: auto 240px 1fr 60px;
 	justify-content: start;
 	align-items: center;
 	background: var(--node);
@@ -77,6 +85,11 @@ const coltype = ref(null)
 	position: relative;
 	&:hover {
 		border-color: $secondary;
+	}
+	&.drop {
+		background: #a8d2bf;
+		box-shadow: var(--shad);
+		z-index: 100 !important;
 	}
 
 	.close {

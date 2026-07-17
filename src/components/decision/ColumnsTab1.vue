@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Draggable, dragContext } from '@he-tree/vue'
-import '@he-tree/vue/style/default.css'
-import '@he-tree/vue/style/material-design.css'
+import { ref, computed, watch } from 'vue'
+// import { Draggable, dragContext } from '@he-tree/vue'
+import { animations } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+// import '@he-tree/vue/style/default.css'
+// import '@he-tree/vue/style/material-design.css'
 import { useDndStore } from '@/stores/dnd'
-import Column from '@/components/decision/Column.vue'
-import Param from '@/components/decision/Param.vue'
-// import { useDrag } from '@/stores/drag'
+import DropTarget from '@/components/decision/DropTarget.vue'
+// import Column from '@/components/decision/Column.vue'
+// import Param from '@/components/decision/Param.vue'
+import { Kind } from '@/types/enum'
 
 const props = defineProps<{
 	initialTree?: TreeNode[]
@@ -21,6 +24,7 @@ interface BaseNode {
 }
 interface ColumnNode extends BaseNode {
 	type: 'column'
+	kind: Kind | null
 	children: ParamNode[]
 }
 interface ParamNode extends BaseNode {
@@ -32,11 +36,33 @@ type TreeNode = ColumnNode | ParamNode
 
 const dndStore = useDndStore()
 
-const treeData = ref(props.initialTree ?? [])
+const treeData = ref(
+	props.initialTree ?? [
+		{
+			id: 'col-1784195793292-1',
+			type: 'column',
+			text: 'Автор',
+			kind: 5,
+			children: [],
+		},
+		{
+			id: 'col-1784195799717-2',
+			type: 'column',
+			text: 'Тема',
+			kind: 0,
+			children: [],
+		},
+		{
+			id: 'col-1784195800967-3',
+			type: 'column',
+			text: 'Колонка 3',
+			kind: null,
+			children: [],
+		},
+	]
+)
 
 const treeRef = ref<InstanceType<typeof Draggable> | null>(null)
-
-// const drag = useDrag()
 
 let colCounter = 0
 function addColumn() {
@@ -46,11 +72,13 @@ function addColumn() {
 			id: `col-${Date.now()}-${colCounter}`,
 			type: 'column',
 			text: `Колонка ${colCounter}`,
+			kind: null,
 			children: [],
 		} satisfies ColumnNode,
 		null,
 		treeRef.value.rootChildren.length
 	)
+	console.log(treeData.value)
 }
 
 // Что сейчас тащат. Если dragContext.dragNode пуст — значит перетаскивание
@@ -67,9 +95,11 @@ function rootDroppable() {
 // Наведение на узел stat: разрешаем "приземлиться" рядом/внутрь только
 // в допустимых комбинациях
 function eachDroppable(stat: any) {
-	const type = draggingType()
-	if (type === 'column') return false // колонку никуда не вкладываем
-	return stat.data.type === 'column' || stat.data.type === 'param'
+	return true
+	// const type = draggingType()
+	// if (type === 'column') return false // колонку никуда не вкладываем
+	//
+	// return stat.data.type === 'column' && stat.data.kind === dndStore.externalDragPayload.kind
 }
 
 function eachDraggable() {
@@ -77,7 +107,6 @@ function eachDraggable() {
 }
 
 function externalDataHandler(_event: DragEvent): ParamNode | null {
-	console.log('external')
 	const payload = dndStore.externalDragPayload
 	if (!payload) return null
 	return {
@@ -123,10 +152,52 @@ const remove = (e: Stat) => {
 const toggle = (stat: Stat) => {
 	stat.open = !stat.open
 }
+
+const drop = (e: Event, item: any) => {
+	console.log('fuck ', item)
+	item.children.push(dndStore.externalDragPayload)
+}
+const isDrop = (item: any) => {
+	return dndStore.externalDragPayload !== null && dndStore.externalDragPayload.kind == item.kind
+}
+
+// const sortDisabled = computed(() => dndStore.externalDragPayload != null)
+
+// const config = {
+// 	plugins: [animations()],
+// 	dragPlaceholderClass: 'ghost',
+// 	// draggable: (child: HTMLElement) => {
+// 	// 	return child.classList.contains('my-expansion')
+// 	// },
+// 	draggable: (child: HTMLElement) => {
+// 		// пока идёт внешний драг — ни один child не считается узлом formkit
+// 		if (dndStore.externalDragPayload != null) return false
+// 		return child.classList.contains('my-expansion')
+// 	},
+// }
+
+const config = {
+	plugins: [animations()],
+	dragPlaceholderClass: 'ghost',
+	sortable: true,
+	draggable: (child: HTMLElement) => {
+		return child.classList.contains('my-expansion')
+	},
+}
+
+const [parent, tapes] = useDragAndDrop(treeData.value, config)
+
+// watch(
+// 	() => dndStore.externalDragPayload,
+// 	(payload) => {
+// 		// payload != null → идёт внешний драг → полностью отключаем DnD-систему formkit на списке
+// 		updateConfig({ disabled: payload != null })
+// 	}
+// )
 </script>
 
 <template lang="pug">
-q-btn(unelevated color="primary" label="Добавить колонку" @click="addColumn" size="sm") 
+q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку" @click="addColumn" size="sm") 
 
 .empty(v-if='treeData.length === 0')
 	ol
@@ -134,29 +205,32 @@ q-btn(unelevated color="primary" label="Добавить колонку" @click=
 		li Задайте названия и тип колонок.
 		li Настройте данные для показа в колонке, перетащив нужное поле из списка справа.
 
-Draggable.q-mt-md(
-	ref='treeRef'
-	v-model='treeData'
-	:root-droppable='rootDroppable'
-	:each-droppable='eachDroppable'
-	:each-draggable='eachDraggable'
-	:onExternalDragOver="()=> true"
-	:external-data-handler='externalDataHandler'
-	:max-level='2'
-	@change='repairTree'
-	:indent="40"
-	treeLine
-	:treeLineOffset="20"
-	class="mtl-tree"
-	)
+.par(ref='parent')
+	DropTarget(:item="item" v-for="item in tapes" :key="item.id")
 
-	template(#default='{ stat, node, index }')
-		.all(:class='node.type')
-			Column(v-if='node.type === "column"' :stat="stat" @kill="remove(stat)" @toggle='toggle(stat)')
-			Param(v-else :stat="stat" @kill="remove(stat)")
+// Draggable.q-mt-md(
+// 	ref='treeRef'
+// 	v-model='treeData'
+// 	:root-droppable='rootDroppable'
+// 	:each-droppable='eachDroppable'
+// 	:each-draggable='eachDraggable'
+// 	:indent="40"
+// 	treeLine :treeLineOffset="20" class="mtl-tree") template(#default='{ stat, node, index }') .all(:class='node.type') Column( v-if='node.type === "column"', :stat="stat", @kill="remove(stat)", @toggle='toggle(stat)'
+// 				@dragover.prevent,
+// 				@drop="drop($event, node)"
+// 			)
+// 			Param(v-else :stat="stat" @kill="remove(stat)")
 </template>
 
 <style scoped lang="scss">
+.droptarget {
+	height: 50px;
+	background: #ccc;
+	margin-bottom: 1px;
+	&.drop {
+		background: teal;
+	}
+}
 .all {
 	width: 100%;
 	cursor: pointer;
@@ -200,5 +274,16 @@ Draggable.q-mt-md(
 	align-items: center;
 	height: 100%;
 	margin-left: 1rem;
+}
+.ghost {
+	width: 100%;
+	height: 48px;
+	background: hsl(213 38% 81% / 1) !important;
+	box-shadow: none !important;
+	border: none !important;
+
+	* {
+		display: none;
+	}
 }
 </style>

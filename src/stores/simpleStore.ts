@@ -987,7 +987,13 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	const selectedType = ref<string | null>('Все')
 
-	const selectedElement = ref<TreeElement | null>(null)
+	// const selectedElement = ref<TreeElement | null>(null)
+	const selectedElement = ref<TreeElement | null>({
+		id: '1-1-1-2',
+		text: 'Просроченные задания',
+		selected: true,
+		sourceType: 'view',
+	})
 
 	function setSelectedElement(element: TreeElement | null) {
 		selectedElement.value = element

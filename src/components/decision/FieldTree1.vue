@@ -13,6 +13,7 @@ import { useDrag } from '@/stores/drag'
 import { useChips } from '@/stores/chips'
 import { useDndStore } from '@/stores/dnd'
 import ChipModal from '@/components/decision/ChipModal-new.vue'
+import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
 
 const dndStore = useDndStore()
 
@@ -99,6 +100,17 @@ const chipsModal = ref(false)
 const selChip = () => {
 	chipsModal.value = !chipsModal.value
 }
+
+const isTable = (node: any) => {
+	return node.kind == 18 ? true : false
+}
+const isVirtual = (node: any) => {
+	return node.kind == 19 ? true : false
+}
+
+const onDrop = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
@@ -122,8 +134,18 @@ div
 		icon="mdi-chevron-right" )
 		template(v-slot:default-header="prop")
 			q-icon(v-if="!prop.node.drag" name="mdi-folder-outline")
-			.node(:draggable="prop.node.drag" @dragstart="onExternalDragStart(prop.node)" @dragend="onExternalDragEnd" :class="{grey : prop.node.drag}" )
+			q-icon(v-if="isTable(prop.node)" name="mdi-format-list-group" color="primary")
+			.node(
+				:draggable="prop.node.drag",
+				@dragstart="onExternalDragStart(prop.node)",
+				@dragend="onExternalDragEnd",
+				@drop="onDrop"
+				:class="{grey : prop.node.drag, virtual: isVirtual(prop.node)}"
+			)
 				WordHighlighter(:query="query" ) {{ prop.node.text }}
+				template(v-if='isVirtual(prop.node)')
+					PhVirtualReality.q-ml-sm
+					q-tooltip Виртуальное поле
 	ChipModal(v-model="chipsModal" @tree="setTree" )
 </template>
 
@@ -156,6 +178,16 @@ div
 }
 .grey {
 	color: $primary;
+}
+
+.virtual {
+	background: hsl(210 25% 95% / 1);
+	color: $primary;
+	border: 1px solid hsl(210 25% 83% / 1);
+	svg {
+		font-size: 1.2rem;
+		vertical-align: text-bottom;
+	}
 }
 .oper {
 	font-size: 0.9rem;
