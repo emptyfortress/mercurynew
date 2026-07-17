@@ -42,15 +42,15 @@ const onDragLeave = () => {
 	dragDepth.value = Math.max(0, dragDepth.value - 1)
 }
 
-const field = ref<Dropped | null>(null)
+// const field = ref<Dropped | null>(null)
 const onDrop = () => {
 	dragDepth.value = 0
 	// тут же логика приёма дропа
-	field.value = dndStore.externalDragPayload
-	console.log(field.value)
+	// field.value = dndStore.externalDragPayload
+	emit('drop')
 }
 
-const emit = defineEmits(['kill'])
+const emit = defineEmits(['kill', 'drop'])
 const kill = () => {
 	emit('kill')
 }
@@ -92,6 +92,8 @@ q-expansion-item.my-expansion(
 	template(v-slot:header)
 		q-item-section
 			.project
+				q-icon(v-if='!props.item.children.length' name="mdi-alert-outline" color="warning" size='sm')
+					q-tooltip Колонка не настроена
 				span(@click.prevent) {{ props.item.text || 'Колонка'}}
 					q-popup-edit(v-model="props.item.text" auto-save v-slot="scope")
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
@@ -112,12 +114,14 @@ q-expansion-item.my-expansion(
 		.row.items-center.justify-between
 			.row.items-center
 				div Раздел карточки / поле:
-				.txt(v-if='field')
-					template(v-for="item in field?.parents" :key="item")
+				.txt(v-if='props.item.children.length')
+					template(v-for="item in props.item.children[0]?.parents" :key="item")
 						div {{ item }}
 						.q-mx-sm >
-					div {{ field?.text }}
-				.empty(v-else) Не задано (Перетащите сюда поле из дерева справа)
+					div {{ props.item.children[0]?.text }}
+				.empty(v-else)
+					q-icon(name="mdi-alert-outline" color="warning" size='sm')
+					|Не задано (Перетащите сюда поле из дерева справа)
 
 			q-btn(unelevated color="secondary" label="Вычисляемое поле" size="sm") 
 		.row.items-center.q-mt-md
@@ -139,9 +143,8 @@ q-expansion-item.my-expansion(
 }
 .empty {
 	font-size: 0.9rem;
-	color: $blue-grey-4;
+	color: $warning;
 	font-weight: 600;
-	// line-height: 0;
 	margin-left: 1rem;
 }
 .full {
@@ -154,6 +157,7 @@ q-expansion-item.my-expansion(
 .project {
 	color: $primary;
 	span {
+		margin-left: 0.5rem;
 		font-weight: 600;
 		border-bottom: 1px dotted $primary;
 	}
