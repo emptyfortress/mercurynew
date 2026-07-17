@@ -151,7 +151,7 @@ q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку"
 	height: 100%;
 	margin-left: 1rem;
 }
-.ghost {
+:deep(.ghost) {
 	width: 100%;
 	height: 48px;
 	background: hsl(213 38% 81% / 1) !important;
@@ -159,7 +159,7 @@ q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку"
 	border: none !important;
 
 	* {
-		display: none;
+		display: none !important;
 	}
 }
 </style>
