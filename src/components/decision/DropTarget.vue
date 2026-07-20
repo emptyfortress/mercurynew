@@ -22,12 +22,6 @@ interface Dropped {
 const expanded = ref(false)
 const dndStore = useDndStore()
 
-// const isDropTarget = computed(() => {
-// 	return (
-// 		dndStore.externalDragPayload != null && dndStore.externalDragPayload.kind === props.item.kind
-// 	)
-// })
-
 const isDropTarget = computed(() => {
 	if (dndStore.externalDragPayload == null) return false
 	// если тип колонки ещё не задан — принимаем любой kind
@@ -50,11 +44,6 @@ const onDragLeave = () => {
 }
 
 const onDrop = () => {
-	// dragDepth.value = 0
-	// if (props.item.kind == null && dndStore.externalDragPayload != null) {
-	// 	props.item.kind = dndStore.externalDragPayload.kind
-	// }
-	// emit('drop')
 	if (dndStore.externalDragPayload) {
 		if (props.item.kind == null && dndStore.externalDragPayload != null) {
 			props.item.kind = dndStore.externalDragPayload.kind
