@@ -4,7 +4,15 @@ import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useDndStore } from '@/stores/dnd'
 import DropTarget from '@/components/decision/DropTarget.vue'
-// import { Kind } from '@/types/enum'
+import { Kind } from '@/types/enum'
+
+interface TreeNode {
+	id: string
+	type: string
+	text: string
+	kind: Kind | null
+	children?: TreeNode[]
+}
 
 const props = defineProps<{
 	initialTree?: TreeNode[]
