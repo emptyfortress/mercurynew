@@ -21,4 +21,15 @@ enum Kind {
 	Virtual,
 }
 
-export { Kind }
+enum Newkind {
+	String,
+	Num,
+	Digit,
+	Datetime,
+	Bool,
+	Id,
+	Table,
+	Virtual,
+}
+
+export { Kind, Newkind }

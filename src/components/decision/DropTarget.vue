@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useDndStore } from '@/stores/dnd'
-import { Kind } from '@/types/enum'
+import { Kind, Newkind } from '@/types/enum'
 
 const props = defineProps<{
 	item: any
@@ -25,8 +25,8 @@ const dndStore = useDndStore()
 const isDropTarget = computed(() => {
 	if (dndStore.externalDragPayload == null) return false
 	// если тип колонки ещё не задан — принимаем любой kind
-	if (props.item.kind == null) return true
-	return dndStore.externalDragPayload.kind === props.item.kind
+	if (props.item.newkind == null) return true
+	return dndStore.externalDragPayload.newkind === props.item.newkind
 })
 
 // счётчик, чтобы dragenter/dragleave от вложенных элементов не сбивали подсветку
@@ -45,15 +45,15 @@ const onDragLeave = () => {
 
 const onDrop = () => {
 	if (dndStore.externalDragPayload) {
-		if (props.item.kind == null && dndStore.externalDragPayload != null) {
-			props.item.kind = dndStore.externalDragPayload.kind
+		if (props.item.newkind == null && dndStore.externalDragPayload != null) {
+			props.item.newkind = dndStore.externalDragPayload.newkind
 		}
 		emit('drop')
 	}
 }
 
 const onDragStart = () => {
-	console.log('start')
+	// console.log('start')
 	dndStore.clearExternalDragPayload()
 }
 
@@ -63,19 +63,21 @@ const kill = () => {
 }
 
 const options = [
-	{ id: 1, label: 'Строка', value: Kind.String },
-	{ id: 2, label: 'Текст', value: Kind.Text },
-	{ id: 3, label: 'Дата', value: Kind.Date },
-	{ id: 4, label: 'Организация', value: Kind.Org },
-	{ id: 5, label: 'Сотрудник', value: Kind.Man },
-	{ id: 6, label: 'Статус', value: Kind.Status },
-	{ id: 7, label: 'Линк', value: Kind.Link },
-	{ id: 8, label: 'Телефон', value: Kind.Phone },
-	{ id: 9, label: 'Email', value: Kind.Email },
-	{ id: 10, label: 'Число', value: Kind.Num },
-	{ id: 11, label: 'Логический тип', value: Kind.Bool },
-	{ id: 12, label: 'Таблица', value: Kind.Table },
-	{ id: 13, label: 'Виртуальное поле', value: Kind.Virtual },
+	{ id: 1, label: 'Строка', value: Newkind.String },
+	{ id: 2, label: 'Целое число', value: Newkind.Num },
+	{ id: 3, label: 'Дробное число', value: Newkind.Digit },
+	{ id: 4, label: 'Дата', value: Newkind.Datetime },
+	{ id: 5, label: 'Да / нет', value: Newkind.Bool },
+	{ id: 6, label: 'Идентификатор', value: Newkind.Id },
+	{ id: 7, label: 'Таблица', value: Newkind.Table },
+	{ id: 8, label: 'Виртуальное поле', value: Newkind.Virtual },
+
+	// { id: 4, label: 'Организация', value: Kind.Org },
+	// { id: 6, label: 'Статус', value: Kind.Status },
+	// { id: 7, label: 'Линк', value: Kind.Link },
+	// { id: 8, label: 'Телефон', value: Kind.Phone },
+	// { id: 9, label: 'Email', value: Kind.Email },
+	// { id: 2, label: 'Текст', value: Kind.Text },
 ]
 
 const hidden = ref(false)
@@ -86,6 +88,13 @@ const format = ref('Стандартный формат')
 const remove = () => {
 	props.item.children.length = 0
 }
+
+const isDrob = computed(() => {
+	if (props.item.newkind == Newkind.Digit) return true
+	if (props.item.newkind == Newkind.Datetime) return true
+	else return false
+})
+const opt = ['Стандартный формат', 'Нестандартный формат']
 </script>
 
 <template lang="pug">
@@ -111,7 +120,7 @@ q-expansion-item.my-expansion(
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 		q-item-section()
 			.row.items-center.q-gutter-x-sm
-				q-select(dense filled v-model="props.item.kind" label="Тип данных" :options='options' map-options emit-value)
+				q-select(dense filled v-model="props.item.newkind" label="Тип данных" :options='options' map-options emit-value)
 				q-checkbox.q-ml-md(v-model='hidden' label='Скрыть' dense)
 		q-item-section(side)
 			.but
@@ -123,11 +132,15 @@ q-expansion-item.my-expansion(
 									q-icon(name="mdi-delete-outline" color="negative")
 								q-item-section Удалить
 	.inside
-		.row.items-center.justify-between
+		.row.items-center.justify-start
+			q-checkbox(v-if='props.item.newkind == 0' v-model='html' label='Отображать содержимое колонки как HTML' dense)
+			q-select(v-if='isDrob' dense filled v-model='format' label="Формат вывода" :options="opt")
+			q-checkbox.q-ml-lg(v-if='isDrob' v-model='sort' label='Сортировать по колонке с учетом формата' dense)
+		.row.items-center.justify-between.q-mt-md
 			.row.items-center
 				div Раздел карточки / поле:
 				template(v-if='props.item.children.length')
-					.txt()
+					.txt
 						template(v-for="item in props.item.children[0]?.parents" :key="item")
 							div {{ item }}
 							.q-mx-sm >
@@ -137,11 +150,6 @@ q-expansion-item.my-expansion(
 					q-icon(name="mdi-alert-outline" color="warning" size='sm')
 					|Не задано (Перетащите сюда поле из дерева справа)
 
-			q-btn(unelevated color="secondary" label="Вычисляемое поле" size="sm") 
-		.row.items-center.q-mt-md
-			q-checkbox.q-ml-md(v-model='html' label='Отображать содержимое колонки как HTML' dense)
-			q-select.q-ml-xl(dense filled v-model='format' label="Формат вывода" :disable='!html')
-			q-checkbox.q-ml-md(v-model='sort' label='Сортировать по колонке с учетом формата' dense)
 </template>
 
 <style scoped lang="scss">
