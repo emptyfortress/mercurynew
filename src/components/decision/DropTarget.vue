@@ -49,13 +49,23 @@ const onDragLeave = () => {
 	dragDepth.value = Math.max(0, dragDepth.value - 1)
 }
 
-// const field = ref<Dropped | null>(null)
 const onDrop = () => {
-	dragDepth.value = 0
-	if (props.item.kind == null && dndStore.externalDragPayload != null) {
-		props.item.kind = dndStore.externalDragPayload.kind
+	// dragDepth.value = 0
+	// if (props.item.kind == null && dndStore.externalDragPayload != null) {
+	// 	props.item.kind = dndStore.externalDragPayload.kind
+	// }
+	// emit('drop')
+	if (dndStore.externalDragPayload) {
+		if (props.item.kind == null && dndStore.externalDragPayload != null) {
+			props.item.kind = dndStore.externalDragPayload.kind
+		}
+		emit('drop')
 	}
-	emit('drop')
+}
+
+const onDragStart = () => {
+	console.log('start')
+	dndStore.clearExternalDragPayload()
 }
 
 const emit = defineEmits(['kill', 'drop'])
@@ -100,6 +110,7 @@ q-expansion-item.my-expansion(
 	@dragleave.stop="onDragLeave"
 	@dragover.prevent.stop
 	@drop.stop="onDrop"
+	@dragstart.stop='onDragStart'
 )
 	template(v-slot:header)
 		q-item-section
