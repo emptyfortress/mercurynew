@@ -21,29 +21,30 @@ const props = defineProps<{
 const dndStore = useDndStore()
 
 const treeData = ref(
-	props.initialTree ?? [
-		{
-			id: 'col-1784195793292-1',
-			type: 'column',
-			text: 'Автор',
-			kind: 5,
-			children: [],
-		},
-		{
-			id: 'col-1784195799717-2',
-			type: 'column',
-			text: 'Тема',
-			kind: 0,
-			children: [],
-		},
-		{
-			id: 'col-1784195800967-3',
-			type: 'column',
-			text: 'Колонка 3',
-			kind: null,
-			children: [],
-		},
-	]
+	props.initialTree ??
+		[
+			// {
+			// 	id: 'col-1784195793292-1',
+			// 	type: 'column',
+			// 	text: 'Автор',
+			// 	kind: 5,
+			// 	children: [],
+			// },
+			// {
+			// 	id: 'col-1784195799717-2',
+			// 	type: 'column',
+			// 	text: 'Тема',
+			// 	kind: 0,
+			// 	children: [],
+			// },
+			// {
+			// 	id: 'col-1784195800967-3',
+			// 	type: 'column',
+			// 	text: 'Колонка 3',
+			// 	kind: null,
+			// 	children: [],
+			// },
+		]
 )
 
 let colCounter = 0
