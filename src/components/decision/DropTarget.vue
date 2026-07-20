@@ -83,6 +83,10 @@ const hidden = ref(false)
 const html = ref(false)
 const sort = ref(false)
 const format = ref('Стандартный формат')
+
+const remove = () => {
+	props.item.children.length = 0
+}
 </script>
 
 <template lang="pug">
@@ -122,11 +126,13 @@ q-expansion-item.my-expansion(
 		.row.items-center.justify-between
 			.row.items-center
 				div Раздел карточки / поле:
-				.txt(v-if='props.item.children.length')
-					template(v-for="item in props.item.children[0]?.parents" :key="item")
-						div {{ item }}
-						.q-mx-sm >
-					div {{ props.item.children[0]?.text }}
+				template(v-if='props.item.children.length')
+					.txt()
+						template(v-for="item in props.item.children[0]?.parents" :key="item")
+							div {{ item }}
+							.q-mx-sm >
+						div {{ props.item.children[0]?.text }}
+					q-btn.q-ml-sm(flat round dense size="sm" icon="mdi-close" color="primary" @click="remove") 
 				.empty(v-else)
 					q-icon(name="mdi-alert-outline" color="warning" size='sm')
 					|Не задано (Перетащите сюда поле из дерева справа)
