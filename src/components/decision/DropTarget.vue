@@ -53,11 +53,10 @@ const onDrop = () => {
 }
 
 const onDragStart = () => {
-	// console.log('start')
 	dndStore.clearExternalDragPayload()
 }
 
-const emit = defineEmits(['kill', 'drop'])
+const emit = defineEmits(['kill', 'drop', 'remove'])
 const kill = () => {
 	emit('kill')
 }
@@ -71,13 +70,6 @@ const options = [
 	{ id: 6, label: 'Идентификатор', value: Newkind.Id },
 	{ id: 7, label: 'Таблица', value: Newkind.Table },
 	{ id: 8, label: 'Виртуальное поле', value: Newkind.Virtual },
-
-	// { id: 4, label: 'Организация', value: Kind.Org },
-	// { id: 6, label: 'Статус', value: Kind.Status },
-	// { id: 7, label: 'Линк', value: Kind.Link },
-	// { id: 8, label: 'Телефон', value: Kind.Phone },
-	// { id: 9, label: 'Email', value: Kind.Email },
-	// { id: 2, label: 'Текст', value: Kind.Text },
 ]
 
 const hidden = ref(false)
@@ -85,8 +77,11 @@ const html = ref(false)
 const sort = ref(false)
 const format = ref('Стандартный формат')
 
-const remove = () => {
-	props.item.children.length = 0
+const remove = (index: number | string) => {
+	emit('remove', {
+		column: props.item,
+		index: index,
+	})
 }
 
 const isDrob = computed(() => {
@@ -120,7 +115,7 @@ q-expansion-item.my-expansion(
 						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 		q-item-section()
 			.row.items-center.q-gutter-x-sm
-				q-select(dense filled v-model="props.item.newkind" label="Тип данных" :options='options' map-options emit-value)
+				q-select(dense filled v-model="props.item.newkind" label="Тип данных" :options='options' map-options emit-value :disable='props.item.children.length > 0')
 				q-checkbox.q-ml-md(v-model='hidden' label='Скрыть' dense)
 		q-item-section(side)
 			.but
@@ -136,19 +131,18 @@ q-expansion-item.my-expansion(
 			q-checkbox(v-if='props.item.newkind == 0' v-model='html' label='Отображать содержимое колонки как HTML' dense)
 			q-select(v-if='isDrob' dense filled v-model='format' label="Формат вывода" :options="opt")
 			q-checkbox.q-ml-lg(v-if='isDrob' v-model='sort' label='Сортировать по колонке с учетом формата' dense)
-		.row.items-center.justify-between.q-mt-md
-			.row.items-center
-				div Раздел карточки / поле:
-				template(v-if='props.item.children.length')
-					.txt
-						template(v-for="item in props.item.children[0]?.parents" :key="item")
-							div {{ item }}
-							.q-mx-sm >
-						div {{ props.item.children[0]?.text }}
-					q-btn.q-ml-sm(flat round dense size="sm" icon="mdi-close" color="primary" @click="remove") 
-				.empty(v-else)
-					q-icon(name="mdi-alert-outline" color="warning" size='sm')
-					|Не задано (Перетащите сюда поле из дерева справа)
+		.q-mt-md.q-mb-sm Раздел карточки / поле:
+		.row
+			template(v-if='props.item.children.length' v-for="(item, index) in props.item.children" :key="item.id")
+				.txt
+					template(v-for="check in item.parents" :key="item")
+						div {{ check }}
+						.q-mx-sm >
+					div {{ item.text }}
+					q-btn.q-ml-xs(flat round dense size="sm" icon="mdi-close" color="secondary" @click="remove(index)") 
+			.empty(v-else)
+				q-icon(name="mdi-alert-outline" color="warning" size='sm')
+				|Не задано (Перетащите сюда поле из дерева справа)
 
 </template>
 
@@ -157,11 +151,13 @@ q-expansion-item.my-expansion(
 	display: flex;
 	align-items: center;
 	font-size: 0.9rem;
-	padding: 0px 7px;
+	padding: 0px 0 0 7px;
 	background: hsl(214 42% 92% / 1);
 	border: 1px solid hsl(214 42% 84% / 1);
 	border-radius: 4px;
 	margin-left: 1rem;
+	margin-bottom: 2px;
+	justify-self: start;
 }
 .empty {
 	font-size: 0.9rem;

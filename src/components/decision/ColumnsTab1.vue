@@ -81,7 +81,13 @@ watch(
 )
 
 const insert = (item: any) => {
-	item.children.push(dndStore.externalDragPayload)
+	if (item.newkind == dndStore.externalDragPayload.newkind) {
+		item.children.push(dndStore.externalDragPayload)
+	} else return
+}
+
+const clear = (el: any) => {
+	el.column.children.splice(el.index, 1)
 }
 </script>
 
@@ -95,7 +101,13 @@ q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку"
 		li Настройте данные для показа в колонке, перетащив нужное поле из списка справа.
 
 .par(ref='parent')
-	DropTarget(:item="item" v-for="(item, index) in tapes" :key="item.id" @drop='insert(item)' @kill='remove(index)')
+	DropTarget(:item="item",
+		v-for="(item, index) in tapes",
+		:key="item.id",
+		@drop='insert(item)',
+		@kill='remove(index)'
+		@remove='clear'
+	)
 
 </template>
 
