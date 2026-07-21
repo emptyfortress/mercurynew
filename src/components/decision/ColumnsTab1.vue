@@ -4,25 +4,27 @@ import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useDndStore } from '@/stores/dnd'
 import DropTarget from '@/components/decision/DropTarget.vue'
-import { Kind } from '@/types/enum'
+import { Kind, Newkind } from '@/types/enum'
 
 interface TreeNode {
 	id: string
 	type: string
 	text: string
 	kind: Kind | null
+	newkind?: Newkind | null
 	children?: TreeNode[]
 }
 
-const props = defineProps<{
-	initialTree?: TreeNode[]
-}>()
+// const props = defineProps<{
+// 	initialTree?: TreeNode[]
+// }>()
 
 const dndStore = useDndStore()
 
-const columnData = ref(props.initialTree ?? [])
+const columnData = ref<TreeNode[]>([])
 
 let colCounter = 0
+
 function addColumn() {
 	colCounter++
 	let newColumn = {
@@ -30,6 +32,7 @@ function addColumn() {
 		type: 'column',
 		text: `Колонка ${colCounter}`,
 		kind: null,
+		newkind: null,
 		children: [],
 	}
 	columnData.value?.push(newColumn)
