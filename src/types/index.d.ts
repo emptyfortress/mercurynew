@@ -188,6 +188,7 @@ interface NodeData {
 	vis?: boolean
 	check?: boolean
 	sort?: boolean
+	order?: string
 	label?: string
 	inp?: boolean
 	focus?: boolean

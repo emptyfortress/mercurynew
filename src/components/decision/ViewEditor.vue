@@ -7,6 +7,7 @@ import ColumnsTab1 from '@/components/decision/ColumnsTab1.vue'
 import SortPanel from '@/components/decision/SortPanel.vue'
 import FilterPanel from '@/components/decision/FilterPanel.vue'
 import StylePanel from '@/components/decision/StylePanel.vue'
+import GroupPanel from '@/components/decision/GroupPanel.vue'
 
 const props = defineProps({
 	splitter: Number,
@@ -82,6 +83,8 @@ div
 				CommonTab
 			q-tab-panel(name='columns')
 				ColumnsTab1
+			q-tab-panel(name='group')
+				GroupPanel
 			q-tab-panel(name='sort')
 				SortPanel
 			q-tab-panel(name='filter')

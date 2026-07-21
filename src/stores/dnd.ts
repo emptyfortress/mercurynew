@@ -9,6 +9,8 @@ interface TreeNode {
 	kind: Kind | null
 	newkind?: Newkind | null
 	children?: TreeNode[]
+	sort?: boolean
+	order?: string
 }
 
 interface ExternalParamPayload {
@@ -31,6 +33,8 @@ export const useDndStore = defineStore('dnd', () => {
 			kind: null,
 			newkind: null,
 			children: [],
+			sort: false,
+			order: 'up',
 		}
 		columnData.value?.push(newColumn)
 	}
@@ -53,6 +57,6 @@ export const useDndStore = defineStore('dnd', () => {
 		clearExternalDragPayload,
 		columnData,
 		addColumn,
-		remove
+		remove,
 	}
 })
