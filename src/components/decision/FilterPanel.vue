@@ -40,6 +40,7 @@ fieldset {
 }
 legend {
 	padding: 0 0.5rem;
+	color: $blue-grey-7;
 }
 .poisk {
 	margin-top: 0.5rem;

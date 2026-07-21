@@ -29,8 +29,6 @@ const calcType = (e: Newkind) => {
 			return 'Целое число'
 		case 2:
 			return 'Дробное число'
-		case 2:
-			return 'Дробное число'
 		case 3:
 			return 'Дата, время'
 		case 4:
@@ -59,7 +57,7 @@ q-list(ref='parent')
 		q-item-section
 			q-item-label {{ item.text }}
 		template(v-if="item.sort")
-			q-item-section
+			q-item-section.sec
 				div(v-if='item.newkind !== null && item.newkind !== undefined') {{ calcType(item.newkind) }}
 				div(v-else) Тип не определен
 			q-item-section
@@ -67,10 +65,13 @@ q-list(ref='parent')
 					q-radio(dense v-model="item.order" val="up" label="По возрастанию" :disable='!item.sort')
 					q-radio(dense v-model="item.order" val="down" label="По убыванию" :disable='!item.sort')
 		template(v-else)
-			q-item-section  не сортировать
+			q-item-section.sec  не сортировать
 </template>
 
 <style lang="scss" scoped>
+.sec {
+	color: $blue-grey-7;
+}
 .q-item {
 	border: 1px solid var(--my-border-color);
 	margin-top: -1px;
