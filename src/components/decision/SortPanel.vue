@@ -1,28 +1,12 @@
-<template>
-	<q-card style="min-width: 260px">
-		<q-card-header>
-			<div class="text-h5">Sort Settings</div>
-		</q-card-header>
-
-		<q-card-section>
-			<p class="text-body1">Drag and drop to reorder columns.</p>
-		</q-card-section>
-
-		<q-card-actions>
-			<q-btn
-				flat
-				label="Save"
-				color="positive"
-				@click="dummyClick"
-			/>
-			<q-btn
-				flat
-				label="Cancel"
-				color="negative"
-				@click="dummyClick"
-			/>
-		</q-card-actions>
-	</q-card>
+<template lang="pug">
+q-card(style="min-width: 260px")
+	q-card-header
+		.text-h5 Sort Settings
+	q-card-section
+		.text-body1 Drag and drop to reorder columns.
+	q-card-actions
+		q-btn(flat label="Save" color="positive" @click="dummyClick")
+		q-btn(flat label="Cancel" color="negative" @click="dummyClick")
 </template>
 
 <script setup lang="ts">
@@ -35,4 +19,3 @@ function dummyClick() {
 </script>
 
 <style lang="scss" scoped></style>
-
