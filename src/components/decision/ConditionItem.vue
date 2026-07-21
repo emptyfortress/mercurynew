@@ -119,8 +119,9 @@ const setName = (e: string) => {
 						span.text-weight-bold {{ item }}
 						span.q-mx-sm >
 					span.text-weight-bold {{props.stat.data.syn[0]}}
-			q-btn.syn(dense flat round icon="mdi-playlist-plus" @click.stop="showModal" )
-				q-tooltip Добавить в условие поля
+
+			// q-btn.syn(dense flat round icon="mdi-playlist-plus" @click.stop="showModal" )
+			// 	q-tooltip Добавить в условие поля
 
 		.txt(v-else)
 			.text-weight-bold
@@ -134,8 +135,9 @@ const setName = (e: string) => {
 			.row
 				q-radio(v-model="rukovoditel" val="yes" label="Да")
 				q-radio(v-model="rukovoditel" val="no" label="Нет")
+
 		template(v-else)
-			q-select(v-model="props.stat.data.text2" :options="calcSecond" label="Условие" dense emit-value)
+			q-select.uslovie(v-model="props.stat.data.text2" :options="calcSecond" label="Условие" dense emit-value)
 			template(v-if="showLast")
 				q-input(v-if="text" dense v-model="props.stat.data.inp" outlined bg-color="white" placeholder="Значение" lazy-rules :rules="req" hide-bottom-space @blur="myform.validate()")
 				q-select(v-else v-model="props.stat.data.text3" :options="options3" outlined label="Значение" dense bg-color="white" lazy-rules :rules="req" hide-bottom-space @blur="myform.validate()")
@@ -143,7 +145,9 @@ const setName = (e: string) => {
 						q-icon(name="mdi-calendar")
 					template(v-slot:prepend v-if="props.stat.data.man")
 						q-icon(name="mdi-book-open-page-variant-outline")
-		q-btn.eye(flat round @click.stop="toggleVis" size="md")
+				q-checkbox(v-model='props.stat.data.param' label='Параметр' dense)
+
+		// q-btn.eye(flat round @click.stop="toggleVis" size="md")
 			q-icon(name="mdi-eye" v-if="props.stat.data.vis") 
 			q-icon(name="mdi-eye-off" v-else) 
 			q-tooltip Скрывать условие при поиске
@@ -210,7 +214,7 @@ const setName = (e: string) => {
 
 .one {
 	display: grid;
-	grid-template-columns: 2fr 0.85fr 0.8fr 25px;
+	grid-template-columns: 2fr 165px 180px 120px 25px;
 	align-items: center;
 	background: var(--node);
 	padding: 0.5rem;

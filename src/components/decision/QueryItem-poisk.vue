@@ -4,7 +4,7 @@ import { Draggable } from '@he-tree/vue'
 import ConditionItem from '@/components/decision/ConditionItem.vue'
 import { useDrag } from '@/stores/drag'
 import PreviewFormDialog from '@/components/decision/PreviewFormDialog.vue'
-import { uid } from 'quasar'
+// import { uid } from 'quasar'
 
 const props = defineProps({
 	preview: {
@@ -76,11 +76,12 @@ const externalDataHandler = () => {
 			children: [],
 			synparents: [],
 			syn: [],
+			param: false,
 		}
 	}
 }
 // additional code for top node
-const typ = ref(false)
+// const typ = ref(false)
 const next = () => {
 	all[0].typ = !all[0].typ
 }

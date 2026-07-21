@@ -133,8 +133,8 @@ const save = () => {
 					CommonTab
 				q-tab-panel(name='query')
 					QueryItem(:preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
-					.row.justify-center.q-mx-lg
-						q-btn(unelevated color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
+					// .row.justify-center.q-mx-lg
+					// 	q-btn(unelevated color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
 				q-tab-panel(name='folders')
 					FolderTab
 				q-tab-panel(name='safety')

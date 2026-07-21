@@ -183,7 +183,7 @@ q-expansion-item.my-expansion(
 .q-expansion-item {
 	background: var(--bgLight);
 	border-radius: 0.25rem;
-	margin-bottom: 0.25rem;
+	margin-bottom: 0.5rem;
 	cursor: pointer;
 }
 .my-expansion {

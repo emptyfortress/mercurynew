@@ -43,7 +43,7 @@ div
 				template(v-slot:before)
 					.main
 						q-scroll-area.list
-							ZaprosMainPoisk(v-model="tabs" :splitter="splitterModel" @maximize="splitterModel = 0" @reset="splitterModel = 30")
+							ZaprosMainPoisk(v-model="tabs" :splitter="splitterModel" @maximize="splitterModel = 0" @reset="splitterModel = 15")
 
 				template(v-slot:after)
 					q-scroll-area.list1
