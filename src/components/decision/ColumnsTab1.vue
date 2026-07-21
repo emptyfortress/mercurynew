@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useDndStore } from '@/stores/dnd'
@@ -20,32 +20,7 @@ const props = defineProps<{
 
 const dndStore = useDndStore()
 
-const treeData = ref(
-	props.initialTree ??
-		[
-			// {
-			// 	id: 'col-1784195793292-1',
-			// 	type: 'column',
-			// 	text: 'Автор',
-			// 	kind: 5,
-			// 	children: [],
-			// },
-			// {
-			// 	id: 'col-1784195799717-2',
-			// 	type: 'column',
-			// 	text: 'Тема',
-			// 	kind: 0,
-			// 	children: [],
-			// },
-			// {
-			// 	id: 'col-1784195800967-3',
-			// 	type: 'column',
-			// 	text: 'Колонка 3',
-			// 	kind: null,
-			// 	children: [],
-			// },
-		]
-)
+const columnData = ref(props.initialTree ?? [])
 
 let colCounter = 0
 function addColumn() {
@@ -57,7 +32,7 @@ function addColumn() {
 		kind: null,
 		children: [],
 	}
-	treeData.value?.push(newColumn)
+	columnData.value?.push(newColumn)
 }
 
 const remove = (index: number) => {
@@ -71,7 +46,7 @@ const buildConfig = (disabled: boolean) => ({
 	draggable: (child: HTMLElement) => child.classList.contains('my-expansion'),
 	disabled,
 })
-const [parent, tapes, updateConfig] = useDragAndDrop(treeData.value, buildConfig(false))
+const [parent, tapes, updateConfig] = useDragAndDrop(columnData.value, buildConfig(false))
 
 watch(
 	() => dndStore.externalDragPayload,
@@ -94,7 +69,7 @@ const clear = (el: any) => {
 <template lang="pug">
 q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку" @click="addColumn" size="sm") 
 
-.empty(v-if='treeData.length === 0')
+.empty(v-if='columnData.length === 0')
 	ol
 		li Добавьте нужное количество колонок.
 		li Задайте названия и тип колонок.
