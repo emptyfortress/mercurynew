@@ -196,6 +196,7 @@ interface NodeData {
 	syn: string[]
 	and?: boolean
 	kind?: Kind
+	param?: boolean
 }
 
 type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'
