@@ -1,46 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useDndStore } from '@/stores/dnd'
 import DropTarget from '@/components/decision/DropTarget.vue'
-import { Kind, Newkind } from '@/types/enum'
-
-interface TreeNode {
-	id: string
-	type: string
-	text: string
-	kind: Kind | null
-	newkind?: Newkind | null
-	children?: TreeNode[]
-}
-
-// const props = defineProps<{
-// 	initialTree?: TreeNode[]
-// }>()
 
 const dndStore = useDndStore()
-
-const columnData = ref<TreeNode[]>([])
-
-let colCounter = 0
-
-function addColumn() {
-	colCounter++
-	let newColumn = {
-		id: `col-${Date.now()}-${colCounter}`,
-		type: 'column',
-		text: `Колонка ${colCounter}`,
-		kind: null,
-		newkind: null,
-		children: [],
-	}
-	columnData.value?.push(newColumn)
-}
-
-const remove = (index: number) => {
-	tapes.value.splice(index, 1)
-}
 
 const buildConfig = (disabled: boolean) => ({
 	plugins: [animations()],
@@ -49,7 +14,7 @@ const buildConfig = (disabled: boolean) => ({
 	draggable: (child: HTMLElement) => child.classList.contains('my-expansion'),
 	disabled,
 })
-const [parent, tapes, updateConfig] = useDragAndDrop(columnData.value, buildConfig(false))
+const [parent, tapes, updateConfig] = useDragAndDrop(dndStore.columnData, buildConfig(false))
 
 watch(
 	() => dndStore.externalDragPayload,
@@ -70,9 +35,9 @@ const clear = (el: any) => {
 </script>
 
 <template lang="pug">
-q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку" @click="addColumn" size="sm") 
+q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку" @click="dndStore.addColumn" size="sm") 
 
-.empty(v-if='columnData.length === 0')
+.empty(v-if='dndStore.columnData.length === 0')
 	ol
 		li Добавьте нужное количество колонок.
 		li Задайте названия и тип колонок.
@@ -83,7 +48,7 @@ q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку"
 		v-for="(item, index) in tapes",
 		:key="item.id",
 		@drop='insert(item)',
-		@kill='remove(index)'
+		@kill='dndStore.remove(index)'
 		@remove='clear'
 	)
 
