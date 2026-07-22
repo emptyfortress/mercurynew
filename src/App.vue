@@ -160,6 +160,9 @@ const title = computed(() => {
 	if (route.path.includes('cards') && route.path.includes('5')) {
 		return 'Метаданные'
 	}
+	if (route.path.includes('approve')) {
+		return 'Конструктор согласований'
+	}
 
 	if (route.path.includes('cards')) {
 		return 'Конструктор карточек'

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
+import ApproveTree from '@/components/decision/ApproveTree.vue'
 import { useElementSize } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import Webframe from '@/components/decision/Webframe.vue'
@@ -51,6 +52,16 @@ q-page(padding)
 					transition(name="page" mode="out-in")
 						component(:is="Component" :key="route.fullPath")
 
+	.container(v-if='route.params.constructorId === "approve"')
+		q-splitter.q-mt-md(v-model="splitterModel" :limits="[0, 100]" :style="hei")
+			template(v-slot:before)
+				q-scroll-area.list(ref='el')
+					ApproveTree(
+						sourceType="approve"
+						filterField="text"
+						:showTypeSelector="false"
+						mode="folder"
+					)
 
 	Webframe(v-if='route.params.constructorId === "webframe"')
 	Poisk(v-if='route.params.constructorId === "search"')

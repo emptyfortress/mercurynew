@@ -6,12 +6,13 @@ const router = useRouter()
 const sections = [
 	{ id: 0, label: 'Конструктор карточек', to: 'cards' },
 	{ id: 1, label: 'Каталог папок', to: 'folders' },
-	{ id: 3, label: 'Конструктор поисковых запросов', to: 'search' },
+	{ id: 2, label: 'Конструктор поисковых запросов', to: 'search' },
 	{ id: 3, label: 'Настройка представлений', to: 'views' },
-	{ id: 2, label: 'Рабочая область', to: 'webframe' },
-	{ id: 4, label: 'Процессы', to: '' },
-	{ id: 5, label: 'Справочники', to: '' },
-	{ id: 6, label: 'Нумераторы', to: '' },
+	{ id: 4, label: 'Рабочая область', to: 'webframe' },
+	{ id: 5, label: 'Конструктор согласований', to: 'approve' },
+	{ id: 6, label: 'Процессы', to: '' },
+	{ id: 7, label: 'Справочники', to: '' },
+	{ id: 8, label: 'Нумераторы', to: '' },
 ]
 
 const goto = (e: string) => {
@@ -26,7 +27,7 @@ q-page(padding)
 		.it.constr(
 			v-for="item in sections",
 			:key='item.id',
-			:class="{dis : item.id > 3}"
+			:class="{dis : item.id > 5}"
 			@click='goto(item.to)'
 		)
 			div {{ item.label }}

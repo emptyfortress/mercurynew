@@ -22,4 +22,5 @@ export const BREADCRUMB_OVERRIDES: Record<string, string> = {
 	docs: 'Мои документы',
 	dogovor: 'Договор',
 	constructor: 'Название разметки',
+	approve: 'Конструктор согласований',
 }

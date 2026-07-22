@@ -32,6 +32,13 @@ export function useBreadcrumbLabel() {
 			return viewNode.text
 		}
 
+		const approveNode = simpleStore.approveData[0]
+			? findInTree(simpleStore.approveData, segment)
+			: undefined
+		if (approveNode) {
+			return approveNode.text
+		}
+		//
 		// 3. Затем matrixStore (razmet, roleId)
 		const matrixLabel = matrixStore.getNameById(segment)
 		if (matrixLabel !== segment) {
