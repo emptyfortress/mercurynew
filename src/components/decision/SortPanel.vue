@@ -75,6 +75,7 @@ q-list(ref='parent')
 .q-item {
 	border: 1px solid var(--my-border-color);
 	margin-top: -1px;
+	user-select: none;
 	&.active {
 		background: var(--bgLight);
 	}
