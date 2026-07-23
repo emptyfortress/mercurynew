@@ -11,7 +11,7 @@ import { uid } from 'quasar'
 import { useChips } from '@/stores/chips'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
-import { approveData } from '@/stores/approveData'
+// import { approveData } from '@/stores/approveData'
 
 export type TreeSourceType = 'selectedBranch' | 'folderData' | 'poisk' | 'view' | 'approve'
 
@@ -41,8 +41,8 @@ const sourceData = computed(() => {
 			return simpleStore.folderData
 		case 'view':
 			return simpleStore.viewData
-		case 'approve':
-			return approveData.value
+		// case 'approve':
+		// 	return approveData.value
 		default:
 			return simpleStore.selectedBranch
 	}
