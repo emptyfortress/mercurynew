@@ -9,6 +9,7 @@ import { useApproveStore } from '@/stores/approveStore'
 import { uid } from 'quasar'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
+import WordHighlighter from 'vue-word-highlighter'
 
 const props = defineProps<{
 	mode?: string | undefined
@@ -45,6 +46,7 @@ watch(query, (newValue) => {
 			stat.hidden = true
 			if (stat.data[field.value]?.toLowerCase().includes(query.value.toLowerCase())) {
 				stat.hidden = false
+				tree.value.openNodeAndParents(stat)
 				for (const parentStat of tree.value.iterateParent(stat, { withSelf: false })) {
 					parentStat.hidden = false
 				}
@@ -217,7 +219,7 @@ div
 					).trig
 					q-icon(v-if="node.virtual" name="mdi-folder-search-outline").fold
 					q-icon(v-if='node.type == 0' name="mdi-folder-outline").fold
-					span {{ node.text }}
+					WordHighlighter(:query="query") {{ node.text }}
 
 					DirMenu(
 						:mode='props.mode'
