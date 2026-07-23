@@ -4,9 +4,8 @@ import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import DirMenu from '@/components/decision/DirMenu.vue'
 import { useRouter, useRoute } from 'vue-router'
-import CreateDialog from '@/components/decision/CreateDialog.vue'
-import { useSimpleStore } from '@/stores/simpleStore'
-import { useApproveDataStore } from '@/stores/approveData'
+// import CreateDialog from '@/components/decision/CreateDialog.vue'
+import { useApproveStore } from '@/stores/approveStore'
 import { uid } from 'quasar'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
@@ -17,8 +16,7 @@ const props = defineProps<{
 
 const router = useRouter()
 const route = useRoute()
-const simpleStore = useSimpleStore()
-const approveStore = useApproveDataStore()
+const approveStore = useApproveStore()
 
 const tree = ref()
 const query = ref('')
@@ -57,15 +55,8 @@ watch(query, (newValue) => {
 	}
 })
 
-const select = (n: any) => {
-	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
-	n.data.selected = true
-	simpleStore.setSelectedElement(n.data)
-	simpleStore.setCurrentNode(n)
-	router.push({
-		name: 'start',
-		params: { viewId: n.data.id },
-	})
+const select = (stat: Stat) => {
+	approveStore.selectNode(stat, router)
 }
 
 const toggle = (stat: any) => {
@@ -92,8 +83,8 @@ const addFolderFromMenu = (e: any) => {
 
 const remove = (e: any) => {
 	tree.value.remove(e)
-	simpleStore.setCurrentNode(null)
-	simpleStore.setSelectedElement(null)
+	approveStore.currentNode = null
+	approveStore.selectedElement = null
 }
 
 const edit = (e: any) => {
@@ -133,8 +124,8 @@ const create = (data: any) => {
 		type: data.type,
 		children: [],
 	}
-	if (simpleStore.selectedElement) {
-		const tmp = tree.value.getStat(simpleStore.selectedElement)
+	if (approveStore.selectedElement) {
+		const tmp = tree.value.getStat(approveStore.selectedElement)
 		tree.value.add(newFolder, tmp)
 	} else {
 		tree.value.add(newFolder, tree.value.rootChildren[0])
@@ -145,48 +136,46 @@ const create = (data: any) => {
 	select(newStat)
 }
 
-const folderMode = ref(false)
-
 onBeforeRouteUpdate((to, from) => {
 	const wasOnDetail = from.matched.length == 2
 	const isOnListRoot = to.matched.length === 2 && to.name === 'Emp'
 
 	if (wasOnDetail && isOnListRoot) {
-		simpleStore.currentNode.data.selected = false
+		approveStore.currentNode.data.selected = false
 		setTimeout(() => {
-			simpleStore.clearSelectedElement()
+			approveStore.selectedElement = null
 		}, 200)
 	}
 })
 
 watchEffect(() => {
-	if (simpleStore.deleteRequest === true) {
-		tree.value.remove(simpleStore.currentNode)
-		simpleStore.setCurrentNode(null)
-		simpleStore.setSelectedElement(null)
-		simpleStore.toggleDelete()
+	if (approveStore.deleteRequest === true) {
+		tree.value.remove(approveStore.currentNode)
+		approveStore.currentNode = null
+		approveStore.selectedElement = null
+		approveStore.toggleDelete()
 	}
 
-	if (simpleStore.duplicateRequest === true) {
+	if (approveStore.duplicateRequest === true) {
 		let temp = {
-			text: simpleStore.currentNode!.data.text + '-copy',
-			text1: simpleStore.currentNode!.data.text1,
+			text: approveStore.currentNode.data.text + '-copy',
+			text1: approveStore.currentNode.data.text1,
 			hidden: false,
 			type: 1,
 		}
-		tree.value.add(temp, simpleStore.currentNode!.parent)
+		tree.value.add(temp, approveStore.currentNode.parent)
 		let one = tree.value.getStat(temp)
 		select(one)
-		simpleStore.toggleDuplicate()
+		approveStore.toggleDuplicate()
 	}
 })
 
 onBeforeRouteLeave((to, from) => {
 	if (from.name == 'start' && to.name == 'decisions') {
-		simpleStore.clearSelectedElement()
+		approveStore.selectedElement = null
 	}
 	if (from.name == 'Emp' && to.name == 'decisions') {
-		simpleStore.clearSelectedElement()
+		approveStore.selectedElement = null
 	}
 })
 </script>
@@ -251,7 +240,7 @@ div
 		q-btn.fab(v-if='props.mode == "poisk"' round icon="mdi-plus" color="primary" @click="dialog = !dialog")
 		q-btn.fab(v-else round icon="mdi-plus" color="primary" @click="dialog = !dialog")
 
-		CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='folderMode' @create='create')
+		// CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='folderMode' @create='create')
 </template>
 
 <style scoped lang="scss">
@@ -303,3 +292,4 @@ div
 	}
 }
 </style>
+

@@ -109,6 +109,20 @@ const router = createRouter({
 			],
 		},
 
+		// {
+		// 	path: '/dvmain/approve/',
+		// 	name: 'appinside',
+		// 	component: () => import('@/components/decision/ApproveInside.vue'),
+		// 	props: true,
+		// 	meta: {
+		// 		toolbar: false,
+		// 		back: false,
+		// 		back1: false,
+		// 		count: 19,
+		// 		save: false,
+		// 		breadcrumbs: true,
+		// 	},
+		// },
 		{
 			path: '/dvmain/:constructorId/:viewId/:razmet',
 			name: 'razmet',

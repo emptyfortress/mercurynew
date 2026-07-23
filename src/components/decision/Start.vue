@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useSimpleStore } from '@/stores/simpleStore'
+import { useApproveStore } from '@/stores/approveStore'
 import { storeToRefs } from 'pinia'
 
 const simpleStore = useSimpleStore()
+const approveStore = useApproveStore()
 const { currentNode } = storeToRefs(simpleStore)
 const router = useRouter()
-// const route = useRoute()
 
 const goto = (id: number) => {
 	router.push({ name: 'razmet', params: { razmet: id } })
@@ -33,6 +34,7 @@ const tab = ref('tab1')
 </script>
 
 <template lang="pug">
+div(v-if='approveStore.selectedElement') fuck
 .q-ml-md(v-if='currentNode')
 	h6
 		span.edit {{ currentNode.data.text }}

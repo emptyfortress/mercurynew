@@ -1,10 +1,12 @@
 import { useMatrixStore } from '@/stores/matrix'
 import { useSimpleStore } from '@/stores/simpleStore'
+import { useApproveStore } from '@/stores/approveStore'
 import { BREADCRUMB_OVERRIDES } from '@/constants/breadcrumbs'
 
 export function useBreadcrumbLabel() {
 	const matrixStore = useMatrixStore()
 	const simpleStore = useSimpleStore()
+	const approveStore = useApproveStore()
 
 	function resolveLabel(segment: string): string {
 		// 1. Сначала проверяем хардкод
@@ -32,8 +34,9 @@ export function useBreadcrumbLabel() {
 			return viewNode.text
 		}
 
-		const approveNode = simpleStore.approveData[0]
-			? findInTree(simpleStore.approveData, segment)
+		// Use approveStore instead of simpleStore.approveData
+		const approveNode = approveStore.treeData[0]
+			? findInTree(approveStore.treeData, segment)
 			: undefined
 		if (approveNode) {
 			return approveNode.text
@@ -62,3 +65,4 @@ export function useBreadcrumbLabel() {
 
 	return { resolveLabel }
 }
+
