@@ -34,7 +34,6 @@ const tab = ref('tab1')
 </script>
 
 <template lang="pug">
-div(v-if='approveStore.selectedElement') fuck
 .q-ml-md(v-if='currentNode')
 	h6
 		span.edit {{ currentNode.data.text }}

@@ -4,12 +4,13 @@ import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import DirMenu from '@/components/decision/DirMenu.vue'
 import { useRouter, useRoute } from 'vue-router'
-// import CreateDialog from '@/components/decision/CreateDialog.vue'
 import { useApproveStore } from '@/stores/approveStore'
 import { uid } from 'quasar'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 import WordHighlighter from 'vue-word-highlighter'
+import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
+import CreateDialog from '@/components/decision/CreateDialog.vue'
 
 const props = defineProps<{
 	mode?: string | undefined
@@ -180,6 +181,10 @@ onBeforeRouteLeave((to, from) => {
 		approveStore.selectedElement = null
 	}
 })
+
+const one = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
@@ -217,8 +222,11 @@ div
 						@click.stop="toggle(stat)"
 						:class="{ 'closed': !stat.open }"
 					).trig
-					q-icon(v-if="node.virtual" name="mdi-folder-search-outline").fold
-					q-icon(v-if='node.type == 0' name="mdi-folder-outline").fold
+					// q-icon(v-if="node.virtual" name="mdi-folder-search-outline").fold
+					q-icon.fold(v-if='node.type == 0' name="mdi-folder-outline")
+					q-icon.fold(name="mdi-message-check-outline" color="primary" v-if='node.type == 1')
+					q-icon.fold(name="mdi-flag-triangle" color="primary" v-if='node.type == 3')
+					MaterialSymbolsAltRoute.rou(v-if='node.type == 2')
 					WordHighlighter(:query="query") {{ node.text }}
 
 					DirMenu(
@@ -239,10 +247,14 @@ div
 							@keyup.enter="setText(stat, $event)"
 						)
 
-		q-btn.fab(v-if='props.mode == "poisk"' round icon="mdi-plus" color="primary" @click="dialog = !dialog")
-		q-btn.fab(v-else round icon="mdi-plus" color="primary" @click="dialog = !dialog")
+	q-fab.fab(round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
+		q-fab-action(color="primary" icon="mdi-flag-triangle" external-label label="Этап" label-position="left" @click="one")
+		q-fab-action(color="primary" external-label label="Маршрут" label-position="left" @click="one")
+			MaterialSymbolsAltRoute(style='font-size: 1.5rem')
+		q-fab-action(color="primary" icon="mdi-message-check-outline" external-label label="Согласование" label-position="left"  @click="one")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left"  @click="one")
 
-		// CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='folderMode' @create='create')
+		// CreateDialog(v-model="dialog" mode="approve" @create='create')
 </template>
 
 <style scoped lang="scss">
@@ -293,5 +305,11 @@ div
 		transform: rotate(-90deg);
 	}
 }
+.rou {
+	font-size: 1.15rem;
+	color: $primary;
+	margin-bottom: -2px;
+	margin-right: 4px;
+	// color: var(--violet);
+}
 </style>
-

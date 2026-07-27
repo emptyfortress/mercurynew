@@ -504,3 +504,14 @@
 		display: block;
 	}
 }
+
+fieldset {
+	border: 1px solid var(--my-border-color);
+	padding: 0.5rem 1rem;
+	margin-bottom: 1rem;
+	width: 100%;
+}
+legend {
+	padding: 0 0.5rem;
+	color: $blue-grey-7;
+}
