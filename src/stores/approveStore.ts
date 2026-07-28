@@ -19,6 +19,19 @@ interface TreeElement {
 
 export const useApproveStore = defineStore('approveStore', () => {
 	// === Data collections ===
+
+	const treeData1 = ref<TreeElement[]>([
+		{
+			id: 'template',
+			text: 'Шаблоны',
+			text1: '',
+			selected: false,
+			hidden: false,
+			type: 0,
+			fields: [],
+			children: [],
+		},
+	])
 	const treeData = ref<TreeElement[]>([
 		{
 			id: 'dogovor',
@@ -682,16 +695,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 				},
 			],
 		},
-		{
-			id: 'template',
-			text: 'Шаблоны',
-			text1: '',
-			selected: false,
-			hidden: false,
-			type: 0,
-			fields: [],
-			children: [],
-		},
 	])
 	// === State for selection and navigation ===
 	const selectedElement = ref<TreeElement | null>(null)
@@ -831,31 +834,12 @@ export const useApproveStore = defineStore('approveStore', () => {
 		duplicateRequest.value = !duplicateRequest.value
 	}
 
-	// === Computed for selection ===
-	// const selectedBranch = computed({
-	// 	get() {
-	// 		if (selectedType.value === 'Все') {
-	// 			return treeData.value
-	// 		}
-	// 		return treeData.value.filter((node) => node.text === selectedType.value)
-	// 	},
-	// 	set(value) {
-	// 		treeData.value = value
-	// 	},
-	// })
-
-	// === Export ===
 	return {
-		// Data
 		treeData,
-		// poiskData,
 		selectedElement,
 		currentNode,
-		// selectedType,
 		deleteRequest,
 		duplicateRequest,
-		// folderMode,
-		// Tree utilities
 		nodesMap,
 		flatNodes,
 		getNodeById,
@@ -864,8 +848,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 		updateTreeData,
 		updateSelectedElement,
 		removeById,
-		// getFirstNode,
-		// Node operations
 		selectNode,
 		removeNode,
 		editNode,
@@ -873,10 +855,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 		toggleNode,
 		addNode,
 		openNode,
-		// Store controls
 		toggleDelete,
 		toggleDuplicate,
-		// Computed
-		// selectedBranch,
 	}
 })

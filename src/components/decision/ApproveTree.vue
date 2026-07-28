@@ -10,7 +10,7 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 import WordHighlighter from 'vue-word-highlighter'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
-import CreateDialog from '@/components/decision/CreateDialog.vue'
+// import CreateDialog from '@/components/decision/CreateDialog.vue'
 
 const props = defineProps<{
 	mode?: string | undefined
@@ -22,7 +22,7 @@ const approveStore = useApproveStore()
 
 const tree = ref()
 const query = ref('')
-const dialog = ref(false)
+// const dialog = ref(false)
 
 const sourceData = computed(() => approveStore.treeData)
 
@@ -185,10 +185,37 @@ onBeforeRouteLeave((to, from) => {
 const one = () => {
 	console.log(111)
 }
+
+const list = ref([
+	{
+		id: 0,
+		label: 'Согласования',
+		selected: true,
+	},
+	{
+		id: 1,
+		label: 'Шаблоны',
+		selected: false,
+	},
+])
+
+const handleClick = (item: any) => {
+	list.value.map((el: any) => (el.selected = false))
+	item.selected = true
+}
 </script>
 
 <template lang="pug">
 div
+	.row.q-mb-md
+		q-chip(
+			clickable,
+			v-for="item in list",
+			:key="item.id"
+			v-model:selected='item.selected'
+			@click="handleClick(item)"
+		) {{ item.label }}
+
 	q-form.quick
 		q-input.query(
 			dense
@@ -310,6 +337,11 @@ div
 	color: $primary;
 	margin-bottom: -2px;
 	margin-right: 4px;
-	// color: var(--violet);
+}
+.q-chip {
+	background: #ccc;
+}
+.q-chip--selected {
+	background: $primary;
 }
 </style>
