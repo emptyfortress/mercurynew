@@ -87,16 +87,18 @@ fieldset
 			q-select(v-model="regim" dense outlined :options="options")
 			label Тип маршрутизации:
 			q-select(v-model="type" dense outlined :options="typeoptions")
-		.column.q-gutter-y-sm
+		.column
 			q-checkbox(v-model='hide' label='Скрыть этап' dense)
-			q-checkbox(v-model='skip' label='Пропускать этап при повторое на новом цикле' dense)
+			q-checkbox(v-model='skip' label='Пропускать этап при повторе на новом цикле' dense)
 
 fieldset
 	legend Доступность редактирования
-	.column.q-gutter-y-sm
-		q-checkbox(v-model='allow' label='Разрешить исключение этапа из маршрута' dense)
-		q-checkbox(v-model='alpar' label='Разрешить изменение параметров этапа' dense)
-		q-checkbox(v-model='altype' label='Разрешить редактирование типа маршрутизации' dense)
+	.row
+		.col
+			q-checkbox(v-model='allow' label='Разрешить исключение этапа из маршрута' dense)
+			q-checkbox(v-model='alpar' label='Разрешить изменение параметров этапа' dense)
+		.col
+			q-checkbox(v-model='altype' label='Разрешить редактирование типа маршрутизации' dense)
 
 .grid2
 	fieldset

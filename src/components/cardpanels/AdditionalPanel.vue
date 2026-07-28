@@ -92,6 +92,26 @@ const remove = (e: any) => {
 }
 
 const dialog = ref(false)
+
+const semoptions = [
+	'Положительная',
+	'Отрицательная',
+	'Условно-положительная',
+	'Отмена',
+	'Новый цикл',
+	'Добавление согласующих',
+	'Переход А',
+	'Переход B',
+	'Переход C',
+	'Переход D',
+	'Завершение',
+	'Переход на новый цикл',
+]
+
+const sem = ref('Положительная')
+const bus = ref('')
+const otk = ref('Продолжать согласование')
+const options = ['Продолжать согласование', 'Действие 1', 'Действие 2', 'Действие 3']
 </script>
 
 <template lang="pug">
@@ -107,6 +127,8 @@ fieldset
 		tableHeaderClass='hd'
 	)
 
+		template(v-slot:body-cell-vid='props')
+			q-td.text-bold {{ props.row.vid }}
 		template(v-slot:body-cell-actions='props')
 			q-td.text-right(auto-width :props="props")
 				.q-gutter-x-sm
@@ -131,9 +153,23 @@ fieldset
 				q-btn(unelevated color="primary" label="OK" v-close-popup) 
 fieldset
 	legend Завершение этапа
+	.grid2
+		q-select(v-model="sem" dense label="Семантика завершения этапа по умолчанию" outlined :options="semoptions")
+		q-input(v-model="bus" dense label="При завершении этапа запускать бизнес-процесс" outlined)
+			template(v-slot:append)
+				q-icon(name="mdi-dots-horizontal" color="primary")
+		q-select(v-model="otk" dense label="При первом отказе" outlined :options="options")
 </template>
 
 <style scoped lang="scss">
+.grid2 {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	justify-items: stretch;
+	align-items: start;
+	column-gap: 2rem;
+	row-gap: 0.5rem;
+}
 :deep(.hd) {
 	background: yellow;
 	background: #e9eef1;
