@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import ParamPanel from '@/components/cardpanels/ParamPanel.vue'
+import TaskPanel from '@/components/cardpanels/TaskPanel.vue'
 
-const activeTab = ref('param')
+const activeTab = ref('task')
 </script>
 
 <template lang="pug">
@@ -17,6 +18,8 @@ const activeTab = ref('param')
 		q-tab-panel(name="param")
 			ParamPanel
 		q-tab-panel(name="task")
+			TaskPanel
+
 		q-tab-panel(name="addition")
 		q-tab-panel(name="logic")
 </template>
