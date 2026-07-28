@@ -148,6 +148,8 @@ const add = () => {
 const calcLabel = computed(() => {
 	return editMode.value ? 'Сохранить' : 'Добавить'
 })
+
+const options1 = ['Процесс', 'Цикл', 'Этап']
 </script>
 
 <template lang="pug">
@@ -203,7 +205,7 @@ fieldset
 					q-icon(name="mdi-dots-horizontal" color="primary" )
 
 		.column.q-gutter-y-sm
-			q-select(v-model="business1" dense label="Уровень дерева версий" outlined)
+			q-select(v-model="business1" dense label="Уровень дерева версий" outlined :options="options1")
 
 	.row.q-gutter-x-md.q-mt-md
 		q-input(v-model="dlit" dense label="Длительность (часы)" outlined type="number")
