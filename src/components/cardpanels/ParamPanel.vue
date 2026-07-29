@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
@@ -16,6 +16,10 @@ const altype = ref(false)
 
 const typeoptions = ['Параллельное', 'Последовательное', 'Альтернативное']
 const options = ['Согласование', 'Подписание', 'Консолидация']
+
+const typovoy = computed(() => {
+	return approveStore.selectedElement?.template ? true : false
+})
 
 const sogl = ref([
 	{
@@ -82,14 +86,14 @@ fieldset
 	.grid2
 		.grid
 			label Название:
-			q-input(v-model="name" dense outlined)
+			q-input(v-model="name" dense outlined :readonly='typovoy')
 			label Режим:
-			q-select(v-model="regim" dense outlined :options="options")
+			q-select(v-model="regim" dense outlined :options="options" :readonly='typovoy')
 			label Тип маршрутизации:
-			q-select(v-model="type" dense outlined :options="typeoptions")
+			q-select(v-model="type" dense outlined :options="typeoptions" :readonly='typovoy')
 		.column
-			q-checkbox(v-model='hide' label='Скрыть этап' dense)
-			q-checkbox(v-model='skip' label='Пропускать этап при повторе на новом цикле' dense)
+			q-checkbox(v-model='hide' label='Скрыть этап' dense :disable='typovoy')
+			q-checkbox(v-model='skip' label='Пропускать этап при повторе на новом цикле' dense :disable='typovoy')
 
 fieldset
 	legend Доступность редактирования

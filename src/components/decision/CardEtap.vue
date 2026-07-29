@@ -5,7 +5,7 @@ import TaskPanel from '@/components/cardpanels/TaskPanel.vue'
 import AdditionalPanel from '@/components/cardpanels/AdditionalPanel.vue'
 import LogicPanel from '../cardpanels/LogicPanel.vue'
 
-const activeTab = ref('logic')
+const activeTab = ref('param')
 </script>
 
 <template lang="pug">

@@ -4,36 +4,53 @@ import { useApproveStore } from '@/stores/approveStore'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
 // import { useRoute } from 'vue-router'
 import CardEtap from '@/components/decision/CardEtap.vue'
+import CardEtapTemp from '@/components/decision/CardEtapTemp.vue'
 import CardMarshroute from '@/components/decision/CardMarshroute.vue'
 import CardSoglas from '@/components/decision/CardSoglas.vue'
 import CardFolder from '@/components/decision/CardFolder.vue'
+import MaterialIconThemeTemplate from '@/components/icons/MaterialIconThemeTemplate.vue'
 
 // const route = useRoute()
 
 const approveStore = useApproveStore()
 
 const selectedElement = ref(approveStore.selectedElement)
+
+const share = ref(false)
+const showShare = () => {
+	share.value = !share.value
+}
+const sharing = () => {
+	if (selectedElement.value == undefined) return
+	selectedElement.value.template = true
+	share.value = false
+}
 </script>
 
 <template lang="pug">
 div(v-if='selectedElement')
 	.row.items-start.justify-between.q-px-md
 		.myblock
-			MaterialSymbolsAltRoute(v-if="selectedElement.type == 2")
-			q-icon.fold(name="mdi-flag-triangle" color="secondary" v-if='selectedElement.type == 3')
-			q-icon.fold(name="mdi-message-check-outline" color="secondary" v-if='selectedElement.type == 1')
-			q-icon.fold( name="mdi-folder-outline" color="secondary" v-if='selectedElement.type == 0')
+			.row.items-center
+				MaterialSymbolsAltRoute(v-if="selectedElement.type == 2")
+				q-icon.fold(name="mdi-flag-triangle" color="secondary" v-if='selectedElement.type == 3')
+				q-icon.fold(name="mdi-message-check-outline" color="secondary" v-if='selectedElement.type == 1')
+				q-icon.fold( name="mdi-folder-outline" color="secondary" v-if='selectedElement.type == 0')
+				q-icon.fold(v-if="selectedElement.template" name="mdi-share-variant" color="secondary")
+				// MaterialIconThemeTemplate(v-if='selectedElement.template') 
 			div
 				.text-overline
 					span(v-if='selectedElement.type == 2') Маршрут
-					span(v-if='selectedElement.type == 3') Этап
+					span(v-if='selectedElement.type == 3 && selectedElement.template') Типовой этап
+					span(v-if='selectedElement.type == 3 && !selectedElement.template') Этап
 					span(v-if='selectedElement.type == 1') Согласование
 					span(v-if='selectedElement.type == 0') Папка
 				.zg {{ selectedElement?.text }}
 					// q-popup-edit(v-model="selectedElement.text" auto-save v-slot="scope")
 					// 	q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
-		.btngroup(v-if='!!selectedElement && selectedElement.type > 0')
+		.btngroup(v-if='!!selectedElement && selectedElement.type > 0 && !selectedElement.template')
+			q-btn(flat round icon="mdi-share-variant" color="primary" @click="showShare" dense size="md" style="margin-right: .75rem;") 
 			q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="") 
 			q-btn(outline color="primary" label="Отмена" size="sm") 
 			q-btn(round flat color="primary" icon="mdi-sync" size="sm") 
@@ -48,7 +65,23 @@ div(v-if='selectedElement')
 	CardFolder(v-if='selectedElement.type == 0')
 	CardSoglas(v-if='selectedElement.type == 1')
 	CardMarshroute(v-if='selectedElement.type == 2')
+	CardEtapTemp(v-if='selectedElement.type == 3 && selectedElement.template')
 	CardEtap(v-if='selectedElement.type == 3')
+
+	q-dialog(v-model="share")
+		q-card
+			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
+			q-card-section
+				.text-h6
+					q-icon.q-mr-md(name="mdi-share-variant" color="primary")
+					span(v-if='selectedElement.type == 3') Типовой этап
+					span(v-if='selectedElement.type == 2') Типовой маршрут
+
+			q-card-section
+				div Сделать этап доступным для использования в других маршрутах? Этап станет типовым и будущие изменения в нем затронут все связанные маршруты.
+			q-card-actions(align="right")
+				q-btn(flat color="primary" label="Отмена" v-close-popup) 
+				q-btn(unelevated color="primary" label="OK" @click="sharing") 
 
 </template>
 

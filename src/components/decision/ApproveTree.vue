@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, watch, watchEffect, nextTick } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
-import DirMenu from '@/components/decision/DirMenu.vue'
+// import DirMenu from '@/components/decision/DirMenu.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useApproveStore } from '@/stores/approveStore'
 import { uid } from 'quasar'
@@ -10,6 +10,8 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 import WordHighlighter from 'vue-word-highlighter'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
+import MaterialIconThemeTemplate from '@/components/icons/MaterialIconThemeTemplate.vue'
+
 // import CreateDialog from '@/components/decision/CreateDialog.vue'
 
 const props = defineProps<{
@@ -24,7 +26,7 @@ const tree = ref()
 const query = ref('')
 // const dialog = ref(false)
 
-const sourceData = computed(() => approveStore.treeData)
+const sourceData = computed(() => approveStore.activeTreeData)
 
 const treeData = computed({
 	get: () => sourceData.value,
@@ -185,24 +187,6 @@ onBeforeRouteLeave((to, from) => {
 const one = () => {
 	console.log(111)
 }
-
-const list = ref([
-	{
-		id: 0,
-		label: 'Согласования',
-		selected: true,
-	},
-	{
-		id: 1,
-		label: 'Шаблоны',
-		selected: false,
-	},
-])
-
-const handleClick = (item: any) => {
-	list.value.map((el: any) => (el.selected = false))
-	item.selected = true
-}
 </script>
 
 <template lang="pug">
@@ -210,11 +194,11 @@ div
 	.row.q-mb-md
 		q-chip(
 			clickable,
-			v-for="item in list",
-			:key="item.id"
-			v-model:selected='item.selected'
-			@click="handleClick(item)"
-		) {{ item.label }}
+			v-for="chip in approveStore.list",
+			:key="chip.id"
+			v-model:selected='chip.selected'
+			@click="approveStore.selectChip(chip.id)"
+		) {{ chip.label }}
 
 	q-form.quick
 		q-input.query(
@@ -241,7 +225,7 @@ div
 			template(#default="{ node, stat }")
 				.node(
 					@click="select(stat)"
-					:class="{ 'selected': stat.data.selected }"
+					:class="{ 'selected': stat.data.selected, 'templ': stat.data.template }"
 				)
 					q-icon(
 						name="mdi-chevron-down"
@@ -249,30 +233,32 @@ div
 						@click.stop="toggle(stat)"
 						:class="{ 'closed': !stat.open }"
 					).trig
-					// q-icon(v-if="node.virtual" name="mdi-folder-search-outline").fold
 					q-icon.fold(v-if='node.type == 0' name="mdi-folder-outline")
 					q-icon.fold(name="mdi-message-check-outline" color="primary" v-if='node.type == 1')
 					q-icon.fold(name="mdi-flag-triangle" color="primary" v-if='node.type == 3')
 					MaterialSymbolsAltRoute.rou(v-if='node.type == 2')
+					// MaterialIconThemeTemplate.rou1(v-if='node.template')
+					q-icon.fold1(v-if='node.template' name="mdi-share-variant" color="primary")
+					q-tooltip(v-if='node.template') Шаблон
 					WordHighlighter(:query="query") {{ node.text }}
 
-					DirMenu(
-						:mode='props.mode'
-						:stat="stat"
-						@kill="remove(stat)"
-						@add="addFromMenu(stat)"
-						@addFolder="addFolderFromMenu(stat)"
-						@rename="edit(stat)"
-					)
+					// DirMenu(
+					// 	:mode='props.mode'
+					// 	:stat="stat"
+					// 	@kill="remove(stat)"
+					// 	@add="addFromMenu(stat)"
+					// 	@addFolder="addFolderFromMenu(stat)"
+					// 	@rename="edit(stat)"
+					// )
 
-					q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
-						q-input(
-							:model-value="stat.data.text"
-							dense
-							autofocus
-							counter
-							@keyup.enter="setText(stat, $event)"
-						)
+					// q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
+					// 	q-input(
+					// 		:model-value="stat.data.text"
+					// 		dense
+					// 		autofocus
+					// 		counter
+					// 		@keyup.enter="setText(stat, $event)"
+					// 	)
 
 	q-fab.fab(round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
 		q-fab-action(color="primary" icon="mdi-flag-triangle" external-label label="Этап" label-position="left" @click="one")
@@ -322,6 +308,12 @@ div
 	margin-right: 0.5rem;
 	color: $primary;
 }
+.fold1 {
+	font-size: 1.1rem;
+	margin-right: 0.5rem;
+	margin-left: -0.4rem;
+	color: $primary;
+}
 
 .trig {
 	font-size: 1.3rem;
@@ -335,8 +327,15 @@ div
 .rou {
 	font-size: 1.15rem;
 	color: $primary;
-	margin-bottom: -2px;
+	margin-bottom: -4px;
 	margin-right: 4px;
+}
+.rou1 {
+	font-size: 1.15rem;
+	color: $primary;
+	margin-bottom: -6px;
+	margin-right: 4px;
+	margin-left: -4px;
 }
 .q-chip {
 	background: #ccc;

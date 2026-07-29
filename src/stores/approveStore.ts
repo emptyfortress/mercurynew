@@ -15,6 +15,7 @@ interface TreeElement {
 	virtual?: boolean
 	author?: string
 	fields?: any[]
+	template?: boolean
 }
 
 export const useApproveStore = defineStore('approveStore', () => {
@@ -23,7 +24,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 	const treeData1 = ref<TreeElement[]>([
 		{
 			id: 'template',
-			text: 'Шаблоны',
+			text: 'Типовые образцы',
 			text1: '',
 			selected: false,
 			hidden: false,
@@ -61,6 +62,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							hidden: false,
 							type: 2,
 							author: 'System',
+							template: true,
 							fields: [],
 							children: [
 								{
@@ -82,6 +84,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									hidden: false,
 									type: 3,
 									author: 'System',
+									template: true,
 									fields: [],
 									children: [],
 								},
@@ -695,12 +698,82 @@ export const useApproveStore = defineStore('approveStore', () => {
 				},
 			],
 		},
+		{
+			id: 'unsort',
+			text: 'Unsorted',
+			text1: '',
+			selected: false,
+			hidden: false,
+			type: 0,
+			author: 'System',
+			fields: [],
+			children: [
+				{
+					id: 'unsort1',
+					text: 'Этап-потеряшка',
+					text1: '',
+					selected: false,
+					hidden: false,
+					type: 3,
+					author: 'System',
+					fields: [],
+					children: [],
+				},
+				{
+					id: 'unsort2',
+					text: 'Этап подготовительный',
+					text1: '',
+					selected: false,
+					hidden: false,
+					type: 3,
+					author: 'System',
+					fields: [],
+					children: [],
+				},
+				{
+					id: 'unsort3',
+					text: 'Некое согласование',
+					text1: '',
+					selected: false,
+					hidden: false,
+					type: 1,
+					author: 'System',
+					fields: [],
+					children: [],
+				},
+				{
+					id: 'unsort4',
+					text: 'Маршрут Иванович',
+					text1: '',
+					selected: false,
+					hidden: false,
+					type: 2,
+					author: 'System',
+					fields: [],
+					children: [],
+				},
+			],
+		},
 	])
 	// === State for selection and navigation ===
 	const selectedElement = ref<TreeElement | null>(null)
 	const currentNode = ref<any>(null)
 	const deleteRequest = ref(false)
 	const duplicateRequest = ref(false)
+
+	// === Chip list state ===
+	const list = ref([
+		{
+			id: 0,
+			label: 'Согласования',
+			selected: true,
+		},
+		{
+			id: 1,
+			label: 'Типовые образцы',
+			selected: false,
+		},
+	])
 
 	// === Computed properties for tree operations ===
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
@@ -834,12 +907,25 @@ export const useApproveStore = defineStore('approveStore', () => {
 		duplicateRequest.value = !duplicateRequest.value
 	}
 
+	// === Chip selection ===
+	function selectChip(id: number) {
+		list.value.forEach((item) => (item.selected = item.id === id))
+	}
+
+	const activeTreeData = computed(() => {
+		const selectedChip = list.value.find((item) => item.selected)
+		return selectedChip?.id === 1 ? treeData1.value : treeData.value
+	})
+
 	return {
 		treeData,
+		treeData1,
 		selectedElement,
 		currentNode,
 		deleteRequest,
 		duplicateRequest,
+		list,
+		activeTreeData,
 		nodesMap,
 		flatNodes,
 		getNodeById,
@@ -857,5 +943,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 		openNode,
 		toggleDelete,
 		toggleDuplicate,
+		selectChip,
 	}
 })
