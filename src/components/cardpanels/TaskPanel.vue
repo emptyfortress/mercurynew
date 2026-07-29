@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useApproveStore } from '@/stores/approveStore'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 
@@ -11,6 +12,11 @@ interface Item {
 	raz: boolean
 	dva: boolean
 }
+
+const approveStore = useApproveStore()
+const typovoy = computed(() => {
+	return approveStore.selectedElement?.template ? true : false
+})
 
 const name = ref('Согласование этапа')
 
@@ -193,8 +199,8 @@ fieldset
 		.row.justify-between.items-center.q-mt-sm
 			q-btn(unelevated color="primary" label="Добавить" size="sm" icon="mdi-plus-circle" @click="add") 
 			.q-gutter-x-md(v-if='selection')
-				q-checkbox(v-model='selection.raz' label='Не добавлять решение в лист согласования' dense)
-				q-checkbox(v-model='selection.dva' label='Разрешать создавать подчиненные задания' dense)
+				q-checkbox(v-model='selection.raz' label='Не добавлять решение в лист согласования' dense :disable='typovoy')
+				q-checkbox(v-model='selection.dva' label='Разрешать создавать подчиненные задания' dense :disable='typovoy')
 
 fieldset
 	legend Дополнительно
@@ -216,7 +222,7 @@ fieldset
 fieldset
 	legend Автосогласование
 	.grid2
-		q-checkbox.che(v-model='finish' label='Автоматически завершать согласование по истечении срока исполнения' dense)
+		q-checkbox.che(v-model='finish' label='Автоматически завершать согласование по истечении срока исполнения' dense :disable='typovoy')
 		q-select(v-model="sem" dense label="Семантика завершения задания" outlined :options="semoptions")
 
 q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
