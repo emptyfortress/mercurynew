@@ -120,27 +120,27 @@ fieldset
 							q-item.pink(clickable @click="remove(item.id)")
 								q-item-section Удалить
 
-		q-input.q-mt-sm(v-model="add" dense label="Добавить согласующего" outlined)
+		q-input.q-mt-sm(v-model="add" dense label="Добавить согласующего" outlined :readonly='typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-star-outline" color="warning" @click='addSogl')
 				q-icon(name="mdi-book-open-page-variant-outline" color="primary" @click='addSogl')
 				q-icon(name="mdi-dots-horizontal" color="primary" @click='addSogl')
 
-		q-select.q-mt-xs(v-model="ier" dense label="Уровень иерархии" outlined) 
+		q-select.q-mt-xs(v-model="ier" dense label="Уровень иерархии" outlined :readonly='typovoy') 
 
-		q-input.q-mt-xs(v-model="add" dense label="Поле документа" outlined)
+		q-input.q-mt-xs(v-model="add" dense label="Поле документа" outlined :readonly='typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-dots-horizontal" color="primary")
-		q-input.q-mt-xs(v-model="add" dense label="Бизнес-процесс" outlined)
+		q-input.q-mt-xs(v-model="add" dense label="Бизнес-процесс" outlined :readonly='typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-dots-horizontal" color="primary")
 
 	fieldset
 		legend Дополнительные согласующие
 			// label Семантика завершения заданий при добавлении согласующего
-		q-select(v-model="semantic" dense label='Семантика завершения заданий при добавлении согласующего' outlined :options="semoptions")
+		q-select(v-model="semantic" dense label='Семантика завершения заданий при добавлении согласующего' outlined :options="semoptions" :readonly='typovoy')
 		q-checkbox.che(v-model='zapr' label='Запрашивать подтверждение у инициатора, отправлять задание вида' dense :disable='typovoy')
-		q-select(v-model="vid" dense label="Вид" outlined :options="vidoptions")
+		q-select(v-model="vid" dense label="Вид" outlined :options="vidoptions" :readonly='typovoy')
 		q-checkbox.q-mt-lg(v-model='pere' label='Отправить на пересогласование после доп.согласующих' dense :disable='typovoy')
 
 	

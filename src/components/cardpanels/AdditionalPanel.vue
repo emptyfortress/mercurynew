@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { QTableProps } from 'quasar'
+import { useApproveStore } from '@/stores/approveStore'
 
 const cols: QTableProps['columns'] = [
 	{
@@ -112,6 +113,11 @@ const sem = ref('Положительная')
 const bus = ref('')
 const otk = ref('Продолжать согласование')
 const options = ['Продолжать согласование', 'Действие 1', 'Действие 2', 'Действие 3']
+
+const approveStore = useApproveStore()
+const typovoy = computed(() => {
+	return approveStore.selectedElement?.template ? true : false
+})
 </script>
 
 <template lang="pug">
@@ -154,11 +160,11 @@ fieldset
 fieldset
 	legend Завершение этапа
 	.grid2
-		q-select(v-model="sem" dense label="Семантика завершения этапа по умолчанию" outlined :options="semoptions")
-		q-input(v-model="bus" dense label="При завершении этапа запускать бизнес-процесс" outlined)
+		q-select(v-model="sem" dense label="Семантика завершения этапа по умолчанию" outlined :options="semoptions" :readonly='typovoy')
+		q-input(v-model="bus" dense label="При завершении этапа запускать бизнес-процесс" outlined :readonly='typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-dots-horizontal" color="primary")
-		q-select(v-model="otk" dense label="При первом отказе" outlined :options="options")
+		q-select(v-model="otk" dense label="При первом отказе" outlined :options="options" :readonly='typovoy')
 </template>
 
 <style scoped lang="scss">

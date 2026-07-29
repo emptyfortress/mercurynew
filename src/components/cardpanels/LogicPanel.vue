@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useApproveStore } from '@/stores/approveStore'
+
+const approveStore = useApproveStore()
+const typovoy = computed(() => {
+	return approveStore.selectedElement?.template ? true : false
+})
 
 const imp = ref('')
 const com = ref('')
@@ -9,14 +15,14 @@ const com = ref('')
 fieldset
 	legend Специальный сервис логики этапа
 	.grid2
-		q-input(v-model="imp" dense label="Имя сервиса" outlined)
+		q-input(v-model="imp" dense label="Имя сервиса" outlined :readonly='typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-dots-horizontal" color="primary")
 		.info
 			q-icon.q-mr-sm(name="mdi-information-outline" color="secondary" size="18px")
 			|Используется только в усовершенствованном согласовании
 
-		q-input(v-model="com" dense label="Комментарий" type='textarea' outlined)
+		q-input(v-model="com" dense label="Комментарий" type='textarea' outlined :readonly='typovoy')
 
 </template>
 

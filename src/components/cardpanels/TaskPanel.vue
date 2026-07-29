@@ -162,11 +162,11 @@ const options1 = ['Процесс', 'Цикл', 'Этап']
 fieldset
 	legend Задание участника этапа
 	.grid2
-		q-select(v-model="vid" dense label="Вид" outlined :options="options")
-		q-input(v-model="name" dense label="Название" outlined)
+		q-select(v-model="vid" dense label="Вид" outlined :options="options" :readonly='typovoy')
+		q-input(v-model="name" dense label="Название" outlined :readonly='typovoy')
 fieldset
 	legend Содержание
-	q-input(v-model="sod" type="textarea" dense outlined autogrow)
+	q-input(v-model="sod" type="textarea" dense outlined autogrow :readonly='typovoy')
 
 fieldset
 	legend Варианты решений
@@ -206,16 +206,16 @@ fieldset
 	legend Дополнительно
 	.grid2
 		.column.q-gutter-y-sm
-			q-input(v-model="business" dense label="Бизнес-календарь" outlined)
+			q-input(v-model="business" dense label="Бизнес-календарь" outlined :readonly='typovoy')
 				template(v-slot:append)
 					q-icon(name="mdi-dots-horizontal" color="primary" )
 
 		.column.q-gutter-y-sm
-			q-select(v-model="business1" dense label="Уровень дерева версий" outlined :options="options1")
+			q-select(v-model="business1" dense label="Уровень дерева версий" outlined :options="options1" :readonly='typovoy')
 
 	.row.q-gutter-x-md.q-mt-md
-		q-input(v-model="dlit" dense label="Длительность (часы)" outlined type="number")
-		q-input(v-model="dlit1" dense label="В следующих циклах" outlined type="number")
+		q-input(v-model="dlit" dense label="Длительность (часы)" outlined type="number" :readonly='typovoy')
+		q-input(v-model="dlit1" dense label="В следующих циклах" outlined type="number" :readonly='typovoy')
 		q-radio(v-model="rad" val='one' label="Длительность указана для задания" dense)
 		q-radio(v-model="rad" val='two' label="Длительность указана для этапа" dense)
 
@@ -223,7 +223,7 @@ fieldset
 	legend Автосогласование
 	.grid2
 		q-checkbox.che(v-model='finish' label='Автоматически завершать согласование по истечении срока исполнения' dense :disable='typovoy')
-		q-select(v-model="sem" dense label="Семантика завершения задания" outlined :options="semoptions")
+		q-select(v-model="sem" dense label="Семантика завершения задания" outlined :options="semoptions" :readonly='typovoy')
 
 q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
 	q-card()
@@ -234,9 +234,9 @@ q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-form(@submit="submit")
 			q-card-section
 				.column.q-gutter-y-sm
-					q-input(v-model="varName" autofocus  dense label="Название" outlined)
-					q-select(v-model="varSem" dense label="Семантика" outlined :options="semoptions")
-					q-input(v-model="varMetka" dense label="Метка подписи" outlined)
+					q-input(v-model="varName" autofocus  dense label="Название" outlined :readonly='typovoy')
+					q-select(v-model="varSem" dense label="Семантика" outlined :options="semoptions" :readonly='typovoy')
+					q-input(v-model="varMetka" dense label="Метка подписи" outlined :readonly='typovoy')
 					q-checkbox(v-model='varAdd' label='Не добавлять решение в лист согласования' dense)
 					q-checkbox(v-model='varAllow' label='Разрешать создавать подчиненные задания' dense)
 			q-card-actions(align="right")
