@@ -99,10 +99,10 @@ fieldset
 	legend Доступность редактирования
 	.row
 		.col
-			q-checkbox(v-model='allow' label='Разрешить исключение этапа из маршрута' dense)
-			q-checkbox(v-model='alpar' label='Разрешить изменение параметров этапа' dense)
+			q-checkbox(v-model='allow' label='Разрешить исключение этапа из маршрута' dense :disable='typovoy')
+			q-checkbox(v-model='alpar' label='Разрешить изменение параметров этапа' dense :disable='typovoy')
 		.col
-			q-checkbox(v-model='altype' label='Разрешить редактирование типа маршрутизации' dense)
+			q-checkbox(v-model='altype' label='Разрешить редактирование типа маршрутизации' dense :disable='typovoy')
 
 .grid2
 	fieldset
@@ -139,9 +139,9 @@ fieldset
 		legend Дополнительные согласующие
 			// label Семантика завершения заданий при добавлении согласующего
 		q-select(v-model="semantic" dense label='Семантика завершения заданий при добавлении согласующего' outlined :options="semoptions")
-		q-checkbox.che(v-model='zapr' label='Запрашивать подтверждение у инициатора, отправлять задание вида' dense)
+		q-checkbox.che(v-model='zapr' label='Запрашивать подтверждение у инициатора, отправлять задание вида' dense :disable='typovoy')
 		q-select(v-model="vid" dense label="Вид" outlined :options="vidoptions")
-		q-checkbox.q-mt-lg(v-model='pere' label='Отправить на пересогласование после доп.согласующих' dense)
+		q-checkbox.q-mt-lg(v-model='pere' label='Отправить на пересогласование после доп.согласующих' dense :disable='typovoy')
 
 	
 </template>
