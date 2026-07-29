@@ -54,7 +54,8 @@ const config = {
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains('node')
+		// return child.classList.contains('node')
+		return typovoy.value ? false : child.classList.contains('node')
 	},
 }
 
@@ -189,15 +190,15 @@ fieldset
 			div {{ item.label }}
 			div {{ item.semantic }}
 			div {{ item.sign }}
-			q-btn(flat round icon="mdi-pencil-outline" color="secondary" @click.stop="edit(item)" size="sm") 
-			q-btn(flat round icon="mdi-close" color="secondary" size="sm") 
+			q-btn(flat round icon="mdi-pencil-outline" color="secondary" @click.stop="edit(item)" size="sm" :disable='typovoy')
+			q-btn(flat round icon="mdi-close" color="secondary" size="sm" :disable='typovoy') 
 				q-menu
 					q-list
 						q-item.pink(clickable @click="remove(item.id)")
 							q-item-section Удалить
 
 		.row.justify-between.items-center.q-mt-sm
-			q-btn(unelevated color="primary" label="Добавить" size="sm" icon="mdi-plus-circle" @click="add") 
+			q-btn(unelevated color="primary" label="Добавить" size="sm" icon="mdi-plus-circle" @click="add" :disable='typovoy') 
 			.q-gutter-x-md(v-if='selection')
 				q-checkbox(v-model='selection.raz' label='Не добавлять решение в лист согласования' dense :disable='typovoy')
 				q-checkbox(v-model='selection.dva' label='Разрешать создавать подчиненные задания' dense :disable='typovoy')
@@ -216,8 +217,8 @@ fieldset
 	.row.q-gutter-x-md.q-mt-md
 		q-input(v-model="dlit" dense label="Длительность (часы)" outlined type="number" :readonly='typovoy')
 		q-input(v-model="dlit1" dense label="В следующих циклах" outlined type="number" :readonly='typovoy')
-		q-radio(v-model="rad" val='one' label="Длительность указана для задания" dense)
-		q-radio(v-model="rad" val='two' label="Длительность указана для этапа" dense)
+		q-radio(v-model="rad" val='one' label="Длительность указана для задания" dense :disable='typovoy')
+		q-radio(v-model="rad" val='two' label="Длительность указана для этапа" dense :disable='typovoy')
 
 fieldset
 	legend Автосогласование

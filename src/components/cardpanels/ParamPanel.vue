@@ -39,7 +39,7 @@ const config = {
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
-		return child.classList.contains('node')
+		return typovoy.value ? false : child.classList.contains('node')
 	},
 }
 
@@ -52,6 +52,7 @@ const remove = (id: number) => {
 const add = ref('')
 
 const addSogl = () => {
+	if (typovoy.value) return
 	tapes.value.push({
 		id: Date.now(),
 		label: `Согласующий - ${tapes.value.length + 1}`,
@@ -114,7 +115,7 @@ fieldset
 			.node(v-for="item in tapes" :key="item.id")
 				div {{ item.label }}
 				div {{ item.type }}
-				q-btn(flat round icon="mdi-close" color="secondary" size="sm") 
+				q-btn(flat round icon="mdi-close" color="secondary" size="sm" :disable='typovoy') 
 					q-menu
 						q-list
 							q-item.pink(clickable @click="remove(item.id)")

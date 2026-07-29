@@ -138,13 +138,13 @@ fieldset
 		template(v-slot:body-cell-actions='props')
 			q-td.text-right(auto-width :props="props")
 				.q-gutter-x-sm
-					q-btn(flat round icon="mdi-pencil-outline" color="secondary" dense size="sm" @click="edit(props.row)") 
-					q-btn(flat round icon="mdi-close" color="secondary" dense size="sm") 
+					q-btn(flat round icon="mdi-pencil-outline" color="secondary" dense size="sm" @click="edit(props.row)" :disable='typovoy') 
+					q-btn(flat round icon="mdi-close" color="secondary" dense size="sm" :disable='typovoy') 
 						q-menu
 							q-list
 								q-item.pink(clickable @click="remove(props.row)")
 									q-item-section Удалить
-	q-btn.q-mt-sm(unelevated color="primary" label="Добавить" icon="mdi-plus-circle" @click="dialog = !dialog" size="sm")
+	q-btn.q-mt-sm(unelevated color="primary" label="Добавить" icon="mdi-plus-circle" @click="dialog = !dialog" size="sm" :disable='typovoy')
 
 	q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-card
