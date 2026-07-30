@@ -931,7 +931,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 	// === Chip selection ===
 	function selectChip(id: number) {
 		list.value.forEach((item) => (item.selected = item.id === id))
-		// selectedElement.value = null
 	}
 
 	const activeTreeData = computed(() => {
