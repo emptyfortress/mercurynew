@@ -933,14 +933,14 @@ export const useApproveStore = defineStore('approveStore', () => {
 		list.value.forEach((item) => (item.selected = item.id === id))
 	}
 
+	const selectedChip = computed(() => list.value.find((item) => item.selected))
+
 	const activeTreeData = computed(() => {
-		const selectedChip = list.value.find((item) => item.selected)
-		return selectedChip?.id === 1 ? treeData1.value : treeData.value
+		return selectedChip.value?.id === 1 ? treeData1.value : treeData.value
 	})
 
 	const typovoy = computed(() => {
-		const selectedChip = list.value.find((item) => item.selected)
-		return selectedElement.value?.template === true && selectedChip?.id === 0
+		return selectedElement.value?.template === true && selectedChip.value?.id === 0
 	})
 
 	return {
@@ -952,6 +952,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 		deleteRequest,
 		duplicateRequest,
 		list,
+		selectedChip,
 		activeTreeData,
 		nodesMap,
 		flatNodes,
