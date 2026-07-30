@@ -939,6 +939,10 @@ export const useApproveStore = defineStore('approveStore', () => {
 		return selectedChip?.id === 1 ? treeData1.value : treeData.value
 	})
 
+	const typovoy = computed(() => {
+		return selectedElement.value?.template ? true : false
+	})
+
 	return {
 		treeData,
 		// sample,
@@ -967,5 +971,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 		toggleDelete,
 		toggleDuplicate,
 		selectChip,
+		typovoy,
 	}
 })

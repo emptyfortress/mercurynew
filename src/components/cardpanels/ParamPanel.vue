@@ -17,10 +17,6 @@ const altype = ref(false)
 const typeoptions = ['Параллельное', 'Последовательное', 'Альтернативное']
 const options = ['Согласование', 'Подписание', 'Консолидация']
 
-const typovoy = computed(() => {
-	return approveStore.selectedElement?.template ? true : false
-})
-
 const sogl = ref([
 	{
 		id: 1,
@@ -39,7 +35,7 @@ const config = {
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
-		return typovoy.value ? false : child.classList.contains('node')
+		return approveStore.typovoy ? false : child.classList.contains('node')
 	},
 }
 
@@ -52,7 +48,7 @@ const remove = (id: number) => {
 const add = ref('')
 
 const addSogl = () => {
-	if (typovoy.value) return
+	if (approveStore.typovoy) return
 	tapes.value.push({
 		id: Date.now(),
 		label: `Согласующий - ${tapes.value.length + 1}`,
@@ -87,23 +83,23 @@ fieldset
 	.grid2
 		.grid
 			label Название:
-			q-input(v-model="name" dense outlined :readonly='typovoy')
+			q-input(v-model="name" dense outlined :readonly='approveStore.typovoy')
 			label Режим:
-			q-select(v-model="regim" dense outlined :options="options" :readonly='typovoy')
+			q-select(v-model="regim" dense outlined :options="options" :readonly='approveStore.typovoy')
 			label Тип маршрутизации:
-			q-select(v-model="type" dense outlined :options="typeoptions" :readonly='typovoy')
+			q-select(v-model="type" dense outlined :options="typeoptions" :readonly='approveStore.typovoy')
 		.column
-			q-checkbox(v-model='hide' label='Скрыть этап' dense :disable='typovoy')
-			q-checkbox(v-model='skip' label='Пропускать этап при повторе на новом цикле' dense :disable='typovoy')
+			q-checkbox(v-model='hide' label='Скрыть этап' dense :disable='approveStore.typovoy')
+			q-checkbox(v-model='skip' label='Пропускать этап при повторе на новом цикле' dense :disable='approveStore.typovoy')
 
 fieldset
 	legend Доступность редактирования
 	.row
 		.col
-			q-checkbox(v-model='allow' label='Разрешить исключение этапа из маршрута' dense :disable='typovoy')
-			q-checkbox(v-model='alpar' label='Разрешить изменение параметров этапа' dense :disable='typovoy')
+			q-checkbox(v-model='allow' label='Разрешить исключение этапа из маршрута' dense :disable='approveStore.typovoy')
+			q-checkbox(v-model='alpar' label='Разрешить изменение параметров этапа' dense :disable='approveStore.typovoy')
 		.col
-			q-checkbox(v-model='altype' label='Разрешить редактирование типа маршрутизации' dense :disable='typovoy')
+			q-checkbox(v-model='altype' label='Разрешить редактирование типа маршрутизации' dense :disable='approveStore.typovoy')
 
 .grid2
 	fieldset
@@ -115,34 +111,34 @@ fieldset
 			.node(v-for="item in tapes" :key="item.id")
 				div {{ item.label }}
 				div {{ item.type }}
-				q-btn(flat round icon="mdi-close" color="secondary" size="sm" :disable='typovoy') 
+				q-btn(flat round icon="mdi-close" color="secondary" size="sm" :disable='approveStore.typovoy') 
 					q-menu
 						q-list
 							q-item.pink(clickable @click="remove(item.id)")
 								q-item-section Удалить
 
-		q-input.q-mt-sm(v-model="add" dense label="Добавить согласующего" outlined :readonly='typovoy')
+		q-input.q-mt-sm(v-model="add" dense label="Добавить согласующего" outlined :readonly='approveStore.typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-star-outline" color="warning" @click='addSogl')
 				q-icon(name="mdi-book-open-page-variant-outline" color="primary" @click='addSogl')
 				q-icon(name="mdi-dots-horizontal" color="primary" @click='addSogl')
 
-		q-select.q-mt-xs(v-model="ier" dense label="Уровень иерархии" outlined :readonly='typovoy') 
+		q-select.q-mt-xs(v-model="ier" dense label="Уровень иерархии" outlined :readonly='approveStore.typovoy') 
 
-		q-input.q-mt-xs(v-model="add" dense label="Поле документа" outlined :readonly='typovoy')
+		q-input.q-mt-xs(v-model="add" dense label="Поле документа" outlined :readonly='approveStore.typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-dots-horizontal" color="primary")
-		q-input.q-mt-xs(v-model="add" dense label="Бизнес-процесс" outlined :readonly='typovoy')
+		q-input.q-mt-xs(v-model="add" dense label="Бизнес-процесс" outlined :readonly='approveStore.typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-dots-horizontal" color="primary")
 
 	fieldset
 		legend Дополнительные согласующие
 			// label Семантика завершения заданий при добавлении согласующего
-		q-select(v-model="semantic" dense label='Семантика завершения заданий при добавлении согласующего' outlined :options="semoptions" :readonly='typovoy')
-		q-checkbox.che(v-model='zapr' label='Запрашивать подтверждение у инициатора, отправлять задание вида' dense :disable='typovoy')
-		q-select(v-model="vid" dense label="Вид" outlined :options="vidoptions" :readonly='typovoy')
-		q-checkbox.q-mt-lg(v-model='pere' label='Отправить на пересогласование после доп.согласующих' dense :disable='typovoy')
+		q-select(v-model="semantic" dense label='Семантика завершения заданий при добавлении согласующего' outlined :options="semoptions" :readonly='approveStore.typovoy')
+		q-checkbox.che(v-model='zapr' label='Запрашивать подтверждение у инициатора, отправлять задание вида' dense :disable='approveStore.typovoy')
+		q-select(v-model="vid" dense label="Вид" outlined :options="vidoptions" :readonly='approveStore.typovoy')
+		q-checkbox.q-mt-lg(v-model='pere' label='Отправить на пересогласование после доп.согласующих' dense :disable='approveStore.typovoy')
 
 	
 </template>

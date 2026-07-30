@@ -115,9 +115,6 @@ const otk = ref('Продолжать согласование')
 const options = ['Продолжать согласование', 'Действие 1', 'Действие 2', 'Действие 3']
 
 const approveStore = useApproveStore()
-const typovoy = computed(() => {
-	return approveStore.selectedElement?.template ? true : false
-})
 </script>
 
 <template lang="pug">
@@ -138,13 +135,13 @@ fieldset
 		template(v-slot:body-cell-actions='props')
 			q-td.text-right(auto-width :props="props")
 				.q-gutter-x-sm
-					q-btn(flat round icon="mdi-pencil-outline" color="secondary" dense size="sm" @click="edit(props.row)" :disable='typovoy') 
-					q-btn(flat round icon="mdi-close" color="secondary" dense size="sm" :disable='typovoy') 
+					q-btn(flat round icon="mdi-pencil-outline" color="secondary" dense size="sm" @click="edit(props.row)" :disable='approveStore.typovoy') 
+					q-btn(flat round icon="mdi-close" color="secondary" dense size="sm" :disable='approveStore.typovoy') 
 						q-menu
 							q-list
 								q-item.pink(clickable @click="remove(props.row)")
 									q-item-section Удалить
-	q-btn.q-mt-sm(unelevated color="primary" label="Добавить" icon="mdi-plus-circle" @click="dialog = !dialog" size="sm" :disable='typovoy')
+	q-btn.q-mt-sm(unelevated color="primary" label="Добавить" icon="mdi-plus-circle" @click="dialog = !dialog" size="sm" :disable='approveStore.typovoy')
 
 	q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-card
@@ -160,11 +157,11 @@ fieldset
 fieldset
 	legend Завершение этапа
 	.grid2
-		q-select(v-model="sem" dense label="Семантика завершения этапа по умолчанию" outlined :options="semoptions" :readonly='typovoy')
-		q-input(v-model="bus" dense label="При завершении этапа запускать бизнес-процесс" outlined :readonly='typovoy')
+		q-select(v-model="sem" dense label="Семантика завершения этапа по умолчанию" outlined :options="semoptions" :readonly='approveStore.typovoy')
+		q-input(v-model="bus" dense label="При завершении этапа запускать бизнес-процесс" outlined :readonly='approveStore.typovoy')
 			template(v-slot:append)
 				q-icon(name="mdi-dots-horizontal" color="primary")
-		q-select(v-model="otk" dense label="При первом отказе" outlined :options="options" :readonly='typovoy')
+		q-select(v-model="otk" dense label="При первом отказе" outlined :options="options" :readonly='approveStore.typovoy')
 </template>
 
 <style scoped lang="scss">
