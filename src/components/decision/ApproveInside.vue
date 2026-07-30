@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
-// import { useRoute } from 'vue-router'
 import CardEtap from '@/components/decision/CardEtap.vue'
 import CardEtapTemp from '@/components/decision/CardEtapTemp.vue'
 import CardMarshroute from '@/components/decision/CardMarshroute.vue'
 import CardSoglas from '@/components/decision/CardSoglas.vue'
 import CardFolder from '@/components/decision/CardFolder.vue'
-import MaterialIconThemeTemplate from '@/components/icons/MaterialIconThemeTemplate.vue'
-
-// const route = useRoute()
 
 const approveStore = useApproveStore()
 
@@ -25,6 +21,13 @@ const sharing = () => {
 	selectedElement.value.template = true
 	share.value = false
 }
+
+const showGroup = computed(() => {
+	if (approveStore.selectedChip?.id == 1) return true
+	if (!!selectedElement.value && selectedElement.value.type > 0 && !selectedElement.value.template)
+		return true
+	return false
+})
 </script>
 
 <template lang="pug">
@@ -37,7 +40,6 @@ div(v-if='selectedElement')
 				q-icon.fold(name="mdi-message-check-outline" color="secondary" v-if='selectedElement.type == 1')
 				q-icon.fold( name="mdi-folder-outline" color="secondary" v-if='selectedElement.type == 0')
 				q-icon.fold(v-if="selectedElement.template" name="mdi-share-variant" color="secondary")
-				// MaterialIconThemeTemplate(v-if='selectedElement.template') 
 			div
 				.text-overline
 					span(v-if='selectedElement.type == 2') Маршрут
@@ -46,10 +48,8 @@ div(v-if='selectedElement')
 					span(v-if='selectedElement.type == 1') Согласование
 					span(v-if='selectedElement.type == 0') Папка
 				.zg {{ selectedElement?.text }}
-					// q-popup-edit(v-model="selectedElement.text" auto-save v-slot="scope")
-					// 	q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 
-		.btngroup(v-if='!!selectedElement && selectedElement.type > 0 && !selectedElement.template')
+		.btngroup(v-if='showGroup')
 			q-btn(flat round icon="mdi-share-variant" color="primary" @click="showShare" dense size="md" style="margin-right: .75rem;") 
 			q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="") 
 			q-btn(outline color="primary" label="Отмена" size="sm") 
