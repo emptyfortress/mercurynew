@@ -1,0 +1,20 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+    "ANTHROPIC_AUTH_TOKEN": "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",
+    "ANTHROPIC_API_KEY": "",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "openrouter/free",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "qwen/qwen3-coder:free",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "openrouter/free",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "qwen/qwen3-coder:free"
+  },
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:quasar.dev)",
+      "Bash(npm run *)",
+      "Read(//Users/admin/Develop/poisk/src/stores/**)"
+    ]
+  },
+  "model": "openrouter/free"
+}
