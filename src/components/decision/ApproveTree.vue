@@ -60,6 +60,15 @@ watch(query, (newValue) => {
 	}
 })
 
+watch(sourceData, (val) => {
+	if (val) {
+		setTimeout(() => {
+			const stat = tree.value.getStat(approveStore.selectedElement)
+			tree.value.openNodeAndParents(stat)
+		}, 200)
+	}
+})
+
 const select = (stat: Stat) => {
 	approveStore.selectNode(stat, router)
 }
