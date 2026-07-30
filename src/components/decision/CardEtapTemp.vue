@@ -1,23 +1,28 @@
 <script setup lang="ts">
-import MaterialIconThemeTemplate from '@/components/icons/MaterialIconThemeTemplate.vue'
-import { computed, ref } from 'vue'
-// import ParamPanel from '@/components/cardpanels/ParamPanel.vue'
-// import TaskPanel from '@/components/cardpanels/TaskPanel.vue'
-// import AdditionalPanel from '@/components/cardpanels/AdditionalPanel.vue'
-// import LogicPanel from '../cardpanels/LogicPanel.vue'
+import { useApproveStore } from '@/stores/approveStore'
 
-// const activeTab = ref('param')
+const approveStore = useApproveStore()
+
+const makeLocal = () => {
+	if (!!approveStore.selectedElement) {
+		approveStore.selectedElement.text = approveStore.selectedElement.text + '-copy'
+		approveStore.selectedElement.template = false
+	}
+}
+
+const toTemplate = () => {
+	approveStore.selectChip(1)
+}
 </script>
 
 <template lang="pug">
 .q-ma-md
 	.info
-		// q-icon(name="mdi-share-variant" color="secondary")
 		q-icon(name="mdi-information-outline" color="secondary")
 		div Это типовой этап. Он используется в разных маршруртах.<br />Для редактирования - перейдите в "Типовые образцы".
 		.column.q-gutter-y-xs
-			q-btn(unelevated size="sm" color="primary" label="Типовые образцы") 
-			q-btn(unelevated size="sm" color="primary" label="Локальная копия") 
+			q-btn(unelevated size="sm" color="primary" label="Типовые образцы" @click="toTemplate") 
+			q-btn(unelevated size="sm" color="primary" label="Локальная копия" @click="makeLocal") 
 </template>
 
 <style scoped lang="scss">
