@@ -27,27 +27,28 @@ const isEditable = computed(() => {
 	.info(v-if='isEditable')
 		q-icon(name="mdi-information-outline" color="secondary")
 		div Это типовой этап. Он используется в разных маршруртах.<br />Для редактирования - перейдите в "Типовые образцы".
-		.column.q-gutter-y-xs
-			q-btn(unelevated size="sm" color="primary" label="Типовые образцы" @click="toTemplate") 
-			q-btn(unelevated size="sm" color="primary" label="Локальная копия" @click="makeLocal") 
+		q-btn(unelevated size="sm" color="primary" label="Типовые образцы" @click="toTemplate") 
+		q-btn(unelevated size="sm" color="primary" label="Сделать локальную копию" @click="makeLocal") 
 
 	.info1(v-if='!isEditable && show')
-		q-icon(name="mdi-information-outline" color="secondary")
-		div Это типовой этап. Он используется в разных маршруртах. Редактируйте с осторожностью.
+		.row.items-center.q-gutter-x-sm
+			q-icon(name="mdi-information-outline" color="secondary")
+			div Это типовой этап. Он используется в разных маршруртах. Редактируйте с осторожностью.
 		q-btn(unelevated size="sm" color="primary" label="Понятно" @click="show = false") 
 </template>
 
 <style scoped lang="scss">
 .info {
-	padding: 1rem;
+	padding: 0.5rem 1rem;
 	border: 1px solid var(--my-border-color);
 	margin-top: 1rem;
 	border-radius: 0.5rem;
 	background: var(--bgLight);
 	display: grid;
 	align-items: center;
-	width: 760px;
-	grid-template-columns: 64px 430px 200px;
+	gap: 0.5rem;
+	// width: 760px;
+	grid-template-columns: 64px 500px 180px 190px;
 	svg {
 		width: 50px;
 		height: 50px;
@@ -65,7 +66,7 @@ const isEditable = computed(() => {
 	background: var(--bgLight);
 	display: flex;
 	gap: 1rem;
-	justify-content: start;
+	justify-content: space-between;
 	align-items: center;
 	.q-icon {
 		font-size: 1.5rem;

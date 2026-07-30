@@ -50,7 +50,7 @@ div(v-if='selectedElement')
 				.zg {{ selectedElement?.text }}
 
 		.btngroup(v-if='showGroup')
-			q-btn(flat round icon="mdi-share-variant" color="primary" @click="showShare" dense size="md" style="margin-right: .75rem;") 
+			q-btn(v-if='!selectedElement.template' flat round icon="mdi-share-variant" color="primary" @click="showShare" dense size="md" style="margin-right: .75rem;") 
 			q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="") 
 			q-btn(outline color="primary" label="Отмена" size="sm") 
 			q-btn(round flat color="primary" icon="mdi-sync" size="sm") 
