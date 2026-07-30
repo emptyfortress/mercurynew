@@ -939,7 +939,8 @@ export const useApproveStore = defineStore('approveStore', () => {
 	})
 
 	const typovoy = computed(() => {
-		return selectedElement.value?.template ? true : false
+		const selectedChip = list.value.find((item) => item.selected)
+		return selectedElement.value?.template === true && selectedChip?.id === 0
 	})
 
 	return {
