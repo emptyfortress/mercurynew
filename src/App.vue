@@ -169,7 +169,7 @@ const refresh = () => {
 	})
 }
 
-// this is comment
+// this is comment fuck
 
 const lang = [
 	{
