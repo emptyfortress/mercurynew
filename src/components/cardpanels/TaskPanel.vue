@@ -14,6 +14,7 @@ interface Item {
 }
 
 const approveStore = useApproveStore()
+
 const typovoy = computed(() => {
 	return approveStore.selectedElement?.template ? true : false
 })

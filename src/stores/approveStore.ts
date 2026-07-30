@@ -11,7 +11,7 @@ interface TreeElement {
 	open?: boolean
 	edit?: boolean
 	type: number
-	children?: TreeElement[]
+	children: TreeElement[]
 	virtual?: boolean
 	author?: string
 	fields?: any[]
@@ -21,18 +21,6 @@ interface TreeElement {
 export const useApproveStore = defineStore('approveStore', () => {
 	// === Data collections ===
 
-	const treeData1 = ref<TreeElement[]>([
-		{
-			id: 'template',
-			text: 'Типовые образцы',
-			text1: '',
-			selected: false,
-			hidden: false,
-			type: 0,
-			fields: [],
-			children: [],
-		},
-	])
 	const treeData = ref<TreeElement[]>([
 		{
 			id: 'dogovor',
@@ -755,6 +743,39 @@ export const useApproveStore = defineStore('approveStore', () => {
 			],
 		},
 	])
+
+	const sample = computed(() => {
+		const result: (typeof treeData.value)[number][] = []
+
+		const walk = (nodes: typeof treeData.value) => {
+			for (const node of nodes) {
+				if (node.template === true) {
+					result.push(node)
+				}
+
+				if (node.children.length > 0) {
+					walk(node.children ?? [])
+				}
+			}
+		}
+
+		walk(treeData.value)
+
+		return result
+	})
+	const treeData1 = computed<TreeElement[]>(() => [
+		{
+			id: 'template',
+			text: 'Типовые образцы',
+			text1: '',
+			selected: false,
+			hidden: false,
+			type: 0,
+			fields: [],
+			children: sample.value,
+		},
+	])
+
 	// === State for selection and navigation ===
 	const selectedElement = ref<TreeElement | null>(null)
 	const currentNode = ref<any>(null)
@@ -910,6 +931,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 	// === Chip selection ===
 	function selectChip(id: number) {
 		list.value.forEach((item) => (item.selected = item.id === id))
+		// selectedElement.value = null
 	}
 
 	const activeTreeData = computed(() => {
@@ -919,6 +941,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 
 	return {
 		treeData,
+		// sample,
 		treeData1,
 		selectedElement,
 		currentNode,

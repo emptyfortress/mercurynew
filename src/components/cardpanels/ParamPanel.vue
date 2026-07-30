@@ -5,7 +5,7 @@ import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 
 const approveStore = useApproveStore()
-const name = ref(approveStore.selectedElement?.text)
+const name = computed(() => approveStore.selectedElement?.text)
 const regim = ref('Согласование')
 const type = ref('Параллельное')
 const hide = ref(false)
