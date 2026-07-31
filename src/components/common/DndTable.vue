@@ -7,12 +7,14 @@ interface Column {
 	field: string
 	label: string
 	align: string
-	type?: 'checkbox'
+	type?: 'checkbox' | string
+	// condition: string
 }
 
 interface Row {
 	id: string | number
 	[key: string]: unknown
+	condition?: null | Object
 }
 
 const props = defineProps<{
@@ -62,13 +64,15 @@ table.dnd-table
 			th.handle-col
 			th(v-for="col in columns" :key="col.field") {{ col.label }}
 			th.actions
+
 	tbody(ref="tbodyRef")
 		tr(v-for="row in rows" :key="row.id")
 			td.handle-col
 				span.drag-handle ⠿
 			td(v-for="col in columns" :key="col.field" :class="calcClass(col.align)")
-				q-checkbox(v-if="col.type === 'checkbox'" v-model="row[col.field]" dense)
-				span(v-else) {{ row[col.field] }}
+				slot(:name="`cell-${col.field}`" :row="row" :col="col")
+					q-checkbox(v-if="col.type === 'checkbox'" v-model="row[col.field]" dense)
+					template(v-else) {{ row[col.field] }}
 			td.action
 				q-btn(flat round icon="mdi-pencil-outline" color="secondary" @click="" dense size="sm") 
 				q-btn(flat round icon="mdi-close" color="secondary" @click="" dense size="sm") 

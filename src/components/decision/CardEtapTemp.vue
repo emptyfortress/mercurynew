@@ -30,7 +30,7 @@ const isEditable = computed(() => {
 		div Это типовой этап. Он используется в разных маршруртах.<br />Для редактирования - перейдите в "Типовые образцы".
 		q-btn(unelevated size="sm" color="primary" label="Типовые образцы" @click="toTemplate") 
 		q-btn(unelevated size="sm" color="primary" label="Сделать локальную копию" @click="makeLocal") 
-		q-btn(flat round dense icon="mdi-close" color="secondary" @click="show1 = false") 
+		q-btn(flat round dense icon="mdi-close" color="secondary" @click="show1 = false" style="justify-self: end") 
 
 	.info1(v-if='!isEditable && show')
 		.row.items-center.q-gutter-x-sm
@@ -50,7 +50,7 @@ const isEditable = computed(() => {
 	align-items: center;
 	gap: 0.5rem;
 	// width: 760px;
-	grid-template-columns: 64px 500px 160px 190px 32px;
+	grid-template-columns: 64px 500px 160px 190px 1fr;
 	svg {
 		width: 50px;
 		height: 50px;
