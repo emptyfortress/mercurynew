@@ -2,12 +2,10 @@
 import { ref, computed } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import DndTable from '@/components/common/DndTable.vue'
-import ApproveTree from '@/components/decision/ApproveTree.vue'
 import { useRouter } from 'vue-router'
 import type { QTableColumn } from 'quasar'
 
 const router = useRouter()
-// const route = useRoute()
 
 const approveStore = useApproveStore()
 const name = computed(() => approveStore.selectedElement?.text)
@@ -283,7 +281,7 @@ const handleClick = (event: Event, row: any) => {
 					@rowClick='handleClick'
 				)
 					template(v-slot:body-cell-used='props')
-						q-td.text-right(:props='props') {{ approveStore.sample.counts.get(props.row.id) }}
+						q-td.text-right(:props='props') {{ props.row.count }}
 
 
 			q-card-actions(align="right")

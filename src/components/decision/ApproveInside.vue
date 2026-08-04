@@ -46,7 +46,8 @@ div(v-if='selectedElement')
 					span(v-if='selectedElement.type == 2 && !selectedElement.template') Маршрут
 					span(v-if='selectedElement.type == 3 && selectedElement.template') Типовой этап
 					span(v-if='selectedElement.type == 3 && !selectedElement.template') Этап
-					span(v-if='selectedElement.type == 1') Согласование
+					span(v-if='selectedElement.type == 1 && selectedElement.template') Типовое согласование
+					span(v-if='selectedElement.type == 1 && !selectedElement.template') Согласование
 					span(v-if='selectedElement.type == 0') Папка
 				.zg {{ selectedElement?.text }}
 

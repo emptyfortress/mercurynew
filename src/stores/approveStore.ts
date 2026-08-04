@@ -788,7 +788,12 @@ export const useApproveStore = defineStore('approveStore', () => {
 	})
 
 	const sharedEtaps = computed(() => {
-		return sample.value.result.filter((el) => el.type == 3)
+		return sample.value.result
+			.filter((el) => el.type === 3)
+			.map((node) => ({
+				...node,
+				count: sample.value.counts.get(node.id) ?? 0,
+			}))
 	})
 
 	const treeData1 = computed<TreeElement[]>(() => [
