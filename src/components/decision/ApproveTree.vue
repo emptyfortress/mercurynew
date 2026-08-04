@@ -10,7 +10,6 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 import WordHighlighter from 'vue-word-highlighter'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
-import MaterialIconThemeTemplate from '@/components/icons/MaterialIconThemeTemplate.vue'
 
 // import CreateDialog from '@/components/decision/CreateDialog.vue'
 
@@ -24,7 +23,6 @@ const approveStore = useApproveStore()
 
 const tree = ref()
 const query = ref('')
-// const dialog = ref(false)
 
 const sourceData = computed(() => approveStore.activeTreeData)
 
@@ -68,6 +66,26 @@ watch(sourceData, (val) => {
 		}, 200)
 	}
 })
+
+watch(
+	() => route.params.viewId,
+	async (viewId, oldViewId) => {
+		if (!viewId) return
+		await nextTick()
+		if (!approveStore.nodesMap.has(viewId.toString())) return // данные ещё не готовы
+
+		const prevId = oldViewId?.toString() ?? approveStore.selectedElement?.id
+		if (prevId) {
+			const prevNode = approveStore.nodesMap.get(prevId)
+			if (prevNode) prevNode.selected = false
+		}
+		const node = approveStore.getNodeById(viewId.toString())
+		const stat = tree.value.getStat(node)
+		tree.value.openNodeAndParents(stat)
+		select(stat)
+	},
+	{ immediate: true }
+)
 
 const select = (stat: Stat) => {
 	approveStore.selectNode(stat, router)
@@ -181,6 +199,44 @@ watchEffect(() => {
 		let one = tree.value.getStat(temp)
 		select(one)
 		approveStore.toggleDuplicate()
+	}
+	if (approveStore.addRequest === true && approveStore.addTemp == null) {
+		let temp = {
+			id: Date.now().toString(),
+			text: 'Новый этап',
+			virtual: false,
+			hidden: false,
+			type: 3,
+			children: [],
+		}
+		if (approveStore.selectedElement) {
+			const tmp = tree.value.getStat(approveStore.selectedElement)
+			tree.value.add(temp, tmp)
+		}
+		nextTick()
+		const newStat = tree.value.getStat(temp)
+		select(newStat)
+		approveStore.toggleAdd(null)
+	}
+	if (approveStore.addRequest === true && approveStore.addTemp !== null) {
+		let temp = {
+			id: approveStore.addCopy ? Date.now().toString() : approveStore.addTemp.id,
+			text: approveStore.addCopy ? approveStore.addTemp.text + '-copy' : approveStore.addTemp.text,
+			virtual: false,
+			hidden: false,
+			type: 3,
+			template: approveStore.addCopy ? false : true,
+			children: [],
+		}
+		if (approveStore.selectedElement) {
+			const tmp = tree.value.getStat(approveStore.selectedElement)
+			tree.value.add(temp, tmp)
+		}
+		nextTick()
+		const newStat = tree.value.getStat(temp)
+		select(newStat)
+		approveStore.toggleAdd(null)
+		approveStore.addCopy = false
 	}
 })
 

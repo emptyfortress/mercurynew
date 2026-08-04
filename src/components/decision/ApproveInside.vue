@@ -42,7 +42,8 @@ div(v-if='selectedElement')
 				q-icon.fold(v-if="selectedElement.template" name="mdi-share-variant" color="secondary")
 			div
 				.text-overline
-					span(v-if='selectedElement.type == 2') Маршрут
+					span(v-if='selectedElement.type == 2 && selectedElement.template') Типовой маршрут
+					span(v-if='selectedElement.type == 2 && !selectedElement.template') Маршрут
 					span(v-if='selectedElement.type == 3 && selectedElement.template') Типовой этап
 					span(v-if='selectedElement.type == 3 && !selectedElement.template') Этап
 					span(v-if='selectedElement.type == 1') Согласование

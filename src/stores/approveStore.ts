@@ -29,7 +29,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 			selected: false,
 			hidden: false,
 			type: 0,
-			author: 'System',
+			author: 'admin',
 			fields: [],
 			children: [
 				{
@@ -39,7 +39,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 1,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [
 						{
@@ -49,7 +49,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							template: true,
 							fields: [],
 							children: [
@@ -60,7 +60,8 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
+									template: true,
 									fields: [],
 									children: [],
 								},
@@ -71,7 +72,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									template: true,
 									fields: [],
 									children: [],
@@ -83,7 +84,8 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
+									template: true,
 									fields: [],
 									children: [],
 								},
@@ -96,7 +98,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -106,7 +108,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -117,7 +119,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -128,7 +130,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -141,7 +143,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -151,7 +153,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -162,7 +164,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -177,7 +179,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 1,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [
 						{
@@ -187,7 +189,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -197,7 +199,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -208,7 +210,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -219,7 +221,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -232,7 +234,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -242,7 +244,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -253,7 +255,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -268,7 +270,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 1,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [
 						{
@@ -278,7 +280,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -288,7 +290,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -299,7 +301,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -312,7 +314,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -322,7 +324,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -333,7 +335,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -344,7 +346,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -361,7 +363,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 			selected: false,
 			hidden: false,
 			type: 0,
-			author: 'System',
+			author: 'admin',
 			fields: [],
 			children: [
 				{
@@ -371,7 +373,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 1,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [
 						{
@@ -381,7 +383,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -391,7 +393,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -402,7 +404,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -415,7 +417,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -425,7 +427,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -436,7 +438,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -451,7 +453,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 1,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [
 						{
@@ -461,7 +463,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -471,7 +473,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -482,7 +484,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -495,7 +497,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -505,7 +507,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -516,7 +518,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -531,7 +533,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 1,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [
 						{
@@ -541,7 +543,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -551,7 +553,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -562,7 +564,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -575,7 +577,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -585,7 +587,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -596,7 +598,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -611,7 +613,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 1,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [
 						{
@@ -621,7 +623,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -631,7 +633,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -642,7 +644,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -655,7 +657,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 							selected: false,
 							hidden: false,
 							type: 2,
-							author: 'System',
+							author: 'admin',
 							fields: [],
 							children: [
 								{
@@ -665,7 +667,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -676,7 +678,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 									selected: false,
 									hidden: false,
 									type: 3,
-									author: 'System',
+									author: 'admin',
 									fields: [],
 									children: [],
 								},
@@ -693,7 +695,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 			selected: false,
 			hidden: false,
 			type: 0,
-			author: 'System',
+			author: 'admin',
 			fields: [],
 			children: [
 				{
@@ -703,7 +705,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 3,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [],
 				},
@@ -714,7 +716,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 3,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [],
 				},
@@ -725,7 +727,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 1,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [],
 				},
@@ -736,7 +738,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 					selected: false,
 					hidden: false,
 					type: 2,
-					author: 'System',
+					author: 'admin',
 					fields: [],
 					children: [],
 				},
@@ -744,25 +746,51 @@ export const useApproveStore = defineStore('approveStore', () => {
 		},
 	])
 
+	// const sample = computed(() => {
+	// 	const result: (typeof treeData.value)[number][] = []
+	//
+	// 	const walk = (nodes: typeof treeData.value) => {
+	// 		for (const node of nodes) {
+	// 			if (node.template === true) {
+	// 				result.push(node)
+	// 			}
+	//
+	// 			if (node.children.length > 0) {
+	// 				walk(node.children ?? [])
+	// 			}
+	// 		}
+	// 	}
+	//
+	// 	walk(treeData.value)
+	//
+	// 	return result
+	// })
+
 	const sample = computed(() => {
 		const result: (typeof treeData.value)[number][] = []
-
+		const counts = new Map<string, number>()
 		const walk = (nodes: typeof treeData.value) => {
 			for (const node of nodes) {
 				if (node.template === true) {
-					result.push(node)
+					const count = (counts.get(node.id) ?? 0) + 1
+					counts.set(node.id, count)
+					if (count === 1) {
+						result.push(node)
+					}
 				}
-
 				if (node.children.length > 0) {
 					walk(node.children ?? [])
 				}
 			}
 		}
-
 		walk(treeData.value)
-
-		return result
+		return { result, counts }
 	})
+
+	const sharedEtaps = computed(() => {
+		return sample.value.result.filter((el) => el.type == 3)
+	})
+
 	const treeData1 = computed<TreeElement[]>(() => [
 		{
 			id: 'template',
@@ -772,7 +800,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 			hidden: false,
 			type: 0,
 			fields: [],
-			children: sample.value,
+			children: sample.value.result,
 		},
 	])
 
@@ -781,6 +809,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 	const currentNode = ref<any>(null)
 	const deleteRequest = ref(false)
 	const duplicateRequest = ref(false)
+	const addRequest = ref(false)
 
 	// === Chip list state ===
 	const list = ref([
@@ -903,6 +932,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 			children: [],
 			edit: false,
 			author: 'System',
+			template: false,
 			fields: [],
 		}
 		if (parent.children) {
@@ -920,6 +950,15 @@ export const useApproveStore = defineStore('approveStore', () => {
 	}
 
 	// === Store control functions ===
+
+	const addTemp = ref<null | TreeElement>(null)
+	const addCopy = ref(false)
+
+	function toggleAdd(e: null | TreeElement) {
+		addTemp.value = e
+		addRequest.value = !addRequest.value
+	}
+
 	function toggleDelete() {
 		deleteRequest.value = !deleteRequest.value
 	}
@@ -945,11 +984,15 @@ export const useApproveStore = defineStore('approveStore', () => {
 
 	return {
 		treeData,
-		// sample,
+		sample,
+		sharedEtaps,
 		treeData1,
 		selectedElement,
 		currentNode,
 		deleteRequest,
+		addRequest,
+		addCopy,
+		addTemp,
 		duplicateRequest,
 		list,
 		selectedChip,
@@ -973,5 +1016,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 		toggleDuplicate,
 		selectChip,
 		typovoy,
+		toggleAdd,
 	}
 })

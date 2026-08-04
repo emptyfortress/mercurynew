@@ -198,7 +198,7 @@ interface NodeData {
 	and?: boolean
 	kind?: Kind
 	param?: boolean
-	children: any[]
+	children: NodeData[]
 }
 
 type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'

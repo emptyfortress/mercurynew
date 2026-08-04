@@ -2,6 +2,12 @@
 import { ref, computed } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import DndTable from '@/components/common/DndTable.vue'
+import ApproveTree from '@/components/decision/ApproveTree.vue'
+import { useRouter } from 'vue-router'
+import type { QTableColumn } from 'quasar'
+
+const router = useRouter()
+// const route = useRoute()
 
 const approveStore = useApproveStore()
 const name = computed(() => approveStore.selectedElement?.text)
@@ -134,6 +140,72 @@ const rows1 = ref([
 		state: 'Согласован',
 	},
 ])
+
+const selectedId = ref(null)
+const good = ref('')
+
+const remove = (row: any) => {
+	let ind = approveStore.selectedElement?.children.findIndex((el) => el.id == row.id)
+	if (ind !== undefined && ind > -1) {
+		approveStore.selectedElement?.children.splice(ind, 1)
+	}
+}
+
+const remove1 = (row: any) => {
+	let ind = rows1.value.findIndex((el) => el.id == row.id)
+	if (ind !== undefined && ind > -1) {
+		rows1.value.splice(ind, 1)
+	}
+}
+
+const addEtap = () => {
+	approveStore.toggleAdd(null)
+}
+
+const goedit = (row: any) => {
+	router.push({
+		name: 'start',
+		params: {
+			viewId: row.id,
+		},
+	})
+}
+
+const colsAdd: QTableColumn[] = [
+	{
+		name: 'text',
+		label: 'Этап',
+		field: 'text',
+		align: 'left',
+	},
+	{
+		name: 'author',
+		label: 'Автор',
+		field: 'author',
+		align: 'left',
+	},
+	{
+		name: 'used',
+		label: 'Использование',
+		field: 'used',
+		align: 'right',
+	},
+]
+
+const selectedAdd = ref<any[]>([])
+const query = ref(null)
+const link = () => {
+	approveStore.toggleAdd(selectedAdd.value[0])
+}
+const copy = () => {
+	selectedAdd.value[0].template = false
+	approveStore.addCopy = true
+	approveStore.toggleAdd(selectedAdd.value[0])
+}
+
+const handleClick = (event: Event, row: any) => {
+	selectedAdd.value[0] = row
+}
 </script>
 
 <template lang="pug">
@@ -154,13 +226,13 @@ const rows1 = ref([
 
 	fieldset
 		legend Карта этапов
-		DndTable(:columns='cols' :rows='rows')
+		DndTable(:columns='cols' :rows='rows' v-model:selected='selectedId' @removeRow="remove" @edit='goedit')
 			template(#cell-condition="{ row }")
-				q-chip(v-if='row.condition' color="green-3" size="sm" selected clickable @click="edit") Условие
-				q-chip(v-if='!row.condition' size="sm" clickable textColor="black") Задать
+				q-chip(v-if='row.condition' color="green-3" size="sm" selected clickable @click.stop="edit") Условие
+				q-chip(v-if='!row.condition' size="sm" clickable textColor="black" @click.stop='') Задать
 
 			template(#cell-repeat="{ row }")
-				.sel
+				.sel(@click.stop)
 					span {{ row.repeat }}
 					q-menu
 						q-list
@@ -168,28 +240,68 @@ const rows1 = ref([
 								q-item-section {{ item }}
 
 
-		q-btn.q-mt-sm(unelevated color="primary" label="Добавить этап" icon="mdi-plus-circle" @click="showAddDialog" size="sm") 
+		.special
+			q-btn.q-mt-sm(unelevated color="primary" label="Создать этап" icon="mdi-plus-circle" @click="addEtap" size="sm") 
+			q-btn.q-mt-sm(unelevated color="primary" label="Добавить этап" icon="mdi-link-variant" @click="showAddDialog" size="sm") 
+			template(v-if='selectedId')
+				div
+				q-input.q-mt-sm(v-model="good" label='Отрицательное завершение' dense outlined hideBottomSpace)
+					template(v-slot:append)
+						q-icon(name="mdi-dots-horizontal" color="secondary")
+						q-icon(name="mdi-close" color="secondary" size="xs")
+				q-input.q-mt-sm(v-model="good"  label='Положительное завершение' dense outlined)
+					template(v-slot:append)
+						q-icon(name="mdi-dots-horizontal" color="secondary")
+						q-icon(name="mdi-close" color="secondary" size="xs")
 
 	fieldset
 		legend Настройка итоговых состояних документов
-		DndTable(:columns='cols1' :rows='rows1')
+		DndTable(:columns='cols1' :rows='rows1' @removeRow="remove1")
+		q-btn.q-mt-sm(unelevated color="primary" label="Добавить состояние" icon="mdi-plus-circle" @click="showAddDialog" size="sm") 
 
 	q-dialog(v-model="addDialog" backdrop-filter="blur(4px) saturate(150%)")
-		q-card
+		q-card(style='width: 640px; min-height: 200px')
 			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 			q-card-section
-				.text-h6 Добавить этап
+				.text-h6 Добавить типовой этап
 
 			q-card-section
-				div Список типовых образцов доступных этапов
-				q-input(v-model="name" dense label="Название" outlined)
+				q-input(v-model="query" dense clearable)
+					template(v-slot:prepend)
+						q-icon(name="mdi-magnify" color="primary")
+				q-table.q-mt-md(
+					flat
+					color="primary"
+					:columns="colsAdd"
+					:rows="approveStore.sharedEtaps"
+					row-key="id"
+					:filter='query'
+					hideBottom
+					selection="single"
+					v-model:selected="selectedAdd"
+					dense
+					@rowClick='handleClick'
+				)
+					template(v-slot:body-cell-used='props')
+						q-td.text-right(:props='props') {{ approveStore.sample.counts.get(props.row.id) }}
+
 
 			q-card-actions(align="right")
 				q-btn(flat color="primary" label="Отмена" v-close-popup) 
-				q-btn(unelevated color="primary" label="OK" @click="") 
+				q-space
+				q-btn(flat color="primary" label="Сделать копию" @click="copy") 
+				q-btn(unelevated color="primary" label="Вставить ссылку" @click="link") 
 </template>
 
 <style scoped lang="scss">
+.special {
+	display: grid;
+	grid-template-columns: auto auto 50px 1fr 1fr;
+	// justify-items: start;
+	align-items: center;
+	column-gap: 0.5rem;
+	row-gap: 0.5rem;
+}
 .sel {
 	font-size: 13px;
 	color: $primary;
@@ -202,7 +314,7 @@ const rows1 = ref([
 		vertical-align: middle;
 
 		border-bottom: 1px solid #999;
-		padding: 2px 8px;
+		padding: 1px 8px;
 		background: #dedede;
 		border-radius: 3px;
 		cursor: pointer;
@@ -228,5 +340,8 @@ const rows1 = ref([
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
+}
+.fold {
+	font-size: 0.9rem;
 }
 </style>

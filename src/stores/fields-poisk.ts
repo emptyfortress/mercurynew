@@ -16,6 +16,7 @@ const operators = [
 		fields: [],
 		synparents: [],
 		syn: [],
+		children: [],
 	},
 	{
 		id: '2',
@@ -32,6 +33,7 @@ const operators = [
 		fields: [],
 		synparents: [],
 		syn: [],
+		children: [],
 	},
 ]
 const fields = [
