@@ -80,8 +80,9 @@ const rows = computed(() => {
 	}))
 })
 
-const edit = () => {
-	console.log(111)
+const conditionDialog = ref(false)
+const setCondition = () => {
+	conditionDialog.value = !conditionDialog.value
 }
 
 const addDialog = ref(false)
@@ -226,8 +227,8 @@ const handleClick = (event: Event, row: any) => {
 		legend Карта этапов
 		DndTable(:columns='cols' :rows='rows' v-model:selected='selectedId' @removeRow="remove" @edit='goedit')
 			template(#cell-condition="{ row }")
-				q-chip(v-if='row.condition' color="green-3" size="sm" selected clickable @click.stop="edit") Условие
-				q-chip(v-if='!row.condition' size="sm" clickable textColor="black" @click.stop='') Задать
+				q-chip(v-if='row.condition' color="green-3" size="sm" selected clickable @click.stop="setCondition") Условие
+				q-chip(v-if='!row.condition' size="sm" clickable textColor="black" @click.stop='setCondition') Задать
 
 			template(#cell-repeat="{ row }")
 				.sel(@click.stop)
@@ -289,6 +290,18 @@ const handleClick = (event: Event, row: any) => {
 				q-space
 				q-btn(flat color="primary" label="Сделать копию" @click="copy") 
 				q-btn(unelevated color="primary" label="Вставить ссылку" @click="link") 
+
+	q-dialog(v-model="conditionDialog" backdrop-filter="blur(4px) saturate(150%)")
+		q-card
+			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
+			q-card-section
+				.text-h6 Условие старта этапа
+
+			q-card-section
+				div Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.
+			q-card-actions(align="right")
+				q-btn(flat color="primary" label="Отмена" v-close-popup) 
+				q-btn(unelevated color="primary" label="OK" @click="") 
 </template>
 
 <style scoped lang="scss">

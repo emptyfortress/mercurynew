@@ -3,7 +3,7 @@ import MyComponentDev from './pages/Column.dev.vue'
 
 const devRoutes: RouteRecordRaw[] = [
 	{
-		path: '/dev/column',
+		path: '/dev/test',
 		name: 'Column',
 		component: MyComponentDev,
 	},
