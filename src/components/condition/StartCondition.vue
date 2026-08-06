@@ -6,6 +6,7 @@ import type {
 	ConditionGroupNode,
 	ConditionLeafNode,
 } from '@/components/condition/conditionTypes'
+import { uid } from 'quasar'
 
 const etaps = ref([
 	{
@@ -71,15 +72,18 @@ const etaps = ref([
 const dialog = ref(false)
 const goal = ref('dogovor-1-1-3')
 
-function createEmptyGroup() {
-	return {
-		id: crypto.randomUUID(),
-		type: 'AND',
-		children: [],
-	}
+function createEmptyGroup(): ConditionGroupNode {
+	return [
+		{
+			id: 'root',
+			type: 'AND',
+			kind: 'group',
+			children: [],
+		},
+	]
 }
 
-const tree = ref(createEmptyGroup())
+const tree = ref<ConditionGroupNode>(createEmptyGroup())
 
 const options = computed(() => etaps.value)
 
