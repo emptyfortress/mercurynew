@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import { ref } from 'vue'
 // import Component from '@/components/decision/GroupPanel.vue'
-import Component from '@/components/condition/StartCondition.vue'
+// import Component from '@/components/condition/StartCondition.vue'
 </script>
 
 <template lang="pug">

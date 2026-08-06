@@ -26,7 +26,7 @@ const treeRef = ref()
 
 const props = defineProps<{
 	etapList: List[]
-	goalStage: Object | null
+	goalStage: List | null
 	tree: ConditionGroupNode
 }>()
 
@@ -46,7 +46,7 @@ const treeData = computed({
 	},
 })
 
-const createEmptyGroup = () => {
+const createEmptyGroup = (): ConditionGroupNode => {
 	return {
 		id: 'root',
 		type: 'AND',
@@ -58,7 +58,7 @@ const createEmptyGroup = () => {
 watch(
 	() => props.goalStage,
 	(newGoalStage) => {
-		if (newGoalStage?.condition) {
+		if (!!newGoalStage && newGoalStage.condition) {
 			localTree.value = JSON.parse(JSON.stringify(newGoalStage.condition))
 		} else {
 			localTree.value = createEmptyGroup()
@@ -68,7 +68,9 @@ watch(
 )
 
 // Список этапов минус целевой
-const stageOptions = computed(() => props.etapList.filter((etap) => etap.id !== props.goalStage.id))
+const stageOptions = computed(() =>
+	props.etapList.filter((etap) => etap.id !== props.goalStage?.id)
+)
 
 // Сохранение и закрытие
 const handleSave = () => {
