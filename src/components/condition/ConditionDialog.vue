@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
@@ -18,6 +18,7 @@ interface List {
 	hidden: boolean
 	type: number
 	author: string
+	condition?: any
 }
 
 const modelValue = defineModel<boolean>()
@@ -25,17 +26,13 @@ const treeRef = ref()
 
 const props = defineProps<{
 	etapList: List[]
-	goalStageId: string | null
+	goalStage: Object | null
 	tree: ConditionGroupNode
 }>()
 
 const emit = defineEmits<{
-	'update:tree': [value: ConditionGroupNode]
+	'update:tree': [cond: ConditionGroupNode, etap: any]
 }>()
-
-const goalStage = computed(() => {
-	return props.etapList.find((el: List) => el.id == props.goalStageId)
-})
 
 // Локальная копия дерева для редактирования в модалке
 // localTree остаётся единственным источником правды — объект
@@ -49,13 +46,33 @@ const treeData = computed({
 	},
 })
 
+const createEmptyGroup = () => {
+	return {
+		id: 'root',
+		type: 'AND',
+		kind: 'group',
+		children: [],
+	}
+}
+
+watch(
+	() => props.goalStage,
+	(newGoalStage) => {
+		if (newGoalStage?.condition) {
+			localTree.value = JSON.parse(JSON.stringify(newGoalStage.condition))
+		} else {
+			localTree.value = createEmptyGroup()
+		}
+	},
+	{ immediate: true }
+)
+
 // Список этапов минус целевой
-const stageOptions = computed(() => props.etapList.filter((etap) => etap.id !== props.goalStageId))
+const stageOptions = computed(() => props.etapList.filter((etap) => etap.id !== props.goalStage.id))
 
 // Сохранение и закрытие
 const handleSave = () => {
-	// emit('update:tree', localTree.value)
-	emit('update:tree', treeRef.value)
+	emit('update:tree', localTree.value, props.goalStage)
 	modelValue.value = false
 }
 

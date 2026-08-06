@@ -5,11 +5,18 @@ import DndTable from '@/components/common/DndTable.vue'
 import { useRouter } from 'vue-router'
 import type { QTableColumn } from 'quasar'
 import ConditionDialog from '@/components/condition/ConditionDialog.vue'
-import type {
-	ConditionNode,
-	ConditionGroupNode,
-	ConditionLeafNode,
-} from '@/components/condition/conditionTypes'
+import type { ConditionGroupNode } from '@/components/condition/conditionTypes'
+
+interface List {
+	id: string
+	text: string
+	text1: string
+	selected: boolean
+	hidden: boolean
+	type: number
+	author: string
+	condition?: ConditionGroupNode
+}
 
 const router = useRouter()
 
@@ -79,7 +86,7 @@ const rows = computed(() => {
 		text1: '',
 		first: index == 0,
 		repeat: 'Всегда',
-		condition: index === children.length - 1,
+		condition: null,
 		regim: index == 0 ? 'Согласование' : 'Консолидация',
 		marsh: index == 1 ? 'Параллельно' : 'Последовательно',
 		sogl: index == 0 ? 'Согласующие' : 'Инициатор',
@@ -91,8 +98,9 @@ const rows = computed(() => {
 })
 
 const conditionDialog = ref(false)
+
 const setCondition = (row: any) => {
-	goal.value = row.id
+	goal.value = row
 	conditionDialog.value = !conditionDialog.value
 }
 
@@ -217,18 +225,6 @@ const handleClick = (event: Event, row: any) => {
 	selectedAdd.value[0] = row
 }
 
-// function createEmptyGroup(): ConditionGroupNode {
-// 	return [
-// 		{
-// 			id: 'root',
-// 			type: 'AND',
-// 			kind: 'group',
-// 			children: [],
-// 		},
-// 	]
-// }
-
-// const tree = ref<ConditionGroupNode>(createEmptyGroup())
 const tree = ref<ConditionGroupNode>({
 	id: 'root',
 	type: 'AND',
@@ -236,9 +232,13 @@ const tree = ref<ConditionGroupNode>({
 	children: [],
 })
 
-const goal = ref()
+const goal = ref<List | null>(null)
 
-const save = (e: any) => {}
+const save = (e: any) => {
+	if (goal.value) {
+		goal.value.condition = e
+	}
+}
 </script>
 
 <template lang="pug">
@@ -328,7 +328,7 @@ const save = (e: any) => {}
 	ConditionDialog(
 		v-model="conditionDialog"
 		:etap-list="rows"
-		:goal-stage-id='goal'
+		:goal-stage='goal'
 		:tree="tree"
 		@update:tree="save"
 	)
