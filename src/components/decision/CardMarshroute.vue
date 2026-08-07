@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
 import type { QTableColumn } from 'quasar'
 import ConditionDialog from '@/components/condition/ConditionDialog.vue'
 import type { ConditionGroupNode } from '@/components/condition/conditionTypes'
+import type { TreeElement } from '@/components/condition/conditionTypes'
 
 interface List {
 	id: string
@@ -79,8 +80,11 @@ const cols = [
 	},
 ]
 
-const rows = computed(() => {
-	const children = approveStore.selectedElement?.children ?? []
+const etapsRows = computed(() => {
+	var children: TreeElement[] = []
+	if (!!approveStore.selectedElement) {
+		children = approveStore.getChildren(approveStore.selectedElement.id)
+	}
 	return children.map((child, index) => ({
 		...child,
 		text1: '',
@@ -104,8 +108,12 @@ const setCondition = (row: any) => {
 	conditionDialog.value = !conditionDialog.value
 }
 
+const linked = ref(false)
 const addDialog = ref(false)
-const showAddDialog = () => {
+const showAddDialog = (n: number) => {
+	if (n == 1) {
+		linked.value = true
+	} else linked.value = false
 	addDialog.value = !addDialog.value
 }
 
@@ -259,7 +267,7 @@ const save = (e: any) => {
 
 	fieldset
 		legend Карта этапов
-		DndTable(:columns='cols' :rows='rows' v-model:selected='selectedId' @removeRow="remove" @edit='goedit')
+		DndTable(:columns='cols' :rows='etapsRows' v-model:selected='selectedId' @removeRow="remove" @edit='goedit')
 			template(#cell-condition="{ row }")
 				q-chip(v-if='row.condition' color="green-3" size="sm" selected clickable @click.stop="setCondition(row)") Условие
 				q-chip(v-if='!row.condition' size="sm" clickable textColor="black" @click.stop='setCondition(row)') Задать
@@ -274,8 +282,8 @@ const save = (e: any) => {
 
 
 		.special
-			q-btn.q-mt-sm(unelevated color="primary" label="Создать этап" icon="mdi-plus-circle" @click="addEtap" size="sm") 
-			q-btn.q-mt-sm(unelevated color="primary" label="Добавить этап" icon="mdi-link-variant" @click="showAddDialog" size="sm") 
+			q-btn.q-mt-sm(unelevated color="primary" label="Создать этап" icon="mdi-plus-circle" @click="showAddDialog(0)" size="sm") 
+			q-btn.q-mt-sm(unelevated color="primary" label="Добавить этап" icon="mdi-link-variant" @click="showAddDialog(1)" size="sm") 
 			template(v-if='selectedId')
 				div
 				q-input.q-mt-sm(v-model="good" label='Отрицательное завершение' dense outlined hideBottomSpace)
@@ -290,19 +298,23 @@ const save = (e: any) => {
 	fieldset
 		legend Настройка итоговых состояних документов
 		DndTable(:columns='cols1' :rows='rows1' @removeRow="remove1")
-		q-btn.q-mt-sm(unelevated color="primary" label="Добавить состояние" icon="mdi-plus-circle" @click="showAddDialog" size="sm") 
+		q-btn.q-mt-sm(unelevated color="primary" label="Добавить состояние" icon="mdi-plus-circle" @click="" size="sm") 
 
 	q-dialog(v-model="addDialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-card(style='width: 640px; min-height: 200px')
 			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
 			q-card-section
-				.text-h6 Добавить типовой этап
+				.text-h6
+					span(v-if='linked') Добавить этап
+					span(v-else) Создать новый этап
+
 
 			q-card-section
 				q-input(v-model="query" dense clearable)
 					template(v-slot:prepend)
 						q-icon(name="mdi-magnify" color="primary")
-				q-table.q-mt-md(
+
+				// q-table.q-mt-md(
 					flat
 					color="primary"
 					:columns="colsAdd"
@@ -314,7 +326,7 @@ const save = (e: any) => {
 					v-model:selected="selectedAdd"
 					dense
 					@rowClick='handleClick'
-				)
+					)
 					template(v-slot:body-cell-used='props')
 						q-td.text-right(:props='props') {{ props.row.count }}
 
@@ -327,7 +339,7 @@ const save = (e: any) => {
 
 	ConditionDialog(
 		v-model="conditionDialog"
-		:etap-list="rows"
+		:etap-list="etapsRows"
 		:goal-stage='goal'
 		:tree="tree"
 		@update:tree="save"

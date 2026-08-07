@@ -9,6 +9,7 @@ import type {
 	ConditionLeafNode,
 } from '@/components/condition/conditionTypes'
 import { ConditionResult } from '@/components/condition/conditionTypes'
+import { FileType } from '@/components/condition/conditionTypes'
 
 interface List {
 	id: string
@@ -16,7 +17,7 @@ interface List {
 	text1: string
 	selected: boolean
 	hidden: boolean
-	type: number
+	fileType?: FileType
 	author: string
 	condition?: any
 }

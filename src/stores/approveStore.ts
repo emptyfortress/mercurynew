@@ -27,6 +27,24 @@ export const useApproveStore = defineStore('approveStore', () => {
 	const flatNodes = computed(() => flatten(treeData.value))
 	const nodesMap = computed(() => new Map(flatNodes.value.map((node) => [node.id, node])))
 
+	const childrenMap = computed(() => {
+		const map = new Map<string, TreeElement[]>()
+
+		for (const node of flatNodes.value) {
+			if (!node.parentId) {
+				continue
+			}
+
+			const arr = map.get(node.parentId) ?? []
+			arr.push(node)
+			map.set(node.parentId, arr)
+		}
+
+		return map
+	})
+
+	const getChildren = (parentId: string): TreeElement[] => childrenMap.value.get(parentId) ?? []
+
 	// === Tree utilities ===
 	const getNodeById = (id: string): TreeElement | undefined => nodesMap.value.get(id)
 
@@ -245,6 +263,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 		getNodeById,
 		getNameById,
 		getNameByFolderId,
+		getChildren,
 		updateTreeData,
 		updateSelectedElement,
 		removeById,

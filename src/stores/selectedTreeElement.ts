@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export interface TreeElement {
+interface TreeElement {
 	id: number
 	text: string
 	name?: string
