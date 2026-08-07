@@ -1,0 +1,248 @@
+import { FileType } from '@/components/condition/conditionTypes'
+
+const treeData = [
+	{
+		id: 'root',
+		text: 'Папки',
+		filetype: FileType.Folder,
+		open: true,
+		children: [
+			{
+				id: 'soglasovanie-test',
+				text: 'Согласование-тест',
+				filetype: FileType.Folder,
+				children: [
+					{
+						id: 'approval-test-1',
+						parentId: 'soglasovanie-test',
+						text: 'Согласование договора поставки',
+						filetype: FileType.Approving,
+						children: [],
+					},
+					{
+						id: 'approval-test-1-route-1',
+						parentId: 'approval-test-1',
+						text: 'Основной маршрут',
+						filetype: FileType.Route,
+						children: [],
+					},
+					{
+						id: 'approval-test-1-route-1-stage-1',
+						parentId: 'approval-test-1-route-1',
+						text: 'Подготовка документа',
+						filetype: FileType.Stage,
+						children: [],
+					},
+					{
+						id: 'approval-test-1-route-1-stage-2',
+						parentId: 'approval-test-1-route-1',
+						text: 'Проверка юристом',
+						filetype: FileType.Stage,
+						children: [],
+					},
+					{
+						id: 'approval-test-1-route-1-stage-3',
+						parentId: 'approval-test-1-route-1',
+						text: 'Утверждение руководителем',
+						filetype: FileType.Stage,
+						children: [],
+					},
+					{
+						id: 'approval-test-1-route-2',
+						parentId: 'approval-test-1',
+						text: 'Ускоренный маршрут',
+						filetype: FileType.Route,
+						children: [],
+					},
+					{
+						id: 'approval-test-1-route-2-stage-1',
+						parentId: 'approval-test-1-route-2',
+						text: 'Проверка документа',
+						filetype: FileType.Stage,
+						children: [],
+					},
+					{
+						id: 'approval-test-1-route-2-stage-2',
+						parentId: 'approval-test-1-route-2',
+						text: 'Согласование руководителем',
+						filetype: FileType.Stage,
+						children: [],
+					},
+					{
+						id: 'approval-test-1-route-2-stage-3',
+						parentId: 'approval-test-1-route-2',
+						text: 'Подписание',
+						filetype: FileType.Stage,
+						children: [],
+					},
+				],
+			},
+			{
+				id: 'konstruktor-soglasovaniy',
+				text: 'Конструктор согласований',
+				filetype: FileType.Folder,
+				children: [
+					{
+						id: 'dogovory',
+						text: 'Договоры',
+						filetype: FileType.Folder,
+						children: [
+							{
+								id: 'approval-contract-1',
+								text: 'Типовой договор поставки',
+								filetype: FileType.Approving,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-1',
+								text: 'Стандартный маршрут',
+								filetype: FileType.Route,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-1-stage-1',
+								text: 'Подготовка',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-test-1-route-2-stage-1',
+								text: 'Проверка документа',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-1-stage-2',
+								text: 'Юридическая экспертиза',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-1-stage-3',
+								text: 'Финансовое согласование',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-1-stage-4',
+								text: 'Подписание',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-2',
+								text: 'Маршрут для филиалов',
+								filetype: FileType.Route,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-2-stage-1',
+								text: 'Подготовка',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-2-stage-2',
+								text: 'Согласование филиалом',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-1-route-2-stage-3',
+								text: 'Утверждение директором',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2',
+								text: 'Договор аренды',
+								filetype: FileType.Approving,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2-route-1',
+								text: 'Основной маршрут',
+								filetype: FileType.Route,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2-route-1-stage-1',
+								text: 'Проверка документа',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2-route-1-stage-2',
+								text: 'Юридическое согласование',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2-route-1-stage-3',
+								text: 'Подписание',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2-route-2',
+								text: 'Экспресс-маршрут',
+								filetype: FileType.Route,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2-route-2-stage-1',
+								text: 'Проверка',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2-route-2-stage-2',
+								text: 'Подписание',
+								filetype: FileType.Stage,
+								children: [],
+							},
+							{
+								id: 'approval-contract-2-route-2-stage-3',
+								text: 'Регистрация',
+								filetype: FileType.Stage,
+								children: [],
+							},
+						],
+					},
+					{
+						id: 'archive',
+						text: 'Архив',
+						filetype: FileType.Folder,
+						children: [],
+					},
+				],
+			},
+			{
+				id: 'papki-podrazdeleniy',
+				text: 'Папки подразделений',
+				filetype: FileType.Folder,
+				children: [
+					{
+						id: 'otdel-kadrov',
+						text: 'Отдел кадров',
+						filetype: FileType.Folder,
+						children: [
+							{
+								id: 'file1',
+								text: 'Анкета сотрудника.txt',
+								filetype: FileType.Text,
+								children: [],
+							},
+							{
+								id: 'file2',
+								text: 'Должностные_обязанности.docx',
+								filetype: FileType.Word,
+								children: [],
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+]
