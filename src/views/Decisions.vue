@@ -68,6 +68,7 @@ q-page(padding)
 				router-view(v-slot="{ Component }")
 					transition(name="page" mode="out-in")
 						component(:is="Component" :key="route.fullPath")
+						// ApproveInside
 
 	Webframe(v-if='route.params.constructorId === "webframe"')
 	Poisk(v-if='route.params.constructorId === "search"')

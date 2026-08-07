@@ -68,11 +68,11 @@ const goedit = (row: any) => {
 	fieldset
 		legend Основные настройки
 		.grid2
-			q-input(v-model="name" label="Название" dense outlined :readonly='approveStore.typovoy')
+			q-input(v-model="name" label="Название" dense outlined )
 			.q-gutter-y-sm
 				q-checkbox(v-model='start' label='Запускать согласование без показа карточки' dense)
 				q-checkbox(v-model='files' label='Запускать согласование без показа карточки' dense)
-			q-input(v-model="name" label="Маршрут по умолчанию" dense outlined :readonly='approveStore.typovoy')
+			q-input(v-model="name" label="Маршрут по умолчанию" dense outlined )
 				template(v-slot:append)
 					q-icon(name="mdi-dots-horizontal" color="secondary")
 					q-icon(name="mdi-close" color="secondary")
@@ -91,6 +91,5 @@ const goedit = (row: any) => {
 	grid-template-columns: repeat(2, 1fr);
 	align-items: top;
 	column-gap: 1rem;
-	// row-gap: 0.5rem;
 }
 </style>

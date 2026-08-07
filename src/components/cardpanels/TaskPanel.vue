@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useApproveStore } from '@/stores/approveStore'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 
@@ -13,7 +12,6 @@ interface Item {
 	dva: boolean
 }
 
-const approveStore = useApproveStore()
 
 const name = ref('Согласование этапа')
 
@@ -51,7 +49,7 @@ const config = {
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
 	draggable: (child: HTMLElement) => {
-		return approveStore.typovoy ? false : child.classList.contains('node')
+		return child.classList.contains('node')
 	},
 }
 
@@ -159,11 +157,11 @@ const options1 = ['Процесс', 'Цикл', 'Этап']
 fieldset
 	legend Задание участника этапа
 	.grid2
-		q-select(v-model="vid" dense label="Вид" outlined :options="options" :readonly='approveStore.typovoy')
-		q-input(v-model="name" dense label="Название" outlined :readonly='approveStore.typovoy')
+		q-select(v-model="vid" dense label="Вид" outlined :options="options" )
+		q-input(v-model="name" dense label="Название" outlined )
 fieldset
 	legend Содержание
-	q-input(v-model="sod" type="textarea" dense outlined autogrow :readonly='approveStore.typovoy')
+	q-input(v-model="sod" type="textarea" dense outlined autogrow )
 
 fieldset
 	legend Варианты решений
@@ -186,41 +184,41 @@ fieldset
 			div {{ item.label }}
 			div {{ item.semantic }}
 			div {{ item.sign }}
-			q-btn(flat round icon="mdi-pencil-outline" color="secondary" @click.stop="edit(item)" size="sm" :disable='approveStore.typovoy')
-			q-btn(flat round icon="mdi-close" color="secondary" size="sm" :disable='approveStore.typovoy') 
+			q-btn(flat round icon="mdi-pencil-outline" color="secondary" @click.stop="edit(item)" size="sm" )
+			q-btn(flat round icon="mdi-close" color="secondary" size="sm" ) 
 				q-menu
 					q-list
 						q-item.pink(clickable @click="remove(item.id)")
 							q-item-section Удалить
 
 		.row.justify-between.items-center.q-mt-sm
-			q-btn(unelevated color="primary" label="Добавить" size="sm" icon="mdi-plus-circle" @click="add" :disable='approveStore.typovoy') 
+			q-btn(unelevated color="primary" label="Добавить" size="sm" icon="mdi-plus-circle" @click="add" ) 
 			.q-gutter-x-md(v-if='selection')
-				q-checkbox(v-model='selection.raz' label='Не добавлять решение в лист согласования' dense :disable='approveStore.typovoy')
-				q-checkbox(v-model='selection.dva' label='Разрешать создавать подчиненные задания' dense :disable='approveStore.typovoy')
+				q-checkbox(v-model='selection.raz' label='Не добавлять решение в лист согласования' dense )
+				q-checkbox(v-model='selection.dva' label='Разрешать создавать подчиненные задания' dense )
 
 fieldset
 	legend Дополнительно
 	.grid2
 		.column.q-gutter-y-sm
-			q-input(v-model="business" dense label="Бизнес-календарь" outlined :readonly='approveStore.typovoy')
+			q-input(v-model="business" dense label="Бизнес-календарь" outlined )
 				template(v-slot:append)
 					q-icon(name="mdi-dots-horizontal" color="primary" )
 
 		.column.q-gutter-y-sm
-			q-select(v-model="business1" dense label="Уровень дерева версий" outlined :options="options1" :readonly='approveStore.typovoy')
+			q-select(v-model="business1" dense label="Уровень дерева версий" outlined :options="options1" )
 
 	.row.q-gutter-x-md.q-mt-md
-		q-input(v-model="dlit" dense label="Длительность (часы)" outlined type="number" :readonly='approveStore.typovoy')
-		q-input(v-model="dlit1" dense label="В следующих циклах" outlined type="number" :readonly='approveStore.typovoy')
-		q-radio(v-model="rad" val='one' label="Длительность указана для задания" dense :disable='approveStore.typovoy')
-		q-radio(v-model="rad" val='two' label="Длительность указана для этапа" dense :disable='approveStore.typovoy')
+		q-input(v-model="dlit" dense label="Длительность (часы)" outlined type="number" )
+		q-input(v-model="dlit1" dense label="В следующих циклах" outlined type="number" )
+		q-radio(v-model="rad" val='one' label="Длительность указана для задания" dense )
+		q-radio(v-model="rad" val='two' label="Длительность указана для этапа" dense )
 
 fieldset
 	legend Автосогласование
 	.grid2
-		q-checkbox.che(v-model='finish' label='Автоматически завершать согласование по истечении срока исполнения' dense :disable='approveStore.typovoy')
-		q-select(v-model="sem" dense label="Семантика завершения задания" outlined :options="semoptions" :readonly='approveStore.typovoy')
+		q-checkbox.che(v-model='finish' label='Автоматически завершать согласование по истечении срока исполнения' dense )
+		q-select(v-model="sem" dense label="Семантика завершения задания" outlined :options="semoptions" )
 
 q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
 	q-card()
@@ -231,9 +229,9 @@ q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-form(@submit="submit")
 			q-card-section
 				.column.q-gutter-y-sm
-					q-input(v-model="varName" autofocus  dense label="Название" outlined :readonly='approveStore.typovoy')
-					q-select(v-model="varSem" dense label="Семантика" outlined :options="semoptions" :readonly='approveStore.typovoy')
-					q-input(v-model="varMetka" dense label="Метка подписи" outlined :readonly='approveStore.typovoy')
+					q-input(v-model="varName" autofocus  dense label="Название" outlined )
+					q-select(v-model="varSem" dense label="Семантика" outlined :options="semoptions" )
+					q-input(v-model="varMetka" dense label="Метка подписи" outlined )
 					q-checkbox(v-model='varAdd' label='Не добавлять решение в лист согласования' dense)
 					q-checkbox(v-model='varAllow' label='Разрешать создавать подчиненные задания' dense)
 			q-card-actions(align="right")

@@ -1,7 +1,8 @@
 <script setup lang="ts"></script>
 
 <template lang="pug">
-h2 Hello folder
+.q-ma-md
+	.text-caption Карточка папки будет тут
 </template>
 
 <style scoped lang="scss"></style>

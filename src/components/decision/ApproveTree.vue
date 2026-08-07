@@ -10,6 +10,7 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 import WordHighlighter from 'vue-word-highlighter'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
+import { FileType } from '@/components/condition/conditionTypes'
 
 // import CreateDialog from '@/components/decision/CreateDialog.vue'
 
@@ -23,8 +24,6 @@ const approveStore = useApproveStore()
 
 const tree = ref()
 const query = ref('')
-
-// const sourceData = computed(() => approveStore.activeTreeData)
 
 const treeData = computed({
 	get: () => approveStore.activeTreeData,
@@ -58,14 +57,19 @@ watch(query, (newValue) => {
 	}
 })
 
-// watch(sourceData, (val) => {
-// 	if (val) {
-// 		setTimeout(() => {
-// 			const stat = tree.value.getStat(approveStore.selectedElement)
-// 			tree.value.openNodeAndParents(stat)
-// 		}, 200)
-// 	}
-// })
+watch(
+	treeData,
+	(val) => {
+		if (val) {
+			nextTick(() => {
+				tree.value.statsFlat
+					.filter((s) => s.data.open)
+					.forEach((s) => tree.value.openNodeAndParents(s))
+			})
+		}
+	},
+	{ immediate: true }
+)
 
 watch(
 	() => route.params.viewId,
@@ -137,15 +141,15 @@ const open = (nodeId: string) => {
 }
 
 // onMounted(() => {
-// 	if (!tree.value?.statsFlat) return
-// 	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
-// 	if (route.params.viewId) {
-// 		open(route.params.viewId.toString())
-// 	}
-// 	const firstNode = sourceData.value[0]
-// 	if (firstNode) {
-// 		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
-// 	}
+//	if (!tree.value?.statsFlat) return
+//	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
+//	if (route.params.viewId) {
+//		open(route.params.viewId.toString())
+//	}
+//	const firstNode = treeData.value[0]
+//	if (firstNode) {
+//		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
+//	}
 // })
 
 const create = (data: any) => {
@@ -260,9 +264,10 @@ const selectChip = (id: number) => {
 
 <template lang="pug">
 div
-	.row.q-mb-md
+	.q-mb-sm
 		q-chip(
 			clickable,
+			size='12px'
 			v-for="chip in approveStore.list",
 			:key="chip.id"
 			:selected='chip.selected'
@@ -288,6 +293,7 @@ div
 			treeLine
 			:treeLineOffset="18"
 			:indent="30"
+			:default-open='false'
 		)
 			template(#default="{ node, stat }")
 				.node(
@@ -309,12 +315,12 @@ div
 					WordHighlighter(:query="query") {{ node.text }}
 
 					// DirMenu(
-					// 	:mode='props.mode'
-					// 	:stat="stat"
-					// 	@kill="remove(stat)"
-					// 	@add="addFromMenu(stat)"
-					// 	@addFolder="addFolderFromMenu(stat)"
-					// 	@rename="edit(stat)"
+					//	:mode='props.mode'
+					//	:stat="stat"
+					//	@kill="remove(stat)"
+					//	@add="addFromMenu(stat)"
+					//	@addFolder="addFolderFromMenu(stat)"
+					//	@rename="edit(stat)"
 					// )
 
 	q-btn(flat icon="mdi-folder-multiple-plus-outline" color="primary" label="Подключить папки" size='sm') 
@@ -323,7 +329,7 @@ div
 		q-fab-action(color="primary" external-label label="Маршрут" label-position="left" @click="one")
 			MaterialSymbolsAltRoute(style='font-size: 1.5rem')
 		q-fab-action(color="primary" icon="mdi-message-check-outline" external-label label="Согласование" label-position="left"  @click="one")
-		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left"  @click="one")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left"	@click="one")
 
 		// CreateDialog(v-model="dialog" mode="approve" @create='create')
 </template>

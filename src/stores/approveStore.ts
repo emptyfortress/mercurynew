@@ -11,6 +11,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 			id: 'root',
 			text: 'Папки',
 			filetype: FileType.Folder,
+			open: true,
 			children: [
 				{
 					id: 'soglasovanie-test',
@@ -21,58 +22,58 @@ export const useApproveStore = defineStore('approveStore', () => {
 							id: 'approval-test-1',
 							text: 'Согласование договора поставки',
 							filetype: FileType.Approving,
-							children: [
-								{
-									id: 'approval-test-1-route-1',
-									text: 'Основной маршрут',
-									filetype: FileType.Route,
-									children: [
-										{
-											id: 'approval-test-1-route-1-stage-1',
-											text: 'Подготовка документа',
-											filetype: FileType.Stage,
-											children: [],
-										},
-										{
-											id: 'approval-test-1-route-1-stage-2',
-											text: 'Проверка юристом',
-											filetype: FileType.Stage,
-											children: [],
-										},
-										{
-											id: 'approval-test-1-route-1-stage-3',
-											text: 'Утверждение руководителем',
-											filetype: FileType.Stage,
-											children: [],
-										},
-									],
-								},
-								{
-									id: 'approval-test-1-route-2',
-									text: 'Ускоренный маршрут',
-									filetype: FileType.Route,
-									children: [
-										{
-											id: 'approval-test-1-route-2-stage-1',
-											text: 'Проверка документа',
-											filetype: FileType.Stage,
-											children: [],
-										},
-										{
-											id: 'approval-test-1-route-2-stage-2',
-											text: 'Согласование руководителем',
-											filetype: FileType.Stage,
-											children: [],
-										},
-										{
-											id: 'approval-test-1-route-2-stage-3',
-											text: 'Подписание',
-											filetype: FileType.Stage,
-											children: [],
-										},
-									],
-								},
-							],
+							children: [],
+							open: true,
+						},
+						{
+							id: 'approval-test-1-route-1',
+							text: 'Основной маршрут',
+							filetype: FileType.Route,
+							children: [],
+							open: true,
+						},
+						{
+							id: 'approval-test-1-route-1-stage-1',
+							text: 'Подготовка документа',
+							filetype: FileType.Stage,
+							children: [],
+							open: true,
+						},
+						{
+							id: 'approval-test-1-route-1-stage-2',
+							text: 'Проверка юристом',
+							filetype: FileType.Stage,
+							children: [],
+						},
+						{
+							id: 'approval-test-1-route-1-stage-3',
+							text: 'Утверждение руководителем',
+							filetype: FileType.Stage,
+							children: [],
+						},
+						{
+							id: 'approval-test-1-route-2',
+							text: 'Ускоренный маршрут',
+							filetype: FileType.Route,
+							children: [],
+						},
+						{
+							id: 'approval-test-1-route-2-stage-1',
+							text: 'Проверка документа',
+							filetype: FileType.Stage,
+							children: [],
+						},
+						{
+							id: 'approval-test-1-route-2-stage-2',
+							text: 'Согласование руководителем',
+							filetype: FileType.Stage,
+							children: [],
+						},
+						{
+							id: 'approval-test-1-route-2-stage-3',
+							text: 'Подписание',
+							filetype: FileType.Stage,
+							children: [],
 						},
 					],
 				},
@@ -82,12 +83,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 					filetype: FileType.Folder,
 					children: [
 						{
-							id: 'routes',
-							text: 'Мои согласования',
-							filetype: FileType.Folder,
-							children: [],
-						},
-						{
 							id: 'dogovory',
 							text: 'Договоры',
 							filetype: FileType.Folder,
@@ -96,121 +91,121 @@ export const useApproveStore = defineStore('approveStore', () => {
 									id: 'approval-contract-1',
 									text: 'Типовой договор поставки',
 									filetype: FileType.Approving,
-									children: [
-										{
-											id: 'approval-contract-1-route-1',
-											text: 'Стандартный маршрут',
-											filetype: FileType.Route,
-											children: [
-												{
-													id: 'approval-contract-1-route-1-stage-1',
-													text: 'Подготовка',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-1-route-1-stage-2',
-													text: 'Юридическая экспертиза',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-1-route-1-stage-3',
-													text: 'Финансовое согласование',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-1-route-1-stage-4',
-													text: 'Подписание',
-													filetype: FileType.Stage,
-													children: [],
-												},
-											],
-										},
-										{
-											id: 'approval-contract-1-route-2',
-											text: 'Маршрут для филиалов',
-											filetype: FileType.Route,
-											children: [
-												{
-													id: 'approval-contract-1-route-2-stage-1',
-													text: 'Подготовка',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-1-route-2-stage-2',
-													text: 'Согласование филиалом',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-1-route-2-stage-3',
-													text: 'Утверждение директором',
-													filetype: FileType.Stage,
-													children: [],
-												},
-											],
-										},
-									],
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-1',
+									text: 'Стандартный маршрут',
+									filetype: FileType.Route,
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-1-stage-1',
+									text: 'Подготовка',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-test-1-route-2-stage-1',
+									text: 'Проверка документа',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-1-stage-2',
+									text: 'Юридическая экспертиза',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-1-stage-3',
+									text: 'Финансовое согласование',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-1-stage-4',
+									text: 'Подписание',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-2',
+									text: 'Маршрут для филиалов',
+									filetype: FileType.Route,
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-2-stage-1',
+									text: 'Подготовка',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-2-stage-2',
+									text: 'Согласование филиалом',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-1-route-2-stage-3',
+									text: 'Утверждение директором',
+									filetype: FileType.Stage,
+									children: [],
 								},
 								{
 									id: 'approval-contract-2',
 									text: 'Договор аренды',
 									filetype: FileType.Approving,
-									children: [
-										{
-											id: 'approval-contract-2-route-1',
-											text: 'Основной маршрут',
-											filetype: FileType.Route,
-											children: [
-												{
-													id: 'approval-contract-2-route-1-stage-1',
-													text: 'Проверка документа',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-2-route-1-stage-2',
-													text: 'Юридическое согласование',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-2-route-1-stage-3',
-													text: 'Подписание',
-													filetype: FileType.Stage,
-													children: [],
-												},
-											],
-										},
-										{
-											id: 'approval-contract-2-route-2',
-											text: 'Экспресс-маршрут',
-											filetype: FileType.Route,
-											children: [
-												{
-													id: 'approval-contract-2-route-2-stage-1',
-													text: 'Проверка',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-2-route-2-stage-2',
-													text: 'Подписание',
-													filetype: FileType.Stage,
-													children: [],
-												},
-												{
-													id: 'approval-contract-2-route-2-stage-3',
-													text: 'Регистрация',
-													filetype: FileType.Stage,
-													children: [],
-												},
-											],
-										},
-									],
+									children: [],
+								},
+								{
+									id: 'approval-contract-2-route-1',
+									text: 'Основной маршрут',
+									filetype: FileType.Route,
+									children: [],
+								},
+								{
+									id: 'approval-contract-2-route-1-stage-1',
+									text: 'Проверка документа',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-2-route-1-stage-2',
+									text: 'Юридическое согласование',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-2-route-1-stage-3',
+									text: 'Подписание',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-2-route-2',
+									text: 'Экспресс-маршрут',
+									filetype: FileType.Route,
+									children: [],
+								},
+								{
+									id: 'approval-contract-2-route-2-stage-1',
+									text: 'Проверка',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-2-route-2-stage-2',
+									text: 'Подписание',
+									filetype: FileType.Stage,
+									children: [],
+								},
+								{
+									id: 'approval-contract-2-route-2-stage-3',
+									text: 'Регистрация',
+									filetype: FileType.Stage,
+									children: [],
 								},
 							],
 						},
@@ -475,7 +470,11 @@ export const useApproveStore = defineStore('approveStore', () => {
 		return filterTreeByChips(treeData.value, selectedChips.value)
 	})
 
+	// killme
+	const typovoy = ref(true)
+
 	return {
+		typovoy,
 		treeData,
 		selectedElement,
 		currentNode,

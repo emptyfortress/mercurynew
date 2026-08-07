@@ -246,12 +246,12 @@ const save = (e: any) => {
 	fieldset
 		legend Общие
 		.grid3
-			q-input(v-model="name" label="Название" dense outlined :readonly='approveStore.typovoy')
-			q-input(v-model="author" label="Автор" dense outlined :readonly='approveStore.typovoy')
+			q-input(v-model="name" label="Название" dense outlined )
+			q-input(v-model="author" label="Автор" dense outlined )
 				template(v-slot:append)
 					q-icon(name="mdi-dots-horizontal" color="secondary")
 					q-icon(name="mdi-close" color="secondary" size="xs")
-			q-input(v-model="registrator" label="Регистратор" dense outlined :readonly='approveStore.typovoy')
+			q-input(v-model="registrator" label="Регистратор" dense outlined )
 				template(v-slot:append)
 					q-icon(name="mdi-dots-horizontal" color="secondary")
 					q-icon(name="mdi-close" color="secondary" size="xs")
