@@ -1,353 +1,247 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-
-interface TreeElement {
-	id: string
-	text: string
-	text1?: string
-	name?: string
-	selected?: boolean
-	hidden?: boolean
-	open?: boolean
-	edit?: boolean
-	type: number
-	children: TreeElement[]
-	virtual?: boolean
-	author?: string
-	fields?: any[]
-	template?: boolean
-}
+import type { TreeElement } from '@/components/condition/conditionTypes'
+import { FileType } from '@/components/condition/conditionTypes'
 
 export const useApproveStore = defineStore('approveStore', () => {
 	// === Data collections ===
 
 	const treeData = ref<TreeElement[]>([
 		{
-			id: 'dogovor',
-			text: 'Договоры',
-			text1: '',
-			selected: false,
-			hidden: false,
-			type: 0,
-			author: 'admin',
-			fields: [],
+			id: 'root',
+			text: 'Папки',
+			filetype: FileType.Folder,
 			children: [
 				{
-					id: 'dogovor-1',
-					text: 'Согласование договора поставки',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 1,
-					author: 'admin',
-					fields: [],
+					id: 'soglasovanie-test',
+					text: 'Согласование-тест',
+					filetype: FileType.Folder,
 					children: [
 						{
-							id: 'dogovor-1-1',
-							text: 'Проверка юридическим отделом',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							template: true,
-							fields: [],
+							id: 'approval-test-1',
+							text: 'Согласование договора поставки',
+							filetype: FileType.Approving,
 							children: [
 								{
-									id: 'dogovor-1-1-1',
-									text: 'Получение документа',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									template: true,
-									fields: [],
-									children: [],
+									id: 'approval-test-1-route-1',
+									text: 'Основной маршрут',
+									filetype: FileType.Route,
+									children: [
+										{
+											id: 'approval-test-1-route-1-stage-1',
+											text: 'Подготовка документа',
+											filetype: FileType.Stage,
+											children: [],
+										},
+										{
+											id: 'approval-test-1-route-1-stage-2',
+											text: 'Проверка юристом',
+											filetype: FileType.Stage,
+											children: [],
+										},
+										{
+											id: 'approval-test-1-route-1-stage-3',
+											text: 'Утверждение руководителем',
+											filetype: FileType.Stage,
+											children: [],
+										},
+									],
 								},
 								{
-									id: 'dogovor-1-1-2',
-									text: 'Правовая экспертиза',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									template: true,
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'dogovor-1-1-3',
-									text: 'Формирование заключения',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									template: true,
-									fields: [],
-									children: [],
-								},
-							],
-						},
-						{
-							id: 'dogovor-1-2',
-							text: 'Согласование финансовым отделом',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'dogovor-1-2-1',
-									text: 'Проверка бюджета',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'dogovor-1-2-2',
-									text: 'Расчёт условий оплаты',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'dogovor-1-2-3',
-									text: 'Согласование сметы',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-						{
-							id: 'dogovor-1-3',
-							text: 'Утверждение руководителем',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'dogovor-1-3-1',
-									text: 'Рассмотрение документа',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'dogovor-1-3-2',
-									text: 'Подписание',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
+									id: 'approval-test-1-route-2',
+									text: 'Ускоренный маршрут',
+									filetype: FileType.Route,
+									children: [
+										{
+											id: 'approval-test-1-route-2-stage-1',
+											text: 'Проверка документа',
+											filetype: FileType.Stage,
+											children: [],
+										},
+										{
+											id: 'approval-test-1-route-2-stage-2',
+											text: 'Согласование руководителем',
+											filetype: FileType.Stage,
+											children: [],
+										},
+										{
+											id: 'approval-test-1-route-2-stage-3',
+											text: 'Подписание',
+											filetype: FileType.Stage,
+											children: [],
+										},
+									],
 								},
 							],
 						},
 					],
 				},
 				{
-					id: 'dogovor-2',
-					text: 'Согласование договора аренды',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 1,
-					author: 'admin',
-					fields: [],
+					id: 'konstruktor-soglasovaniy',
+					text: 'Конструктор согласований',
+					filetype: FileType.Folder,
 					children: [
 						{
-							id: 'dogovor-2-1',
-							text: 'Проверка условий аренды',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
+							id: 'routes',
+							text: 'Мои согласования',
+							filetype: FileType.Folder,
+							children: [],
+						},
+						{
+							id: 'dogovory',
+							text: 'Договоры',
+							filetype: FileType.Folder,
 							children: [
 								{
-									id: 'dogovor-2-1-1',
-									text: 'Анализ условий договора',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
+									id: 'approval-contract-1',
+									text: 'Типовой договор поставки',
+									filetype: FileType.Approving,
+									children: [
+										{
+											id: 'approval-contract-1-route-1',
+											text: 'Стандартный маршрут',
+											filetype: FileType.Route,
+											children: [
+												{
+													id: 'approval-contract-1-route-1-stage-1',
+													text: 'Подготовка',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-1-route-1-stage-2',
+													text: 'Юридическая экспертиза',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-1-route-1-stage-3',
+													text: 'Финансовое согласование',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-1-route-1-stage-4',
+													text: 'Подписание',
+													filetype: FileType.Stage,
+													children: [],
+												},
+											],
+										},
+										{
+											id: 'approval-contract-1-route-2',
+											text: 'Маршрут для филиалов',
+											filetype: FileType.Route,
+											children: [
+												{
+													id: 'approval-contract-1-route-2-stage-1',
+													text: 'Подготовка',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-1-route-2-stage-2',
+													text: 'Согласование филиалом',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-1-route-2-stage-3',
+													text: 'Утверждение директором',
+													filetype: FileType.Stage,
+													children: [],
+												},
+											],
+										},
+									],
 								},
 								{
-									id: 'dogovor-2-1-2',
-									text: 'Проверка кадастровых данных',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'dogovor-2-1-3',
-									text: 'Согласование ставки аренды',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
+									id: 'approval-contract-2',
+									text: 'Договор аренды',
+									filetype: FileType.Approving,
+									children: [
+										{
+											id: 'approval-contract-2-route-1',
+											text: 'Основной маршрут',
+											filetype: FileType.Route,
+											children: [
+												{
+													id: 'approval-contract-2-route-1-stage-1',
+													text: 'Проверка документа',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-2-route-1-stage-2',
+													text: 'Юридическое согласование',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-2-route-1-stage-3',
+													text: 'Подписание',
+													filetype: FileType.Stage,
+													children: [],
+												},
+											],
+										},
+										{
+											id: 'approval-contract-2-route-2',
+											text: 'Экспресс-маршрут',
+											filetype: FileType.Route,
+											children: [
+												{
+													id: 'approval-contract-2-route-2-stage-1',
+													text: 'Проверка',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-2-route-2-stage-2',
+													text: 'Подписание',
+													filetype: FileType.Stage,
+													children: [],
+												},
+												{
+													id: 'approval-contract-2-route-2-stage-3',
+													text: 'Регистрация',
+													filetype: FileType.Stage,
+													children: [],
+												},
+											],
+										},
+									],
 								},
 							],
 						},
 						{
-							id: 'dogovor-2-2',
-							text: 'Согласование с бухгалтерией',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'dogovor-2-2-1',
-									text: 'Проверка расчётов',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'dogovor-2-2-2',
-									text: 'Формирование платёжного графика',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
+							id: 'archive',
+							text: 'Архив',
+							filetype: FileType.Folder,
+							children: [],
 						},
 					],
 				},
 				{
-					id: 'dogovor-4',
-					text: 'Согласование договора подряда',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 1,
-					author: 'admin',
-					fields: [],
+					id: 'papki-podrazdeleniy',
+					text: 'Папки подразделений',
+					filetype: FileType.Folder,
 					children: [
 						{
-							id: 'dogovor-4-1',
-							text: 'Проверка технического задания',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
+							id: 'otdel-kadrov',
+							text: 'Отдел кадров',
+							filetype: FileType.Folder,
 							children: [
 								{
-									id: 'dogovor-4-1-1',
-									text: 'Анализ требований',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
+									id: 'file1',
+									text: 'Анкета сотрудника.txt',
+									filetype: FileType.Text,
 									children: [],
 								},
 								{
-									id: 'dogovor-4-1-2',
-									text: 'Согласование объёма работ',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-						{
-							id: 'dogovor-4-2',
-							text: 'Согласование бюджета',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'dogovor-4-2-1',
-									text: 'Расчёт стоимости',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'dogovor-4-2-2',
-									text: 'Проверка сметы',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'dogovor-4-2-3',
-									text: 'Утверждение бюджета',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
+									id: 'file2',
+									text: 'Должностные_обязанности.docx',
+									filetype: FileType.Word,
 									children: [],
 								},
 							],
@@ -355,457 +249,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 					],
 				},
 			],
-		},
-		{
-			id: 'ord',
-			text: 'ОРД',
-			text1: '',
-			selected: false,
-			hidden: false,
-			type: 0,
-			author: 'admin',
-			fields: [],
-			children: [
-				{
-					id: 'ord-1',
-					text: 'Согласование приказа',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 1,
-					author: 'admin',
-					fields: [],
-					children: [
-						{
-							id: 'ord-1-1',
-							text: 'Юридическая проверка',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'ord-1-1-1',
-									text: 'Проверка соответствия законодательству',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'ord-1-1-2',
-									text: 'Формирование замечаний',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-						{
-							id: 'ord-1-2',
-							text: 'Подписание руководителем',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'ord-1-2-1',
-									text: 'Рассмотрение приказа',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'ord-1-2-2',
-									text: 'Подписание',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-					],
-				},
-				{
-					id: 'ord-2',
-					text: 'Согласование распоряжения',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 1,
-					author: 'admin',
-					fields: [],
-					children: [
-						{
-							id: 'ord-2-1',
-							text: 'Проверка исполнителей',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'ord-2-1-1',
-									text: 'Определение ответственных лиц',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'ord-2-1-2',
-									text: 'Согласование сроков исполнения',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-						{
-							id: 'ord-2-2',
-							text: 'Утверждение',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'ord-2-2-1',
-									text: 'Финальная проверка',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'ord-2-2-2',
-									text: 'Утверждение распоряжения',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-					],
-				},
-				{
-					id: 'ord-3',
-					text: 'Согласование положения',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 1,
-					author: 'admin',
-					fields: [],
-					children: [
-						{
-							id: 'ord-3-1',
-							text: 'Экспертиза документа',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'ord-3-1-1',
-									text: 'Анализ содержания',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'ord-3-1-2',
-									text: 'Проверка на соответствие стандартам',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-						{
-							id: 'ord-3-2',
-							text: 'Утверждение',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'ord-3-2-1',
-									text: 'Рассмотрение положения',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'ord-3-2-2',
-									text: 'Подписание',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-					],
-				},
-				{
-					id: 'ord-4',
-					text: 'Согласование регламента',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 1,
-					author: 'admin',
-					fields: [],
-					children: [
-						{
-							id: 'ord-4-1',
-							text: 'Согласование подразделениями',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'ord-4-1-1',
-									text: 'Рассылка на согласование',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'ord-4-1-2',
-									text: 'Сбор замечаний подразделений',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-						{
-							id: 'ord-4-2',
-							text: 'Финальное утверждение',
-							text1: '',
-							selected: false,
-							hidden: false,
-							type: 2,
-							author: 'admin',
-							fields: [],
-							children: [
-								{
-									id: 'ord-4-2-1',
-									text: 'Проверка итоговой версии',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-								{
-									id: 'ord-4-2-2',
-									text: 'Утверждение регламента',
-									text1: '',
-									selected: false,
-									hidden: false,
-									type: 3,
-									author: 'admin',
-									fields: [],
-									children: [],
-								},
-							],
-						},
-					],
-				},
-			],
-		},
-		{
-			id: 'unsort',
-			text: 'Unsorted',
-			text1: '',
-			selected: false,
-			hidden: false,
-			type: 0,
-			author: 'admin',
-			fields: [],
-			children: [
-				{
-					id: 'unsort1',
-					text: 'Этап-потеряшка',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 3,
-					author: 'admin',
-					fields: [],
-					children: [],
-				},
-				{
-					id: 'unsort2',
-					text: 'Этап подготовительный',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 3,
-					author: 'admin',
-					fields: [],
-					children: [],
-				},
-				{
-					id: 'unsort3',
-					text: 'Некое согласование',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 1,
-					author: 'admin',
-					fields: [],
-					children: [],
-				},
-				{
-					id: 'unsort4',
-					text: 'Маршрут Иванович',
-					text1: '',
-					selected: false,
-					hidden: false,
-					type: 2,
-					author: 'admin',
-					fields: [],
-					children: [],
-				},
-			],
-		},
-	])
-
-	// const sample = computed(() => {
-	// 	const result: (typeof treeData.value)[number][] = []
-	//
-	// 	const walk = (nodes: typeof treeData.value) => {
-	// 		for (const node of nodes) {
-	// 			if (node.template === true) {
-	// 				result.push(node)
-	// 			}
-	//
-	// 			if (node.children.length > 0) {
-	// 				walk(node.children ?? [])
-	// 			}
-	// 		}
-	// 	}
-	//
-	// 	walk(treeData.value)
-	//
-	// 	return result
-	// })
-
-	const sample = computed(() => {
-		const result: (typeof treeData.value)[number][] = []
-		const counts = new Map<string, number>()
-		const walk = (nodes: typeof treeData.value) => {
-			for (const node of nodes) {
-				if (node.template === true) {
-					const count = (counts.get(node.id) ?? 0) + 1
-					counts.set(node.id, count)
-					if (count === 1) {
-						result.push(node)
-					}
-				}
-				if (node.children.length > 0) {
-					walk(node.children ?? [])
-				}
-			}
-		}
-		walk(treeData.value)
-		return { result, counts }
-	})
-
-	const sharedEtaps = computed(() => {
-		return sample.value.result
-			.filter((el) => el.type === 3)
-			.map((node) => ({
-				...node,
-				count: sample.value.counts.get(node.id) ?? 0,
-			}))
-	})
-
-	const treeData1 = computed<TreeElement[]>(() => [
-		{
-			id: 'template',
-			text: 'Типовые образцы',
-			text1: '',
-			selected: false,
-			hidden: false,
-			type: 0,
-			fields: [],
-			children: sample.value.result,
 		},
 	])
 
@@ -815,20 +258,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 	const deleteRequest = ref(false)
 	const duplicateRequest = ref(false)
 	const addRequest = ref(false)
-
-	// === Chip list state ===
-	const list = ref([
-		{
-			id: 0,
-			label: 'Согласования',
-			selected: true,
-		},
-		{
-			id: 1,
-			label: 'Типовые образцы',
-			selected: false,
-		},
-	])
 
 	// === Computed properties for tree operations ===
 	const flatten = (nodes: TreeElement[]): TreeElement[] => {
@@ -935,10 +364,8 @@ export const useApproveStore = defineStore('approveStore', () => {
 			type: type,
 			virtual: isVirtual,
 			children: [],
-			edit: false,
 			author: 'System',
 			template: false,
-			fields: [],
 		}
 		if (parent.children) {
 			parent.children.push(newNode)
@@ -972,26 +399,84 @@ export const useApproveStore = defineStore('approveStore', () => {
 		duplicateRequest.value = !duplicateRequest.value
 	}
 
+	// === Chip list state ===
+	type Chip = {
+		id: number
+		label: string
+		selected: boolean
+	}
+	const list = ref<Chip[]>([
+		{
+			id: 0,
+			label: 'Все',
+			selected: true,
+		},
+		{
+			id: 1,
+			label: 'Согласования',
+			selected: false,
+		},
+		{
+			id: 2,
+			label: 'Маршруты',
+			selected: false,
+		},
+		{
+			id: 3,
+			label: 'Этапы',
+			selected: false,
+		},
+	])
 	// === Chip selection ===
 	function selectChip(id: number) {
-		list.value.forEach((item) => (item.selected = item.id === id))
+		if (id === 0) {
+			list.value.forEach((chip) => (chip.selected = chip.id === 0))
+			return
+		}
+
+		const zeroChip = list.value.find((chip) => chip.id === 0)
+		if (zeroChip) zeroChip.selected = false
+
+		const target = list.value.find((chip) => chip.id === id)
+		if (target) target.selected = !target.selected
+
+		const hasOtherSelected = list.value.some((chip) => chip.id !== 0 && chip.selected)
+		if (!hasOtherSelected && zeroChip) zeroChip.selected = true
 	}
+	const selectedChips = computed(() => list.value.filter((item) => item.selected))
 
-	const selectedChip = computed(() => list.value.find((item) => item.selected))
+	function filterTreeByChips(treeData: TreeElement[], selectedChips: Chip[]): TreeElement[] {
+		// чип id: 0 ("Все") выбран — возвращаем исходное дерево как есть
+		if (selectedChips.some((chip) => chip.id === 0)) {
+			return treeData
+		}
 
+		const selectedTypes = new Set(selectedChips.map((chip) => chip.id))
+
+		function filterNodes(nodes: TreeElement[]): TreeElement[] {
+			return nodes.reduce<TreeElement[]>((acc, node) => {
+				const filteredChildren = node.children ? filterNodes(node.children) : []
+				const matchesSelf = node.filetype !== undefined && selectedTypes.has(node.filetype)
+
+				if (matchesSelf || filteredChildren.length > 0) {
+					acc.push({
+						...node,
+						children: filteredChildren,
+					})
+				}
+
+				return acc
+			}, [])
+		}
+
+		return filterNodes(treeData)
+	}
 	const activeTreeData = computed(() => {
-		return selectedChip.value?.id === 1 ? treeData1.value : treeData.value
-	})
-
-	const typovoy = computed(() => {
-		return selectedElement.value?.template === true && selectedChip.value?.id === 0
+		return filterTreeByChips(treeData.value, selectedChips.value)
 	})
 
 	return {
 		treeData,
-		sample,
-		sharedEtaps,
-		treeData1,
 		selectedElement,
 		currentNode,
 		deleteRequest,
@@ -1000,7 +485,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 		addTemp,
 		duplicateRequest,
 		list,
-		selectedChip,
 		activeTreeData,
 		nodesMap,
 		flatNodes,
@@ -1020,7 +504,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 		toggleDelete,
 		toggleDuplicate,
 		selectChip,
-		typovoy,
 		toggleAdd,
 	}
 })

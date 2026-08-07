@@ -28,3 +28,29 @@ export interface ConditionGroupNode {
 }
 
 export type ConditionNode = ConditionGroupNode | ConditionLeafNode
+
+export enum FileType {
+	Folder,
+	Approving,
+	Route,
+	Stage,
+	Word,
+	Excel,
+	Text,
+}
+
+export interface TreeElement {
+	id: string
+	text: string
+	text1?: string
+	name?: string
+	selected?: boolean
+	hidden?: boolean
+	open?: boolean
+	filetype?: FileType
+	type?: number
+	children: TreeElement[]
+	virtual?: boolean
+	author?: string
+	template?: boolean
+}

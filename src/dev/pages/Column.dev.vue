@@ -2,6 +2,7 @@
 // import { ref } from 'vue'
 // import Component from '@/components/decision/GroupPanel.vue'
 // import Component from '@/components/condition/StartCondition.vue'
+import Component from '@/components/decision/ApproveTree.vue'
 </script>
 
 <template lang="pug">
@@ -16,7 +17,7 @@ q-page(padding)
 	display: flex;
 	> div {
 		margin: auto;
-		width: 1024px;
+		width: 500px;
 		justify-content: center;
 		align-items: center;
 	}

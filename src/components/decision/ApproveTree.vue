@@ -24,10 +24,10 @@ const approveStore = useApproveStore()
 const tree = ref()
 const query = ref('')
 
-const sourceData = computed(() => approveStore.activeTreeData)
+// const sourceData = computed(() => approveStore.activeTreeData)
 
 const treeData = computed({
-	get: () => sourceData.value,
+	get: () => approveStore.activeTreeData,
 	set: (value: any) => {
 		approveStore.updateTreeData(value)
 	},
@@ -58,14 +58,14 @@ watch(query, (newValue) => {
 	}
 })
 
-watch(sourceData, (val) => {
-	if (val) {
-		setTimeout(() => {
-			const stat = tree.value.getStat(approveStore.selectedElement)
-			tree.value.openNodeAndParents(stat)
-		}, 200)
-	}
-})
+// watch(sourceData, (val) => {
+// 	if (val) {
+// 		setTimeout(() => {
+// 			const stat = tree.value.getStat(approveStore.selectedElement)
+// 			tree.value.openNodeAndParents(stat)
+// 		}, 200)
+// 	}
+// })
 
 watch(
 	() => route.params.viewId,
@@ -136,17 +136,17 @@ const open = (nodeId: string) => {
 	}
 }
 
-onMounted(() => {
-	if (!tree.value?.statsFlat) return
-	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
-	if (route.params.viewId) {
-		open(route.params.viewId.toString())
-	}
-	const firstNode = sourceData.value[0]
-	if (firstNode) {
-		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
-	}
-})
+// onMounted(() => {
+// 	if (!tree.value?.statsFlat) return
+// 	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
+// 	if (route.params.viewId) {
+// 		open(route.params.viewId.toString())
+// 	}
+// 	const firstNode = sourceData.value[0]
+// 	if (firstNode) {
+// 		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
+// 	}
+// })
 
 const create = (data: any) => {
 	const newFolder = {
@@ -252,6 +252,10 @@ onBeforeRouteLeave((to, from) => {
 const one = () => {
 	console.log(111)
 }
+
+const selectChip = (id: number) => {
+	approveStore.selectChip(id)
+}
 </script>
 
 <template lang="pug">
@@ -261,7 +265,7 @@ div
 			clickable,
 			v-for="chip in approveStore.list",
 			:key="chip.id"
-			v-model:selected='chip.selected'
+			:selected='chip.selected'
 			@click="approveStore.selectChip(chip.id)"
 		) {{ chip.label }}
 
@@ -269,7 +273,6 @@ div
 		q-input.query(
 			dense
 			v-model="query"
-			autofocus
 			clearable
 			@clear="clearFilter"
 			placeholder="фильтр"
@@ -285,7 +288,6 @@ div
 			treeLine
 			:treeLineOffset="18"
 			:indent="30"
-			:defaultOpen="false"
 		)
 			template(#default="{ node, stat }")
 				.node(
@@ -298,13 +300,12 @@ div
 						@click.stop="toggle(stat)"
 						:class="{ 'closed': !stat.open }"
 					).trig
-					q-icon.fold(v-if='node.type == 0' name="mdi-folder-outline")
-					q-icon.fold(name="mdi-message-check-outline" color="primary" v-if='node.type == 1')
-					q-icon.fold(name="mdi-flag-triangle" color="primary" v-if='node.type == 3')
-					MaterialSymbolsAltRoute.rou(v-if='node.type == 2')
-					// MaterialIconThemeTemplate.rou1(v-if='node.template')
-					q-icon.fold1(v-if='node.template' name="mdi-share-variant" color="primary")
-					q-tooltip(v-if='node.template') Шаблон
+					q-icon.fold(v-if='node.filetype == 0' name="mdi-folder-outline")
+					q-icon.fold(name="mdi-message-check-outline" color="primary" v-if='node.filetype == 1')
+					q-icon.fold(name="mdi-flag-triangle" color="primary" v-if='node.filetype == 3')
+					q-icon.fold(name="mdi-text-box-outline" color="primary" v-if='node.filetype == 6')
+					q-icon.fold(name="mdi-file-word-outline" color="primary" v-if='node.filetype == 4')
+					MaterialSymbolsAltRoute.rou(v-if='node.filetype == 2')
 					WordHighlighter(:query="query") {{ node.text }}
 
 					// DirMenu(
@@ -316,15 +317,7 @@ div
 					// 	@rename="edit(stat)"
 					// )
 
-					// q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
-					// 	q-input(
-					// 		:model-value="stat.data.text"
-					// 		dense
-					// 		autofocus
-					// 		counter
-					// 		@keyup.enter="setText(stat, $event)"
-					// 	)
-
+	q-btn(flat icon="mdi-folder-multiple-plus-outline" color="primary" label="Подключить папки" size='sm') 
 	q-fab.fab(round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
 		q-fab-action(color="primary" icon="mdi-flag-triangle" external-label label="Этап" label-position="left" @click="one")
 		q-fab-action(color="primary" external-label label="Маршрут" label-position="left" @click="one")
