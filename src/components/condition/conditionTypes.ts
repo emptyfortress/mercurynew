@@ -15,14 +15,14 @@ export enum ConditionResult {
 
 export interface ConditionLeafNode {
 	id: string
-	kind: 'leaf'
+	kind1: 'leaf'
 	stageId: string | null
 	result: ConditionResult
 }
 
 export interface ConditionGroupNode {
 	id: string
-	kind: 'group'
+	kind1: 'group'
 	type: 'AND' | 'OR'
 	children: (ConditionGroupNode | ConditionLeafNode)[]
 }

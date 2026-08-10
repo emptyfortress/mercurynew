@@ -27,7 +27,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 	const flatNodes = computed(() => flatten(treeData.value))
 	const nodesMap = computed(() => new Map(flatNodes.value.map((node) => [node.id, node])))
 
-	const childrenMap = computed(() => {
+	const nodesByParentId = computed(() => {
 		const map = new Map<string, TreeElement[]>()
 
 		for (const node of flatNodes.value) {
@@ -35,15 +35,20 @@ export const useApproveStore = defineStore('approveStore', () => {
 				continue
 			}
 
-			const arr = map.get(node.parentId) ?? []
-			arr.push(node)
-			map.set(node.parentId, arr)
+			let children = map.get(node.parentId)
+
+			if (!children) {
+				children = []
+				map.set(node.parentId, children)
+			}
+
+			children.push(node)
 		}
 
 		return map
 	})
 
-	const getChildren = (parentId: string): TreeElement[] => childrenMap.value.get(parentId) ?? []
+	const getChildren = (parentId: string): TreeElement[] => nodesByParentId.value.get(parentId) ?? []
 
 	// === Tree utilities ===
 	const getNodeById = (id: string): TreeElement | undefined => nodesMap.value.get(id)
@@ -177,6 +182,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 		label: string
 		selected: boolean
 	}
+
 	const list = ref<Chip[]>([
 		{
 			id: 0,

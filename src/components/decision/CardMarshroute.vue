@@ -236,7 +236,7 @@ const handleClick = (event: Event, row: any) => {
 const tree = ref<ConditionGroupNode>({
 	id: 'root',
 	type: 'AND',
-	kind: 'group',
+	kind1: 'group',
 	children: [],
 })
 
@@ -284,16 +284,21 @@ const save = (e: any) => {
 		.special
 			q-btn.q-mt-sm(unelevated color="primary" label="Создать этап" icon="mdi-plus-circle" @click="showAddDialog(0)" size="sm") 
 			q-btn.q-mt-sm(unelevated color="primary" label="Добавить этап" icon="mdi-link-variant" @click="showAddDialog(1)" size="sm") 
-			template(v-if='selectedId')
-				div
-				q-input.q-mt-sm(v-model="good" label='Отрицательное завершение' dense outlined hideBottomSpace)
-					template(v-slot:append)
-						q-icon(name="mdi-dots-horizontal" color="secondary")
-						q-icon(name="mdi-close" color="secondary" size="xs")
-				q-input.q-mt-sm(v-model="good"  label='Положительное завершение' dense outlined)
-					template(v-slot:append)
-						q-icon(name="mdi-dots-horizontal" color="secondary")
-						q-icon(name="mdi-close" color="secondary" size="xs")
+
+	fieldset
+		legend Настройка семантики завершения
+		.grid4
+			label Отрицательное завершение:
+			q-input(v-model="good" dense outlined hideBottomSpace)
+				template(v-slot:append)
+					q-icon(name="mdi-dots-horizontal" color="secondary")
+					q-icon(name="mdi-close" color="secondary" size="xs")
+			div 
+			label Положительное завершение:
+			q-input(v-model="good" dense outlined)
+				template(v-slot:append)
+					q-icon(name="mdi-dots-horizontal" color="secondary")
+					q-icon(name="mdi-close" color="secondary" size="xs")
 
 	fieldset
 		legend Настройка итоговых состояних документов
@@ -310,25 +315,26 @@ const save = (e: any) => {
 
 
 			q-card-section
+			q-card-section(v-if='linked')
 				q-input(v-model="query" dense clearable)
 					template(v-slot:prepend)
 						q-icon(name="mdi-magnify" color="primary")
 
 				// q-table.q-mt-md(
-					flat
-					color="primary"
-					:columns="colsAdd"
-					:rows="approveStore.sharedEtaps"
-					row-key="id"
-					:filter='query'
-					hideBottom
-					selection="single"
-					v-model:selected="selectedAdd"
-					dense
-					@rowClick='handleClick'
-					)
-					template(v-slot:body-cell-used='props')
-						q-td.text-right(:props='props') {{ props.row.count }}
+				// 	flat
+				// 	color="primary"
+				// 	:columns="colsAdd"
+				// 	:rows="approveStore.sharedEtaps"
+				// 	row-key="id"
+				// 	:filter='query'
+				// 	hideBottom
+				// 	selection="single"
+				// 	v-model:selected="selectedAdd"
+				// 	dense
+				// 	@rowClick='handleClick'
+				// 	)
+				// 	template(v-slot:body-cell-used='props')
+				// 		q-td.text-right(:props='props') {{ props.row.count }}
 
 
 			q-card-actions(align="right")
@@ -396,5 +402,13 @@ const save = (e: any) => {
 }
 .fold {
 	font-size: 0.9rem;
+}
+.grid4 {
+	display: grid;
+	grid-template-columns: auto 1fr 50px auto 1fr;
+	// justify-items: start;
+	align-items: center;
+	column-gap: 0.5rem;
+	// row-gap: .5rem;
 }
 </style>

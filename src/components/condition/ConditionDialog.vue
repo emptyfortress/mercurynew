@@ -20,6 +20,7 @@ interface List {
 	fileType?: FileType
 	author: string
 	condition?: any
+	// kind1: 'group' | 'leaf'
 }
 
 const modelValue = defineModel<boolean>()
@@ -51,7 +52,7 @@ const createEmptyGroup = (): ConditionGroupNode => {
 	return {
 		id: 'root',
 		type: 'AND',
-		kind: 'group',
+		kind1: 'group',
 		children: [],
 	}
 }
@@ -84,7 +85,7 @@ const addCondition = (kind: 'leaf' | 'group') => {
 	if (kind === 'leaf') {
 		const item: ConditionLeafNode = {
 			id: crypto.randomUUID(),
-			kind: 'leaf',
+			kind1: 'leaf',
 			stageId: null,
 			result: ConditionResult.Positive,
 		}
@@ -96,7 +97,7 @@ const addCondition = (kind: 'leaf' | 'group') => {
 	} else {
 		const item: ConditionGroupNode = {
 			id: crypto.randomUUID(),
-			kind: 'group',
+			kind1: 'group',
 			type: 'AND',
 			children: [],
 		}
@@ -116,7 +117,7 @@ const stageLabel = (stageId: string | null): string => {
 }
 
 const serializeCondition = (node: ConditionNode): string => {
-	if (node.kind === 'leaf') {
+	if (node.kind1 === 'leaf') {
 		return `${stageLabel(node.stageId)} = ${node.result}`
 	}
 
@@ -131,7 +132,7 @@ const serializeCondition = (node: ConditionNode): string => {
 		const childStr = serializeCondition(child)
 		// Оборачиваем в скобки вложенную группу с несколькими детьми,
 		// чтобы не терялся приоритет операторов
-		if (child.kind === 'group' && child.children.length > 1) {
+		if (child.kind1 === 'group' && child.children.length > 1) {
 			return `(${childStr})`
 		}
 		return childStr
@@ -154,16 +155,14 @@ const remove = (e: Stat) => {
 	treeRef.value.remove(e)
 }
 
-const isDrop = (e: any) => {
-	if (e.data.kind == 'group') return true
+const isDrop = (e: Stat) => {
+	if (e.data.kind1 == 'group') return true
 	else return false
 }
-const isDrag = (e: any) => {
+const isDrag = (e: Stat) => {
 	if (e.data.id == 'root') return false
 	return true
 }
-// const etap = ref('')
-// const semant = ref('')
 const semoptions = [
 	'Положительная',
 	'Отрицательная',
@@ -188,19 +187,19 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 			.text-h6 Условие старта этапа "{{ goalStage?.text }}"
 
 		.scroll
-			div
+			.mini
 				Draggable(ref="treeRef"
+					propKey="id"
 					treeLine
 					v-model="treeData"
 					:indent="30"
-					:eachDroppable="isDrop"
-					:eachDraggable="isDrag"
-					:root-droppable="false"
+					:each-draggable='isDrag'
+					:each-droppable='isDrop'
+					:root-droppable='false'
 					class='mtl-tree'
-					)
-
+				)
 					template(#default="{ node, stat }")
-						.zero(v-if='stat.data.kind == "group"')
+						.zero(v-if='stat.data.kind1 == "group"')
 							q-icon.trig(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }")
 							.root
 								.icon(:class="{or : stat.data.type === 'OR'}" @click.stop="next(stat)")
@@ -236,6 +235,8 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 	padding: 2px 10px;
 	border-radius: 0.25rem;
 	border: 1px solid var(--bgLight);
+	// margin-bottom: 2px;
+	// margin-top: 2px;
 	.closing {
 		position: absolute;
 		right: 0.5rem;
@@ -325,6 +326,9 @@ pre {
 :deep(.drag-placeholder) {
 	min-height: 48px;
 	border-radius: 0.25rem;
-	background: $blue-grey-3;
+}
+.mini {
+	min-height: 100px;
+	width: 100%;
 }
 </style>

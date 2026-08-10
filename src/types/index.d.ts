@@ -193,6 +193,7 @@ interface NodeData {
 	inp?: boolean
 	focus?: boolean
 	kind?: number
+	kind1?: string
 	synparents: string[]
 	syn: string[]
 	and?: boolean
