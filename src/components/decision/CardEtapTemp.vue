@@ -18,7 +18,7 @@ const show = ref(true)
 const show1 = ref(true)
 
 const isEditable = computed(() => {
-	if (approveStore.selectedChip?.id == 0) return true
+	// if (approveStore.selectedChip?.id == 0) return true
 	return false
 })
 </script>

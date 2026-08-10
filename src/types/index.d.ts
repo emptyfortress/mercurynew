@@ -200,6 +200,7 @@ interface NodeData {
 	kind?: Kind
 	param?: boolean
 	children: NodeData[]
+	open?: boolean
 }
 
 type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'

@@ -3,7 +3,6 @@ import { ref, computed } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
 import CardEtap from '@/components/decision/CardEtap.vue'
-import CardEtapTemp from '@/components/decision/CardEtapTemp.vue'
 import CardMarshroute from '@/components/decision/CardMarshroute.vue'
 import CardSoglas from '@/components/decision/CardSoglas.vue'
 import CardFolder from '@/components/decision/CardFolder.vue'
@@ -59,7 +58,6 @@ div(v-if='selectedElement')
 	CardFolder(v-if='selectedElement.filetype == 0')
 	CardSoglas(v-if='selectedElement.filetype == 1')
 	CardMarshroute(v-if='selectedElement.filetype == 2')
-	CardEtapTemp(v-if='selectedElement.filetype == 3 && selectedElement.template')
 	CardEtap(v-if='selectedElement.filetype == 3')
 
 	// q-dialog(v-model="share")

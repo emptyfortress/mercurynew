@@ -68,7 +68,7 @@ const updateChild = (index: number, newChild: ConditionNode) => {
 const addLeaf = () => {
 	const newLeaf: ConditionLeafNode = {
 		id: crypto.randomUUID(),
-		kind: 'leaf',
+		kind1: 'leaf',
 		stageId: null,
 		result: ConditionResult.Positive,
 	}
@@ -79,7 +79,7 @@ const addLeaf = () => {
 const addGroup = () => {
 	const newGroup: ConditionGroupNode = {
 		id: crypto.randomUUID(),
-		kind: 'group',
+		kind1: 'group',
 		type: 'AND',
 		children: [],
 	}
@@ -117,7 +117,7 @@ const addGroup = () => {
 			
 			.child-content
 				ConditionGroup(
-					v-if="child.kind === 'group'"
+					v-if="child.kind1 === 'group'"
 					:model-value="child"
 					@update:model-value="updateChild(index, $event)"
 					:stage-options="stageOptions"

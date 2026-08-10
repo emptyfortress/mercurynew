@@ -63,8 +63,8 @@ watch(
 		if (val) {
 			nextTick(() => {
 				tree.value.statsFlat
-					.filter((s) => s.data.open)
-					.forEach((s) => tree.value.openNodeAndParents(s))
+					.filter((s: Stat) => s.data.open)
+					.forEach((s: Stat) => tree.value.openNodeAndParents(s))
 			})
 		}
 	},
