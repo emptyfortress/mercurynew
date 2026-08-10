@@ -197,6 +197,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 					:each-droppable='isDrop'
 					:root-droppable='false'
 					class='mtl-tree'
+					keepPlaceholder
 				)
 					template(#default="{ node, stat }")
 						.zero(v-if='stat.data.kind1 == "group"')

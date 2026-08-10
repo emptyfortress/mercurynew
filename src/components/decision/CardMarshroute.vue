@@ -281,7 +281,10 @@ const save = (e: any) => {
 								q-item-section {{ item }}
 
 
-		.special
+		.info
+			q-icon(name="mdi-information" color="primary" size="sm")
+			div Чтобы добавить этап в маршрут - перетащите его в таблицу из дерева слева.
+		// .special
 			q-btn.q-mt-sm(unelevated color="primary" label="Создать этап" icon="mdi-plus-circle" @click="showAddDialog(0)" size="sm") 
 			q-btn.q-mt-sm(unelevated color="primary" label="Добавить этап" icon="mdi-link-variant" @click="showAddDialog(1)" size="sm") 
 
@@ -410,5 +413,15 @@ const save = (e: any) => {
 	align-items: center;
 	column-gap: 0.5rem;
 	// row-gap: .5rem;
+}
+.info {
+	padding: 3px 1rem;
+	border: 1px solid var(--my-border-color);
+	display: flex;
+	align-items: center;
+	margin-top: 0.5rem;
+	background: hsl(216, 44%, 83%);
+	gap: 1rem;
+	font-size: 0.8rem;
 }
 </style>
