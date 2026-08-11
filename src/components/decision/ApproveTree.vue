@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, watch, watchEffect, nextTick } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
-// import DirMenu from '@/components/decision/DirMenu.vue'
+import DirMenuApprove from '@/components/decision/DirMenuApprove.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useApproveStore } from '@/stores/approveStore'
 import { uid } from 'quasar'
@@ -10,9 +10,8 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 import WordHighlighter from 'vue-word-highlighter'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
-import { FileType } from '@/components/condition/conditionTypes'
-
-// import CreateDialog from '@/components/decision/CreateDialog.vue'
+// import type { TreeElement } from '../condition/conditionTypes'
+// import { FileType } from '@/components/condition/conditionTypes'
 
 const props = defineProps<{
 	mode?: string | undefined
@@ -86,30 +85,30 @@ watch(
 		const node = approveStore.getNodeById(viewId.toString())
 		const stat = tree.value.getStat(node)
 		tree.value.openNodeAndParents(stat)
-		select(stat)
+		approveStore.selectNode(stat)
 	},
 	{ immediate: true }
 )
 
 const select = (stat: Stat) => {
-	approveStore.selectNode(stat, router)
+	router.push({
+		name: 'start',
+		params: { viewId: stat.data.id },
+	})
 }
 
 const toggle = (stat: any) => {
 	stat.open = !stat.open
 }
 
-const addFromMenu = (e: any) => {
-	const tmp = { id: uid(), text: 'Новое имя' }
-	tree.value.add(tmp, e)
-	nextTick()
-	const newStat = tree.value.getStat(tmp)
-	tree.value.openNodeAndParents(newStat)
-	select(newStat)
-}
-
-const addFolderFromMenu = (e: any) => {
-	const tmp = { id: uid(), text: 'Новая папка', type: 0 }
+const addFromMenu = (e: Stat, filetype: number) => {
+	const tmp = {
+		id: uid(),
+		text: 'Новое имя',
+		filetype: filetype,
+		hidden: false,
+		selected: false,
+	}
 	tree.value.add(tmp, e)
 	nextTick()
 	const newStat = tree.value.getStat(tmp)
@@ -140,36 +139,26 @@ const open = (nodeId: string) => {
 	}
 }
 
-// onMounted(() => {
-//	if (!tree.value?.statsFlat) return
-//	tree.value.statsFlat.forEach((item: any) => (item.data.selected = false))
-//	if (route.params.viewId) {
-//		open(route.params.viewId.toString())
-//	}
-//	const firstNode = treeData.value[0]
-//	if (firstNode) {
-//		tree.value.openNodeAndParents(firstNode.children?.[0] || firstNode)
-//	}
-// })
-
-const create = (data: any) => {
-	const newFolder = {
-		id: uid(),
-		text: data.name,
-		virtual: data.isVirtual ?? false,
-		type: data.type,
+const create = () => {
+	const newItem = {
+		id: approveStore.addTemp!.id,
+		text: approveStore.addTemp?.text,
+		filetype: approveStore.addTemp?.filetype,
+		hidden: false,
+		selected: true,
 		children: [],
 	}
 	if (approveStore.selectedElement) {
 		const tmp = tree.value.getStat(approveStore.selectedElement)
-		tree.value.add(newFolder, tmp)
+		tree.value.add(newItem, tmp)
 	} else {
-		tree.value.add(newFolder, tree.value.rootChildren[0])
+		tree.value.add(newItem, tree.value.rootChildren[0])
 	}
 	nextTick()
-	const newStat = tree.value.getStat(newFolder)
-	tree.value.openNodeAndParents(newStat)
-	select(newStat)
+	const newStat = approveStore.getNodeById(newItem.id)
+	if (newStat) {
+		tree.value.openNodeAndParents(newStat)
+	}
 }
 
 onBeforeRouteUpdate((to, from) => {
@@ -194,53 +183,28 @@ watchEffect(() => {
 
 	if (approveStore.duplicateRequest === true) {
 		let temp = {
+			id: Date.now().toString(),
 			text: approveStore.currentNode.data.text + '-copy',
 			text1: approveStore.currentNode.data.text1,
 			hidden: false,
-			type: 1,
+			selected: true,
+			filetype: approveStore.currentNode.data.filetype,
 		}
 		tree.value.add(temp, approveStore.currentNode.parent)
 		let one = tree.value.getStat(temp)
 		select(one)
 		approveStore.toggleDuplicate()
 	}
-	if (approveStore.addRequest === true && approveStore.addTemp == null) {
-		let temp = {
-			id: Date.now().toString(),
-			text: 'Новый этап',
-			virtual: false,
-			hidden: false,
-			type: 3,
-			children: [],
-		}
-		if (approveStore.selectedElement) {
-			const tmp = tree.value.getStat(approveStore.selectedElement)
-			tree.value.add(temp, tmp)
-		}
-		nextTick()
-		const newStat = tree.value.getStat(temp)
-		select(newStat)
-		approveStore.toggleAdd(null)
-	}
+
 	if (approveStore.addRequest === true && approveStore.addTemp !== null) {
-		let temp = {
-			id: approveStore.addCopy ? Date.now().toString() : approveStore.addTemp.id,
-			text: approveStore.addCopy ? approveStore.addTemp.text + '-copy' : approveStore.addTemp.text,
-			virtual: false,
-			hidden: false,
-			type: 3,
-			template: approveStore.addCopy ? false : true,
-			children: [],
-		}
-		if (approveStore.selectedElement) {
-			const tmp = tree.value.getStat(approveStore.selectedElement)
-			tree.value.add(temp, tmp)
-		}
+		create()
 		nextTick()
-		const newStat = tree.value.getStat(temp)
-		select(newStat)
+		const newNode = approveStore.getNodeById(approveStore.addTemp.id)
+		const newStat = tree.value.getStat(newNode)
+		if (newStat) {
+			select(newStat)
+		}
 		approveStore.toggleAdd(null)
-		approveStore.addCopy = false
 	}
 })
 
@@ -257,8 +221,9 @@ const one = () => {
 	console.log(111)
 }
 
-const selectChip = (id: number) => {
-	approveStore.selectChip(id)
+const duble = (stat: Stat) => {
+	approveStore.currentNode = stat
+	approveStore.toggleDuplicate()
 }
 </script>
 
@@ -314,16 +279,24 @@ div
 					MaterialSymbolsAltRoute.rou(v-if='node.filetype == 2')
 					WordHighlighter(:query="query") {{ node.text }}
 
-					// DirMenu(
-					//	:mode='props.mode'
-					//	:stat="stat"
-					//	@kill="remove(stat)"
-					//	@add="addFromMenu(stat)"
-					//	@addFolder="addFolderFromMenu(stat)"
-					//	@rename="edit(stat)"
-					// )
+					DirMenuApprove(
+						:stat="stat"
+						@kill="remove(stat)"
+						@add="(filetype) => addFromMenu(stat, filetype)"
+						@duble="duble(stat)"
+						@rename="edit(stat)"
+					)
+					q-menu.q-px-md(no-parent-event v-model="stat.data.edit" cover anchor="top left")
+						q-input(
+							:model-value="stat.data.text"
+							dense
+							autofocus
+							counter
+							@keyup.enter="setText(stat, $event)"
+						)
 
-	q-btn(flat icon="mdi-folder-multiple-plus-outline" color="primary" label="Подключить папки" size='sm') 
+	q-btn(flat icon="mdi-folder-multiple-plus-outline" color="primary" label="Подключить папки" size='sm' ) 
+
 	q-fab.fab(round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
 		q-fab-action(color="primary" icon="mdi-flag-triangle" external-label label="Этап" label-position="left" @click="one")
 		q-fab-action(color="primary" external-label label="Маршрут" label-position="left" @click="one")
@@ -331,7 +304,6 @@ div
 		q-fab-action(color="primary" icon="mdi-message-check-outline" external-label label="Согласование" label-position="left"  @click="one")
 		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left"	@click="one")
 
-		// CreateDialog(v-model="dialog" mode="approve" @create='create')
 </template>
 
 <style scoped lang="scss">

@@ -100,16 +100,11 @@ export const useApproveStore = defineStore('approveStore', () => {
 	}
 
 	// === Node operations ===
-	function selectNode(stat: Stat, router: any) {
+	function selectNode(stat: Stat) {
 		flatNodes.value.forEach((item: any) => (item.selected = false))
 		stat.data.selected = true
-		// node.sourceType = 'approve'
 		selectedElement.value = stat.data
 		currentNode.value = stat
-		router.push({
-			name: 'start',
-			params: { viewId: stat.data.id },
-		})
 	}
 
 	function removeNode(node: any) {

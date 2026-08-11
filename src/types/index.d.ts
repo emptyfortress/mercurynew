@@ -201,6 +201,7 @@ interface NodeData {
 	param?: boolean
 	children: NodeData[]
 	open?: boolean
+	filetype?: FileType
 }
 
 type Scenario = 'copy' | 'group' | 'group0' | 'add' | 'remove'

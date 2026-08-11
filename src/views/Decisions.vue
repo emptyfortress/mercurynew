@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router'
 import Webframe from '@/components/decision/Webframe.vue'
 import Poisk from '@/components/decision/Poisk.vue'
 import Views from '@/components/decision/Views.vue'
-import ApproveInside from '@/components//decision/ApproveInside.vue'
+// import ApproveInside from '@/components/decision/ApproveInside.vue'
 
 const route = useRoute()
 
@@ -61,7 +61,7 @@ q-page(padding)
 						sourceType="approve"
 						filterField="text"
 						:showTypeSelector="false"
-						mode="folder"
+						mode="approve"
 					)
 
 			template(v-slot:after)
