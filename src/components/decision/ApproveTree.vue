@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, watchEffect, nextTick } from 'vue'
-import { Draggable } from '@he-tree/vue'
+import { ref, computed, watch, watchEffect, nextTick } from 'vue'
+import { Draggable, dragContext } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import DirMenuApprove from '@/components/decision/DirMenuApprove.vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -10,8 +10,6 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 import WordHighlighter from 'vue-word-highlighter'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
-// import type { TreeElement } from '../condition/conditionTypes'
-// import { FileType } from '@/components/condition/conditionTypes'
 
 const props = defineProps<{
 	mode?: string | undefined
@@ -224,6 +222,10 @@ const one = () => {
 const duble = (stat: Stat) => {
 	approveStore.currentNode = stat
 	approveStore.toggleDuplicate()
+}
+
+const drop = () => {
+	console.log(111)
 }
 </script>
 
