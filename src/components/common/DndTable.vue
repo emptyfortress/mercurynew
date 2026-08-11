@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends Row">
-import { watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { animations } from '@formkit/drag-and-drop'
 
@@ -8,7 +8,6 @@ export interface Column {
 	label: string
 	align: string
 	type?: 'checkbox' | string
-	// condition: string
 }
 
 export interface Row {
@@ -16,23 +15,77 @@ export interface Row {
 	[key: string]: unknown
 }
 
-// const props = defineProps<{
-// 	columns: Column[]
-// 	rows: Row[]
-// }>()
-
 const props = defineProps<{
 	columns: Column[]
 	rows: T[]
 	selected?: T['id'] | null
+	dragOver?: boolean
+	canDropChecker?: () => boolean
 }>()
+
+const dragState = ref<'none' | 'valid' | 'invalid'>('none')
 
 const emit = defineEmits<{
 	'update:rows': [rows: T[]]
 	'update:selected': [id: T['id'] | null]
 	removeRow: [row: T]
 	edit: [row: T]
+	'table-drop': []
 }>()
+
+onMounted(() => {
+	document.addEventListener('dragover', handleDocumentDragOver, true)
+})
+onBeforeUnmount(() => {
+	document.removeEventListener('dragover', handleDocumentDragOver, true)
+})
+
+function handleDocumentDragOver(e: DragEvent) {
+	if (!tbodyRef.value) return
+	const rect = tbodyRef.value.getBoundingClientRect()
+	const inside =
+		e.clientX >= rect.left &&
+		e.clientX <= rect.right &&
+		e.clientY >= rect.top &&
+		e.clientY <= rect.bottom
+
+	if (!inside) {
+		dragState.value = 'none'
+		return
+	}
+	const valid = props.canDropChecker ? props.canDropChecker() : true
+	dragState.value = valid ? 'valid' : 'invalid'
+}
+
+function handleWindowDrop(e: DragEvent) {
+	if (!tbodyRef.value) return
+	const rect = tbodyRef.value.getBoundingClientRect()
+	const inside =
+		e.clientX >= rect.left &&
+		e.clientX <= rect.right &&
+		e.clientY >= rect.top &&
+		e.clientY <= rect.bottom
+
+	if (!inside) return
+
+	e.stopPropagation()
+	e.preventDefault()
+
+	const valid = props.canDropChecker ? props.canDropChecker() : true
+	dragState.value = 'none'
+
+	if (!valid) return // молча блокируем, наружу ничего не эмитим
+	emit('table-drop')
+}
+
+onMounted(() => {
+	document.addEventListener('dragover', handleDocumentDragOver, true)
+	window.addEventListener('drop', handleWindowDrop, true)
+})
+onBeforeUnmount(() => {
+	document.removeEventListener('dragover', handleDocumentDragOver, true)
+	window.removeEventListener('drop', handleWindowDrop, true)
+})
 
 const config = {
 	plugins: [animations()],
@@ -87,7 +140,10 @@ table.dnd-table
 			th(v-for="col in columns" :key="col.field") {{ col.label }}
 			th.actions
 
-	tbody(ref="tbodyRef")
+	tbody(
+		ref="tbodyRef"
+		:class="{ 'tbody-drag-valid': dragState === 'valid', 'tbody-drag-invalid': dragState === 'invalid' }"
+	)
 		tr(
 			v-for="row in rows",
 			:key="row.id"
@@ -108,12 +164,26 @@ table.dnd-table
 							q-list
 								q-item.pink(clickable @click.stop="remove(row)")
 									q-item-section Удалить
+
 </template>
 
 <style lang="scss" scoped>
 .dnd-table {
 	width: 100%;
 	border-collapse: collapse;
+	thead {
+		background: var(--bgLight);
+	}
+	tbody {
+		background: var(--bgLight);
+		&.tbody-drag-valid {
+			background: rgb(72 176 76 / 38%);
+		}
+		&.tbody-drag-invalid {
+			// background: rgb(72 176 76 / 38%);
+			background: rgba(244, 67, 54, 0.5);
+		}
+	}
 
 	th {
 		font-size: 11px;
@@ -128,7 +198,6 @@ table.dnd-table
 		font-size: 13px;
 	}
 	tr {
-		background: var(--bgLight);
 		cursor: pointer;
 		&.row-selected {
 			background: var(--selection);

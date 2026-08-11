@@ -3,10 +3,10 @@ import { ref, computed } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import DndTable from '@/components/common/DndTable.vue'
 import { useRouter } from 'vue-router'
-import type { QTableColumn } from 'quasar'
 import ConditionDialog from '@/components/condition/ConditionDialog.vue'
 import type { ConditionGroupNode } from '@/components/condition/conditionTypes'
 import type { TreeElement } from '@/components/condition/conditionTypes'
+import { dragContext } from '@he-tree/vue'
 
 interface List {
 	id: string
@@ -109,13 +109,8 @@ const setCondition = (row: any) => {
 }
 
 const linked = ref(false)
+
 const addDialog = ref(false)
-const showAddDialog = (n: number) => {
-	if (n == 1) {
-		linked.value = true
-	} else linked.value = false
-	addDialog.value = !addDialog.value
-}
 
 const options = [
 	'Всегда',
@@ -184,10 +179,6 @@ const remove1 = (row: any) => {
 	}
 }
 
-const addEtap = () => {
-	approveStore.toggleAdd(null)
-}
-
 const goedit = (row: any) => {
 	router.push({
 		name: 'start',
@@ -196,27 +187,6 @@ const goedit = (row: any) => {
 		},
 	})
 }
-
-const colsAdd: QTableColumn[] = [
-	{
-		name: 'text',
-		label: 'Этап',
-		field: 'text',
-		align: 'left',
-	},
-	{
-		name: 'author',
-		label: 'Автор',
-		field: 'author',
-		align: 'left',
-	},
-	{
-		name: 'used',
-		label: 'Использование',
-		field: 'used',
-		align: 'right',
-	},
-]
 
 const selectedAdd = ref<any[]>([])
 const query = ref(null)
@@ -227,10 +197,6 @@ const copy = () => {
 	selectedAdd.value[0].template = false
 	approveStore.addCopy = true
 	approveStore.toggleAdd(selectedAdd.value[0])
-}
-
-const handleClick = (event: Event, row: any) => {
-	selectedAdd.value[0] = row
 }
 
 const tree = ref<ConditionGroupNode>({
@@ -246,6 +212,30 @@ const save = (e: any) => {
 	if (goal.value) {
 		goal.value.condition = e
 	}
+}
+
+const isOverTable = ref(false)
+
+function onTableDrop() {
+	const draggedData = dragContext.dragNode?.data
+	draggedData.first = false
+	draggedData.repeat = 'Всегда'
+	draggedData.condition = null
+	draggedData.regim = 'Консолидация'
+	draggedData.marsh = 'Последовательно'
+	draggedData.sogl = 'Инициатор'
+	draggedData.duration = 24
+	draggedData.selected = false
+	draggedData.hidden = false
+	draggedData.parentId = approveStore.selectedElement?.id
+
+	if (draggedData) {
+		etapsRows.value.push(draggedData)
+	}
+}
+
+function checkDropAllowed() {
+	return dragContext.dragNode?.data?.filetype === 3
 }
 </script>
 
@@ -267,7 +257,16 @@ const save = (e: any) => {
 
 	fieldset
 		legend Карта этапов
-		DndTable(:columns='cols' :rows='etapsRows' v-model:selected='selectedId' @removeRow="remove" @edit='goedit')
+		DndTable(
+			:columns='cols',
+			:rows='etapsRows',
+			v-model:selected='selectedId',
+			v-model:drag-over='isOverTable',
+			@removeRow="remove",
+			@edit='goedit',
+			@table-drop="onTableDrop"
+			:can-drop-checker="checkDropAllowed"
+		)
 			template(#cell-condition="{ row }")
 				q-chip(v-if='row.condition' color="green-3" size="sm" selected clickable @click.stop="setCondition(row)") Условие
 				q-chip(v-if='!row.condition' size="sm" clickable textColor="black" @click.stop='setCondition(row)') Задать
@@ -308,44 +307,6 @@ const save = (e: any) => {
 		DndTable(:columns='cols1' :rows='rows1' @removeRow="remove1")
 		q-btn.q-mt-sm(unelevated color="primary" label="Добавить состояние" icon="mdi-plus-circle" @click="" size="sm") 
 
-	q-dialog(v-model="addDialog" backdrop-filter="blur(4px) saturate(150%)")
-		q-card(style='width: 640px; min-height: 200px')
-			q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
-			q-card-section
-				.text-h6
-					span(v-if='linked') Добавить этап
-					span(v-else) Создать новый этап
-
-
-			q-card-section
-			q-card-section(v-if='linked')
-				q-input(v-model="query" dense clearable)
-					template(v-slot:prepend)
-						q-icon(name="mdi-magnify" color="primary")
-
-				// q-table.q-mt-md(
-				// 	flat
-				// 	color="primary"
-				// 	:columns="colsAdd"
-				// 	:rows="approveStore.sharedEtaps"
-				// 	row-key="id"
-				// 	:filter='query'
-				// 	hideBottom
-				// 	selection="single"
-				// 	v-model:selected="selectedAdd"
-				// 	dense
-				// 	@rowClick='handleClick'
-				// 	)
-				// 	template(v-slot:body-cell-used='props')
-				// 		q-td.text-right(:props='props') {{ props.row.count }}
-
-
-			q-card-actions(align="right")
-				q-btn(flat color="primary" label="Отмена" v-close-popup) 
-				q-space
-				q-btn(flat color="primary" label="Сделать копию" @click="copy") 
-				q-btn(unelevated color="primary" label="Вставить ссылку" @click="link") 
-
 	ConditionDialog(
 		v-model="conditionDialog"
 		:etap-list="etapsRows"
@@ -359,7 +320,6 @@ const save = (e: any) => {
 .special {
 	display: grid;
 	grid-template-columns: auto auto 50px 1fr 1fr;
-	// justify-items: start;
 	align-items: center;
 	column-gap: 0.5rem;
 	row-gap: 0.5rem;

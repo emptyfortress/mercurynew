@@ -227,6 +227,26 @@ const duble = (stat: Stat) => {
 const drop = () => {
 	console.log(111)
 }
+
+const onExternalDragStart = (e: any) => {
+	console.log(e)
+}
+const onExternalDragEnd = (e: any) => {
+	console.log('end')
+}
+
+const isOverTable = ref(false)
+
+// function onTreeDragEnd() {
+// 	if (isOverTable.value) {
+// 		const draggedData = dragContext.dragNode?.data
+// 		if (draggedData) {
+// 			etapsRows.value.push(mapToRow(draggedData)) // маппинг под структуру Row при необходимости
+// 		}
+// 		isOverTable.value = false
+// 		return false // запрещаем he-tree менять позицию узла внутри дерева
+// 	}
+// }
 </script>
 
 <template lang="pug">
