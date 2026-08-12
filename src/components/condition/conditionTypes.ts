@@ -42,7 +42,7 @@ export enum FileType {
 export interface TreeElement {
 	id: string
 	text: string
-	parentId?: string
+	parentId?: string[]
 	text1?: string
 	name?: string
 	selected?: boolean

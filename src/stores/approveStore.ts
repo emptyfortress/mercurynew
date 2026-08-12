@@ -29,22 +29,19 @@ export const useApproveStore = defineStore('approveStore', () => {
 
 	const nodesByParentId = computed(() => {
 		const map = new Map<string, TreeElement[]>()
-
 		for (const node of flatNodes.value) {
-			if (!node.parentId) {
+			if (!node.parentId?.length) {
 				continue
 			}
-
-			let children = map.get(node.parentId)
-
-			if (!children) {
-				children = []
-				map.set(node.parentId, children)
+			for (const pid of node.parentId) {
+				let children = map.get(pid)
+				if (!children) {
+					children = []
+					map.set(pid, children)
+				}
+				children.push(node)
 			}
-
-			children.push(node)
 		}
-
 		return map
 	})
 

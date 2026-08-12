@@ -108,10 +108,6 @@ const setCondition = (row: any) => {
 	conditionDialog.value = !conditionDialog.value
 }
 
-const linked = ref(false)
-
-const addDialog = ref(false)
-
 const options = [
 	'Всегда',
 	'Никогда',
@@ -165,10 +161,12 @@ const rows1 = ref([
 const selectedId = ref(null)
 const good = ref('')
 
-const remove = (row: any) => {
-	let ind = approveStore.selectedElement?.children.findIndex((el) => el.id == row.id)
-	if (ind !== undefined && ind > -1) {
-		approveStore.selectedElement?.children.splice(ind, 1)
+const remove = (row: TreeElement) => {
+	const parentId = approveStore.selectedElement?.id
+	if (!parentId) return
+	const idx = row.parentId?.indexOf(parentId)
+	if (idx !== undefined && idx > -1) {
+		row.parentId?.splice(idx, 1)
 	}
 }
 
@@ -186,17 +184,6 @@ const goedit = (row: any) => {
 			viewId: row.id,
 		},
 	})
-}
-
-const selectedAdd = ref<any[]>([])
-const query = ref(null)
-const link = () => {
-	approveStore.toggleAdd(selectedAdd.value[0])
-}
-const copy = () => {
-	selectedAdd.value[0].template = false
-	approveStore.addCopy = true
-	approveStore.toggleAdd(selectedAdd.value[0])
 }
 
 const tree = ref<ConditionGroupNode>({
@@ -218,6 +205,8 @@ const isOverTable = ref(false)
 
 function onTableDrop() {
 	const draggedData = dragContext.dragNode?.data
+	if (!draggedData) return
+
 	draggedData.first = false
 	draggedData.repeat = 'Всегда'
 	draggedData.condition = null
@@ -227,10 +216,10 @@ function onTableDrop() {
 	draggedData.duration = 24
 	draggedData.selected = false
 	draggedData.hidden = false
-	draggedData.parentId = approveStore.selectedElement?.id
 
-	if (draggedData) {
-		etapsRows.value.push(draggedData)
+	const newParentId = approveStore.selectedElement?.id
+	if (newParentId && !draggedData.parentId.includes(newParentId)) {
+		draggedData.parentId.push(newParentId)
 	}
 }
 

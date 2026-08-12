@@ -41,6 +41,10 @@ onBeforeUnmount(() => {
 })
 
 function handleDocumentDragOver(e: DragEvent) {
+	if (isInternalDrag.value) {
+		dragState.value = 'none'
+		return
+	}
 	if (!tbodyRef.value) return
 	const rect = tbodyRef.value.getBoundingClientRect()
 	const inside =
@@ -58,6 +62,7 @@ function handleDocumentDragOver(e: DragEvent) {
 }
 
 function handleWindowDrop(e: DragEvent) {
+	if (isInternalDrag.value) return // не трогаем — пусть formkit обрабатывает как обычно
 	if (!tbodyRef.value) return
 	const rect = tbodyRef.value.getBoundingClientRect()
 	const inside =
@@ -65,28 +70,37 @@ function handleWindowDrop(e: DragEvent) {
 		e.clientX <= rect.right &&
 		e.clientY >= rect.top &&
 		e.clientY <= rect.bottom
-
 	if (!inside) return
 
 	e.stopPropagation()
 	e.preventDefault()
-
 	const valid = props.canDropChecker ? props.canDropChecker() : true
 	dragState.value = 'none'
-
-	if (!valid) return // молча блокируем, наружу ничего не эмитим
+	if (!valid) return
 	emit('table-drop')
+}
+function handleWindowDragStart(e: DragEvent) {
+	if (!tbodyRef.value) return
+	if (tbodyRef.value.contains(e.target as Node)) {
+		isInternalDrag.value = true
+	}
+}
+function handleWindowDragEnd() {
+	isInternalDrag.value = false
 }
 
 onMounted(() => {
 	document.addEventListener('dragover', handleDocumentDragOver, true)
 	window.addEventListener('drop', handleWindowDrop, true)
+	window.addEventListener('dragstart', handleWindowDragStart, true)
+	window.addEventListener('dragend', handleWindowDragEnd, true)
 })
 onBeforeUnmount(() => {
 	document.removeEventListener('dragover', handleDocumentDragOver, true)
 	window.removeEventListener('drop', handleWindowDrop, true)
+	window.removeEventListener('dragstart', handleWindowDragStart, true)
+	window.removeEventListener('dragend', handleWindowDragEnd, true)
 })
-
 const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'row-ghost',
@@ -130,6 +144,8 @@ const remove = (row: Row) => {
 const edit = (row: Row) => {
 	emit('edit', row as T)
 }
+
+const isInternalDrag = ref(false)
 </script>
 
 <template lang="pug">
