@@ -78,6 +78,16 @@ const semoptions = [
 
 <template lang="pug">
 fieldset
+	legend Маршруты
+	.emp(v-if='approveStore.selectedElement?.parentId?.length == 0')
+		q-icon.q-mr-md(name="mdi-information-outline" color="secondary" size="md")
+		|Данный этап не используется ни в одном маршруте.
+	template(v-else)
+		.warn()
+			q-icon.q-mr-md(name="mdi-alert-outline" size="md")
+			|Использование в маршрутах: {{ approveStore.selectedElement?.parentId?.length }} раз(а)
+
+fieldset
 	legend Общие
 	.grid2
 		.grid
@@ -214,5 +224,9 @@ fieldset
 	* {
 		display: none;
 	}
+}
+.warn {
+	color: darkred;
+	font-weight: 600;
 }
 </style>
