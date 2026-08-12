@@ -45,6 +45,14 @@ export const useApproveStore = defineStore('approveStore', () => {
 		return map
 	})
 
+	const getParentsInfo = (parentId: string[] | undefined): { name: string; id: string }[] => {
+		if (!parentId?.length) return []
+		return parentId
+			.map((id) => flatNodes.value.find((node) => node.id === id))
+			.filter((node): node is TreeElement => !!node)
+			.map((node) => ({ name: node.text, id: node.id }))
+	}
+
 	const getChildren = (parentId: string): TreeElement[] => nodesByParentId.value.get(parentId) ?? []
 
 	// === Tree utilities ===
@@ -276,5 +284,6 @@ export const useApproveStore = defineStore('approveStore', () => {
 		toggleDuplicate,
 		selectChip,
 		toggleAdd,
+		getParentsInfo,
 	}
 })
