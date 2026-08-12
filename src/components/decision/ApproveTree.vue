@@ -88,6 +88,36 @@ watch(
 	{ immediate: true }
 )
 
+// watch(
+// 	() => route.params.viewId,
+// 	async (viewId, oldViewId) => {
+// 		await nextTick()
+//
+// 		if (!viewId) {
+// 			// возврат на стартовую — сбрасываем выделение
+// 			const prevId = oldViewId?.toString() ?? approveStore.selectedElement?.id
+// 			if (prevId) {
+// 				const prevNode = approveStore.nodesMap.get(prevId)
+// 				if (prevNode) prevNode.selected = false
+// 			}
+// 			approveStore.selectedElement = null // или clearSelectedElement(), смотря что есть в сторе
+// 			return
+// 		}
+//
+// 		if (!approveStore.nodesMap.has(viewId.toString())) return
+// 		const prevId = oldViewId?.toString() ?? approveStore.selectedElement?.id
+// 		if (prevId) {
+// 			const prevNode = approveStore.nodesMap.get(prevId)
+// 			if (prevNode) prevNode.selected = false
+// 		}
+// 		const node = approveStore.getNodeById(viewId.toString())
+// 		const stat = tree.value.getStat(node)
+// 		tree.value.openNodeAndParents(stat)
+// 		approveStore.selectNode(stat)
+// 	},
+// 	{ immediate: true }
+// )
+
 const select = (stat: Stat) => {
 	router.push({
 		name: 'start',

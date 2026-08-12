@@ -6,6 +6,9 @@ import CardEtap from '@/components/decision/CardEtap.vue'
 import CardMarshroute from '@/components/decision/CardMarshroute.vue'
 import CardSoglas from '@/components/decision/CardSoglas.vue'
 import CardFolder from '@/components/decision/CardFolder.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const approveStore = useApproveStore()
 
@@ -20,6 +23,13 @@ const showGroup = computed(() => {
 		return true
 	return false
 })
+
+const remove = () => {
+	router.push('/dvmain/approve/')
+	setTimeout(() => {
+		approveStore.toggleDelete()
+	}, 200)
+}
 </script>
 
 <template lang="pug">
@@ -52,28 +62,13 @@ div(v-if='selectedElement')
 			q-btn(flat round color="negative" icon="mdi-delete-outline" size="sm") 
 				q-menu
 					q-list
-						q-item.pink(clickable @click="")
+						q-item.pink(clickable @click="remove")
 							q-item-section Удалить
 
 	CardFolder(v-if='selectedElement.filetype == 0')
 	CardSoglas(v-if='selectedElement.filetype == 1')
 	CardMarshroute(v-if='selectedElement.filetype == 2')
 	CardEtap(v-if='selectedElement.filetype == 3')
-
-	// q-dialog(v-model="share")
-	// 	q-card
-	// 		q-btn.close(icon="mdi-close" color="negative" round dense v-close-popup)
-	// 		q-card-section
-	// 			.text-h6
-	// 				q-icon.q-mr-md(name="mdi-share-variant" color="primary")
-	// 				span(v-if='selectedElement.filetype == 3') Типовой этап
-	// 				span(v-if='selectedElement.filetype == 2') Типовой маршрут
-	//
-	// 		q-card-section
-	// 			div Сделать этап доступным для использования в других маршрутах? Этап станет типовым и будущие изменения в нем затронут все связанные маршруты.
-	// 		q-card-actions(align="right")
-	// 			q-btn(flat color="primary" label="Отмена" v-close-popup) 
-	// 			q-btn(unelevated color="primary" label="OK" @click="sharing") 
 
 </template>
 
@@ -82,9 +77,6 @@ div(v-if='selectedElement')
 	font-size: 1rem;
 	text-transform: uppercase;
 	font-weight: 600;
-	// color: $primary;
-	// padding-bottom: 0;
-	// border-bottom: 1px dotted var(--q-primary);
 }
 .myblock {
 	display: grid;

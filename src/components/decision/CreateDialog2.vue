@@ -75,9 +75,6 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)"  @hide=
 .section {
 	margin: 1rem;
 	margin-top: 0;
-	// margin-bottom: 1rem;
-	// margin-left: 0.5rem;
-	// margin-right: 0.5rem;
 }
 .q-card__actions {
 	margin-right: 0.5rem;

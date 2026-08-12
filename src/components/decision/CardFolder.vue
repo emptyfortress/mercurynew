@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
 import CreateDialog2 from '@/components/decision/CreateDialog2.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const approveStore = useApproveStore()
 const name = ref(approveStore.selectedElement?.text)
 
@@ -39,10 +41,14 @@ const add = (n: number) => {
 	dialog.value = !dialog.value
 }
 
-const create = (e: string) => {
-	console.log(e)
-}
 const rem = ref(true)
+
+const remove = () => {
+	router.push('/dvmain/approve/')
+	setTimeout(() => {
+		approveStore.toggleDelete()
+	}, 200)
+}
 </script>
 
 <template lang="pug">
@@ -68,10 +74,10 @@ const rem = ref(true)
 
 		fieldset
 			legend Удаление
-			q-btn(unelevated color="negative" label="Удалить папку" @click="" icon="mdi-delete-outline") 
+			q-btn(unelevated color="negative" label="Удалить папку" @click="remove" icon="mdi-delete-outline") 
 			q-checkbox.q-ml-md(v-model='rem' label='Удалить также содержимое папки' dense)
 
-	CreateDialog2(v-model="dialog" :mode="mode" @create='create')
+	CreateDialog2(v-model="dialog" :mode="mode")
 </template>
 
 <style scoped lang="scss">
