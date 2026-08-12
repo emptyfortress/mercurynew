@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, watchEffect, nextTick } from 'vue'
-import { Draggable, dragContext } from '@he-tree/vue'
+import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import DirMenuApprove from '@/components/decision/DirMenuApprove.vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -88,36 +88,6 @@ watch(
 	{ immediate: true }
 )
 
-// watch(
-// 	() => route.params.viewId,
-// 	async (viewId, oldViewId) => {
-// 		await nextTick()
-//
-// 		if (!viewId) {
-// 			// возврат на стартовую — сбрасываем выделение
-// 			const prevId = oldViewId?.toString() ?? approveStore.selectedElement?.id
-// 			if (prevId) {
-// 				const prevNode = approveStore.nodesMap.get(prevId)
-// 				if (prevNode) prevNode.selected = false
-// 			}
-// 			approveStore.selectedElement = null // или clearSelectedElement(), смотря что есть в сторе
-// 			return
-// 		}
-//
-// 		if (!approveStore.nodesMap.has(viewId.toString())) return
-// 		const prevId = oldViewId?.toString() ?? approveStore.selectedElement?.id
-// 		if (prevId) {
-// 			const prevNode = approveStore.nodesMap.get(prevId)
-// 			if (prevNode) prevNode.selected = false
-// 		}
-// 		const node = approveStore.getNodeById(viewId.toString())
-// 		const stat = tree.value.getStat(node)
-// 		tree.value.openNodeAndParents(stat)
-// 		approveStore.selectNode(stat)
-// 	},
-// 	{ immediate: true }
-// )
-
 const select = (stat: Stat) => {
 	router.push({
 		name: 'start',
@@ -146,8 +116,7 @@ const addFromMenu = (e: Stat, filetype: number) => {
 
 const remove = (e: any) => {
 	tree.value.remove(e)
-	approveStore.currentNode = null
-	approveStore.selectedElement = null
+	router.push('/dvmain/approve/')
 }
 
 const edit = (e: any) => {
@@ -157,14 +126,6 @@ const edit = (e: any) => {
 const setText = (e: any, ev: any) => {
 	e.data.text = ev.target.value
 	e.data.edit = false
-}
-
-const open = (nodeId: string) => {
-	const node = approveStore.nodesMap.get(nodeId)
-	if (node) {
-		node.selected = true
-		tree.value?.openNodeAndParents(node)
-	}
 }
 
 const create = () => {
@@ -246,38 +207,10 @@ onBeforeRouteLeave((to, from) => {
 	}
 })
 
-const one = () => {
-	console.log(111)
-}
-
 const duble = (stat: Stat) => {
 	approveStore.currentNode = stat
 	approveStore.toggleDuplicate()
 }
-
-const drop = () => {
-	console.log(111)
-}
-
-const onExternalDragStart = (e: any) => {
-	console.log(e)
-}
-const onExternalDragEnd = (e: any) => {
-	console.log('end')
-}
-
-const isOverTable = ref(false)
-
-// function onTreeDragEnd() {
-// 	if (isOverTable.value) {
-// 		const draggedData = dragContext.dragNode?.data
-// 		if (draggedData) {
-// 			etapsRows.value.push(mapToRow(draggedData)) // маппинг под структуру Row при необходимости
-// 		}
-// 		isOverTable.value = false
-// 		return false // запрещаем he-tree менять позицию узла внутри дерева
-// 	}
-// }
 </script>
 
 <template lang="pug">
@@ -350,21 +283,9 @@ div
 
 	q-btn(flat icon="mdi-folder-multiple-plus-outline" color="primary" label="Подключить папки" size='sm' ) 
 
-	q-fab.fab(round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
-		q-fab-action(color="primary" icon="mdi-flag-triangle" external-label label="Этап" label-position="left" @click="one")
-		q-fab-action(color="primary" external-label label="Маршрут" label-position="left" @click="one")
-			MaterialSymbolsAltRoute(style='font-size: 1.5rem')
-		q-fab-action(color="primary" icon="mdi-message-check-outline" external-label label="Согласование" label-position="left"  @click="one")
-		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left"	@click="one")
-
 </template>
 
 <style scoped lang="scss">
-.fab {
-	position: fixed;
-	bottom: 1rem;
-	right: 1rem;
-}
 .node {
 	padding: 4px 8px;
 	cursor: pointer;

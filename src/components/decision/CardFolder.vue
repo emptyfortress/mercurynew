@@ -74,8 +74,11 @@ const remove = () => {
 
 		fieldset
 			legend Удаление
-			q-btn(unelevated color="negative" label="Удалить папку" @click="remove" icon="mdi-delete-outline") 
-			q-checkbox.q-ml-md(v-model='rem' label='Удалить также содержимое папки' dense)
+			.row.items-center
+				q-btn(unelevated color="negative" label="Удалить папку" @click="remove" icon="mdi-delete-outline") 
+				.q-ml-xl.row.q-gutter-x-sm.text-negative.text-bold.items-center
+					q-icon(name="mdi-alert-outline" color="negative" size="md")
+					div Содержимое папки будет удалено
 
 	CreateDialog2(v-model="dialog" :mode="mode")
 </template>
