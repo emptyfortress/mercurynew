@@ -99,7 +99,7 @@ fieldset
 		|Данный этап не используется ни в одном маршруте.
 	template(v-else)
 		.warn()
-			q-icon.q-mr-md(name="mdi-alert-outline" size="md")
+			q-icon.q-mr-md(name="mdi-information-outline" size="md" color="primary")
 			|Данный этап используется в  маршрутах: 
 			.list(v-for="item in marshList" :key="item.id" @click='goto(item.id)') {{ item.name }}
 
@@ -243,12 +243,11 @@ fieldset
 	}
 }
 .warn {
-	color: darkred;
-	font-weight: 600;
 	display: flex;
 	align-items: center;
 	white-space: wrap;
 	.list {
+		font-weight: 600;
 		color: $primary;
 		margin-left: 1rem;
 		cursor: pointer;
