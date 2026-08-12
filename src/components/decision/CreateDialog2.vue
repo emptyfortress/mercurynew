@@ -38,6 +38,7 @@ const submitForm = () => {
 		text: model.value,
 		filetype: calcFileType.value,
 		children: [],
+		parentId: [],
 	})
 }
 </script>

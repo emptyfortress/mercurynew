@@ -172,6 +172,7 @@ const create = () => {
 		id: approveStore.addTemp!.id,
 		text: approveStore.addTemp?.text,
 		filetype: approveStore.addTemp?.filetype,
+		parentId: approveStore.addTemp?.parentId,
 		hidden: false,
 		selected: true,
 		children: [],
