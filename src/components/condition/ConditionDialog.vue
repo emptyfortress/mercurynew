@@ -187,36 +187,33 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 			.text-h6 Условие старта этапа "{{ goalStage?.text }}"
 
 		.scroll
-			.mini
-				Draggable(ref="treeRef"
-					propKey="id"
-					treeLine
-					v-model="treeData"
-					:indent="30"
-					:each-draggable='isDrag'
-					:each-droppable='isDrop'
-					:root-droppable='false'
-					class='mtl-tree'
-					keepPlaceholder
-				)
-					template(#default="{ node, stat }")
-						.zero(v-if='stat.data.kind1 == "group"')
-							q-icon.trig(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }")
-							.root
-								.icon(:class="{or : stat.data.type === 'OR'}" @click.stop="next(stat)")
-								.q-ml-md Оператор
-								.text-weight-bold.q-ml-sm {{stat.data.type == 'AND' ? 'И' : 'ИЛИ'}}
-							q-btn.closing(v-if='stat.data.id !== "root"' dense flat round color="secondary" icon="mdi-close" size='sm' @click='remove(stat)') 
+			Draggable(ref="treeRef"
+				treeLine
+				v-model="treeData"
+				:indent="30"
+				:each-draggable='isDrag'
+				:each-droppable='isDrop'
+				:root-droppable='false'
+				class='mtl-tree'
+			)
+				template(#default="{ node, stat }")
+					.zero(v-if='stat.data.kind1 == "group"')
+						q-icon.trig(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }")
+						.root
+							.icon(:class="{or : stat.data.type === 'OR'}" @click.stop="next(stat)")
+							.q-ml-md Оператор
+							.text-weight-bold.q-ml-sm {{stat.data.type == 'AND' ? 'И' : 'ИЛИ'}}
+						q-btn.closing(v-if='stat.data.id !== "root"' dense flat round color="secondary" icon="mdi-close" size='sm' @click='remove(stat)') 
 
-						.node(v-else)
-							.myrow
-								q-select(outlined label='Этап' :options='stageOptions' dense v-model='node.stageId' map-options emit-value option-label='text' option-value='id')
-								q-select(outlined label='Семантика завершения' :options='semoptions' dense v-model='node.result')
-							q-btn.closing(v-if='!node.root' dense flat round color="secondary" icon="mdi-close" size='sm' @click='remove(stat)') 
+					.node(v-else)
+						.myrow
+							q-select(outlined label='Этап' :options='stageOptions' dense v-model='node.stageId' map-options emit-value option-label='text' option-value='id')
+							q-select(outlined label='Семантика завершения' :options='semoptions' dense v-model='node.result')
+						q-btn.closing(v-if='!node.root' dense flat round color="secondary" icon="mdi-close" size='sm' @click='remove(stat)') 
 
-			.q-mt-md
-				.text-caption Условие:
-				pre.text-caption {{ conditionPreview }}
+		.q-mt-md.q-mx-md
+			.text-caption Условие:
+			pre.text-caption {{ conditionPreview }}
 
 		q-card-actions(align="right")
 			q-btn(flat color="primary" icon='mdi-plus-circle-outline' label="Условие" @click="addCondition('leaf')") 
@@ -236,8 +233,6 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 	padding: 2px 10px;
 	border-radius: 0.25rem;
 	border: 1px solid var(--bgLight);
-	// margin-bottom: 2px;
-	// margin-top: 2px;
 	.closing {
 		position: absolute;
 		right: 0.5rem;
@@ -285,7 +280,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 }
 .scroll {
 	min-height: 100px;
-	max-height: 500px;
+	// max-height: 500px;
 	margin: 0 1rem;
 }
 pre {
@@ -324,12 +319,15 @@ pre {
 	width: 100%;
 	row-gap: 0.5rem;
 }
+
 :deep(.drag-placeholder) {
-	min-height: 48px;
+	height: 58px;
 	border-radius: 0.25rem;
 }
-.mini {
-	min-height: 100px;
-	width: 100%;
+:deep(.tree-hline) {
+	width: 30px;
+}
+:deep(.tree-line) {
+	background-color: #a8bbd1;
 }
 </style>
