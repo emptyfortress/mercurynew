@@ -49,6 +49,8 @@ const remove = () => {
 		approveStore.toggleDelete()
 	}, 200)
 }
+
+const showRemove = ref(false)
 </script>
 
 <template lang="pug">
@@ -75,10 +77,12 @@ const remove = () => {
 		fieldset
 			legend Удаление
 			.row.items-center
-				q-btn(unelevated color="negative" label="Удалить папку" @click="remove" icon="mdi-delete-outline") 
-				.q-ml-xl.row.q-gutter-x-sm.text-negative.text-bold.items-center
+				q-btn(:disable='showRemove' unelevated color="primary" label="Удалить папку" @click="showRemove = true" icon="mdi-delete-outline") 
+				.q-ml-xl.row.q-gutter-x-sm.text-negative.text-bold.items-center(v-if='showRemove')
 					q-icon(name="mdi-alert-outline" color="negative" size="md")
-					div Содержимое папки будет удалено
+					div Содержимое папки будет удалено!
+					q-btn.q-ml-lg(flat color="primary" label="Отмена" @click="showRemove = false") 
+					q-btn(unelevated color="negative" label="Удалить!" @click="remove") 
 
 	CreateDialog2(v-model="dialog" :mode="mode")
 </template>
