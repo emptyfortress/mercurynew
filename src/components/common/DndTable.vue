@@ -21,6 +21,7 @@ const props = defineProps<{
 	selected?: T['id'] | null
 	dragOver?: boolean
 	canDropChecker?: () => boolean
+	disableDragHighlight?: boolean
 }>()
 
 const dragState = ref<'none' | 'valid' | 'invalid'>('none')
@@ -41,7 +42,7 @@ onBeforeUnmount(() => {
 })
 
 function handleDocumentDragOver(e: DragEvent) {
-	if (isInternalDrag.value) {
+	if (props.disableDragHighlight || isInternalDrag.value) {
 		dragState.value = 'none'
 		return
 	}
@@ -61,8 +62,15 @@ function handleDocumentDragOver(e: DragEvent) {
 	dragState.value = valid ? 'valid' : 'invalid'
 }
 
+function handleWindowDragStart(e: DragEvent) {
+	if (!tbodyRef.value) return
+	if (tbodyRef.value.contains(e.target as Node)) {
+		isInternalDrag.value = true
+	}
+}
+
 function handleWindowDrop(e: DragEvent) {
-	if (isInternalDrag.value) return // не трогаем — пусть formkit обрабатывает как обычно
+	if (isInternalDrag.value) return
 	if (!tbodyRef.value) return
 	const rect = tbodyRef.value.getBoundingClientRect()
 	const inside =
@@ -74,17 +82,31 @@ function handleWindowDrop(e: DragEvent) {
 
 	e.stopPropagation()
 	e.preventDefault()
-	const valid = props.canDropChecker ? props.canDropChecker() : true
 	dragState.value = 'none'
+
+	if (props.disableDragHighlight) return // событие уже перехвачено, просто ничего не делаем дальше
+
+	const valid = props.canDropChecker ? props.canDropChecker() : true
 	if (!valid) return
 	emit('table-drop')
 }
-function handleWindowDragStart(e: DragEvent) {
-	if (!tbodyRef.value) return
-	if (tbodyRef.value.contains(e.target as Node)) {
-		isInternalDrag.value = true
-	}
+
+function handleWindowDragOverCapture(e: DragEvent) {
+	if (!props.disableDragHighlight || !tbodyRef.value || !e.dataTransfer) return
+	const rect = tbodyRef.value.getBoundingClientRect()
+	const inside =
+		e.clientX >= rect.left &&
+		e.clientX <= rect.right &&
+		e.clientY >= rect.top &&
+		e.clientY <= rect.bottom
+	if (!inside) return
+
+	e.preventDefault()
+	e.stopPropagation() // не даём he-tree тоже выставить dropEffect после нас
+	e.dataTransfer.dropEffect = 'none'
+	dragState.value = 'none'
 }
+
 function handleWindowDragEnd() {
 	isInternalDrag.value = false
 }
@@ -94,13 +116,16 @@ onMounted(() => {
 	window.addEventListener('drop', handleWindowDrop, true)
 	window.addEventListener('dragstart', handleWindowDragStart, true)
 	window.addEventListener('dragend', handleWindowDragEnd, true)
+	window.addEventListener('dragover', handleWindowDragOverCapture, true) // capture вместо bubble
 })
 onBeforeUnmount(() => {
 	document.removeEventListener('dragover', handleDocumentDragOver, true)
 	window.removeEventListener('drop', handleWindowDrop, true)
 	window.removeEventListener('dragstart', handleWindowDragStart, true)
 	window.removeEventListener('dragend', handleWindowDragEnd, true)
+	window.removeEventListener('dragover', handleWindowDragOverCapture, true)
 })
+
 const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'row-ghost',
@@ -179,7 +204,7 @@ table.dnd-table
 						q-menu
 							q-list
 								q-item.pink(clickable @click.stop="remove(row)")
-									q-item-section Удалить
+									q-item-section Убрать
 
 </template>
 
