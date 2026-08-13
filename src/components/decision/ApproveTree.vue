@@ -23,7 +23,7 @@ const tree = ref()
 const query = ref('')
 
 const treeData = computed({
-	get: () => approveStore.activeTreeData,
+	get: () => approveStore.treeData,
 	set: (value: any) => {
 		approveStore.updateTreeData(value)
 	},
@@ -211,6 +211,43 @@ const duble = (stat: Stat) => {
 	approveStore.currentNode = stat
 	approveStore.toggleDuplicate()
 }
+
+function applyChipFilter() {
+	if (!tree.value?.statsFlat) return
+
+	const chips = approveStore.selectedChips
+	const showAll = chips.some((chip: any) => chip.id === 0)
+
+	tree.value.statsFlat.forEach((stat: any) => {
+		stat.hidden = !showAll
+	})
+
+	if (showAll) return
+
+	const selectedTypes = new Set(chips.map((chip) => chip.id))
+
+	const matchedNodes = approveStore.flatNodes.filter(
+		(node) => node.filetype !== undefined && selectedTypes.has(node.filetype)
+	)
+
+	matchedNodes.forEach((node) => {
+		const stat = tree.value.getStat(node)
+		if (!stat) return
+		stat.hidden = false
+		tree.value.openNodeAndParents(stat)
+		for (const parentStat of tree.value.iterateParent(stat, { withSelf: false })) {
+			parentStat.hidden = false
+		}
+	})
+}
+
+watch(
+	() => approveStore.selectedChips,
+	() => {
+		applyChipFilter()
+	},
+	{ immediate: true }
+)
 </script>
 
 <template lang="pug">

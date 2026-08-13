@@ -221,37 +221,8 @@ export const useApproveStore = defineStore('approveStore', () => {
 		const hasOtherSelected = list.value.some((chip) => chip.id !== 0 && chip.selected)
 		if (!hasOtherSelected && zeroChip) zeroChip.selected = true
 	}
+
 	const selectedChips = computed(() => list.value.filter((item) => item.selected))
-
-	function filterTreeByChips(treeData: TreeElement[], selectedChips: Chip[]): TreeElement[] {
-		// чип id: 0 ("Все") выбран — возвращаем исходное дерево как есть
-		if (selectedChips.some((chip) => chip.id === 0)) {
-			return treeData
-		}
-
-		const selectedTypes = new Set(selectedChips.map((chip) => chip.id))
-
-		function filterNodes(nodes: TreeElement[]): TreeElement[] {
-			return nodes.reduce<TreeElement[]>((acc, node) => {
-				const filteredChildren = node.children ? filterNodes(node.children) : []
-				const matchesSelf = node.filetype !== undefined && selectedTypes.has(node.filetype)
-
-				if (matchesSelf || filteredChildren.length > 0) {
-					acc.push({
-						...node,
-						children: filteredChildren,
-					})
-				}
-
-				return acc
-			}, [])
-		}
-
-		return filterNodes(treeData)
-	}
-	const activeTreeData = computed(() => {
-		return filterTreeByChips(treeData.value, selectedChips.value)
-	})
 
 	return {
 		treeData,
@@ -263,9 +234,9 @@ export const useApproveStore = defineStore('approveStore', () => {
 		addTemp,
 		duplicateRequest,
 		list,
-		activeTreeData,
 		nodesMap,
 		flatNodes,
+		selectedChips,
 		getNodeById,
 		getNameById,
 		getNameByFolderId,
