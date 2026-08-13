@@ -41,20 +41,18 @@ onBeforeUnmount(() => {
 	document.removeEventListener('dragover', handleDocumentDragOver, true)
 })
 
+function isPointerOverTbody(e: DragEvent): boolean {
+	if (!tbodyRef.value) return false
+	const el = document.elementFromPoint(e.clientX, e.clientY)
+	return !!el && tbodyRef.value.contains(el)
+}
+
 function handleDocumentDragOver(e: DragEvent) {
 	if (props.disableDragHighlight || isInternalDrag.value) {
 		dragState.value = 'none'
 		return
 	}
-	if (!tbodyRef.value) return
-	const rect = tbodyRef.value.getBoundingClientRect()
-	const inside =
-		e.clientX >= rect.left &&
-		e.clientX <= rect.right &&
-		e.clientY >= rect.top &&
-		e.clientY <= rect.bottom
-
-	if (!inside) {
+	if (!isPointerOverTbody(e)) {
 		dragState.value = 'none'
 		return
 	}
@@ -71,38 +69,24 @@ function handleWindowDragStart(e: DragEvent) {
 
 function handleWindowDrop(e: DragEvent) {
 	if (isInternalDrag.value) return
-	if (!tbodyRef.value) return
-	const rect = tbodyRef.value.getBoundingClientRect()
-	const inside =
-		e.clientX >= rect.left &&
-		e.clientX <= rect.right &&
-		e.clientY >= rect.top &&
-		e.clientY <= rect.bottom
-	if (!inside) return
+	if (!isPointerOverTbody(e)) return
 
 	e.stopPropagation()
 	e.preventDefault()
 	dragState.value = 'none'
 
-	if (props.disableDragHighlight) return // событие уже перехвачено, просто ничего не делаем дальше
-
+	if (props.disableDragHighlight) return
 	const valid = props.canDropChecker ? props.canDropChecker() : true
 	if (!valid) return
 	emit('table-drop')
 }
 
 function handleWindowDragOverCapture(e: DragEvent) {
-	if (!props.disableDragHighlight || !tbodyRef.value || !e.dataTransfer) return
-	const rect = tbodyRef.value.getBoundingClientRect()
-	const inside =
-		e.clientX >= rect.left &&
-		e.clientX <= rect.right &&
-		e.clientY >= rect.top &&
-		e.clientY <= rect.bottom
-	if (!inside) return
+	if (!props.disableDragHighlight || !e.dataTransfer) return
+	if (!isPointerOverTbody(e)) return
 
 	e.preventDefault()
-	e.stopPropagation() // не даём he-tree тоже выставить dropEffect после нас
+	e.stopPropagation()
 	e.dataTransfer.dropEffect = 'none'
 	dragState.value = 'none'
 }
