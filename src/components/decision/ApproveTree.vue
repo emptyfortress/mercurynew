@@ -248,6 +248,10 @@ watch(
 	},
 	{ immediate: true }
 )
+
+const isDrop = (stat: Stat) => {
+	return stat.data.filetype == 0
+}
 </script>
 
 <template lang="pug">
@@ -279,6 +283,8 @@ div
 			ref="tree"
 			propKey="id"
 			treeLine
+			:eachDroppable='isDrop'
+			:rootDroppable='false'
 			:treeLineOffset="18"
 			:indent="30"
 			:default-open='false'
