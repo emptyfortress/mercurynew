@@ -32,13 +32,17 @@ const calcFileType = computed(() => {
 	}
 })
 
+const calcParent = computed(() => {
+	return props.mode == 'approve' ? [approveStore.selectedElement?.id] : []
+})
+
 const submitForm = () => {
 	approveStore.toggleAdd({
 		id: Date.now().toString(),
 		text: model.value,
 		filetype: calcFileType.value,
 		children: [],
-		parentId: [],
+		parentId: calcParent.value as string[],
 	})
 }
 </script>

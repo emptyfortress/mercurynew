@@ -90,7 +90,7 @@ const etapsRows = computed(() => {
 		text1: '',
 		first: index == 0,
 		repeat: 'Всегда',
-		condition: null,
+		condition: child.condition,
 		regim: index == 0 ? 'Согласование' : 'Консолидация',
 		marsh: index == 1 ? 'Параллельно' : 'Последовательно',
 		sogl: index == 0 ? 'Согласующие' : 'Инициатор',
@@ -118,6 +118,9 @@ const options = [
 
 const change = (row: any, e: string) => {
 	row.repeat = e
+}
+const change1 = (row: any, e: string) => {
+	row.state = e
 }
 
 const cols1 = [
@@ -226,6 +229,16 @@ function onTableDrop() {
 function checkDropAllowed() {
 	return dragContext.dragNode?.data?.filetype === 3
 }
+
+const options1 = ['Согласован', 'Отклонен', 'Делегирован', 'Делегирован', 'В архиве', 'Черновик']
+
+const addState = () => {
+	rows1.value.push({
+		id: Date.now(),
+		vid: 'Новый вид',
+		state: 'Черновик',
+	})
+}
 </script>
 
 <template lang="pug">
@@ -246,6 +259,9 @@ function checkDropAllowed() {
 
 	fieldset
 		legend Карта этапов
+		.info
+			q-icon(name="mdi-information" color="primary" size="sm")
+			div Чтобы добавить этап в маршрут - перетащите его в таблицу из дерева слева.
 		DndTable(
 			:columns='cols',
 			:rows='etapsRows',
@@ -269,9 +285,6 @@ function checkDropAllowed() {
 								q-item-section {{ item }}
 
 
-		.info
-			q-icon(name="mdi-information" color="primary" size="sm")
-			div Чтобы добавить этап в маршрут - перетащите его в таблицу из дерева слева.
 
 	fieldset
 		legend Настройка семантики завершения
@@ -290,8 +303,15 @@ function checkDropAllowed() {
 
 	fieldset
 		legend Настройка итоговых состояних документов
-		DndTable(:columns='cols1' :rows='rows1' @removeRow="remove1")
-		q-btn.q-mt-sm(unelevated color="primary" label="Добавить состояние" icon="mdi-plus-circle" @click="" size="sm") 
+		DndTable(:columns='cols1' :rows='rows1' @removeRow="remove1" simple)
+			template(#cell-state='{row}')
+				.sel(@click.stop)
+					span {{ row.state }}
+					q-menu
+						q-list
+							q-item(clickable dense v-for="item in options1" :key="item" @click="change1(row, item)" v-close-popup)
+								q-item-section {{ item }}
+		q-btn.q-mt-sm(unelevated color="primary" label="Добавить состояние" icon="mdi-plus-circle" @click="addState" size="sm") 
 
 	ConditionDialog(
 		v-model="conditionDialog"
@@ -355,17 +375,15 @@ function checkDropAllowed() {
 .grid4 {
 	display: grid;
 	grid-template-columns: auto 1fr 50px auto 1fr;
-	// justify-items: start;
 	align-items: center;
 	column-gap: 0.5rem;
-	// row-gap: .5rem;
 }
 .info {
 	padding: 3px 1rem;
 	border: 1px solid var(--my-border-color);
 	display: flex;
 	align-items: center;
-	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
 	background: hsl(216, 44%, 83%);
 	gap: 1rem;
 	font-size: 0.8rem;

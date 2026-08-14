@@ -41,7 +41,7 @@ const add = (n: number) => {
 	dialog.value = !dialog.value
 }
 
-const rem = ref(true)
+// const rem = ref(true)
 
 const remove = () => {
 	router.push('/dvmain/approve/')

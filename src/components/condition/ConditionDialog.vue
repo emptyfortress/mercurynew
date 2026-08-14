@@ -10,6 +10,7 @@ import type {
 } from '@/components/condition/conditionTypes'
 import { ConditionResult } from '@/components/condition/conditionTypes'
 import { FileType } from '@/components/condition/conditionTypes'
+import { useApproveStore } from '@/stores/approveStore'
 
 interface List {
 	id: string
@@ -25,6 +26,7 @@ interface List {
 
 const modelValue = defineModel<boolean>()
 const treeRef = ref()
+const approveStore = useApproveStore()
 
 const props = defineProps<{
 	etapList: List[]
@@ -77,6 +79,12 @@ const stageOptions = computed(() =>
 // Сохранение и закрытие
 const handleSave = () => {
 	emit('update:tree', localTree.value, props.goalStage)
+	if (props.goalStage) {
+		let node = approveStore.getNodeById(props.goalStage.id)
+		if (node) {
+			node.condition = localTree.value
+		}
+	}
 	modelValue.value = false
 }
 

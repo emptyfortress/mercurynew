@@ -54,4 +54,5 @@ export interface TreeElement {
 	virtual?: boolean
 	author?: string
 	template?: boolean
+	condition?: any
 }

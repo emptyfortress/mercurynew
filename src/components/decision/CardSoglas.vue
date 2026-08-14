@@ -14,6 +14,12 @@ const files = ref(false)
 
 const cols = [
 	{
+		name: 'priority',
+		label: 'Приоритет',
+		field: 'priority',
+		align: 'center',
+	},
+	{
 		name: 'route',
 		label: 'Маршрут',
 		field: 'text',
@@ -31,12 +37,6 @@ const cols = [
 		field: 'condition',
 		align: 'left',
 	},
-	{
-		name: 'priority',
-		label: 'Приоритет',
-		field: 'priority',
-		align: 'center',
-	},
 ]
 
 const rows = computed(() => {
@@ -48,17 +48,7 @@ const rows = computed(() => {
 		...child,
 		descr: '',
 		condition: '',
-		priority: 2,
 	}))
-})
-
-const defaultRoute = computed(() => {
-	return rows.value[0].text
-})
-
-const restRows = computed(() => {
-	// return rows.value.slice(1)
-	return rows.value
 })
 
 const remove = (row: TreeElement) => {
@@ -70,7 +60,7 @@ const remove = (row: TreeElement) => {
 	}
 }
 
-const selectedId = ref(rows.value[0].id)
+const selectedId = ref(null)
 
 const goedit = (row: any) => {
 	router.push({
@@ -95,7 +85,6 @@ const goal = ref<List | null>(null)
 const conditionDialog = ref(false)
 
 const setCondition = (row: any) => {
-	console.log(row)
 	goal.value = row
 	conditionDialog.value = !conditionDialog.value
 }
@@ -122,7 +111,7 @@ function checkDropAllowed() {
 }
 
 const selRoute = computed(() => {
-	return selectedId.value ? approveStore.getNameById(selectedId.value) : defaultRoute.value
+	return selectedId.value ? approveStore.getNameById(selectedId.value) : null
 })
 
 const colsEtaps = [
@@ -179,7 +168,7 @@ const colsEtaps = [
 
 const etapsRows = computed(() => {
 	var children: TreeElement[] = []
-	if (!!approveStore.selectedElement) {
+	if (!!approveStore.selectedElement && selectedId.value) {
 		children = approveStore.getChildren(selectedId.value)
 	}
 	return children.map((child, index) => ({
@@ -187,7 +176,7 @@ const etapsRows = computed(() => {
 		text1: '',
 		first: index == 0,
 		repeat: 'Всегда',
-		condition: null,
+		condition: child.condition,
 		regim: index == 0 ? 'Согласование' : 'Консолидация',
 		marsh: index == 1 ? 'Параллельно' : 'Последовательно',
 		sogl: index == 0 ? 'Согласующие' : 'Инициатор',
@@ -197,6 +186,16 @@ const etapsRows = computed(() => {
 		author: 'admin',
 	}))
 })
+
+const descr = ref('')
+const active = ref(false)
+
+const handleSave = () => {
+	if (goal.value) {
+		goal.value.descr = descr.value
+		goal.value.condition = active.value
+	}
+}
 </script>
 
 <template lang="pug">
@@ -208,15 +207,15 @@ const etapsRows = computed(() => {
 			.q-gutter-y-sm
 				q-checkbox(v-model='start' label='Запускать согласование без показа карточки' dense)
 				q-checkbox(v-model='files' label='Запускать согласование без показа карточки' dense)
-			q-input(v-model="defaultRoute" label="Маршрут по умолчанию" dense outlined )
-				template(v-slot:append)
-					q-icon(name="mdi-dots-horizontal" color="secondary")
-					q-icon(name="mdi-close" color="secondary")
 
-		.q-mt-lg Маршрут согласования по условию
+	fieldset
+		legend Маршруты согласования
+		.info
+			q-icon(name="mdi-information" color="primary" size="sm")
+			div Маршруты стартуют согласно приоритету. Чтобы добавить маршрут в согласование  - перетащите его в таблицу из дерева слева.
 		DndTable(
 			:columns='cols',
-			:rows='restRows',
+			:rows='rows',
 			v-model:selected='selectedId',
 			v-model:drag-over='isOverTable',
 			@removeRow="remove",
@@ -228,32 +227,39 @@ const etapsRows = computed(() => {
 				q-chip(v-if='row.condition' color="green-3" size="sm" selected clickable @click.stop="setCondition(row)") Условие
 				q-chip(v-if='!row.condition' size="sm" clickable textColor="black" @click.stop='setCondition(row)') Задать
 
-			template(#cell-priority="{ row }")
-				.link {{ row.priority }}
-					q-popup-edit(v-model="row.priority" auto-save v-slot="scope")
-						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" type="number")
+			template(#cell-priority="{ index }")
+				.link {{ index + 1 }}
+
 
 	fieldset
 		legend Этапы маршрута {{ selRoute }}
-		DndTable(
+		DndTable(v-if='selRoute'
 			:columns='colsEtaps',
 			:rows='etapsRows',
 			@edit='goedit',
 			disableDragHighlight
+			readonly
 		)
+			template(#cell-condition="{ row }")
+				q-chip(v-if='row.condition' color="green-3" size="sm" selected) Условие
+
+		.text-grey-7(v-else) Маршрут не выбран.
 
 	q-dialog(v-model="conditionDialog" backdrop-filter="blur(4px) saturate(150%)")
-		q-card
+		q-card(style='min-width: 400px;')
 			q-btn.close(icon="mdi-close" color="negative" unelevated round dense v-close-popup)
 			q-card-section
-				.text-h6 Атрибутивный поиск
+				.text-h6 Условие выбора маршрута
 
 			q-card-section
-				div Здесь настройка атрибутивного поиска
-				div И поле для текстового описания.
+				div Введите описание условия:
+				q-input(v-model="descr" dense outlined type="text")
+
+				q-checkbox.q-mt-md(v-model='active' label='Представьте, что вы задали условие' dense)
+
 			q-card-actions(align="right")
 				q-btn(flat color="primary" label="Отмена" v-close-popup) 
-				q-btn(unelevated color="primary" label="Сохранить" @click="" v-close-popup) 
+				q-btn(unelevated color="primary" label="Сохранить" @click="handleSave" v-close-popup) 
 </template>
 
 <style scoped lang="scss">
@@ -265,7 +271,19 @@ const etapsRows = computed(() => {
 }
 .link {
 	max-width: 50px;
-	color: $primary;
-	border-bottom: 1px dotted $primary;
+}
+.info {
+	padding: 3px 1rem;
+	border: 1px solid var(--my-border-color);
+	display: flex;
+	align-items: center;
+	margin-bottom: 0.5rem;
+	background: hsl(216, 44%, 83%);
+	gap: 1rem;
+	font-size: 0.8rem;
+}
+.q-chip {
+	margin: 0;
+	color: $teal-10;
 }
 </style>

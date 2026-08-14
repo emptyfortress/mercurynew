@@ -22,6 +22,8 @@ const props = defineProps<{
 	dragOver?: boolean
 	canDropChecker?: () => boolean
 	disableDragHighlight?: boolean
+	readonly?: boolean
+	simple?: boolean
 }>()
 
 const dragState = ref<'none' | 'valid' | 'invalid'>('none')
@@ -161,34 +163,36 @@ const isInternalDrag = ref(false)
 table.dnd-table
 	thead
 		tr
-			th.handle-col
+			th.handle-col(v-if='!props.readonly')
 			th(v-for="col in columns" :key="col.field") {{ col.label }}
-			th.actions
+			th.actions(v-if='!props.readonly')
 
 	tbody(
 		ref="tbodyRef"
 		:class="{ 'tbody-drag-valid': dragState === 'valid', 'tbody-drag-invalid': dragState === 'invalid' }"
 	)
 		tr(
-			v-for="row in rows",
+			v-for="(row, index) in rows",
 			:key="row.id"
 			:class="{ 'row-selected': selected === row.id }"
 			@click="selectRow(row, $event)"
 		)
-			td.handle-col
+			td.handle-col(v-if='!props.readonly')
 				span.drag-handle ⠿
 			td(v-for="col in columns" :key="col.field" :class="calcClass(col.align)")
-				slot(:name="`cell-${col.field}`" :row="row" :col="col")
-					q-checkbox(v-if="col.type === 'checkbox'" v-model="row[col.field]" dense)
+				slot(:name="`cell-${col.field}`" :row="row" :col="col" :index='index')
+					q-checkbox(v-if="col.type === 'checkbox'" v-model="row[col.field]" dense :disable='props.readonly')
 					template(v-else) {{ row[col.field] }}
-			td
+			td(v-if='!props.readonly')
 				.action
-					q-btn(flat round icon="mdi-pencil-outline" color="secondary" @click.stop="edit(row)" dense size="sm") 
+					q-btn(v-if='!props.simple' flat round icon="mdi-pencil-outline" color="secondary" @click.stop="edit(row)" dense size="sm") 
 					q-btn(flat round icon="mdi-close" color="secondary" dense size="sm") 
 						q-menu
 							q-list
 								q-item.pink(clickable @click.stop="remove(row)")
 									q-item-section Убрать
+		tr(v-if='!props.rows.length')
+			td.empty(:colspan='props.columns.length + 2') Нет данных.
 
 </template>
 
@@ -256,5 +260,10 @@ table.dnd-table
 	&:active {
 		cursor: grabbing;
 	}
+}
+.empty {
+	height: 60px;
+	color: grey;
+	text-align: center;
 }
 </style>
