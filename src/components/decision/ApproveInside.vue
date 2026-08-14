@@ -7,6 +7,7 @@ import CardMarshroute from '@/components/decision/CardMarshroute.vue'
 import CardSoglas from '@/components/decision/CardSoglas.vue'
 import CardFolder from '@/components/decision/CardFolder.vue'
 import { useRouter } from 'vue-router'
+// import IcTwotoneHandshake from '@/components/icons/IcTwotoneHandshake.vue'
 
 const router = useRouter()
 
