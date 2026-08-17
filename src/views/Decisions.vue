@@ -7,7 +7,6 @@ import { useRoute } from 'vue-router'
 import Webframe from '@/components/decision/Webframe.vue'
 import Poisk from '@/components/decision/Poisk.vue'
 import Views from '@/components/decision/Views.vue'
-// import ApproveInside from '@/components/decision/ApproveInside.vue'
 
 const route = useRoute()
 
@@ -68,7 +67,6 @@ q-page(padding)
 				router-view(v-slot="{ Component }")
 					transition(name="page" mode="out-in")
 						component(:is="Component" :key="route.fullPath")
-						// ApproveInside
 
 	Webframe(v-if='route.params.constructorId === "webframe"')
 	Poisk(v-if='route.params.constructorId === "search"')
