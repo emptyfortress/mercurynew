@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const approveStore = useApproveStore()
-const name = computed(() => approveStore.selectedElement?.text)
+const name = ref(approveStore.selectedElement?.text)
 const regim = ref('Согласование')
 const type = ref('Параллельное')
 const hide = ref(false)
@@ -19,6 +19,12 @@ const altype = ref(false)
 
 const typeoptions = ['Параллельное', 'Последовательное', 'Альтернативное']
 const options = ['Согласование', 'Подписание', 'Консолидация']
+
+watch(name, (val) => {
+	if (val) {
+		approveStore.tempName = name.value
+	}
+})
 
 const sogl = ref([
 	{

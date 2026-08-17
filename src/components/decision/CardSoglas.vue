@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import DndTable from '@/components/common/DndTable.vue'
 import { useRouter } from 'vue-router'
@@ -8,7 +8,9 @@ import { dragContext } from '@he-tree/vue'
 
 const router = useRouter()
 const approveStore = useApproveStore()
-const name = computed(() => approveStore.selectedElement?.text)
+// const name = computed(() => approveStore.selectedElement?.text)
+const name = ref(approveStore.selectedElement?.text)
+
 const start = ref(false)
 const files = ref(false)
 
@@ -214,6 +216,12 @@ const handleSave = () => {
 const calcDefault = (row: any, index: number) => {
 	return index == rows.value.length - 1 && !row.condition
 }
+
+watch(name, (val) => {
+	if (val) {
+		approveStore.tempName = name.value
+	}
+})
 </script>
 
 <template lang="pug">

@@ -224,6 +224,8 @@ export const useApproveStore = defineStore('approveStore', () => {
 
 	const selectedChips = computed(() => list.value.filter((item) => item.selected))
 
+	const tempName = ref<string | undefined>()
+
 	return {
 		treeData,
 		selectedElement,
@@ -237,6 +239,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 		nodesMap,
 		flatNodes,
 		selectedChips,
+		tempName,
 		getNodeById,
 		getNameById,
 		getNameByFolderId,

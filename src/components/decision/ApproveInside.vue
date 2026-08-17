@@ -31,6 +31,12 @@ const remove = () => {
 		approveStore.toggleDelete()
 	}, 200)
 }
+
+const save = () => {
+	if (approveStore.selectedElement && approveStore.tempName) {
+		approveStore.selectedElement.text = approveStore.tempName
+	}
+}
 </script>
 
 <template lang="pug">
@@ -55,8 +61,8 @@ div(v-if='selectedElement')
 				.zg {{ selectedElement?.text }}
 
 		.btngroup(v-if='showGroup')
-			q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="") 
-			q-btn(outline color="primary" label="Отмена" size="sm") 
+			q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="save") 
+			q-btn(outline color="primary" label="Отмена" size="sm" @click="") 
 			q-btn(round flat color="primary" icon="mdi-sync" size="sm") 
 			q-chip(size='sm' color="amber") Есть изменения
 			q-chip(size='sm' color="blue-grey-3" icon="mdi-lock") Заблокировано вами

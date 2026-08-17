@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import DndTable from '@/components/common/DndTable.vue'
 import { useRouter } from 'vue-router'
@@ -22,7 +22,13 @@ interface List {
 const router = useRouter()
 
 const approveStore = useApproveStore()
-const name = computed(() => approveStore.selectedElement?.text)
+const name = ref(approveStore.selectedElement?.text)
+
+watch(name, (val) => {
+	if (val) {
+		approveStore.tempName = name.value
+	}
+})
 
 const author = ref('admin')
 const registrator = ref('registrator')
