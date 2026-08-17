@@ -239,10 +239,32 @@ const addState = () => {
 		state: 'Черновик',
 	})
 }
+
+const marshList = computed(() => {
+	return approveStore.getParentsInfo(approveStore.selectedElement?.parentId)
+})
+
+const goto = (id: string) => {
+	router.push({
+		name: 'start',
+		params: { viewId: id },
+	})
+}
 </script>
 
 <template lang="pug">
 .q-ma-md
+	fieldset
+		legend Согласования ({{ approveStore.selectedElement?.parentId?.length }})
+		.emp(v-if='approveStore.selectedElement?.parentId?.length == 0')
+			q-icon.q-mr-md(name="mdi-information-outline" color="secondary" size="md")
+			|Данный маршрут нигде не используется.
+		template(v-else)
+			.warn()
+				q-icon.q-mr-md(name="mdi-information-outline" size="md" color="primary")
+				|Данный маршрут используется в согласованиях: 
+				.list(v-for="item in marshList" :key="item.id" @click='goto(item.id)') {{ item.name }}
+
 	fieldset
 		legend Общие
 		.grid3
@@ -387,5 +409,17 @@ const addState = () => {
 	background: hsl(216, 44%, 83%);
 	gap: 1rem;
 	font-size: 0.8rem;
+}
+.warn {
+	display: flex;
+	align-items: center;
+	white-space: wrap;
+	.list {
+		font-weight: 600;
+		color: $primary;
+		margin-left: 1rem;
+		cursor: pointer;
+		text-decoration: underline;
+	}
 }
 </style>
