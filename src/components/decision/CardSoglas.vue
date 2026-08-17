@@ -44,10 +44,11 @@ const rows = computed(() => {
 	if (!!approveStore.selectedElement) {
 		children = approveStore.getChildren(approveStore.selectedElement.id)
 	}
+
 	return children.map((child, index) => ({
 		...child,
-		descr: '',
-		condition: '',
+		descr: child.descr,
+		condition: child.condition,
 	}))
 })
 
@@ -85,7 +86,15 @@ const goal = ref<List | null>(null)
 const conditionDialog = ref(false)
 
 const setCondition = (row: any) => {
-	goal.value = row
+	if (row) {
+		goal.value = row
+		descr.value = row.descr
+		active.value = !!row.condition
+	} else {
+		goal.value = row
+		descr.value = ''
+		active.value = false
+	}
 	conditionDialog.value = !conditionDialog.value
 }
 
@@ -194,7 +203,16 @@ const handleSave = () => {
 	if (goal.value) {
 		goal.value.descr = descr.value
 		goal.value.condition = active.value
+		let tmp = approveStore.getNodeById(goal.value.id)
+		if (!!tmp) {
+			tmp.descr = descr.value
+			tmp.condition = active.value
+		}
 	}
+}
+
+const calcDefault = (row: any, index: number) => {
+	return index == rows.value.length - 1 && !row.condition
 }
 </script>
 
@@ -229,6 +247,9 @@ const handleSave = () => {
 
 			template(#cell-priority="{ index }")
 				.link {{ index + 1 }}
+
+			template(#cell-descr="{ row, index }")
+				div(v-if='calcDefault(row, index)') По умолчанию
 
 
 	fieldset

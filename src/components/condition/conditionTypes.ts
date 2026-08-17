@@ -55,4 +55,5 @@ export interface TreeElement {
 	author?: string
 	template?: boolean
 	condition?: any
+	descr?: string
 }
