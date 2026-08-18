@@ -72,25 +72,31 @@ div
 	template( v-if='store.selectedElement' )
 		q-tabs.q-mt-md(v-model="tabs" align="left" dense color="primary" class="text-primary")
 			q-tab(name='common' label='Общие')
+
 			q-tab(name='columns' label='Колонки' v-if='!isFolder')
-			q-tab(name='group' label='Группировки' v-if='!isFolder')
-			q-tab(name='sort' label='Сортировки' v-if='!isFolder')
-			q-tab(name='filter' label='Фильтрация' v-if='!isFolder')
-			q-tab(name='style' label='Стили' v-if='!isFolder')
+			q-tab(name='data' label='Данные' v-if='!isFolder')
+			q-tab(name='appearance' label='Внешний вид' v-if='!isFolder')
+
+			// q-tab(name='group' label='Группировки' v-if='!isFolder')
+			// q-tab(name='sort' label='Сортировки' v-if='!isFolder')
+			// q-tab(name='filter' label='Фильтрация' v-if='!isFolder')
+			// q-tab(name='style' label='Стили' v-if='!isFolder')
 
 		q-tab-panels(v-model="tabs" animated)
 			q-tab-panel(name='common')
 				CommonTab
 			q-tab-panel(name='columns')
 				ColumnsTab1
-			q-tab-panel(name='group')
-				GroupPanel
-			q-tab-panel(name='sort')
-				SortPanel
-			q-tab-panel(name='filter')
-				FilterPanel
-			q-tab-panel(name='style')
-				StylePanel
+			q-tab-panel(name='data')
+				div Данные
+				// GroupPanel
+			q-tab-panel(name='appearance')
+				div Внешний вид
+				// SortPanel
+			// q-tab-panel(name='filter')
+				// FilterPanel
+			// q-tab-panel(name='style')
+				// StylePanel
 
 
 ChipModal(v-model="dialogCreate" create mode="views")

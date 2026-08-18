@@ -38,7 +38,10 @@ const menu = [
 		label: 'Добавить папку',
 		icon: 'mdi-folder-plus-outline',
 		action: addFolder,
-		hidden: () => props.mode == 'vid' || props.mode == 'folder',
+		hidden: () =>
+			(props.stat.data.type !== 0 && props.mode == 'view') ||
+			props.mode == 'vid' ||
+			props.mode == 'folder',
 	},
 	{ id: 1, label: 'Добавить', icon: 'mdi-plus-circle-outline', action: add },
 	{

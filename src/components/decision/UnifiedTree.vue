@@ -284,6 +284,17 @@ onBeforeRouteLeave((to, from) => {
 		simpleStore.clearSelectedElement()
 	}
 })
+const duble = (stat: Stat) => {
+	let temp = {
+		text: stat.data.text + '-copy',
+		text1: stat.data.text1,
+		hidden: false,
+		type: 1,
+	}
+	tree.value.add(temp, stat.parent)
+	let one = tree.value.getStat(temp)
+	select(one)
+}
 </script>
 
 <template lang="pug">
@@ -341,6 +352,7 @@ div
 					@kill="remove(stat)"
 					@add="addFromMenu(stat)"
 					@addFolder="addFolderFromMenu(stat)"
+					@duble='duble(stat)'
 					@rename="edit(stat)"
 				)
 
@@ -357,11 +369,7 @@ div
 		q-fab-action(color="primary" icon="mdi-magnify" external-label label="Запрос" label-position="left" @click="poisk")
 		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
 
-	q-fab.fab(v-else-if='props.mode == "view"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
-		q-fab-action(color="primary" icon="mdi-view-compact-outline" external-label label="Представление" label-position="left" @click="view")
-		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
-
-	q-btn.fab(v-else round icon="mdi-plus" color="primary" @click="dialog = !dialog")
+	q-btn.fab(v-if='props.mode !== "view"' round icon="mdi-plus" color="primary" @click="dialog = !dialog")
 
 	CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='folderMode' @create='create')
 	ChipModalNew(v-model="dialog1" create)
