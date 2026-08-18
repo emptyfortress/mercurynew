@@ -2,11 +2,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSimpleStore } from '@/stores/simpleStore'
-// import { useApproveStore } from '@/stores/approveStore'
 import { storeToRefs } from 'pinia'
 
 const simpleStore = useSimpleStore()
-// const approveStore = useApproveStore()
 const { currentNode } = storeToRefs(simpleStore)
 const router = useRouter()
 
