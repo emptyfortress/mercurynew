@@ -5,9 +5,10 @@ import ChipModal from '@/components/decision/ChipModal-new.vue'
 import CommonTab from '@/components/decision/CommonTab.vue'
 import ColumnsTab1 from '@/components/decision/ColumnsTab1.vue'
 import SortPanel from '@/components/decision/SortPanel.vue'
-import FilterPanel from '@/components/decision/FilterPanel.vue'
-import StylePanel from '@/components/decision/StylePanel.vue'
 import GroupPanel from '@/components/decision/GroupPanel.vue'
+import ViewFolder from '@/components/decision/ViewFolder.vue'
+// import FilterPanel from '@/components/decision/FilterPanel.vue'
+// import StylePanel from '@/components/decision/StylePanel.vue'
 
 const props = defineProps({
 	splitter: Number,
@@ -46,18 +47,24 @@ const save = () => {
 		br
 		q-btn(unelevated color="primary" @click="toggleCreate") Создать представление
 
-div
+div(v-else)
 	.row.items-start.justify-between
 		.row.items-center
 			q-btn(flat round dense @click="switchSidebar" color="primary")
 				q-icon(name="mdi-forwardburger" v-if="props.splitter === 0")
 				q-icon(name="mdi-backburger" v-else)
 
-			.zg(v-if="store.selectedElement") {{ store.selectedElement.text }}
-				q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")
-					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+			.myblock
+				.row.items-center
+					q-icon.fold( name="mdi-folder-outline" color="secondary" v-if='store.selectedElement.type == 0')
+					q-icon.fold( name="mdi-table" color="secondary" v-else)
+				div
+					.text-overline
+						span(v-if='store.selectedElement.type == 0') Папка
+						span(v-else) Представление
+					.zg {{ store.selectedElement.text }}
 
-		.btngroup(v-if='store.selectedElement')
+		.btngroup(v-if='store.selectedElement && store.selectedElement.type !== 0')
 			q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="save") 
 			q-btn(outline color="primary" label="Отмена" size="sm") 
 			q-btn(round flat color="primary" icon="mdi-sync" size="sm") 
@@ -69,34 +76,35 @@ div
 						q-item.pink(clickable @click="store.toggleDelete")
 							q-item-section Удалить
 
+
 	template( v-if='store.selectedElement' )
-		q-tabs.q-mt-md(v-model="tabs" align="left" dense color="primary" class="text-primary")
-			q-tab(name='common' label='Общие')
+		ViewFolder(v-if='store.selectedElement.type == 0')
 
-			q-tab(name='columns' label='Колонки' v-if='!isFolder')
-			q-tab(name='data' label='Данные' v-if='!isFolder')
-			q-tab(name='appearance' label='Внешний вид' v-if='!isFolder')
+		template(v-else)
+			q-tabs.q-mt-md(v-model="tabs" align="left" dense color="primary" class="text-primary")
+				q-tab(name='common' label='Представление')
+				q-tab(name='columns' label='Колонки')
+				q-tab(name='group' label='Группировки')
+				q-tab(name='sort' label='Сортировки')
+				q-tab(name='appearance' label='Внешний вид')
+				// q-tab(name='filter' label='Фильтрация' v-if='!isFolder')
+				// q-tab(name='style' label='Стили' v-if='!isFolder')
 
-			// q-tab(name='group' label='Группировки' v-if='!isFolder')
-			// q-tab(name='sort' label='Сортировки' v-if='!isFolder')
-			// q-tab(name='filter' label='Фильтрация' v-if='!isFolder')
-			// q-tab(name='style' label='Стили' v-if='!isFolder')
-
-		q-tab-panels(v-model="tabs" animated)
-			q-tab-panel(name='common')
-				CommonTab
-			q-tab-panel(name='columns')
-				ColumnsTab1
-			q-tab-panel(name='data')
-				div Данные
-				// GroupPanel
-			q-tab-panel(name='appearance')
-				div Внешний вид
-				// SortPanel
-			// q-tab-panel(name='filter')
-				// FilterPanel
-			// q-tab-panel(name='style')
-				// StylePanel
+			q-tab-panels(v-model="tabs" animated)
+				q-tab-panel(name='common')
+					CommonTab
+				q-tab-panel(name='columns')
+					ColumnsTab1
+				q-tab-panel(name='group')
+					GroupPanel
+				q-tab-panel(name='sort')
+					SortPanel
+				q-tab-panel(name='appearance')
+					div Внешний вид
+				// q-tab-panel(name='filter')
+					// FilterPanel
+				// q-tab-panel(name='style')
+					// StylePanel
 
 
 ChipModal(v-model="dialogCreate" create mode="views")
@@ -113,14 +121,14 @@ ChipModal(v-model="dialogCreate" create mode="views")
 .btngroup > * {
 	margin-right: 0.25rem;
 }
+.fold {
+	color: $secondary;
+	font-size: 2.2rem;
+}
 .zg {
 	font-size: 1rem;
 	text-transform: uppercase;
-	margin-left: 1rem;
 	font-weight: 600;
-	color: $primary;
-	padding-bottom: 0;
-	border-bottom: 1px dotted var(--q-primary);
 }
 .q-tabs {
 	border-bottom: 1px solid var(--my-border-color);
@@ -131,5 +139,20 @@ ChipModal(v-model="dialogCreate" create mode="views")
 }
 :deep(.q-tab-panel) {
 	padding: 1rem 0;
+}
+.myblock {
+	margin-left: 1rem;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	justify-items: start;
+	align-items: stretch;
+	column-gap: 0.7rem;
+	.text-h6,
+	.text-overline {
+		line-height: 1;
+	}
+	.text-overline {
+		color: $blue-grey-6;
+	}
 }
 </style>

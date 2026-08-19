@@ -1,64 +1,142 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useDndStore } from '@/stores/dnd'
-import DropTarget from '@/components/decision/DropTarget.vue'
+import { useViewStore } from '@/stores/view'
+import ViewDrawer from '@/components/ViewDrawer.vue'
+
+const viewStore = useViewStore()
+// import DropTarget from '@/components/decision/DropTarget.vue'
 
 const dndStore = useDndStore()
 
-const buildConfig = (disabled: boolean) => ({
+const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
-	draggable: (child: HTMLElement) => child.classList.contains('my-expansion'),
-	disabled,
-})
-const [parent, tapes, updateConfig] = useDragAndDrop(dndStore.columnData, buildConfig(false))
-
-watch(
-	() => dndStore.externalDragPayload,
-	(payload) => {
-		updateConfig(buildConfig(payload != null))
-	}
-)
-
-const insert = (item: any) => {
-	if (item.newkind == dndStore.externalDragPayload.newkind) {
-		item.children.push(dndStore.externalDragPayload)
-	} else return
+	dragHandle: '.drag-handle',
+	draggable: (child: HTMLElement) => child.classList.contains('mycolumn'),
 }
 
-const clear = (el: any) => {
-	el.column.children.splice(el.index, 1)
+const [parent, tapes] = useDragAndDrop(dndStore.columnData, config)
+
+const insert = () => {
+	tapes.value.push(dndStore.externalDragPayload)
+	isHoverTarget.value = false
+}
+
+let colCounter = 0
+
+function addColumn() {
+	colCounter++
+	let newColumn = {
+		id: `col-${Date.now()}-${colCounter}`,
+		type: '',
+		text: `Колонка ${colCounter}`,
+		kind: null,
+		newkind: null,
+		children: [],
+		sort: false,
+		order: 'up',
+		hide: false,
+	}
+	tapes.value?.push(newColumn)
+}
+
+const clear = (ind: number) => {
+	tapes.value.splice(ind, 1)
+}
+
+const isHoverTarget = ref(false)
+
+function onDragOver() {
+	isHoverTarget.value = true
+}
+function onDragLeave(event: DragEvent) {
+	const target = event.currentTarget as HTMLElement
+	const related = event.relatedTarget as Node | null
+
+	if (!related || !target.contains(related)) {
+		isHoverTarget.value = false
+	}
+}
+
+// interface Col {
+// 	id: string
+// 	type: string
+// 	text: string
+// 	kind: null
+// 	newkind: null
+// 	children: []
+// 	sort: false
+// 	order: string
+// }
+
+const drawer = ref(false)
+const currentColumn = ref()
+
+const toggle = (row: any) => {
+	drawer.value = !drawer.value
+	currentColumn.value = row
+}
+const open = (row: any) => {
+	drawer.value = true
+	currentColumn.value = row
 }
 </script>
 
 <template lang="pug">
-q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку" @click="dndStore.addColumn" size="sm") 
-
-.empty(v-if='dndStore.columnData.length === 0')
-	ol
-		li Добавьте нужное количество колонок.
-		li Задайте названия и тип колонок.
-		li Настройте данные для показа в колонке, перетащив нужное поле из списка справа.
+.q-mb-md Настройте состав и порядок колонок представления.
 
 .par(ref='parent')
-	DropTarget(:item="item",
+	.mycolumn(
 		v-for="(item, index) in tapes",
 		:key="item.id",
-		@drop='insert(item)',
 		@kill='dndStore.remove(index)'
-		@remove='clear'
 	)
 
+		.drag-handle ⠿
+		q-btn.tool(flat round icon="mdi-cog" color="secondary" size='sm' @click="open(item)") 
+		.name 
+			span {{ item.text}}
+				q-popup-edit(v-model="item.text" auto-save v-slot="scope")
+					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+		q-icon(v-if='item.hide' name="mdi-eye-off" color="secondary" size="18px")
+		div(v-else)
+
+		q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' @click="clear(index)") 
+
+
+.empty(
+	:class="{ 'drop-hover': isHoverTarget }",
+	@dragover.prevent="onDragOver"
+	@dragleave="onDragLeave"
+	@drop="insert"
+)
+	div Перетащите сюда поле чтобы задать колонку.
+	q-btn.q-mt-md(outline  color="primary" icon='mdi-plus-circle-outline' label="Добавить колонку" @click="addColumn") 
+
+
+Teleport(to='body')
+	ViewDrawer(v-model:visible="drawer" v-model:column="currentColumn")
 </template>
 
 <style scoped lang="scss">
+.name {
+	color: $primary;
+	margin-left: 1rem;
+	span {
+		border-bottom: 1px dotted $primary;
+	}
+}
 .empty {
 	margin-top: 1rem;
 	padding: 1rem;
-	border: 1px solid var(--my-border-color);
+	text-align: center;
+	background: var(--bgLight);
+	border-radius: 0.5rem;
+	border: 2px dashed var(--my-border-color);
 }
 .ghost {
 	width: 100%;
@@ -69,6 +147,40 @@ q-btn.q-mb-md(unelevated color="primary" label="Добавить колонку"
 
 	* {
 		display: none !important;
+	}
+}
+.drop-hover {
+	transform: scale(0.99);
+	background: #a8d2bf;
+	outline: 2px solid teal;
+}
+.mycolumn {
+	background: var(--bgLight);
+	border-radius: 0.5rem;
+	border: 1px solid var(--my-border-color);
+	padding: 0.25rem 1rem;
+	height: 48px;
+	margin-top: -1px;
+	display: grid;
+	grid-template-columns: auto auto 1fr 1fr 32px;
+	align-items: center;
+	.close {
+		visibility: hidden;
+	}
+	&:hover {
+		.close {
+			visibility: visible;
+		}
+	}
+}
+.drag-handle {
+	font-size: 1.3rem;
+	cursor: grab;
+	user-select: none;
+	margin-right: 1rem;
+
+	&:active {
+		cursor: grabbing;
 	}
 }
 </style>

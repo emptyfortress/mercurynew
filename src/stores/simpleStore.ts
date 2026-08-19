@@ -16,10 +16,21 @@ interface TreeElement {
 	sourceType?: TreeSourceType
 	virtual?: boolean
 	author?: string
+	parentId?: string
 }
 
 export const useSimpleStore = defineStore('simpleStore', () => {
+	const addRequest = ref(false)
+	const addTemp = ref<null | TreeElement>(null)
+	// const addCopy = ref(false)
+
+	function toggleAdd(e: null | TreeElement) {
+		addTemp.value = e
+		addRequest.value = !addRequest.value
+	}
+
 	const deleteRequest = ref(false)
+
 	const toggleDelete = () => {
 		deleteRequest.value = !deleteRequest.value
 	}
@@ -1147,16 +1158,11 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 
 	const selectedType = ref<string | null>('Все')
 
-	// const selectedElement = ref<TreeElement | null>(null)
-	const selectedElement = ref<TreeElement | null>(
-		null
-		// {
-		// id: '1-1-1-2',
-		// text: 'Просроченные задания',
-		// selected: true,
-		// sourceType: 'view',
-		// }
-	)
+	const selectedElement = ref<TreeElement | null>(null)
+	// const selectedElement = ref<TreeElement | null>(
+	// 	// null
+	// 	{ id: '1-1-1-1', text: 'Мои задания', selected: true, sourceType: 'view' }
+	// )
 
 	function setSelectedElement(element: TreeElement | null) {
 		selectedElement.value = element
@@ -1235,5 +1241,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 		toggleDuplicate,
 		tempNode,
 		setTempNode,
+		addRequest,
+		addTemp,
+		toggleAdd,
 	}
 })

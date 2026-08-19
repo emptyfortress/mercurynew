@@ -11,6 +11,7 @@ interface TreeNode {
 	children?: TreeNode[]
 	sort?: boolean
 	order?: string
+	hide?: boolean
 }
 
 interface ExternalParamPayload {

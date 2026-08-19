@@ -255,6 +255,18 @@ onBeforeRouteUpdate((to, from) => {
 })
 
 watchEffect(() => {
+	if (simpleStore.addRequest === true && simpleStore.addTemp !== null) {
+		if (!simpleStore.selectedElement) return
+		const selectedStat = tree.value.getStat(simpleStore.selectedElement)
+		tree.value.add(simpleStore.addTemp, selectedStat)
+		nextTick()
+		const newStat = tree.value.getStat(simpleStore.addTemp)
+		tree.value.openNodeAndParents(newStat)
+		select(newStat)
+		nextTick()
+		simpleStore.toggleAdd(null)
+	}
+
 	if (simpleStore.deleteRequest === true) {
 		tree.value.remove(simpleStore.currentNode)
 		simpleStore.setCurrentNode(null)
