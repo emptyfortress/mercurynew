@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { Kind } from '@/types/enum'
-import CarbonDirectLink from '@/components/icons/CarbonDirectLink.vue'
+import { QScrollArea } from 'quasar'
+import type { ComponentPublicInstance } from 'vue'
 
 const visible = defineModel<boolean>('visible')
 const column = defineModel<Col | null>('column')
@@ -58,7 +59,68 @@ const source = ref('')
 const sel = (n: string) => {
 	source.value = n
 }
-const tabs = ref('cols')
+
+const sections = [
+	{
+		name: 'info',
+		label: 'Общая информация',
+		icon: 'mdi-information-outline',
+		content: 'lasjdla sjdlkjaslkdjlaks ',
+	},
+	{
+		name: 'data',
+		label: 'Данные',
+		icon: 'mdi-database-outline',
+		content: 'lasj dlasjdlkja slkdjlaks ',
+	},
+	// { name: 'data', label: 'Данные', icon: 'mdi-database-outline' },
+]
+
+const activeTab = ref(sections[0].name)
+const scrollAreaRef = ref<QScrollArea | null>(null)
+const sectionRefs: Record<string, HTMLElement> = {}
+
+// function setSectionRef(el: HTMLElement | null, name: string) {
+// 	if (el) sectionRefs[name] = el
+// }
+function setSectionRef(el: Element | ComponentPublicInstance | null, name: string) {
+	if (el instanceof HTMLElement) {
+		sectionRefs[name] = el
+	}
+}
+
+function scrollToSection(name: string) {
+	const target = sectionRefs[name]
+	const scrollTarget = scrollAreaRef.value?.getScrollTarget()
+	if (!target || !scrollTarget) return
+
+	// offsetTop относительно скролл-контейнера QScrollArea
+	const offset = target.offsetTop
+	scrollAreaRef.value?.setScrollPosition('vertical', offset, 300) // 300ms анимация
+}
+
+let observer: IntersectionObserver | null = null
+
+onMounted(() => {
+	const root = scrollAreaRef.value?.getScrollTarget()
+	if (!root) return
+
+	observer = new IntersectionObserver(
+		(entries) => {
+			const visible = entries
+				.filter((e) => e.isIntersecting)
+				.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+			if (visible) {
+				const name = Object.keys(sectionRefs).find((key) => sectionRefs[key] === visible.target)
+				if (name) activeTab.value = name
+			}
+		},
+		{ root, threshold: 0.5 }
+	)
+	Object.values(sectionRefs).forEach((el) => observer!.observe(el))
+})
+
+onBeforeUnmount(() => observer?.disconnect())
 </script>
 
 <template lang="pug">
@@ -67,59 +129,78 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 		q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
 		div {{draft?.text}}
 		div >
-		div {{ tabs }}
+		div {{ activeTab }}
 
 	.vertgrid
-		q-tabs(v-model="tabs" vertical class="text-primary")
-			q-tab(name='cols' icon='mdi-tag-outline' color="primary")
-			q-tab(name='data' icon="mdi-database-outline")
-			q-tab(name='attach' icon="mdi-virtual-reality")
-			q-tab(name='calc' icon="mdi-calculator-variant-outline")
-			q-tab(name='sort' icon="mdi-sort")
-			q-tab(name='group' icon="mdi-format-list-group")
-
-		q-tab-panels(
-			v-model="tabs",
-			vertical,
-			animated,
-			transition-prev="jump-up"
-			transition-next="jump-up"
+		q-tabs(
+			v-model="activeTab"
+			vertical
+			class="col-auto"
+			@update:model-value="scrollToSection"
 		)
-			q-tab-panel(name='cols')
-				.grid2(v-if='draft')
-					label Название:
-					q-input(v-model="draft.text" dense outlined)
-					label Тип данных:
-					q-select(v-model="draft.kind" dense outlined :options="options" map-options emit-value)
-					label
-					q-checkbox(v-model='draft.hide' label='Скрытая колонка' dense)
+			q-tab(
+				v-for="section in sections"
+				:key="section.name"
+				:name="section.name"
+				:icon="section.icon"
+			)
 
-				template(v-if='draft')
-					label.q-mt-md.q-mb-sm Источник данных:
-					.grid5
-						.chose(@click="sel('1')" :class="{selected: source == '1'}")
-							q-radio(v-model="source" val="1" label="Поле раздела" dense)
-						.chose(@click="sel('2')" :class="{selected: source == '2'}")
-							q-radio(v-model="source" val="2" label="Системное поле" dense)
-						// .chose(@click="sel('3')" :class="{selected: source == '3'}")
-						// 	q-radio(v-model="source" val="3" label="Свойство карточки" dense)
-						.chose(@click="sel('4')" :class="{selected: source == '4'}")
-							q-radio(v-model="source" val="4" label="Виртуальное поле" dense)
-						.chose(@click="sel('5')" :class="{selected: source == '5'}")
-							q-radio(v-model="source" val="5" label="Вычисляемое поле" dense)
+		q-scroll-area.col(ref="scrollAreaRef" style="height: 100%")
+			div(
+				v-for="section in sections"
+				:key="section.name"
+				:ref="el => setSectionRef(el, section.name)"
+				class="q-pa-md"
+			)
+				h6 {{ section.label }}
+				p {{ section.content }}
+				p(v-for="n in 20") Lorem ipsum dolor sit amet consectetur adipisicing elit.
 
-					.q-mt-md.q-mb-sm Раздел
-					q-input(v-model="razdel" dense outlined )
-						template(v-slot:append)
-							q-btn(flat round icon="mdi-dots-horizontal" color="secondary" dense @click="") 
-							q-btn(flat round icon="mdi-close" color="secondary" dense @click="") 
-
-					q-separator
-					.row.items-center
-						CarbonDirectLink.ic 
-						q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="") 
-
-			q-tab-panel(name='data')
+		// q-tab-panels(
+		// 	v-model="tabs",
+		// 	vertical,
+		// 	animated,
+		// 	transition-prev="jump-up"
+		// 	transition-next="jump-up"
+		// )
+		// 	q-tab-panel(name='cols')
+		// 		.grid2(v-if='draft')
+		// 			.fullwidth Общая информация
+		// 			label Название:
+		// 			q-input(v-model="draft.text" dense outlined)
+		// 			label Тип данных:
+		// 			q-select(v-model="draft.kind" dense outlined :options="options" map-options emit-value)
+		// 			label
+		// 			q-checkbox(v-model='draft.hide' label='Скрытая колонка' dense)
+		//
+		// 		template(v-if='draft')
+		// 			label.q-mt-md.q-mb-sm Источник данных:
+		// 			.grid5
+		// 				.chose(@click="sel('1')" :class="{selected: source == '1'}")
+		// 					q-radio(v-model="source" val="1" label="Поле раздела" dense)
+		// 				.chose(@click="sel('2')" :class="{selected: source == '2'}")
+		// 					q-radio(v-model="source" val="2" label="Системное поле" dense)
+		// 				// .chose(@click="sel('3')" :class="{selected: source == '3'}")
+		// 				// 	q-radio(v-model="source" val="3" label="Свойство карточки" dense)
+		// 				.chose(@click="sel('4')" :class="{selected: source == '4'}")
+		// 					q-radio(v-model="source" val="4" label="Виртуальное поле" dense)
+		// 				.chose(@click="sel('5')" :class="{selected: source == '5'}")
+		// 					q-radio(v-model="source" val="5" label="Вычисляемое поле" dense)
+		//
+		// 			.q-mt-md.q-mb-sm Раздел
+		// 			q-input(v-model="razdel" dense outlined )
+		// 				template(v-slot:append)
+		// 					q-btn(flat round icon="mdi-dots-horizontal" color="secondary" dense @click="") 
+		// 					q-btn(flat round icon="mdi-close" color="secondary" dense @click="") 
+		//
+		// 			q-separator
+		// 			.row.items-center
+		// 				CarbonDirectLink.ic 
+		// 				q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="") 
+		//
+		// 		// p(v-for="n in 20") Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa tempora dicta excepturi cum facere at praesentium qui vitae sit molestias illum soluta dignissimos libero, non impedit! Totam quibusdam natus aliquam.
+		//
+		// 	q-tab-panel(name='data') data
 
 
 	.actions
@@ -131,9 +212,12 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 .vertgrid {
 	display: grid;
 	grid-template-columns: auto 1fr;
+	grid-template-rows: 1fr;
 	column-gap: 1rem;
 	height: calc(100% - 64px);
+	min-height: 0;
 }
+
 .ic {
 	font-size: 2.6rem;
 	color: $secondary;
@@ -200,5 +284,11 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 	// justify-items: start;
 	// align-items: stretch;
 	gap: 0.25rem;
+}
+.fullwidth {
+	grid-column: 1/-1;
+	font-size: 1.4rem;
+	// font-weight: 600;
+	color: $secondary;
 }
 </style>
