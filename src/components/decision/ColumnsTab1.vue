@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue'
+import { ref } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useDndStore } from '@/stores/dnd'
-import { useViewStore } from '@/stores/view'
+// import { useViewStore } from '@/stores/view'
 import ViewDrawer from '@/components/ViewDrawer.vue'
 
-const viewStore = useViewStore()
+// const viewStore = useViewStore()
 // import DropTarget from '@/components/decision/DropTarget.vue'
 
 const dndStore = useDndStore()
@@ -22,7 +22,17 @@ const config = {
 const [parent, tapes] = useDragAndDrop(dndStore.columnData, config)
 
 const insert = () => {
-	tapes.value.push(dndStore.externalDragPayload)
+	// let tmp = dndStore.externalDragPayload
+	let tmp = {} as any
+	tmp.id = Date.now().toString()
+	tmp.text = dndStore.externalDragPayload.text
+	tmp.sort = false
+	tmp.hide = false
+	tmp.kind = dndStore.externalDragPayload.kind
+	tmp.source = 'field'
+	tmp.children = []
+	tmp.children.push(dndStore.externalDragPayload)
+	tapes.value.push(tmp)
 	isHoverTarget.value = false
 }
 
@@ -62,24 +72,13 @@ function onDragLeave(event: DragEvent) {
 	}
 }
 
-// interface Col {
-// 	id: string
-// 	type: string
-// 	text: string
-// 	kind: null
-// 	newkind: null
-// 	children: []
-// 	sort: false
-// 	order: string
-// }
-
 const drawer = ref(false)
 const currentColumn = ref()
 
-const toggle = (row: any) => {
-	drawer.value = !drawer.value
-	currentColumn.value = row
-}
+// const toggle = (row: any) => {
+// 	drawer.value = !drawer.value
+// 	currentColumn.value = row
+// }
 const open = (row: any) => {
 	drawer.value = true
 	currentColumn.value = row

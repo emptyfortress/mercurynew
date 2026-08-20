@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
-import { Kind } from '@/types/enum'
+import { ref, watch, onMounted, onBeforeUnmount, computed, markRaw } from 'vue'
 import { QScrollArea } from 'quasar'
 import type { ComponentPublicInstance } from 'vue'
+import CommonInfo from '@/components/view/CommonInfo.vue'
+import Data from '@/components/view/Data.vue'
 
 const visible = defineModel<boolean>('visible')
 const column = defineModel<Col | null>('column')
+const CommonInfoComp = markRaw(CommonInfo)
+const DataComp = markRaw(Data)
 
 interface Col {
 	id: string
@@ -17,10 +20,22 @@ interface Col {
 	sort: false
 	order: string
 	hide: boolean
+	source?: string
 }
 
 // локальный буфер редактирования
-const draft = ref<Col | null>(null)
+const draft = ref<Col>({
+	id: 'start',
+	type: 'start',
+	text: 'start',
+	kind: null,
+	newkind: null,
+	children: [],
+	sort: false,
+	order: '',
+	hide: false,
+	source: undefined,
+})
 
 // пересоздаём буфер при каждом открытии/смене колонки
 watch(
@@ -36,53 +51,29 @@ watch(
 const save = () => {
 	if (!draft.value || !column.value) return
 	Object.assign(column.value, draft.value) // мутируем тот же объект, ссылка не рвётся
-	visible.value = false
+	// visible.value = false
 }
 
-const options = [
-	{ id: 1, label: 'Строка', value: Kind.String },
-	{ id: 2, label: 'Текст', value: Kind.Text },
-	{ id: 3, label: 'Дата', value: Kind.Date },
-	{ id: 4, label: 'Организация', value: Kind.Org },
-	{ id: 5, label: 'Сотрудник', value: Kind.Man },
-	{ id: 6, label: 'Статус', value: Kind.Status },
-	{ id: 7, label: 'Линк', value: Kind.Link },
-	{ id: 8, label: 'Телефон', value: Kind.Phone },
-	{ id: 9, label: 'Email', value: Kind.Email },
-	{ id: 10, label: 'Число', value: Kind.Num },
-	{ id: 11, label: 'Логический тип', value: Kind.Bool },
-	{ id: 12, label: 'Таблица', value: Kind.Table },
-	{ id: 13, label: 'Виртуальное поле', value: Kind.Virtual },
-]
-
-const source = ref('')
-const sel = (n: string) => {
-	source.value = n
-}
-
-const sections = [
+const sections = ref([
 	{
 		name: 'info',
 		label: 'Общая информация',
 		icon: 'mdi-information-outline',
-		content: 'lasjdla sjdlkjaslkdjlaks ',
+		component: CommonInfoComp,
 	},
 	{
 		name: 'data',
 		label: 'Данные',
-		icon: 'mdi-database-outline',
-		content: 'lasj dlasjdlkja slkdjlaks ',
+		icon: 'mdi-code-braces',
+		component: DataComp,
 	},
 	// { name: 'data', label: 'Данные', icon: 'mdi-database-outline' },
-]
+])
 
-const activeTab = ref(sections[0].name)
+const activeTab = ref('info')
 const scrollAreaRef = ref<QScrollArea | null>(null)
 const sectionRefs: Record<string, HTMLElement> = {}
 
-// function setSectionRef(el: HTMLElement | null, name: string) {
-// 	if (el) sectionRefs[name] = el
-// }
 function setSectionRef(el: Element | ComponentPublicInstance | null, name: string) {
 	if (el instanceof HTMLElement) {
 		sectionRefs[name] = el
@@ -121,15 +112,20 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => observer?.disconnect())
+
+const currentLabel = computed(() => {
+	let temp = sections.value.find((el: any) => el.name == activeTab.value)
+	if (temp) return temp.label
+})
 </script>
 
 <template lang="pug">
 q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered behavior="desktop")
 	.zg
 		q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
-		div {{draft?.text}}
-		div >
-		div {{ activeTab }}
+		.q-ml-md {{draft?.text}}
+		.q-mx-sm >
+		div {{ currentLabel }}
 
 	.vertgrid
 		q-tabs(
@@ -145,63 +141,16 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 				:icon="section.icon"
 			)
 
-		q-scroll-area.col(ref="scrollAreaRef" style="height: 100%")
-			div(
+		q-scroll-area(ref="scrollAreaRef" style="height: 100%")
+			.q-my-md.q-mr-md(
 				v-for="section in sections"
 				:key="section.name"
 				:ref="el => setSectionRef(el, section.name)"
-				class="q-pa-md"
 			)
-				h6 {{ section.label }}
-				p {{ section.content }}
-				p(v-for="n in 20") Lorem ipsum dolor sit amet consectetur adipisicing elit.
-
-		// q-tab-panels(
-		// 	v-model="tabs",
-		// 	vertical,
-		// 	animated,
-		// 	transition-prev="jump-up"
-		// 	transition-next="jump-up"
-		// )
-		// 	q-tab-panel(name='cols')
-		// 		.grid2(v-if='draft')
-		// 			.fullwidth Общая информация
-		// 			label Название:
-		// 			q-input(v-model="draft.text" dense outlined)
-		// 			label Тип данных:
-		// 			q-select(v-model="draft.kind" dense outlined :options="options" map-options emit-value)
-		// 			label
-		// 			q-checkbox(v-model='draft.hide' label='Скрытая колонка' dense)
-		//
-		// 		template(v-if='draft')
-		// 			label.q-mt-md.q-mb-sm Источник данных:
-		// 			.grid5
-		// 				.chose(@click="sel('1')" :class="{selected: source == '1'}")
-		// 					q-radio(v-model="source" val="1" label="Поле раздела" dense)
-		// 				.chose(@click="sel('2')" :class="{selected: source == '2'}")
-		// 					q-radio(v-model="source" val="2" label="Системное поле" dense)
-		// 				// .chose(@click="sel('3')" :class="{selected: source == '3'}")
-		// 				// 	q-radio(v-model="source" val="3" label="Свойство карточки" dense)
-		// 				.chose(@click="sel('4')" :class="{selected: source == '4'}")
-		// 					q-radio(v-model="source" val="4" label="Виртуальное поле" dense)
-		// 				.chose(@click="sel('5')" :class="{selected: source == '5'}")
-		// 					q-radio(v-model="source" val="5" label="Вычисляемое поле" dense)
-		//
-		// 			.q-mt-md.q-mb-sm Раздел
-		// 			q-input(v-model="razdel" dense outlined )
-		// 				template(v-slot:append)
-		// 					q-btn(flat round icon="mdi-dots-horizontal" color="secondary" dense @click="") 
-		// 					q-btn(flat round icon="mdi-close" color="secondary" dense @click="") 
-		//
-		// 			q-separator
-		// 			.row.items-center
-		// 				CarbonDirectLink.ic 
-		// 				q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="") 
-		//
-		// 		// p(v-for="n in 20") Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa tempora dicta excepturi cum facere at praesentium qui vitae sit molestias illum soluta dignissimos libero, non impedit! Totam quibusdam natus aliquam.
-		//
-		// 	q-tab-panel(name='data') data
-
+				.section
+					q-icon.q-mr-sm(:name="section.icon")
+					span {{ section.label }}
+				component(:is="section.component" v-model:draft='draft')
 
 	.actions
 		q-btn(flat color="primary" label="Отмена" @click="visible = false") 
@@ -214,7 +163,7 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 	grid-template-columns: auto 1fr;
 	grid-template-rows: 1fr;
 	column-gap: 1rem;
-	height: calc(100% - 64px);
+	height: calc(100% - 110px);
 	min-height: 0;
 }
 
@@ -290,5 +239,9 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 	font-size: 1.4rem;
 	// font-weight: 600;
 	color: $secondary;
+}
+.section {
+	color: $secondary;
+	font-size: 1.3rem;
 }
 </style>
