@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, computed, markRaw } from 'vue'
+import { ref, watch, computed, markRaw } from 'vue'
 import { QScrollArea } from 'quasar'
 import type { ComponentPublicInstance } from 'vue'
 import CommonInfo from '@/components/view/CommonInfo.vue'
@@ -80,38 +80,39 @@ function setSectionRef(el: Element | ComponentPublicInstance | null, name: strin
 	}
 }
 
+const isProgrammaticScroll = ref(false)
+let scrollTimeout: ReturnType<typeof setTimeout> | null = null
+
 function scrollToSection(name: string) {
 	const target = sectionRefs[name]
-	const scrollTarget = scrollAreaRef.value?.getScrollTarget()
-	if (!target || !scrollTarget) return
+	if (!target || !scrollAreaRef.value) return
 
-	// offsetTop относительно скролл-контейнера QScrollArea
-	const offset = target.offsetTop
-	scrollAreaRef.value?.setScrollPosition('vertical', offset, 300) // 300ms анимация
+	isProgrammaticScroll.value = true
+	activeTab.value = name // выставляем сразу, не ждём scroll-событий
+
+	scrollAreaRef.value.setScrollPosition('vertical', target.offsetTop, 300)
+
+	if (scrollTimeout) clearTimeout(scrollTimeout)
+	scrollTimeout = setTimeout(() => {
+		isProgrammaticScroll.value = false
+	}, 320) // чуть больше длительности анимации
 }
 
-let observer: IntersectionObserver | null = null
+function onScroll(info: { verticalPosition: number }) {
+	if (isProgrammaticScroll.value) return // игнорируем во время программного скролла
 
-onMounted(() => {
-	const root = scrollAreaRef.value?.getScrollTarget()
-	if (!root) return
+	const pos = info.verticalPosition
+	let current = sections.value[0].name
 
-	observer = new IntersectionObserver(
-		(entries) => {
-			const visible = entries
-				.filter((e) => e.isIntersecting)
-				.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-			if (visible) {
-				const name = Object.keys(sectionRefs).find((key) => sectionRefs[key] === visible.target)
-				if (name) activeTab.value = name
-			}
-		},
-		{ root, threshold: 0.5 }
-	)
-	Object.values(sectionRefs).forEach((el) => observer!.observe(el))
-})
+	for (const section of sections.value) {
+		const el = sectionRefs[section.name]
+		if (el && el.offsetTop - 8 <= pos) {
+			current = section.name
+		}
+	}
 
-onBeforeUnmount(() => observer?.disconnect())
+	activeTab.value = current
+}
 
 const currentLabel = computed(() => {
 	let temp = sections.value.find((el: any) => el.name == activeTab.value)
@@ -155,7 +156,7 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 					:icon="section.icon"
 				)
 
-			q-scroll-area(ref="scrollAreaRef" style="height: 100%")
+			q-scroll-area(ref="scrollAreaRef" style="height: 100%" @scroll="onScroll")
 				.q-my-md.q-mr-md(
 					v-for="section in sections"
 					:key="section.name"
@@ -251,15 +252,12 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 	// align-items: stretch;
 	gap: 0.25rem;
 }
-.fullwidth {
-	grid-column: 1/-1;
-	font-size: 1.4rem;
-	// font-weight: 600;
-	color: $secondary;
-}
 .section {
-	color: $secondary;
 	font-size: 1.3rem;
+	background: $secondary;
+	color: white;
+	padding-left: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 
 .panel {

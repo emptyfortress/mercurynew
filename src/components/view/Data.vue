@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import FieldTree2 from '@/components/decision/FieldTree2.vue'
+import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
 
 interface Col {
 	id: string
@@ -29,9 +30,31 @@ const removeField = (index: number) => {
 	draft.value?.children.splice(index, 1)
 }
 const showTree = ref(false)
+const showSystem = ref(false)
 
 const insert = (node: any) => {
 	draft.value?.children.push(node)
+}
+const list = ref([
+	{ id: 1, label: 'Системное поле 1', selected: false },
+	{ id: 2, label: 'Системное поле 2', selected: false },
+	{ id: 3, label: 'Системное поле 3', selected: false },
+	{ id: 4, label: 'Системное поле 4', selected: false },
+	{ id: 5, label: 'Системное поле 5', selected: false },
+	{ id: 6, label: 'Системное поле 6', selected: false },
+	{ id: 7, label: 'Системное поле 7', selected: false },
+])
+
+const test = ref([{ id: 0, label: 'Системное поле пример' }])
+const removeSysField = (index: number) => {
+	test.value?.splice(index, 1)
+}
+const addSys = (item: any) => {
+	item.selected = true
+	test.value.push({
+		id: Date.now(),
+		label: item.label,
+	})
 }
 </script>
 
@@ -56,7 +79,9 @@ transition(name="fade" mode="out-in")
 			transition-next="jump-up"
 		)
 			q-tab-panel(name='field')
-				.section Поле из раздела карточки
+				.section
+					q-icon(name="mdi-form-textbox" color="white")
+					span Поле из раздела карточки
 				.column.items-start.q-gutter-y-sm
 					.mai(v-for="(chip, index) in draft.children" :key="chip.id")
 						.txt
@@ -77,14 +102,40 @@ transition(name="fade" mode="out-in")
 
 
 			q-tab-panel(name='system')
-				.text-h6 Тут настройки системных полей
+				.section
+					q-icon(name="mdi-tools" color="white")
+					span Системное поле
+				.column.items-start.q-gutter-y-sm
+					.mai(v-for="(chip,index) in test" :key="chip.id")
+						.txt
+							div {{ chip.label }}
+							q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeSysField(index)" size="sm") 
+				q-expansion-item(v-model="showSystem" label='Добавить поле' switchToggleSide)
+					template(v-slot:header)
+						.header
+							q-btn(flat color="primary" label="Добавить поле") 
+					q-list(dense)
+						q-item(clickable v-for="item in list" :key="item.id" @click="addSys(item)")
+							q-item-section(side)
+								q-checkbox(v-model='item.selected' dense @click.stop)
+							q-item-section
+								q-item-label {{ item.label }}
+
 			q-tab-panel(name='virtual')
-				.text-h6 Тут настройки виртуальных полей
+				.section
+					PhVirtualReality.ic
+					span Виртуальное поле
 			q-tab-panel(name='calc')
+				.section
+					q-icon(name="mdi-calculator-variant-outline" color="white")
+					span  Вычисляемое поле
 
 </template>
 
 <style scoped lang="scss">
+.ic {
+	font-size: 1.6rem;
+}
 .tree {
 	background: var(--bgLight);
 	width: 100%;
@@ -99,8 +150,19 @@ transition(name="fade" mode="out-in")
 	padding: 1rem 0;
 }
 .section {
-	color: $secondary;
+	background: $secondary;
+	color: white;
 	font-size: 1.1rem;
+	padding-left: 0.5rem;
+	margin-bottom: 0.5rem;
+	display: flex;
+	align-items: center;
+	.q-icon {
+		font-size: 1.4rem;
+	}
+	span {
+		margin-left: 0.5rem;
+	}
 }
 
 .chose {
