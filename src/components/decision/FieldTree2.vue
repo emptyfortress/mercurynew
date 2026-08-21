@@ -2,28 +2,10 @@
 import { ref, watch, computed } from 'vue'
 import WordHighlighter from 'vue-word-highlighter'
 import { fields } from '@/stores/fields-poisk'
-import {
-	getMembers,
-	filterByLabel,
-	filterByKind,
-	filterByCommon,
-	filterByArray,
-} from '@/utils/utils'
+import { getMembers, filterByLabel, filterByKind, filterByArray } from '@/utils/utils'
 import { useDrag } from '@/stores/drag'
 import { useChips } from '@/stores/chips'
-import { useDndStore } from '@/stores/dnd'
-// import ChipModal from '@/components/decision/ChipModal-new.vue'
 import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
-
-const dndStore = useDndStore()
-
-// function onExternalDragStart(node: any) {
-// 	dndStore.setExternalDragPayload(node)
-// }
-
-// function onExternalDragEnd() {
-// 	dndStore.clearExternalDragPayload()
-// }
 
 const props = defineProps({
 	layout: {
@@ -47,7 +29,7 @@ const setTree = () => {
 		.map((item) => item.label)
 }
 const data = computed(() => {
-	let temp1 = filterByCommon(fields, !common.value)
+	let temp1 = fields
 	let temp = filterByArray(temp1, visFlat.value)
 	if (visFlat.value[0] == 'Все') {
 		mychips.setRows(temp1)
@@ -62,7 +44,6 @@ const drag = useDrag()
 const tree = ref()
 const query = ref('')
 const expanded = ref(['type'])
-const common = ref(false)
 
 const clearFilter = () => {
 	query.value = ''
@@ -115,7 +96,7 @@ const myfields = computed(() => {
 	if (selectedChip.value.id == 1) {
 		return filterByLabel(data.value, 'Данные УПД')
 	}
-	return filterByCommon(data.value, !common.value)
+	return data.value
 })
 
 const isTable = (node: any) => {
@@ -124,17 +105,6 @@ const isTable = (node: any) => {
 const isVirtual = (node: any) => {
 	return node.kind == 19 ? true : false
 }
-
-// const onDrop = () => {
-// 	console.log(111)
-// }
-
-// const selectedIds = reactive(new Set<number>())
-//
-// function toggleSelected(node: any) {
-// 	if (selectedIds.has(node.id)) selectedIds.delete(node.id)
-// 	else selectedIds.add(node.id)
-// }
 
 const selectedId = ref<number | null>(null)
 
@@ -157,7 +127,6 @@ div
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")
 
-	q-checkbox.q-mb-md(v-model="common" dense label="Отображать общие свойства")
 	div
 		label.q-mr-md Показать:
 		q-chip(v-for="chip in chips" :key="chip.id" clickable v-model:selected="chip.selected" size="12px" @click="selChip(chip)" ) {{ chip.label }}
