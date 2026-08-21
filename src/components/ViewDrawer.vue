@@ -117,40 +117,54 @@ const currentLabel = computed(() => {
 	let temp = sections.value.find((el: any) => el.name == activeTab.value)
 	if (temp) return temp.label
 })
+
+const isSwitching = ref(false)
+let timer: ReturnType<typeof setTimeout> | null = null
+
+watch(column, (next, prev) => {
+	if (!prev || !next) return // не показываем оверлей при открытии/закрытии панели
+	isSwitching.value = true
+	clearTimeout(timer!)
+	timer = setTimeout(() => (isSwitching.value = false), 180)
+})
 </script>
 
 <template lang="pug">
 q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered behavior="desktop")
-	.zg
-		q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
-		.q-ml-md {{draft?.text}}
-		.q-mx-sm >
-		div {{ currentLabel }}
+	.panel(v-if="column")
+		transition(name="skeleton-fade")
+			.panel-skeleton-overlay(v-if="isSwitching" key="skeleton")
 
-	.vertgrid
-		q-tabs(
-			v-model="activeTab"
-			vertical
-			class="col-auto"
-			@update:model-value="scrollToSection"
-		)
-			q-tab(
-				v-for="section in sections"
-				:key="section.name"
-				:name="section.name"
-				:icon="section.icon"
-			)
+		.zg
+			q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
+			.q-ml-md {{draft?.text}}
+			.q-mx-sm >
+			div {{ currentLabel }}
 
-		q-scroll-area(ref="scrollAreaRef" style="height: 100%")
-			.q-my-md.q-mr-md(
-				v-for="section in sections"
-				:key="section.name"
-				:ref="el => setSectionRef(el, section.name)"
+		.vertgrid
+			q-tabs(
+				v-model="activeTab"
+				vertical
+				class="col-auto"
+				@update:model-value="scrollToSection"
 			)
-				.section
-					q-icon.q-mr-sm(:name="section.icon")
-					span {{ section.label }}
-				component(:is="section.component" v-model:draft='draft')
+				q-tab(
+					v-for="section in sections"
+					:key="section.name"
+					:name="section.name"
+					:icon="section.icon"
+				)
+
+			q-scroll-area(ref="scrollAreaRef" style="height: 100%")
+				.q-my-md.q-mr-md(
+					v-for="section in sections"
+					:key="section.name"
+					:ref="el => setSectionRef(el, section.name)"
+				)
+					.section
+						q-icon.q-mr-sm(:name="section.icon")
+						span {{ section.label }}
+					component(:is="section.component" v-model:draft='draft')
 
 	.actions
 		q-btn(flat color="primary" label="Отмена" @click="visible = false") 
@@ -158,6 +172,9 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 </template>
 
 <style scoped lang="scss">
+.panel-content {
+	height: 100%;
+}
 .vertgrid {
 	display: grid;
 	grid-template-columns: auto 1fr;
@@ -243,5 +260,23 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 .section {
 	color: $secondary;
 	font-size: 1.3rem;
+}
+
+.panel {
+	height: 100%;
+}
+.panel-skeleton-overlay {
+	position: absolute;
+	inset: 0;
+	background: var(--bgLight);
+	z-index: 1;
+}
+.skeleton-fade-enter-active,
+.skeleton-fade-leave-active {
+	transition: opacity 0.45s ease;
+}
+.skeleton-fade-enter-from,
+.skeleton-fade-leave-to {
+	opacity: 0;
 }
 </style>
