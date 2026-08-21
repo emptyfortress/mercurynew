@@ -169,7 +169,7 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 
 	.actions
 		q-btn(flat color="primary" label="Отмена" @click="visible = false") 
-		q-btn(unelevated color="primary" label="Сохранить" @click="save") 
+		q-btn(unelevated color="primary" label="Применить" @click="save") 
 </template>
 
 <style scoped lang="scss">
