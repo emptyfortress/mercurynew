@@ -29,6 +29,10 @@ const removeField = (index: number) => {
 	draft.value?.children.splice(index, 1)
 }
 const showTree = ref(false)
+
+const insert = (node: any) => {
+	draft.value?.children.push(node)
+}
 </script>
 
 <template lang="pug">
@@ -67,7 +71,7 @@ transition(name="fade" mode="out-in")
 						.header
 							q-btn(flat color="primary" label="Добавить поле") 
 					.tree
-						FieldTree2
+						FieldTree2(@insertField="insert")
 
 					q-checkbox(v-if='draft.kind == 0 || draft.kind == 1' v-model='html' label='Отображать содержимое колонки как HTML')
 
