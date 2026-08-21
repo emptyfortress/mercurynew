@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, watch, computed, reactive } from 'vue'
+import { ref, watch, computed } from 'vue'
 import WordHighlighter from 'vue-word-highlighter'
 import { fields } from '@/stores/fields-poisk'
 import {
 	getMembers,
-	// filterByLabel,
+	filterByLabel,
 	filterByKind,
 	filterByCommon,
 	filterByArray,
@@ -12,18 +12,18 @@ import {
 import { useDrag } from '@/stores/drag'
 import { useChips } from '@/stores/chips'
 import { useDndStore } from '@/stores/dnd'
-import ChipModal from '@/components/decision/ChipModal-new.vue'
+// import ChipModal from '@/components/decision/ChipModal-new.vue'
 import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
 
 const dndStore = useDndStore()
 
-function onExternalDragStart(node: any) {
-	dndStore.setExternalDragPayload(node)
-}
+// function onExternalDragStart(node: any) {
+// 	dndStore.setExternalDragPayload(node)
+// }
 
-function onExternalDragEnd() {
-	dndStore.clearExternalDragPayload()
-}
+// function onExternalDragEnd() {
+// 	dndStore.clearExternalDragPayload()
+// }
 
 const props = defineProps({
 	layout: {
@@ -61,6 +61,8 @@ const data = computed(() => {
 const drag = useDrag()
 const tree = ref()
 const query = ref('')
+const expanded = ref(['type'])
+const common = ref(false)
 
 const clearFilter = () => {
 	query.value = ''
@@ -85,26 +87,6 @@ watch(
 	}
 )
 
-const myfields = computed(() => {
-	if (!!drag.treeKey && drag.focus == true) {
-		return filterByKind(data.value, drag.kind)
-	}
-	return filterByCommon(data.value, !common.value)
-})
-
-const expanded = ref(['type'])
-const common = ref(false)
-
-const isTable = (node: any) => {
-	return node.kind == 18 ? true : false
-}
-const isVirtual = (node: any) => {
-	return node.kind == 19 ? true : false
-}
-
-const onDrop = () => {
-	console.log(111)
-}
 const chips = ref([
 	{
 		id: 0,
@@ -122,23 +104,56 @@ const selChip = (chip: any) => {
 	chip.selected = true
 }
 
+const selectedChip = computed(() => {
+	return chips.value.filter((el) => el.selected)[0]
+})
+
+const myfields = computed(() => {
+	if (!!drag.treeKey && drag.focus == true) {
+		return filterByKind(data.value, drag.kind)
+	}
+	if (selectedChip.value.id == 1) {
+		return filterByLabel(data.value, 'Данные УПД')
+	}
+	return filterByCommon(data.value, !common.value)
+})
+
+const isTable = (node: any) => {
+	return node.kind == 18 ? true : false
+}
+const isVirtual = (node: any) => {
+	return node.kind == 19 ? true : false
+}
+
+// const onDrop = () => {
+// 	console.log(111)
+// }
+
 // const selectedIds = reactive(new Set<number>())
 //
 // function toggleSelected(node: any) {
 // 	if (selectedIds.has(node.id)) selectedIds.delete(node.id)
 // 	else selectedIds.add(node.id)
 // }
+
 const selectedId = ref<number | null>(null)
+
+const emit = defineEmits(['insertField'])
 
 function toggleSelected(node: any) {
 	selectedId.value = selectedId.value === node.id ? null : node.id
+	if (!selectedId.value) return
+	else if (!node.drag) return
+	else {
+		emit('insertField', node)
+	}
 }
 </script>
 
 <template lang="pug">
 div
 	.hd Разделы карточки / Поля
-	q-input.search( ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter")
+	q-input.search(ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter" placeholder='Фильтр')
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")
 
