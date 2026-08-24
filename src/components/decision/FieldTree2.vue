@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, nextTick } from 'vue'
 import WordHighlighter from 'vue-word-highlighter'
 import { fields } from '@/stores/fields-poisk'
-import { getMembers, filterByLabel, filterByKind, filterByArray } from '@/utils/utils'
+import {
+	getMembers,
+	filterByLabel,
+	filterByCommon,
+	filterByKind,
+	filterByArray,
+} from '@/utils/utils'
 import { useDrag } from '@/stores/drag'
 import { useChips } from '@/stores/chips'
 import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
 
-const props = defineProps({
-	layout: {
-		type: Boolean,
-		default: false,
-	},
-})
+const clear = defineModel('clear')
 const visFlat = ref<string[]>(['Все'])
 const mychips = useChips()
 
@@ -23,27 +24,31 @@ watch(
 	}
 )
 
+const common = ref(false)
+
 const setTree = () => {
 	visFlat.value = getMembers(mychips.chips)
 		.filter((el) => el.ticked == true)
 		.map((item) => item.label)
 }
 const data = computed(() => {
-	let temp1 = fields
-	let temp = filterByArray(temp1, visFlat.value)
-	if (visFlat.value[0] == 'Все') {
-		mychips.setRows(temp1)
-		return fields
-	} else {
-		mychips.setRows(temp)
-		return temp
-	}
+	// let temp = filterByCommon(fields, true)
+	return filterByCommon(fields, true)
+	// let temp1 = filterByCommon(fields, !common.value)
+	// let temp = filterByArray(temp1, visFlat.value)
+	// if (visFlat.value[0] == 'Все') {
+	// 	mychips.setRows(temp1)
+	// 	return fields
+	// } else {
+	// 	mychips.setRows(temp)
+	// 	return temp
+	// }
 })
 
 const drag = useDrag()
 const tree = ref()
 const query = ref('')
-const expanded = ref(['type'])
+const expanded = ref(['root'])
 
 const clearFilter = () => {
 	query.value = ''
@@ -90,12 +95,12 @@ const selectedChip = computed(() => {
 })
 
 const myfields = computed(() => {
-	if (!!drag.treeKey && drag.focus == true) {
-		return filterByKind(data.value, drag.kind)
-	}
-	if (selectedChip.value.id == 1) {
-		return filterByLabel(data.value, 'Данные УПД')
-	}
+	// if (!!drag.treeKey && drag.focus == true) {
+	// 	return filterByKind(data.value, drag.kind)
+	// }
+	// if (selectedChip.value.id == 1) {
+	// 	return filterByLabel(data.value, 'Данные УПД')
+	// }
 	return data.value
 })
 
@@ -106,30 +111,79 @@ const isVirtual = (node: any) => {
 	return node.kind == 19 ? true : false
 }
 
-const selectedId = ref<number | null>(null)
+const selectedIds = ref(new Set<string>())
 
-const emit = defineEmits(['insertField'])
+// const emit = defineEmits(['insertField'])
+const emit = defineEmits(['update:selected'])
+
+// строим map: id листа -> id top-level родителя (fields[i].id)
+const topIdMap = computed(() => {
+	const map = {} as any
+	const walk = (node: any, topId: string) => {
+		map[node.id] = topId
+		if (node.children) {
+			node.children.forEach((child: any) => walk(child, topId))
+		}
+	}
+	myfields.value.forEach((top: any) => walk(top, top.id))
+	return map
+})
+
+// id -> сам узел, обходим один раз тем же способом
+const nodeMap = computed(() => {
+	const map = {} as any
+	const walk = (node: any) => {
+		map[node.id] = node
+		if (node.children) {
+			node.children.forEach(walk)
+		}
+	}
+	myfields.value.forEach(walk)
+	return map
+})
 
 function toggleSelected(node: any) {
-	selectedId.value = selectedId.value === node.id ? null : node.id
-	if (!selectedId.value) return
-	else if (!node.drag) return
-	else {
-		emit('insertField', node)
+	if (!node.drag) return
+
+	const next = new Set<string>(selectedIds.value)
+	const nodeTop = topIdMap.value[node.id]
+
+	if (next.has(node.id)) {
+		next.delete(node.id)
+	} else {
+		for (const id of next) {
+			if (topIdMap.value[id] === nodeTop) {
+				next.delete(id)
+				break
+			}
+		}
+		next.add(node.id)
 	}
+
+	selectedIds.value = next
+	emit(
+		'update:selected',
+		[...next].map((id) => nodeMap.value[id])
+	)
 }
+
+watch(clear, (val: any) => {
+	if (val !== null) {
+		selectedIds.value.delete(val)
+		clear.value = null
+	}
+})
 </script>
 
 <template lang="pug">
 div
-	.hd Разделы карточки / Поля
+	div
+		label.q-mr-md Показать:
+		q-chip(v-for="chip in chips" :key="chip.id" clickable v-model:selected="chip.selected" size="12px" @click="selChip(chip)" ) {{ chip.label }}
 	q-input.search(ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter" placeholder='Фильтр')
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")
 
-	div
-		label.q-mr-md Показать:
-		q-chip(v-for="chip in chips" :key="chip.id" clickable v-model:selected="chip.selected" size="12px" @click="selChip(chip)" ) {{ chip.label }}
 	q-tree(ref="tree"
 		:nodes="myfields"
 		dense
@@ -144,7 +198,7 @@ div
 			.node(@click="toggleSelected(prop.node)")
 				q-checkbox(
 					v-if='prop.node.drag'
-					:model-value='selectedId === prop.node.id'
+					:model-value='selectedIds.has(prop.node.id)'
 					@click.stop="toggleSelected(prop.node)"
 					dense, size='sm'
 				)

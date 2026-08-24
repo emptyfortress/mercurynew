@@ -94,7 +94,7 @@ const myfields = computed(() => {
 	}
 	return filterByCommon(data.value, !common.value)
 })
-const expanded = ref(['type'])
+const expanded = ref([])
 const common = ref(false)
 const chipsModal = ref(false)
 const selChip = () => {

@@ -26,15 +26,21 @@ const sel = (n: string) => {
 
 const html = ref(false)
 
-const removeField = (index: number) => {
+const clearId = ref<null | string>(null)
+
+const removeField = (index: number, chip: any) => {
+	clearId.value = chip.id
 	draft.value?.children.splice(index, 1)
 }
-const showTree = ref(false)
+const showTree = ref(true)
 const showSystem = ref(false)
 
-const insert = (node: any) => {
-	draft.value?.children.push(node)
+const insert = (nodes: any[]) => {
+	if (draft.value) {
+		draft.value.children = [...nodes]
+	}
 }
+
 const list = ref([
 	{ id: 1, label: 'Системное поле 1', selected: false },
 	{ id: 2, label: 'Системное поле 2', selected: false },
@@ -65,8 +71,6 @@ label.q-mt-md.q-mb-sm Источник данных:
 		q-radio(v-model="draft.source" val="field" label="Поле раздела" dense)
 	.chose(@click="sel('system')" :class="{selected: draft.source == 'system'}")
 		q-radio(v-model="draft.source" val="system" label="Системное поле" dense)
-	.chose(@click="sel('virtual')" :class="{selected: draft.source == 'virtual'}")
-		q-radio(v-model="draft.source" val="virtual" label="Виртуальное поле" dense)
 	.chose(@click="sel('calc')" :class="{selected: draft.source == 'calc'}")
 		q-radio(v-model="draft.source" val="calc" label="Вычисляемое поле" dense)
 
@@ -89,14 +93,14 @@ transition(name="fade" mode="out-in")
 								div {{ item }}
 								.q-mx-sm >
 							div {{ chip.text }}
-							q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeField(index)" size="sm") 
+							q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeField(index, chip)" size="sm") 
 
 				q-expansion-item(v-model="showTree" label='Добавить поле' switchToggleSide)
 					template(v-slot:header)
 						.header
 							q-btn(flat color="primary" label="Добавить поле") 
 					.tree
-						FieldTree2(@insertField="insert")
+						FieldTree2(@update:selected="insert" v-model:clear='clearId')
 
 					q-checkbox(v-if='draft.kind == 0 || draft.kind == 1' v-model='html' label='Отображать содержимое колонки как HTML')
 

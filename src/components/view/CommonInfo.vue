@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Kind } from '@/types/enum'
+import { ref } from 'vue'
 
 interface Col {
 	id: string
@@ -30,6 +31,8 @@ const options = [
 	{ id: 12, label: 'Таблица', value: Kind.Table },
 	{ id: 13, label: 'Виртуальное поле', value: Kind.Virtual },
 ]
+
+const html = ref(false)
 </script>
 
 <template lang="pug">
@@ -40,6 +43,12 @@ const options = [
 	q-select(v-model="draft.kind" dense outlined :options="options" map-options emit-value)
 	label
 	q-checkbox(v-model='draft.hide' label='Скрыть колонку' dense)
+	template(v-if='draft.kind == 0 || draft.kind == 1' )
+		div
+		q-checkbox(v-model='html' label='Отображать содержимое колонки как HTML' dense)
+	template(v-if='draft.kind == 2' )
+		div
+		q-checkbox(v-model='html' label='Сортировать по чему-то там' dense)
 
 </template>
 
