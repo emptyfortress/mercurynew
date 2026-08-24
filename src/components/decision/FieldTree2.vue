@@ -2,6 +2,7 @@
 import { ref, watch, computed, nextTick } from 'vue'
 import WordHighlighter from 'vue-word-highlighter'
 import { fields } from '@/stores/fields-poisk'
+import type { TreeElement } from '@/components/condition/conditionTypes'
 import {
 	getMembers,
 	filterByLabel,
@@ -23,8 +24,6 @@ watch(
 		setTree()
 	}
 )
-
-const common = ref(false)
 
 const setTree = () => {
 	visFlat.value = getMembers(mychips.chips)
@@ -94,14 +93,21 @@ const selectedChip = computed(() => {
 	return chips.value.filter((el) => el.selected)[0]
 })
 
+const containsSelected = (node: TreeElement, selectedIds: Set<string>): boolean => {
+	if (selectedIds.has(node.id)) {
+		return true
+	}
+
+	return node.children?.some((child) => containsSelected(child, selectedIds)) ?? false
+}
+
+const filterBySelectedIds = (nodes: TreeElement[], selectedIds: Set<string>): TreeElement[] => {
+	return nodes.filter((node) => containsSelected(node, selectedIds))
+}
+
 const myfields = computed(() => {
-	// if (!!drag.treeKey && drag.focus == true) {
-	// 	return filterByKind(data.value, drag.kind)
-	// }
-	// if (selectedChip.value.id == 1) {
-	// 	return filterByLabel(data.value, 'Данные УПД')
-	// }
-	return data.value
+	if (selectedChip.value.id == 0) return data.value
+	else return filterBySelectedIds(data.value, selectedIds.value)
 })
 
 const isTable = (node: any) => {
@@ -113,7 +119,6 @@ const isVirtual = (node: any) => {
 
 const selectedIds = ref(new Set<string>())
 
-// const emit = defineEmits(['insertField'])
 const emit = defineEmits(['update:selected'])
 
 // строим map: id листа -> id top-level родителя (fields[i].id)
