@@ -38,7 +38,7 @@ const operators = [
 ]
 const fields = [
 	{
-		id: uid(),
+		id: 'root',
 		text: 'Документ',
 		hidden: false,
 		type: 1,

@@ -67,7 +67,6 @@ const sections = ref([
 		icon: 'mdi-code-braces',
 		component: DataComp,
 	},
-	// { name: 'data', label: 'Данные', icon: 'mdi-database-outline' },
 ])
 
 const activeTab = ref('info')
