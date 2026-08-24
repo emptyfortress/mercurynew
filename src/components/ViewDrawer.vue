@@ -51,7 +51,6 @@ watch(
 const save = () => {
 	if (!draft.value || !column.value) return
 	Object.assign(column.value, draft.value) // мутируем тот же объект, ссылка не рвётся
-	// visible.value = false
 }
 
 const sections = ref([
