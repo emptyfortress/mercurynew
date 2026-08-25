@@ -22,6 +22,8 @@ const emit = defineEmits(['save'])
 const selection = ref()
 
 const save = () => {
+	// console.log(selection.value)
+
 	part.selectedIds = new Set(localSelectedIds.value)
 	modelValue.value = false
 	emit('save', {

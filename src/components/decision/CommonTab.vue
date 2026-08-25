@@ -141,7 +141,7 @@ const save1 = () => {
 		:columns='cols0',
 		:rows='rows0',
 		@removeRow="remove",
-		:selected="null"
+		v-model:selected="selectedId"
 		@edit='goedit',
 	)
 		template(#cell-part="{ row }")
