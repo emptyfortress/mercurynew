@@ -4,7 +4,7 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import { usePartitionStore } from '@/stores/partition'
 import DndTable from '@/components/common/DndTable.vue'
 import MainSectionDialog from '@/components/decision/MainSectionDialog.vue'
-import type { TreeElement } from '@/components/condition/conditionTypes'
+import DopSectionDialog from '@/components/decision/DopSectionDialog.vue'
 
 const store = useSimpleStore()
 const part = usePartitionStore()
@@ -117,6 +117,11 @@ const goedit = () => {
 
 const dialog = ref(false)
 const asRow = (row: unknown) => row as RowMain
+
+const dialog1 = ref(false)
+const save1 = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
@@ -149,17 +154,19 @@ const asRow = (row: unknown) => row as RowMain
 	q-btn(v-if='part.partitions.length == 0' flat icon="mdi-plus" color="primary" label="Добавить ведущий раздел" @click="dialog = true") 
 
 	template(v-if='rows0.length')
-		.section Присоединённые разделы карточек
-		DndTable(
-			:columns='cols',
-			:rows='rows',
-			v-model:selected='selectedId',
-			@removeRow="remove",
-			@edit='goedit',
-		)
-		q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="") 
+	.section Присоединённые разделы карточек
+	DndTable(
+		:columns='cols',
+		:rows='rows',
+		v-model:selected='selectedId',
+		@removeRow="remove",
+		@edit='goedit',
+	)
 
-	MainSectionDialog(v-model="dialog" @save="save")
+	q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="dialog1 = true") 
+
+	DopSectionDialog(v-model='dialog1' @save='save1')
+	MainSectionDialog(v-model='dialog' @save='save')
 
 </template>
 
