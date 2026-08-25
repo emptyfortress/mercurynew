@@ -154,16 +154,16 @@ const save1 = () => {
 	q-btn(v-if='part.partitions.length == 0' flat icon="mdi-plus" color="primary" label="Добавить ведущий раздел" @click="dialog = true") 
 
 	template(v-if='rows0.length')
-	.section Присоединённые разделы карточек
-	DndTable(
-		:columns='cols',
-		:rows='rows',
-		v-model:selected='selectedId',
-		@removeRow="remove",
-		@edit='goedit',
-	)
+		.section Присоединённые разделы карточек
+		DndTable(
+			:columns='cols',
+			:rows='rows',
+			v-model:selected='selectedId',
+			@removeRow="remove",
+			@edit='goedit',
+		)
 
-	q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="dialog1 = true") 
+		q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="dialog1 = true") 
 
 	DopSectionDialog(v-model='dialog1' @save='save1')
 	MainSectionDialog(v-model='dialog' @save='save')
