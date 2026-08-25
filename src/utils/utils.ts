@@ -144,6 +144,7 @@ const filterByKind = (array: any, searchTerm: number) => {
 			: prev
 	}, [])
 }
+
 const filterByCommon = (array: any, searchTerm: boolean) => {
 	return array.reduce((prev: any, curr: any) => {
 		const children = curr.children ? filterByCommon(curr.children, searchTerm) : undefined
@@ -153,6 +154,7 @@ const filterByCommon = (array: any, searchTerm: boolean) => {
 			: prev
 	}, [])
 }
+
 const filterByArray = (array: any, searchTerm: string[]) => {
 	return array.reduce((prev: any, curr: any) => {
 		const children = curr.children ? filterByArray(curr.children, searchTerm) : undefined

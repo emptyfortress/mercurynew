@@ -774,7 +774,7 @@ const fields = [
 		],
 	},
 	{
-		id: uid(),
+		id: 'root1',
 		text: 'Задание',
 		hidden: false,
 		type: 1,
@@ -3354,7 +3354,7 @@ const fields = [
 		],
 	},
 	{
-		id: uid(),
+		id: 'root2',
 		text: 'Группа заданий',
 		hidden: false,
 		type: 1,
@@ -3958,7 +3958,7 @@ const fields = [
 		],
 	},
 	{
-		id: uid(),
+		id: 'root3',
 		text: 'Квартальная цель',
 		hidden: false,
 		type: 1,

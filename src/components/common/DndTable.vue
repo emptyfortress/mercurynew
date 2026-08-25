@@ -191,8 +191,8 @@ table.dnd-table
 							q-list
 								q-item.pink(clickable @click.stop="remove(row)")
 									q-item-section Убрать
-		tr(v-if='!props.rows.length')
-			td.empty(:colspan='props.columns.length + 2') Нет данных.
+		// tr(v-if='!props.rows.length')
+		// 	td.empty(:colspan='props.columns.length + 2') Нет данных.
 
 </template>
 

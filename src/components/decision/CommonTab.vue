@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, watchEffect } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
-import CarbonDirectLink from '@/components/icons/CarbonDirectLink.vue'
+import { usePartitionStore } from '@/stores/partition'
+import DndTable from '@/components/common/DndTable.vue'
+import MainSectionDialog from '@/components/decision/MainSectionDialog.vue'
+import type { TreeElement } from '@/components/condition/conditionTypes'
 
 const store = useSimpleStore()
+const part = usePartitionStore()
 
 watchEffect(() => {
 	if (store.currentNode) {
@@ -20,7 +24,99 @@ const author = computed(() => {
 	return store.selectedElement?.author || 'System'
 })
 
-const razdel = ref()
+const cols0 = [
+	{
+		name: 'card',
+		label: 'Тип карточки',
+		field: 'card',
+		align: 'left',
+	},
+	{
+		name: 'part',
+		label: 'Ведущий раздел',
+		field: 'part',
+		align: 'left',
+	},
+	{
+		name: 'psev',
+		label: 'Псевдоним',
+		field: 'psev',
+		align: 'left',
+	},
+]
+
+const cols = [
+	{
+		name: 'psevdo',
+		label: 'Псевдоним',
+		field: 'psevde',
+		align: 'left',
+	},
+	{
+		name: 'orig',
+		label: 'Оригинальный раздел',
+		field: 'orig',
+		align: 'left',
+	},
+	{
+		name: 'attached',
+		label: 'Присоединенный раздел',
+		field: 'attached',
+		align: 'left',
+	},
+	{
+		name: 'common',
+		label: 'Объединение через',
+		field: 'common',
+		align: 'left',
+	},
+	{
+		name: 'condition',
+		label: 'Условие',
+		field: 'condition',
+		align: 'left',
+	},
+	{
+		name: 'action',
+		label: '',
+		field: 'action',
+		align: 'right',
+	},
+]
+const rows = ref<any[]>([])
+const selectedId = ref()
+
+interface RowMain {
+	id: string
+	card: string
+	part: any
+	psev: string
+}
+
+const rows0 = ref<RowMain[]>([])
+
+const remove = (row: any) => {
+	const ind = rows0.value.findIndex((el) => el.id == row.id)
+	if (ind > -1) {
+		rows0.value.splice(ind, 1)
+	}
+}
+
+const save = (e: RowMain) => {
+	rows0.value.push({
+		id: Date.now().toString(),
+		card: e.card,
+		part: e.part,
+		psev: e.psev,
+	})
+}
+
+const goedit = () => {
+	console.log(111)
+}
+
+const dialog = ref(false)
+const asRow = (row: unknown) => row as RowMain
 </script>
 
 <template lang="pug">
@@ -33,17 +129,37 @@ const razdel = ref()
 		.col-3
 			q-input(v-model="author" label="Автор" outlined dense readonly)
 		.col-12
-			q-input(v-model="store.tempNode.text1" label="Описание" type="textarea" outlined dense)
+			q-input(v-model="store.tempNode.text1" label="Описание" type="textarea" outlined dense autogrow)
 
-	.q-mt-lg.q-mb-sm Раздел карточки
-	q-input(v-model="razdel" dense outlined )
-		template(v-slot:append)
-			q-btn(flat round icon="mdi-dots-horizontal" color="secondary" dense @click="") 
-			q-btn(flat round icon="mdi-close" color="secondary" dense @click="") 
+	.section Ведущие разделы карточек
+	DndTable(
+		:columns='cols0',
+		:rows='rows0',
+		@removeRow="remove",
+		:selected="null"
+		@edit='goedit',
+	)
+		template(#cell-part="{ row }")
+			.txt
+				template(v-for="item in asRow(row).part.parents" :key="item")
+					div {{ item }}
+					.q-mx-sm >
+				div {{ asRow(row).part.text }}
 
-	.row.items-center
-		CarbonDirectLink.ic 
+	q-btn(v-if='part.partitions.length == 0' flat icon="mdi-plus" color="primary" label="Добавить ведущий раздел" @click="dialog = true") 
+
+	template(v-if='rows0.length')
+		.section Присоединённые разделы карточек
+		DndTable(
+			:columns='cols',
+			:rows='rows',
+			v-model:selected='selectedId',
+			@removeRow="remove",
+			@edit='goedit',
+		)
 		q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="") 
+
+	MainSectionDialog(v-model="dialog" @save="save")
 
 </template>
 
@@ -51,5 +167,28 @@ const razdel = ref()
 .ic {
 	font-size: 2.6rem;
 	color: $secondary;
+}
+.section {
+	margin-top: 2rem;
+	font-size: 1.1rem;
+	background: $secondary;
+	color: white;
+	padding-left: 0.5rem;
+	// margin-bottom: 0.5rem;
+}
+.mai {
+	display: flex;
+	// justify-content: start;
+	// align-items: center;
+	background: var(--selection);
+	padding: 2px 16px;
+	padding-right: 2px;
+	border-radius: 5rem;
+}
+.txt {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	font-size: 0.9rem;
 }
 </style>

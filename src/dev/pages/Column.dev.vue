@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import Component from '@/components/condition/StartCondition.vue'
 import { reactive } from 'vue'
-import Component from '@/components/view/Data.vue'
+import Component from '@/components/decision/CommonTab.vue'
 
 const draft = reactive({
 	id: 'col-1787214856080-1',
@@ -29,7 +29,7 @@ q-page(padding)
 	display: flex;
 	> div {
 		margin: auto;
-		width: 500px;
+		width: 1000px;
 		justify-content: center;
 		align-items: center;
 	}
