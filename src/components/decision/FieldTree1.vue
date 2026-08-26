@@ -25,12 +25,6 @@ function onExternalDragEnd() {
 	dndStore.clearExternalDragPayload()
 }
 
-const props = defineProps({
-	layout: {
-		type: Boolean,
-		default: false,
-	},
-})
 const visFlat = ref<string[]>(['Все'])
 const lab = computed(() => {
 	return visFlat.value[0] == 'Все' ? 'Все' : 'Выбрать'

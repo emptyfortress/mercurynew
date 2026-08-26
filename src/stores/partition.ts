@@ -13,8 +13,21 @@ export const usePartitionStore = defineStore('part', () => {
 
 	const selectedIds = ref<Set<string>>(new Set())
 
+	const externalDragPayload = ref<any>(null)
+
+	function setExternalDragPayload(payload: any) {
+		externalDragPayload.value = payload
+	}
+
+	function clearExternalDragPayload() {
+		externalDragPayload.value = null
+	}
+
 	return {
 		partitions,
 		selectedIds,
+		externalDragPayload,
+		setExternalDragPayload,
+		clearExternalDragPayload,
 	}
 })

@@ -4,6 +4,7 @@ import UnifiedTree from '@/components/decision/UnifiedTree.vue'
 import ViewEditor from '@/components/decision/ViewEditor.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import FieldTree1 from '@/components/decision/FieldTree1.vue'
+import FieldTree3 from '@/components/decision/FieldTree3.vue'
 
 const simpleStore = useSimpleStore()
 
@@ -18,6 +19,13 @@ const tabs = ref('common')
 
 const isTreeVisible = computed(() => {
 	if (simpleStore.selectedElement && tabs.value == 'columns') {
+		return true
+	}
+	return false
+})
+
+const isTree3Visible = computed(() => {
+	if (simpleStore.selectedElement && tabs.value == 'common') {
 		return true
 	}
 	return false
@@ -48,7 +56,9 @@ div
 
 				template(v-slot:after)
 					q-scroll-area.list1
-						FieldTree1(v-show='isTreeVisible' layout)
+						FieldTree1(v-show='isTreeVisible')
+						FieldTree3(v-show='isTree3Visible')
+						// FieldTree1(layout)
 
 </template>
 
