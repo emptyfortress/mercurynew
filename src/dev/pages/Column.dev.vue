@@ -14,7 +14,7 @@ const draft = reactive({
 	sort: false,
 	order: 'up',
 	hide: false,
-	source: 'field',
+	source: 'calc',
 })
 
 const visible = ref(true)

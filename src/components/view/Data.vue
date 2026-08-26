@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import FieldTree2 from '@/components/decision/FieldTree2.vue'
 import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
+import CalcField from '@/components/view/CalcField.vue'
 
 interface Col {
 	id: string
@@ -133,6 +134,7 @@ transition(name="fade" mode="out-in")
 				.section
 					q-icon(name="mdi-calculator-variant-outline" color="white")
 					span  Вычисляемое поле
+				CalcField
 
 </template>
 
