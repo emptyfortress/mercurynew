@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useDndStore } from '@/stores/dnd'
+import { KindLabels, Kind } from '@/types/enum'
 // import { useViewStore } from '@/stores/view'
 import ViewDrawer from '@/components/ViewDrawer.vue'
 
@@ -83,6 +84,10 @@ const open = (row: any) => {
 	drawer.value = true
 	currentColumn.value = row
 }
+
+const calcLabel = (e: Kind) => {
+	return KindLabels[e]
+}
 </script>
 
 <template lang="pug">
@@ -101,6 +106,8 @@ const open = (row: any) => {
 			span {{ item.text}}
 				q-popup-edit(v-model="item.text" auto-save v-slot="scope")
 					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+		.type(v-if='item.kind') < {{ calcLabel(item.kind) }} >
+		div(v-else)
 		q-icon(v-if='item.hide' name="mdi-eye-off" color="secondary" size="18px")
 		div(v-else)
 
@@ -161,7 +168,7 @@ Teleport(to='body')
 	height: 48px;
 	margin-top: -1px;
 	display: grid;
-	grid-template-columns: auto auto 1fr 1fr 32px;
+	grid-template-columns: auto auto 1fr 1fr 1fr 32px;
 	align-items: center;
 	.close {
 		visibility: hidden;
@@ -181,5 +188,9 @@ Teleport(to='body')
 	&:active {
 		cursor: grabbing;
 	}
+}
+.type {
+	font-size: 0.8rem;
+	color: $blue-grey-6;
 }
 </style>

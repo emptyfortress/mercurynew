@@ -21,6 +21,29 @@ enum Kind {
 	Virtual,
 }
 
+const KindLabels: Record<Kind, string> = {
+	[Kind.String]: 'Строка',
+	[Kind.Text]: 'Текст',
+	[Kind.Date]: 'Дата',
+	[Kind.Org]: 'Организация',
+	[Kind.Num]: 'Число',
+	[Kind.Man]: 'Сотрудник',
+	[Kind.Status]: 'Статус',
+	[Kind.Link]: 'Линк',
+	[Kind.Phone]: 'Телефон',
+	[Kind.Email]: 'Email',
+	[Kind.Bool]: 'Boolean',
+	[Kind.Key]: 'Ключ',
+	[Kind.Goal]: 'Цель',
+	[Kind.Exec]: 'i',
+	[Kind.Execute]: 'i',
+	[Kind.Selector]: 'i',
+	[Kind.Selector1]: 'i',
+	[Kind.Selector2]: 'i',
+	[Kind.Table]: 'Таблица',
+	[Kind.Virtual]: 'Виртуальное поле',
+}
+
 enum Newkind {
 	String,
 	Num,
@@ -32,4 +55,4 @@ enum Newkind {
 	Virtual,
 }
 
-export { Kind, Newkind }
+export { Kind, Newkind, KindLabels }
