@@ -30,8 +30,10 @@ interface SimpleElement {
 	preview: string
 	valueType: string
 	fixedValue: string
+	children: SimpleElement[]
 }
 const list = ref<SimpleElement[]>([])
+const tree = ref()
 
 const addFunction = (item: any) => {
 	console.log('add function chain', item)
@@ -47,7 +49,7 @@ const functionOptions = [
 ]
 
 const addSimpleElement = () => {
-	list.value.push({
+	tree.value.add({
 		id: nextId++,
 		type: 'simple',
 		name: 'Новый элемент',
@@ -60,6 +62,26 @@ const addSimpleElement = () => {
 		preview: '',
 		valueType: '',
 		fixedValue: '',
+		children: [],
+	})
+}
+const addOptionsSet = () => {
+	tree.value.add({
+		id: nextId++,
+		type: 'options',
+		name: 'Набор вариантов',
+		expanded: false,
+		children: [],
+	})
+}
+
+const addConditionsSet = () => {
+	tree.value.add({
+		id: nextId++,
+		type: 'conditions',
+		name: 'Набор условий',
+		expanded: false,
+		children: [],
 	})
 }
 </script>
@@ -71,102 +93,108 @@ const addSimpleElement = () => {
 	div
 .text-bold Элементы вычисляемого поля
 
-q-list
-	q-expansion-item.my-expansion(
-		v-for="item in list",
-		:key="item.id",
-		v-model="item.expanded"
-	)
-		template(v-slot:header)
-			.drag-handle ⠿
+Draggable(
+	ref="tree",
+	treeLine,
+	v-model="list",
+	:indent="40"
+	class='mtl-tree'
+)
+	template(#default="{ node, stat }")
+		q-expansion-item.my-expansion(v-model="stat.open")
+			template(v-slot:header)
+				.drag-handle ⠿
 
-			q-item-section
-				.project
-					|Простой элемент:
-					span.editable(@click.stop) {{ item.name }}
-						q-popup-edit(v-model="item.name" v-slot="scope")
-							q-input(
-								v-model="scope.value"
-								dense
-								autofocus
-								@keyup.enter="scope.set"
-							)
+				q-item-section
+					.project
+						|Простой элемент:
+						span.editable(@click.stop) {{ node.name }}
+							q-popup-edit(v-model="node.name" v-slot="scope")
+								q-input(
+									v-model="scope.value"
+									dense
+									autofocus
+									@keyup.enter="scope.set"
+								)
 
-		.inside
-			q-btn-group(outline)
-				q-btn(
-					:outline="item.mode !== 'field'"
-					:color="item.mode === 'field' ? 'primary' : 'grey-9'"
-					label="Поле раздела"
-					@click="item.mode = 'field'"
-					size='sm'
-				)
-				q-btn(
-					:outline="item.mode !== 'fixed'"
-					:color="item.mode === 'fixed' ? 'primary' : 'grey-9'"
-					label="Фиксированное значение"
-					@click="item.mode = 'fixed'"
-					size='sm'
-				)
-			
-			.field-form(v-if="item.mode === 'field'")
-				.row.q-col-gutter-md.q-mt-sm
-					.col
-						.text-bold.q-mb-xs Раздел
-						q-select(v-model="item.section" dense outlined :options="sectionOptions")
-					.col
-						.text-bold.q-mb-xs Поле
-						q-select(v-model="item.field" dense outlined :options="fieldOptions")
+			.inside
+				q-btn-group(outline)
+					q-btn(
+						:outline="node.mode !== 'field'"
+						:color="node.mode === 'field' ? 'primary' : 'grey-9'"
+						label="Поле раздела"
+						@click="node.mode = 'field'"
+						size='sm'
+					)
+					q-btn(
+						:outline="node.mode !== 'fixed'"
+						:color="node.mode === 'fixed' ? 'primary' : 'grey-9'"
+						label="Фиксированное значение"
+						@click="node.mode = 'fixed'"
+						size='sm'
+					)
+				
+				.field-form(v-if="node.mode === 'field'")
+					.row.q-col-gutter-md.q-mt-sm
+						.col
+							.text-bold.q-mb-xs Раздел
+							q-select(v-model="node.section" dense outlined :options="sectionOptions")
+						.col
+							.text-bold.q-mb-xs Поле
+							q-select(v-model="node.field" dense outlined :options="fieldOptions")
 
-				.q-mt-md
-					.text-bold.q-mb-xs Применить функцию
-					q-select(v-model="item.func" dense outlined :options="functionOptions")
+					.q-mt-md
+						.text-bold.q-mb-xs Применить функцию
+						q-select(v-model="node.func" dense outlined :options="functionOptions")
 
-				.func-box.q-mt-sm(v-if="item.func")
-					.row.items-center.q-gutter-sm.q-mb-sm
-						span Длина:
-						q-input(v-model="item.funcLength" dense outlined style="width: 80px")
-					q-chip(square color="green-1" text-color="green-9")
-						| Результат: '{{ item.preview?.[0] }}'
+					.func-box.q-mt-sm(v-if="node.func")
+						.row.items-center.q-gutter-sm.q-mb-sm
+							span Длина:
+							q-input(v-model="node.funcLength" dense outlined style="width: 80px")
+						q-chip(square color="green-1" text-color="green-9")
+							| Результат: '{{ node.preview?.[0] }}'
 
-				q-btn.q-mt-sm(
-					flat
-					no-caps
-					color="primary"
-					icon="mdi-plus"
-					label="Добавить ещё функцию (цепочка)"
-					@click="addFunction(item)"
-				)
+					q-btn.q-mt-sm(
+						flat
+						no-caps
+						color="primary"
+						icon="mdi-plus"
+						label="Добавить ещё функцию (цепочка)"
+						@click="addFunction(node)"
+					)
 
-				.preview-box.q-mt-md
-					| Предпросмотр значения: {{ item.preview }}
+					.preview-box.q-mt-md
+						| Предпросмотр значения: {{ node.preview }}
 
-			.fixed-form(v-if="item.mode === 'fixed'")
-				.text-bold.q-mt-md.q-mb-xs Тип значения
-				q-select(v-model="item.valueType" dense outlined :options="valueTypeOptions")
+				.fixed-form(v-if="node.mode === 'fixed'")
+					.text-bold.q-mt-md.q-mb-xs Тип значения
+					q-select(v-model="node.valueType" dense outlined :options="valueTypeOptions")
 
-				.text-bold.q-mt-sm.q-mb-xs Значение
-				q-input(v-model="item.fixedValue" dense outlined clearable)
-				.hint.q-mt-xs(v-if="item.fixedValue === ' '") (символ пробела)
+					.text-bold.q-mt-sm.q-mb-xs Значение
+					q-input(v-model="node.fixedValue" dense outlined clearable)
+					.hint.q-mt-xs(v-if="node.fixedValue === ' '") (символ пробела)
 
-				q-item.apply-func.q-mt-md(clickable @click="addFunction(item)")
-					q-item-section Применить функцию
-					q-item-section(side)
-						q-icon(name="mdi-plus")
+					q-item.apply-func.q-mt-md(clickable @click="addFunction(node)")
+						q-item-section Применить функцию
+						q-item-section(side)
+							q-icon(name="mdi-plus")
 
-				.preview-box.q-mt-md
-					q-icon.q-mr-sm(name="mdi-eye")
-					| Предпросмотр: '{{ item.fixedValue }}'
+					.preview-box.q-mt-md
+						q-icon.q-mr-sm(name="mdi-eye")
+						| Предпросмотр: '{{ node.fixedValue }}'
 
 q-btn(flat icon="mdi-plus" color="primary" label="Добавить элемент" size="sm") 
 	q-menu
 		q-list
 			q-item(clickable @click="addSimpleElement" v-close-popup)
 				q-item-section Простой элемент
-			q-item(clickable)
+			q-item(clickable @click="addOptionsSet" v-close-popup)
 				q-item-section Набор вариантов
-			q-item(clickable)
+			q-item(clickable @click="addConditionsSet" v-close-popup)
 				q-item-section Набор условий
+			q-separator
+			q-item(clickable @click="addGroup" v-close-popup)
+				q-item-section Группа
 </template>
 
 <style scoped lang="scss">
