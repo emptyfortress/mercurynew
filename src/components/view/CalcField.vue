@@ -7,7 +7,13 @@ import GroupNode from './GroupNode.vue'
 import SimpleNode from './SimpleNode.vue'
 import OptionsNode from './OptionsNode.vue'
 import ConditionsNode from './ConditionsNode.vue'
-import type { AnyNode, GroupNode as GroupNodeType, SimpleElement, OptionsSetNode, ConditionsSetNode } from './nodesTypes'
+import type {
+	AnyNode,
+	GroupNode as GroupNodeType,
+	SimpleElement,
+	OptionsSetNode,
+	ConditionsSetNode,
+} from './nodesTypes'
 
 const result = ref()
 const options = [
@@ -251,13 +257,13 @@ q-btn(flat icon="mdi-plus" color="primary" label="Добавить элемен�
 span.editable {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
-	cursor: pointer.
+	cursor: pointer;
 }
 .apply-func {
 	border: var(--border);
 	border-radius: 0.5rem;
 	padding: 0;
-	min-height: 2.75rem.
+	min-height: 2.75rem;
 }
 .hint {
 	color: $grey-6;

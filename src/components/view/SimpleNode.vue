@@ -113,9 +113,11 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 
 <style scoped lang="scss">
 .project {
+	color: $secondary;
 	span {
 		font-weight: 600;
 		margin-left: 0.5rem;
+		color: $primary;
 	}
 }
 .my-expansion :deep(.q-expansion-item__container > .q-item .q-focus-helper) {
