@@ -106,7 +106,7 @@ const calcLabel = (e: Kind) => {
 			span {{ item.text}}
 				q-popup-edit(v-model="item.text" auto-save v-slot="scope")
 					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
-		.type(v-if='item.kind') < {{ calcLabel(item.kind) }} >
+		.type(v-if='item.kind !== null') < {{ calcLabel(item.kind) }} >
 		div(v-else)
 		q-icon(v-if='item.hide' name="mdi-eye-off" color="secondary" size="18px")
 		div(v-else)

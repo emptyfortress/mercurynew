@@ -76,7 +76,7 @@ const toggle = (stat: any) => {
 	}
 }
 .project {
-	color: $secondary;
+	color: #63808c;
 	span {
 		font-weight: 600;
 		margin-left: 0.5rem;

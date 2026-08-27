@@ -101,22 +101,6 @@ const addOptionsSet = () => addNode(createOptionsSetNode())
 const addConditionsSet = () => addNode(createConditionsSetNode())
 const addGroup = () => addNode(createGroupNode())
 
-// ---- сворачивание всех узлов ----
-
-const collapseAll = () => {
-	if (!tree.value) return
-	const walk = (stats: any[]) => {
-		for (const stat of stats) {
-			stat.open = false
-			if (stat.children?.length) walk(stat.children)
-		}
-	}
-	walk(tree.value.rootChildren)
-}
-const collapse = (stat: any) => {
-	stat.open = false
-}
-
 // ---- ограничения drag & drop ----
 
 const eachDraggable = () => {
@@ -134,7 +118,7 @@ const eachDroppable = (stat: any) => {
 	label Тип результата:
 	q-select(v-model="result" dense outlined :options="options")
 	div
-.text-bold Элементы вычисляемого поля
+.text-bold.text-center Элементы вычисляемого поля
 
 Draggable(
 	ref="tree"
@@ -169,35 +153,26 @@ Draggable(
 			:stat="stat"
 		)
 
-q-btn(flat icon="mdi-plus" color="primary" label="Добавить элемент" size="sm") 
-	q-menu
-		q-list
-			q-item(clickable @click="addSimpleElement" v-close-popup)
-				q-item-section Простой элемент
-			q-item(clickable @click="addOptionsSet" v-close-popup)
-				q-item-section Набор вариантов
-			q-item(clickable @click="addConditionsSet" v-close-popup)
-				q-item-section Набор условий
-			q-separator
-			q-item(clickable @click="addGroup" v-close-popup)
-				q-item-section Группа
+.text-center.q-mt-md
+	q-btn(flat icon="mdi-plus" color="primary" label="Добавить" size="12px") 
+		q-menu
+			q-list
+				q-item(clickable @click="addSimpleElement" v-close-popup)
+					q-item-section(side) ⠿
+					q-item-section Простой элемент
+				q-item(clickable @click="addOptionsSet" v-close-popup)
+					q-item-section(side) ⠿
+					q-item-section Набор вариантов
+				q-item(clickable @click="addConditionsSet" v-close-popup)
+					q-item-section(side) ⠿
+					q-item-section Набор условий
+				q-separator
+				q-item(clickable @click="addGroup" v-close-popup)
+					q-item-section(side) [+]
+					q-item-section Группа
 </template>
 
 <style scoped lang="scss">
-.project {
-	span {
-		font-weight: 600;
-		margin-left: 0.5rem;
-	}
-}
-.group {
-	padding: 0.25rem 1rem;
-	background: var(--bgLight);
-	border: var(--border);
-}
-.node {
-	padding: 0.25rem 1rem;
-}
 .mygrid {
 	display: grid;
 	grid-template-columns: auto 1fr;
@@ -243,33 +218,15 @@ q-btn(flat icon="mdi-plus" color="primary" label="Добавить элемен�
 		cursor: grabbing;
 	}
 }
-.func-box {
-	background: var(--bgLight);
-	border-radius: 0.5rem;
-	padding: 0.75rem 1rem;
-}
-.preview-box {
-	background: var(--bgLight);
-	border-radius: 0.5rem;
-	padding: 0.6rem 1rem;
-	color: $grey-8;
-}
-span.editable {
-	color: $primary;
-	border-bottom: 1px dotted $primary;
-	cursor: pointer;
-}
-.apply-func {
-	border: var(--border);
-	border-radius: 0.5rem;
-	padding: 0;
-	min-height: 2.75rem;
-}
-.hint {
-	color: $grey-6;
-	font-size: 0.8rem;
-}
 :deep(.tree-hline) {
 	width: 28px;
+}
+.q-item__section--side {
+	font-size: 1rem;
+	color: $primary;
+}
+:deep(.drag-placeholder) {
+	height: 48px;
+	border-radius: 0.25rem;
 }
 </style>

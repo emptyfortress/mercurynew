@@ -126,10 +126,6 @@ transition(name="fade" mode="out-in")
 							q-item-section
 								q-item-label {{ item.label }}
 
-			q-tab-panel(name='virtual')
-				.section
-					PhVirtualReality.ic
-					span Виртуальное поле
 			q-tab-panel(name='calc')
 				.section
 					q-icon(name="mdi-calculator-variant-outline" color="white")

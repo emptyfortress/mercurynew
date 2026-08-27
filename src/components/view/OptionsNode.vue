@@ -37,7 +37,7 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 
 <style scoped lang="scss">
 .project {
-	color: $secondary;
+	color: #63808c;
 	span {
 		font-weight: 600;
 		margin-left: 0.5rem;

@@ -25,6 +25,10 @@ const emit = defineEmits<{
 const collapse = (stat: any) => {
 	stat.open = false
 }
+
+const remove = () => {
+	console.log(111)
+}
 </script>
 
 <template lang="pug">
@@ -43,6 +47,7 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 							autofocus
 							@keyup.enter="scope.set"
 						)
+		q-btn.close(flat round dense color="primary" icon='mdi-close' @click.stop="remove" size="sm") 
 
 	.inside
 		q-btn-group(outline)
@@ -78,7 +83,7 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 				.row.items-center.q-gutter-sm.q-mb-sm
 					span Длина:
 					q-input(v-model="props.node.funcLength" dense outlined style="width: 80px")
-				q-chip(square color="green-1" text-color="green-9")
+				q-chip(square color="green-4" text-color="green-10")
 					| Результат: '{{ props.node.preview?.[0] }}'
 
 			q-btn.q-mt-sm(
@@ -113,7 +118,7 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 
 <style scoped lang="scss">
 .project {
-	color: $secondary;
+	color: #63808c;
 	span {
 		font-weight: 600;
 		margin-left: 0.5rem;
@@ -131,6 +136,20 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 	background: white;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
 	border: 1px solid $secondary;
+}
+
+.close {
+	align-self: center;
+}
+.my-expansion {
+	.close {
+		display: none;
+	}
+	&:hover {
+		.close {
+			display: block;
+		}
+	}
 }
 
 .inside {
@@ -171,5 +190,8 @@ span.editable {
 .hint {
 	color: $grey-6;
 	font-size: 0.8rem;
+}
+:deep(.q-item__section--side) {
+	padding-left: 0;
 }
 </style>
