@@ -46,6 +46,7 @@ interface SimpleElement extends BaseNode {
 
 interface GroupNode extends BaseNode {
 	type: 'group'
+	function: string
 }
 
 interface OptionsSetNode extends BaseNode {
@@ -85,6 +86,7 @@ const createGroupNode = (): GroupNode => ({
 	id: nextId++,
 	type: 'group',
 	name: 'Группа',
+	function: '+',
 	open: false,
 	expanded: false,
 	children: [],
@@ -172,6 +174,7 @@ Draggable(
 	:indent="40"
 	:each-draggable="eachDraggable"
 	:each-droppable="eachDroppable"
+	:rootDroppable='false'
 	triggerClass="drag-handle"
 )
 	template(#default="{ node, stat }")
@@ -285,16 +288,19 @@ q-btn(flat icon="mdi-plus" color="primary" label="Добавить элемен�
 span.editable {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
-	cursor: pointer.
+	cursor: pointer;
 }
 .apply-func {
 	border: var(--border);
 	border-radius: 0.5rem;
 	padding: 0;
-	min-height: 2.75rem.
+	min-height: 2.75rem;
 }
 .hint {
 	color: $grey-6;
 	font-size: 0.8rem;
+}
+:deep(.tree-hline) {
+	width: 28px;
 }
 </style>

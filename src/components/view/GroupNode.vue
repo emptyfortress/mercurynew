@@ -19,34 +19,54 @@ const toggle = (stat: any) => {
 </script>
 
 <template lang="pug">
-q-expansion-item.my-expansion(v-model="panelOpen")
-	template(v-slot:header)
-		q-icon.trig(
-			name="mdi-chevron-down"
-			v-if="props.stat.children.length"
-			@click.stop="toggle(props.stat)"
-			:class="{ closed: !props.stat.open }"
-		)
-		.drag-handle(@mousedown="emit('drag-start')" @touchstart="emit('drag-start')") ⠿
+.nod
+	q-icon.trig(
+		name="mdi-chevron-down"
+		v-if="props.stat.children.length"
+		@click.stop="toggle(props.stat)"
+		:class="{ closed: !props.stat.open }"
+	)
+	q-expansion-item.my-expansion(v-model="panelOpen")
+		template(v-slot:header)
+			.drag-handle(v-if='props.node.id !== 2' @mousedown="emit('drag-start')" @touchstart="emit('drag-start')") ⠿
 
-		q-item-section
-			.project
-				|Группа:
-				span.editable(@click.stop) {{ props.node.name }}
-					q-popup-edit(v-model="props.node.name" v-slot="scope")
-						q-input(
-							v-model="scope.value"
-							dense
-							autofocus
-							@keyup.enter="scope.set"
-						)
+			q-item-section
+				.project
+					|Группа:
+					span [ {{ props.node.function }} ]
 
-	.inside
-		| Настройки группы
+		.inside
+			| Настройки группы
 </template>
 
 <style scoped lang="scss">
+.nod {
+	display: flex;
+	align-items: center;
+}
+.q-expansion-item {
+	background: var(--bgLight);
+	border-radius: 0.25rem;
+	margin-bottom: 0.5rem;
+	cursor: pointer;
+	border: var(--border);
+	width: 100%;
+}
+
+.my-expansion :deep(.q-expansion-item__container > .q-item .q-focus-helper) {
+	display: none;
+}
+.my-expansion :deep(.q-expansion-item__container > .q-item:hover) {
+	border-radius: 0.25rem;
+	box-shadow: var(--shad0);
+}
+:deep(.q-expansion-item--expanded) {
+	background: white;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+	border: 1px solid $secondary;
+}
 .trig {
+	font-size: 1.4rem;
 	transition: transform 0.2s;
 	cursor: pointer;
 	margin-right: 0.5rem;
