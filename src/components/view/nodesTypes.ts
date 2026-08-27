@@ -1,5 +1,11 @@
 export type NodeType = 'simple' | 'options' | 'conditions' | 'group'
 
+export interface OptionRow {
+	id: string
+	value: string
+	label: string
+}
+
 export interface BaseNode {
 	id: number
 	type: NodeType
@@ -24,10 +30,19 @@ export interface SimpleElement extends BaseNode {
 export interface GroupNode extends BaseNode {
 	type: 'group'
 	function: string
+	children: AnyNode[]
 }
 
 export interface OptionsSetNode extends BaseNode {
 	type: 'options'
+}
+
+export interface OptionsNode extends BaseNode {
+	type: 'options'
+	sourceField: string | null
+	sourceFieldOptions: { label: string; value: string }[]
+	options: OptionRow[]
+	defaultValue: string
 }
 
 export interface ConditionsSetNode extends BaseNode {
