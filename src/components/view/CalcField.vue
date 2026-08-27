@@ -7,6 +7,7 @@ import GroupNode from './GroupNode.vue'
 import SimpleNode from './SimpleNode.vue'
 import OptionsNode from './OptionsNode.vue'
 import ConditionsNode from './ConditionsNode.vue'
+import type { AnyNode, GroupNode as GroupNodeType, SimpleElement, OptionsSetNode, ConditionsSetNode } from './nodesTypes'
 
 const result = ref()
 const options = [
@@ -20,44 +21,6 @@ const options = [
 ]
 
 let nextId = 1
-
-type NodeType = 'simple' | 'options' | 'conditions' | 'group'
-
-interface BaseNode {
-	id: number
-	type: NodeType
-	name: string
-	open: boolean
-	expanded: boolean
-	children: AnyNode[]
-}
-
-interface SimpleElement extends BaseNode {
-	type: 'simple'
-	mode: 'field' | 'fixed'
-	section: string
-	field: string
-	func: string
-	funcLength: null | number
-	preview: string
-	valueType: string
-	fixedValue: string
-}
-
-interface GroupNode extends BaseNode {
-	type: 'group'
-	function: string
-}
-
-interface OptionsSetNode extends BaseNode {
-	type: 'options'
-}
-
-interface ConditionsSetNode extends BaseNode {
-	type: 'conditions'
-}
-
-type AnyNode = SimpleElement | GroupNode | OptionsSetNode | ConditionsSetNode
 
 const list = ref<AnyNode[]>([])
 const tree = ref()
@@ -82,7 +45,7 @@ const addNode = (node: AnyNode) => {
 	tree.value.add(node, rootGroupStat)
 }
 
-const createGroupNode = (): GroupNode => ({
+const createGroupNode = (): GroupNodeType => ({
 	id: nextId++,
 	type: 'group',
 	name: 'Группа',
@@ -288,13 +251,13 @@ q-btn(flat icon="mdi-plus" color="primary" label="Добавить элемен�
 span.editable {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
-	cursor: pointer;
+	cursor: pointer.
 }
 .apply-func {
 	border: var(--border);
 	border-radius: 0.5rem;
 	padding: 0;
-	min-height: 2.75rem;
+	min-height: 2.75rem.
 }
 .hint {
 	color: $grey-6;
