@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
+import GroupNode from './GroupNode.vue'
 
 const result = ref()
 const options = [
@@ -17,11 +18,19 @@ const options = [
 
 let nextId = 1
 
-interface SimpleElement {
+type NodeType = 'simple' | 'options' | 'conditions' | 'group'
+
+interface BaseNode {
 	id: number
+	type: NodeType
 	name: string
-	type: string
+	open: boolean
 	expanded: boolean
+	children: AnyNode[]
+}
+
+interface SimpleElement extends BaseNode {
+	type: 'simple'
 	mode: 'field' | 'fixed'
 	section: string
 	field: string
@@ -30,9 +39,23 @@ interface SimpleElement {
 	preview: string
 	valueType: string
 	fixedValue: string
-	children: SimpleElement[]
 }
-const list = ref<SimpleElement[]>([])
+
+interface GroupNode extends BaseNode {
+	type: 'group'
+}
+
+interface OptionsSetNode extends BaseNode {
+	type: 'options'
+}
+
+interface ConditionsSetNode extends BaseNode {
+	type: 'conditions'
+}
+
+type AnyNode = SimpleElement | GroupNode | OptionsSetNode | ConditionsSetNode
+
+const list = ref<AnyNode[]>([])
 const tree = ref()
 
 const addFunction = (item: any) => {
@@ -48,41 +71,100 @@ const functionOptions = [
 	'Lower(строка)',
 ]
 
-const addSimpleElement = () => {
-	tree.value.add({
-		id: nextId++,
-		type: 'simple',
-		name: 'Новый элемент',
-		expanded: false,
-		mode: 'field',
-		section: '',
-		field: '',
-		func: '',
-		funcLength: null,
-		preview: '',
-		valueType: '',
-		fixedValue: '',
-		children: [],
-	})
-}
-const addOptionsSet = () => {
-	tree.value.add({
-		id: nextId++,
-		type: 'options',
-		name: 'Набор вариантов',
-		expanded: false,
-		children: [],
-	})
+// ---- фабрики узлов ----
+
+const createGroupNode = (): GroupNode => ({
+	id: nextId++,
+	type: 'group',
+	name: 'Группа',
+	open: false,
+	expanded: false,
+	children: [],
+})
+
+const createSimpleElement = (): SimpleElement => ({
+	id: nextId++,
+	type: 'simple',
+	name: 'Новый элемент',
+	open: false,
+	expanded: false,
+	mode: 'field',
+	section: '',
+	field: '',
+	func: '',
+	funcLength: null,
+	preview: '',
+	valueType: '',
+	fixedValue: '',
+	children: [],
+})
+
+const createOptionsSetNode = (): OptionsSetNode => ({
+	id: nextId++,
+	type: 'options',
+	name: 'Набор вариантов',
+	open: false,
+	expanded: false,
+	children: [],
+})
+
+const createConditionsSetNode = (): ConditionsSetNode => ({
+	id: nextId++,
+	type: 'conditions',
+	name: 'Набор условий',
+	open: false,
+	expanded: false,
+	children: [],
+})
+
+// ---- единая точка добавления узла любого типа ----
+
+const addNode = (node: AnyNode) => {
+	if (!tree.value) return
+
+	let rootStats = tree.value.rootChildren as any[]
+
+	// если корневой группы ещё нет — создаём её
+	if (!rootStats.length) {
+		tree.value.add(createGroupNode())
+		rootStats = tree.value.rootChildren
+	}
+
+	// корневой элемент — всегда group, добавляем узел в него
+	const rootGroupStat = rootStats[0]
+	tree.value.add(node, rootGroupStat)
 }
 
-const addConditionsSet = () => {
-	tree.value.add({
-		id: nextId++,
-		type: 'conditions',
-		name: 'Набор условий',
-		expanded: false,
-		children: [],
-	})
+const addSimpleElement = () => addNode(createSimpleElement())
+const addOptionsSet = () => addNode(createOptionsSetNode())
+const addConditionsSet = () => addNode(createConditionsSetNode())
+const addGroup = () => addNode(createGroupNode())
+
+// ---- сворачивание всех узлов ----
+
+const collapseAll = () => {
+	if (!tree.value) return
+	const walk = (stats: any[]) => {
+		for (const stat of stats) {
+			stat.open = false
+			if (stat.children?.length) walk(stat.children)
+		}
+	}
+	walk(tree.value.rootChildren)
+}
+const collapse = (stat: Stat) => {
+	stat.open = false
+}
+
+// ---- ограничения drag & drop ----
+
+const eachDraggable = () => {
+	return true
+}
+
+const eachDroppable = (stat: any) => {
+	// принимать вложенные узлы могут только узлы типа group
+	return stat.data.type === 'group'
 }
 </script>
 
@@ -94,20 +176,27 @@ const addConditionsSet = () => {
 .text-bold Элементы вычисляемого поля
 
 Draggable(
-	ref="tree",
-	treeLine,
-	v-model="list",
+	ref="tree"
+	treeLine
+	v-model="list"
 	:indent="40"
-	class='mtl-tree'
+	:each-draggable="eachDraggable"
+	:each-droppable="eachDroppable"
+	triggerClass="drag-handle"
 )
 	template(#default="{ node, stat }")
-		q-expansion-item.my-expansion(v-model="stat.open")
+		GroupNode(
+			v-if="node.type === 'group'"
+			:node="node"
+			:stat="stat"
+		)
+		q-expansion-item.my-expansion(v-else v-model="stat.open")
 			template(v-slot:header)
-				.drag-handle ⠿
+				.drag-handle(@mousedown="collapse(stat)" @touchstart="collapse(stat)") ⠿
 
 				q-item-section
 					.project
-						|Простой элемент:
+						|{{ node.type === 'group' ? 'Группа' : node.type === 'options' ? 'Набор вариантов' : node.type === 'conditions' ? 'Набор условий' : 'Простой элемент' }}:
 						span.editable(@click.stop) {{ node.name }}
 							q-popup-edit(v-model="node.name" v-slot="scope")
 								q-input(
@@ -117,7 +206,7 @@ Draggable(
 									@keyup.enter="scope.set"
 								)
 
-			.inside
+			.inside(v-if="node.type === 'simple'")
 				q-btn-group(outline)
 					q-btn(
 						:outline="node.mode !== 'field'"
@@ -133,7 +222,7 @@ Draggable(
 						@click="node.mode = 'fixed'"
 						size='sm'
 					)
-				
+
 				.field-form(v-if="node.mode === 'field'")
 					.row.q-col-gutter-md.q-mt-sm
 						.col
