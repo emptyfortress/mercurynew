@@ -111,6 +111,11 @@ const eachDroppable = (stat: any) => {
 	// принимать вложенные узлы могут только узлы типа group
 	return stat.data.type === 'group'
 }
+
+const removeNode = (stat: any) => {
+	if (!tree.value) return
+	tree.value.remove(stat)
+}
 </script>
 
 <template lang="pug">
@@ -124,7 +129,7 @@ Draggable(
 	ref="tree"
 	treeLine
 	v-model="list"
-	:indent="40"
+	:indent="50"
 	:each-draggable="eachDraggable"
 	:each-droppable="eachDroppable"
 	:rootDroppable='false'
@@ -135,22 +140,26 @@ Draggable(
 			v-if="node.type === 'group'"
 			:node="node"
 			:stat="stat"
+			@remove="removeNode"
 		)
 		SimpleNode(
 			v-else-if="node.type === 'simple'"
 			:node="node"
 			:stat="stat"
 			@addFunction="addFunction"
+			@remove="removeNode"
 		)
 		OptionsNode(
 			v-else-if="node.type === 'options'"
 			:node="node"
 			:stat="stat"
+			@remove="removeNode"
 		)
 		ConditionsNode(
 			v-else-if="node.type === 'conditions'"
 			:node="node"
 			:stat="stat"
+			@remove="removeNode"
 		)
 
 .text-center.q-mt-md
@@ -219,7 +228,7 @@ Draggable(
 	}
 }
 :deep(.tree-hline) {
-	width: 28px;
+	width: 38px;
 }
 .q-item__section--side {
 	font-size: 1rem;

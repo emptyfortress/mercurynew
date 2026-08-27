@@ -9,6 +9,12 @@ const props = defineProps<Props>()
 const collapse = (stat: any) => {
 	stat.open = false
 }
+
+const emit = defineEmits(['remove'])
+
+const remove = () => {
+	emit('remove', props.stat)
+}
 </script>
 
 <template lang="pug">
@@ -27,6 +33,11 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 							autofocus
 							@keyup.enter="scope.set"
 						)
+		q-btn.close(flat round dense color="negative" icon='mdi-delete-outline' size="sm") 
+			q-menu
+				q-list
+					q-item.pink(clickable @click.stop="remove" )
+						q-item-section Удалить
 
 	.inside
 		.text-center.q-pa-md.text-grey-6
@@ -74,5 +85,21 @@ span.editable {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
 	cursor: pointer;
+}
+.close {
+	align-self: center;
+}
+.my-expansion {
+	.close {
+		display: none;
+	}
+	&:hover {
+		.close {
+			display: block;
+		}
+	}
+}
+:deep(.q-item__section--side) {
+	padding-left: 0;
 }
 </style>

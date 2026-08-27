@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+// import { ref } from 'vue'
 
 interface Props {
 	node: any
@@ -18,16 +18,17 @@ const functionOptions = [
 	'Lower(строка)',
 ]
 
-const emit = defineEmits<{
-	addFunction: [item: any]
-}>()
-
 const collapse = (stat: any) => {
 	stat.open = false
 }
 
+const emit = defineEmits<{
+	addFunction: [item: any]
+	remove: [stat: any]
+}>()
+
 const remove = () => {
-	console.log(111)
+	emit('remove', props.stat)
 }
 </script>
 
@@ -47,7 +48,11 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 							autofocus
 							@keyup.enter="scope.set"
 						)
-		q-btn.close(flat round dense color="primary" icon='mdi-close' @click.stop="remove" size="sm") 
+		q-btn.close(flat round dense color="negative" icon='mdi-delete-outline' size="sm") 
+			q-menu
+				q-list
+					q-item.pink(clickable @click.stop="remove" )
+						q-item-section Удалить
 
 	.inside
 		q-btn-group(outline)

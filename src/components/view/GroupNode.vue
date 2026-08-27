@@ -6,9 +6,13 @@ const props = defineProps<{
 	stat: any
 }>()
 
-const emit = defineEmits<{
-	(e: 'drag-start'): void
-}>()
+// const emit = defineEmits<{
+// 	(e: 'drag-start'): void
+// 	(e: 'remove'): void
+// 	(e: 'remove'): void
+// }>()
+
+const emit = defineEmits(['remove', 'drag-start'])
 
 // раскрытие панели настроек группы — отдельное от stat.open (который управляет показом потомков)
 const panelOpen = ref(false)
@@ -47,6 +51,10 @@ const operationDescriptions: Record<string, string> = {
 const operationDescription = computed(() => {
 	return operationDescriptions[props.node.function] ?? 'Выберите операцию'
 })
+
+const remove = () => {
+	emit('remove', props.stat)
+}
 </script>
 
 <template lang="pug">
@@ -65,6 +73,12 @@ const operationDescription = computed(() => {
 				.project
 					|Группа:
 					span {{ props.node.function }}
+
+			q-btn.close(flat round dense color="negative" icon='mdi-delete-outline' size="sm") 
+				q-menu
+					q-list
+						q-item.pink(clickable @click.stop="remove" )
+							q-item-section Удалить
 
 		.inside
 			.first
@@ -189,5 +203,21 @@ const operationDescription = computed(() => {
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
+}
+.close {
+	align-self: center;
+}
+.my-expansion {
+	.close {
+		display: none;
+	}
+	&:hover {
+		.close {
+			display: block;
+		}
+	}
+}
+:deep(.q-item__section--side) {
+	padding-left: 0;
 }
 </style>
