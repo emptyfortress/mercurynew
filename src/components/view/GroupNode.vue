@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps<{
 	node: any
@@ -16,6 +16,37 @@ const panelOpen = ref(false)
 const toggle = (stat: any) => {
 	stat.open = !stat.open
 }
+
+// поля панели настроек группы
+const delimiter = ref('')
+const func = ref('')
+const section = ref('Ведущий')
+const sorting = ref('Нет')
+const sortSection = ref('')
+const sortField = ref('')
+const dataType = ref('Строка Unicode')
+const pkField = ref('RowID')
+const pkFieldType = ref('Идентификатор')
+
+const sectionOptions = ['Ведущий', 'Подчинённый']
+const sortingOptions = ['Нет', 'По возрастанию', 'По убыванию']
+const fieldTypeOptions = ['Идентификатор', 'Строка Unicode', 'Число']
+
+const agregate = ref(false)
+const operationOptions = ['[ + ]', '[ - ]', '[ * ]', '[ / ]', '[ И ]', '[ ИЛИ ]']
+
+const operationDescriptions: Record<string, string> = {
+	'[ + ]': 'Суммирование значений элементов группы.',
+	'[ - ]': 'Вычитание значений элементов группы.',
+	'[ * ]': 'Умножение значений элементов группы.',
+	'[ / ]': 'Деление значений элементов группы.',
+	'[ И ]': 'Логическое И — истина, если истинны все элементы группы.',
+	'[ ИЛИ ]': 'Логическое ИЛИ — истина, если истинен хотя бы один элемент группы.',
+}
+
+const operationDescription = computed(() => {
+	return operationDescriptions[props.node.function] ?? 'Выберите операцию'
+})
 </script>
 
 <template lang="pug">
@@ -33,10 +64,47 @@ const toggle = (stat: any) => {
 			q-item-section
 				.project
 					|Группа:
-					span [ {{ props.node.function }} ]
+					span {{ props.node.function }}
 
 		.inside
-			| Настройки группы
+			.first
+				.col
+					.text-bold.q-mb-xs Операция
+					q-select(v-model="props.node.function" dense outlined :options="operationOptions")
+				.col
+					.text-bold.q-mb-xs Описание
+					.descr {{ operationDescription }}
+			
+			q-checkbox.field.q-mt-lg(v-model='agregate' label='Агрегация' dense)
+
+			template(v-if='agregate')
+				.mygrid
+					q-input(v-model="delimiter" label="Разделитель:" dense outlined)
+					q-input(v-model="func" label="Функция:" dense outlined)
+
+					q-select(v-model="section" :options="sectionOptions" label="Раздел:" dense outlined)
+					q-select(v-model="sorting" :options="sortingOptions" label="Сортировка:" dense outlined)
+					q-select(
+						v-model="sortSection"
+						:options="sectionOptions"
+						label="Раздел:"
+						dense outlined
+						:disable="sorting === 'Нет'"
+					)
+					q-select(
+						v-model="sortField"
+						:options="[]"
+						label="Поле:"
+						dense outlined
+						:disable="sorting === 'Нет'"
+					)
+					q-select(v-model="dataType" :options="[]" label="Тип данных:" dense outlined disable)
+
+				.pk-title Первичный ключ агрегации
+				.mygrid.q-mb-md
+					q-input(v-model="pkField" label="Поле:" dense outlined)
+					q-select(v-model="pkFieldType" :options="fieldTypeOptions" label="Тип поля:" dense outlined)
+
 </template>
 
 <style scoped lang="scss">
@@ -94,6 +162,32 @@ const toggle = (stat: any) => {
 	}
 }
 .inside {
-	padding: 1rem;
+	padding: 0.25rem 1rem;
+}
+.field {
+	margin-bottom: 0.5rem;
+}
+.pk-title {
+	font-weight: 600;
+	color: #63808c;
+	margin: 0.75rem 0 0.5rem;
+}
+.first {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	column-gap: 1rem;
+	margin-bottom: 0.5rem;
+}
+.descr {
+	margin-top: 0.7rem;
+	font-size: 0.8rem;
+	color: $blue-grey-6;
+}
+.mygrid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	align-items: center;
+	column-gap: 1rem;
+	row-gap: 0.5rem;
 }
 </style>

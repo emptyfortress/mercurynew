@@ -55,7 +55,7 @@ const createGroupNode = (): GroupNodeType => ({
 	id: nextId++,
 	type: 'group',
 	name: 'Группа',
-	function: '+',
+	function: '[ + ]',
 	open: false,
 	expanded: false,
 	children: [],

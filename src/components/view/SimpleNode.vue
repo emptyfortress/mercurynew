@@ -99,12 +99,15 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 				| Предпросмотр значения: {{ props.node.preview }}
 
 		.fixed-form(v-if="props.node.mode === 'fixed'")
-			.text-bold.q-mt-md.q-mb-xs Тип значения
-			q-select(v-model="props.node.valueType" dense outlined :options="valueTypeOptions")
+			.row.q-col-gutter-md.q-mt-sm
+				.col
+					.text-bold.q-mb-xs  Тип значения
+					q-select(v-model="props.node.valueType" dense outlined :options="valueTypeOptions")
 
-			.text-bold.q-mt-sm.q-mb-xs Значение
-			q-input(v-model="props.node.fixedValue" dense outlined clearable)
-			.hint.q-mt-xs(v-if="props.node.fixedValue === ' '") (символ пробела)
+				.col
+					.text-bold.q-mb-xs Значение
+					q-input(v-model="props.node.fixedValue" dense outlined clearable)
+					.hint.q-mt-xs(v-if="props.node.fixedValue === ' '") (символ пробела)
 
 			q-item.apply-func.q-mt-md(clickable @click="emit('addFunction', props.node)")
 				q-item-section Применить функцию
