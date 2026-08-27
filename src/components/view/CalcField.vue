@@ -4,6 +4,9 @@ import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
 import GroupNode from './GroupNode.vue'
+import SimpleNode from './SimpleNode.vue'
+import OptionsNode from './OptionsNode.vue'
+import ConditionsNode from './ConditionsNode.vue'
 
 const result = ref()
 const options = [
@@ -61,17 +64,22 @@ const tree = ref()
 const addFunction = (item: any) => {
 	console.log('add function chain', item)
 }
-const sectionOptions = ['Сотрудники_1', 'Сотрудники_2', 'Документы']
-const fieldOptions = ['Имя', 'Фамилия', 'Отчество', 'Должность']
-const valueTypeOptions = ['Строка', 'Число', 'Дата']
-const functionOptions = [
-	'Left(строка, длина)',
-	'Right(строка, длина)',
-	'Upper(строка)',
-	'Lower(строка)',
-]
 
-// ---- фабрики узлов ----
+const addNode = (node: AnyNode) => {
+	if (!tree.value) return
+
+	let rootStats = tree.value.rootChildren as any[]
+
+	// если корневой группы ещё нет — создаём её
+	if (!rootStats.length) {
+		tree.value.add(createGroupNode())
+		rootStats = tree.value.rootChildren
+	}
+
+	// корневой элемент — всегда group, добавляем узел в него
+	const rootGroupStat = rootStats[0]
+	tree.value.add(node, rootGroupStat)
+}
 
 const createGroupNode = (): GroupNode => ({
 	id: nextId++,
@@ -117,24 +125,6 @@ const createConditionsSetNode = (): ConditionsSetNode => ({
 	children: [],
 })
 
-// ---- единая точка добавления узла любого типа ----
-
-const addNode = (node: AnyNode) => {
-	if (!tree.value) return
-
-	let rootStats = tree.value.rootChildren as any[]
-
-	// если корневой группы ещё нет — создаём её
-	if (!rootStats.length) {
-		tree.value.add(createGroupNode())
-		rootStats = tree.value.rootChildren
-	}
-
-	// корневой элемент — всегда group, добавляем узел в него
-	const rootGroupStat = rootStats[0]
-	tree.value.add(node, rootGroupStat)
-}
-
 const addSimpleElement = () => addNode(createSimpleElement())
 const addOptionsSet = () => addNode(createOptionsSetNode())
 const addConditionsSet = () => addNode(createConditionsSetNode())
@@ -152,7 +142,7 @@ const collapseAll = () => {
 	}
 	walk(tree.value.rootChildren)
 }
-const collapse = (stat: Stat) => {
+const collapse = (stat: any) => {
 	stat.open = false
 }
 
@@ -190,87 +180,22 @@ Draggable(
 			:node="node"
 			:stat="stat"
 		)
-		q-expansion-item.my-expansion(v-else v-model="stat.open")
-			template(v-slot:header)
-				.drag-handle(@mousedown="collapse(stat)" @touchstart="collapse(stat)") ⠿
-
-				q-item-section
-					.project
-						|{{ node.type === 'group' ? 'Группа' : node.type === 'options' ? 'Набор вариантов' : node.type === 'conditions' ? 'Набор условий' : 'Простой элемент' }}:
-						span.editable(@click.stop) {{ node.name }}
-							q-popup-edit(v-model="node.name" v-slot="scope")
-								q-input(
-									v-model="scope.value"
-									dense
-									autofocus
-									@keyup.enter="scope.set"
-								)
-
-			.inside(v-if="node.type === 'simple'")
-				q-btn-group(outline)
-					q-btn(
-						:outline="node.mode !== 'field'"
-						:color="node.mode === 'field' ? 'primary' : 'grey-9'"
-						label="Поле раздела"
-						@click="node.mode = 'field'"
-						size='sm'
-					)
-					q-btn(
-						:outline="node.mode !== 'fixed'"
-						:color="node.mode === 'fixed' ? 'primary' : 'grey-9'"
-						label="Фиксированное значение"
-						@click="node.mode = 'fixed'"
-						size='sm'
-					)
-
-				.field-form(v-if="node.mode === 'field'")
-					.row.q-col-gutter-md.q-mt-sm
-						.col
-							.text-bold.q-mb-xs Раздел
-							q-select(v-model="node.section" dense outlined :options="sectionOptions")
-						.col
-							.text-bold.q-mb-xs Поле
-							q-select(v-model="node.field" dense outlined :options="fieldOptions")
-
-					.q-mt-md
-						.text-bold.q-mb-xs Применить функцию
-						q-select(v-model="node.func" dense outlined :options="functionOptions")
-
-					.func-box.q-mt-sm(v-if="node.func")
-						.row.items-center.q-gutter-sm.q-mb-sm
-							span Длина:
-							q-input(v-model="node.funcLength" dense outlined style="width: 80px")
-						q-chip(square color="green-1" text-color="green-9")
-							| Результат: '{{ node.preview?.[0] }}'
-
-					q-btn.q-mt-sm(
-						flat
-						no-caps
-						color="primary"
-						icon="mdi-plus"
-						label="Добавить ещё функцию (цепочка)"
-						@click="addFunction(node)"
-					)
-
-					.preview-box.q-mt-md
-						| Предпросмотр значения: {{ node.preview }}
-
-				.fixed-form(v-if="node.mode === 'fixed'")
-					.text-bold.q-mt-md.q-mb-xs Тип значения
-					q-select(v-model="node.valueType" dense outlined :options="valueTypeOptions")
-
-					.text-bold.q-mt-sm.q-mb-xs Значение
-					q-input(v-model="node.fixedValue" dense outlined clearable)
-					.hint.q-mt-xs(v-if="node.fixedValue === ' '") (символ пробела)
-
-					q-item.apply-func.q-mt-md(clickable @click="addFunction(node)")
-						q-item-section Применить функцию
-						q-item-section(side)
-							q-icon(name="mdi-plus")
-
-					.preview-box.q-mt-md
-						q-icon.q-mr-sm(name="mdi-eye")
-						| Предпросмотр: '{{ node.fixedValue }}'
+		SimpleNode(
+			v-else-if="node.type === 'simple'"
+			:node="node"
+			:stat="stat"
+			@addFunction="addFunction"
+		)
+		OptionsNode(
+			v-else-if="node.type === 'options'"
+			:node="node"
+			:stat="stat"
+		)
+		ConditionsNode(
+			v-else-if="node.type === 'conditions'"
+			:node="node"
+			:stat="stat"
+		)
 
 q-btn(flat icon="mdi-plus" color="primary" label="Добавить элемент" size="sm") 
 	q-menu
@@ -360,13 +285,13 @@ q-btn(flat icon="mdi-plus" color="primary" label="Добавить элемен�
 span.editable {
 	color: $primary;
 	border-bottom: 1px dotted $primary;
-	cursor: pointer;
+	cursor: pointer.
 }
 .apply-func {
 	border: var(--border);
 	border-radius: 0.5rem;
 	padding: 0;
-	min-height: 2.75rem;
+	min-height: 2.75rem.
 }
 .hint {
 	color: $grey-6;
