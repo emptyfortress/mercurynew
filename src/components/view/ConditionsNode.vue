@@ -33,10 +33,12 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 							autofocus
 							@keyup.enter="scope.set"
 						)
-		q-btn.close(flat round dense color="negative" icon='mdi-delete-outline' size="sm") 
+		q-btn.close(flat round dense color="primary" icon='mdi-dots-vertical' size="sm") 
 			q-menu
 				q-list
-					q-item.pink(clickable @click.stop="remove" )
+					q-item(clickable)
+						q-item-section Копировать
+					q-item.text-negative(clickable @click.stop="remove" )
 						q-item-section Удалить
 
 	.inside
@@ -88,16 +90,6 @@ span.editable {
 }
 .close {
 	align-self: center;
-}
-.my-expansion {
-	.close {
-		display: none;
-	}
-	&:hover {
-		.close {
-			display: block;
-		}
-	}
 }
 :deep(.q-item__section--side) {
 	padding-left: 0;
