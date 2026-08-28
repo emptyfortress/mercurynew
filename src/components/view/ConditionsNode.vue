@@ -32,7 +32,7 @@ let conditionCounter = 0
 
 const addRow = () => {
 	conditionCounter++
-	props.node.conditions.push({ id: genId(), condition: `${conditionCounter} условие`, value: '' })
+	props.node.conditions.push({ id: genId(), condition: `Условие ${conditionCounter}`, value: '' })
 }
 
 const removeRow = (id: string) => {
@@ -86,12 +86,14 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 		table.options-table(v-if="props.node.conditions.length")
 			thead
 				tr
+					th
 					th Условие
 					th Значение
 					th
 
 			tbody
-				tr(v-for="row in props.node.conditions" :key="row.id")
+				tr(v-for="(row, index) in props.node.conditions" :key="row.id")
+					td {{ index + 1}}.
 					td
 						q-input(v-model="row.condition" dense outlined)
 					td
@@ -186,4 +188,15 @@ span.editable {
 		}
 	}
 }
+// .or-separator {
+// 	td {
+// 		// text-align: center;
+// 		font-size: 0.7rem;
+// 		font-weight: 600;
+// 		color: $blue-grey-7;
+// 		padding: 0.1rem 0;
+// 		border-bottom: none;
+// 		padding-left: 4rem;
+// 	}
+// }
 </style>

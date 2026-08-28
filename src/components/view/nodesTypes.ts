@@ -45,12 +45,24 @@ export interface OptionsSetNode extends BaseNode {
 	defaultValue: string
 }
 
-export interface ConditionRow {
-	id: string
-	condition: string
+export interface SelectOption {
+	label: string
 	value: string
 }
 
+export interface ConditionLine {
+	id: string
+	section: string
+	field: string
+	operator: string
+	value: string
+}
+
+export interface ConditionRow {
+	id: string
+	resultField: string | null
+	lines: ConditionLine[]
+}
 export interface ConditionsSetNode extends BaseNode {
 	type: 'conditions'
 	conditions: ConditionRow[]
