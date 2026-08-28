@@ -109,18 +109,15 @@ watch(modelValue, (open) => {
 
 <template lang="pug">
 q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
-	q-card(style="min-width: 560px;")
+	q-card(style="min-width: 860px;")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 
 		q-card-section.row.items-center.justify-between.q-py-md
 			.text-h6 Условие
 			.result-block
 				.text-caption.text-grey-6 Результат:
-				q-select(
+				q-input(
 					v-model="resultField"
-					:options="resultFields"
-					emit-value
-					map-options
 					dense
 					outlined
 					style="min-width: 260px;"
@@ -167,6 +164,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 								emit-value
 								map-options
 								dense
+								optionsDense
 								outlined
 							)
 						.field-group
@@ -213,14 +211,15 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 .condition-line {
 	position: relative;
 	display: grid;
-	grid-template-columns: 1fr 1fr 120px 1fr;
+	grid-template-columns: 1fr 1fr 80px 1fr;
 	gap: 0.75rem;
 	padding-right: 1.75rem;
+	// align-items: center;
 }
 
 .remove-line {
 	position: absolute;
-	top: 0;
+	top: 26px;
 	right: 0;
 }
 
@@ -234,7 +233,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 	flex-direction: column;
 	align-items: center;
 	margin-left: 1rem;
-	height: 56px;
+	height: 48px;
 
 	&__line {
 		flex: 1;

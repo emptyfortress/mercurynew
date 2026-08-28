@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { ConditionsSetNode as ConditionsNodeType, ConditionRow } from './nodesTypes'
+import type {
+	ConditionsSetNode as ConditionsNodeType,
+	ConditionRow,
+	ConditionLine,
+} from './nodesTypes'
 import EditConditionsNodeDialog from './EditConditionsNodeDialog.vue'
 
 interface Props {
@@ -25,20 +29,7 @@ if (!props.node.conditions) {
 	props.node.conditions = [] as ConditionRow[]
 }
 
-let rowCounter = 0
-const genId = () => `row_${Date.now()}_${rowCounter++}`
-
-let conditionCounter = 0
-
-const addRow = () => {
-	conditionCounter++
-	props.node.conditions.push({ id: genId(), condition: `Условие ${conditionCounter}`, value: '' })
-}
-
-const removeRow = (id: string) => {
-	const idx = props.node.conditions.findIndex((r: ConditionRow) => r.id === id)
-	if (idx !== -1) props.node.conditions.splice(idx, 1)
-}
+const genId = () => crypto.randomUUID()
 
 const editDialogOpen = ref(false)
 const editingRow = ref<ConditionRow | null>(null)
@@ -48,11 +39,31 @@ const showEditDialog = (row: ConditionRow) => {
 	editDialogOpen.value = true
 }
 
-const onEditConfirm = (payload: { condition: string; value: string }) => {
+const addRow = () => {
+	const row: ConditionRow = { id: genId(), resultField: null, lines: [] }
+	props.node.conditions.push(row)
+	showEditDialog(row)
+}
+
+const removeRow = (id: string) => {
+	const idx = props.node.conditions.findIndex((r: ConditionRow) => r.id === id)
+	if (idx !== -1) props.node.conditions.splice(idx, 1)
+}
+
+const onEditConfirm = (payload: { resultField: string | null; lines: ConditionLine[] }) => {
 	if (editingRow.value) {
-		editingRow.value.condition = payload.condition
-		editingRow.value.value = payload.value
+		editingRow.value.resultField = payload.resultField
+		editingRow.value.lines = payload.lines
 	}
+}
+
+const summarizeRow = (row: ConditionRow) => {
+	if (!row.lines.length) return 'Не заполнено'
+	return row.lines
+		.map((line) =>
+			`${line.section || '—'} / ${line.field || '—'} ${line.operator || ''} ${line.value ?? ''}`.trim()
+		)
+		.join(' И ')
 }
 </script>
 
@@ -88,16 +99,14 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 				tr
 					th
 					th Условие
-					th Значение
+					th Результат
 					th
 
 			tbody
 				tr(v-for="(row, index) in props.node.conditions" :key="row.id")
-					td {{ index + 1}}.
-					td
-						q-input(v-model="row.condition" dense outlined)
-					td
-						q-input(v-model="row.value" dense outlined)
+					td {{ index + 1 }}.
+					td.summary(@click="showEditDialog(row)") {{ summarizeRow(row) }}
+					td {{ row.resultField ?? '—' }}
 					td.actions
 						q-btn(flat round dense icon="mdi-pencil-outline" color="primary" size="sm" @click="showEditDialog(row)")
 						q-btn(flat round dense icon="mdi-delete-outline" color="negative" size="sm" @click="removeRow(row.id)")
@@ -186,17 +195,15 @@ span.editable {
 			white-space: nowrap;
 			width: 1%;
 		}
+
+		&.summary {
+			cursor: pointer;
+			color: $blue-grey-8;
+
+			&:hover {
+				color: $primary;
+			}
+		}
 	}
 }
-// .or-separator {
-// 	td {
-// 		// text-align: center;
-// 		font-size: 0.7rem;
-// 		font-weight: 600;
-// 		color: $blue-grey-7;
-// 		padding: 0.1rem 0;
-// 		border-bottom: none;
-// 		padding-left: 4rem;
-// 	}
-// }
 </style>
