@@ -185,7 +185,6 @@ Draggable(
 					q-item-section(side) [+]
 					q-item-section Группа
 
-	q-btn(flat icon="mdi-virtual-reality" color="primary" label="Сохранить как виртуальное поле" size="12px") 
 </template>
 
 <style scoped lang="scss">

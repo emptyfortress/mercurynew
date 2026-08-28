@@ -187,6 +187,8 @@ q-drawer(v-model='visible' side='right' :width="640" overlay persistent bordered
 					component(:is="section.component" v-model:draft='draft')
 
 	.actions
+		q-btn(flat icon="mdi-virtual-reality" color="primary" label="Сохранить как виртуальное поле" size="12px") 
+		q-space
 		q-btn(flat color="primary" label="Отмена" @click="visible = false") 
 		q-btn(unelevated color="primary" label="Применить" @click="save") 
 </template>
@@ -252,8 +254,10 @@ q-drawer(v-model='visible' side='right' :width="640" overlay persistent bordered
 	width: 100%;
 	justify-content: end;
 	position: absolute;
-	bottom: 1rem;
-	right: 1rem;
+	bottom: 0;
+	right: 0;
+	padding: 0.5rem 1rem;
+	box-shadow: 0 -2px 7px rgba($color: #000000, $alpha: 0.2);
 }
 .q-separator {
 	margin-top: 1rem;
