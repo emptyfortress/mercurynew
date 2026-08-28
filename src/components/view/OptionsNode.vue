@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { OptionsNode as OptionsNodeType, OptionRow } from './nodesTypes'
+import type { OptionsSetNode, OptionRow } from './nodesTypes'
 
 interface Props {
-	node: OptionsNodeType
+	node: OptionsSetNode
 	stat: Stat
 }
 
@@ -52,16 +52,25 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 							autofocus
 							@keyup.enter="scope.set"
 						)
-		q-btn.close(flat round dense color="primary" icon='mdi-dots-vertical' size="sm") 
+		q-btn.close(flat round dense color="primary" icon='mdi-dots-vertical' size="sm" @click.stop) 
 			q-menu
 				q-list
 					q-item(clickable)
 						q-item-section Копировать
-					q-item.text-negative(clickable @click.stop="remove" )
+					q-item.text-negative(clickable @click="remove" )
 						q-item-section Удалить
 
 	.inside
-		.field-select.q-mb-md
+		.grid2
+			.label Раздел:
+			q-select(
+				v-model="props.node.sourceField"
+				:options="props.node.sourceFieldOptions || []"
+				dense
+				outlined
+				emit-value
+				map-options
+			)
 			.label.text-bold Поле-источник:
 			q-select(
 				v-model="props.node.sourceField"
@@ -70,10 +79,9 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 				outlined
 				emit-value
 				map-options
-				style="min-width: 260px"
 			)
 
-		table.options-table
+		table.options-table(v-if="props.node.options.length")
 			thead
 				tr
 					th Значение поля
@@ -192,5 +200,14 @@ span.editable {
 	// align-items: stretch;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
+}
+.grid2 {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	// justify-items: start;
+	align-items: center;
+	column-gap: 1rem;
+	row-gap: 0.5rem;
+	margin-bottom: 1rem;
 }
 </style>

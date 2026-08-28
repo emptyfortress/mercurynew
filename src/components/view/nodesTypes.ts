@@ -33,11 +33,11 @@ export interface GroupNode extends BaseNode {
 	children: AnyNode[]
 }
 
-export interface OptionsSetNode extends BaseNode {
-	type: 'options'
-}
+// export interface OptionsSetNode extends BaseNode {
+// 	type: 'options'
+// }
 
-export interface OptionsNode extends BaseNode {
+export interface OptionsSetNode extends BaseNode {
 	type: 'options'
 	sourceField: string | null
 	sourceFieldOptions: { label: string; value: string }[]
@@ -45,8 +45,15 @@ export interface OptionsNode extends BaseNode {
 	defaultValue: string
 }
 
+export interface ConditionRow {
+	id: string
+	condition: string
+	value: string
+}
+
 export interface ConditionsSetNode extends BaseNode {
 	type: 'conditions'
+	conditions: ConditionRow[]
 }
 
 export type AnyNode = SimpleElement | GroupNode | OptionsSetNode | ConditionsSetNode

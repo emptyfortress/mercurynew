@@ -48,12 +48,12 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 							autofocus
 							@keyup.enter="scope.set"
 						)
-		q-btn.close(flat round dense color="primary" icon='mdi-dots-vertical' size="sm") 
+		q-btn.close(flat round dense color="primary" icon='mdi-dots-vertical' size="sm" @click.stop) 
 			q-menu
 				q-list
 					q-item(clickable)
 						q-item-section Копировать
-					q-item(clickable @click.stop="remove" )
+					q-item(clickable @click="remove" )
 						q-item-section.text-negative Удалить
 
 	.inside

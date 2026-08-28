@@ -68,12 +68,12 @@ const remove = () => {
 					|Группа:
 					span {{ props.node.function }}
 
-			q-btn.close(v-if='props.node.id !== 2' flat round dense color="primary" icon='mdi-dots-vertical' size="sm") 
+			q-btn.close(v-if='props.node.id !== 2' flat round dense color="primary" icon='mdi-dots-vertical' size="sm" @click.stop) 
 				q-menu
 					q-list
 						q-item(clickable)
 							q-item-section Копировать
-						q-item.text-negative(clickable @click.stop="remove" )
+						q-item.text-negative(clickable @click="remove" )
 							q-item-section Удалить
 
 		.inside

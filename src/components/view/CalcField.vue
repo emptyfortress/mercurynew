@@ -78,12 +78,16 @@ const createSimpleElement = (): SimpleElement => ({
 	children: [],
 })
 
-const createOptionsSetNode = (): OptionsSetNode => ({
+const createOptionsNode = (): OptionsSetNode => ({
 	id: nextId++,
 	type: 'options',
 	name: 'Набор вариантов',
 	open: false,
 	expanded: false,
+	sourceField: null,
+	sourceFieldOptions: [],
+	options: [],
+	defaultValue: '',
 	children: [],
 })
 
@@ -93,11 +97,12 @@ const createConditionsSetNode = (): ConditionsSetNode => ({
 	name: 'Набор условий',
 	open: false,
 	expanded: false,
+	conditions: [],
 	children: [],
 })
 
 const addSimpleElement = () => addNode(createSimpleElement())
-const addOptionsSet = () => addNode(createOptionsSetNode())
+const addOptionsSet = () => addNode(createOptionsNode())
 const addConditionsSet = () => addNode(createConditionsSetNode())
 const addGroup = () => addNode(createGroupNode())
 
