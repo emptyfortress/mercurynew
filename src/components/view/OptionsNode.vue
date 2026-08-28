@@ -87,10 +87,13 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 					td
 						q-input(v-model="row.label" dense outlined)
 					td.actions
+						q-btn(flat round dense icon="mdi-function" color="primary" size="sm" @click="")
+							q-tooltip Добавить функцию
 						q-btn(flat round dense icon="mdi-delete-outline" color="negative" size="sm" @click="removeRow(row.id)")
 							q-tooltip Удалить
 
 		q-btn.q-mt-sm(flat color="primary" icon="mdi-plus" label="Добавить строку" size="sm" @click="addRow")
+		q-btn.q-mt-sm(flat color="primary" icon="mdi-function" label="Добавить функцию" size="sm" @click="")
 
 		.default-value-bar.q-mt-md.q-pa-sm.row.items-center
 			q-icon.q-mr-sm(name="mdi-alert" color="warning" size="sm")

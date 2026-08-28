@@ -1,9 +1,9 @@
 <script setup lang="ts">
-// import { ref } from 'vue'
+import type { SimpleElement } from './nodesTypes'
 
 interface Props {
-	node: any
-	stat: any
+	node: SimpleElement
+	stat: Stat
 }
 
 const props = defineProps<Props>()
@@ -24,7 +24,7 @@ const collapse = (stat: any) => {
 
 const emit = defineEmits<{
 	addFunction: [item: any]
-	remove: [stat: any]
+	remove: [stat: Stat]
 }>()
 
 const remove = () => {

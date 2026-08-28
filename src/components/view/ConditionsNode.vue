@@ -42,13 +42,19 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 						q-item-section Удалить
 
 	.inside
-		.text-center.q-pa-md.text-grey-6
-			| Компонент "Набор условий" (заглушка)
-			br
+		.inf Условия объединены по ИЛИ, вычисляются сверху вниз, срабатывает первое валидное.
+
+		// here goes table for conditions
+
+		.text-center.q-mt-md
 			q-btn(flat color="primary" icon="mdi-plus" label="Добавить условие" size="sm")
 </template>
 
 <style scoped lang="scss">
+.inf {
+	color: $grey-7;
+	font-size: 0.75rem;
+}
 .project {
 	color: #63808c;
 	span {
@@ -72,6 +78,7 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 
 .inside {
 	padding: 1rem;
+	padding-top: 0;
 }
 .drag-handle {
 	font-size: 1.3rem;
