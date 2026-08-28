@@ -2,9 +2,15 @@
 import { ref, computed, watchEffect } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { usePartitionStore } from '@/stores/partition'
-import DndTable from '@/components/common/DndTable.vue'
-import MainSectionDialog from '@/components/decision/MainSectionDialog.vue'
-import DopSectionDialog from '@/components/decision/DopSectionDialog.vue'
+import { Draggable, BaseTree } from '@he-tree/vue'
+import { useRouter, useRoute } from 'vue-router'
+
+// const router = useRouter()
+const route = useRoute()
+
+// import DndTable from '@/components/common/DndTable.vue'
+// import MainSectionDialog from '@/components/decision/MainSectionDialog.vue'
+// import DopSectionDialog from '@/components/decision/DopSectionDialog.vue'
 
 const store = useSimpleStore()
 const part = usePartitionStore()
@@ -24,103 +30,62 @@ const author = computed(() => {
 	return store.selectedElement?.author || 'System'
 })
 
-const cols0 = [
-	{
-		name: 'card',
-		label: 'Тип карточки',
-		field: 'card',
-		align: 'left',
-	},
-	{
-		name: 'part',
-		label: 'Ведущий раздел',
-		field: 'part',
-		align: 'left',
-	},
-	{
-		name: 'psev',
-		label: 'Псевдоним',
-		field: 'psev',
-		align: 'left',
-	},
-]
-
-const cols = [
-	{
-		name: 'psevdo',
-		label: 'Псевдоним',
-		field: 'psevde',
-		align: 'left',
-	},
-	{
-		name: 'orig',
-		label: 'Оригинальный раздел',
-		field: 'orig',
-		align: 'left',
-	},
-	{
-		name: 'attached',
-		label: 'Присоединенный раздел',
-		field: 'attached',
-		align: 'left',
-	},
-	{
-		name: 'common',
-		label: 'Объединение через',
-		field: 'common',
-		align: 'left',
-	},
-	{
-		name: 'condition',
-		label: 'Условие',
-		field: 'condition',
-		align: 'left',
-	},
-	{
-		name: 'action',
-		label: '',
-		field: 'action',
-		align: 'right',
-	},
-]
-const rows = ref<any[]>([])
-const selectedId = ref()
-
-interface RowMain {
-	id: string
-	card: string
-	part: any
-	psev: string
+const toggle = (stat: any) => {
+	stat.open = !stat.open
 }
 
-const rows0 = ref<RowMain[]>([])
+const treeData = ref(part.partitions)
+// const treeData = ref([])
+const tree = ref()
 
-const remove = (row: any) => {
-	const ind = rows0.value.findIndex((el) => el.id == row.id)
-	if (ind > -1) {
-		rows0.value.splice(ind, 1)
-	}
+const drop = () => {
+	let node = part.externalDragPayload
+	if (node.parents) {
+		return {
+			id: Date.now().toString(),
+			text: node.parents[0],
+			hidden: false,
+			selected: false,
+			children: [
+				{
+					id: node.id,
+					text: node.text,
+					hidden: false,
+					selected: false,
+					children: [],
+				},
+			],
+		}
+	} else
+		return {
+			id: node.id,
+			text: node.text,
+			hidden: false,
+			selected: false,
+			children: [],
+		}
+	// let tmp = {
+	// 	id: Date.now().toString(),
+	// 	text: tmptext,
+	// 	selected: false,
+	// 	children: [
+	// 		{
+	// 			id: node.id,
+	// 			text: node.text,
+	// 			hidden: false,
+	// 			selected: false,
+	// 			children: [],
+	// 		},
+	// 	],
+	// }
+	// return tmp
 }
+const isView = computed(() => {
+	return route.fullPath.includes('views')
+})
 
-const save = (e: RowMain) => {
-	rows0.value.push({
-		id: Date.now().toString(),
-		card: e.card,
-		part: e.part,
-		psev: e.psev,
-	})
-}
-
-const goedit = () => {
-	console.log(111)
-}
-
-const dialog = ref(false)
-const asRow = (row: unknown) => row as RowMain
-
-const dialog1 = ref(false)
-const save1 = () => {
-	console.log(111)
+const isDrop = (stat: Stat) => {
+	return false
 }
 </script>
 
@@ -136,41 +101,27 @@ const save1 = () => {
 		.col-12
 			q-input(v-model="store.tempNode.text1" label="Описание" type="textarea" outlined dense autogrow)
 
-	.section Ведущие разделы карточек
-	DndTable(
-		:columns='cols0',
-		:rows='rows0',
-		@removeRow="remove",
-		v-model:selected="selectedId"
-		@edit='goedit',
-	)
-		template(#cell-part="{ row }")
-			.txt
-				template(v-for="item in asRow(row).part.parents" :key="item")
-					div {{ item }}
-					.q-mx-sm >
-				div {{ asRow(row).part.text }}
-
-	q-btn(v-if='part.partitions.length == 0' flat icon="mdi-plus" color="primary" label="Добавить ведущий раздел" @click="dialog = true") 
-
-	template(v-if='rows0.length')
-		.section Присоединённые разделы карточек
-		DndTable(
-			:columns='cols',
-			:rows='rows',
-			v-model:selected='selectedId',
-			@removeRow="remove",
-			@edit='goedit',
+	template(v-if='isView')
+		.section Разделы карточек
+		Draggable(
+			ref="tree"
+			treeLine
+			v-model="treeData"
+			:onExternalDragOver="()=> true"
+			:externalDataHandler="drop"
+			:eachDroppable="isDrop"
+			:class="{ 'is-empty': treeData.length === 0, 'is-dragover': tree?.dragOvering }"
+			class="mytree"
 		)
-
-		q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="dialog1 = true") 
-
-	DopSectionDialog(v-model='dialog1' @save='save1')
-	MainSectionDialog(v-model='dialog' @save='save')
+			template(#default="{ node, stat }")
+				.node {{ node.text }}
 
 </template>
 
 <style scoped lang="scss">
+.mytree {
+	min-height: 60px;
+}
 .ic {
 	font-size: 2.6rem;
 	color: $secondary;
@@ -197,5 +148,26 @@ const save1 = () => {
 	align-items: center;
 	flex-wrap: wrap;
 	font-size: 0.9rem;
+}
+.mytree.is-empty {
+	min-height: 58px;
+	border: 1px dashed #999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #999;
+	&:after {
+		content: 'Перетащите сюда раздел из дерева справа';
+	}
+}
+.mytree.is-dragover {
+}
+.node {
+	// min-height: 64px;
+	// width: 100%;
+}
+:deep(.drag-placeholder) {
+	// height: 58px;
+	// margin-bottom: 0.3rem;
 }
 </style>

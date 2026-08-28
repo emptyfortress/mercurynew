@@ -28,11 +28,20 @@ const props = defineProps<{
 
 const dragState = ref<'none' | 'valid' | 'invalid'>('none')
 
+// const emit = defineEmits<{
+// 	'update:rows': [rows: T[]]
+// 	'update:selected': [id: T['id'] | null]
+// 	removeRow: [row: T]
+// 	edit: [row: T]
+// 	'table-drop': []
+// }>()
+
 const emit = defineEmits<{
 	'update:rows': [rows: T[]]
 	'update:selected': [id: T['id'] | null]
 	removeRow: [row: T]
 	edit: [row: T]
+	rowClick: [row: T]
 	'table-drop': []
 }>()
 
@@ -143,8 +152,14 @@ const calcClass = (e: string) => {
 	}
 }
 
+// function selectRow(row: Row, e: MouseEvent) {
+// 	if ((e.target as HTMLElement).closest('.drag-handle, button, input, .q-checkbox')) return
+// 	emit('update:selected', props.selected === row.id ? null : (row.id as T['id']))
+// }
+
 function selectRow(row: Row, e: MouseEvent) {
 	if ((e.target as HTMLElement).closest('.drag-handle, button, input, .q-checkbox')) return
+	emit('rowClick', row as T)
 	emit('update:selected', props.selected === row.id ? null : (row.id as T['id']))
 }
 

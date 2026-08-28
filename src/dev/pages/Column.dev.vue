@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 // import Component from '@/components/condition/StartCondition.vue'
 import { reactive } from 'vue'
-import Component from '@/components/decision/CommonTab.vue'
+import Component from '@/components/view/Data.vue'
 
 const draft = reactive({
 	id: 'col-1787214856080-1',
@@ -13,8 +14,10 @@ const draft = reactive({
 	sort: false,
 	order: 'up',
 	hide: false,
-	source: 'field',
+	source: 'calc',
 })
+
+const visible = ref(true)
 </script>
 
 <template lang="pug">
@@ -29,7 +32,7 @@ q-page(padding)
 	display: flex;
 	> div {
 		margin: auto;
-		width: 1000px;
+		width: 600px;
 		justify-content: center;
 		align-items: center;
 	}

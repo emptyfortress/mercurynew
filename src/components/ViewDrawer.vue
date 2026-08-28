@@ -68,6 +68,27 @@ const sections = ref([
 	},
 ])
 
+const calcIcon = (str: any) => {
+	if (str == 'field') return 'mdi-form-textbox'
+	if (str == 'system') return 'mdi-tools'
+	if (str == 'calc') return 'mdi-calculator-variant-outline'
+}
+
+watch(
+	draft,
+	(val) => {
+		if (val.source) {
+			let tmp = {
+				name: 'test',
+				label: 'Fuck',
+				icon: calcIcon(val.source),
+			}
+			// sections.value.push(tmp)
+		}
+	},
+	{ deep: true }
+)
+
 const activeTab = ref('info')
 const scrollAreaRef = ref<QScrollArea | null>(null)
 const sectionRefs: Record<string, HTMLElement> = {}
@@ -129,15 +150,15 @@ watch(column, (next, prev) => {
 </script>
 
 <template lang="pug">
-q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered behavior="desktop")
+q-drawer(v-model='visible' side='right' :width="640" overlay persistent bordered behavior="desktop")
 	.panel(v-if="column")
 		transition(name="skeleton-fade")
 			.panel-skeleton-overlay(v-if="isSwitching" key="skeleton")
 
 		.zg
 			q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
-			.q-ml-md {{draft?.text}}
-			.q-mx-sm >
+			.q-ml-sm {{draft?.text}}
+			.q-mx-xs >
 			div {{ currentLabel }}
 
 		.vertgrid
@@ -178,7 +199,7 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 	display: grid;
 	grid-template-columns: auto 1fr;
 	grid-template-rows: 1fr;
-	column-gap: 1rem;
+	column-gap: 0.5rem;
 	height: calc(100% - 110px);
 	min-height: 0;
 }
@@ -191,14 +212,16 @@ q-drawer(v-model='visible' side='right' :width="550" overlay persistent bordered
 	font-size: 2rem;
 }
 .zg {
-	padding: 0.5rem 1rem;
-	font-size: 0.9rem;
+	padding: 0.25rem 1rem;
+	font-size: 0.7rem;
 	border-bottom: 1px solid #cfdbec;
 	display: flex;
 	align-items: center;
-	gap: 1rem;
 	color: $primary;
 	gap: 0.25rem;
+	.q-btn {
+		margin-top: -3px;
+	}
 }
 .chose {
 	cursor: pointer;

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import FieldTree2 from '@/components/decision/FieldTree2.vue'
 import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
+import CalcField from '@/components/view/CalcField.vue'
 
 interface Col {
 	id: string
@@ -125,14 +126,11 @@ transition(name="fade" mode="out-in")
 							q-item-section
 								q-item-label {{ item.label }}
 
-			q-tab-panel(name='virtual')
-				.section
-					PhVirtualReality.ic
-					span Виртуальное поле
 			q-tab-panel(name='calc')
 				.section
 					q-icon(name="mdi-calculator-variant-outline" color="white")
 					span  Вычисляемое поле
+				CalcField
 
 </template>
 

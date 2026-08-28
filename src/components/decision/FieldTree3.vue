@@ -8,35 +8,14 @@ import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
 import { usePartitionStore } from '@/stores/partition'
 
 const localSelectedIds = defineModel<Set<string>>('localSelectedIds')
-const data = defineModel<TreeElement[]>('data')
 
-// const props = defineProps({
-// 	type: {
-// 		type: String,
-// 		required: true,
-// 		default: '',
-// 	},
-// 	data: {
-// 		type: TreeElement[],
-// 		required: true,
-// 		default: []
-// 	}
-// })
+// const data = defineModel<TreeElement[]>('data')
 
-// interface Props {
-// 	id: string
-// 	label: string
-// }
-const props = defineProps<{
-	// treeData: TreeElement[]
-	type: string
-}>()
+// const props = defineProps<{
+// 	type: string
+// }>()
 
 const part = usePartitionStore()
-
-// const data = computed(() => {
-// 	return filterByCommon(fields, true)
-// })
 
 const tree = ref()
 const query = ref('')
@@ -57,26 +36,8 @@ watch(query, () => {
 	}
 })
 
-// const filterBySelectedIds = (
-// 	nodes: TreeElement[],
-// 	selectedIds: Set<string>,
-// 	topIdMap: Record<string, string>
-// ) => {
-// 	const selectedTopIds = new Set<string>()
-//
-// 	selectedIds.forEach((id) => {
-// 		const topId = topIdMap[id]
-//
-// 		if (topId) {
-// 			selectedTopIds.add(topId)
-// 		}
-// 	})
-//
-// 	return nodes.filter((node) => selectedTopIds.has(node.id))
-// }
-
 const myfields = computed(() => {
-	return filterByLabel(data.value, props.type)
+	return filterByCommon(fields, true)
 })
 
 const isTable = (node: any) => {
@@ -97,6 +58,17 @@ function toggleSelected(node: any) {
 		localSelectedIds.value?.add(node.id)
 	}
 }
+
+const onExternalDragStart = (e: any) => {
+	part.setExternalDragPayload(e)
+}
+const onExternalDragEnd = () => {
+	// part.clearExternalDragPayload()
+}
+
+// const onDrop = () => {
+// 	part.clearExternalDragPayload()
+// }
 </script>
 
 <template lang="pug">
@@ -114,16 +86,14 @@ div
 		v-model:expanded="expanded"
 		icon="mdi-chevron-right" )
 		template(v-slot:default-header="prop")
-			q-icon(v-if="!prop.node.drag" name="mdi-folder-outline")
+			q-icon(v-if="!prop.node.drag && prop.node.id.includes('root')" name="mdi-folder-outline")
 			q-icon(v-if="isTable(prop.node)" name="mdi-format-list-group" color="primary")
-			.node()
-				q-checkbox(
-					v-if='!prop.node.drag && !prop.node.id.includes("root")'
-					:model-value='localSelectedIds?.has(prop.node.id)'
-					@update:model-value="toggleSelected(prop.node)"
-					dense
-					size='sm'
-				)
+			.node(
+				:draggable="!prop.node.drag",
+				@dragstart="onExternalDragStart(prop.node)",
+				@dragend="onExternalDragEnd",
+				:class="{grey : prop.node.drag, virtual: isVirtual(prop.node)}"
+			)
 				WordHighlighter(:query="query" ) {{ prop.node.text }}
 				template(v-if='isVirtual(prop.node)')
 					PhVirtualReality.q-ml-sm
@@ -144,6 +114,7 @@ div
 	cursor: pointer;
 	font-size: 0.9rem;
 	background: transparent;
+	color: $primary;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -154,9 +125,8 @@ div
 	&:hover {
 		background: #ecf0f4;
 	}
-	.q-checkbox {
-		margin-top: -2px;
-		margin-right: 0.5rem;
+	&.grey {
+		color: $grey-7;
 	}
 }
 :deep(.q-tree__arrow) {

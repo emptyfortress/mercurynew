@@ -1,0 +1,227 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import type {
+	ConditionsSetNode as ConditionsNodeType,
+	ConditionRow,
+	ConditionLine,
+} from './nodesTypes'
+import EditConditionsNodeDialog from './EditConditionsNodeDialog.vue'
+import type { Column } from '@/components/common/DndTable.vue'
+import DndTable from '@/components/common/DndTable.vue'
+import { defaultResultFields } from '@/components/view/nodesTypes'
+
+interface Props {
+	node: ConditionsNodeType
+	stat: Stat
+}
+
+const props = defineProps<Props>()
+
+const collapse = (stat: any) => {
+	stat.open = false
+}
+
+const emit = defineEmits(['remove'])
+
+const remove = () => {
+	emit('remove', props.stat)
+}
+
+// Ensure conditions array exists
+if (!props.node.conditions) {
+	props.node.conditions = [] as ConditionRow[]
+}
+
+const genId = () => crypto.randomUUID()
+
+const editDialogOpen = ref(false)
+const editingRow = ref<ConditionRow | null>(null)
+
+const showEditDialog = (row: ConditionRow) => {
+	editingRow.value = row
+	editDialogOpen.value = true
+}
+
+const addRow = () => {
+	const row: ConditionRow = { id: genId(), resultField: null, lines: [] }
+	props.node.conditions.push(row)
+	showEditDialog(row)
+}
+
+const removeRow = (id: string) => {
+	const idx = props.node.conditions.findIndex((r: ConditionRow) => r.id === id)
+	if (idx !== -1) props.node.conditions.splice(idx, 1)
+}
+
+const onEditConfirm = (payload: { resultField: string | null; lines: ConditionLine[] }) => {
+	if (editingRow.value) {
+		editingRow.value.resultField = payload.resultField
+		editingRow.value.lines = payload.lines
+	}
+}
+
+const summarizeRow = (row: ConditionRow) => {
+	if (!row.lines.length) return 'Не заполнено'
+	return row.lines
+		.map((line) =>
+			`${line.section || '—'} / ${line.field || '—'} ${line.operator || ''} ${line.value ?? ''}`.trim()
+		)
+		.join(' И ')
+}
+
+const conditionColumns: Column[] = [
+	{ field: 'index', label: '', align: 'left' },
+	{ field: 'condition', label: 'Условие', align: 'left' },
+	{ field: 'result', label: 'Результат', align: 'left' },
+]
+
+function onReorder(rows: ConditionRow[]) {
+	// сюда — то, как у вас сейчас применяется новый порядок к node.conditions
+	// например: emit('update:conditions', rows)
+	// или, если node — реактивный объект: props.node.conditions = rows
+}
+
+function resultFieldLabel(value: string | null): string {
+	if (!value) return '—'
+	return defaultResultFields.find((opt) => opt.value === value)?.label ?? value
+}
+function asCondition(row: any): ConditionRow {
+	return row as ConditionRow
+}
+</script>
+
+<template lang="pug">
+q-expansion-item.my-expansion(v-model="props.stat.open")
+	template(v-slot:header)
+		.drag-handle(@mousedown="collapse(props.stat)" @touchstart="collapse(props.stat)") ⠿
+
+		q-item-section
+			.project
+				| Набор условий:
+				span.editable(@click.stop) {{ props.node.name }}
+					q-popup-edit(v-model="props.node.name" v-slot="scope")
+						q-input(
+							v-model="scope.value"
+							dense
+							autofocus
+							@keyup.enter="scope.set"
+						)
+		q-btn.close(flat round dense color="primary" icon='mdi-dots-vertical' size="sm" @click.stop) 
+			q-menu
+				q-list
+					q-item(clickable)
+						q-item-section Копировать
+					q-item.text-negative(clickable @click="remove" )
+						q-item-section Удалить
+
+	.inside
+		.inf Условия объединены по ИЛИ, вычисляются сверху вниз, срабатывает первое валидное.
+
+		DndTable(
+			v-if="props.node.conditions.length"
+			:columns="conditionColumns"
+			:rows="props.node.conditions"
+			simple
+			@update:rows="onReorder"
+			@row-click="showEditDialog"
+			@remove-row="row => removeRow(row.id)"
+		)
+			template(#cell-index="{ index }") {{ index + 1 }}.
+			template(#cell-condition="{ row }") {{ summarizeRow(asCondition(row)) }}
+			template(#cell-result="{ row }") {{ resultFieldLabel(asCondition(row).resultField) }}
+
+		.text-center.q-mt-md
+			q-btn(flat color="primary" icon="mdi-plus" label="Добавить условие" size="sm" @click="addRow")
+
+		EditConditionsNodeDialog(
+			v-model="editDialogOpen"
+			:row="editingRow"
+			@confirm="onEditConfirm"
+		)
+
+</template>
+
+<style scoped lang="scss">
+.inf {
+	color: $grey-7;
+	font-size: 0.75rem;
+}
+.project {
+	color: #63808c;
+	span {
+		font-weight: 600;
+		margin-left: 0.5rem;
+		color: $primary;
+	}
+}
+.my-expansion :deep(.q-expansion-item__container > .q-item .q-focus-helper) {
+	display: none;
+}
+.my-expansion :deep(.q-expansion-item__container > .q-item:hover) {
+	border-radius: 0.25rem;
+	box-shadow: var(--shad0);
+}
+:deep(.q-expansion-item--expanded) {
+	background: white;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+	border: 1px solid $secondary;
+}
+
+.inside {
+	padding: 1rem;
+	padding-top: 0;
+}
+.drag-handle {
+	font-size: 1.3rem;
+	cursor: grab;
+	user-select: none;
+	margin-right: 1rem;
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+span.editable {
+	color: $primary;
+	border-bottom: 1px dotted $primary;
+	cursor: pointer;
+}
+.close {
+	align-self: center;
+}
+:deep(.q-item__section--side) {
+	padding-left: 0;
+}
+.options-table {
+	width: 100%;
+	border-collapse: collapse;
+
+	th {
+		text-align: left;
+		font-weight: 500;
+		color: #63808c;
+		padding: 0.5rem;
+		border-bottom: 1px solid #e0e0e0;
+		font-size: 0.8rem;
+	}
+
+	td {
+		padding: 0.25rem 0.25rem;
+		vertical-align: middle;
+
+		&.actions {
+			white-space: nowrap;
+			width: 1%;
+		}
+
+		&.summary {
+			cursor: pointer;
+			color: $blue-grey-8;
+
+			&:hover {
+				color: $primary;
+			}
+		}
+	}
+}
+</style>

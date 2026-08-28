@@ -3354,7 +3354,7 @@ const fields = [
 		],
 	},
 	{
-		id: 'root2',
+		id: 'group',
 		text: 'Группа заданий',
 		hidden: false,
 		type: 1,
@@ -3958,7 +3958,7 @@ const fields = [
 		],
 	},
 	{
-		id: 'root3',
+		id: 'goal',
 		text: 'Квартальная цель',
 		hidden: false,
 		type: 1,
