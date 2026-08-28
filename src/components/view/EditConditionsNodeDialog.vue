@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { ConditionRow, ConditionLine, SelectOption } from './nodesTypes'
+import { defaultResultFields } from './nodesTypes'
 
 const modelValue = defineModel<boolean>()
 
@@ -40,10 +41,6 @@ const defaultFieldsBySection: Record<string, SelectOption[]> = {
 		{ label: 'Текст отчёта', value: 'report_text' },
 	],
 }
-
-const defaultResultFields: SelectOption[] = [
-	{ label: 'Значение = Комментарии_1 / Текст отчёта', value: 'comments_1_report_text' },
-]
 
 const sections = computed(() => props.sections ?? defaultSections)
 const fieldsBySection = computed(() => props.fieldsBySection ?? defaultFieldsBySection)
@@ -113,13 +110,19 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 
 		q-card-section.row.items-center.justify-between.q-py-md
-			.text-h6 Условие
+			div
+				.text-h6 Условие
+				.text-caption Условия объединяются по И
+
 			.result-block
 				.text-caption.text-grey-6 Результат:
-				q-input(
+				q-select(
 					v-model="resultField"
 					dense
 					outlined
+					:options="defaultResultFields"
+					mapOptions
+					emitValue
 					style="min-width: 260px;"
 				)
 

@@ -6,6 +6,9 @@ import type {
 	ConditionLine,
 } from './nodesTypes'
 import EditConditionsNodeDialog from './EditConditionsNodeDialog.vue'
+import type { Column } from '@/components/common/DndTable.vue'
+import DndTable from '@/components/common/DndTable.vue'
+import { defaultResultFields } from '@/components/view/nodesTypes'
 
 interface Props {
 	node: ConditionsNodeType
@@ -65,6 +68,26 @@ const summarizeRow = (row: ConditionRow) => {
 		)
 		.join(' И ')
 }
+
+const conditionColumns: Column[] = [
+	{ field: 'index', label: '', align: 'left' },
+	{ field: 'condition', label: 'Условие', align: 'left' },
+	{ field: 'result', label: 'Результат', align: 'left' },
+]
+
+function onReorder(rows: ConditionRow[]) {
+	// сюда — то, как у вас сейчас применяется новый порядок к node.conditions
+	// например: emit('update:conditions', rows)
+	// или, если node — реактивный объект: props.node.conditions = rows
+}
+
+function resultFieldLabel(value: string | null): string {
+	if (!value) return '—'
+	return defaultResultFields.find((opt) => opt.value === value)?.label ?? value
+}
+function asCondition(row: any): ConditionRow {
+	return row as ConditionRow
+}
 </script>
 
 <template lang="pug">
@@ -94,23 +117,18 @@ q-expansion-item.my-expansion(v-model="props.stat.open")
 	.inside
 		.inf Условия объединены по ИЛИ, вычисляются сверху вниз, срабатывает первое валидное.
 
-		table.options-table(v-if="props.node.conditions.length")
-			thead
-				tr
-					th
-					th Условие
-					th Результат
-					th
-
-			tbody
-				tr(v-for="(row, index) in props.node.conditions" :key="row.id")
-					td {{ index + 1 }}.
-					td.summary(@click="showEditDialog(row)") {{ summarizeRow(row) }}
-					td {{ row.resultField ?? '—' }}
-					td.actions
-						q-btn(flat round dense icon="mdi-pencil-outline" color="primary" size="sm" @click="showEditDialog(row)")
-						q-btn(flat round dense icon="mdi-delete-outline" color="negative" size="sm" @click="removeRow(row.id)")
-							q-tooltip Удалить
+		DndTable(
+			v-if="props.node.conditions.length"
+			:columns="conditionColumns"
+			:rows="props.node.conditions"
+			simple
+			@update:rows="onReorder"
+			@row-click="showEditDialog"
+			@remove-row="row => removeRow(row.id)"
+		)
+			template(#cell-index="{ index }") {{ index + 1 }}.
+			template(#cell-condition="{ row }") {{ summarizeRow(asCondition(row)) }}
+			template(#cell-result="{ row }") {{ resultFieldLabel(asCondition(row).resultField) }}
 
 		.text-center.q-mt-md
 			q-btn(flat color="primary" icon="mdi-plus" label="Добавить условие" size="sm" @click="addRow")

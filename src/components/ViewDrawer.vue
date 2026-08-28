@@ -150,7 +150,7 @@ watch(column, (next, prev) => {
 </script>
 
 <template lang="pug">
-q-drawer(v-model='visible' side='right' :width="600" overlay persistent bordered behavior="desktop")
+q-drawer(v-model='visible' side='right' :width="640" overlay persistent bordered behavior="desktop")
 	.panel(v-if="column")
 		transition(name="skeleton-fade")
 			.panel-skeleton-overlay(v-if="isSwitching" key="skeleton")

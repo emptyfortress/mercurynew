@@ -62,10 +62,16 @@ export interface ConditionRow {
 	id: string
 	resultField: string | null
 	lines: ConditionLine[]
+	[key: string]: unknown
 }
+
 export interface ConditionsSetNode extends BaseNode {
 	type: 'conditions'
 	conditions: ConditionRow[]
 }
 
 export type AnyNode = SimpleElement | GroupNode | OptionsSetNode | ConditionsSetNode
+
+export const defaultResultFields: SelectOption[] = [
+	{ label: 'Значение = Комментарии_1 / Текст отчёта', value: 'comments_1_report_text' },
+]
