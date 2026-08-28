@@ -116,6 +116,8 @@ const isDrop = (stat: Stat) => {
 			template(#default="{ node, stat }")
 				.node {{ node.text }}
 
+	.text-bold.text-center.q-mt-lg Страница не доделана.
+
 </template>
 
 <style scoped lang="scss">
