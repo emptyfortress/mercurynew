@@ -116,54 +116,6 @@ const isDrop = (stat: Stat) => {
 			template(#default="{ node, stat }")
 				.node {{ node.text }}
 
-	// BaseTree(v-model="treeData"
-		ref="tree"
-		propKey="id"
-		treeLine
-		:treeLineOffset="18"
-		:indent="30"
-		:defaultOpen="false"
-		)
-		template(#default="{ node, stat }")
-			.node(
-				@click="toggle(stat)",
-				:draggable="drag(node)"
-				:class="{ 'first-folder-root': node.id === 'root' }"
-			)
-				q-icon(name="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }").trig
-				q-icon(name="mdi-folder-outline" v-if="stat.data.type === 0").fold
-				q-icon(v-if="node.virtual" name="mdi-folder-search-outline").fold
-				q-icon(v-if="node.icon" :name="node.icon").fold
-				span {{ node.text }}
-
-	// DndTable(
-	// 	:columns='cols0',
-	// 	:rows='rows0',
-	// 	@removeRow="remove",
-	// 	v-model:selected="selectedId"
-	// 	@edit='goedit',
-	// )
-	// 	template(#cell-part="{ row }")
-	// 		.txt
-	// 			template(v-for="item in asRow(row).part.parents" :key="item")
-	// 				div {{ item }}
-	// 				.q-mx-sm >
-	// 			div {{ asRow(row).part.text }}
-	//
-	// q-btn(v-if='part.partitions.length == 0' flat icon="mdi-plus" color="primary" label="Добавить ведущий раздел" @click="dialog = true") 
-
-	// template(v-if='rows0.length')
-	// .section Присоединённые разделы карточек
-	// DndTable(
-	// 	:columns='cols',
-	// 	:rows='rows',
-	// 	v-model:selected='selectedId',
-	// 	@removeRow="remove",
-	// 	@edit='goedit',
-	// )
-	//
-	// q-btn(flat icon="mdi-plus" color="primary" label="Добавить присоединенный раздел" @click="dialog1 = true") 
-
 </template>
 
 <style scoped lang="scss">
