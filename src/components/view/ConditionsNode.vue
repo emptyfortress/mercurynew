@@ -76,6 +76,7 @@ const conditionColumns: Column[] = [
 ]
 
 function onReorder(rows: ConditionRow[]) {
+	props.node.conditions = rows
 	// сюда — то, как у вас сейчас применяется новый порядок к node.conditions
 	// например: emit('update:conditions', rows)
 	// или, если node — реактивный объект: props.node.conditions = rows

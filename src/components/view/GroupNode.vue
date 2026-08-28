@@ -80,7 +80,8 @@ const remove = () => {
 			.first
 				.col
 					.text-bold.q-mb-xs Операция
-					q-select(v-model="props.node.function" dense outlined :options="operationOptions")
+					q-select(v-model="props.node.function" dense optionsDense outlined :options="operationOptions")
+								
 				.col
 					.text-bold.q-mb-xs Описание
 					.descr {{ operationDescription }}
