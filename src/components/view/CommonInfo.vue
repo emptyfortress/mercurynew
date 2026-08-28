@@ -40,7 +40,7 @@ const html = ref(false)
 	label Название:
 	q-input(v-model="draft.text" dense outlined)
 	label Тип данных:
-	q-select(v-model="draft.kind" dense outlined :options="options" map-options emit-value)
+	q-select(v-model="draft.kind" dense outlined options-dense :options="options" map-options emit-value)
 	label
 	q-checkbox(v-model='draft.hide' label='Скрыть колонку' dense)
 	template(v-if='draft.kind == 0 || draft.kind == 1' )

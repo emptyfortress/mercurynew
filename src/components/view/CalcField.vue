@@ -126,7 +126,7 @@ const removeNode = (stat: any) => {
 <template lang="pug">
 .mygrid
 	label Тип результата:
-	q-select(v-model="result" dense outlined :options="options")
+	q-select(v-model="result" dense optionsDense outlined :options="options")
 	div
 .text-bold.text-center Элементы вычисляемого поля
 
