@@ -19,10 +19,36 @@ interface Col {
 
 const draft = defineModel<Col>('draft')
 
+// const sel = (n: string) => {
+// 	if (!!draft.value) {
+// 		draft.value.source = n
+// 	}
+// }
+
+const showUnsavedDialog = ref(false)
+const pendingSource = ref<string | null>(null)
+
 const sel = (n: string) => {
-	if (!!draft.value) {
-		draft.value.source = n
+	if (!draft.value || draft.value.source === n) {
+		return
 	}
+
+	pendingSource.value = n
+	showUnsavedDialog.value = true
+}
+
+const changeSource = () => {
+	if (draft.value && pendingSource.value) {
+		draft.value.source = pendingSource.value
+	}
+
+	pendingSource.value = null
+	showUnsavedDialog.value = false
+}
+
+const cancelSourceChange = () => {
+	pendingSource.value = null
+	showUnsavedDialog.value = false
 }
 
 const html = ref(false)
@@ -68,12 +94,30 @@ const addSys = (item: any) => {
 <template lang="pug">
 label.q-mt-md.q-mb-sm Источник данных:
 .grid5(v-if='!!draft')
-	.chose(@click="sel('field')" :class="{selected: draft.source == 'field'}")
-		q-radio(v-model="draft.source" val="field" label="Поле раздела" dense)
-	.chose(@click="sel('system')" :class="{selected: draft.source == 'system'}")
-		q-radio(v-model="draft.source" val="system" label="Системное поле" dense)
-	.chose(@click="sel('calc')" :class="{selected: draft.source == 'calc'}")
-		q-radio(v-model="draft.source" val="calc" label="Вычисляемое поле" dense)
+	.chose(:class="{selected: draft.source == 'field'}")
+		q-radio(
+			:model-value="draft.source"
+			val="field"
+			label="Поле раздела"
+			dense
+			@update:model-value="sel"
+		)
+	.chose(:class="{selected: draft.source == 'system'}")
+		q-radio(
+			:model-value="draft.source"
+			val="system"
+			label="Системное поле"
+			dense
+			@update:model-value="sel"
+		)
+	.chose(:class="{selected: draft.source == 'calc'}")
+		q-radio(
+			:model-value="draft.source"
+			val="calc"
+			label="Вычисляемое поле"
+			dense
+			@update:model-value="sel"
+		)
 
 transition(name="fade" mode="out-in")
 	template(v-if='draft')
@@ -132,6 +176,21 @@ transition(name="fade" mode="out-in")
 					span  Вычисляемое поле
 				CalcField
 
+q-dialog(v-model="showUnsavedDialog")
+	q-card(style="min-width: 600px;")
+		q-btn.close(round color="negative" icon="mdi-close" @click="cancelSourceChange")
+		q-card-section
+			.text-h6
+				q-icon(name="mdi-alert" color="warning" size="md")
+				span.q-ml-md Данные не сохранены
+
+		.q-mx-md
+			div При переключении источника данных текущие изменения могут быть потеряны.
+			div.q-mt-md Вы действительно хотите продолжить?
+
+		q-card-actions.q-mx-sm.q-mt-xl(align="right")
+			q-btn(flat color="primary" label="Отмена" @click="cancelSourceChange")
+			q-btn(unelevated color="primary" label="Продолжить" @click="changeSource")
 </template>
 
 <style scoped lang="scss">
