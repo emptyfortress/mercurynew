@@ -286,6 +286,21 @@ const goto = (id: string) => {
 			q-checkbox(v-model='check' label='Усовершенствованный маршрут' dense)
 
 	fieldset
+		legend Настройка семантики завершения
+		.grid4
+			label Отрицательное завершение:
+			q-input(v-model="good" dense outlined hideBottomSpace)
+				template(v-slot:append)
+					q-icon(name="mdi-dots-horizontal" color="secondary")
+					q-icon(name="mdi-close" color="secondary" size="xs")
+			div 
+			label Положительное завершение:
+			q-input(v-model="good" dense outlined)
+				template(v-slot:append)
+					q-icon(name="mdi-dots-horizontal" color="secondary")
+					q-icon(name="mdi-close" color="secondary" size="xs")
+
+	fieldset
 		legend Карта этапов
 		.info
 			q-icon(name="mdi-information" color="primary" size="sm")
@@ -315,20 +330,6 @@ const goto = (id: string) => {
 
 
 
-	fieldset
-		legend Настройка семантики завершения
-		.grid4
-			label Отрицательное завершение:
-			q-input(v-model="good" dense outlined hideBottomSpace)
-				template(v-slot:append)
-					q-icon(name="mdi-dots-horizontal" color="secondary")
-					q-icon(name="mdi-close" color="secondary" size="xs")
-			div 
-			label Положительное завершение:
-			q-input(v-model="good" dense outlined)
-				template(v-slot:append)
-					q-icon(name="mdi-dots-horizontal" color="secondary")
-					q-icon(name="mdi-close" color="secondary" size="xs")
 
 	fieldset
 		legend Настройка итоговых состояних документов
