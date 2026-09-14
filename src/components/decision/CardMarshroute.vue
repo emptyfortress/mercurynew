@@ -293,6 +293,7 @@ const goto = (id: string) => {
 		DndTable(
 			:columns='cols',
 			:rows='etapsRows',
+			mode='route'
 			v-model:selected='selectedId',
 			v-model:drag-over='isOverTable',
 			@removeRow="remove",

@@ -24,6 +24,7 @@ const props = defineProps<{
 	disableDragHighlight?: boolean
 	readonly?: boolean
 	simple?: boolean
+	mode?: string
 }>()
 
 const dragState = ref<'none' | 'valid' | 'invalid'>('none')
@@ -207,7 +208,10 @@ table.dnd-table
 								q-item.pink(clickable @click.stop="remove(row)")
 									q-item-section Убрать
 		tr(v-if='!props.rows.length')
-			td.empty(:colspan='props.columns.length + 2') Нет данных.
+			td.empty(:colspan='props.columns.length + 2')
+				span(v-if='props.mode == "sogl"') Чтобы добавить маршрут в согласование  - перетащите его в таблицу из дерева слева.
+				span(v-if='props.mode == "route"') Чтобы добавить этап - перетащите его в таблицу из дерева слева.
+				span(v-else) Нет данных.
 
 </template>
 

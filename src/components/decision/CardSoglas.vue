@@ -232,7 +232,7 @@ watch(name, (val) => {
 			q-input(v-model="name" label="Название" dense outlined )
 			.q-gutter-y-sm
 				q-checkbox(v-model='start' label='Запускать согласование без показа карточки' dense)
-				q-checkbox(v-model='files' label='Запускать согласование без показа карточки' dense)
+				q-checkbox(v-model='files' label='Разрешать запуск согласованя без файлов' dense)
 
 	fieldset
 		legend Маршруты согласования
@@ -242,6 +242,7 @@ watch(name, (val) => {
 		DndTable(
 			:columns='cols',
 			:rows='rows',
+			mode='sogl'
 			v-model:selected='selectedId',
 			v-model:drag-over='isOverTable',
 			@removeRow="remove",
