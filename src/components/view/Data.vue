@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import FieldTree2 from '@/components/decision/FieldTree2.vue'
-import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
 import CalcField from '@/components/view/CalcField.vue'
 
 interface Col {
@@ -18,12 +17,6 @@ interface Col {
 }
 
 const draft = defineModel<Col>('draft')
-
-// const sel = (n: string) => {
-// 	if (!!draft.value) {
-// 		draft.value.source = n
-// 	}
-// }
 
 const showUnsavedDialog = ref(false)
 const pendingSource = ref<string | null>(null)
@@ -200,7 +193,6 @@ q-dialog(v-model="showUnsavedDialog")
 .tree {
 	background: var(--bgLight);
 	width: 100%;
-	// min-height: 500px;
 	padding: 0.5rem;
 	border-radius: 0.5rem;
 	border: var(--border);
