@@ -35,7 +35,6 @@ const toggle = (stat: any) => {
 }
 
 const treeData = ref(part.partitions)
-// const treeData = ref([])
 const tree = ref()
 
 const drop = () => {
@@ -64,21 +63,6 @@ const drop = () => {
 			selected: false,
 			children: [],
 		}
-	// let tmp = {
-	// 	id: Date.now().toString(),
-	// 	text: tmptext,
-	// 	selected: false,
-	// 	children: [
-	// 		{
-	// 			id: node.id,
-	// 			text: node.text,
-	// 			hidden: false,
-	// 			selected: false,
-	// 			children: [],
-	// 		},
-	// 	],
-	// }
-	// return tmp
 }
 const isView = computed(() => {
 	return route.fullPath.includes('views')
@@ -86,6 +70,10 @@ const isView = computed(() => {
 
 const isDrop = (stat: Stat) => {
 	return false
+}
+
+const clear = (stat: Stat) => {
+	tree.value.remove(stat)
 }
 </script>
 
@@ -114,7 +102,16 @@ const isDrop = (stat: Stat) => {
 			class="mytree"
 		)
 			template(#default="{ node, stat }")
-				.node {{ node.text }}
+				.node
+					.drag-handle ⠿
+					div {{ node.text }}
+					q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 
+						q-menu
+							q-list
+								q-item.pink(clickable @click="clear(stat)" v-close-popup)
+									q-item-section(side)
+										q-icon(name="mdi-delete-outline" color="pink-9")
+									q-item-section Удалить
 
 	.text-bold.text-center.q-mt-lg Страница не доделана.
 
@@ -134,7 +131,7 @@ const isDrop = (stat: Stat) => {
 	background: $secondary;
 	color: white;
 	padding-left: 0.5rem;
-	// margin-bottom: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 .mai {
 	display: flex;
@@ -165,11 +162,38 @@ const isDrop = (stat: Stat) => {
 .mytree.is-dragover {
 }
 .node {
-	// min-height: 64px;
-	// width: 100%;
+	// min-height: 42px;
+	padding: 0.5rem 1rem;
+	background: var(--bgLight);
+	border-radius: 0.5rem;
+	border: 1px solid var(--my-border-color);
+	margin-top: -1px;
+	position: relative;
+	display: grid;
+	grid-template-columns: auto 1fr 32px;
+	gap: 2rem;
+	align-items: center;
+	.close {
+		visibility: hidden;
+	}
+	&:hover {
+		.close {
+			visibility: visible;
+		}
+	}
 }
 :deep(.drag-placeholder) {
-	// height: 58px;
+	height: 38px;
 	// margin-bottom: 0.3rem;
+}
+.drag-handle {
+	font-size: 1.3rem;
+	cursor: grab;
+	user-select: none;
+	margin-right: 1rem;
+
+	&:active {
+		cursor: grabbing;
+	}
 }
 </style>
