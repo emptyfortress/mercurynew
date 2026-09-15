@@ -25,9 +25,13 @@ const sel = (n: string) => {
 	if (!draft.value || draft.value.source === n) {
 		return
 	}
-
-	pendingSource.value = n
-	showUnsavedDialog.value = true
+	if (draft.value && draft.value.source == undefined) {
+		pendingSource.value = n
+		changeSource()
+	} else {
+		pendingSource.value = n
+		showUnsavedDialog.value = true
+	}
 }
 
 const changeSource = () => {
