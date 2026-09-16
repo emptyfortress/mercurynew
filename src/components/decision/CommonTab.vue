@@ -84,15 +84,17 @@ const clear = (stat: Stat) => {
 
 const drawer = ref(false)
 const currentPartition = ref<any>(null)
+const drawerMode = ref<'add' | 'edit'>('edit')
 
-const open = (row: any) => {
-	drawer.value = true
+const open = (row: any, mode: 'add' | 'edit') => {
 	currentPartition.value = row
+	drawerMode.value = mode
+	drawer.value = true
 }
 
 const add = (nodes: any[]) => {
 	if (!nodes?.length) return
-	const existingNode = treeData.value.find((n: any) => n.id === currentPartition.value?.id)
+	const existingNode = currentPartition.value
 	if (!existingNode) return
 	const existingStat = tree.value.getStat(existingNode)
 	if (!existingStat) return
@@ -112,6 +114,17 @@ const add = (nodes: any[]) => {
 			},
 			existingStat
 		)
+	}
+}
+
+const remove = (ids: string[]) => {
+	const existingNode = currentPartition.value
+	if (!existingNode) return
+	for (const id of ids) {
+		const childNode = existingNode.children.find((c: any) => c.id === id)
+		if (!childNode) continue
+		const stat = tree.value.getStat(childNode)
+		if (stat) tree.value.remove(stat)
 	}
 }
 </script>
@@ -143,8 +156,9 @@ const add = (nodes: any[]) => {
 		)
 			template(#default="{ node, stat }")
 				.node
-					.drag-handle ⠿
-					q-btn.tool(flat round icon="mdi-cog" color="secondary" size='sm' @click="open(node)") 
+					q-btn.trig(flat round dense icon="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }" size="sm")
+					div(v-else)
+					q-btn.tool(flat round icon="mdi-pencil-outline" color="secondary" size='sm' @click="open(node, 'edit')") 
 					div(v-if='node.psevdo') {{ node.psevdo }}
 
 					.txt(v-else)
@@ -153,18 +167,20 @@ const add = (nodes: any[]) => {
 							.q-mx-sm >
 						div {{ node.text }}
 
-					q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 
-						q-menu
-							q-list
-								q-item.pink(clickable @click="clear(stat)" v-close-popup)
-									q-item-section(side)
-										q-icon(name="mdi-delete-outline" color="pink-9")
-									q-item-section Удалить
+					.node-actions
+						q-btn(flat round icon="mdi-plus" color="secondary" size='sm' @click="open(node, 'add')")
+						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 
+							q-menu
+								q-list
+									q-item.pink(clickable @click="clear(stat)" v-close-popup)
+										q-item-section(side)
+											q-icon(name="mdi-delete-outline" color="pink-9")
+										q-item-section Удалить
 
 	.text-bold.text-center.q-mt-lg Страница не доделана.
 
 Teleport(to='body')
-	ViewDrawer1(v-model:visible="drawer" v-model:partition="currentPartition" @add="add")
+	ViewDrawer1(v-model:visible="drawer" v-model:partition="currentPartition" :mode="drawerMode" @add="add" @remove="remove")
 </template>
 
 <style scoped lang="scss">
@@ -215,7 +231,7 @@ Teleport(to='body')
 	margin-top: -1px;
 	position: relative;
 	display: grid;
-	grid-template-columns: 16px auto 1fr 32px;
+	grid-template-columns: 16px auto minmax(0, 1fr) auto;
 	gap: 1rem;
 	align-items: center;
 	.close {
@@ -226,6 +242,11 @@ Teleport(to='body')
 			visibility: visible;
 		}
 	}
+}
+.node-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.25rem;
 }
 :deep(.drag-placeholder) {
 	height: 38px;
@@ -248,5 +269,14 @@ Teleport(to='body')
 }
 :deep(.tree-hline) {
 	width: 22px;
+}
+.trig {
+	font-size: 1.3rem;
+	transition: 0.2s ease all;
+	margin-right: 0.25rem;
+
+	&.closed {
+		transform: rotate(-90deg);
+	}
 }
 </style>

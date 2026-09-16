@@ -10,6 +10,15 @@ import { usePartitionStore } from '@/stores/partition'
 const part = usePartitionStore()
 const clear = defineModel('clear')
 
+withDefaults(
+	defineProps<{
+		showFilter?: boolean
+	}>(),
+	{
+		showFilter: true,
+	}
+)
+
 const data = computed(() => {
 	return filterByCommon(fields, true)
 })
@@ -148,9 +157,10 @@ watch(clear, (val: any) => {
 
 <template lang="pug">
 div
-	div
+	.show(v-if="showFilter")
 		label.q-mr-md Показать:
 		q-chip(v-for="chip in chips" :key="chip.id" clickable v-model:selected="chip.selected" size="12px" @click="selChip(chip)" ) {{ chip.label }}
+
 	q-input.search(ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter" placeholder='Фильтр')
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")

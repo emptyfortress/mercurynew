@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import FieldTree2 from '@/components/decision/FieldTree2.vue'
+import { usePartitionStore } from '@/stores/partition'
 
 const visible = defineModel<boolean>('visible')
 const partition = defineModel<Par | null>('partition')
 
+defineProps<{
+	mode: 'add' | 'edit'
+}>()
+
+const part = usePartitionStore()
 const conditionDialog = ref(false)
 
 interface Par {
@@ -33,25 +39,6 @@ const draft = ref<Par>({
 	hide: false,
 	main: true,
 })
-// пересоздаём буфер при каждом открытии/смене колонки
-watch(
-	() => [visible.value, partition.value] as const,
-	([isVisible, par]) => {
-		if (isVisible && par) {
-			draft.value = { ...par }
-		}
-	},
-	{ immediate: true }
-)
-
-const emit = defineEmits(['add'])
-const save = () => {
-	if (!draft.value || !partition.value) return
-	const { children, ...rest } = draft.value
-	Object.assign(partition.value, rest) // структурные children не мутируем — этим владеет he-tree
-	visible.value = false
-	emit('add', children)
-}
 
 const isSwitching = ref(false)
 let timer: ReturnType<typeof setTimeout> | null = null
@@ -78,9 +65,54 @@ const insert = (nodes: Par[]) => {
 }
 
 const clearId = ref<null | string>(null)
-const removeField = (index: number, chip: any) => {
+
+const emit = defineEmits(['add', 'remove'])
+
+const removedIds = ref<Set<string>>(new Set())
+
+// то, что реально присоединено — берём из дерева (partition), минус то, что помечено на удаление
+const attachedSections = computed(() => {
+	if (!partition.value?.children) return []
+	return partition.value.children.filter((c: any) => !removedIds.value.has(c.id))
+})
+
+const removeAttached = (chip: any) => {
+	removedIds.value.add(chip.id) // не трогаем дерево — только помечаем, применится по кнопке
+}
+
+const removeDraftField = (index: number, chip: any) => {
 	clearId.value = chip.id
 	draft.value?.children.splice(index, 1)
+}
+
+// клонируем draft при открытии; children — чистая area для НОВЫХ добавлений, не копия старых
+watch(
+	() => [visible.value, partition.value] as const,
+	([isVisible, par]) => {
+		if (isVisible && par) {
+			draft.value = { ...par, children: [] }
+			removedIds.value = new Set()
+		}
+	},
+	{ immediate: true }
+)
+
+watch(visible, (isVisible) => {
+	if (!isVisible) {
+		showTree.value = false
+		field.value = undefined
+		clearId.value = null
+		part.selectedIds.clear()
+	}
+})
+
+const save = () => {
+	if (!draft.value || !partition.value) return
+	const { children, ...rest } = draft.value
+	Object.assign(partition.value, rest) // structural children не трогаем — этим владеет he-tree
+	visible.value = false
+	if (children.length) emit('add', children)
+	if (removedIds.value.size) emit('remove', [...removedIds.value])
 }
 </script>
 
@@ -96,7 +128,7 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 
 		q-scroll-area(ref="scrollAreaRef" style="height: 100%")
 
-			.grid2(v-if='draft')
+			.grid2(v-if="draft && mode !== 'add'")
 				label Псевдоним:
 				q-input(v-model="draft.psevdo" dense outlined)
 				label Раздел:
@@ -105,24 +137,11 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 						div {{ item }}
 						.q-mx-sm >
 					div {{ draft.text }}
+				.sec Пусто как-то. Может еще что-то сюда добавить? <br /> Список полей раздела?
 
-			template(v-if="partition.children.length")
-				.section
-					span Присоединенные разделы
+			template(v-if="mode === 'add'")
+				.text-h6.text-center.q-mb-md Присоединить раздел
 
-				.column.items-start.q-gutter-y-sm
-					.mai(v-for="(chip, index) in partition.children" :key="chip.id")
-						.txt
-							template(v-for="item in chip.parents" :key="item")
-								div {{ item }}
-								.q-mx-sm >
-							div {{ chip.text }}
-							q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeField(index, chip)" size="sm") 
-
-			q-expansion-item(v-model="showTree" switchToggleSide)
-				template(v-slot:header)
-					.header
-						q-btn(flat color="primary" label="Присоединить раздел") 
 				.section
 					span Оригинальный раздел
 				.grid2
@@ -132,7 +151,7 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 					q-select(v-model="field" dense optionsDense outlined :options="selectOptions")
 				.section
 					span Присоединяемый раздел / поле
-				.q-mx-md()
+				.q-ma-md()
 					.column.items-start.q-gutter-y-sm
 						.mai(v-for="(chip, index) in draft.children" :key="chip.id")
 							.txt
@@ -140,9 +159,9 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 									div {{ item }}
 									.q-mx-sm >
 								div {{ chip.text }}
-								q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeField(index, chip)" size="sm") 
+								q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeDraftField(index, chip)" size="sm") 
 					.tree
-						FieldTree2(@update:selected="insert" v-model:clear='clearId')
+						FieldTree2(@update:selected="insert" v-model:clear='clearId' :showFilter='false')
 
 				.section
 					span Условие
@@ -277,5 +296,10 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 	background: var(--selection);
 	padding: 0.5rem 1rem;
 	border-radius: 2rem;
+}
+.sec {
+	margin-top: 2rem;
+	color: $secondary;
+	grid-column: 1/-1;
 }
 </style>
