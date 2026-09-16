@@ -9,10 +9,6 @@ import { usePartitionStore } from '@/stores/partition'
 const part = usePartitionStore()
 const clear = defineModel('clear')
 
-const data = computed(() => {
-	return filterByCommon(fields, true)
-})
-
 const tree = ref()
 const query = ref('')
 const expanded = ref(['root'])
@@ -26,6 +22,16 @@ watch(query, () => {
 		tree.value.expandAll()
 	}
 })
+watch(query, () => {
+	if (query.value.length > 1) {
+		tree.value.expandAll()
+	}
+})
+
+const myfields = computed(() => {
+	return filterByCommon(fields, true)
+})
+
 const isTable = (node: any) => {
 	return node.kind == 18 ? true : false
 }
@@ -44,7 +50,7 @@ const topIdMap = computed(() => {
 			node.children.forEach((child: any) => walk(child, topId))
 		}
 	}
-	data.value.forEach((top: any) => walk(top, top.id))
+	myfields.value.forEach((top: any) => walk(top, top.id))
 	return map
 })
 
@@ -57,13 +63,11 @@ const nodeMap = computed(() => {
 			node.children.forEach(walk)
 		}
 	}
-	data.value.forEach(walk)
+	myfields.value.forEach(walk)
 	return map
 })
 
 function toggleSelected(node: any) {
-	if (!node.drag) return
-
 	const next = new Set<string>(part.selectedIds)
 	const nodeTop = topIdMap.value[node.id]
 
@@ -100,8 +104,8 @@ div
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")
 
-	q-tree(ref="tree"
-		:nodes="data"
+	q-tree(ref="tree",
+		:nodes="myfields"
 		dense
 		node-key="id"
 		label-key="text"
@@ -109,13 +113,15 @@ div
 		v-model:expanded="expanded"
 		icon="mdi-chevron-right" )
 		template(v-slot:default-header="prop")
-			q-icon(v-if="!prop.node.drag" name="mdi-folder-outline")
+			q-icon(v-if="!prop.node.drag && prop.node.id.includes('root')" name="mdi-folder-outline")
 			q-icon(v-if="isTable(prop.node)" name="mdi-format-list-group" color="primary")
-			.node(@click="toggleSelected(prop.node)")
-				q-checkbox(
-					v-if='prop.node.children?.length'
+			.node(
+				:class="{ virtual: isVirtual(prop.node)}"
+			)
+				q-checkbox.q-mr-sm(
+					v-if='!prop.node.drag && !prop.node.id.includes("root")'
 					:model-value='part.selectedIds.has(prop.node.id) ?? false'
-					@click.stop="toggleSelected(prop.node)"
+					@click="toggleSelected(prop.node)"
 					dense, size='sm'
 				)
 				WordHighlighter(:query="query" ) {{ prop.node.text }}
@@ -138,6 +144,7 @@ div
 	cursor: pointer;
 	font-size: 0.9rem;
 	background: transparent;
+	color: $primary;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -147,10 +154,6 @@ div
 	vertical-align: center;
 	&:hover {
 		background: #ecf0f4;
-	}
-	.q-checkbox {
-		margin-top: -2px;
-		margin-right: 0.5rem;
 	}
 }
 :deep(.q-tree__arrow) {

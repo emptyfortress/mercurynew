@@ -47,7 +47,6 @@ const drop = () => {
 	const parentGroup = node.parents ? node.parents[0] : null
 
 	const text = node.text
-	// const text = parentGroup ? `${parentGroup} > ${node.text}` : node.text
 
 	// Если в дереве уже есть узел с таким же parentGroup — удаляем его через tree.value.remove()
 	if (parentGroup) {
@@ -92,6 +91,15 @@ const open = (row: any, mode: 'add' | 'edit') => {
 	drawer.value = true
 }
 
+const toggleDrawer = (row: any, mode: 'add' | 'edit') => {
+	if (drawer.value && currentPartition.value === row && drawerMode.value === mode) {
+		drawer.value = false
+		return
+	}
+
+	open(row, mode)
+}
+
 const add = (nodes: any[]) => {
 	if (!nodes?.length) return
 	const existingNode = currentPartition.value
@@ -105,7 +113,7 @@ const add = (nodes: any[]) => {
 				id: node.id,
 				text: node.text,
 				psevdo: undefined,
-				children: node.children,
+				children: [],
 				kind: node.kind,
 				newkind: node.newkind,
 				selected: false,
@@ -158,7 +166,9 @@ const remove = (ids: string[]) => {
 				.node
 					q-btn.trig(flat round dense icon="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }" size="sm")
 					div(v-else)
-					q-btn.tool(flat round icon="mdi-pencil-outline" color="secondary" size='sm' @click="open(node, 'edit')") 
+					.node-actions
+						q-btn.tool(flat round icon="mdi-pencil-outline" color="secondary" size='sm' @click="toggleDrawer(node, 'edit')") 
+						q-btn(flat round icon="mdi-plus-circle-outline" color="secondary" size='sm' @click="toggleDrawer(node, 'add')")
 					div(v-if='node.psevdo') {{ node.psevdo }}
 
 					.txt(v-else)
@@ -168,7 +178,6 @@ const remove = (ids: string[]) => {
 						div {{ node.text }}
 
 					.node-actions
-						q-btn(flat round icon="mdi-plus" color="secondary" size='sm' @click="open(node, 'add')")
 						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 
 							q-menu
 								q-list
@@ -231,7 +240,7 @@ Teleport(to='body')
 	margin-top: -1px;
 	position: relative;
 	display: grid;
-	grid-template-columns: 16px auto minmax(0, 1fr) auto;
+	grid-template-columns: 16px auto auto minmax(0, 1fr) auto;
 	gap: 1rem;
 	align-items: center;
 	.close {
