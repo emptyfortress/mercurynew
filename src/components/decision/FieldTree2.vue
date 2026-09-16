@@ -41,7 +41,7 @@ const chips = ref([
 	},
 	{
 		id: 1,
-		label: 'Подключенные разделы',
+		label: 'Присоединенные разделы',
 		selected: false,
 	},
 ])

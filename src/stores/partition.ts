@@ -6,6 +6,7 @@ interface Part {
 	label: string
 	parentId: string
 	main: boolean
+	children: Part[]
 }
 
 export const usePartitionStore = defineStore('part', () => {

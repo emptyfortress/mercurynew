@@ -2,8 +2,9 @@
 import { ref, computed, watchEffect } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { usePartitionStore } from '@/stores/partition'
-import { Draggable, BaseTree } from '@he-tree/vue'
-import { useRouter, useRoute } from 'vue-router'
+import { Draggable } from '@he-tree/vue'
+import { useRoute } from 'vue-router'
+import ViewDrawer1 from '@/components/ViewDrawer1.vue'
 
 // const router = useRouter()
 const route = useRoute()
@@ -37,36 +38,41 @@ const toggle = (stat: any) => {
 const treeData = ref(part.partitions)
 const tree = ref()
 
-const drop = () => {
-	let node = part.externalDragPayload
-	if (node.parents) {
-		return {
-			id: Date.now().toString(),
-			text: node.parents[0],
-			hidden: false,
-			selected: false,
-			children: [
-				{
-					id: node.id,
-					text: node.text,
-					hidden: false,
-					selected: false,
-					children: [],
-				},
-			],
-		}
-	} else
-		return {
-			id: node.id,
-			text: node.text,
-			hidden: false,
-			selected: false,
-			children: [],
-		}
-}
 const isView = computed(() => {
 	return route.fullPath.includes('views')
 })
+
+const drop = () => {
+	const node = part.externalDragPayload
+	const parentGroup = node.parents ? node.parents[0] : null
+
+	const text = node.text
+	// const text = parentGroup ? `${parentGroup} > ${node.text}` : node.text
+
+	// Если в дереве уже есть узел с таким же parentGroup — удаляем его через tree.value.remove()
+	if (parentGroup) {
+		const existingNode = treeData.value.find((n: any) => n.parentGroup === parentGroup)
+		if (existingNode) {
+			const existingStat = tree.value.getStat(existingNode)
+			if (existingStat) {
+				tree.value.remove(existingStat)
+			}
+		}
+	}
+
+	return {
+		id: node.id,
+		text,
+		parentGroup,
+		parents: node.parents,
+		hidden: false,
+		selected: false,
+		children: [],
+		childs: node.children,
+		main: true,
+		psevdo: '',
+	}
+}
 
 const isDrop = (stat: Stat) => {
 	return false
@@ -74,6 +80,39 @@ const isDrop = (stat: Stat) => {
 
 const clear = (stat: Stat) => {
 	tree.value.remove(stat)
+}
+
+const drawer = ref(false)
+const currentPartition = ref<any>(null)
+
+const open = (row: any) => {
+	drawer.value = true
+	currentPartition.value = row
+}
+
+const add = (nodes: any[]) => {
+	if (!nodes?.length) return
+	const existingNode = treeData.value.find((n: any) => n.id === currentPartition.value?.id)
+	if (!existingNode) return
+	const existingStat = tree.value.getStat(existingNode)
+	if (!existingStat) return
+
+	for (const node of nodes) {
+		tree.value.add(
+			{
+				id: node.id,
+				text: node.text,
+				psevdo: undefined,
+				children: node.children,
+				kind: node.kind,
+				newkind: node.newkind,
+				selected: false,
+				hidden: false,
+				parents: node.parents,
+			},
+			existingStat
+		)
+	}
 }
 </script>
 
@@ -100,11 +139,20 @@ const clear = (stat: Stat) => {
 			:eachDroppable="isDrop"
 			:class="{ 'is-empty': treeData.length === 0, 'is-dragover': tree?.dragOvering }"
 			class="mytree"
+			:indent="30"
 		)
 			template(#default="{ node, stat }")
 				.node
 					.drag-handle ⠿
-					div {{ node.text }}
+					q-btn.tool(flat round icon="mdi-cog" color="secondary" size='sm' @click="open(node)") 
+					div(v-if='node.psevdo') {{ node.psevdo }}
+
+					.txt(v-else)
+						template(v-for="item in node.parents" :key="item")
+							div {{ item }}
+							.q-mx-sm >
+						div {{ node.text }}
+
 					q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 
 						q-menu
 							q-list
@@ -115,6 +163,8 @@ const clear = (stat: Stat) => {
 
 	.text-bold.text-center.q-mt-lg Страница не доделана.
 
+Teleport(to='body')
+	ViewDrawer1(v-model:visible="drawer" v-model:partition="currentPartition" @add="add")
 </template>
 
 <style scoped lang="scss">
@@ -135,8 +185,6 @@ const clear = (stat: Stat) => {
 }
 .mai {
 	display: flex;
-	// justify-content: start;
-	// align-items: center;
 	background: var(--selection);
 	padding: 2px 16px;
 	padding-right: 2px;
@@ -159,10 +207,7 @@ const clear = (stat: Stat) => {
 		content: 'Перетащите сюда раздел из дерева справа';
 	}
 }
-.mytree.is-dragover {
-}
 .node {
-	// min-height: 42px;
 	padding: 0.5rem 1rem;
 	background: var(--bgLight);
 	border-radius: 0.5rem;
@@ -170,8 +215,8 @@ const clear = (stat: Stat) => {
 	margin-top: -1px;
 	position: relative;
 	display: grid;
-	grid-template-columns: auto 1fr 32px;
-	gap: 2rem;
+	grid-template-columns: 16px auto 1fr 32px;
+	gap: 1rem;
 	align-items: center;
 	.close {
 		visibility: hidden;
@@ -184,7 +229,6 @@ const clear = (stat: Stat) => {
 }
 :deep(.drag-placeholder) {
 	height: 38px;
-	// margin-bottom: 0.3rem;
 }
 .drag-handle {
 	font-size: 1.3rem;
@@ -195,5 +239,14 @@ const clear = (stat: Stat) => {
 	&:active {
 		cursor: grabbing;
 	}
+}
+.txt {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	font-size: 0.9rem;
+}
+:deep(.tree-hline) {
+	width: 22px;
 }
 </style>
