@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import FieldTree2 from '@/components/decision/FieldTree2.vue'
+import PartitionTree from '@/components/decision/PartitionTree.vue'
 import { usePartitionStore } from '@/stores/partition'
 
 const visible = defineModel<boolean>('visible')
@@ -161,7 +161,7 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 								div {{ chip.text }}
 								q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeDraftField(index, chip)" size="sm") 
 					.tree
-						FieldTree2(@update:selected="insert" v-model:clear='clearId' :showFilter='false')
+						PartitionTree(@update:selected="insert" v-model:clear='clearId')
 
 				.section
 					span Условие
