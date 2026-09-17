@@ -3,14 +3,12 @@ import { ref } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { useDndStore } from '@/stores/dnd'
+import { usePartitionStore } from '@/stores/partition'
 import { KindLabels, Kind } from '@/types/enum'
-// import { useViewStore } from '@/stores/view'
 import ViewDrawer from '@/components/ViewDrawer.vue'
 
-// const viewStore = useViewStore()
-// import DropTarget from '@/components/decision/DropTarget.vue'
-
 const dndStore = useDndStore()
+const part = usePartitionStore()
 
 const config = {
 	plugins: [animations()],
@@ -23,7 +21,6 @@ const config = {
 const [parent, tapes] = useDragAndDrop(dndStore.columnData, config)
 
 const insert = () => {
-	// let tmp = dndStore.externalDragPayload
 	let tmp = {} as any
 	tmp.id = Date.now().toString()
 	tmp.text = dndStore.externalDragPayload.text
@@ -31,9 +28,11 @@ const insert = () => {
 	tmp.hide = false
 	tmp.kind = dndStore.externalDragPayload.kind
 	tmp.source = 'field'
+	tmp.parents = dndStore.externalDragPayload.parents ?? []
 	tmp.children = []
 	tmp.children.push(dndStore.externalDragPayload)
 	tapes.value.push(tmp)
+	part.addPartitionForColumn(tmp)
 	isHoverTarget.value = false
 }
 
@@ -47,12 +46,14 @@ function addColumn() {
 		text: `Колонка ${colCounter}`,
 		kind: null,
 		newkind: null,
+		parents: [],
 		children: [],
 		sort: false,
 		order: 'up',
 		hide: false,
 	}
-	tapes.value?.push(newColumn)
+	tapes.value.push(newColumn)
+	part.addPartitionForColumn(newColumn)
 }
 
 const clear = (ind: number) => {

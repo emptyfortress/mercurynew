@@ -172,10 +172,10 @@ const remove = (ids: string[]) => {
 					div(v-if='node.psevdo') {{ node.psevdo }}
 
 					.txt(v-else)
-						template(v-for="item in node.parents" :key="item")
+						template(v-for="(item, index) in node.parents" :key="item")
 							div {{ item }}
-							.q-mx-sm >
-						div {{ node.text }}
+							.q-mx-sm(v-if="index < node.parents.length - 1 || !node.sourceColumnId") >
+						div(v-if="!node.sourceColumnId || !node.parents?.length") {{ node.text }}
 
 					.node-actions
 						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 
