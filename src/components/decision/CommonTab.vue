@@ -182,7 +182,7 @@ const remove = (ids: string[]) => {
 											q-icon(name="mdi-delete-outline" color="pink-9")
 										q-item-section Удалить
 
-	.text-bold.text-center.q-mt-lg Страница не доделана.
+	.text-bold.text-center.q-mt-lg Страница содержит мелкие баги.
 
 Teleport(to='body')
 	ViewDrawer1(v-model:visible="drawer" v-model:partition="currentPartition" :mode="drawerMode" @add="add" @remove="remove")
