@@ -2,20 +2,24 @@
 import { ref, watch, computed } from 'vue'
 import WordHighlighter from 'vue-word-highlighter'
 import { fields } from '@/stores/fields-poisk'
-import {
-	getMembers,
-	// filterByLabel,
-	filterByKind,
-	filterByCommon,
-	filterByArray,
-} from '@/utils/utils'
+import type { TreeElement } from '@/components/condition/conditionTypes'
+import { filterByKind, filterByCommon } from '@/utils/utils'
 import { useDrag } from '@/stores/drag'
-import { useChips } from '@/stores/chips'
 import { useDndStore } from '@/stores/dnd'
-import ChipModal from '@/components/decision/ChipModal-new.vue'
 import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
+import { usePartitionStore } from '@/stores/partition'
 
 const dndStore = useDndStore()
+const part = usePartitionStore()
+
+withDefaults(
+	defineProps<{
+		showFilter?: boolean
+	}>(),
+	{
+		showFilter: true,
+	}
+)
 
 function onExternalDragStart(node: any) {
 	dndStore.setExternalDragPayload(node)
@@ -25,34 +29,8 @@ function onExternalDragEnd() {
 	dndStore.clearExternalDragPayload()
 }
 
-const visFlat = ref<string[]>(['Все'])
-const lab = computed(() => {
-	return visFlat.value[0] == 'Все' ? 'Все' : 'Выбрать'
-})
-const mychips = useChips()
-
-watch(
-	() => mychips.updateTree,
-	() => {
-		setTree()
-	}
-)
-
-const setTree = () => {
-	visFlat.value = getMembers(mychips.chips)
-		.filter((el) => el.ticked == true)
-		.map((item) => item.label)
-}
 const data = computed(() => {
-	let temp1 = filterByCommon(fields, !common.value)
-	let temp = filterByArray(temp1, visFlat.value)
-	if (visFlat.value[0] == 'Все') {
-		mychips.setRows(temp1)
-		return fields
-	} else {
-		mychips.setRows(temp)
-		return temp
-	}
+	return filterByCommon(fields, !common.value)
 })
 
 const drag = useDrag()
@@ -82,18 +60,68 @@ watch(
 	}
 )
 
-const myfields = computed(() => {
-	if (!!drag.treeKey && drag.focus == true) {
-		return filterByKind(data.value, drag.kind)
-	}
-	return filterByCommon(data.value, !common.value)
-})
 const expanded = ref([])
 const common = ref(false)
-const chipsModal = ref(false)
-const selChip = () => {
-	chipsModal.value = !chipsModal.value
+
+const chips = ref([
+	{
+		id: 0,
+		label: 'Все',
+		selected: true,
+	},
+	{
+		id: 1,
+		label: 'Присоединенные разделы',
+		selected: false,
+	},
+])
+
+const selChip = (chip: any) => {
+	chips.value.forEach((item) => (item.selected = item.id === chip.id))
 }
+
+const selectedChip = computed(() => {
+	return chips.value.find((chip) => chip.selected)
+})
+
+const topIdMap = computed(() => {
+	const map: Record<string, string> = {}
+	const walk = (node: any, topId: string) => {
+		map[node.id] = topId
+		node.children?.forEach((child: any) => walk(child, topId))
+	}
+
+	data.value.forEach((top: any) => walk(top, top.id))
+	return map
+})
+
+const filterBySelectedIds = (
+	nodes: TreeElement[],
+	selectedIds: Set<string>,
+	topIds: Record<string, string>
+) => {
+	const selectedTopIds = new Set<string>()
+
+	selectedIds.forEach((id) => {
+		const topId = topIds[id]
+		if (topId) selectedTopIds.add(topId)
+	})
+
+	return nodes.filter((node) => selectedTopIds.has(node.id))
+}
+
+const myfields = computed(() => {
+	const selectedFields =
+		selectedChip.value?.id === 0
+			? data.value
+			: filterBySelectedIds(data.value, part.selectedIds, topIdMap.value)
+
+	if (!!drag.treeKey && drag.focus == true) {
+		return filterByKind(selectedFields, drag.kind)
+	}
+
+	return selectedFields
+})
 
 const isTable = (node: any) => {
 	return node.kind == 18 ? true : false
@@ -110,14 +138,14 @@ const onDrop = () => {
 <template lang="pug">
 div
 	.hd Разделы карточки / Поля
+	.show(v-if="showFilter")
+		label.q-mr-md Показать:
+		q-chip(v-for="chip in chips" :key="chip.id" clickable v-model:selected="chip.selected" size="12px" @click="selChip(chip)") {{ chip.label }}
+
 	q-input.search( ref="input" dense v-model="query" clearable hide-bottom-space @clear="clearFilter")
 		template(v-slot:prepend)
 			q-icon(name="mdi-magnify")
 
-	q-checkbox.q-mb-md(v-model="common" dense label="Отображать общие свойства")
-	div
-		label Показать:
-		q-chip.q-ml-md(clickable :selected="true" size="12px" @click="selChip" color="primary") {{ lab }}
 	q-tree(ref="tree"
 		:nodes="myfields"
 		dense
@@ -140,7 +168,6 @@ div
 				template(v-if='isVirtual(prop.node)')
 					PhVirtualReality.q-ml-sm
 					q-tooltip Виртуальное поле
-	ChipModal(v-model="chipsModal" @tree="setTree" )
 </template>
 
 <style scoped lang="scss">

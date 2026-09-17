@@ -101,6 +101,7 @@ div(v-else)
 					SortPanel
 				q-tab-panel(name='appearance')
 					div Внешний вид
+					.text-negative Пока решили не делать.
 				// q-tab-panel(name='filter')
 					// FilterPanel
 				// q-tab-panel(name='style')

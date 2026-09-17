@@ -14,6 +14,7 @@ const config = {
 	plugins: [animations()],
 	dragPlaceholderClass: 'ghost',
 	sortable: true,
+	dragHandle: '.drag-handle',
 	draggable: (child: HTMLElement) => {
 		return child.classList.contains('q-item')
 	},
@@ -52,6 +53,7 @@ const calcType = (e: Newkind) => {
 	|Сортировать по выбранным колонкам (последовательно, сверху вниз):
 q-list(ref='parent')
 	q-item(v-for="item in tapes" :key="item.id" :class="{active: item.sort}")
+		q-item-section.drag-handle(side) ⠿
 		q-item-section(side)
 			q-checkbox(v-model='item.sort' dense)
 		q-item-section
@@ -78,6 +80,16 @@ q-list(ref='parent')
 	user-select: none;
 	&.active {
 		background: var(--bgLight);
+	}
+}
+.drag-handle {
+	font-size: 1.3rem;
+	cursor: grab;
+	user-select: none;
+	margin-right: 1rem;
+
+	&:active {
+		cursor: grabbing;
 	}
 }
 </style>

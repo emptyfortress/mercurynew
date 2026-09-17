@@ -121,7 +121,7 @@ const calcLabel = (e: Kind) => {
 	@dragleave="onDragLeave"
 	@drop="insert"
 )
-	div Перетащите сюда поле чтобы задать колонку.
+	div Перетащите сюда поле справа, чтобы задать колонку.
 	q-btn.q-mt-md(outline  color="primary" icon='mdi-plus-circle-outline' label="Добавить колонку" @click="addColumn") 
 
 
