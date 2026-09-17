@@ -16,6 +16,14 @@ interface ColumnSource {
 	parents?: string[]
 }
 
+export const hasSameParents = (first: unknown, second: unknown) => {
+	if (!Array.isArray(first) || !Array.isArray(second) || first.length === 0) {
+		return false
+	}
+
+	return first.length === second.length && first.every((parent, index) => parent === second[index])
+}
+
 export const usePartitionStore = defineStore('part', () => {
 	const partitions = ref<PartitionNode[]>([])
 
@@ -34,26 +42,14 @@ export const usePartitionStore = defineStore('part', () => {
 	function addPartitionForColumn(column: ColumnSource) {
 		const partitionId = `partition-${column.id}`
 		const parents = column.parents ?? []
-		const duplicates = partitions.value.reduce<number[]>((indexes, partition, index) => {
-			const sameParents =
-				parents.length > 0 &&
-				Array.isArray(partition.parents) &&
-				partition.parents.length === parents.length &&
-				partition.parents.every((parent, parentIndex) => parent === parents[parentIndex])
+		const existingPartition = partitions.value.find(
+			(partition) =>
+				hasSameParents(partition.parents, parents) ||
+				partition.sourceColumnId === column.id ||
+				partition.id === partitionId
+		)
 
-			if (
-				partition.sourceColumnId &&
-				(sameParents || partition.sourceColumnId === column.id || partition.id === partitionId)
-			) {
-				indexes.push(index)
-			}
-			return indexes
-		}, [])
-
-		if (duplicates.length) {
-			for (let index = duplicates.length - 1; index > 0; index--) {
-				partitions.value.splice(duplicates[index], 1)
-			}
+		if (existingPartition) {
 			return
 		}
 

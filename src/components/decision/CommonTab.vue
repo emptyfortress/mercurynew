@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watchEffect } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
-import { usePartitionStore } from '@/stores/partition'
+import { hasSameParents, usePartitionStore } from '@/stores/partition'
 import { Draggable } from '@he-tree/vue'
 import { useRoute } from 'vue-router'
 import ViewDrawer1 from '@/components/ViewDrawer1.vue'
@@ -44,26 +44,21 @@ const isView = computed(() => {
 
 const drop = () => {
 	const node = part.externalDragPayload
-	const parentGroup = node.parents ? node.parents[0] : null
+	if (!node) return null
 
-	const text = node.text
+	const parents = node.parents ?? []
+	parents.push(node.text)
+	const existingNode = treeData.value.find(
+		(item: any) => item.id === node.id || hasSameParents(item.parents, parents)
+	)
 
-	// Если в дереве уже есть узел с таким же parentGroup — удаляем его через tree.value.remove()
-	if (parentGroup) {
-		const existingNode = treeData.value.find((n: any) => n.parentGroup === parentGroup)
-		if (existingNode) {
-			const existingStat = tree.value.getStat(existingNode)
-			if (existingStat) {
-				tree.value.remove(existingStat)
-			}
-		}
-	}
+	if (existingNode) return null
 
 	return {
 		id: node.id,
-		text,
-		parentGroup,
-		parents: node.parents,
+		text: undefined,
+		parentGroup: parents[0] ?? null,
+		parents,
 		hidden: false,
 		selected: false,
 		children: [],
@@ -158,6 +153,7 @@ const remove = (ids: string[]) => {
 			:onExternalDragOver="()=> true"
 			:externalDataHandler="drop"
 			:eachDroppable="isDrop"
+			:eachDraggable="isDrop"
 			:class="{ 'is-empty': treeData.length === 0, 'is-dragover': tree?.dragOvering }"
 			class="mytree"
 			:indent="30"
@@ -174,7 +170,7 @@ const remove = (ids: string[]) => {
 					.txt(v-else)
 						template(v-for="(item, index) in node.parents" :key="item")
 							div {{ item }}
-							.q-mx-sm(v-if="index < node.parents.length - 1 || !node.sourceColumnId") >
+							.q-mx-sm(v-if="Number(index) < node.parents.length - 1 || !node.sourceColumnId") >
 						div(v-if="!node.sourceColumnId || !node.parents?.length") {{ node.text }}
 
 					.node-actions
