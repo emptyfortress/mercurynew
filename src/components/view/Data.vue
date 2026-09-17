@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import FieldTree2 from '@/components/decision/FieldTree2.vue'
+import FieldPicker from '@/components/decision/FieldPicker.vue'
 import CalcField from '@/components/view/CalcField.vue'
 
 interface Col {
@@ -142,7 +142,7 @@ transition(name="fade" mode="out-in")
 						.header
 							q-btn(flat color="primary" label="Добавить поле") 
 					.tree
-						FieldTree2(@update:selected="insert" v-model:clear='clearId')
+						FieldPicker(@update:selected="insert" v-model:clear='clearId')
 
 					q-checkbox(v-if='draft.kind == 0 || draft.kind == 1' v-model='html' label='Отображать содержимое колонки как HTML')
 

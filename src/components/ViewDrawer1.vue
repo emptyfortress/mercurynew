@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import PartitionTree1 from '@/components/decision/PartitionTree1.vue'
+import BuildConditionDialog from '@/components/view/BuildConditionDialog.vue'
 import { usePartitionStore } from '@/stores/partition'
 
 const visible = defineModel<boolean>('visible')
@@ -176,17 +177,7 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 		q-btn(flat color="primary" label="Отмена" @click="visible = false") 
 		q-btn(unelevated color="primary" label="Применить" @click="save") 
 
-	q-dialog(v-model="conditionDialog" backdrop-filter="blur(4px) saturate(150%)")
-		q-card
-			q-btn.close(icon="mdi-close" round color="negative" dense v-close-popup)
-			q-card-section
-				.text-h6 Задать условие
-
-			q-card-section
-				div Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.
-			q-card-actions(align="right")
-				q-btn(flat color="primary" label="Отмена" v-close-popup) 
-				q-btn(unelevated color="primary" label="Применить" @click="") 
+	BuildConditionDialog(v-model="conditionDialog")
 </template>
 
 <style scoped lang="scss">
