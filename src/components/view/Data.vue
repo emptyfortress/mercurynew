@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import FieldPicker from '@/components/decision/FieldPicker.vue'
 import CalcField from '@/components/view/CalcField.vue'
+import { usePartitionStore } from '@/stores/partition'
 
 interface Col {
 	id: string
@@ -17,6 +18,7 @@ interface Col {
 }
 
 const draft = defineModel<Col>('draft')
+const part = usePartitionStore()
 
 const showUnsavedDialog = ref(false)
 const pendingSource = ref<string | null>(null)
@@ -62,6 +64,7 @@ const showSystem = ref(false)
 const insert = (nodes: any[]) => {
 	if (draft.value) {
 		draft.value.children = [...nodes]
+		nodes.forEach((field) => part.addPartitionForColumn(field))
 	}
 }
 

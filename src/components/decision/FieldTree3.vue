@@ -65,10 +65,6 @@ const onExternalDragStart = (e: any) => {
 const onExternalDragEnd = () => {
 	// part.clearExternalDragPayload()
 }
-
-// const onDrop = () => {
-// 	part.clearExternalDragPayload()
-// }
 </script>
 
 <template lang="pug">

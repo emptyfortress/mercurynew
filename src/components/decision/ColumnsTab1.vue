@@ -21,19 +21,21 @@ const config = {
 const [parent, tapes] = useDragAndDrop(dndStore.columnData, config)
 
 const insert = () => {
-	console.log(dndStore.externalDragPayload)
+	const field = dndStore.externalDragPayload
+	if (!field) return
+
 	let tmp = {} as any
 	tmp.id = Date.now().toString()
-	tmp.text = dndStore.externalDragPayload.text
+	tmp.text = field.text
 	tmp.sort = false
 	tmp.hide = false
-	tmp.kind = dndStore.externalDragPayload.kind
+	tmp.kind = field.kind
 	tmp.source = 'field'
-	tmp.parents = dndStore.externalDragPayload.parents ?? []
+	tmp.parents = field.parents ?? []
 	tmp.children = []
-	tmp.children.push(dndStore.externalDragPayload)
+	tmp.children.push(field)
 	tapes.value.push(tmp)
-	part.addPartitionForColumn(tmp)
+	part.addPartitionForField(field)
 	isHoverTarget.value = false
 }
 
@@ -55,7 +57,6 @@ function addColumn() {
 		hide: false,
 	}
 	tapes.value.push(newColumn)
-	part.addPartitionForColumn(newColumn)
 }
 
 const clear = (ind: number) => {

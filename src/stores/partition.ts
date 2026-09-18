@@ -1,20 +1,23 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { fields } from '@/stores/fields-poisk'
 
 export interface PartitionNode {
 	id: string
 	text: string
 	main: boolean
 	children: PartitionNode[]
-	sourceColumnId?: string
+	sourcePartitionId?: string
 	[key: string]: unknown
 }
 
-interface ColumnSource {
+interface FieldSource {
 	id: string
 	text: string
 	parents?: string[]
-	children?: unknown[]
+	drag?: boolean
+	children?: FieldSource[]
+	[key: string]: unknown
 }
 
 export const hasSameParents = (first: unknown, second: unknown) => {
@@ -40,14 +43,34 @@ export const usePartitionStore = defineStore('part', () => {
 		externalDragPayload.value = null
 	}
 
-	function addPartitionForColumn(column: ColumnSource) {
-		const partitionId = `partition-${column.id}`
-		const parents = column.parents ?? []
+	function findSourcePartition(field: FieldSource) {
+		const path = field.parents
+		if (!path?.length) return null
+
+		let nodes = fields as FieldSource[]
+		let partition: FieldSource | undefined
+		for (const label of path) {
+			partition = nodes.find((node) => node.text === label)
+			if (!partition) return null
+			nodes = partition.children ?? []
+		}
+
+		return partition
+	}
+
+	function addPartitionForField(field: FieldSource) {
+		const sourcePartition = findSourcePartition(field)
+		const path = field.parents ?? []
+		if (!sourcePartition || !path.length) return
+
+		const text = path[path.length - 1]
+		const parents = path.slice(0, -1)
 		const existingPartition = partitions.value.find(
 			(partition) =>
-				hasSameParents(partition.parents, parents) ||
-				partition.sourceColumnId === column.id ||
-				partition.id === partitionId
+				partition.text === text &&
+				Array.isArray(partition.parents) &&
+				partition.parents.length === parents.length &&
+				partition.parents.every((parent, index) => parent === parents[index])
 		)
 
 		if (existingPartition) {
@@ -55,13 +78,13 @@ export const usePartitionStore = defineStore('part', () => {
 		}
 
 		partitions.value.push({
-			id: partitionId,
-			text: column.text,
-			sourceColumnId: column.id,
-			parents: [...parents],
+			id: `partition-${sourcePartition.id}`,
+			text,
+			sourcePartitionId: sourcePartition.id,
+			parents,
 			main: true,
 			children: [],
-			childs: column.children ?? [],
+			childs: (sourcePartition.children ?? []).filter((child) => child.drag),
 			hidden: false,
 			selected: false,
 			psevdo: '',
@@ -74,6 +97,6 @@ export const usePartitionStore = defineStore('part', () => {
 		externalDragPayload,
 		setExternalDragPayload,
 		clearExternalDragPayload,
-		addPartitionForColumn,
+		addPartitionForField,
 	}
 })

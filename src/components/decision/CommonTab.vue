@@ -43,6 +43,7 @@ const isView = computed(() => {
 })
 
 const drop = () => {
+	console.log(part.externalDragPayload)
 	const node = part.externalDragPayload
 	if (!node) return null
 
