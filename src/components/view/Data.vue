@@ -64,7 +64,7 @@ const showSystem = ref(false)
 const insert = (nodes: any[]) => {
 	if (draft.value) {
 		draft.value.children = [...nodes]
-		nodes.forEach((field) => part.addPartitionForColumn(field))
+		nodes.forEach((field) => part.addPartitionForField(field))
 	}
 }
 
