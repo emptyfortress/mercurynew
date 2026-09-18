@@ -21,6 +21,7 @@ const config = {
 const [parent, tapes] = useDragAndDrop(dndStore.columnData, config)
 
 const insert = () => {
+	console.log(dndStore.externalDragPayload)
 	let tmp = {} as any
 	tmp.id = Date.now().toString()
 	tmp.text = dndStore.externalDragPayload.text
@@ -48,6 +49,7 @@ function addColumn() {
 		newkind: null,
 		parents: [],
 		children: [],
+		childs: [],
 		sort: false,
 		order: 'up',
 		hide: false,

@@ -14,6 +14,7 @@ interface ColumnSource {
 	id: string
 	text: string
 	parents?: string[]
+	children?: unknown[]
 }
 
 export const hasSameParents = (first: unknown, second: unknown) => {
@@ -60,6 +61,7 @@ export const usePartitionStore = defineStore('part', () => {
 			parents: [...parents],
 			main: true,
 			children: [],
+			childs: column.children ?? [],
 			hidden: false,
 			selected: false,
 			psevdo: '',

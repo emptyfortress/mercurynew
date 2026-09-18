@@ -46,8 +46,7 @@ const drop = () => {
 	const node = part.externalDragPayload
 	if (!node) return null
 
-	const parents = node.parents ?? []
-	parents.push(node.text)
+	const parents = [...(node.parents ?? [])]
 	const existingNode = treeData.value.find(
 		(item: any) => item.id === node.id || hasSameParents(item.parents, parents)
 	)
@@ -56,7 +55,7 @@ const drop = () => {
 
 	return {
 		id: node.id,
-		text: undefined,
+		text: node.text,
 		parentGroup: parents[0] ?? null,
 		parents,
 		hidden: false,
@@ -109,6 +108,7 @@ const add = (nodes: any[]) => {
 				text: node.text,
 				psevdo: undefined,
 				children: [],
+				childs: node.children ?? [],
 				kind: node.kind,
 				newkind: node.newkind,
 				selected: false,

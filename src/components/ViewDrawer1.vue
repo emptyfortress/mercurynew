@@ -127,7 +127,11 @@ watch(
 	() => [visible.value, partition.value] as const,
 	([isVisible, par]) => {
 		if (isVisible && par) {
-			draft.value = { ...par, children: [] }
+			const isLegacyPartition = !par.text && Boolean(par.parents?.length)
+			const text = par.text || par.parents?.at(-1) || ''
+			const parents = isLegacyPartition ? par.parents?.slice(0, -1) : par.parents
+
+			draft.value = { ...par, text, parents, children: [] }
 			removedIds.value = new Set()
 		}
 	},
