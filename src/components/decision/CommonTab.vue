@@ -38,6 +38,14 @@ const toggle = (stat: any) => {
 const treeData = ref(part.partitions)
 const tree = ref()
 
+const rootOnlyParentNames = new Set(['Документ', 'Задание'])
+
+const hasRootOnlyParents = (parents: unknown) =>
+	Array.isArray(parents) &&
+	parents.length === 1 &&
+	typeof parents[0] === 'string' &&
+	rootOnlyParentNames.has(parents[0])
+
 const isView = computed(() => {
 	return route.fullPath.includes('views')
 })
@@ -49,7 +57,11 @@ const drop = () => {
 
 	const parents = [...(node.parents ?? [])]
 	const existingNode = treeData.value.find(
-		(item: any) => item.id === node.id || hasSameParents(item.parents, parents)
+		(item: any) =>
+			item.id === node.id ||
+			(!hasRootOnlyParents(item.parents) &&
+				!hasRootOnlyParents(parents) &&
+				hasSameParents(item.parents, parents))
 	)
 
 	if (existingNode) return null
