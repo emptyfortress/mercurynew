@@ -7,12 +7,20 @@ import { usePartitionStore } from '@/stores/partition'
 const visible = defineModel<boolean>('visible')
 const partition = defineModel<Par | null>('partition')
 
-defineProps<{
+const props = defineProps<{
 	mode: 'add' | 'edit'
 }>()
 
 const part = usePartitionStore()
 const conditionDialog = ref(false)
+
+interface SavedCondition {
+	preview: string
+	tree: any
+}
+
+const conditions = ref<SavedCondition[]>([])
+const editingCondition = ref<SavedCondition | null>(null)
 
 interface Par {
 	id: string
@@ -22,7 +30,7 @@ interface Par {
 	newkind: null
 	parents?: string[]
 	children: Par[]
-	childs: []
+	childs: Par[]
 	hide: boolean
 	main: boolean
 	psevdo?: string
@@ -51,12 +59,15 @@ watch(partition, (next, prev) => {
 	timer = setTimeout(() => (isSwitching.value = false), 180)
 })
 
-const showTree = ref(false)
+const showFields = ref(false)
+const showOriginalSection = ref(false)
+const showAttachedSection = ref(false)
+const showConditionsSection = ref(false)
 const field = ref()
 
 const selectOptions = computed<string[]>(() => {
 	if (!draft.value.childs || draft.value.childs.length == 0) return []
-	return draft.value.childs.map((child: any) => child.text)
+	return draft.value.childs.map((child) => child.text)
 })
 
 const insert = (nodes: Par[]) => {
@@ -86,6 +97,31 @@ const removeDraftField = (index: number, chip: any) => {
 	draft.value?.children.splice(index, 1)
 }
 
+const saveCondition = (condition: SavedCondition) => {
+	if (editingCondition.value) {
+		editingCondition.value.preview = condition.preview
+		editingCondition.value.tree = condition.tree
+	} else {
+		conditions.value.push(condition)
+	}
+
+	editingCondition.value = null
+}
+
+const removeConditionPreview = (index: number) => {
+	conditions.value.splice(index, 1)
+}
+
+const openNewCondition = () => {
+	editingCondition.value = null
+	conditionDialog.value = true
+}
+
+const openExistingCondition = (condition: SavedCondition) => {
+	editingCondition.value = condition
+	conditionDialog.value = true
+}
+
 // клонируем draft при открытии; children — чистая area для НОВЫХ добавлений, не копия старых
 watch(
 	() => [visible.value, partition.value] as const,
@@ -99,12 +135,25 @@ watch(
 )
 
 watch(visible, (isVisible) => {
-	if (!isVisible) {
-		showTree.value = false
-		field.value = undefined
-		clearId.value = null
-		part.selectedIds.clear()
+	if (isVisible) {
+		showFields.value = props.mode === 'edit'
+		showOriginalSection.value = props.mode === 'add'
+		showAttachedSection.value = props.mode === 'add'
+		showConditionsSection.value = props.mode === 'add'
+		return
 	}
+
+	showFields.value = false
+	showOriginalSection.value = false
+	showAttachedSection.value = false
+	showConditionsSection.value = false
+	field.value = undefined
+	clearId.value = null
+	part.selectedIds.clear()
+})
+
+watch(conditionDialog, (isOpen) => {
+	if (!isOpen) editingCondition.value = null
 })
 
 const save = () => {
@@ -123,9 +172,10 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 		transition(name="skeleton-fade")
 			.panel-skeleton-overlay(v-if="isSwitching" key="skeleton")
 
-		.zg
+		.hd
+			span(v-if="mode === 'add'") Присоединить раздел
+			span(v-else) Редактировать
 			q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
-			div {{ partition.text }}
 
 		q-scroll-area(ref="scrollAreaRef" style="height: 100%")
 
@@ -138,46 +188,63 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 						div {{ item }}
 						.q-mx-sm >
 					div {{ draft.text }}
-				.sec Пусто как-то. Может еще что-то сюда добавить? <br /> Список полей раздела?
+
+			q-expansion-item.section-expansion(v-model="showFields" dense switchToggleSide)
+				template(#header)
+					.header Поля раздела
+				q-list.q-ml-md
+					q-item.field(v-for="item in draft.childs" :key="item.id" clickable dense)
+						q-item-section(side)
+							q-icon(name="mdi-circle-small" color="primary")
+						q-item-section {{ item.text }}
 
 			template(v-if="mode === 'add'")
-				.text-h6.text-center.q-mb-md Присоединить раздел
+				q-expansion-item.section-expansion(v-model="showOriginalSection" dense switchToggleSide)
+					template(#header)
+						.header Оригинальный раздел
+					.grid2
+						label Оригинальный раздел:
+						q-input(v-model="draft.text" dense outlined)
+						label Оригинальное поле:
+						q-select(v-model="field" dense optionsDense outlined :options="selectOptions")
 
-				.section
-					span Оригинальный раздел
-				.grid2
-					label Оригинальный раздел:
-					q-input(v-model="draft.text" dense outlined)
-					label Оригинальное поле:
-					q-select(v-model="field" dense optionsDense outlined :options="selectOptions")
-				.section
-					span Присоединяемый раздел / поле
-				.q-ma-md()
-					.column.items-start.q-gutter-y-sm
-						.mai(v-for="(chip, index) in draft.children" :key="chip.id")
-							.txt
-								template(v-for="item in chip.parents" :key="item")
-									div {{ item }}
-									.q-mx-sm >
-								div {{ chip.text }}
-								q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeDraftField(index, chip)" size="sm") 
-					.tree
-						PartitionTree1(@update:selected="insert" v-model:clear='clearId')
+				q-expansion-item.section-expansion(v-model="showAttachedSection" dense switchToggleSide)
+					template(#header)
+						.header Присоединяемый раздел / поле
+					.q-ma-md()
+						.column.items-start.q-gutter-y-sm
+							.mai(v-for="(chip, index) in draft.children" :key="chip.id")
+								.txt
+									template(v-for="item in chip.parents" :key="item")
+										div {{ item }}
+										.q-mx-sm >
+									div {{ chip.text }}
+									q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeDraftField(index, chip)" size="sm")
+						.tree
+							PartitionTree1(@update:selected="insert" v-model:clear='clearId')
 
-				.section
-					span Условие
+				q-expansion-item.section-expansion(v-model="showConditionsSection" dense switchToggleSide)
+					template(#header)
+						.header Условие
+					q-list.q-mx-md.q-mb-sm(v-if="conditions.length" dense)
+						q-item.conditionPreview(v-for="(condition, index) in conditions" :key="`${condition.preview}-${index}`" clickable @click="openExistingCondition(condition)")
+							q-item-section {{ condition.preview }}
+							q-item-section(side)
+								q-btn(flat round dense size="sm" icon="mdi-close" color="secondary" @click.stop="removeConditionPreview(index)")
 
-				.text-center
-					q-btn(outline color="primary" label="Задать условие" size='sm' @click="conditionDialog = true") 
-					br
-					br
-					br
+					.text-center.q-mb-md
+						q-btn(outline color="primary" label="Задать условие" size='sm' @click="openNewCondition")
 
 	.actions
 		q-btn(flat color="primary" label="Отмена" @click="visible = false") 
 		q-btn(unelevated color="primary" label="Применить" @click="save") 
 
-	BuildConditionDialog(v-model="conditionDialog")
+	BuildConditionDialog(
+		v-model="conditionDialog"
+		:condition-tree="editingCondition?.tree ?? null"
+		:preview="editingCondition?.preview ?? null"
+		@apply="saveCondition"
+	)
 </template>
 
 <style scoped lang="scss">
@@ -206,16 +273,18 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 	box-shadow: 0 -2px 7px rgba($color: #000000, $alpha: 0.2);
 	z-index: 2;
 }
-.zg {
+.hd {
 	padding: 0.25rem 1rem;
-	font-size: 0.7rem;
 	border-bottom: 1px solid #cfdbec;
-	display: flex;
-	align-items: center;
-	color: $primary;
+	position: relative;
+	font-size: 1.2rem;
+	text-align: center;
 	gap: 0.25rem;
 	.q-btn {
-		margin-top: -3px;
+		position: absolute;
+		left: 0.5rem;
+		top: 1px;
+		color: $primary;
 	}
 }
 :deep(.q-drawer__content) {
@@ -243,19 +312,21 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 	row-gap: 0.5rem;
 	margin: 1rem;
 }
-.section {
-	background: $secondary;
-	color: white;
-	font-size: 1.1rem;
-	padding-left: 0.5rem;
-	margin-bottom: 0.5rem;
-	display: flex;
-	align-items: center;
-	.q-icon {
-		font-size: 1.4rem;
+.section-expansion {
+	:deep(.q-expansion-item__container > .q-item) {
+		background: $secondary;
+		color: white;
+		font-size: 1.1rem;
+		padding-left: 0.5rem;
+		margin-bottom: 0.5rem;
 	}
-	span {
-		margin-left: 0.5rem;
+
+	:deep(.q-expansion-item__container > .q-item .q-item__section--side) {
+		color: white;
+	}
+
+	:deep(.q-focus-helper) {
+		display: none;
 	}
 }
 .mai {
@@ -292,5 +363,20 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 	margin-top: 2rem;
 	color: $secondary;
 	grid-column: 1/-1;
+}
+.conditionPreview {
+	background: var(--bgLight);
+	border: var(--border);
+	border-radius: 0.5rem;
+	cursor: pointer;
+	&:hover {
+		border-color: $secondary;
+	}
+	:deep(.q-focus-helper) {
+		display: none;
+	}
+}
+.field {
+	font-size: 0.8rem;
 }
 </style>

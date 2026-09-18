@@ -6,6 +6,7 @@ import '@he-tree/vue/style/material-design.css'
 import FieldPicker from '@/components/decision/FieldPicker.vue'
 
 type OperatorType = 'AND' | 'OR'
+type ValueSource = 'field' | 'value' | 'search'
 
 interface ConditionNode {
 	id: string
@@ -13,6 +14,8 @@ interface ConditionNode {
 	fieldLabel: string | null
 	operation: string | null
 	value: string | null
+	valueType: string | null
+	valueSource: ValueSource | null
 }
 
 interface OperatorNode {
@@ -27,6 +30,13 @@ type BuildConditionNode = ConditionNode | OperatorNode
 const ROOT_ID = 'build-condition-root'
 
 const modelValue = defineModel<boolean>()
+const props = defineProps<{
+	conditionTree?: OperatorNode | null
+	preview?: string | null
+}>()
+const emit = defineEmits<{
+	apply: [condition: { preview: string; tree: OperatorNode }]
+}>()
 const treeRef = ref<any>()
 const pickerOpen = ref(false)
 const pickerMode = ref<'field' | 'value' | null>(null)
@@ -45,14 +55,18 @@ const dummyOperations = [
 	'ОдинИз',
 	'НеОдинИз',
 ]
-const dummyValues = ['Значение 1', 'Значение 2', 'Значение 3']
+const valueTypeOptions = ['Строка', 'Число', 'Дата']
 
-const localTree = ref<OperatorNode>({
+const createEmptyTree = (): OperatorNode => ({
 	id: ROOT_ID,
 	kind: 'operator',
 	type: 'AND',
 	children: [],
 })
+
+const cloneTree = (tree: OperatorNode): OperatorNode => JSON.parse(JSON.stringify(tree))
+
+const localTree = ref<OperatorNode>(createEmptyTree())
 
 const treeData = computed<OperatorNode[]>({
 	get: () => [localTree.value],
@@ -80,6 +94,14 @@ const serializeCondition = (node: BuildConditionNode): string => {
 }
 
 const conditionPreview = computed(() => serializeCondition(localTree.value))
+const editablePreview = ref('')
+const previewWasEdited = ref(false)
+
+watch(conditionPreview, (preview) => {
+	if (modelValue.value && !previewWasEdited.value) {
+		editablePreview.value = preview
+	}
+})
 
 const closePicker = () => {
 	pickerOpen.value = false
@@ -88,14 +110,27 @@ const closePicker = () => {
 }
 
 watch(modelValue, (isOpen) => {
-	if (!isOpen) closePicker()
+	if (isOpen) {
+		const tree = props.conditionTree ? cloneTree(props.conditionTree) : createEmptyTree()
+		const generatedPreview = serializeCondition(tree)
+
+		localTree.value = tree
+		editablePreview.value = props.preview ?? generatedPreview
+		previewWasEdited.value =
+			props.preview !== null && props.preview !== undefined && props.preview !== generatedPreview
+	} else {
+		closePicker()
+		localTree.value = createEmptyTree()
+		editablePreview.value = ''
+		previewWasEdited.value = false
+	}
 })
 
 const handleDocumentClick = (event: MouseEvent) => {
 	if (!pickerOpen.value) return
 
 	const target = event.target as HTMLElement
-	if (target.closest('.field-picker, .field-selector')) return
+	if (target.closest('.field-picker, .field-selector, .q-menu')) return
 
 	closePicker()
 }
@@ -112,6 +147,8 @@ const addCondition = (kind: BuildConditionNode['kind']) => {
 					fieldLabel: null,
 					operation: null,
 					value: null,
+					valueType: null,
+					valueSource: null,
 				}
 			: { id: crypto.randomUUID(), kind: 'operator', type: 'AND', children: [] }
 
@@ -140,7 +177,8 @@ const openPicker = (node: ConditionNode) => {
 	pickerOpen.value = true
 }
 
-const openValuePanel = () => {
+const openValuePanel = (node: ConditionNode) => {
+	activeConditionId.value = node.id
 	pickerMode.value = 'value'
 	pickerOpen.value = true
 }
@@ -156,6 +194,10 @@ const findCondition = (node: BuildConditionNode, id: string): ConditionNode | nu
 	return null
 }
 
+const activeCondition = computed(() =>
+	activeConditionId.value ? findCondition(localTree.value, activeConditionId.value) : null
+)
+
 const selectField = (nodes: Array<{ text: string; parents?: string[] }>) => {
 	const field = nodes.at(-1)
 	if (!field) return
@@ -169,7 +211,24 @@ const selectField = (nodes: Array<{ text: string; parents?: string[] }>) => {
 	closePicker()
 }
 
+const selectValueField = (nodes: Array<{ text: string; parents?: string[] }>) => {
+	const field = nodes.at(-1)
+	if (!field) return
+	const fieldPath = [...(field.parents ?? []), field.text].join(' > ')
+
+	if (activeConditionId.value) {
+		const condition = findCondition(localTree.value, activeConditionId.value)
+		if (condition) condition.value = fieldPath
+	}
+
+	closePicker()
+}
+
 const apply = () => {
+	emit('apply', {
+		preview: editablePreview.value,
+		tree: cloneTree(localTree.value),
+	})
 	modelValue.value = false
 }
 </script>
@@ -234,7 +293,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 								v-model="node.value"
 								label="Значение"
 								outlined dense readonly
-								@click.stop="openValuePanel"
+								@click.stop="openValuePanel(node)"
 							)
 								template(#append)
 									q-icon(name="mdi-dots-horizontal" class="selector-icon")
@@ -248,13 +307,56 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 				div.q-mt-sm Добавьте условие или оператор, чтобы собрать логику проверки.
 
 		.field-picker(v-if="pickerOpen")
+			q-btn.picker-close(flat round dense size='sm' icon="mdi-close" color="primary" @click="closePicker")
 			q-scroll-area.field-picker-scroll
-				FieldPicker(v-if="pickerMode === 'field'" @update:selected="selectField")
-				.text-body2(v-else) Здесь будет список доступных значений поля.
+				template(v-if="pickerMode === 'field'")
+					.text-h6.q-mb-md.text-center Аргумент 1
+					FieldPicker(@update:selected="selectField")
+				template(v-else-if="pickerMode === 'value' && activeCondition")
+					.text-h6.q-mb-md.text-center Аргумент 2
+					q-select(
+						v-model="activeCondition.valueType"
+						:options="valueTypeOptions"
+						label="Тип значения"
+						outlined dense
+					)
+					.column.q-gutter-y-sm.q-mt-md
+						q-radio(dense v-model="activeCondition.valueSource" val="value" label="Значение")
+						q-radio(dense v-model="activeCondition.valueSource" val="field" label="Раздел/поле")
+						q-radio(dense v-model="activeCondition.valueSource" val="search" label="Поисковое слово")
+					q-separator(spaced)
+					q-input(
+						v-if="activeCondition.valueSource === 'value'"
+						v-model="activeCondition.value"
+						outlined dense
+						label="Значение"
+						class="q-mt-md"
+					)
+					q-input(
+						v-else-if="activeCondition.valueSource === 'search'"
+						v-model="activeCondition.value"
+						label="Поисковое слово"
+						outlined dense
+						class="q-mt-md"
+					)
+					FieldPicker(
+						v-else-if="activeCondition.valueSource === 'field'"
+						@update:selected="selectValueField"
+					)
+					.row.justify-end.q-gutter-sm.q-mt-md
+						q-btn(outline size="sm" color="primary" label="Отмена" @click="closePicker")
+						q-btn(outline size="sm" color="primary" label="OK" @click="closePicker")
 
 		q-card-section.condition-preview
 			.text-caption Превью условия
-			pre.text-caption {{ conditionPreview }}
+			q-input.condition-preview__input(
+				v-model="editablePreview"
+				type="textarea"
+				autogrow
+				filled dense
+				input-style="font-family: monospace; font-size: 12px;"
+				@update:model-value="previewWasEdited = true"
+			)
 
 		q-card-actions(align="right")
 			q-btn(flat color="primary" icon="mdi-plus-circle-outline" label="Добавить условие" @click="addCondition('condition')")
@@ -401,7 +503,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 	position: absolute;
 	top: 0;
 	right: 0;
-	width: 360px;
+	width: 400px;
 	height: 100%;
 	box-sizing: border-box;
 	padding: 1rem;
@@ -416,18 +518,23 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)")
 	height: 100%;
 }
 
+.picker-close {
+	position: absolute;
+	top: 0.25rem;
+	left: 0.25rem;
+	z-index: 1;
+}
+
 .condition-preview {
 	padding-top: 0;
 }
 
-pre {
-	margin: 0.25rem 0 0;
-	padding: 8px;
-	border-radius: 4px;
-	background: #f5f5f5;
-	font-size: 12px;
-	white-space: pre-wrap;
-	word-break: break-word;
+.condition-preview__input {
+	margin-top: 0.25rem;
+
+	:deep(textarea) {
+		word-break: break-word;
+	}
 }
 
 :deep(.drag-placeholder) {
