@@ -199,6 +199,8 @@ interface NodeData {
 	and?: boolean
 	kind?: Kind
 	param?: boolean
+	paramText?: string
+	localizationId?: string
 	children: NodeData[]
 	open?: boolean
 	filetype?: FileType

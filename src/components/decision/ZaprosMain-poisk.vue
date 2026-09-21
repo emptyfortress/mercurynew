@@ -11,6 +11,7 @@ import Safety from '@/components/decision/Safety.vue'
 import AdditionTab from '@/components/decision/AdditionTab.vue'
 import FolderTab from '@/components/decision/FolderTab.vue'
 import XmlTree from '@/components/decision/XmlTree.vue'
+import QueryLocalization from '@/components/decision/QueryLocalization.vue'
 
 const props = defineProps({
 	splitter: Number,
@@ -68,6 +69,27 @@ const toggleCreate = () => {
 
 const isFolder = computed(() => {
 	return store.selectedElement?.type == 0
+})
+
+const queryTree = computed({
+	get: () => {
+		if (!store.selectedElement) return []
+		const query = store.selectedElement as any
+		if (!query.queryTree) {
+			query.queryTree = [{ type: 10, typ: false, drop: false, drag: false, children: [] }]
+		}
+		return query.queryTree
+	},
+	set: (value: any[]) => {
+		if (store.selectedElement) (store.selectedElement as any).queryTree = value
+	},
+})
+
+const queryLocalization = computed(() => {
+	if (!store.selectedElement) return { languages: [], values: {} }
+	const query = store.selectedElement as any
+	if (!query.localization) query.localization = { languages: [], values: {} }
+	return query.localization
 })
 
 const testXml = `
@@ -133,11 +155,13 @@ const save = () => {
 				q-tab-panel(name='common')
 					CommonTab
 				q-tab-panel(name='query')
-					QueryItem(:preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
+					QueryItem(v-model:treeData="queryTree" :preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
 					// .row.justify-center.q-mx-lg
 					// 	q-btn(unelevated color="primary" label="Превью" icon="mdi-check-bold" @click="togglePreviewForm")
 				q-tab-panel(name='folders')
 					FolderTab
+				q-tab-panel(name='lang')
+					QueryLocalization(:tree-data="queryTree" :localization="queryLocalization")
 				q-tab-panel(name='safety')
 					Safety
 

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import ZaprosMainPoisk from '@/components/decision/ZaprosMain-poisk.vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
 import FieldTree from '@/components/decision/FieldTree.vue'
+import LocalizationList from '@/components/decision/LocalizationList.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 
 const simpleStore = useSimpleStore()
@@ -20,6 +21,17 @@ const isTreeVisible = computed(() => {
 		return true
 	}
 	return false
+})
+
+const isLocalizationListVisible = computed(
+	() => tabs.value === 'lang' && simpleStore.selectedElement !== null,
+)
+
+const queryLocalization = computed(() => {
+	if (!simpleStore.selectedElement) return { languages: [], values: {} }
+	const query = simpleStore.selectedElement as any
+	if (!query.localization) query.localization = { languages: [], values: {} }
+	return query.localization
 })
 </script>
 
@@ -48,6 +60,7 @@ div
 				template(v-slot:after)
 					q-scroll-area.list1
 						FieldTree(v-show='isTreeVisible')
+						LocalizationList(v-if="isLocalizationListVisible" :localization="queryLocalization")
 </template>
 
 <style scoped lang="scss">

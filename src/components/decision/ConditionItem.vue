@@ -90,6 +90,22 @@ const showModal = () => {
 }
 const common = ref(false)
 const commonName = ref('')
+const isParam = ref(props.stat.data.param)
+const paramText = computed({
+	get: () => props.stat.data.paramText ?? props.stat.data.text,
+	set: (value: string) => {
+		props.stat.data.paramText = value
+	},
+})
+
+watch(
+	() => props.stat.data.param,
+	(value) => {
+		isParam.value = value
+	},
+	{ immediate: true }
+)
+
 const setName = (e: string) => {
 	common.value = true
 	commonName.value = e
@@ -109,7 +125,12 @@ const setName = (e: string) => {
 	q-form.one(v-if="props.stat.data.type === 1 || props.stat.data.type === 2" ref="myform" no-error-focus)
 		.mai(v-if="!common")
 			div
-				.txt
+				.params(v-if="isParam")
+					span {{ paramText }}
+						q-popup-edit(v-model="paramText" auto-save v-slot="scope")
+							q-input(v-model="scope.value" dense autofocus @keyup.enter="scope.set")
+						q-tooltip Отображаемая метка
+				.txt(:class="{ 'txt--param': isParam }")
 					template(v-for="item in par" :key="item")
 						.text-weight-bold {{ item }}
 						.q-mx-sm >
@@ -291,5 +312,19 @@ const setName = (e: string) => {
 }
 :deep(.q-field__control:before) {
 	background: transparent;
+}
+.txt--param {
+	font-size: 0.75rem;
+
+	:deep(.text-weight-bold) {
+		font-weight: normal;
+	}
+}
+.params {
+	span {
+		color: $primary;
+		font-weight: 600;
+		border-bottom: 1px dotted $primary;
+	}
 }
 </style>

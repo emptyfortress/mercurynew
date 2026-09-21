@@ -4,7 +4,7 @@ import { Draggable } from '@he-tree/vue'
 import ConditionItem from '@/components/decision/ConditionItem.vue'
 import { useDrag } from '@/stores/drag'
 import PreviewFormDialog from '@/components/decision/PreviewFormDialog.vue'
-// import { uid } from 'quasar'
+import { uid } from 'quasar'
 
 const props = defineProps({
 	preview: {
@@ -14,16 +14,13 @@ const props = defineProps({
 	},
 })
 
+const treeData = defineModel<any[]>('treeData', {
+	default: () => [
+		{ type: 10, typ: false, drop: false, drag: false, children: [] },
+	],
+})
+
 const drag = useDrag()
-let treeData = reactive([
-	{
-		type: 10,
-		typ: false,
-		drop: false,
-		drag: false,
-		children: [],
-	},
-])
 
 const isDrop = (e: any) => {
 	if (e.data.drop) return true
@@ -43,7 +40,7 @@ const remove = (e: Stat) => {
 	}
 }
 const duble = (e: Stat) => {
-	const temp = { ...e.data }
+	const temp = { ...e.data, localizationId: uid() }
 	tree.value.add(temp, e.parent)
 }
 
@@ -56,7 +53,9 @@ const externalDataHandler = () => {
 	if (!!drag.dragNode && drag.focus == false) {
 		return {
 			id: drag.dragNode.id,
+			localizationId: uid(),
 			text: drag.dragNode.text,
+			paramText: drag.dragNode.text,
 			text1: '',
 			text2: 'Равно',
 			text3: '',
