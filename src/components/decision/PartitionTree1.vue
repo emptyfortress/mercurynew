@@ -119,7 +119,7 @@ div
 				:class="{ virtual: isVirtual(prop.node)}"
 			)
 				q-checkbox.q-mr-sm(
-					v-if='!prop.node.drag && !prop.node.id.includes("root")'
+					v-if='prop.node.drag'
 					:model-value='part.selectedIds.has(prop.node.id) ?? false'
 					@click="toggleSelected(prop.node)"
 					dense, size='sm'

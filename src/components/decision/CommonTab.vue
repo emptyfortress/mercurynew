@@ -143,6 +143,10 @@ const remove = (ids: string[]) => {
 		if (stat) tree.value.remove(stat)
 	}
 }
+const test = (stat: any, node: any) => {
+	console.log(stat)
+	console.log(node)
+}
 </script>
 
 <template lang="pug">
@@ -172,7 +176,7 @@ const remove = (ids: string[]) => {
 			:indent="30"
 		)
 			template(#default="{ node, stat }")
-				.node
+				.node(@click='test(stat, node)')
 					q-btn.trig(flat round dense icon="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }" size="sm")
 					div(v-else)
 					.node-actions
@@ -184,7 +188,8 @@ const remove = (ids: string[]) => {
 						template(v-for="(item, index) in node.parents" :key="item")
 							div {{ item }}
 							.q-mx-sm(v-if="Number(index) < node.parents.length - 1 || !node.sourceColumnId") >
-						div(v-if="!node.sourceColumnId || !node.parents?.length") {{ node.text }}
+						div(v-if="!node.parents?.length") {{ node.text }}
+						// div(v-if="!node.sourceColumnId || !node.parents?.length") {{ node.text }}
 
 					.node-actions
 						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 

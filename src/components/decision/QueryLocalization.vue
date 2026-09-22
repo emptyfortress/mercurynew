@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { QTableColumn } from 'quasar'
-import { languageOptions, type Language } from '@/components/decision/localizationOptions'
+import {
+	languageOptions,
+	type Language,
+	type QueryLocalization,
+} from '@/components/decision/localizationOptions'
 
 const props = defineProps<{
 	treeData: any[]
-	localization: { languages: Language[]; values: Record<string, Record<string, string>> }
+	localization: QueryLocalization
 }>()
 
 const addDialog = ref(false)
@@ -37,6 +41,14 @@ const setTranslation = (conditionId: string, languageCode: string, value: string
 
 const getFieldPath = (node: any) => [...(node.parents ?? []), node.text].join(' > ')
 
+const orderedLanguages = computed(() => {
+	const positions = new Map(props.localization.languageOrder.map((code, index) => [code, index]))
+	return [...props.localization.languages].sort(
+		(first, second) =>
+			(positions.get(first.code) ?? Infinity) - (positions.get(second.code) ?? Infinity)
+	)
+})
+
 const columns = computed<QTableColumn[]>(() => [
 	{
 		name: 'field',
@@ -47,12 +59,12 @@ const columns = computed<QTableColumn[]>(() => [
 	},
 	{
 		name: 'source',
-		label: 'Текущая локализация',
+		label: 'Текущая локализация (ru)',
 		field: (row) => row.node.paramText,
 		align: 'left',
 		sortable: true,
 	},
-	...props.localization.languages.map((language) => ({
+	...orderedLanguages.value.map((language) => ({
 		name: language.code,
 		label: language.label,
 		field: (row: any) => getTranslation(row.id, language.code),

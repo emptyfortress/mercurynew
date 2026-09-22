@@ -12,6 +12,7 @@ import AdditionTab from '@/components/decision/AdditionTab.vue'
 import FolderTab from '@/components/decision/FolderTab.vue'
 import XmlTree from '@/components/decision/XmlTree.vue'
 import QueryLocalization from '@/components/decision/QueryLocalization.vue'
+import { languageOptions, normalizeLanguageOrder } from '@/components/decision/localizationOptions'
 
 const props = defineProps({
 	splitter: Number,
@@ -86,9 +87,19 @@ const queryTree = computed({
 })
 
 const queryLocalization = computed(() => {
-	if (!store.selectedElement) return { languages: [], values: {} }
+	if (!store.selectedElement) {
+		return { languages: [], values: {}, languageOrder: languageOptions.map((language) => language.code) }
+	}
 	const query = store.selectedElement as any
-	if (!query.localization) query.localization = { languages: [], values: {} }
+	if (!query.localization) {
+		query.localization = {
+			languages: [],
+			values: {},
+			languageOrder: languageOptions.map((language) => language.code),
+		}
+	} else {
+		query.localization.languageOrder = normalizeLanguageOrder(query.localization.languageOrder)
+	}
 	return query.localization
 })
 

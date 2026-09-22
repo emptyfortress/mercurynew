@@ -1,19 +1,65 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { languageOptions, type Language } from '@/components/decision/localizationOptions'
+import { ref, watch } from 'vue'
+import { animations } from '@formkit/drag-and-drop'
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+import {
+	languageOptions,
+	normalizeLanguageOrder,
+	type Language,
+	type QueryLocalization,
+} from '@/components/decision/localizationOptions'
 
 const props = defineProps<{
-	localization: { languages: Language[]; values: Record<string, Record<string, string>> }
+	localization: QueryLocalization
 }>()
 
 const filter = ref('')
-const filteredLanguageOptions = computed(() => {
+const dragConfig = {
+	plugins: [animations()],
+	dragHandle: '.language-drag-handle',
+	dragPlaceholderClass: 'ghost',
+	draggable: () => filter.value.trim() === '',
+}
+const getOrderedLanguages = (codes: string[]) => {
+	const languagesByCode = new Map(languageOptions.map((language) => [language.code, language]))
+	return normalizeLanguageOrder(codes).map((code) => languagesByCode.get(code)!)
+}
+const hasSameOrder = (first: string[], second: string[]) =>
+	first.length === second.length && first.every((code, index) => code === second[index])
+
+const [languageList, sortableLanguages] = useDragAndDrop(
+	getOrderedLanguages(props.localization.languageOrder),
+	dragConfig
+)
+
+const matchesFilter = (language: Language) => {
 	const query = filter.value.trim().toLocaleLowerCase()
-	if (!query) return languageOptions
-	return languageOptions.filter(
-		(language) =>
-			language.label.toLocaleLowerCase().includes(query) || language.code.includes(query)
+	return (
+		!query || language.label.toLocaleLowerCase().includes(query) || language.code.includes(query)
 	)
+}
+
+watch(
+	() => props.localization.languageOrder,
+	(codes) => {
+		const normalizedCodes = normalizeLanguageOrder(codes)
+		if (
+			!hasSameOrder(
+				sortableLanguages.value.map((language) => language.code),
+				normalizedCodes
+			)
+		) {
+			sortableLanguages.value = getOrderedLanguages(normalizedCodes)
+		}
+	},
+	{ deep: true, immediate: true }
+)
+
+watch(sortableLanguages, (languages) => {
+	const codes = languages.map((language) => language.code)
+	if (!hasSameOrder(props.localization.languageOrder, codes)) {
+		props.localization.languageOrder = codes
+	}
 })
 
 const isEnabled = (languageCode: string) =>
@@ -49,13 +95,19 @@ q-list.q-mt-md(separator)
 			q-item-label Русский
 		q-item-section(side)
 			q-item-label(caption).text-primary ru
-	q-item(v-for="language in filteredLanguageOptions" :key="language.code" tag="label" dense)
+
+.q-list(ref="languageList")
+	q-item(v-for="language in sortableLanguages" v-show="matchesFilter(language)" :key="language.code" tag="label" dense)
+		// q-item-section(side)
+		// 	q-icon.language-drag-handle(name="mdi-drag-vertical" color="grey-6")
 		q-item-section(side)
-			q-checkbox(
-				:model-value="isEnabled(language.code)"
-				@update:model-value="toggleLanguage(language, $event === true)"
-				dense
-			)
+			.row.items-center
+				q-icon.language-drag-handle(name="mdi-drag-vertical" color="grey-6" size='20px')
+				q-checkbox(
+					:model-value="isEnabled(language.code)"
+					@update:model-value="toggleLanguage(language, $event === true)"
+					dense
+				)
 		q-item-section
 			q-item-label {{ language.label }}
 		q-item-section(side)
@@ -66,5 +118,24 @@ q-list.q-mt-md(separator)
 .q-item__label--caption {
 	color: $primary;
 	font-weight: 600;
+}
+
+.language-drag-handle {
+	cursor: grab;
+	margin-right: 0.25rem;
+}
+.q-item {
+	background: var(--bg-panel);
+	padding-left: 0.25rem;
+}
+
+.ghost {
+	background: hsl(213 38% 81% / 1) !important;
+	box-shadow: none !important;
+	border: none !important;
+
+	* {
+		display: none;
+	}
 }
 </style>

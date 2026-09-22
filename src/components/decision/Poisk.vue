@@ -4,6 +4,7 @@ import ZaprosMainPoisk from '@/components/decision/ZaprosMain-poisk.vue'
 import UnifiedTree from '@/components/decision/UnifiedTree.vue'
 import FieldTree from '@/components/decision/FieldTree.vue'
 import LocalizationList from '@/components/decision/LocalizationList.vue'
+import { languageOptions, normalizeLanguageOrder } from '@/components/decision/localizationOptions'
 import { useSimpleStore } from '@/stores/simpleStore'
 
 const simpleStore = useSimpleStore()
@@ -28,9 +29,19 @@ const isLocalizationListVisible = computed(
 )
 
 const queryLocalization = computed(() => {
-	if (!simpleStore.selectedElement) return { languages: [], values: {} }
+	if (!simpleStore.selectedElement) {
+		return { languages: [], values: {}, languageOrder: languageOptions.map((language) => language.code) }
+	}
 	const query = simpleStore.selectedElement as any
-	if (!query.localization) query.localization = { languages: [], values: {} }
+	if (!query.localization) {
+		query.localization = {
+			languages: [],
+			values: {},
+			languageOrder: languageOptions.map((language) => language.code),
+		}
+	} else {
+		query.localization.languageOrder = normalizeLanguageOrder(query.localization.languageOrder)
+	}
 	return query.localization
 })
 </script>
