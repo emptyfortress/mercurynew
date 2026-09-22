@@ -12,7 +12,6 @@ import AdditionTab from '@/components/decision/AdditionTab.vue'
 import FolderTab from '@/components/decision/FolderTab.vue'
 import XmlTree from '@/components/decision/XmlTree.vue'
 import QueryLocalization from '@/components/decision/QueryLocalization.vue'
-import { languageOptions, normalizeLanguageOrder } from '@/components/decision/localizationOptions'
 
 const props = defineProps({
 	splitter: Number,
@@ -86,22 +85,33 @@ const queryTree = computed({
 	},
 })
 
-const queryLocalization = computed(() => {
-	if (!store.selectedElement) {
-		return { languages: [], values: {}, languageOrder: languageOptions.map((language) => language.code) }
-	}
-	const query = store.selectedElement as any
+const supportedLocalizationCodes = new Set(['ru', 'en', 'fr', 'es'])
+
+const normalizeLocalization = (query: any) => {
 	if (!query.localization) {
-		query.localization = {
-			languages: [],
-			values: {},
-			languageOrder: languageOptions.map((language) => language.code),
-		}
-	} else {
-		query.localization.languageOrder = normalizeLanguageOrder(query.localization.languageOrder)
+		query.localization = { values: {} }
+		return
 	}
-	return query.localization
-})
+
+	query.localization.values ??= {}
+	Object.values(query.localization.values).forEach((translations: any) => {
+		Object.keys(translations).forEach((languageCode) => {
+			if (!supportedLocalizationCodes.has(languageCode)) delete translations[languageCode]
+		})
+	})
+	delete query.localization.languages
+	delete query.localization.languageOrder
+}
+
+watch(
+	() => store.selectedElement,
+	(query) => {
+		if (query && query.type !== 0) normalizeLocalization(query)
+	},
+	{ immediate: true }
+)
+
+const queryLocalization = computed(() => (store.selectedElement as any)?.localization ?? { values: {} })
 
 const testXml = `
 <catalog>

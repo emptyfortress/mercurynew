@@ -4314,4 +4314,16 @@ const fields = [
 	},
 ]
 
+const markLeafFields = (nodes: { children?: unknown[]; field?: boolean }[]) => {
+	nodes.forEach((node) => {
+		node.field = !node.children?.length
+
+		if (node.children) {
+			markLeafFields(node.children as { children?: unknown[]; field?: boolean }[])
+		}
+	})
+}
+
+markLeafFields(fields)
+
 export { fields, operators }

@@ -34,6 +34,7 @@ interface Par {
 	hide: boolean
 	main: boolean
 	psevdo?: string
+	level?: number
 }
 //
 // локальный буфер редактирования
@@ -60,6 +61,7 @@ watch(partition, (next, prev) => {
 })
 
 const showFields = ref(false)
+const expandFields = ref(true)
 const showOriginalSection = ref(false)
 const showAttachedSection = ref(false)
 const showConditionsSection = ref(false)
@@ -177,8 +179,8 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 			.panel-skeleton-overlay(v-if="isSwitching" key="skeleton")
 
 		.hd
-			span(v-if="mode === 'add'") Присоединить раздел
-			span(v-else) Редактировать
+			span(v-if="mode === 'add'") Присоединить раздел {{ partition.level }}
+			span(v-else) Редактировать {{ partition.level }}
 			q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
 
 		q-scroll-area(ref="scrollAreaRef" style="height: 100%")
@@ -193,7 +195,7 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 						.q-mx-sm >
 					div {{ draft.text }}
 
-			q-expansion-item.section-expansion(v-model="showFields" dense switchToggleSide)
+			q-expansion-item.section-expansion(v-if='partition.level == 1 && mode == "edit"' v-model="expandFields" dense switchToggleSide)
 				template(#header)
 					.header Поля раздела
 				q-list.q-ml-md

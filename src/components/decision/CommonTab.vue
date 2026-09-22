@@ -92,19 +92,20 @@ const drawer = ref(false)
 const currentPartition = ref<any>(null)
 const drawerMode = ref<'add' | 'edit'>('edit')
 
-const open = (row: any, mode: 'add' | 'edit') => {
+const open = (level: number, row: any, mode: 'add' | 'edit') => {
 	currentPartition.value = row
+	currentPartition.value.level = level
 	drawerMode.value = mode
 	drawer.value = true
 }
 
-const toggleDrawer = (row: any, mode: 'add' | 'edit') => {
+const toggleDrawer = (level: number, row: any, mode: 'add' | 'edit') => {
 	if (drawer.value && currentPartition.value === row && drawerMode.value === mode) {
 		drawer.value = false
 		return
 	}
 
-	open(row, mode)
+	open(level, row, mode)
 }
 
 const add = (nodes: any[]) => {
@@ -124,6 +125,7 @@ const add = (nodes: any[]) => {
 				childs: node.children ?? [],
 				kind: node.kind,
 				newkind: node.newkind,
+				field: node.field,
 				selected: false,
 				hidden: false,
 				parents: node.parents,
@@ -180,16 +182,16 @@ const test = (stat: any, node: any) => {
 					q-btn.trig(flat round dense icon="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }" size="sm")
 					div(v-else)
 					.node-actions
-						q-btn.tool(flat round icon="mdi-pencil-outline" color="secondary" size='sm' @click="toggleDrawer(node, 'edit')") 
-						q-btn(flat round icon="mdi-plus-circle-outline" color="secondary" size='sm' @click="toggleDrawer(node, 'add')")
+						q-btn.tool(flat round icon="mdi-pencil-outline" color="secondary" size='sm' @click="toggleDrawer(stat.level, node, 'edit')") 
+						q-btn(flat round icon="mdi-plus-circle-outline" color="secondary" size='sm' @click="toggleDrawer(stat.level, node, 'add')")
 					div(v-if='node.psevdo') {{ node.psevdo }}
 
 					.txt(v-else)
 						template(v-for="(item, index) in node.parents" :key="item")
 							div {{ item }}
 							.q-mx-sm(v-if="Number(index) < node.parents.length - 1 || !node.sourceColumnId") >
-						div(v-if="!node.parents?.length") {{ node.text }}
-						// div(v-if="!node.sourceColumnId || !node.parents?.length") {{ node.text }}
+						// div(v-if="!node.sourceColumnId || !node.parents?.length") {{ node.text }} - {{ node.field }}
+						div(v-if="!node.field && !node.sourceColumnId") {{ node.text }}
 
 					.node-actions
 						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 
@@ -200,7 +202,6 @@ const test = (stat: any, node: any) => {
 											q-icon(name="mdi-delete-outline" color="pink-9")
 										q-item-section Удалить
 
-	.text-bold.text-center.q-mt-lg Страница содержит мелкие баги.
 
 Teleport(to='body')
 	ViewDrawer1(v-model:visible="drawer" v-model:partition="currentPartition" :mode="drawerMode" @add="add" @remove="remove")
