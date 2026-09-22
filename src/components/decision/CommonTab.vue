@@ -91,8 +91,10 @@ const clear = (stat: Stat) => {
 const drawer = ref(false)
 const currentPartition = ref<any>(null)
 const drawerMode = ref<'add' | 'edit'>('edit')
+const parentPartition = ref<any>(null)
 
 const open = (level: number, row: any, mode: 'add' | 'edit') => {
+	parentPartition.value = tree.value.getStat(row)?.parent?.data ?? null
 	currentPartition.value = row
 	currentPartition.value.level = level
 	drawerMode.value = mode
@@ -126,6 +128,7 @@ const add = (nodes: any[]) => {
 				kind: node.kind,
 				newkind: node.newkind,
 				field: node.field,
+				attachmentSetup: node.attachmentSetup,
 				selected: false,
 				hidden: false,
 				parents: node.parents,
@@ -164,7 +167,7 @@ const test = (stat: any, node: any) => {
 			q-input(v-model="store.tempNode.text1" label="Описание" type="textarea" outlined dense autogrow)
 
 	template(v-if='isView')
-		.section Разделы карточек
+		.section Разделы представления
 		Draggable(
 			ref="tree"
 			treeLine
@@ -204,7 +207,7 @@ const test = (stat: any, node: any) => {
 
 
 Teleport(to='body')
-	ViewDrawer1(v-model:visible="drawer" v-model:partition="currentPartition" :mode="drawerMode" @add="add" @remove="remove")
+	ViewDrawer1(v-model:visible="drawer" v-model:partition="currentPartition" :mode="drawerMode" :parent-partition="parentPartition" @add="add" @remove="remove")
 </template>
 
 <style scoped lang="scss">
