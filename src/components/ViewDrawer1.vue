@@ -9,6 +9,7 @@ const partition = defineModel<Par | null>('partition')
 
 const props = defineProps<{
 	mode: 'add' | 'edit'
+	parentPartition?: Par | null
 }>()
 
 const part = usePartitionStore()
@@ -21,6 +22,13 @@ interface SavedCondition {
 
 const conditions = ref<SavedCondition[]>([])
 const editingCondition = ref<SavedCondition | null>(null)
+
+interface AttachmentSetup {
+	originalText: string
+	originalField?: string
+	originalFields: Par[]
+	conditions: SavedCondition[]
+}
 
 interface Par {
 	id: string
@@ -35,6 +43,9 @@ interface Par {
 	main: boolean
 	psevdo?: string
 	level?: number
+	field?: unknown
+	attachmentSetup?: AttachmentSetup
+	conditions?: SavedCondition[]
 }
 //
 // локальный буфер редактирования
@@ -62,14 +73,19 @@ watch(partition, (next, prev) => {
 
 const showFields = ref(false)
 const expandFields = ref(true)
+const expandCondition = ref(true)
 const showOriginalSection = ref(false)
 const showAttachedSection = ref(false)
 const showConditionsSection = ref(false)
-const field = ref()
+const field = ref<string>()
+const originalText = ref('')
+const originalFields = ref<Par[]>([])
+const editingAttachment = computed(() => props.mode === 'edit' && (partition.value?.level ?? 0) > 1)
+const showAttachmentSections = computed(() => props.mode === 'add' || editingAttachment.value)
+const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value))
 
 const selectOptions = computed<string[]>(() => {
-	if (!draft.value.childs || draft.value.childs.length == 0) return []
-	return draft.value.childs.map((child) => child.text)
+	return originalFields.value.map((child) => child.text)
 })
 
 const insert = (nodes: Par[]) => {
@@ -124,16 +140,38 @@ const openExistingCondition = (condition: SavedCondition) => {
 	conditionDialog.value = true
 }
 
-// клонируем draft при открытии; children — чистая area для НОВЫХ добавлений, не копия старых
+// Keep edits local until Apply; attachment edits select the current node itself.
 watch(
-	() => [visible.value, partition.value] as const,
+	() => [visible.value, partition.value, props.mode] as const,
 	([isVisible, par]) => {
 		if (isVisible && par) {
 			const isLegacyPartition = !par.text && Boolean(par.parents?.length)
 			const text = par.text || par.parents?.at(-1) || ''
 			const parents = isLegacyPartition ? par.parents?.slice(0, -1) : par.parents
 
-			draft.value = { ...par, text, parents, children: [] }
+			draft.value = {
+				...par,
+				text,
+				parents,
+				children: editingAttachment.value
+					? [{ ...par, text, parents, children: par.childs ?? [] }]
+					: [],
+			}
+			const setup = editingAttachment.value ? par.attachmentSetup : undefined
+			const original = editingAttachment.value ? props.parentPartition : par
+			originalText.value = setup?.originalText ?? original?.text ?? ''
+			originalFields.value = clone(setup?.originalFields ?? original?.childs ?? [])
+			field.value = setup?.originalField
+			conditions.value = clone(
+				props.mode === 'add' ? [] : (setup?.conditions ?? par.conditions ?? [])
+			)
+			editingCondition.value = null
+			conditionDialog.value = false
+			clearId.value = null
+			part.selectedIds = new Set(draft.value.children.map((node) => node.id))
+			showOriginalSection.value = showAttachmentSections.value
+			showAttachedSection.value = showAttachmentSections.value
+			showConditionsSection.value = showAttachmentSections.value
 			removedIds.value = new Set()
 		}
 	},
@@ -143,9 +181,9 @@ watch(
 watch(visible, (isVisible) => {
 	if (isVisible) {
 		showFields.value = props.mode === 'edit'
-		showOriginalSection.value = props.mode === 'add'
-		showAttachedSection.value = props.mode === 'add'
-		showConditionsSection.value = props.mode === 'add'
+		showOriginalSection.value = showAttachmentSections.value
+		showAttachedSection.value = showAttachmentSections.value
+		showConditionsSection.value = showAttachmentSections.value
 		return
 	}
 
@@ -164,10 +202,39 @@ watch(conditionDialog, (isOpen) => {
 
 const save = () => {
 	if (!draft.value || !partition.value) return
+	if (editingAttachment.value && !draft.value.children.length) return
+	if (props.mode === 'add') draft.value.text = originalText.value
 	const { children, ...rest } = draft.value
 	Object.assign(partition.value, rest) // structural children не трогаем — этим владеет he-tree
+	const attachmentSetup: AttachmentSetup = clone({
+		originalText: originalText.value,
+		originalField: field.value,
+		originalFields: originalFields.value,
+		conditions: conditions.value,
+	})
+	if (editingAttachment.value) {
+		const selected = children[0]
+		if (!selected) return
+		Object.assign(partition.value, {
+			id: selected.id,
+			text: selected.text,
+			parents: selected.parents,
+			kind: selected.kind,
+			newkind: selected.newkind,
+			field: selected.field,
+			childs: selected.children ?? [],
+			attachmentSetup,
+		})
+	} else if (props.mode === 'edit') {
+		partition.value.conditions = clone(conditions.value)
+	}
 	visible.value = false
-	if (children.length) emit('add', children)
+	if (props.mode === 'add' && children.length) {
+		emit(
+			'add',
+			children.map((node) => ({ ...node, attachmentSetup: clone(attachmentSetup) }))
+		)
+	}
 	if (removedIds.value.size) emit('remove', [...removedIds.value])
 }
 </script>
@@ -193,24 +260,31 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 					template(v-for="item in draft.parents" :key="item")
 						div {{ item }}
 						.q-mx-sm >
-					div {{ draft.text }}
+					div(v-if='!draft.field') {{ draft.text }}
 
-			q-expansion-item.section-expansion(v-if='partition.level == 1 && mode == "edit"' v-model="expandFields" dense switchToggleSide)
-				template(#header)
-					.header Поля раздела
-				q-list.q-ml-md
-					q-item.field(v-for="item in draft.childs" :key="item.id" clickable dense)
-						q-item-section(side)
-							q-icon(name="mdi-circle-small" color="primary")
-						q-item-section {{ item.text }}
+			template(v-if="mode === 'edit'")
+				q-expansion-item.section-expansion(v-if='partition.level == 1' v-model="expandFields" dense switchToggleSide)
+					template(#header)
+						.header Поля раздела
+					q-list.q-ml-md
+						q-item.field(v-for="item in draft.childs" :key="item.id" clickable dense)
+							q-item-section(side)
+								q-icon(name="mdi-circle-small" color="primary")
+							q-item-section {{ item.text }}
 
-			template(v-if="mode === 'add'")
+			template(v-if="showAttachmentSections")
 				q-expansion-item.section-expansion(v-model="showOriginalSection" dense switchToggleSide)
 					template(#header)
 						.header Оригинальный раздел
 					.grid2
 						label Оригинальный раздел:
-						q-input(v-model="draft.text" dense outlined)
+						.txt1
+							template(v-for="item in draft.parents" :key="item")
+								div {{ item }}
+								.q-mx-sm >
+							div(v-if='!draft.field') {{ draft.text }}
+						// q-input(v-model="originalText" dense outlined)
+
 						label Оригинальное поле:
 						q-select(v-model="field" dense optionsDense outlined :options="selectOptions")
 
@@ -227,30 +301,30 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 									div {{ chip.text }}
 									q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeDraftField(index, chip)" size="sm")
 						.tree
-							PartitionTree1(@update:selected="insert" v-model:clear='clearId')
+							PartitionTree1(:single="editingAttachment" @update:selected="insert" v-model:clear='clearId')
 
-				q-expansion-item.section-expansion(v-model="showConditionsSection" dense switchToggleSide)
-					template(#header)
-						.header Условие
-					q-list.q-mx-md.q-mb-sm(v-if="conditions.length" dense)
-						q-item.conditionPreview(v-for="(condition, index) in conditions" :key="`${condition.preview}-${index}`" clickable @click="openExistingCondition(condition)")
-							q-item-section {{ condition.preview }}
-							q-item-section(side)
-								q-btn(flat round dense size="sm" icon="mdi-close" color="secondary" @click.stop="removeConditionPreview(index)")
+			q-expansion-item.section-expansion(v-model="showConditionsSection" dense switchToggleSide)
+				template(#header)
+					.header Условие
+				q-list.q-mx-md.q-mb-sm(v-if="conditions.length" dense)
+					q-item.conditionPreview(v-for="(condition, index) in conditions" :key="`${condition.preview}-${index}`" clickable @click="openExistingCondition(condition)")
+						q-item-section {{ condition.preview }}
+						q-item-section(side)
+							q-btn(flat round dense size="sm" icon="mdi-close" color="secondary" @click.stop="removeConditionPreview(index)")
 
-					.text-center.q-mb-md
-						q-btn(outline color="primary" label="Задать условие" size='sm' @click="openNewCondition")
+				.text-center.q-mb-md
+					q-btn(outline color="primary" label="Задать условие" size='sm' @click="openNewCondition")
 
 	.actions
 		q-btn(flat color="primary" label="Отмена" @click="visible = false") 
-		q-btn(unelevated color="primary" label="Применить" @click="save") 
+		q-btn(unelevated color="primary" label="Применить" :disable="editingAttachment && !draft.children.length" @click="save")
 
-	BuildConditionDialog(
-		v-model="conditionDialog"
-		:condition-tree="editingCondition?.tree ?? null"
-		:preview="editingCondition?.preview ?? null"
-		@apply="saveCondition"
-	)
+BuildConditionDialog(
+	v-model="conditionDialog"
+	:condition-tree="editingCondition?.tree ?? null"
+	:preview="editingCondition?.preview ?? null"
+	@apply="saveCondition"
+)
 </template>
 
 <style scoped lang="scss">

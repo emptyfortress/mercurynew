@@ -6,6 +6,7 @@ import { filterByCommon } from '@/utils/utils'
 import PhVirtualReality from '@/components/icons/PhVirtualReality.vue'
 import { usePartitionStore } from '@/stores/partition'
 
+const props = defineProps<{ single?: boolean }>()
 const part = usePartitionStore()
 const clear = defineModel('clear')
 
@@ -74,6 +75,7 @@ function toggleSelected(node: any) {
 	if (next.has(node.id)) {
 		next.delete(node.id)
 	} else {
+		if (props.single) next.clear()
 		for (const id of next) {
 			if (topIdMap.value[id] === nodeTop) {
 				next.delete(id)
@@ -86,7 +88,7 @@ function toggleSelected(node: any) {
 	part.selectedIds = next
 	emit(
 		'update:selected',
-		[...next].map((id) => nodeMap.value[id])
+		[...next].map((id) => nodeMap.value[id]).filter(Boolean)
 	)
 }
 
