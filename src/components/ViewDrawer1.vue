@@ -251,7 +251,7 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 			q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
 
 		q-scroll-area(ref="scrollAreaRef" style="height: 100%")
-
+			// pre {{ draft }}
 			.grid2(v-if="draft && mode !== 'add'")
 				label Псевдоним:
 				q-input(v-model="draft.psevdo" dense outlined)
@@ -279,11 +279,10 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 					.grid2
 						label Оригинальный раздел:
 						.txt1
-							template(v-for="item in draft.parents" :key="item")
+							template(v-if='partition.attachmentSetup' v-for="item in partition.attachmentSetup.originalFields[0].parents" :key="item")
 								div {{ item }}
 								.q-mx-sm >
 							div(v-if='!draft.field') {{ draft.text }}
-						// q-input(v-model="originalText" dense outlined)
 
 						label Оригинальное поле:
 						q-select(v-model="field" dense optionsDense outlined :options="selectOptions")

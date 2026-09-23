@@ -150,7 +150,7 @@ const remove = (ids: string[]) => {
 }
 const test = (stat: any, node: any) => {
 	console.log(stat)
-	console.log(node)
+	// console.log(node)
 }
 </script>
 
