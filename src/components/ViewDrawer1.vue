@@ -79,7 +79,8 @@ const editingAttachment = computed(() => props.mode === 'edit' && (partition.val
 const showAttachmentSections = computed(() => props.mode === 'add' || editingAttachment.value)
 const originalBreadcrumbs = computed(() => {
 	if (editingAttachment.value) {
-		return [...(draft.value.parents ?? []), draft.value.text].filter(Boolean)
+		const originalParents = originalFields.value[0]?.parents ?? draft.value.parents ?? []
+		return [...originalParents, ...(!draft.value.field && draft.value.text ? [draft.value.text] : [])]
 	}
 	return originalText.value ? [originalText.value] : []
 })
