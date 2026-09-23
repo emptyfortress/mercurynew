@@ -80,7 +80,10 @@ const showAttachmentSections = computed(() => props.mode === 'add' || editingAtt
 const originalBreadcrumbs = computed(() => {
 	if (editingAttachment.value) {
 		const originalParents = originalFields.value[0]?.parents ?? draft.value.parents ?? []
-		return [...originalParents, ...(!draft.value.field && draft.value.text ? [draft.value.text] : [])]
+		return [
+			...originalParents,
+			...(!draft.value.field && draft.value.text ? [draft.value.text] : []),
+		]
 	}
 	return originalText.value ? [originalText.value] : []
 })
@@ -91,7 +94,7 @@ const drawerTitle = computed(() => {
 			: draft.value.psevdo || draft.value.text
 	return props.mode === 'add'
 		? `Добавить дочерний раздел к «${name || 'разделу'}»`
-		: `Редактировать «${name || 'раздел'}»`
+		: 'Редактировать раздел'
 })
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value))
 
