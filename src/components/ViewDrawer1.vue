@@ -71,17 +71,27 @@ watch(partition, (next, prev) => {
 	timer = setTimeout(() => (isSwitching.value = false), 180)
 })
 
-const showFields = ref(false)
-const expandFields = ref(true)
-const expandCondition = ref(true)
-const showOriginalSection = ref(false)
-const showAttachedSection = ref(false)
-const showConditionsSection = ref(false)
+const expandFields = ref(false)
 const field = ref<string>()
 const originalText = ref('')
 const originalFields = ref<Par[]>([])
 const editingAttachment = computed(() => props.mode === 'edit' && (partition.value?.level ?? 0) > 1)
 const showAttachmentSections = computed(() => props.mode === 'add' || editingAttachment.value)
+const originalBreadcrumbs = computed(() => {
+	if (editingAttachment.value) {
+		return [...(draft.value.parents ?? []), draft.value.text].filter(Boolean)
+	}
+	return originalText.value ? [originalText.value] : []
+})
+const drawerTitle = computed(() => {
+	const name =
+		props.mode === 'add'
+			? originalText.value || partition.value?.text
+			: draft.value.psevdo || draft.value.text
+	return props.mode === 'add'
+		? `Добавить дочерний раздел к «${name || 'разделу'}»`
+		: `Редактировать «${name || 'раздел'}»`
+})
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value))
 
 const selectOptions = computed<string[]>(() => {
@@ -169,9 +179,7 @@ watch(
 			conditionDialog.value = false
 			clearId.value = null
 			part.selectedIds = new Set(draft.value.children.map((node) => node.id))
-			showOriginalSection.value = showAttachmentSections.value
-			showAttachedSection.value = showAttachmentSections.value
-			showConditionsSection.value = showAttachmentSections.value
+			expandFields.value = false
 			removedIds.value = new Set()
 		}
 	},
@@ -180,17 +188,9 @@ watch(
 
 watch(visible, (isVisible) => {
 	if (isVisible) {
-		showFields.value = props.mode === 'edit'
-		showOriginalSection.value = showAttachmentSections.value
-		showAttachedSection.value = showAttachmentSections.value
-		showConditionsSection.value = showAttachmentSections.value
 		return
 	}
 
-	showFields.value = false
-	showOriginalSection.value = false
-	showAttachedSection.value = false
-	showConditionsSection.value = false
 	field.value = undefined
 	clearId.value = null
 	part.selectedIds.clear()
@@ -246,77 +246,58 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 			.panel-skeleton-overlay(v-if="isSwitching" key="skeleton")
 
 		.hd
-			span(v-if="mode === 'add'") Присоединить раздел {{ partition.level }}
-			span(v-else) Редактировать {{ partition.level }}
-			q-btn(flat round icon="mdi-close" color="primary" dense @click="visible = false") 
+			span {{ drawerTitle }}
+			q-btn(flat round icon="mdi-close" color="primary" dense aria-label="Закрыть" @click="visible = false")
 
-		q-scroll-area(ref="scrollAreaRef" style="height: 100%")
-			// pre {{ draft }}
-			.grid2(v-if="draft && mode !== 'add'")
-				label Псевдоним:
-				q-input(v-model="draft.psevdo" dense outlined)
-				label Раздел:
-				.txt1
-					template(v-for="item in draft.parents" :key="item")
-						div {{ item }}
-						.q-mx-sm >
-					div(v-if='!draft.field') {{ draft.text }}
+		q-scroll-area.panel-scroll
+			.drawer-section(v-if="mode === 'edit'")
+				.section-title Основное
+				q-input(v-model="draft.psevdo" dense outlined label="Псевдоним")
+				.context-label Раздел
+				.path
+					span(v-for="item in draft.parents" :key="item") {{ item }}
+					span(v-if="!draft.field") {{ draft.text }}
 
-			template(v-if="mode === 'edit'")
-				q-expansion-item.section-expansion(v-if='partition.level == 1' v-model="expandFields" dense switchToggleSide)
-					template(#header)
-						.header Поля раздела
-					q-list.q-ml-md
-						q-item.field(v-for="item in draft.childs" :key="item.id" clickable dense)
-							q-item-section(side)
-								q-icon(name="mdi-circle-small" color="primary")
-							q-item-section {{ item.text }}
+			.drawer-section(v-if="mode === 'edit' && partition.level == 1")
+				q-expansion-item.fields-expansion(v-model="expandFields" dense switch-toggle-side :label="`Поля раздела · ${draft.childs?.length ?? 0}`")
+					q-scroll-area.field-scroll
+						q-list(dense)
+							q-item.field(v-for="item in draft.childs" :key="item.id" dense)
+								q-item-section {{ item.text }}
 
 			template(v-if="showAttachmentSections")
-				q-expansion-item.section-expansion(v-model="showOriginalSection" dense switchToggleSide)
-					template(#header)
-						.header Оригинальный раздел
-					.grid2
-						label Оригинальный раздел:
-						.txt1
-							template(v-if='partition.attachmentSetup' v-for="item in partition.attachmentSetup.originalFields[0].parents" :key="item")
-								div {{ item }}
-								.q-mx-sm >
-							div(v-if='!draft.field') {{ draft.text }}
+				.drawer-section
+					.section-title Исходный раздел
+					.path(v-if="originalBreadcrumbs.length")
+						span(v-for="(item, index) in originalBreadcrumbs" :key="`${item}-${index}`") {{ item }}
+					.empty-message(v-else) Раздел не указан
+					q-select.q-mt-sm(v-model="field" dense options-dense outlined clearable label="Оригинальное поле (необязательно)" :options="selectOptions")
 
-						label Оригинальное поле:
-						q-select(v-model="field" dense optionsDense outlined :options="selectOptions")
+				.drawer-section
+					.section-title {{ mode === 'add' ? 'Выбранные дочерние разделы' : 'Присоединённый раздел' }} · {{ draft.children.length }}
+					.empty-message(v-if="!draft.children.length") Выберите раздел или поле в дереве ниже
+					.selected-item(v-for="(chip, index) in draft.children" :key="chip.id")
+						.path
+							span(v-for="item in chip.parents" :key="item") {{ item }}
+							span {{ chip.text }}
+						q-btn(flat round dense size="sm" icon="mdi-close" color="blue-grey-5" :aria-label="`Убрать ${chip.text}`" @click="removeDraftField(index, chip)")
+					.context-label.q-mt-md {{ mode === 'add' ? 'Добавить из дерева' : 'Изменить выбор' }}
+					q-scroll-area.tree-scroll
+						PartitionTree1(:single="editingAttachment" @update:selected="insert" v-model:clear="clearId")
 
-				q-expansion-item.section-expansion(v-model="showAttachedSection" dense switchToggleSide)
-					template(#header)
-						.header Присоединяемый раздел / поле
-					.q-ma-md()
-						.column.items-start.q-gutter-y-sm
-							.mai(v-for="(chip, index) in draft.children" :key="chip.id")
-								.txt
-									template(v-for="item in chip.parents" :key="item")
-										div {{ item }}
-										.q-mx-sm >
-									div {{ chip.text }}
-									q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeDraftField(index, chip)" size="sm")
-						.tree
-							PartitionTree1(:single="editingAttachment" @update:selected="insert" v-model:clear='clearId')
-
-			q-expansion-item.section-expansion(v-model="showConditionsSection" dense switchToggleSide)
-				template(#header)
-					.header Условие
-				q-list.q-mx-md.q-mb-sm(v-if="conditions.length" dense)
+			.drawer-section
+				.section-title Условия · {{ conditions.length }}
+				.empty-message(v-if="!conditions.length") Условие не задано
+				q-list.condition-list(v-else dense)
 					q-item.conditionPreview(v-for="(condition, index) in conditions" :key="`${condition.preview}-${index}`" clickable @click="openExistingCondition(condition)")
 						q-item-section {{ condition.preview }}
 						q-item-section(side)
-							q-btn(flat round dense size="sm" icon="mdi-close" color="secondary" @click.stop="removeConditionPreview(index)")
+							q-btn(flat round dense size="sm" icon="mdi-close" color="secondary" :aria-label="'Удалить условие'" @click.stop="removeConditionPreview(index)")
+				q-btn.q-mt-sm(outline color="primary" :label="conditions.length ? 'Добавить условие' : 'Задать условие'" size="sm" @click="openNewCondition")
 
-				.text-center.q-mb-md
-					q-btn(outline color="primary" label="Задать условие" size='sm' @click="openNewCondition")
-
-	.actions
-		q-btn(flat color="primary" label="Отмена" @click="visible = false") 
-		q-btn(unelevated color="primary" label="Применить" :disable="editingAttachment && !draft.children.length" @click="save")
+		.actions
+			q-btn(flat color="primary" label="Отмена" @click="visible = false")
+			q-btn(unelevated color="primary" :label="mode === 'add' ? 'Добавить' : 'Сохранить изменения'" :disable="editingAttachment && !draft.children.length" @click="save")
 
 BuildConditionDialog(
 	v-model="conditionDialog"
@@ -327,43 +308,98 @@ BuildConditionDialog(
 </template>
 
 <style scoped lang="scss">
-.panel-content {
-	height: 100%;
-}
 .panel {
-	height: calc(100% - 95px);
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
 }
-.tree {
-	background: var(--bgLight);
-	width: 100%;
-	padding: 0.5rem;
+.panel-scroll {
+	flex: 1;
+	min-height: 0;
+}
+.drawer-section {
+	padding: 1rem;
+	border-bottom: 1px solid #cfdbec;
+}
+.section-title {
+	font-weight: 600;
+	color: $primary;
+	margin-bottom: 0.75rem;
+}
+.context-label {
+	font-size: 0.8rem;
+	color: $secondary;
+	margin: 0.75rem 0 0.35rem;
+}
+.path {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.25rem;
+	font-size: 0.9rem;
+	min-width: 0;
+	span + span::before {
+		content: '›';
+		margin-right: 0.25rem;
+		// color: black;
+	}
+}
+.empty-message {
+	font-size: 0.875rem;
+	color: $secondary;
+	padding: 0.35rem 0;
+}
+.selected-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.25rem;
+	padding: 0.25rem 0.5rem;
+	margin-bottom: 0.35rem;
+	background: var(--selection);
 	border-radius: 0.5rem;
+}
+.tree-scroll {
+	height: min(36vh, 320px);
+	min-height: 180px;
+	background: var(--bgLight);
 	border: var(--border);
-	margin-bottom: 2rem;
+	border-radius: 0.5rem;
+	padding: 0.5rem;
+}
+.field-scroll {
+	height: min(28vh, 220px);
+	min-height: 100px;
+}
+.fields-expansion :deep(.q-item) {
+	color: $primary;
+}
+.condition-list {
+	display: grid;
+	gap: 0.35rem;
 }
 .actions {
 	display: flex;
-	width: 100%;
-	justify-content: end;
-	position: absolute;
-	bottom: 0;
-	right: 0;
+	justify-content: flex-end;
+	gap: 0.5rem;
 	padding: 0.5rem 1rem;
+	background: white;
 	box-shadow: 0 -2px 7px rgba($color: #000000, $alpha: 0.2);
-	z-index: 2;
+	flex: none;
 }
 .hd {
-	padding: 0.25rem 1rem;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
 	border-bottom: 1px solid #cfdbec;
-	position: relative;
-	font-size: 1.2rem;
-	text-align: center;
-	gap: 0.25rem;
-	.q-btn {
-		position: absolute;
-		left: 0.5rem;
-		top: 1px;
-		color: $primary;
+	font-size: 1.05rem;
+	font-weight: 600;
+	line-height: 1.3;
+	color: $primary;
+	span {
+		flex: 1;
 	}
 }
 :deep(.q-drawer__content) {
@@ -383,66 +419,6 @@ BuildConditionDialog(
 .skeleton-fade-leave-to {
 	opacity: 0;
 }
-.grid2 {
-	display: grid;
-	grid-template-columns: auto 1fr;
-	align-items: center;
-	column-gap: 1rem;
-	row-gap: 0.5rem;
-	margin: 1rem;
-}
-.section-expansion {
-	:deep(.q-expansion-item__container > .q-item) {
-		background: $secondary;
-		color: white;
-		font-size: 1.1rem;
-		padding-left: 0.5rem;
-		margin-bottom: 0.5rem;
-	}
-
-	:deep(.q-expansion-item__container > .q-item .q-item__section--side) {
-		color: white;
-	}
-
-	:deep(.q-focus-helper) {
-		display: none;
-	}
-}
-.mai {
-	display: flex;
-	justify-content: start;
-	align-items: center;
-	background: var(--selection);
-	padding: 2px 16px;
-	padding-right: 2px;
-	border-radius: 5rem;
-	margin-bottom: 0.5rem;
-}
-.txt {
-	display: flex;
-	align-items: center;
-	justify-self: start;
-	flex-wrap: wrap;
-	font-size: 0.9rem;
-	background: var(--selection);
-	// padding: 0.5rem 1rem;
-	border-radius: 2rem;
-}
-.txt1 {
-	display: flex;
-	align-items: center;
-	justify-self: start;
-	flex-wrap: wrap;
-	font-size: 0.9rem;
-	background: var(--selection);
-	padding: 0.5rem 1rem;
-	border-radius: 2rem;
-}
-.sec {
-	margin-top: 2rem;
-	color: $secondary;
-	grid-column: 1/-1;
-}
 .conditionPreview {
 	background: var(--bgLight);
 	border: var(--border);
@@ -454,8 +430,5 @@ BuildConditionDialog(
 	:deep(.q-focus-helper) {
 		display: none;
 	}
-}
-.field {
-	font-size: 0.8rem;
 }
 </style>
