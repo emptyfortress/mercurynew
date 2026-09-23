@@ -35,3 +35,4 @@ coverage
 .claude/sessions/
 .claude/conversations/
 .claude/checkpoints/
+.playwright-mcp
