@@ -47,6 +47,7 @@ q-dialog(v-model="open")
 			.text-h6 Переводы названия
 			.text-caption.text-grey-7 Русское название задаётся в основном поле.
 		q-card-section.q-pt-none
+			.text-caption.q-mb-xs Локализации
 			q-input(
 				v-for="locale in translationLocales"
 				:key="locale.code"

@@ -120,6 +120,7 @@ q-dialog(v-model="modelValue")
 							q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
 								q-tooltip Переводы названия
 					.q-mt-sm(v-if="showNameTranslations")
+						.text-caption.q-mb-xs Локализации
 						q-input(
 							v-for="locale in translationLocales"
 							:key="locale.code"
@@ -136,6 +137,7 @@ q-dialog(v-model="modelValue")
 							q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы описания" @click="showDescriptionTranslations = !showDescriptionTranslations")
 								q-tooltip Переводы описания
 					.q-mt-sm(v-if="showDescriptionTranslations")
+						.text-caption.q-mb-xs Локализации
 						q-input(
 							v-for="locale in translationLocales"
 							:key="locale.code"

@@ -187,6 +187,7 @@ q-dialog(v-model="modelValue")
 						q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showFolderTranslations = !showFolderTranslations")
 							q-tooltip Переводы названия
 				.q-pl-sm.q-mt-md(v-if="showFolderTranslations")
+					.text-caption.q-mb-xs Локализации
 					q-input(
 						v-for="locale in translationLocales"
 						:key="locale.code"

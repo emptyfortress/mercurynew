@@ -76,6 +76,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)"  @hide=
 						q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
 							q-tooltip Переводы названия
 				.q-pl-sm.q-mt-md(v-if='(props.mode == "folder" || props.mode == "view") && showNameTranslations')
+					.text-caption.q-mb-xs Локализации
 					q-input(
 						v-for="locale in translationLocales"
 						:key="locale.code"

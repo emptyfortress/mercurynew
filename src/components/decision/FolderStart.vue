@@ -177,6 +177,7 @@ const zapr = ref()
 								q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
 									q-tooltip Переводы названия
 						.q-pl-sm.q-mt-md(v-if="showNameTranslations")
+							.text-caption.q-mb-xs Локализации
 							q-input(
 								v-for="locale in translationLocales"
 								:key="locale.code"
