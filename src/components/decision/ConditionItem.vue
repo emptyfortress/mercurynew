@@ -175,7 +175,9 @@ const setName = (e: string) => {
 
 	.but
 		q-btn.close(flat round icon="mdi-close" @click="kill" size="sm")
+			q-tooltip Удалить
 		q-btn.dub(flat round icon="mdi-plus-circle-multiple-outline" @click="$emit('duble')" size="sm")
+			q-tooltip Дублировать
 
 	SynModal(v-model="modal" :stat="props.stat" @setname="setName")
 </template>
