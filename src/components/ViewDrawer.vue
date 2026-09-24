@@ -115,7 +115,6 @@ q-drawer(v-model='visible' side='right' :width="expanded ? 760 : 480" overlay pe
 	border-bottom: 1px solid #cfdbec;
 }
 .section-title {
-	color: $primary;
 	span {
 		font-size: 1.1rem;
 		font-weight: 600;

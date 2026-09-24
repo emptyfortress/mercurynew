@@ -328,7 +328,6 @@ BuildConditionDialog(
 }
 .section-title {
 	font-weight: 600;
-	color: $primary;
 	margin-bottom: 0.75rem;
 }
 .context-label {
