@@ -3,7 +3,7 @@ import { ref, computed, reactive, watch } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import ConditionItem from '@/components/decision/ConditionItem.vue'
 import { useDrag } from '@/stores/drag'
-import PreviewFormDialog from '@/components/decision/PreviewFormDialog.vue'
+// import PreviewFormDialog from '@/components/decision/PreviewFormDialog.vue'
 import { uid } from 'quasar'
 
 const props = defineProps({
@@ -112,18 +112,18 @@ watch(
 	}
 )
 
-const focus = (e: Stat) => {
-	let other = tree.value.statsFlat.filter((item: Stat) => item !== e)
-	e.data.focus = !e.data.focus
-	if (e.data.focus == true) {
-		other.map((item: Stat) => (item.data.focus = false))
-		drag.focus = true
-		drag.setKind(e.data.kind!)
-	} else {
-		other.map((item: Stat) => (item.data.focus = false))
-		drag.focus = false
-	}
-}
+// const focus = (e: Stat) => {
+// 	let other = tree.value.statsFlat.filter((item: Stat) => item !== e)
+// 	e.data.focus = !e.data.focus
+// 	if (e.data.focus == true) {
+// 		other.map((item: Stat) => (item.data.focus = false))
+// 		drag.focus = true
+// 		drag.setKind(e.data.kind!)
+// 	} else {
+// 		other.map((item: Stat) => (item.data.focus = false))
+// 		drag.focus = false
+// 	}
+// }
 const calcClass = (e: Stat) => {
 	if (drag.focus && e.data.focus) {
 		return 'focus'
@@ -164,7 +164,7 @@ const hideFirst = computed(() => {
 				@toggleVis="toggle(stat)"
 				@kill="remove(stat)")
 
-	PreviewFormDialog(v-model="props.preview" :tree="all" @close="emit('closePreview')" @find="emit('find')")
+	// PreviewFormDialog(v-model="props.preview" :tree="all" @close="emit('closePreview')" @find="emit('find')")
 </template>
 <style scoped lang="scss">
 .con {
