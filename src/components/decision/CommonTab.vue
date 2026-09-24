@@ -28,7 +28,9 @@ watchEffect(() => {
 	if (store.currentNode) {
 		store.tempNode.text = store.currentNode.data.text
 		store.tempNode.text1 = store.currentNode.data.text1
-		store.tempNode.nameTranslations = { ...(store.currentNode.data.nameTranslations ?? {}) } as NameTranslations
+		store.tempNode.nameTranslations = {
+			...(store.currentNode.data.nameTranslations ?? {}),
+		} as NameTranslations
 		store.tempNode.descriptionTranslations = {
 			...(store.currentNode.data.descriptionTranslations ?? {}),
 		} as NameTranslations
@@ -182,6 +184,7 @@ const test = (stat: any, node: any) => {
 				template(v-if="props.localizeName" v-slot:append)
 					q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
 						q-tooltip Переводы названия
+
 			.q-pl-sm.q-mt-md(v-if="props.localizeName && showNameTranslations")
 				q-input(
 					v-for="locale in translationLocales"

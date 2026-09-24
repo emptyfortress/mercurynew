@@ -5,6 +5,7 @@ import '@he-tree/vue/style/default.css'
 import DirMenu from '@/components/decision/DirMenu.vue'
 import { useRouter, useRoute } from 'vue-router'
 import CreateDialog from '@/components/decision/CreateDialog.vue'
+import CreateDialog3 from '@/components/decision/CreateDialog3.vue'
 import ChipModalNew from '@/components/decision/ChipModal-new.vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { uid } from 'quasar'
@@ -29,6 +30,8 @@ const tree = ref()
 const query = ref('')
 const dialog = ref(false)
 const dialog1 = ref(false)
+const dialog3 = ref(false)
+const dialog3Mode = ref<'folder' | 'view'>('view')
 
 const activeSourceType = computed<TreeSourceType>(() => props.sourceType ?? 'selectedBranch')
 
@@ -220,8 +223,13 @@ const fold = () => {
 	dialog.value = !dialog.value
 }
 const view = () => {
-	folderMode.value = false
-	dialog.value = !dialog.value
+	dialog3Mode.value = 'view'
+	dialog3.value = true
+}
+
+const createViewFolder = () => {
+	dialog3Mode.value = 'folder'
+	dialog3.value = true
 }
 
 // migration FieldTree
@@ -260,8 +268,10 @@ onBeforeRouteUpdate((to, from) => {
 
 watchEffect(() => {
 	if (simpleStore.addRequest === true && simpleStore.addTemp !== null) {
-		if (!simpleStore.selectedElement) return
-		const selectedStat = tree.value.getStat(simpleStore.selectedElement)
+		const selectedStat = simpleStore.selectedElement
+			? tree.value.getStat(simpleStore.selectedElement)
+			: tree.value.rootChildren[0]
+		if (!selectedStat) return
 		tree.value.add(simpleStore.addTemp, selectedStat)
 		nextTick()
 		const newStat = tree.value.getStat(simpleStore.addTemp)
@@ -387,11 +397,12 @@ div
 
 	q-fab.fab(v-if='props.mode == "view"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
 		q-fab-action(color="primary" icon="mdi-table" external-label label="Представление" label-position="left" @click="view")
-		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="createViewFolder")
 
 	q-btn.fab(v-if='props.mode !== "view"' round icon="mdi-plus" color="primary" @click="dialog = !dialog")
 
 	CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='folderMode' @create='create')
+	CreateDialog3(v-model="dialog3" :mode="dialog3Mode")
 	ChipModalNew(v-model="dialog1" create)
 </template>
 
