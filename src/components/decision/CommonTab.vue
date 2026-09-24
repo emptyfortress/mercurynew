@@ -72,6 +72,9 @@ const isView = computed(() => {
 	return route.fullPath.includes('views')
 })
 
+const canLocalizeName = computed(() => props.localizeName || isView.value)
+const canLocalizeDescription = computed(() => props.localizeDescription || isView.value)
+
 const drop = () => {
 	console.log(part.externalDragPayload)
 	const node = part.externalDragPayload
@@ -181,11 +184,11 @@ const test = (stat: any, node: any) => {
 	.row.q-col-gutter-md
 		.col-6
 			q-input(v-model="store.tempNode.text" label="Название" outlined dense)
-				template(v-if="props.localizeName" v-slot:append)
+				template(v-if="canLocalizeName" v-slot:append)
 					q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
 						q-tooltip Переводы названия
 
-			.q-pl-sm.q-mt-md(v-if="props.localizeName && showNameTranslations")
+			.q-pl-sm.q-mt-md(v-if="canLocalizeName && showNameTranslations")
 				q-input(
 					v-for="locale in translationLocales"
 					:key="locale.code"
@@ -201,10 +204,10 @@ const test = (stat: any, node: any) => {
 			q-input(v-model="author" label="Автор" outlined dense readonly)
 		.col-12
 			q-input(v-model="store.tempNode.text1" label="Описание" type="textarea" outlined dense autogrow)
-				template(v-if="props.localizeDescription" v-slot:append)
+				template(v-if="canLocalizeDescription" v-slot:append)
 					q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы описания" @click="showDescriptionTranslations = !showDescriptionTranslations")
 						q-tooltip Переводы описания
-			.q-pl-sm.q-mt-md(v-if="props.localizeDescription && showDescriptionTranslations")
+			.q-pl-sm.q-mt-md(v-if="canLocalizeDescription && showDescriptionTranslations")
 				q-input(
 					v-for="locale in translationLocales"
 					:key="locale.code"

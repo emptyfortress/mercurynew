@@ -7,6 +7,8 @@ import ColumnsTab1 from '@/components/decision/ColumnsTab1.vue'
 import SortPanel from '@/components/decision/SortPanel.vue'
 import GroupPanel from '@/components/decision/GroupPanel.vue'
 import ViewFolder from '@/components/decision/ViewFolder.vue'
+import ViewLocalization from '@/components/decision/ViewLocalization.vue'
+import { useDndStore } from '@/stores/dnd'
 // import FilterPanel from '@/components/decision/FilterPanel.vue'
 // import StylePanel from '@/components/decision/StylePanel.vue'
 
@@ -17,6 +19,15 @@ const props = defineProps({
 const tabs = defineModel<string>()
 
 const store = useSimpleStore()
+const dndStore = useDndStore()
+
+const viewLocalization = computed(() => {
+	const element = store.selectedElement as any
+	if (!element) return { values: {} }
+	element.localization ??= { values: {} }
+	element.localization.values ??= {}
+	return element.localization
+})
 
 const emit = defineEmits(['maximize', 'reset'])
 const switchSidebar = () => {
@@ -37,6 +48,16 @@ const isFolder = computed(() => {
 const save = () => {
 	store.currentNode.data.text = store.tempNode.text
 	store.currentNode.data.text1 = store.tempNode.text1
+	store.currentNode.data.nameTranslations = { ...store.tempNode.nameTranslations }
+	store.currentNode.data.descriptionTranslations = { ...store.tempNode.descriptionTranslations }
+}
+
+const cancel = () => {
+	if (!store.currentNode) return
+	store.tempNode.text = store.currentNode.data.text
+	store.tempNode.text1 = store.currentNode.data.text1
+	store.tempNode.nameTranslations = { ...(store.currentNode.data.nameTranslations ?? {}) }
+	store.tempNode.descriptionTranslations = { ...(store.currentNode.data.descriptionTranslations ?? {}) }
 }
 </script>
 
@@ -66,7 +87,7 @@ div(v-else)
 
 		.btngroup(v-if='store.selectedElement && store.selectedElement.type !== 0')
 			q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="save") 
-			q-btn(outline color="primary" label="Отмена" size="sm") 
+			q-btn(outline color="primary" label="Отмена" size="sm" @click="cancel")
 			q-btn(round flat color="primary" icon="mdi-sync" size="sm") 
 			q-chip(size='sm' color="amber") Есть изменения
 			q-chip(size='sm' color="blue-grey-3" icon="mdi-lock") Заблокировано вами
@@ -84,6 +105,7 @@ div(v-else)
 			q-tabs.q-mt-md(v-model="tabs" align="left" dense color="primary" class="text-primary")
 				q-tab(name='common' label='Представление')
 				q-tab(name='columns' label='Колонки')
+				q-tab(name='localization' label='Локализация')
 				q-tab(name='group' label='Группировки')
 				q-tab(name='sort' label='Сортировки')
 				q-tab(name='appearance' label='Внешний вид')
@@ -95,6 +117,8 @@ div(v-else)
 					CommonTab
 				q-tab-panel(name='columns')
 					ColumnsTab1
+				q-tab-panel(name='localization')
+					ViewLocalization(:columns="dndStore.columnData" :localization="viewLocalization")
 				q-tab-panel(name='group')
 					GroupPanel
 				q-tab-panel(name='sort')
