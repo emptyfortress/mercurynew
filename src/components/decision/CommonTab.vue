@@ -189,6 +189,7 @@ const test = (stat: any, node: any) => {
 						q-tooltip Переводы названия
 
 			.q-pl-sm.q-mt-md(v-if="canLocalizeName && showNameTranslations")
+				.text-caption.q-mb-xs Локализации
 				q-input(
 					v-for="locale in translationLocales"
 					:key="locale.code"
@@ -208,6 +209,7 @@ const test = (stat: any, node: any) => {
 					q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы описания" @click="showDescriptionTranslations = !showDescriptionTranslations")
 						q-tooltip Переводы описания
 			.q-pl-sm.q-mt-md(v-if="canLocalizeDescription && showDescriptionTranslations")
+				.text-caption.q-mb-xs Локализации
 				q-input(
 					v-for="locale in translationLocales"
 					:key="locale.code"
@@ -251,13 +253,7 @@ const test = (stat: any, node: any) => {
 						div(v-if="!node.field && !node.sourceColumnId") {{ node.text }}
 
 					.node-actions
-						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' ) 
-							q-menu
-								q-list
-									q-item.pink(clickable @click="clear(stat)" v-close-popup)
-										q-item-section(side)
-											q-icon(name="mdi-delete-outline" color="pink-9")
-										q-item-section Удалить
+						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' @click="clear(stat)") 
 
 
 Teleport(to='body')
