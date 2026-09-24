@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import '@he-tree/vue/style/material-design.css'
@@ -16,6 +16,7 @@ import type {
 } from './nodesTypes'
 
 const result = ref()
+const dirty = defineModel<boolean>('dirty', { default: false })
 const options = [
 	'Строка',
 	'Строка Unicode',
@@ -30,6 +31,15 @@ let nextId = 1
 
 const list = ref<AnyNode[]>([])
 const tree = ref()
+
+const initialState = JSON.stringify({ result: null, list: [] })
+watch(
+	[result, list],
+	() => {
+		dirty.value = JSON.stringify({ result: result.value ?? null, list: list.value }) !== initialState
+	},
+	{ deep: true, immediate: true }
+)
 
 const addFunction = (item: any) => {
 	console.log('add function chain', item)

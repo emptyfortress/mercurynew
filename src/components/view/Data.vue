@@ -18,6 +18,7 @@ interface Col {
 }
 
 const draft = defineModel<Col>('draft')
+const calcDirty = defineModel<boolean>('calcDirty', { default: false })
 const part = usePartitionStore()
 
 const showUnsavedDialog = ref(false)
@@ -30,14 +31,18 @@ const sel = (n: string) => {
 	if (draft.value && draft.value.source == undefined) {
 		pendingSource.value = n
 		changeSource()
-	} else {
+	} else if (draft.value.source === 'calc' && calcDirty.value) {
 		pendingSource.value = n
 		showUnsavedDialog.value = true
+	} else {
+		pendingSource.value = n
+		changeSource()
 	}
 }
 
 const changeSource = () => {
 	if (draft.value && pendingSource.value) {
+		if (draft.value.source === 'calc') calcDirty.value = false
 		draft.value.source = pendingSource.value
 	}
 
@@ -58,7 +63,6 @@ const removeField = (index: number, chip: any) => {
 	clearId.value = chip.id
 	draft.value?.children.splice(index, 1)
 }
-const showTree = ref(true)
 const showSystem = ref(false)
 
 const insert = (nodes: any[]) => {
@@ -94,28 +98,31 @@ const addSys = (item: any) => {
 <template lang="pug">
 label.q-mt-md.q-mb-sm Источник данных:
 .grid5(v-if='!!draft')
-	.chose(:class="{selected: draft.source == 'field'}")
+	.chose(:class="{selected: draft.source == 'field'}" @click="sel('field')")
 		q-radio(
 			:model-value="draft.source"
 			val="field"
 			label="Поле раздела"
 			dense
+			@click.stop
 			@update:model-value="sel"
 		)
-	.chose(:class="{selected: draft.source == 'system'}")
+	.chose(:class="{selected: draft.source == 'system'}" @click="sel('system')")
 		q-radio(
 			:model-value="draft.source"
 			val="system"
 			label="Системное поле"
 			dense
+			@click.stop
 			@update:model-value="sel"
 		)
-	.chose(:class="{selected: draft.source == 'calc'}")
+	.chose(:class="{selected: draft.source == 'calc'}" @click="sel('calc')")
 		q-radio(
 			:model-value="draft.source"
 			val="calc"
 			label="Вычисляемое поле"
 			dense
+			@click.stop
 			@update:model-value="sel"
 		)
 
@@ -128,9 +135,7 @@ transition(name="fade" mode="out-in")
 			transition-next="jump-up"
 		)
 			q-tab-panel(name='field')
-				.section
-					q-icon(name="mdi-form-textbox" color="white")
-					span Поле из раздела карточки
+				.section Поле из раздела карточки
 				.column.items-start.q-gutter-y-sm
 					.mai(v-for="(chip, index) in draft.children" :key="chip.id")
 						.txt
@@ -140,20 +145,13 @@ transition(name="fade" mode="out-in")
 							div {{ chip.text }}
 							q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeField(index, chip)" size="sm") 
 
-				q-expansion-item(v-model="showTree" label='Добавить поле' switchToggleSide)
-					template(v-slot:header)
-						.header
-							q-btn(flat color="primary" label="Добавить поле") 
-					.tree
-						FieldPicker(@update:selected="insert" v-model:clear='clearId')
-
-					q-checkbox(v-if='draft.kind == 0 || draft.kind == 1' v-model='html' label='Отображать содержимое колонки как HTML')
+				.tree
+					FieldPicker(@update:selected="insert" v-model:clear='clearId')
+				q-checkbox.q-mt-sm(v-if='draft.kind == 0 || draft.kind == 1' v-model='html' label='Отображать содержимое колонки как HTML')
 
 
 			q-tab-panel(name='system')
-				.section
-					q-icon(name="mdi-tools" color="white")
-					span Системное поле
+				.section Системное поле
 				.column.items-start.q-gutter-y-sm
 					.mai(v-for="(chip,index) in test" :key="chip.id")
 						.txt
@@ -171,10 +169,8 @@ transition(name="fade" mode="out-in")
 								q-item-label {{ item.label }}
 
 			q-tab-panel(name='calc')
-				.section
-					q-icon(name="mdi-calculator-variant-outline" color="white")
-					span  Вычисляемое поле
-				CalcField
+				.section Вычисляемое поле
+				CalcField(v-model:dirty="calcDirty")
 
 q-dialog(v-model="showUnsavedDialog")
 	q-card(style="min-width: 600px;")
@@ -210,19 +206,10 @@ q-dialog(v-model="showUnsavedDialog")
 	padding: 1rem 0;
 }
 .section {
-	background: $secondary;
-	color: white;
-	font-size: 1.1rem;
-	padding-left: 0.5rem;
+	color: $primary;
+	font-size: 0.95rem;
+	font-weight: 600;
 	margin-bottom: 0.5rem;
-	display: flex;
-	align-items: center;
-	.q-icon {
-		font-size: 1.4rem;
-	}
-	span {
-		margin-left: 0.5rem;
-	}
 }
 
 .chose {

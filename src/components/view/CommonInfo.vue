@@ -8,8 +8,8 @@ interface Col {
 	text: string
 	kind: null
 	newkind: null
-	children: []
-	sort: false
+	children: any[]
+	sort: boolean
 	order: string
 	hide: boolean
 	source?: string

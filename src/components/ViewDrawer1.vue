@@ -301,7 +301,7 @@ q-drawer(v-model='visible' side='right' :width="480" overlay persistent bordered
 
 		.actions
 			q-btn(flat color="primary" label="Отмена" @click="visible = false")
-			q-btn(unelevated color="primary" :label="mode === 'add' ? 'Добавить' : 'Сохранить изменения'" :disable="editingAttachment && !draft.children.length" @click="save")
+			q-btn(unelevated color="primary" :label="mode === 'add' ? 'Добавить' : 'Применить'" :disable="editingAttachment && !draft.children.length" @click="save")
 
 BuildConditionDialog(
 	v-model="conditionDialog"
@@ -401,7 +401,6 @@ BuildConditionDialog(
 	font-size: 1.05rem;
 	font-weight: 600;
 	line-height: 1.3;
-	color: $primary;
 	span {
 		flex: 1;
 	}
