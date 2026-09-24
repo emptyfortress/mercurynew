@@ -60,12 +60,14 @@ const clearFilter = () => {
 
 const dragstart = (e: NodeData) => {
 	drag.setCurrentDrag(e)
+	drag.setDragNode(e)
 }
 const dragend = () => {
 	if (!!drag.dragNode && !!drag.dragNode.parents && drag.treeKey !== drag.dragNode.parents[1]) {
 		drag.setTreeKey(drag.dragNode.parents[1])
 	}
 	drag.setCurrentDrag(null)
+	drag.setDragNode(null)
 }
 watch(query, () => {
 	if (query.value.length > 1) {

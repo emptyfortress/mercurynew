@@ -17,7 +17,7 @@ export const useDrag = defineStore({
 		setTreeKey(key: string | null) {
 			this.treeKey = key
 		},
-		setDragNode(node: NodeData) {
+		setDragNode(node: NodeData | null) {
 			this.dragNode = node
 		},
 		setFocus(focus: boolean) {
