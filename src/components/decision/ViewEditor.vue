@@ -57,7 +57,9 @@ const cancel = () => {
 	store.tempNode.text = store.currentNode.data.text
 	store.tempNode.text1 = store.currentNode.data.text1
 	store.tempNode.nameTranslations = { ...(store.currentNode.data.nameTranslations ?? {}) }
-	store.tempNode.descriptionTranslations = { ...(store.currentNode.data.descriptionTranslations ?? {}) }
+	store.tempNode.descriptionTranslations = {
+		...(store.currentNode.data.descriptionTranslations ?? {}),
+	}
 }
 </script>
 
@@ -105,7 +107,7 @@ div(v-else)
 			q-tabs.q-mt-md(v-model="tabs" align="left" dense color="primary" class="text-primary")
 				q-tab(name='common' label='Представление')
 				q-tab(name='columns' label='Колонки')
-				q-tab(name='localization' label='Локализация')
+				q-tab(name='localization' label='Локализация колонок')
 				q-tab(name='group' label='Группировки')
 				q-tab(name='sort' label='Сортировки')
 				q-tab(name='appearance' label='Внешний вид')

@@ -186,7 +186,7 @@ const cancel = () => {
 				q-tab(name='common' label='Общие')
 				q-tab(name='query' label='Запрос' v-if='!isFolder')
 				q-tab(name='folders' label='Область поиска' v-if='!isFolder')
-				q-tab(name='lang' label='Локализация' v-if='!isFolder')
+				q-tab(name='lang' label='Локализация параметров' v-if='!isFolder')
 				q-tab(name='safety' label='Безопасность')
 				q-tab(name='addition' label='Дополнительно' v-if='!isFolder')
 				q-tab(name='xml' label='XML' v-if='!isFolder')

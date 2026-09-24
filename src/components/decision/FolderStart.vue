@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue'
+import { ref, nextTick, watch, computed } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
 import ChooseCardTree from '@/components/decision/ChooseCardTree.vue'
@@ -13,6 +13,7 @@ import { translationLocales } from '@/constants/locales'
 
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
+const isFolder = computed(() => selectedElement.value?.type === 0)
 
 const tab = ref('tab1')
 const name = ref('')
@@ -155,11 +156,27 @@ const zapr = ref()
 
 <template lang="pug">
 .q-ml-md(v-if='selectedElement')
-	h6
-		q-icon(name="mdi-folder-outline" color="primary")
-		span.q-ml-md {{ selectedElement.text }}
+	.row.items-start.justify-between
+		.myblock
+			.row.items-center
+				q-icon.fold(name="mdi-folder-outline" color="secondary")
+			div
+				.text-overline
+					span Папка
+				.zg {{ selectedElement.text }}
+		.btngroup
+			q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="saveChanges")
+			q-btn(outline color="primary" label="Отмена" size="sm" @click="cancelChanges")
+			q-btn(round flat color="primary" icon="mdi-sync" size="sm")
+			q-chip(size='sm' color="amber") Есть изменения
+			q-chip(size='sm' color="blue-grey-3" icon="mdi-lock") Заблокировано вами
+			q-btn(flat round color="negative" icon="mdi-delete-outline" size="sm")
+				q-menu
+					q-list
+						q-item.pink(clickable @click="simpleStore.toggleDelete")
+							q-item-section Удалить
 
-	q-tabs(v-model="tab" dense align="left" class="text-primary")
+	q-tabs.q-mt-md(v-model="tab" dense align="left" class="text-primary")
 		q-tab(name="tab1" label="Общие")
 		q-tab(name="tab3" label="Карточки")
 		q-tab(name="tab4" label="Представление")
@@ -227,11 +244,6 @@ const zapr = ref()
 		q-tab-panel(name="tab6")
 			Safety
 
-	q-card-actions(align='center')
-		q-btn(flat color="primary" label="Отмена" @click="cancelChanges") 
-		q-btn(unelevated color="primary" label="Сохранить" @click="saveChanges") 
-
-
 	q-dialog(v-model="dialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-card(style="min-width: 400px; min-height: 600px")
 			q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
@@ -277,6 +289,33 @@ const zapr = ref()
 		width: 260px;
 	}
 }
+.myblock {
+	margin-left: 1rem;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	justify-items: start;
+	align-items: stretch;
+	column-gap: 0.7rem;
+	.text-overline {
+		line-height: 1;
+		color: $blue-grey-6;
+	}
+}
+.fold {
+	color: $secondary;
+	font-size: 2.2rem;
+}
+.zg {
+	font-size: 1rem;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+.btngroup > * {
+	margin-right: 0.25rem;
+}
+.q-tabs {
+	border-bottom: 1px solid var(--my-border-color);
+}
 .name-label {
 	align-self: start;
 }
@@ -306,6 +345,10 @@ const zapr = ref()
 .fold {
 	font-size: 1.3rem;
 	margin-right: 0.5rem;
+}
+.myblock .fold {
+	font-size: 2.2rem;
+	margin-right: 0;
 }
 
 .trig {
