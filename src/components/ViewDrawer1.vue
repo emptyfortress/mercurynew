@@ -376,9 +376,6 @@ BuildConditionDialog(
 	height: min(28vh, 220px);
 	min-height: 100px;
 }
-.fields-expansion :deep(.q-item) {
-	color: $primary;
-}
 .condition-list {
 	display: grid;
 	gap: 0.35rem;
