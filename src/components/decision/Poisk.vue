@@ -21,7 +21,6 @@ const isTreeVisible = computed(() => {
 	}
 	return false
 })
-
 </script>
 
 <template lang="pug">

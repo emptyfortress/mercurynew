@@ -137,7 +137,7 @@ const onDrop = () => {
 
 <template lang="pug">
 div
-	.hd Разделы карточки / Поля
+	// .hd Разделы карточки / Поля
 	.show(v-if="showFilter")
 		label.q-mr-md Показать:
 		q-chip(v-for="chip in chips" :key="chip.id" clickable v-model:selected="chip.selected" size="12px" @click="selChip(chip)") {{ chip.label }}
@@ -229,5 +229,11 @@ div
 .hd {
 	text-align: center;
 	font-weight: 600;
+}
+.q-chip {
+	background: white;
+}
+.q-chip--selected {
+	background: $primary;
 }
 </style>

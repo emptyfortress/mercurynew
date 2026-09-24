@@ -15,9 +15,7 @@ const props = defineProps({
 })
 
 const treeData = defineModel<any[]>('treeData', {
-	default: () => [
-		{ type: 10, typ: false, drop: false, drag: false, children: [] },
-	],
+	default: () => [{ type: 10, typ: false, drop: false, drag: false, children: [] }],
 })
 
 const drag = useDrag()
@@ -216,7 +214,7 @@ const hideFirst = computed(() => {
 }
 .empty {
 	text-align: center;
-	color: $negative;
+	color: $secondary;
 	border: 1px solid var(--my-border-color);
 	padding: 1rem;
 	border-radius: 4px;

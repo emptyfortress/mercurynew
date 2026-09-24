@@ -56,6 +56,7 @@ div
 
 				template(v-slot:after)
 					q-scroll-area.list1
+						.text-bold.text-center(v-if='isTreeVisible || isTree3Visible') Дерево видов
 						FieldTree1(v-show='isTreeVisible')
 						FieldTree3(v-show='isTree3Visible')
 

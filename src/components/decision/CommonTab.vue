@@ -242,7 +242,9 @@ const test = (stat: any, node: any) => {
 					div(v-else)
 					.node-actions
 						q-btn.tool(flat round icon="mdi-pencil-outline" color="secondary" size='sm' @click="toggleDrawer(stat.level, node, 'edit')") 
+							q-tooltip Редактировать
 						q-btn(flat round icon="mdi-plus-circle-outline" color="secondary" size='sm' @click="toggleDrawer(stat.level, node, 'add')")
+							q-tooltip Добавить раздел
 					div(v-if='node.psevdo') {{ node.psevdo }}
 
 					.txt(v-else)
@@ -270,9 +272,8 @@ Teleport(to='body')
 }
 .section {
 	margin-top: 2rem;
-	font-size: 1.1rem;
-	background: $secondary;
-	color: white;
+	font-size: 0.9rem;
+	font-weight: 600;
 	padding-left: 0.5rem;
 	margin-bottom: 0.5rem;
 }
