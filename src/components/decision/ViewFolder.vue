@@ -60,7 +60,7 @@ const showRemove = ref(false)
 			q-btn(unelevated color="primary" label="Сохранить" :disable='!changed' @click="save") 
 			q-btn(flat color="primary" label="Отмена" :disable='!changed' @click="undo") 
 
-	.grid2
+	// .grid2
 		fieldset
 			legend Создание
 			.q-gutter-x-sm
@@ -83,7 +83,7 @@ const showRemove = ref(false)
 <style scoped lang="scss">
 .grid {
 	display: grid;
-	grid-template-columns: 1fr auto auto;
+	grid-template-columns: 1fr auto auto auto;
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: 0.5rem;

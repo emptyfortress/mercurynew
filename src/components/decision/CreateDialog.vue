@@ -1,7 +1,10 @@
 <script setup lang="ts">
-// import { ref } from 'vue'
+import { ref, watch } from 'vue'
 // import { uid } from 'quasar'
 import { useSimpleStore } from '@/stores/simpleStore'
+import NameTranslationsField from '@/components/decision/NameTranslationsField.vue'
+import type { NameTranslations } from '@/constants/locales'
+import { translationLocales } from '@/constants/locales'
 
 const props = defineProps({
 	mode: {
@@ -16,6 +19,18 @@ const props = defineProps({
 const modelValue = defineModel<boolean>()
 
 const simpleStore = useSimpleStore()
+const nameTranslations = ref<NameTranslations>({})
+const showFolderTranslations = ref(false)
+const folderName = ref('')
+const isVirtualFolder = ref(false)
+watch(modelValue, (isOpen) => {
+	if (isOpen) {
+		nameTranslations.value = {}
+		showFolderTranslations.value = false
+		folderName.value = ''
+		isVirtualFolder.value = false
+	}
+})
 
 const close = () => {
 	modelValue.value = false
@@ -24,6 +39,9 @@ const close = () => {
 const emit = defineEmits(['create'])
 
 const create = (data: any) => {
+	if (['folder', 'poisk', 'view'].includes(props.mode)) {
+		data.nameTranslations = { ...nameTranslations.value }
+	}
 	if (props.mode == 'app') {
 		data.text = data.name
 		data.type = 1
@@ -60,6 +78,7 @@ const create = (data: any) => {
 	if (props.mode == 'folder') {
 		const folderData = {
 			name: data.name,
+			nameTranslations: data.nameTranslations,
 			isVirtual: data.isVirtual ?? false,
 		}
 		emit('create', folderData)
@@ -77,6 +96,7 @@ const create = (data: any) => {
 	if (props.mode == 'poisk' && !props.mode1) {
 		const newFolder = {
 			name: data.name,
+			nameTranslations: data.nameTranslations,
 			type: 1,
 		}
 		emit('create', newFolder)
@@ -85,6 +105,7 @@ const create = (data: any) => {
 	if (props.mode == 'poisk' && props.mode1) {
 		const newFolder = {
 			name: data.name,
+			nameTranslations: data.nameTranslations,
 			type: 0,
 		}
 		emit('create', newFolder)
@@ -93,6 +114,7 @@ const create = (data: any) => {
 	if (props.mode == 'view' && !props.mode1) {
 		const newFolder = {
 			name: data.name,
+			nameTranslations: data.nameTranslations,
 			type: 1,
 		}
 		emit('create', newFolder)
@@ -101,6 +123,7 @@ const create = (data: any) => {
 	if (props.mode == 'view' && props.mode1) {
 		const newFolder = {
 			name: data.name,
+			nameTranslations: data.nameTranslations,
 			type: 0,
 		}
 		emit('create', newFolder)
@@ -127,7 +150,7 @@ q-dialog(v-model="modelValue")
 			.text-h6(v-if="props.mode == 'view' && !props.mode1") Создать представление
 
 		q-card-section
-			FormKit(type="form" id="newapp" submit-label="Создать" @submit="create")
+			FormKit(v-if='props.mode != "folder" && !(props.mode == "poisk" && props.mode1)' type="form" id="newapp" submit-label="Создать" @submit="create")
 				FormKit(v-if='props.mode == "app"'  type="text" autofocus name="name" label="Название" value='Мое приложение' help="Назовите ваше приложение" validation="required|length:3")
 				FormKit(v-if='props.mode == "app"' type="textarea" name="descr" label="Описание" help="Что будет делать ваше приложение?")
 
@@ -145,12 +168,38 @@ q-dialog(v-model="modelValue")
 				FormKit(v-if='props.mode == "form"' type="checkbox" name="creation" label="Форма создания")
 
 				FormKit(v-if='props.mode == "status"'  type="text" autofocus name="name" label="Название"  help="Назовите статус" validation="required|length:3")
-				FormKit(v-if='props.mode == "folder"' type="text" autofocus name="name" label="Название" validation="required|length:3")
-				FormKit(v-if='props.mode == "folder"' type="checkbox" name="isVirtual" label="Виртуальная папка")
-
-				FormKit(v-if='props.mode == "poisk"'  type="text" autofocus name="name" label="Название" validation="required|length:3")
+				FormKit(v-if='props.mode == "poisk" && !props.mode1' type="text" autofocus name="name" label="Название" validation="required|length:3")
+				NameTranslationsField(v-if='props.mode == "poisk" && !props.mode1' v-model="nameTranslations")
 
 				FormKit(v-if='props.mode == "view"'  type="text" autofocus name="name" label="Название" validation="required|length:3")
+				NameTranslationsField(v-if='props.mode == "view"' v-model="nameTranslations")
+
+			q-form(v-if='props.mode == "folder" || (props.mode == "poisk" && props.mode1)' @submit.prevent="create({ name: folderName, isVirtual: isVirtualFolder })")
+				q-input(
+					v-model="folderName"
+					label="Название"
+					autofocus
+					outlined
+					dense
+					:rules="[val => !!val || 'Это обязательное поле', val => (val ?? '').trim().length >= 3 || 'Минимум 3 символа']"
+				)
+					template(v-slot:append)
+						q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showFolderTranslations = !showFolderTranslations")
+							q-tooltip Переводы названия
+				.q-pl-sm.q-mt-md(v-if="showFolderTranslations")
+					q-input(
+						v-for="locale in translationLocales"
+						:key="locale.code"
+						v-model="nameTranslations[locale.code]"
+						:label="locale.label"
+						outlined
+						dense
+						class="q-mb-sm"
+					)
+				q-checkbox(v-if='props.mode == "folder"' v-model="isVirtualFolder" label="Виртуальная папка")
+				q-card-actions(align="right")
+					q-btn(flat color="primary" label="Отмена" @click="close")
+					q-btn(unelevated color="primary" label="Создать" type="submit")
 </template>
 
 <style scoped lang="scss"></style>

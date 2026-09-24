@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import type { NameTranslations } from '@/constants/locales'
 
 // Minimal type definitions for the chips store – sufficient for the current component usage
 interface Chip {
@@ -42,7 +43,12 @@ export const useChips = defineStore({
 		] as Chip[],
 		rows: [] as Option[],
 		updateTree: false,
-		newSearchItem: { text: '', text1: '' },
+		newSearchItem: {
+			text: '',
+			text1: '',
+			nameTranslations: {} as NameTranslations,
+			descriptionTranslations: {} as NameTranslations,
+		},
 		count: 0,
 		selectedRow: null as null | Option,
 	}),

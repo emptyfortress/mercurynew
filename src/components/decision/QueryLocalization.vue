@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { QTableColumn } from 'quasar'
+import { translationLocales } from '@/constants/locales'
 
 type QueryLocalization = {
 	values: Record<string, Record<string, string>>
@@ -34,12 +35,6 @@ const setTranslation = (conditionId: string, languageCode: string, value: string
 
 const getFieldPath = (node: any) => [...(node.parents ?? []), node.text].join(' > ')
 
-const translationColumns = [
-	{ code: 'en', label: 'English (en)' },
-	{ code: 'fr', label: 'Français (fr)' },
-	{ code: 'es', label: 'Español (es)' },
-] as const
-
 const columns: QTableColumn[] = [
 	{
 		name: 'field',
@@ -55,7 +50,7 @@ const columns: QTableColumn[] = [
 		align: 'left',
 		sortable: true,
 	},
-	...translationColumns.map((language) => ({
+	...translationLocales.map((language) => ({
 		name: language.code,
 		label: language.label,
 		field: (row: any) => getTranslation(row.id, language.code),

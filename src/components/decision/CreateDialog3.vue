@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
+import type { NameTranslations } from '@/constants/locales'
+import { translationLocales } from '@/constants/locales'
 
 const props = defineProps({
 	mode: {
@@ -13,6 +15,14 @@ const modelValue = defineModel<boolean>()
 const store = useSimpleStore()
 
 const model = ref('')
+const nameTranslations = ref<NameTranslations>({})
+const showNameTranslations = ref(false)
+watch(modelValue, (isOpen) => {
+	if (isOpen) {
+		nameTranslations.value = {}
+		showNameTranslations.value = false
+	}
+})
 
 const modes = ['folder', 'view'] as const
 
@@ -31,6 +41,7 @@ const submitForm = () => {
 	store.toggleAdd({
 		id: Date.now().toString(),
 		text: model.value,
+		nameTranslations: { ...nameTranslations.value },
 		type: props.mode == 'folder' ? 0 : 1,
 		children: [],
 		parentId: store.selectedElement?.id,
@@ -44,6 +55,7 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)"  @hide=
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
 			.text-h6(v-if="props.mode == 'folder'") Создать папку
+			.text-h6(v-if="props.mode == 'view'") Создать представление
 			.text-h6(v-if="props.mode == 'approve'") Создать согласование
 			.text-h6(v-if="props.mode == 'route'") Создать маршрут
 			.text-h6(v-if="props.mode == 'etap'") Создать этап
@@ -59,6 +71,19 @@ q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)"  @hide=
 					outlined
 					:rules="[val => !!val || 'Это обязательное поле']"
 					hint='Название должно быть уникальным?'
+				)
+					template(v-if='props.mode == "folder" || props.mode == "view"' v-slot:append)
+						q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
+							q-tooltip Переводы названия
+				.q-pl-sm.q-mt-md(v-if='(props.mode == "folder" || props.mode == "view") && showNameTranslations')
+					q-input(
+						v-for="locale in translationLocales"
+						:key="locale.code"
+						v-model="nameTranslations[locale.code]"
+						:label="locale.label"
+						outlined
+						dense
+						class="q-mb-sm"
 					)
 
 			q-card-actions(align="right")

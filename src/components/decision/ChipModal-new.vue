@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useChips } from '@/stores/chips'
+import type { NameTranslations } from '@/constants/locales'
+import { translationLocales } from '@/constants/locales'
 // import { useSimpleStore } from '@/stores/simpleStore'
 
 const props = defineProps({
@@ -54,18 +56,39 @@ const setTree = () => {
 	mychips.count = (mychips.count ?? 0) + 1
 	setTimeout(() => {
 		mychips.toggleUpdateTree()
-		mychips.setNewItem({ text: '', text1: '' })
+		mychips.setNewItem({ text: '', text1: '', nameTranslations: {}, descriptionTranslations: {} })
 	}, 200)
 }
 
 const searchName = ref('Мой поиск')
 const descr = ref('Тест')
+const nameTranslations = ref<NameTranslations>({})
+const descriptionTranslations = ref<NameTranslations>({})
+const showNameTranslations = ref(false)
+const showDescriptionTranslations = ref(false)
+watch(modelValue, (isOpen) => {
+	if (isOpen) {
+		nameTranslations.value = {}
+		descriptionTranslations.value = {}
+		showNameTranslations.value = false
+		showDescriptionTranslations.value = false
+	}
+})
+
+const collectTranslations = (translations: NameTranslations): NameTranslations =>
+	Object.fromEntries(
+		translationLocales
+			.map(({ code }) => [code, translations[code]?.trim() ?? ''] as const)
+			.filter(([, value]) => value.length > 0)
+	) as NameTranslations
 
 const createSearch = () => {
 	setTree()
 	let tmp = {
 		text: searchName.value,
 		text1: descr.value,
+		nameTranslations: collectTranslations(nameTranslations.value),
+		descriptionTranslations: collectTranslations(descriptionTranslations.value),
 	}
 	mychips.setNewItem(tmp)
 }
@@ -90,10 +113,38 @@ q-dialog(v-model="modelValue")
 
 		q-card-section(v-if="props.create")
 			.inp
-				label Название запроса:
-				q-input(dense outlined v-model="searchName" clearable autofocus)
-				label Описание:
-				q-input(dense outlined v-model="descr" clearable autofocus)
+				label.q-mt-sm Название запроса:
+				.field-with-translations
+					q-input(dense outlined v-model="searchName" clearable autofocus)
+						template(v-slot:append)
+							q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
+								q-tooltip Переводы названия
+					.q-mt-sm(v-if="showNameTranslations")
+						q-input(
+							v-for="locale in translationLocales"
+							:key="locale.code"
+							v-model="nameTranslations[locale.code]"
+							:label="locale.label"
+							outlined
+							dense
+							class="q-mb-sm"
+						)
+				label.q-mt-sm Описание:
+				.field-with-translations
+					q-input(dense outlined v-model="descr" clearable)
+						template(v-slot:append)
+							q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы описания" @click="showDescriptionTranslations = !showDescriptionTranslations")
+								q-tooltip Переводы описания
+					.q-mt-sm(v-if="showDescriptionTranslations")
+						q-input(
+							v-for="locale in translationLocales"
+							:key="locale.code"
+							v-model="descriptionTranslations[locale.code]"
+							:label="locale.label"
+							outlined
+							dense
+							class="q-mb-sm"
+						)
 		q-card-actions.q-ma-md(align="right")
 			q-btn(flat color="primary" label="Отмена" v-close-popup)
 			q-btn(v-if="props.create" unelevated color="primary" label="Создать" @click="createSearch" :disable="searchName.length < 2" v-close-popup)
@@ -124,5 +175,12 @@ q-dialog(v-model="modelValue")
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
+}
+.inp label {
+	align-self: start;
+	padding-top: 0.6rem;
+}
+.field-with-translations {
+	min-width: 0;
 }
 </style>

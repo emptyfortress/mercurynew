@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { storeToRefs } from 'pinia'
 import ChooseCardTree from '@/components/decision/ChooseCardTree.vue'
@@ -8,25 +8,41 @@ import ChooseTemplate from '@/components/decision/ChooseTemplate.vue'
 import Safety from '@/components/decision/Safety.vue'
 import { BaseTree } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
+import type { NameTranslations } from '@/constants/locales'
+import { translationLocales } from '@/constants/locales'
 
 const simpleStore = useSimpleStore()
 const { selectedElement } = storeToRefs(simpleStore)
 
 const tab = ref('tab1')
 const name = ref('')
-onMounted(() => {
+const nameTranslations = ref<NameTranslations>({})
+const showNameTranslations = ref(false)
+
+const syncSelectedElement = () => {
 	name.value = selectedElement.value?.text ?? ''
-})
+	nameTranslations.value = { ...(selectedElement.value?.nameTranslations ?? {}) }
+	showNameTranslations.value = false
+}
+
+watch(selectedElement, syncSelectedElement, { immediate: true })
 
 const cancelChanges = () => {
 	if (selectedElement.value) {
 		name.value = selectedElement.value.text
+		nameTranslations.value = { ...(selectedElement.value.nameTranslations ?? {}) }
+		showNameTranslations.value = false
 	}
 }
 
 const saveChanges = () => {
 	if (selectedElement.value && name.value.trim()) {
 		selectedElement.value.text = name.value.trim()
+		selectedElement.value.nameTranslations = Object.fromEntries(
+			translationLocales
+				.map(({ code }) => [code, nameTranslations.value[code]?.trim() ?? ''] as const)
+				.filter(([, value]) => value.length > 0)
+		) as NameTranslations
 		simpleStore.updateSelectedElement(selectedElement.value)
 	}
 }
@@ -153,9 +169,23 @@ const zapr = ref()
 	q-tab-panels(v-model="tab" animated)
 		q-tab-panel(name="tab1")
 			.grid
-				.label Название
-				.flex.items-center.q-gutter-x-lg
-					q-input(v-model="name" dense outlined)
+				.label.name-label.q-mt-sm Название
+				.flex.items-start.q-gutter-x-lg
+					.col
+						q-input(v-model="name" dense outlined)
+							template(v-slot:append)
+								q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
+									q-tooltip Переводы названия
+						.q-pl-sm.q-mt-md(v-if="showNameTranslations")
+							q-input(
+								v-for="locale in translationLocales"
+								:key="locale.code"
+								v-model="nameTranslations[locale.code]"
+								:label="locale.label"
+								outlined
+								dense
+								class="q-mb-sm"
+							)
 					q-checkbox(v-if='simpleStore.selectedElement?.virtual' v-model="simpleStore.selectedElement.virtual" dense label="Виртуальная" disable)
 
 				template(v-if='simpleStore.selectedElement?.virtual')
@@ -245,6 +275,9 @@ const zapr = ref()
 	.q-field {
 		width: 260px;
 	}
+}
+.name-label {
+	align-self: start;
 }
 
 :deep(.q-tab-panels) {

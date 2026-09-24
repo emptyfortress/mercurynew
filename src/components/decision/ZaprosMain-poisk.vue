@@ -12,6 +12,7 @@ import AdditionTab from '@/components/decision/AdditionTab.vue'
 import FolderTab from '@/components/decision/FolderTab.vue'
 import XmlTree from '@/components/decision/XmlTree.vue'
 import QueryLocalization from '@/components/decision/QueryLocalization.vue'
+import { supportedLocaleCodes } from '@/constants/locales'
 
 const props = defineProps({
 	splitter: Number,
@@ -85,8 +86,6 @@ const queryTree = computed({
 	},
 })
 
-const supportedLocalizationCodes = new Set(['ru', 'en', 'fr', 'es'])
-
 const normalizeLocalization = (query: any) => {
 	if (!query.localization) {
 		query.localization = { values: {} }
@@ -96,7 +95,7 @@ const normalizeLocalization = (query: any) => {
 	query.localization.values ??= {}
 	Object.values(query.localization.values).forEach((translations: any) => {
 		Object.keys(translations).forEach((languageCode) => {
-			if (!supportedLocalizationCodes.has(languageCode)) delete translations[languageCode]
+			if (!supportedLocaleCodes.has(languageCode)) delete translations[languageCode]
 		})
 	})
 	delete query.localization.languages
@@ -129,6 +128,16 @@ const testXml = `
 const save = () => {
 	store.currentNode.data.text = store.tempNode.text
 	store.currentNode.data.text1 = store.tempNode.text1
+	store.currentNode.data.nameTranslations = { ...store.tempNode.nameTranslations }
+	store.currentNode.data.descriptionTranslations = { ...store.tempNode.descriptionTranslations }
+}
+
+const cancel = () => {
+	if (!store.currentNode) return
+	store.tempNode.text = store.currentNode.data.text
+	store.tempNode.text1 = store.currentNode.data.text1
+	store.tempNode.nameTranslations = { ...(store.currentNode.data.nameTranslations ?? {}) }
+	store.tempNode.descriptionTranslations = { ...(store.currentNode.data.descriptionTranslations ?? {}) }
 }
 </script>
 
@@ -152,7 +161,7 @@ const save = () => {
 
 			.btngroup(v-if='store.selectedElement')
 				q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="save") 
-				q-btn(outline color="primary" label="Отмена" size="sm") 
+				q-btn(outline color="primary" label="Отмена" size="sm" @click="cancel")
 				q-btn(round flat color="primary" icon="mdi-sync" size="sm") 
 				q-chip(size='sm' color="amber") Есть изменения
 				q-chip(size='sm' color="blue-grey-3" icon="mdi-lock") Заблокировано вами
@@ -174,7 +183,7 @@ const save = () => {
 
 			q-tab-panels(v-model="tabs" animated)
 				q-tab-panel(name='common')
-					CommonTab
+					CommonTab(localize-name localize-description)
 				q-tab-panel(name='query')
 					QueryItem(v-model:treeData="queryTree" :preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
 					// .row.justify-center.q-mx-lg

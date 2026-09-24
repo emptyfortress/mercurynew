@@ -2,11 +2,14 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useStorage } from '@vueuse/core'
 import type { TreeSourceType } from '@/components/decision/UnifiedTree.vue'
+import type { NameTranslations } from '@/constants/locales'
 
 interface TreeElement {
 	id: string
 	text: string
 	text1?: string
+	nameTranslations?: NameTranslations
+	descriptionTranslations?: NameTranslations
 	name?: string
 	selected?: boolean
 	hidden?: boolean
@@ -1173,6 +1176,8 @@ export const useSimpleStore = defineStore('simpleStore', () => {
 	const tempNode = ref({
 		text: 'Название',
 		text1: 'Описание',
+		nameTranslations: {} as NameTranslations,
+		descriptionTranslations: {} as NameTranslations,
 	})
 
 	const setCurrentNode = (e: any) => {

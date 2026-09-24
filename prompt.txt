@@ -1,0 +1,2 @@
+one more change:
+- in edit mode and if partition.level > 1 then in  ViewDrawer1 section Оригинальный раздел must show not draft, but draft parents as breadcrumbs.

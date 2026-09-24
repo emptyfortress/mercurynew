@@ -167,6 +167,7 @@ const create = (data: any) => {
 	const newFolder = {
 		id: uid(),
 		text: data.name,
+		nameTranslations: { ...(data.nameTranslations ?? {}) },
 		virtual: data.isVirtual ?? false,
 		type: data.type,
 		children: [],
@@ -191,6 +192,7 @@ const create = (data: any) => {
 		const newFolder = {
 			id: uid(),
 			text: data.name,
+			nameTranslations: { ...(data.nameTranslations ?? {}) },
 			virtual: data.isVirtual ?? false,
 			type: data.type,
 			children: [],
@@ -232,6 +234,8 @@ watch(
 			id: uid(),
 			text: mychips.newSearchItem.text,
 			text1: mychips.newSearchItem.text1,
+			nameTranslations: mychips.newSearchItem.nameTranslations ?? {},
+			descriptionTranslations: mychips.newSearchItem.descriptionTranslations ?? {},
 			hidden: false,
 			selected: true,
 			type: 1,
@@ -379,6 +383,10 @@ div
 
 	q-fab.fab(v-if='props.mode == "poisk"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
 		q-fab-action(color="primary" icon="mdi-magnify" external-label label="Запрос" label-position="left" @click="poisk")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
+
+	q-fab.fab(v-if='props.mode == "view"' round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
+		q-fab-action(color="primary" icon="mdi-table" external-label label="Представление" label-position="left" @click="view")
 		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="fold")
 
 	q-btn.fab(v-if='props.mode !== "view"' round icon="mdi-plus" color="primary" @click="dialog = !dialog")

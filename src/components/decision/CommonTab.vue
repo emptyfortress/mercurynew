@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watch, watchEffect } from 'vue'
 import { useSimpleStore } from '@/stores/simpleStore'
 import { hasSameParents, usePartitionStore } from '@/stores/partition'
 import { Draggable } from '@he-tree/vue'
 import { useRoute } from 'vue-router'
 import ViewDrawer1 from '@/components/ViewDrawer1.vue'
+import type { NameTranslations } from '@/constants/locales'
+import { translationLocales } from '@/constants/locales'
 
 // const router = useRouter()
 const route = useRoute()
@@ -15,13 +17,31 @@ const route = useRoute()
 
 const store = useSimpleStore()
 const part = usePartitionStore()
+const props = withDefaults(
+	defineProps<{ localizeName?: boolean; localizeDescription?: boolean }>(),
+	{ localizeName: false, localizeDescription: false }
+)
+const showNameTranslations = ref(false)
+const showDescriptionTranslations = ref(false)
 
 watchEffect(() => {
 	if (store.currentNode) {
 		store.tempNode.text = store.currentNode.data.text
 		store.tempNode.text1 = store.currentNode.data.text1
+		store.tempNode.nameTranslations = { ...(store.currentNode.data.nameTranslations ?? {}) } as NameTranslations
+		store.tempNode.descriptionTranslations = {
+			...(store.currentNode.data.descriptionTranslations ?? {}),
+		} as NameTranslations
 	}
 })
+
+watch(
+	() => store.selectedElement?.id,
+	() => {
+		showNameTranslations.value = false
+		showDescriptionTranslations.value = false
+	}
+)
 
 const creationDate = computed(() => {
 	return '2024-01-15'
@@ -159,12 +179,40 @@ const test = (stat: any, node: any) => {
 	.row.q-col-gutter-md
 		.col-6
 			q-input(v-model="store.tempNode.text" label="Название" outlined dense)
+				template(v-if="props.localizeName" v-slot:append)
+					q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
+						q-tooltip Переводы названия
+			.q-pl-sm.q-mt-md(v-if="props.localizeName && showNameTranslations")
+				q-input(
+					v-for="locale in translationLocales"
+					:key="locale.code"
+					v-model="store.tempNode.nameTranslations[locale.code]"
+					:label="locale.label"
+					outlined
+					dense
+					class="q-mb-sm"
+				)
 		.col-3
 			q-input(v-model="creationDate" label="Дата создания" outlined dense readonly)
 		.col-3
 			q-input(v-model="author" label="Автор" outlined dense readonly)
 		.col-12
 			q-input(v-model="store.tempNode.text1" label="Описание" type="textarea" outlined dense autogrow)
+				template(v-if="props.localizeDescription" v-slot:append)
+					q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы описания" @click="showDescriptionTranslations = !showDescriptionTranslations")
+						q-tooltip Переводы описания
+			.q-pl-sm.q-mt-md(v-if="props.localizeDescription && showDescriptionTranslations")
+				q-input(
+					v-for="locale in translationLocales"
+					:key="locale.code"
+					v-model="store.tempNode.descriptionTranslations[locale.code]"
+					:label="locale.label"
+					type="textarea"
+					outlined
+					dense
+					autogrow
+					class="q-mb-sm"
+				)
 
 	template(v-if='isView')
 		.section Разделы представления
