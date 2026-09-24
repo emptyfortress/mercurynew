@@ -399,7 +399,7 @@ div
 		q-fab-action(color="primary" icon="mdi-table" external-label label="Представление" label-position="left" @click="view")
 		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="createViewFolder")
 
-	q-btn.fab(v-if='props.mode !== "view"' round icon="mdi-plus" color="primary" @click="dialog = !dialog")
+	q-btn.fab(v-if='props.mode !== "view" && props.mode !== "poisk"' round icon="mdi-plus" color="primary" @click="dialog = !dialog")
 
 	CreateDialog(v-model="dialog" :mode="mode || 'vid'" :mode1='folderMode' @create='create')
 	CreateDialog3(v-model="dialog3" :mode="dialog3Mode")

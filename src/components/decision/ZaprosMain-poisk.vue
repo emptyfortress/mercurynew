@@ -110,7 +110,9 @@ watch(
 	{ immediate: true }
 )
 
-const queryLocalization = computed(() => (store.selectedElement as any)?.localization ?? { values: {} })
+const queryLocalization = computed(
+	() => (store.selectedElement as any)?.localization ?? { values: {} }
+)
 
 const testXml = `
 <catalog>
@@ -137,7 +139,9 @@ const cancel = () => {
 	store.tempNode.text = store.currentNode.data.text
 	store.tempNode.text1 = store.currentNode.data.text1
 	store.tempNode.nameTranslations = { ...(store.currentNode.data.nameTranslations ?? {}) }
-	store.tempNode.descriptionTranslations = { ...(store.currentNode.data.descriptionTranslations ?? {}) }
+	store.tempNode.descriptionTranslations = {
+		...(store.currentNode.data.descriptionTranslations ?? {}),
+	}
 }
 </script>
 
@@ -155,9 +159,15 @@ const cancel = () => {
 					q-icon(name="mdi-forwardburger" v-if="props.splitter === 0")
 					q-icon(name="mdi-backburger" v-else)
 
-				.zg(v-if="store.selectedElement") {{ store.selectedElement.text }}
-					q-popup-edit(v-model="store.selectedElement.text" auto-save v-slot="scope")
-						q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
+				.myblock(v-if="store.selectedElement")
+					.row.items-center
+						q-icon.fold(name="mdi-folder-outline" color="secondary" v-if="isFolder")
+						q-icon.fold(name="mdi-magnify" color="secondary" v-else)
+					div
+						.text-overline
+							span(v-if="isFolder") Папка
+							span(v-else) Запрос
+						.zg {{ store.selectedElement.text }}
 
 			.btngroup(v-if='store.selectedElement')
 				q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="save") 
@@ -221,14 +231,26 @@ const cancel = () => {
 	text-align: center;
 }
 
+.myblock {
+	margin-left: 1rem;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	justify-items: start;
+	align-items: stretch;
+	column-gap: 0.7rem;
+	.text-overline {
+		line-height: 1;
+		color: $blue-grey-6;
+	}
+}
+.fold {
+	color: $secondary;
+	font-size: 2.2rem;
+}
 .zg {
 	font-size: 1rem;
 	text-transform: uppercase;
-	margin-left: 1rem;
 	font-weight: 600;
-	color: $primary;
-	padding-bottom: 0;
-	border-bottom: 1px dotted var(--q-primary);
 }
 
 .descr {

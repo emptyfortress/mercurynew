@@ -4,10 +4,14 @@ import { useSimpleStore } from '@/stores/simpleStore'
 // import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
 import CreateDialog3 from '@/components/decision/CreateDialog3.vue'
 import { useRouter } from 'vue-router'
+import type { NameTranslations } from '@/constants/locales'
+import { translationLocales } from '@/constants/locales'
 
 const router = useRouter()
 const store = useSimpleStore()
 const name = ref(store.selectedElement?.text)
+const nameTranslations = ref<NameTranslations>({ ...(store.selectedElement?.nameTranslations ?? {}) })
+const showNameTranslations = ref(false)
 
 const changed = ref(false)
 
@@ -15,11 +19,27 @@ watch(name, (val) => {
 	if (val) {
 		changed.value = true
 	}
-})
+}, { flush: 'sync' })
+
+watch(nameTranslations, () => {
+	changed.value = true
+}, { deep: true, flush: 'sync' })
+
+watch(() => store.selectedElement, (element) => {
+	name.value = element?.text ?? ''
+	nameTranslations.value = { ...(element?.nameTranslations ?? {}) }
+	showNameTranslations.value = false
+	changed.value = false
+}, { immediate: true })
 
 const save = () => {
 	if (store.selectedElement && name.value) {
 		store.selectedElement.text = name.value
+		store.selectedElement.nameTranslations = Object.fromEntries(
+			translationLocales
+				.map(({ code }) => [code, nameTranslations.value[code]?.trim() ?? ''] as const)
+				.filter(([, value]) => value.length > 0)
+		) as NameTranslations
 		changed.value = false
 	}
 }
@@ -27,6 +47,8 @@ const save = () => {
 const undo = () => {
 	if (store.selectedElement && name.value) {
 		name.value = store.selectedElement.text
+		nameTranslations.value = { ...(store.selectedElement.nameTranslations ?? {}) }
+		showNameTranslations.value = false
 		changed.value = false
 	}
 }
@@ -56,7 +78,22 @@ const showRemove = ref(false)
 	fieldset
 		legend Общие
 		.grid
-			q-input(v-model="name" label="Название" dense outlined )
+			.name-field
+				q-input(v-model="name" label="Название" dense outlined)
+					template(v-slot:append)
+						q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" aria-label="Переводы названия" @click="showNameTranslations = !showNameTranslations")
+							q-tooltip Переводы названия
+				.q-pl-sm.q-mt-md(v-if="showNameTranslations")
+					.text-caption.q-mb-xs Локализации
+					q-input(
+						v-for="locale in translationLocales"
+						:key="locale.code"
+						v-model="nameTranslations[locale.code]"
+						:label="locale.label"
+						outlined
+						dense
+						class="q-mb-sm"
+					)
 			q-btn(unelevated color="primary" label="Сохранить" :disable='!changed' @click="save") 
 			q-btn(flat color="primary" label="Отмена" :disable='!changed' @click="undo") 
 
@@ -87,6 +124,9 @@ const showRemove = ref(false)
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
+}
+.name-field {
+	min-width: 0;
 }
 .tt {
 	float: left;
