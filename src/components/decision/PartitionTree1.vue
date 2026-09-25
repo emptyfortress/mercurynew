@@ -119,11 +119,12 @@ div
 			q-icon(v-if="isTable(prop.node)" name="mdi-format-list-group" color="primary")
 			.node(
 				:class="{ virtual: isVirtual(prop.node)}"
+				@click.stop="prop.node.drag && toggleSelected(prop.node)"
 			)
 				q-checkbox.q-mr-sm(
 					v-if='prop.node.drag'
 					:model-value='part.selectedIds.has(prop.node.id) ?? false'
-					@click="toggleSelected(prop.node)"
+					@click.stop="toggleSelected(prop.node)"
 					dense, size='sm'
 				)
 				WordHighlighter(:query="query" ) {{ prop.node.text }}
