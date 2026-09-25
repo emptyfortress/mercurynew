@@ -80,13 +80,14 @@ function onDragLeave(event: DragEvent) {
 const drawer = ref(false)
 const currentColumn = ref()
 
-// const toggle = (row: any) => {
-// 	drawer.value = !drawer.value
-// 	currentColumn.value = row
-// }
-const open = (row: any) => {
-	drawer.value = true
+const toggleDrawer = (row: any) => {
+	if (drawer.value && currentColumn.value?.id === row.id) {
+		drawer.value = false
+		return
+	}
+
 	currentColumn.value = row
+	drawer.value = true
 }
 
 const calcLabel = (e: Kind) => {
@@ -101,13 +102,14 @@ const calcLabel = (e: Kind) => {
 	.mycolumn(
 		v-for="(item, index) in tapes",
 		:key="item.id",
+		:class="{ active: drawer && currentColumn?.id === item.id }",
+		@click="toggleDrawer(item)",
 		@kill='dndStore.remove(index)'
 	)
 
 		.drag-handle ⠿
-		q-btn.tool(flat round icon="mdi-cog" color="secondary" size='sm' @click="open(item)") 
-		.name 
-			span {{ item.text}}
+		.name
+			span(@click.stop) {{ item.text}}
 				q-popup-edit(v-model="item.text" auto-save v-slot="scope")
 					q-input(v-model="scope.value" dense autofocus counter @keyup.enter="scope.set")
 		.type(v-if='item.kind !== null') < {{ calcLabel(item.kind) }} >
@@ -115,7 +117,7 @@ const calcLabel = (e: Kind) => {
 		q-icon(v-if='item.hide' name="mdi-eye-off" color="secondary" size="18px")
 		div(v-else)
 
-		q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' @click="clear(index)") 
+		q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' @click.stop="clear(index)")
 
 
 .empty(
@@ -170,10 +172,10 @@ Teleport(to='body')
 	border: 1px solid var(--my-border-color);
 	padding: 0.25rem 1rem;
 	height: 48px;
-	margin-top: -1px;
 	display: grid;
-	grid-template-columns: auto auto 1fr 1fr 1fr 32px;
+	grid-template-columns: auto 1fr 1fr 1fr 32px;
 	align-items: center;
+	cursor: pointer;
 	.close {
 		visibility: hidden;
 	}
@@ -181,6 +183,14 @@ Teleport(to='body')
 		.close {
 			visibility: visible;
 		}
+	}
+	&.active {
+		border-color: $primary;
+		background: white;
+		box-shadow:
+			inset 0 4px 4px 0 rgba($color: #000000, $alpha: 0.2),
+			inset 4px 0 4px 0 rgba($color: #000000, $alpha: 0.2),
+			inset 0 -2px 2px 0 rgba($color: #000000, $alpha: 0.2);
 	}
 }
 .drag-handle {
