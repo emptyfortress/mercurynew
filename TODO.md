@@ -2,23 +2,19 @@
 
 ## Now
 
-We develop localization for some part of current prototype:
+We try enchance visual of ColumnsTab1.vue
 
-- folders (/dvmain/folders)
-- views (/dvmain/views)
-- search (dvmain/search)
+## Main problem
 
-## Main goal
-
-User must has possibility set various locales for some data
+When there are several items (columns) in the list - it is hard to identify which one is active.
+User click on item in the list and edit its props in ViewDrawer. But it is unclear which on was clicked.
 
 ## Requirements
 
-- List of locales is static and global for all application
-- Locales:
-  - { code: 'ru', label: 'Русский (ru)' } - default,
-  - { code: 'en', label: 'English (en)' },
-  - { code: 'fr', label: 'Français (fr)' },
-  - { code: 'es', label: 'Español (es)' },
-- when user creates item and name it, there must be some button by clicking it shows modal with others locales to enter
-- for some parts it is more usefull have special q-tab(name='lang'), as it currently done in ZaprosMain-poisk.vue, for massive edits (it should be discuss later)
+- Click on item should change its visual by turn it in active state
+- Click must work as toggle
+- When click next item - active state should move to this item
+
+## Proposals
+
+- lets try add box shadow and border with primary color to active item.

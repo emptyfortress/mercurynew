@@ -127,7 +127,7 @@ const open = (level: number, row: any, mode: 'add' | 'edit') => {
 }
 
 const toggleDrawer = (level: number, row: any, mode: 'add' | 'edit') => {
-	if (drawer.value && currentPartition.value === row && drawerMode.value === mode) {
+	if (drawer.value && currentPartition.value?.id === row.id && drawerMode.value === mode) {
 		drawer.value = false
 		return
 	}
@@ -237,13 +237,16 @@ const test = (stat: any, node: any) => {
 			:indent="30"
 		)
 			template(#default="{ node, stat }")
-				.node(@click='test(stat, node)')
+				.node(
+					:class="{ active: drawer && currentPartition?.id === node.id }"
+					@click="toggleDrawer(stat.level, node, 'edit')"
+				)
 					q-btn.trig(flat round dense icon="mdi-chevron-down" v-if="stat.children.length" @click.stop="toggle(stat)" :class="{ 'closed': !stat.open }" size="sm")
 					div(v-else)
 					.node-actions
-						q-btn.tool(flat round icon="mdi-pencil-outline" color="secondary" size='sm' @click="toggleDrawer(stat.level, node, 'edit')") 
-							q-tooltip Редактировать
-						q-btn(flat round icon="mdi-plus-circle-outline" color="secondary" size='sm' @click="toggleDrawer(stat.level, node, 'add')")
+						// q-btn.tool(flat round icon="mdi-pencil-outline" color="secondary" size='sm' @click.stop="toggleDrawer(stat.level, node, 'edit')")
+						// 	q-tooltip Редактировать
+						q-btn(flat round icon="mdi-plus-circle-outline" color="secondary" size='sm' @click.stop="toggleDrawer(stat.level, node, 'add')")
 							q-tooltip Добавить раздел
 					div(v-if='node.psevdo') {{ node.psevdo }}
 
@@ -255,7 +258,7 @@ const test = (stat: any, node: any) => {
 						div(v-if="!node.field && !node.sourceColumnId") {{ node.text }}
 
 					.node-actions
-						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' @click="clear(stat)") 
+						q-btn.close(flat round icon="mdi-close" color="secondary" size='sm' @click.stop="clear(stat)")
 
 
 Teleport(to='body')
@@ -306,10 +309,10 @@ Teleport(to='body')
 	background: var(--bgLight);
 	border-radius: 0.5rem;
 	border: 1px solid var(--my-border-color);
-	margin-top: -1px;
 	position: relative;
+	cursor: pointer;
 	display: grid;
-	grid-template-columns: 16px auto auto minmax(0, 1fr) auto;
+	grid-template-columns: 16px auto minmax(0, 1fr) auto;
 	gap: 1rem;
 	align-items: center;
 	.close {
@@ -319,6 +322,14 @@ Teleport(to='body')
 		.close {
 			visibility: visible;
 		}
+	}
+	&.active {
+		border-color: $primary;
+		background: white;
+		box-shadow:
+			inset 0 4px 4px 0 var(--selection),
+			inset 4px 0 4px 0 var(--selection),
+			inset 0 -2px 2px 0 var(--selection);
 	}
 }
 .node-actions {

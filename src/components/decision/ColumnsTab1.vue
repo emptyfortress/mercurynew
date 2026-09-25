@@ -188,9 +188,9 @@ Teleport(to='body')
 		border-color: $primary;
 		background: white;
 		box-shadow:
-			inset 0 4px 4px 0 rgba($color: #000000, $alpha: 0.2),
-			inset 4px 0 4px 0 rgba($color: #000000, $alpha: 0.2),
-			inset 0 -2px 2px 0 rgba($color: #000000, $alpha: 0.2);
+			inset 0 4px 4px 0 var(--selection),
+			inset 4px 0 4px 0 var(--selection),
+			inset 0 -2px 2px 0 var(--selection);
 	}
 }
 .drag-handle {
