@@ -82,16 +82,14 @@ const list = ref([
 	{ id: 7, label: 'Системное поле 7', selected: false },
 ])
 
-const test = ref([{ id: 0, label: 'Системное поле пример' }])
-const removeSysField = (index: number) => {
-	test.value?.splice(index, 1)
+const test = ref<{ id: number; label: string }[]>([])
+const removeSysField = () => {
+	test.value = []
+	list.value.forEach((item) => (item.selected = false))
 }
 const addSys = (item: any) => {
-	item.selected = true
-	test.value.push({
-		id: Date.now(),
-		label: item.label,
-	})
+	list.value.forEach((option) => (option.selected = option.id === item.id))
+	test.value = [{ id: item.id, label: item.label }]
 }
 </script>
 
@@ -156,7 +154,7 @@ transition(name="fade" mode="out-in")
 					.mai(v-for="(chip,index) in test" :key="chip.id")
 						.txt
 							div {{ chip.label }}
-							q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeSysField(index)" size="sm") 
+							q-btn.q-ml-sm(flat round icon="mdi-close" color="blue-grey-5" @click="removeSysField" size="sm")
 				q-expansion-item(v-model="showSystem" label='Добавить поле' switchToggleSide)
 					template(v-slot:header)
 						.header
@@ -164,7 +162,7 @@ transition(name="fade" mode="out-in")
 					q-list(dense)
 						q-item(clickable v-for="item in list" :key="item.id" @click="addSys(item)")
 							q-item-section(side)
-								q-checkbox(v-model='item.selected' dense @click.stop)
+								q-checkbox(:model-value="item.selected" dense @click.stop="addSys(item)")
 							q-item-section
 								q-item-label {{ item.label }}
 
