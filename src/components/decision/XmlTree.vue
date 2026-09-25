@@ -37,9 +37,6 @@ watchEffect(() => {
 </script>
 
 <template lang="pug">
-.q-gutter-x-sm
-	q-btn(flat color="primary" label="Импорт") 
-	q-btn(flat color="primary" label="Экспорт") 
 .xml-tree
 	XmlNode(v-if="tree" :node="tree")
 	.xml-error(v-else-if="error") {{ error }}

@@ -194,6 +194,9 @@ const cancel = () => {
 			q-tab-panels(v-model="tabs" animated)
 				q-tab-panel(name='common')
 					CommonTab(localize-name localize-description)
+					.row.q-gutter-sm.q-mt-md.q-ml-md
+						q-btn(outline color="primary" icon="mdi-file-import-outline" label="Импорт xml")
+						q-btn(outline color="primary" icon="mdi-file-export-outline" label="Экспорт xml")
 				q-tab-panel(name='query')
 					QueryItem(v-model:treeData="queryTree" :preview="previewForm" @closePreview="togglePreviewForm" @find="showPreview")
 					// .row.justify-center.q-mx-lg

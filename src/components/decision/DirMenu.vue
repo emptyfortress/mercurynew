@@ -2,7 +2,8 @@
 q-menu(context-menu)
 	q-list
 	template(v-for="item in menu" :key="item.id")
-		q-item(v-if="!item.hidden?.()" clickable v-close-popup @click="item.action")
+		q-separator(v-if="item.separator && !item.hidden?.()")
+		q-item(v-else-if="!item.hidden?.()" clickable v-close-popup @click="item.action")
 			q-item-section(avatar)
 				q-icon(:name="item.icon")
 			q-item-section
@@ -32,7 +33,16 @@ const rename = () => {
 	emit('rename')
 }
 
-const menu = [
+type MenuItem = {
+	id: number
+	label?: string
+	icon?: string
+	action?: () => void
+	separator?: boolean
+	hidden?: () => boolean
+}
+
+const menu: MenuItem[] = [
 	{
 		id: 0,
 		label: 'Добавить папку',
@@ -52,7 +62,11 @@ const menu = [
 		hidden: () => props.stat.data.type === 0,
 	},
 	{ id: 3, label: 'Переименовать', icon: 'mdi-pencil', action: rename },
-	{ id: 4, label: 'Удалить', icon: 'mdi-trash-can-outline', action: kill },
+	{ id: 4, separator: true, hidden: () => props.mode !== 'poisk' },
+	{ id: 5, label: 'Импорт xml', icon: 'mdi-file-import-outline', action: () => {}, hidden: () => props.mode !== 'poisk' },
+	{ id: 6, label: 'Экспорт xml', icon: 'mdi-file-export-outline', action: () => {}, hidden: () => props.mode !== 'poisk' || props.stat.data.type === 0 },
+	{ id: 7, separator: true, hidden: () => props.mode !== 'poisk' },
+	{ id: 8, label: 'Удалить', icon: 'mdi-trash-can-outline', action: kill },
 ]
 </script>
 
