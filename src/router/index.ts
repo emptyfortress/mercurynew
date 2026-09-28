@@ -27,6 +27,12 @@ const router = createRouter({
 		{
 			path: '/docs/:name',
 			component: () => import('@/views/MarkdownPage.vue'),
+			meta: {
+				toolbar: false,
+				back: false,
+				count: 0,
+				save: false,
+			},
 		},
 		{
 			path: '/:id?',
