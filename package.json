@@ -26,6 +26,7 @@
 		"dockview-vue": "^6.6.1",
 		"driver.js": "^1.4.0",
 		"gsap": "^3.12.5",
+		"markdown-it": "^15.0.2",
 		"moment": "^2.30.1",
 		"motion-v": "^0.13.0",
 		"pinia": "^2.2.4",

@@ -25,6 +25,10 @@ const router = createRouter({
 	routes: [
 		...(import.meta.env.DEV ? devRoutes : []),
 		{
+			path: '/docs/:name',
+			component: () => import('@/views/MarkdownPage.vue'),
+		},
+		{
 			path: '/:id?',
 			name: 'apps.home',
 			component: Home,
