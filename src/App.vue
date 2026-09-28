@@ -139,25 +139,36 @@ const title = computed(() => {
 		return 'Конструктор приложений'
 	}
 
-	if (route.path.includes('cards') && route.path.includes('0')) {
+	const cardsId = String(route.params.razmet ?? '')
+
+	if (cardsId === '0') {
 		return 'Конструктор полей'
 	}
-	if (route.path.includes('cards') && route.path.includes('1')) {
-		return 'Конструктор состояний'
-	}
-	if (route.path.includes('cards') && route.path.includes('2')) {
+	if (cardsId === '102') {
 		return 'Конструктор ролей'
 	}
-	if (route.path.includes('cards') && route.path.includes('3')) {
+	if (cardsId === '103') {
+		return 'Матрица доступа'
+	}
+	if (cardsId === '11') {
+		return 'Конструктор состояний'
+	}
+	if (cardsId === '2') {
+		return 'Конструктор ролей'
+	}
+	if (cardsId === '3') {
 		return 'Конструктор разметок'
 	}
-	if (route.path.includes('cards') && route.path.includes('4')) {
+	if (cardsId === '4') {
 		return 'Конструктор разметок'
 	}
-	if (route.path.includes('cards') && route.path.includes('5')) {
+	if (cardsId === '12' || cardsId === '24') {
+		return 'Конструктор разметок'
+	}
+	if (cardsId === '5' || cardsId === '25') {
 		return 'Конструктор расширенных полей'
 	}
-	if (route.path.includes('cards') && route.path.includes('5')) {
+	if (cardsId === '26') {
 		return 'Метаданные'
 	}
 	if (route.path.includes('approve')) {

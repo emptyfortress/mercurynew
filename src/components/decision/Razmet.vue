@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import RolesConstructor from '@/components/decision/RolesConstructor.vue'
 import Matrix from '@/components/decision/Matrix.vue'
 import RazmetConstructor from '@/components/decision/RazmetConstructor.vue'
+import StateConstructor from '@/components/decision/StateConstructor.vue'
 
 const props = defineProps({
 	razmet: {
@@ -15,7 +16,7 @@ const con = computed(() => {
 	switch (props.razmet) {
 		case '0':
 			return 'Конструктор полей'
-		case '1':
+		case '11':
 			return 'Конструктор состояний'
 		case '102':
 			return 'Конструктор ролей'
@@ -36,9 +37,11 @@ const con = computed(() => {
 <template lang="pug">
 div
 	Matrix(v-if='razmet == "103"')
+	StateConstructor(v-if='razmet == "11"')
 	q-page(padding v-else)
 		.container
 			.text-h6(v-if='razmet !== "12"') {{ con }}
+			StateConstructor(v-if='razmet == "11"')
 			RolesConstructor(v-if='razmet == "102"')
 			RazmetConstructor(v-if='razmet == "12"')
 
