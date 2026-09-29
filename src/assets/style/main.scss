@@ -2,6 +2,8 @@
 @import './anim.scss';
 @import 'vue-draggable-resizable/style.css';
 @import 'dockview-core/dist/styles/dockview.css';
+@import '@vue-flow/core/dist/style.css';
+@import '@vue-flow/core/dist/theme-default.css';
 
 :root {
 	--rad: 0.5rem;
