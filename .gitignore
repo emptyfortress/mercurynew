@@ -33,3 +33,4 @@ coverage
 .aider.input.history
 .aider*
 .claude/worktrees
+.playwright-mcp
