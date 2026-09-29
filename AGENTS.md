@@ -52,10 +52,9 @@ changing code unless I explicitly ask you to implement immediately.
 
 ## Browser testing
 
-When asked to review or test the prototype:
-
-- use browser tools;
-- test the actual UI rather than reasoning only from source code;
-- check important empty, loading, error and disabled states.
+- Do not launch or use a browser for verification unless the user explicitly asks for browser testing or review.
+- When browser testing is explicitly requested, use browser tools to inspect the actual UI rather than reasoning only from source code.
+- Assume the dev server is already running; use it instead of starting another server.
+- Check important empty, loading, error and disabled states.
 
 Do not modify code during a review unless explicitly asked.
