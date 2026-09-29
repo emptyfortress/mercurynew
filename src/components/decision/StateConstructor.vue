@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { MarkerType, Panel, PanelPosition as FlowPanelPosition, VueFlow } from '@vue-flow/core'
+import { MarkerType, Panel, VueFlow } from '@vue-flow/core'
 import type { NodeMouseEvent } from '@vue-flow/core'
-import {
-	Background,
-	ControlButton,
-	Controls,
-	PanelPosition,
-} from '@vue-flow/additional-components'
+import { Background, ControlButton, Controls, PanelPosition } from '@vue-flow/additional-components'
 import StatePropertiesPanel from '@/components/decision/StatePropertiesPanel.vue'
 
 const splitterModel = ref(75)
@@ -36,9 +31,7 @@ const clearSelection = () => {
 
 const saveNodeLabel = (id: string, label: string) => {
 	nodes.value = nodes.value.map((node) =>
-		node.id === id
-			? { ...node, data: { ...node.data, label } }
-			: node
+		node.id === id ? { ...node, data: { ...node.data, label } } : node
 	)
 }
 
@@ -99,7 +92,7 @@ q-page(padding)
 									@click="isInteractive = !isInteractive"
 								)
 									q-icon(:name="isInteractive ? 'lock_open' : 'lock'")
-						Panel(:position="FlowPanelPosition.BottomRight")
+						Panel(position="bottom-right")
 							q-btn(
 								fab
 								color="primary"
@@ -169,5 +162,4 @@ q-page(padding)
 	width: 1rem;
 	height: 1rem;
 }
-
 </style>
