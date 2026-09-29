@@ -34,6 +34,8 @@ Before implementing custom UI behavior:
 
 Custom CSS is acceptable when it is needed for the intended design.
 
+For modal windows and dialogs, follow `.codex/skills/modal-window.md`.
+
 ## Changes
 
 Before a significant change:
