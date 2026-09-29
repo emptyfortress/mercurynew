@@ -12,7 +12,12 @@ export type OperationDefinition = {
 }
 
 type StateNode = Pick<
-	Node<{ label?: string; nameTranslations?: NameTranslations; operationIds?: string[] }>,
+	Node<{
+		label?: string
+		nameTranslations?: NameTranslations
+		operationIds?: string[]
+		isInitial?: boolean
+	}>,
 	'id' | 'data'
 >
 type StateEdge = Pick<
@@ -27,7 +32,13 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-	(event: 'save:node-label', id: string, label: string, translations: NameTranslations): void
+	(
+		event: 'save:node-properties',
+		id: string,
+		label: string,
+		translations: NameTranslations,
+		isInitial: boolean
+	): void
 	(event: 'save:edge-label', id: string, label: string, translations: NameTranslations): void
 	(event: 'assign-operations', id: string, operationIds: string[]): void
 	(event: 'remove-operation', id: string, operationId: string): void
@@ -36,6 +47,7 @@ const emit = defineEmits<{
 
 const draftLabel = ref('')
 const draftTranslations = ref<NameTranslations>({})
+const draftIsInitial = ref(false)
 const showNameTranslations = ref(false)
 const activeNodeTab = ref('operations')
 const isOperationDialogOpen = ref(false)
@@ -111,11 +123,12 @@ watch(
 		() => props.node?.id,
 		() => props.node?.data?.label,
 		() => props.node?.data?.nameTranslations,
+		() => props.node?.data?.isInitial,
 		() => props.edge?.id,
 		() => props.edge?.label,
 		() => props.edge?.data?.nameTranslations,
 	],
-	([, nodeLabel, nodeTranslations, , edgeLabel, edgeTranslations]) => {
+	([, nodeLabel, nodeTranslations, nodeIsInitial, , edgeLabel, edgeTranslations]) => {
 		draftLabel.value = props.node
 			? (nodeLabel ?? '')
 			: typeof edgeLabel === 'string'
@@ -124,6 +137,7 @@ watch(
 		draftTranslations.value = {
 			...(props.node ? nodeTranslations : edgeTranslations),
 		}
+		draftIsInitial.value = props.node ? (nodeIsInitial ?? false) : false
 	},
 	{ immediate: true }
 )
@@ -146,8 +160,11 @@ const hasChanges = computed(() => {
 	const translationsChanged = translationLocales.some(
 		({ code }) => (draftTranslations.value[code] ?? '') !== (savedTranslations.value[code] ?? '')
 	)
+	const initialStateChanged = props.node
+		? draftIsInitial.value !== (props.node.data?.isInitial ?? false)
+		: false
 
-	return labelChanged || translationsChanged
+	return labelChanged || translationsChanged || initialStateChanged
 })
 
 const save = () => {
@@ -158,8 +175,15 @@ const save = () => {
 			.filter(([, value]) => value.length > 0)
 	) as NameTranslations
 
-	if (props.node) emit('save:node-label', props.node.id, draftLabel.value, translations)
-	else if (props.edge) emit('save:edge-label', props.edge.id, draftLabel.value, translations)
+	if (props.node) {
+		emit(
+			'save:node-properties',
+			props.node.id,
+			draftLabel.value,
+			translations,
+			draftIsInitial.value
+		)
+	} else if (props.edge) emit('save:edge-label', props.edge.id, draftLabel.value, translations)
 }
 </script>
 
@@ -187,6 +211,13 @@ const save = () => {
 						@click="showNameTranslations = !showNameTranslations"
 					)
 						q-tooltip Переводы названия
+			q-checkbox(
+				v-if="node"
+				v-model="draftIsInitial"
+				label="Исходное состояние"
+				class="q-mt-sm"
+				dense
+			)
 			.q-pl-sm.q-mt-md(v-if="showNameTranslations")
 				.text-caption.q-mb-xs Локализации
 				q-input(

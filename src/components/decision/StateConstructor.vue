@@ -7,7 +7,12 @@ import type { NameTranslations } from '@/constants/locales'
 import StatePropertiesPanel from '@/components/decision/StatePropertiesPanel.vue'
 import type { OperationDefinition } from '@/components/decision/StatePropertiesPanel.vue'
 
-type StateNodeData = { label: string; nameTranslations?: NameTranslations; operationIds?: string[] }
+type StateNodeData = {
+	label: string
+	nameTranslations?: NameTranslations
+	operationIds?: string[]
+	isInitial?: boolean
+}
 type StateNode = Omit<Node<StateNodeData>, 'data'> & { data: StateNodeData }
 type StateEdgeData = { nameTranslations?: NameTranslations }
 const edgeTypeOptions = [
@@ -62,7 +67,13 @@ const operations = ref<OperationDefinition[]>([
 let nextOperationId = 1
 
 const nodes = ref<StateNode[]>([
-	{ id: 'start', type: 'input', data: { label: 'Начало' }, position: { x: 80, y: 80 } },
+	{
+		id: 'start',
+		type: 'input',
+		class: 'is-initial',
+		data: { label: 'Начало', isInitial: true },
+		position: { x: 80, y: 80 },
+	},
 	{ id: 'state', data: { label: 'Новое состояние' }, position: { x: 300, y: 180 } },
 	{ id: 'end', type: 'output', data: { label: 'Завершение' }, position: { x: 540, y: 80 } },
 ])
@@ -91,12 +102,25 @@ const clearSelection = () => {
 	selectedEdgeId.value = null
 }
 
-const saveNodeLabel = (id: string, label: string, translations: NameTranslations) => {
-	nodes.value = nodes.value.map((node) =>
-		node.id === id
-			? { ...node, data: { ...node.data, label, nameTranslations: translations } }
+const saveNodeProperties = (
+	id: string,
+	label: string,
+	translations: NameTranslations,
+	isInitial: boolean
+) => {
+	nodes.value = nodes.value.map((node) => {
+		if (node.id === id) {
+			return {
+				...node,
+				class: isInitial ? 'is-initial' : undefined,
+				data: { ...node.data, label, nameTranslations: translations, isInitial },
+			}
+		}
+
+		return isInitial && node.data.isInitial
+			? { ...node, class: undefined, data: { ...node.data, isInitial: false } }
 			: node
-	)
+	})
 }
 
 const assignOperations = (id: string, operationIds: string[]) => {
@@ -267,7 +291,7 @@ q-page(padding)
 						:node="selectedNode"
 						:edge="selectedEdge"
 						:operations="operations"
-						@save:node-label="saveNodeLabel"
+						@save:node-properties="saveNodeProperties"
 						@save:edge-label="saveEdgeLabel"
 						@assign-operations="assignOperations"
 						@remove-operation="removeOperation"
@@ -299,6 +323,10 @@ q-page(padding)
 	outline: 2px solid var(--q-primary);
 	outline-offset: 2px;
 	box-shadow: 0 4px 6px rgb(0 0 0 / 52%);
+}
+
+:deep(.vue-flow__node.is-initial) {
+	background-color: #c3e7c6;
 }
 
 :deep(.vue-flow__controls) {
