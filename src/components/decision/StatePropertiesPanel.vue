@@ -2,14 +2,16 @@
 import { computed, ref, watch } from 'vue'
 import type { Edge, Node } from '@vue-flow/core'
 import { translationLocales, type NameTranslations } from '@/constants/locales'
+import StateOperationsDialog from '@/components/decision/StateOperationsDialog.vue'
+import type { OperationDefinition } from '@/components/decision/operationTypes'
+import StateTransitionsDialog from '@/components/decision/StateTransitionsDialog.vue'
+import type {
+	StateTransitionItem,
+	TransitionDefinition,
+	TransitionTarget,
+} from '@/components/decision/transitionTypes'
 
-export type OperationDefinition = {
-	id: string
-	name: string
-	description?: string
-	nameTranslations?: NameTranslations
-	descriptionTranslations?: NameTranslations
-}
+export type { OperationDefinition } from '@/components/decision/operationTypes'
 
 type StateNode = Pick<
 	Node<{
@@ -29,6 +31,9 @@ const props = defineProps<{
 	node: StateNode | null
 	edge: StateEdge | null
 	operations: OperationDefinition[]
+	transitions: TransitionDefinition[]
+	transitionTargets: TransitionTarget[]
+	outgoingTransitions: StateTransitionItem[]
 }>()
 
 const emit = defineEmits<{
@@ -43,6 +48,10 @@ const emit = defineEmits<{
 	(event: 'assign-operations', id: string, operationIds: string[]): void
 	(event: 'remove-operation', id: string, operationId: string): void
 	(event: 'create-operation', id: string, operation: Omit<OperationDefinition, 'id'>): void
+	(event: 'assign-transitions', id: string, transitionIds: string[]): void
+	(event: 'create-transition', id: string, transition: Omit<TransitionDefinition, 'id'>): void
+	(event: 'remove-transition', edgeId: string): void
+	(event: 'set-default-transition', edgeId: string, isDefault: boolean): void
 }>()
 
 const draftLabel = ref('')
@@ -51,15 +60,7 @@ const draftIsInitial = ref(false)
 const showNameTranslations = ref(false)
 const activeNodeTab = ref('operations')
 const isOperationDialogOpen = ref(false)
-const isCreatingOperation = ref(false)
-const operationSearch = ref('')
-const selectedOperationIds = ref<string[]>([])
-const newOperationName = ref('')
-const newOperationDescription = ref('')
-const newOperationNameTranslations = ref<NameTranslations>({})
-const newOperationDescriptionTranslations = ref<NameTranslations>({})
-const showNewOperationNameTranslations = ref(false)
-const showNewOperationDescriptionTranslations = ref(false)
+const isTransitionDialogOpen = ref(false)
 const panelTitle = computed(() => (props.node ? 'Состояние' : props.edge ? 'Переход' : 'Свойства'))
 const assignedOperations = computed(() => {
 	const assignedIds = props.node?.data?.operationIds ?? []
@@ -67,56 +68,59 @@ const assignedOperations = computed(() => {
 		.map((id) => props.operations.find((operation) => operation.id === id))
 		.filter((operation): operation is OperationDefinition => Boolean(operation))
 })
-const availableOperations = computed(() => {
-	const assignedIds = new Set(props.node?.data?.operationIds ?? [])
-	const query = operationSearch.value.trim().toLocaleLowerCase()
-	return props.operations.filter(
-		(operation) =>
-			!assignedIds.has(operation.id) && operation.name.toLocaleLowerCase().includes(query)
-	)
-})
-
 const openOperationDialog = () => {
-	isCreatingOperation.value = false
-	operationSearch.value = ''
-	selectedOperationIds.value = []
-	resetNewOperation()
 	isOperationDialogOpen.value = true
 }
 
-const resetNewOperation = () => {
-	newOperationName.value = ''
-	newOperationDescription.value = ''
-	newOperationNameTranslations.value = {}
-	newOperationDescriptionTranslations.value = {}
-	showNewOperationNameTranslations.value = false
-	showNewOperationDescriptionTranslations.value = false
+const openTransitionDialog = () => {
+	isTransitionDialogOpen.value = true
 }
 
-const collectTranslations = (translations: NameTranslations): NameTranslations =>
-	Object.fromEntries(
-		translationLocales
-			.map(({ code }) => [code, translations[code]?.trim() ?? ''] as const)
-			.filter(([, value]) => value.length > 0)
-	) as NameTranslations
+const assignedTransitionIds = computed(() => {
+	const assignedIds = new Set(
+		props.outgoingTransitions
+			.map((transition) => transition.transitionDefinitionId)
+			.filter((id): id is string => Boolean(id))
+	)
+	const assignedTargetIds = new Set(
+		props.outgoingTransitions.map((transition) => transition.targetNodeId)
+	)
 
-const addSelectedOperations = () => {
-	if (!props.node || selectedOperationIds.value.length === 0) return
-	emit('assign-operations', props.node.id, selectedOperationIds.value)
-	isOperationDialogOpen.value = false
-}
+	return props.transitions
+		.filter(
+			(transition) =>
+				assignedIds.has(transition.id) || assignedTargetIds.has(transition.targetNodeId)
+		)
+		.map((transition) => transition.id)
+})
 
-const createOperation = () => {
-	const name = newOperationName.value.trim()
-	if (!props.node || !name) return
-	emit('create-operation', props.node.id, {
-		name,
-		description: newOperationDescription.value.trim() || undefined,
-		nameTranslations: collectTranslations(newOperationNameTranslations.value),
-		descriptionTranslations: collectTranslations(newOperationDescriptionTranslations.value),
-	})
-	isOperationDialogOpen.value = false
-}
+const availableTransitionTargets = computed(() => {
+	const assignedTargetIds = new Set(
+		props.outgoingTransitions.map((transition) => transition.targetNodeId)
+	)
+	return props.transitionTargets.filter(
+		(target) => target.id !== props.node?.id && !assignedTargetIds.has(target.id)
+	)
+})
+
+const forwardAssignedOperations = (id: string, operationIds: string[]) =>
+	emit('assign-operations', id, operationIds)
+
+const forwardCreatedOperation = (
+	id: string,
+	operation: Omit<OperationDefinition, 'id'>
+) => emit('create-operation', id, operation)
+
+const forwardAssignedTransitions = (id: string, transitionIds: string[]) =>
+	emit('assign-transitions', id, transitionIds)
+
+const forwardCreatedTransition = (
+	id: string,
+	transition: Omit<TransitionDefinition, 'id'>
+) => emit('create-transition', id, transition)
+
+const updateDefaultTransition = (edgeId: string, isDefault: boolean | null) =>
+	emit('set-default-transition', edgeId, Boolean(isDefault))
 
 watch(
 	[
@@ -145,6 +149,7 @@ watch(
 watch([() => props.node?.id, () => props.edge?.id], () => {
 	showNameTranslations.value = false
 	isOperationDialogOpen.value = false
+	isTransitionDialogOpen.value = false
 })
 
 const savedTranslations = computed(
@@ -264,93 +269,56 @@ const save = () => {
 								q-btn(flat round dense color="secondary" icon="mdi-close" size='sm' @click="emit('remove-operation', node.id, operation.id)")
 									q-tooltip Удалить операцию
 				q-tab-panel(name="transitions")
-					.text-body2.text-grey-7 Настройки переходов состояния
-
-	q-dialog(v-model="isOperationDialogOpen" backdrop-filter="blur(4px) saturate(150%)")
-		q-card.operation-dialog(style="min-width: 400px;")
-			q-btn.close(round color="negative" icon="mdi-close" aria-label="Закрыть" v-close-popup)
-			q-card-section
-				.text-h6 {{ isCreatingOperation ? 'Новая операция' : 'Добавить операции' }}
-				.caption {{ isCreatingOperation ? 'Создайте операцию для текущего вида документа' : 'Выберите одну или несколько доступных операций' }}
-			template(v-if="!isCreatingOperation")
-				q-card-section.operation-dialog-content.q-pt-none
-					q-input(v-model="operationSearch" filled dense clearable autofocus placeholder='Фильтр')
-						template(v-slot:prepend)
-							q-icon(name="mdi-magnify" color="primary")
-					q-list.operation-options(separator)
-						q-item(v-for="operation in availableOperations" :key="operation.id" tag="label" clickable dense)
-							q-item-section(side)
-								q-checkbox(v-model="selectedOperationIds" :val="operation.id" dense)
+					.row.items-center.justify-between.q-mb-sm
+						.text-subtitle2 Исходящие переходы
+						q-btn(
+							v-if="outgoingTransitions.length"
+							flat
+							round
+							dense
+							color="primary"
+							icon="mdi-plus-circle"
+							aria-label="Добавить переход"
+							@click="openTransitionDialog"
+						)
+					.empty-operations(v-if="!outgoingTransitions.length")
+						.text-body2.text-secondary.q-mb-sm Для этого состояния переходы не добавлены.
+						q-btn(color="primary" flat icon="mdi-plus-circle" label="Добавить переход" @click="openTransitionDialog")
+					q-list.operation-list(v-else separator bordered)
+						q-item(v-for="transition in outgoingTransitions" :key="transition.id" dense)
 							q-item-section
-								q-item-label {{ operation.name }}
-								q-item-label(v-if="operation.description" caption) {{ operation.description }}
-						.text-body2.text-grey-7.q-py-md(v-if="!availableOperations.length") Нет доступных операций по этому запросу.
+								q-item-label(:class="{ 'text-weight-bold': transition.isDefault }") {{ transition.label || transition.targetLabel }}
+								q-item-label(caption) Цель: {{ transition.targetLabel }}
+							q-item-section(side)
+								.row.items-center.no-wrap
+									q-checkbox(
+										:model-value="transition.isDefault"
+										label="По умолчанию"
+										dense
+										@update:model-value="updateDefaultTransition(transition.id, $event)"
+									)
+									q-btn(flat round dense color="secondary" icon="mdi-close" size="sm" aria-label="Удалить переход" @click="emit('remove-transition', transition.id)")
+										q-tooltip Удалить переход
 
-				q-card-actions(align="right")
-					q-btn(flat color="primary" label="Создать операцию" icon="add" @click="isCreatingOperation = true")
-					q-space
-					q-btn(flat color="primary" label="Отмена" v-close-popup)
-					q-btn(color="primary" unelevated label="Добавить" :disable="!selectedOperationIds.length" @click="addSelectedOperations")
-			template(v-else)
-				q-card-section.operation-dialog-content.q-pt-none
-					.operation-field
-						.operation-field-label Название
-						q-input(
-							v-model="newOperationName"
-							outlined
-							dense
-							autofocus
-							aria-label="Название"
-							@keyup.enter="createOperation"
-						)
-							template(v-slot:append)
-								q-btn(
-									flat
-									round
-									dense
-									icon="mdi-translate"
-									color="secondary"
-									type="button"
-									aria-label="Переводы названия"
-									@click="showNewOperationNameTranslations = !showNewOperationNameTranslations"
-								)
-									q-tooltip Переводы названия
-					.q-pl-sm.q-mt-sm(v-if="showNewOperationNameTranslations")
-						.operation-field.q-mb-sm(v-for="locale in translationLocales" :key="`op-name-${locale.code}`")
-							.operation-field-label {{ locale.label }}
-							q-input(v-model="newOperationNameTranslations[locale.code]" outlined dense :aria-label="`Название, ${locale.label}`")
-					.operation-field.q-mt-md
-						.operation-field-label Описание (необязательно)
-						q-input(
-							v-model="newOperationDescription"
-							outlined
-							dense
-							type="textarea"
-							autogrow
-							aria-label="Описание (необязательно)"
-						)
-							template(v-slot:append)
-								q-btn(
-									flat
-									round
-									dense
-									icon="mdi-translate"
-									color="secondary"
-									type="button"
-									aria-label="Переводы описания"
-									@click="showNewOperationDescriptionTranslations = !showNewOperationDescriptionTranslations"
-								)
-									q-tooltip Переводы описания
-						.q-pl-sm.q-mt-sm(v-if="showNewOperationDescriptionTranslations")
-							.operation-field.q-mb-sm(v-for="locale in translationLocales" :key="`op-description-${locale.code}`")
-								.operation-field-label {{ locale.label }}
-								q-input(v-model="newOperationDescriptionTranslations[locale.code]" outlined dense type="textarea" autogrow :aria-label="`Описание, ${locale.label}`")
-
-				q-card-actions(align="right")
-					q-btn(flat color="primary" label="Назад к списку" @click="isCreatingOperation = false")
-					q-space
-					q-btn(flat color="primary" label="Отмена" v-close-popup)
-					q-btn(color="primary" unelevated label="Создать" :disable="!newOperationName.trim()" @click="createOperation")
+			StateOperationsDialog(
+				v-if="node"
+				v-model="isOperationDialogOpen"
+				:node-id="node.id"
+				:operations="operations"
+				:assigned-operation-ids="node.data?.operationIds ?? []"
+				@assign-operations="forwardAssignedOperations"
+				@create-operation="forwardCreatedOperation"
+			)
+			StateTransitionsDialog(
+				v-if="node"
+				v-model="isTransitionDialogOpen"
+				:node-id="node.id"
+				:transitions="transitions"
+				:assigned-transition-ids="assignedTransitionIds"
+				:targets="availableTransitionTargets"
+				@assign-transitions="forwardAssignedTransitions"
+				@create-transition="forwardCreatedTransition"
+			)
 	q-btn(
 		v-if="node || edge"
 		class="save-button"
@@ -392,37 +360,6 @@ const save = () => {
 	.q-item {
 		padding-right: 0.2rem;
 	}
-}
-
-.operation-dialog {
-	width: 560px;
-	height: 640px;
-	max-width: calc(100vw - 2rem);
-	max-height: calc(100vh - 2rem);
-	max-height: calc(100dvh - 2rem);
-	display: flex;
-	flex-direction: column;
-}
-
-.operation-dialog-content {
-	display: flex;
-	flex: 1;
-	flex-direction: column;
-	min-height: 0;
-	overflow-y: auto;
-}
-
-.operation-field-label {
-	display: block;
-	margin-bottom: 0.25rem;
-	text-align: left;
-}
-
-.operation-options {
-	flex: 1;
-	min-height: 0;
-	overflow-y: auto;
-	margin-top: 1rem;
 }
 
 :deep(.q-tab-panels) {

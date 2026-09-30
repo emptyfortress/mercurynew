@@ -6,6 +6,11 @@ import { Background, ControlButton, Controls, PanelPosition } from '@vue-flow/ad
 import type { NameTranslations } from '@/constants/locales'
 import StatePropertiesPanel from '@/components/decision/StatePropertiesPanel.vue'
 import type { OperationDefinition } from '@/components/decision/StatePropertiesPanel.vue'
+import type {
+	StateTransitionItem,
+	TransitionDefinition,
+	TransitionTarget,
+} from '@/components/decision/transitionTypes'
 
 type StateNodeData = {
 	label: string
@@ -14,7 +19,11 @@ type StateNodeData = {
 	isInitial?: boolean
 }
 type StateNode = Omit<Node<StateNodeData>, 'data'> & { data: StateNodeData }
-type StateEdgeData = { nameTranslations?: NameTranslations }
+type StateEdgeData = {
+	nameTranslations?: NameTranslations
+	transitionId?: string
+	isDefault?: boolean
+}
 const edgeTypeOptions = [
 	{ label: 'Кривая Безье', value: 'default' },
 	{ label: 'Простая кривая', value: 'simplebezier' },
@@ -77,6 +86,12 @@ const nodes = ref<StateNode[]>([
 	{ id: 'state', data: { label: 'Новое состояние' }, position: { x: 300, y: 180 } },
 	{ id: 'end', type: 'output', data: { label: 'Завершение' }, position: { x: 540, y: 80 } },
 ])
+
+const transitions = ref<TransitionDefinition[]>([
+	{ id: 'transition-start-state', name: 'Новое состояние', targetNodeId: 'state' },
+	{ id: 'transition-state-end', name: 'Завершение', targetNodeId: 'end' },
+])
+let nextTransitionId = 1
 
 let nextNodeId = 1
 let nextEdgeId = 1
@@ -178,9 +193,103 @@ const defaultEdgeOptions = computed(() => ({
 }))
 
 const edges = ref<Edge<StateEdgeData>[]>([
-	{ ...defaultEdgeOptions.value, id: 'start-state', source: 'start', target: 'state' },
-	{ ...defaultEdgeOptions.value, id: 'state-end', source: 'state', target: 'end' },
+	{
+		...defaultEdgeOptions.value,
+		id: 'start-state',
+		source: 'start',
+		target: 'state',
+		label: 'Новое состояние',
+		data: { transitionId: 'transition-start-state' },
+	},
+	{
+		...defaultEdgeOptions.value,
+		id: 'state-end',
+		source: 'state',
+		target: 'end',
+		label: 'Завершение',
+		data: { transitionId: 'transition-state-end' },
+	},
 ])
+
+const transitionTargets = computed<TransitionTarget[]>(() =>
+	nodes.value.map((node) => ({ id: node.id, label: node.data.label }))
+)
+
+const outgoingTransitions = computed<StateTransitionItem[]>(() => {
+	if (!selectedNodeId.value) return []
+
+	return edges.value
+		.filter((edge) => edge.source === selectedNodeId.value)
+		.map((edge) => ({
+			id: edge.id,
+			transitionDefinitionId: edge.data?.transitionId,
+			targetNodeId: edge.target,
+			targetLabel:
+				nodes.value.find((node) => node.id === edge.target)?.data.label ?? 'Состояние удалено',
+			label: typeof edge.label === 'string' ? edge.label : '',
+			isDefault: edge.data?.isDefault ?? false,
+		}))
+})
+
+const addTransitionsToNode = (nodeId: string, transitionIds: string[]) => {
+	const definitions = transitions.value.filter((transition) => transitionIds.includes(transition.id))
+	const additions: Edge<StateEdgeData>[] = []
+
+	for (const transition of definitions) {
+		if (transition.targetNodeId === nodeId) continue
+		const exists = edges.value.some(
+			(edge) => edge.source === nodeId && edge.target === transition.targetNodeId
+		)
+		if (exists) continue
+
+		additions.push({
+			...defaultEdgeOptions.value,
+			id: `edge-${nextEdgeId++}`,
+			source: nodeId,
+			target: transition.targetNodeId,
+			label: transition.name,
+			data: {
+				transitionId: transition.id,
+				nameTranslations: { ...transition.nameTranslations },
+			},
+		})
+	}
+
+	if (additions.length) edges.value = [...edges.value, ...additions]
+}
+
+const createTransition = (
+	nodeId: string,
+	transition: Omit<TransitionDefinition, 'id'>
+) => {
+	if (transition.targetNodeId === nodeId) return
+	if (!nodes.value.some((node) => node.id === transition.targetNodeId)) return
+
+	const newTransition = { ...transition, id: `transition-${nextTransitionId++}` }
+	transitions.value.push(newTransition)
+	addTransitionsToNode(nodeId, [newTransition.id])
+}
+
+const removeTransition = (edgeId: string) => {
+	edges.value = edges.value.filter((edge) => edge.id !== edgeId)
+	if (selectedEdgeId.value === edgeId) selectedEdgeId.value = null
+}
+
+const setDefaultTransition = (edgeId: string, isDefault: boolean) => {
+	const selected = edges.value.find((edge) => edge.id === edgeId)
+	if (!selected) return
+
+	edges.value = edges.value.map((edge) => {
+		if (edge.source !== selected.source) return edge
+		return {
+			...edge,
+			data: {
+				...edge.data,
+				isDefault: edge.id === edgeId ? isDefault : isDefault ? false : edge.data?.isDefault,
+			},
+		}
+	})
+}
 
 const addConnection = (connection: Connection) => {
 	const exists = edges.value.some(
@@ -191,10 +300,34 @@ const addConnection = (connection: Connection) => {
 			edge.targetHandle === connection.targetHandle
 	)
 	if (exists) return
+	if (!connection.source || !connection.target || connection.source === connection.target) return
+
+	const targetName =
+		nodes.value.find((node) => node.id === connection.target)?.data.label ?? 'Новый переход'
+	let transition = transitions.value.find(
+		(item) => item.targetNodeId === connection.target && item.name === targetName
+	)
+	if (!transition) {
+		transition = {
+			id: `transition-${nextTransitionId++}`,
+			name: targetName,
+			targetNodeId: connection.target,
+		}
+		transitions.value.push(transition)
+	}
 
 	edges.value = [
 		...edges.value,
-		{ ...defaultEdgeOptions.value, ...connection, id: `edge-${nextEdgeId++}` },
+		{
+			...defaultEdgeOptions.value,
+			...connection,
+			id: `edge-${nextEdgeId++}`,
+			label: transition.name,
+			data: {
+				transitionId: transition.id,
+				nameTranslations: { ...transition.nameTranslations },
+			},
+		},
 	]
 }
 
@@ -291,11 +424,18 @@ q-page(padding)
 						:node="selectedNode"
 						:edge="selectedEdge"
 						:operations="operations"
+						:transitions="transitions"
+						:transition-targets="transitionTargets"
+						:outgoing-transitions="outgoingTransitions"
 						@save:node-properties="saveNodeProperties"
 						@save:edge-label="saveEdgeLabel"
 						@assign-operations="assignOperations"
 						@remove-operation="removeOperation"
 						@create-operation="createOperation"
+						@assign-transitions="addTransitionsToNode"
+						@create-transition="createTransition"
+						@remove-transition="removeTransition"
+						@set-default-transition="setDefaultTransition"
 					)
 </template>
 
