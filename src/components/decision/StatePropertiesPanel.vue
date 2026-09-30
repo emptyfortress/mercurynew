@@ -110,18 +110,14 @@ const availableTransitionTargets = computed(() => {
 const forwardAssignedOperations = (id: string, operationIds: string[]) =>
 	emit('assign-operations', id, operationIds)
 
-const forwardCreatedOperation = (
-	id: string,
-	operation: Omit<OperationDefinition, 'id'>
-) => emit('create-operation', id, operation)
+const forwardCreatedOperation = (id: string, operation: Omit<OperationDefinition, 'id'>) =>
+	emit('create-operation', id, operation)
 
 const forwardAssignedTransitions = (id: string, transitionIds: string[]) =>
 	emit('assign-transitions', id, transitionIds)
 
-const forwardCreatedTransition = (
-	id: string,
-	transition: Omit<TransitionDefinition, 'id'>
-) => emit('create-transition', id, transition)
+const forwardCreatedTransition = (id: string, transition: Omit<TransitionDefinition, 'id'>) =>
+	emit('create-transition', id, transition)
 
 const updateDefaultTransition = (edgeId: string, isDefault: boolean | null) =>
 	emit('set-default-transition', edgeId, Boolean(isDefault))
@@ -215,7 +211,7 @@ const save = () => {
 					q-item-section
 						q-item-label {{ item.data?.label ?? item.id }}
 				.text-body2.text-grey-7.q-pa-sm(v-if="!nodes.length") Нет состояний.
-			.text-subtitle2.q-mt-md.q-mb-xs Связи
+			.text-subtitle2.q-mt-md.q-mb-xs Переходы
 			q-list.operation-list(separator bordered)
 				q-item(v-for="item in edges" :key="item.id" clickable dense @click="emit('select-edge', item.id)")
 					q-item-section
