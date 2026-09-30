@@ -102,17 +102,29 @@ const selectedNode = computed(
 	() => nodes.value.find((node) => node.id === selectedNodeId.value) ?? null
 )
 
-const selectNode = ({ node }: NodeMouseEvent) => {
-	selectedNodeId.value = node.id
+const selectNodeById = (nodeId: string) => {
+	if (!nodes.value.some((node) => node.id === nodeId)) return
+	nodes.value = nodes.value.map((node) => ({ ...node, selected: node.id === nodeId }))
+	edges.value = edges.value.map((edge) => ({ ...edge, selected: false }))
+	selectedNodeId.value = nodeId
 	selectedEdgeId.value = null
 }
 
-const selectEdge = ({ edge }: EdgeMouseEvent) => {
-	selectedEdgeId.value = edge.id
+const selectNode = ({ node }: NodeMouseEvent) => selectNodeById(node.id)
+
+const selectEdgeById = (edgeId: string) => {
+	if (!edges.value.some((edge) => edge.id === edgeId)) return
+	nodes.value = nodes.value.map((node) => ({ ...node, selected: false }))
+	edges.value = edges.value.map((edge) => ({ ...edge, selected: edge.id === edgeId }))
+	selectedEdgeId.value = edgeId
 	selectedNodeId.value = null
 }
 
+const selectEdge = ({ edge }: EdgeMouseEvent) => selectEdgeById(edge.id)
+
 const clearSelection = () => {
+	nodes.value = nodes.value.map((node) => ({ ...node, selected: false }))
+	edges.value = edges.value.map((edge) => ({ ...edge, selected: false }))
 	selectedNodeId.value = null
 	selectedEdgeId.value = null
 }
@@ -423,6 +435,8 @@ q-page(padding)
 					StatePropertiesPanel(
 						:node="selectedNode"
 						:edge="selectedEdge"
+						:nodes="nodes"
+						:edges="edges"
 						:operations="operations"
 						:transitions="transitions"
 						:transition-targets="transitionTargets"
@@ -436,6 +450,8 @@ q-page(padding)
 						@create-transition="createTransition"
 						@remove-transition="removeTransition"
 						@set-default-transition="setDefaultTransition"
+						@select-node="selectNodeById"
+						@select-edge="selectEdgeById"
 					)
 </template>
 

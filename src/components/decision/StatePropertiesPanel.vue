@@ -30,6 +30,8 @@ type StateEdge = Pick<
 const props = defineProps<{
 	node: StateNode | null
 	edge: StateEdge | null
+	nodes: StateNode[]
+	edges: StateEdge[]
 	operations: OperationDefinition[]
 	transitions: TransitionDefinition[]
 	transitionTargets: TransitionTarget[]
@@ -52,6 +54,8 @@ const emit = defineEmits<{
 	(event: 'create-transition', id: string, transition: Omit<TransitionDefinition, 'id'>): void
 	(event: 'remove-transition', edgeId: string): void
 	(event: 'set-default-transition', edgeId: string, isDefault: boolean): void
+	(event: 'select-node', nodeId: string): void
+	(event: 'select-edge', edgeId: string): void
 }>()
 
 const draftLabel = ref('')
@@ -121,6 +125,14 @@ const forwardCreatedTransition = (
 
 const updateDefaultTransition = (edgeId: string, isDefault: boolean | null) =>
 	emit('set-default-transition', edgeId, Boolean(isDefault))
+
+const getNodeLabel = (nodeId: string) =>
+	props.nodes.find((node) => node.id === nodeId)?.data?.label ?? nodeId
+
+const getEdgeLabel = (edge: StateEdge) =>
+	typeof edge.label === 'string' && edge.label.trim()
+		? edge.label
+		: `${getNodeLabel(edge.source)} → ${getNodeLabel(edge.target)}`
 
 watch(
 	[
@@ -196,7 +208,20 @@ const save = () => {
 .properties-panel
 	.text-bold.text-center.q-mb-md.text-uppercase {{ panelTitle }}
 	.panel-content
-		.text-body2.text-grey-7.q-mt-lg.text-center(v-if="!node && !edge") Ничего не выбрано.
+		template(v-if="!node && !edge")
+			.text-subtitle2.q-mb-xs Состояния
+			q-list.operation-list(separator bordered)
+				q-item(v-for="item in nodes" :key="item.id" clickable dense @click="emit('select-node', item.id)")
+					q-item-section
+						q-item-label {{ item.data?.label ?? item.id }}
+				.text-body2.text-grey-7.q-pa-sm(v-if="!nodes.length") Нет состояний.
+			.text-subtitle2.q-mt-md.q-mb-xs Связи
+			q-list.operation-list(separator bordered)
+				q-item(v-for="item in edges" :key="item.id" clickable dense @click="emit('select-edge', item.id)")
+					q-item-section
+						q-item-label {{ getEdgeLabel(item) }}
+						q-item-label(caption) {{ getNodeLabel(item.source) }} → {{ getNodeLabel(item.target) }}
+				.text-body2.text-grey-7.q-pa-sm(v-if="!edges.length") Нет связей.
 		template(v-else)
 			label Название
 			q-input(
