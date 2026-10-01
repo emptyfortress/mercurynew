@@ -5,12 +5,7 @@ import type { Connection, Edge, EdgeMouseEvent, Node, NodeMouseEvent } from '@vu
 import { Background, ControlButton, Controls, PanelPosition } from '@vue-flow/additional-components'
 import type { NameTranslations } from '@/constants/locales'
 import StatePropertiesPanel from '@/components/decision/StatePropertiesPanel.vue'
-import type { OperationDefinition } from '@/components/decision/StatePropertiesPanel.vue'
-import type {
-	StateTransitionItem,
-	TransitionDefinition,
-	TransitionTarget,
-} from '@/components/decision/transitionTypes'
+import type { OperationDefinition } from '@/components/decision/operationTypes'
 
 type StateNodeData = {
 	label: string
@@ -19,11 +14,8 @@ type StateNodeData = {
 	isInitial?: boolean
 }
 type StateNode = Omit<Node<StateNodeData>, 'data'> & { data: StateNodeData }
-type StateEdgeData = {
-	nameTranslations?: NameTranslations
-	transitionId?: string
-	isDefault?: boolean
-}
+type StateEdgeData = { operationId: string }
+
 const edgeTypeOptions = [
 	{ label: 'Кривая Безье', value: 'default' },
 	{ label: 'Простая кривая', value: 'simplebezier' },
@@ -32,7 +24,6 @@ const edgeTypeOptions = [
 	{ label: 'Ступенчатая со скруглением', value: 'smoothstep' },
 ] as const
 type EdgeType = (typeof edgeTypeOptions)[number]['value']
-
 const edgeTypeStorageKey = 'state-constructor-edge-type'
 const isEdgeType = (value: string | null): value is EdgeType =>
 	edgeTypeOptions.some((option) => option.value === value)
@@ -49,8 +40,25 @@ const getSavedEdgeType = (): EdgeType => {
 const splitterModel = ref(75)
 const isInteractive = ref(true)
 const selectedEdgeType = ref<EdgeType>(getSavedEdgeType())
+let nextOperationId = 1
+let nextNodeId = 1
+let nextEdgeId = 1
+const selectedNodeId = ref<string | null>(null)
+const selectedEdgeId = ref<string | null>(null)
 
 const operations = ref<OperationDefinition[]>([
+	{
+		id: 'initial-transition-start-state',
+		name: 'В работу',
+		isTransition: true,
+		targetNodeId: 'state',
+	},
+	{
+		id: 'initial-transition-state-end',
+		name: 'Завершить',
+		isTransition: true,
+		targetNodeId: 'end',
+	},
 	{ id: 'contract-concluded', name: 'Договор заключен' },
 	{ id: 'additional-agreement', name: 'Дополнительное соглашение' },
 	{ id: 'change', name: 'Изменение' },
@@ -73,33 +81,56 @@ const operations = ref<OperationDefinition[]>([
 	{ id: 'history', name: 'Просмотр истории' },
 	{ id: 'approval-sheet', name: 'Просмотр листа согласования' },
 ])
-let nextOperationId = 1
 
 const nodes = ref<StateNode[]>([
 	{
 		id: 'start',
 		type: 'input',
 		class: 'is-initial',
-		data: { label: 'Начало', isInitial: true },
+		data: {
+			label: 'Подготовка',
+			isInitial: true,
+			operationIds: ['initial-transition-start-state'],
+		},
 		position: { x: 80, y: 80 },
 	},
-	{ id: 'state', data: { label: 'Новое состояние' }, position: { x: 300, y: 180 } },
-	{ id: 'end', type: 'output', data: { label: 'Завершение' }, position: { x: 540, y: 80 } },
+	{
+		id: 'state',
+		data: { label: 'В работе', operationIds: ['initial-transition-state-end'] },
+		position: { x: 300, y: 180 },
+	},
+	{ id: 'end', type: 'output', data: { label: 'Завершено' }, position: { x: 540, y: 80 } },
+	{ id: 'arch', type: 'state', data: { label: 'Архив' }, position: { x: 540, y: 180 } },
 ])
 
-const transitions = ref<TransitionDefinition[]>([
-	{ id: 'transition-start-state', name: 'Новое состояние', targetNodeId: 'state' },
-	{ id: 'transition-state-end', name: 'Завершение', targetNodeId: 'end' },
-])
-let nextTransitionId = 1
+const defaultEdgeOptions = computed(() => ({
+	style: { strokeWidth: 2 },
+	markerEnd: MarkerType.ArrowClosed,
+	type: selectedEdgeType.value,
+}))
 
-let nextNodeId = 1
-let nextEdgeId = 1
-const selectedNodeId = ref<string | null>(null)
-const selectedEdgeId = ref<string | null>(null)
+const makeOperationEdge = (
+	source: string,
+	operation: OperationDefinition
+): Edge<StateEdgeData> => ({
+	...defaultEdgeOptions.value,
+	id: `edge-${nextEdgeId++}`,
+	source,
+	target: operation.targetNodeId!,
+	label: operation.name,
+	data: { operationId: operation.id },
+})
+
+const edges = ref<Edge<StateEdgeData>[]>([
+	makeOperationEdge('start', operations.value[0]!),
+	makeOperationEdge('state', operations.value[1]!),
+])
 
 const selectedNode = computed(
 	() => nodes.value.find((node) => node.id === selectedNodeId.value) ?? null
+)
+const selectedEdge = computed(
+	() => edges.value.find((edge) => edge.id === selectedEdgeId.value) ?? null
 )
 
 const selectNodeById = (nodeId: string) => {
@@ -109,7 +140,6 @@ const selectNodeById = (nodeId: string) => {
 	selectedNodeId.value = nodeId
 	selectedEdgeId.value = null
 }
-
 const selectNode = ({ node }: NodeMouseEvent) => selectNodeById(node.id)
 
 const selectEdgeById = (edgeId: string) => {
@@ -119,7 +149,6 @@ const selectEdgeById = (edgeId: string) => {
 	selectedEdgeId.value = edgeId
 	selectedNodeId.value = null
 }
-
 const selectEdge = ({ edge }: EdgeMouseEvent) => selectEdgeById(edge.id)
 
 const clearSelection = () => {
@@ -143,16 +172,15 @@ const saveNodeProperties = (
 				data: { ...node.data, label, nameTranslations: translations, isInitial },
 			}
 		}
-
 		return isInitial && node.data.isInitial
 			? { ...node, class: undefined, data: { ...node.data, isInitial: false } }
 			: node
 	})
 }
 
-const assignOperations = (id: string, operationIds: string[]) => {
+const assignOperations = (nodeId: string, operationIds: string[]) => {
 	nodes.value = nodes.value.map((node) =>
-		node.id === id
+		node.id === nodeId
 			? {
 					...node,
 					data: {
@@ -162,32 +190,74 @@ const assignOperations = (id: string, operationIds: string[]) => {
 				}
 			: node
 	)
+	for (const operationId of operationIds) {
+		const operation = operations.value.find((item) => item.id === operationId)
+		if (operation?.isTransition) syncOperationEdges(operation)
+	}
 }
 
-const removeOperation = (id: string, operationId: string) => {
+const unassignOperation = (nodeId: string, operationId: string) => {
 	nodes.value = nodes.value.map((node) =>
-		node.id === id
+		node.id === nodeId
 			? {
 					...node,
 					data: {
 						...node.data,
-						operationIds: (node.data.operationIds ?? []).filter((item) => item !== operationId),
+						operationIds: (node.data.operationIds ?? []).filter((id) => id !== operationId),
 					},
 				}
 			: node
 	)
+	edges.value = edges.value.filter(
+		(edge) => !(edge.source === nodeId && edge.data?.operationId === operationId)
+	)
 }
 
-const createOperation = (id: string, operation: Omit<OperationDefinition, 'id'>) => {
+const createOperation = (nodeId: string | null, operation: Omit<OperationDefinition, 'id'>) => {
 	const newOperation = { ...operation, id: `custom-operation-${nextOperationId++}` }
 	operations.value.push(newOperation)
-	assignOperations(id, [newOperation.id])
+	if (nodeId) assignOperations(nodeId, [newOperation.id])
+}
+
+const deleteOperation = (operationId: string) => {
+	operations.value = operations.value.filter((operation) => operation.id !== operationId)
+	nodes.value = nodes.value.map((node) => ({
+		...node,
+		data: {
+			...node.data,
+			operationIds: (node.data.operationIds ?? []).filter((id) => id !== operationId),
+		},
+	}))
+	edges.value = edges.value.filter((edge) => edge.data?.operationId !== operationId)
+}
+
+const renameOperation = (operationId: string, name: string) => {
+	const operation = operations.value.find((item) => item.id === operationId)
+	if (!operation || !name.trim()) return
+	operation.name = name.trim()
+	edges.value = edges.value.map((edge) =>
+		edge.data?.operationId === operationId ? { ...edge, label: operation.name } : edge
+	)
+}
+
+function syncOperationEdges(operation: OperationDefinition) {
+	edges.value = edges.value.filter((edge) => edge.data?.operationId !== operation.id)
+	if (!operation.isTransition || !operation.targetNodeId) return
+	const sources = nodes.value.filter((node) => node.data.operationIds?.includes(operation.id))
+	edges.value = [...edges.value, ...sources.map((node) => makeOperationEdge(node.id, operation))]
+}
+
+const setOperationTransition = (operationId: string, targetNodeId: string | null) => {
+	const operation = operations.value.find((item) => item.id === operationId)
+	if (!operation) return
+	operation.isTransition = Boolean(targetNodeId)
+	operation.targetNodeId = targetNodeId ?? undefined
+	syncOperationEdges(operation)
 }
 
 const addNode = () => {
-	const addedNodesCount = nodes.value.length - 3
+	const addedNodesCount = nodes.value.filter((node) => node.id.startsWith('node-')).length
 	const id = `node-${nextNodeId++}`
-
 	nodes.value.push({
 		id,
 		data: { label: 'Новое состояние' },
@@ -198,149 +268,33 @@ const addNode = () => {
 	})
 }
 
-const defaultEdgeOptions = computed(() => ({
-	style: { strokeWidth: 2 },
-	markerEnd: MarkerType.ArrowClosed,
-	type: selectedEdgeType.value,
-}))
-
-const edges = ref<Edge<StateEdgeData>[]>([
-	{
-		...defaultEdgeOptions.value,
-		id: 'start-state',
-		source: 'start',
-		target: 'state',
-		label: 'Новое состояние',
-		data: { transitionId: 'transition-start-state' },
-	},
-	{
-		...defaultEdgeOptions.value,
-		id: 'state-end',
-		source: 'state',
-		target: 'end',
-		label: 'Завершение',
-		data: { transitionId: 'transition-state-end' },
-	},
-])
-
-const transitionTargets = computed<TransitionTarget[]>(() =>
-	nodes.value.map((node) => ({ id: node.id, label: node.data.label }))
-)
-
-const outgoingTransitions = computed<StateTransitionItem[]>(() => {
-	if (!selectedNodeId.value) return []
-
-	return edges.value
-		.filter((edge) => edge.source === selectedNodeId.value)
-		.map((edge) => ({
-			id: edge.id,
-			transitionDefinitionId: edge.data?.transitionId,
-			targetNodeId: edge.target,
-			targetLabel:
-				nodes.value.find((node) => node.id === edge.target)?.data.label ?? 'Состояние удалено',
-			label: typeof edge.label === 'string' ? edge.label : '',
-			isDefault: edge.data?.isDefault ?? false,
-		}))
-})
-
-const addTransitionsToNode = (nodeId: string, transitionIds: string[]) => {
-	const definitions = transitions.value.filter((transition) => transitionIds.includes(transition.id))
-	const additions: Edge<StateEdgeData>[] = []
-
-	for (const transition of definitions) {
-		if (transition.targetNodeId === nodeId) continue
-		const exists = edges.value.some(
-			(edge) => edge.source === nodeId && edge.target === transition.targetNodeId
-		)
-		if (exists) continue
-
-		additions.push({
-			...defaultEdgeOptions.value,
-			id: `edge-${nextEdgeId++}`,
-			source: nodeId,
-			target: transition.targetNodeId,
-			label: transition.name,
-			data: {
-				transitionId: transition.id,
-				nameTranslations: { ...transition.nameTranslations },
-			},
-		})
-	}
-
-	if (additions.length) edges.value = [...edges.value, ...additions]
-}
-
-const createTransition = (
-	nodeId: string,
-	transition: Omit<TransitionDefinition, 'id'>
-) => {
-	if (transition.targetNodeId === nodeId) return
-	if (!nodes.value.some((node) => node.id === transition.targetNodeId)) return
-
-	const newTransition = { ...transition, id: `transition-${nextTransitionId++}` }
-	transitions.value.push(newTransition)
-	addTransitionsToNode(nodeId, [newTransition.id])
-}
-
-const removeTransition = (edgeId: string) => {
-	edges.value = edges.value.filter((edge) => edge.id !== edgeId)
-	if (selectedEdgeId.value === edgeId) selectedEdgeId.value = null
-}
-
-const setDefaultTransition = (edgeId: string, isDefault: boolean) => {
-	const selected = edges.value.find((edge) => edge.id === edgeId)
-	if (!selected) return
-
-	edges.value = edges.value.map((edge) => {
-		if (edge.source !== selected.source) return edge
-		return {
-			...edge,
-			data: {
-				...edge.data,
-				isDefault: edge.id === edgeId ? isDefault : isDefault ? false : edge.data?.isDefault,
-			},
-		}
-	})
+const deleteNode = (nodeId: string) => {
+	nodes.value = nodes.value.filter((node) => node.id !== nodeId)
+	edges.value = edges.value.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+	operations.value = operations.value.map((operation) =>
+		operation.targetNodeId === nodeId
+			? { ...operation, isTransition: false, targetNodeId: undefined }
+			: operation
+	)
+	if (selectedNodeId.value === nodeId) selectedNodeId.value = null
+	if (selectedEdgeId.value && !edges.value.some((edge) => edge.id === selectedEdgeId.value))
+		selectedEdgeId.value = null
 }
 
 const addConnection = (connection: Connection) => {
-	const exists = edges.value.some(
-		(edge) =>
-			edge.source === connection.source &&
-			edge.target === connection.target &&
-			edge.sourceHandle === connection.sourceHandle &&
-			edge.targetHandle === connection.targetHandle
+	if (!connection.source || !connection.target) return
+	const existing = edges.value.find(
+		(edge) => edge.source === connection.source && edge.target === connection.target
 	)
-	if (exists) return
-	if (!connection.source || !connection.target || connection.source === connection.target) return
-
-	const targetName =
-		nodes.value.find((node) => node.id === connection.target)?.data.label ?? 'Новый переход'
-	let transition = transitions.value.find(
-		(item) => item.targetNodeId === connection.target && item.name === targetName
-	)
-	if (!transition) {
-		transition = {
-			id: `transition-${nextTransitionId++}`,
-			name: targetName,
-			targetNodeId: connection.target,
-		}
-		transitions.value.push(transition)
+	if (existing) return
+	const operation = {
+		id: `custom-operation-${nextOperationId++}`,
+		name: nodes.value.find((node) => node.id === connection.target)?.data.label ?? 'Новый переход',
+		isTransition: true,
+		targetNodeId: connection.target,
 	}
-
-	edges.value = [
-		...edges.value,
-		{
-			...defaultEdgeOptions.value,
-			...connection,
-			id: `edge-${nextEdgeId++}`,
-			label: transition.name,
-			data: {
-				transitionId: transition.id,
-				nameTranslations: { ...transition.nameTranslations },
-			},
-		},
-	]
+	operations.value.push(operation)
+	assignOperations(connection.source, [operation.id])
 }
 
 watch(selectedEdgeType, (type) => {
@@ -352,21 +306,10 @@ watch(selectedEdgeType, (type) => {
 	}
 })
 
-const selectedEdge = computed(
-	() => edges.value.find((edge) => edge.id === selectedEdgeId.value) ?? null
+const transitionTargets = computed(() =>
+	nodes.value.map((node) => ({ id: node.id, label: node.data.label }))
 )
-
-const saveEdgeLabel = (id: string, label: string, translations: NameTranslations) => {
-	edges.value = edges.value.map((edge) =>
-		edge.id === id
-			? { ...edge, label, data: { ...edge.data, nameTranslations: translations } }
-			: edge
-	)
-}
-
-const hei = computed(() => {
-	return 'height: ' + (window.innerHeight - 180) + 'px;'
-})
+const hei = computed(() => `height: ${window.innerHeight - 180}px;`)
 </script>
 
 <template lang="pug">
@@ -399,34 +342,13 @@ q-page(padding)
 								)
 									q-icon(:name="isInteractive ? 'lock_open' : 'lock'")
 						Panel(position="bottom-right")
-							q-btn(
-								fab
-								color="primary"
-								icon="add"
-								aria-label="Добавить узел"
-								title="Добавить узел"
-								:disable="!isInteractive"
-								@click="addNode"
-							)
+							q-btn(fab color="primary" icon="add" aria-label="Добавить состояние" title="Добавить состояние" :disable="!isInteractive" @click="addNode")
 						Panel(position="bottom-left")
-							q-btn(
-								flat
-								round
-								color="primary"
-								icon="mdi-cog"
-								aria-label="Настройки типа связей"
-								title="Настройки типа связей"
-							)
+							q-btn(flat round color="primary" icon="mdi-cog" aria-label="Настройки типа связей" title="Настройки типа связей")
 								q-menu(anchor="top left" self="bottom left")
 									.text-bold.text-center Тип связи
 									q-list(dense)
-										q-item(
-											v-for="option in edgeTypeOptions"
-											:key="option.value"
-											clickable
-											v-close-popup
-											@click="selectedEdgeType = option.value"
-										)
+										q-item(v-for="option in edgeTypeOptions" :key="option.value" clickable v-close-popup @click="selectedEdgeType = option.value")
 											q-item-section {{ option.label }}
 											q-item-section(side)
 												q-icon(v-if="selectedEdgeType === option.value" name="mdi-check" color="primary")
@@ -438,18 +360,16 @@ q-page(padding)
 						:nodes="nodes"
 						:edges="edges"
 						:operations="operations"
-						:transitions="transitions"
 						:transition-targets="transitionTargets"
-						:outgoing-transitions="outgoingTransitions"
 						@save:node-properties="saveNodeProperties"
-						@save:edge-label="saveEdgeLabel"
-						@assign-operations="assignOperations"
-						@remove-operation="removeOperation"
+						@rename-operation="renameOperation"
+						@assign-operation="assignOperations"
+						@unassign-operation="unassignOperation"
 						@create-operation="createOperation"
-						@assign-transitions="addTransitionsToNode"
-						@create-transition="createTransition"
-						@remove-transition="removeTransition"
-						@set-default-transition="setDefaultTransition"
+						@delete-operation="deleteOperation"
+						@set-operation-transition="setOperationTransition"
+						@add-node="addNode"
+						@delete-node="deleteNode"
 						@select-node="selectNodeById"
 						@select-edge="selectEdgeById"
 					)
@@ -459,7 +379,6 @@ q-page(padding)
 :deep(.q-splitter__separator) {
 	background-color: transparent;
 }
-
 .main {
 	border: 1px solid var(--my-border-color);
 	background: var(--bg-panel);
@@ -467,24 +386,20 @@ q-page(padding)
 	margin-right: 0.5rem;
 	padding: 0;
 }
-
 .properties {
 	height: 100%;
 	background: var(--bg-panel);
 	border: 1px solid var(--my-border-color);
 	padding: 0.5rem;
 }
-
 :deep(.vue-flow__node.selected) {
 	outline: 2px solid var(--q-primary);
 	outline-offset: 2px;
 	box-shadow: 0 4px 6px rgb(0 0 0 / 52%);
 }
-
 :deep(.vue-flow__node.is-initial) {
 	background-color: #c3e7c6;
 }
-
 :deep(.vue-flow__controls) {
 	display: flex;
 	gap: 0.25rem;
@@ -493,7 +408,6 @@ q-page(padding)
 	border-radius: 0.4rem;
 	background: var(--bg-panel);
 }
-
 :deep(.vue-flow__controls-button) {
 	display: grid;
 	width: 2rem;
@@ -504,12 +418,10 @@ q-page(padding)
 	background: transparent;
 	color: var(--q-primary);
 	cursor: pointer;
-
 	&:hover {
 		background: rgb(0 0 0 / 6%);
 	}
 }
-
 :deep(.vue-flow__controls-button svg) {
 	width: 1rem;
 	height: 1rem;

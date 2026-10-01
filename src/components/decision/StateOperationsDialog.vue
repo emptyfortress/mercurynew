@@ -6,17 +6,17 @@ import type { OperationDefinition } from '@/components/decision/operationTypes'
 const isOpen = defineModel<boolean>({ default: false })
 
 const props = defineProps<{
-	nodeId: string
+	nodeId: string | null
 	operations: OperationDefinition[]
 	assignedOperationIds: string[]
 }>()
 
 const emit = defineEmits<{
 	(event: 'assign-operations', nodeId: string, operationIds: string[]): void
-	(event: 'create-operation', nodeId: string, operation: Omit<OperationDefinition, 'id'>): void
+	(event: 'create-operation', nodeId: string | null, operation: Omit<OperationDefinition, 'id'>): void
 }>()
 
-const isCreatingOperation = ref(false)
+const isCreatingOperation = ref(!props.nodeId)
 const operationSearch = ref('')
 const selectedOperationIds = ref<string[]>([])
 const newOperationName = ref('')
@@ -45,7 +45,7 @@ const resetNewOperation = () => {
 }
 
 const resetDialog = () => {
-	isCreatingOperation.value = false
+	isCreatingOperation.value = !props.nodeId
 	operationSearch.value = ''
 	selectedOperationIds.value = []
 	resetNewOperation()
@@ -63,7 +63,7 @@ const collectTranslations = (translations: NameTranslations): NameTranslations =
 	) as NameTranslations
 
 const addSelectedOperations = () => {
-	if (selectedOperationIds.value.length === 0) return
+	if (!props.nodeId || selectedOperationIds.value.length === 0) return
 	emit('assign-operations', props.nodeId, selectedOperationIds.value)
 	isOpen.value = false
 }
@@ -103,7 +103,7 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 					.text-body2.text-grey-7.q-py-md(v-if="!availableOperations.length") Нет доступных операций по этому запросу.
 
 			q-card-actions(align="right")
-				q-btn(flat color="primary" label="Создать операцию" icon="add" @click="isCreatingOperation = true")
+				q-btn(v-if="nodeId" flat color="primary" label="Создать операцию" icon="add" @click="isCreatingOperation = true")
 				q-space
 				q-btn(flat color="primary" label="Отмена" v-close-popup)
 				q-btn(color="primary" unelevated label="Добавить" :disable="!selectedOperationIds.length" @click="addSelectedOperations")
@@ -163,7 +163,7 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 							q-input(v-model="newOperationDescriptionTranslations[locale.code]" outlined dense type="textarea" autogrow :aria-label="`Описание, ${locale.label}`")
 
 			q-card-actions(align="right")
-				q-btn(flat color="primary" label="Назад к списку" @click="isCreatingOperation = false")
+				q-btn(v-if="nodeId" flat color="primary" label="Назад к списку" @click="isCreatingOperation = false")
 				q-space
 				q-btn(flat color="primary" label="Отмена" v-close-popup)
 				q-btn(color="primary" unelevated label="Создать" :disable="!newOperationName.trim()" @click="createOperation")

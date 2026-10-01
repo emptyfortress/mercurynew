@@ -6,4 +6,6 @@ export type OperationDefinition = {
 	description?: string
 	nameTranslations?: NameTranslations
 	descriptionTranslations?: NameTranslations
+	isTransition?: boolean
+	targetNodeId?: string
 }
