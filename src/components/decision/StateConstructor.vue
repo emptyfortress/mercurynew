@@ -50,14 +50,10 @@ const operations = ref<OperationDefinition[]>([
 	{
 		id: 'initial-transition-start-state',
 		name: 'В работу',
-		isTransition: true,
-		targetNodeId: 'state',
 	},
 	{
 		id: 'initial-transition-state-end',
 		name: 'Завершить',
-		isTransition: true,
-		targetNodeId: 'end',
 	},
 	{ id: 'contract-concluded', name: 'Договор заключен' },
 	{ id: 'additional-agreement', name: 'Дополнительное соглашение' },
@@ -111,19 +107,20 @@ const defaultEdgeOptions = computed(() => ({
 
 const makeOperationEdge = (
 	source: string,
+	target: string,
 	operation: OperationDefinition
 ): Edge<StateEdgeData> => ({
 	...defaultEdgeOptions.value,
 	id: `edge-${nextEdgeId++}`,
 	source,
-	target: operation.targetNodeId!,
+	target,
 	label: operation.name,
 	data: { operationId: operation.id },
 })
 
 const edges = ref<Edge<StateEdgeData>[]>([
-	makeOperationEdge('start', operations.value[0]!),
-	makeOperationEdge('state', operations.value[1]!),
+	makeOperationEdge('start', 'state', operations.value[0]!),
+	makeOperationEdge('state', 'end', operations.value[1]!),
 ])
 
 const selectedNode = computed(
@@ -190,10 +187,6 @@ const assignOperations = (nodeId: string, operationIds: string[]) => {
 				}
 			: node
 	)
-	for (const operationId of operationIds) {
-		const operation = operations.value.find((item) => item.id === operationId)
-		if (operation?.isTransition) syncOperationEdges(operation)
-	}
 }
 
 const unassignOperation = (nodeId: string, operationId: string) => {
@@ -240,19 +233,18 @@ const renameOperation = (operationId: string, name: string) => {
 	)
 }
 
-function syncOperationEdges(operation: OperationDefinition) {
-	edges.value = edges.value.filter((edge) => edge.data?.operationId !== operation.id)
-	if (!operation.isTransition || !operation.targetNodeId) return
-	const sources = nodes.value.filter((node) => node.data.operationIds?.includes(operation.id))
-	edges.value = [...edges.value, ...sources.map((node) => makeOperationEdge(node.id, operation))]
+const addTransition = (sourceNodeId: string, targetNodeId: string, operationId: string) => {
+	const operation = operations.value.find((item) => item.id === operationId)
+	const source = nodes.value.find((node) => node.id === sourceNodeId)
+	if (!operation || !source?.data.operationIds?.includes(operationId)) return
+	const duplicate = edges.value.some((edge) => edge.source === sourceNodeId && edge.target === targetNodeId && edge.data?.operationId === operationId)
+	if (duplicate) return
+	edges.value.push(makeOperationEdge(sourceNodeId, targetNodeId, operation))
 }
 
-const setOperationTransition = (operationId: string, targetNodeId: string | null) => {
-	const operation = operations.value.find((item) => item.id === operationId)
-	if (!operation) return
-	operation.isTransition = Boolean(targetNodeId)
-	operation.targetNodeId = targetNodeId ?? undefined
-	syncOperationEdges(operation)
+const deleteTransition = (edgeId: string) => {
+	edges.value = edges.value.filter((edge) => edge.id !== edgeId)
+	if (selectedEdgeId.value === edgeId) selectedEdgeId.value = null
 }
 
 const addNode = () => {
@@ -271,11 +263,6 @@ const addNode = () => {
 const deleteNode = (nodeId: string) => {
 	nodes.value = nodes.value.filter((node) => node.id !== nodeId)
 	edges.value = edges.value.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
-	operations.value = operations.value.map((operation) =>
-		operation.targetNodeId === nodeId
-			? { ...operation, isTransition: false, targetNodeId: undefined }
-			: operation
-	)
 	if (selectedNodeId.value === nodeId) selectedNodeId.value = null
 	if (selectedEdgeId.value && !edges.value.some((edge) => edge.id === selectedEdgeId.value))
 		selectedEdgeId.value = null
@@ -283,18 +270,16 @@ const deleteNode = (nodeId: string) => {
 
 const addConnection = (connection: Connection) => {
 	if (!connection.source || !connection.target) return
-	const existing = edges.value.find(
-		(edge) => edge.source === connection.source && edge.target === connection.target
-	)
+	const existing = edges.value.find((edge) => edge.source === connection.source && edge.target === connection.target)
 	if (existing) return
+	const targetLabel = nodes.value.find((node) => node.id === connection.target)?.data.label
 	const operation = {
 		id: `custom-operation-${nextOperationId++}`,
-		name: nodes.value.find((node) => node.id === connection.target)?.data.label ?? 'Новый переход',
-		isTransition: true,
-		targetNodeId: connection.target,
+		name: targetLabel ? `Перейти: ${targetLabel}` : 'Новый переход',
 	}
 	operations.value.push(operation)
 	assignOperations(connection.source, [operation.id])
+	edges.value.push(makeOperationEdge(connection.source, connection.target, operation))
 }
 
 watch(selectedEdgeType, (type) => {
@@ -367,7 +352,8 @@ q-page(padding)
 						@unassign-operation="unassignOperation"
 						@create-operation="createOperation"
 						@delete-operation="deleteOperation"
-						@set-operation-transition="setOperationTransition"
+						@add-transition="addTransition"
+						@delete-transition="deleteTransition"
 						@add-node="addNode"
 						@delete-node="deleteNode"
 						@select-node="selectNodeById"
