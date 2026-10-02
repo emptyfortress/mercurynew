@@ -9,16 +9,15 @@ const el = ref()
 const splitter = ref(50)
 // const { height } = useElementSize(el)
 
-// TODO: fix heigth calculation
 const hei = computed(() => {
 	return '500px'
 	// return height.value - 130 + 'px'
 })
 const result = ref(false)
 
-const toggleResult = (() => {
+const toggleResult = () => {
 	result.value = true
-})
+}
 </script>
 
 <template lang="pug">

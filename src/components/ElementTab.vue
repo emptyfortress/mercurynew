@@ -102,10 +102,6 @@ const stop = () => {
 	emit('stop')
 	// dragging.value = false
 }
-
-//TODO: Добавить сортировку в список полей
-
-//TODO: Добавить кнопку реадктирования в список полей
 </script>
 
 <template lang="pug">
