@@ -40,8 +40,6 @@ let nextOperationId = 1
 let nextNodeId = 1
 let nextEdgeId = 1
 let nextStateNameNumber = 1
-const selectedNodeId = ref<string | null>(null)
-const selectedEdgeId = ref<string | null>(null)
 const pendingConnection = ref<Connection | null>(null)
 const isConnectionDialogOpen = ref(false)
 const selectedConnectionOperationId = ref<string | null>(null)
@@ -140,19 +138,16 @@ const pendingConnectionOperationOptions = computed(() =>
 	}))
 )
 
-const selectedNode = computed(
-	() => nodes.value.find((node) => node.id === selectedNodeId.value) ?? null
+const selectedNodes = computed(() => nodes.value.filter((node) => node.selected))
+const selectedNode = computed(() =>
+	selectedNodes.value.length === 1 ? selectedNodes.value[0]! : null
 )
-const selectedEdge = computed(
-	() => edges.value.find((edge) => edge.id === selectedEdgeId.value) ?? null
-)
+const selectedEdge = computed(() => edges.value.find((edge) => edge.selected) ?? null)
 
 const selectNodeById = (nodeId: string) => {
 	if (!nodes.value.some((node) => node.id === nodeId)) return
 	nodes.value = nodes.value.map((node) => ({ ...node, selected: node.id === nodeId }))
 	edges.value = edges.value.map((edge) => ({ ...edge, selected: false }))
-	selectedNodeId.value = nodeId
-	selectedEdgeId.value = null
 }
 const selectNode = ({ node }: NodeMouseEvent) => selectNodeById(node.id)
 
@@ -160,16 +155,12 @@ const selectEdgeById = (edgeId: string) => {
 	if (!edges.value.some((edge) => edge.id === edgeId)) return
 	nodes.value = nodes.value.map((node) => ({ ...node, selected: false }))
 	edges.value = edges.value.map((edge) => ({ ...edge, selected: edge.id === edgeId }))
-	selectedEdgeId.value = edgeId
-	selectedNodeId.value = null
 }
 const selectEdge = ({ edge }: EdgeMouseEvent) => selectEdgeById(edge.id)
 
 const clearSelection = () => {
 	nodes.value = nodes.value.map((node) => ({ ...node, selected: false }))
 	edges.value = edges.value.map((edge) => ({ ...edge, selected: false }))
-	selectedNodeId.value = null
-	selectedEdgeId.value = null
 }
 
 const updateNodeProperties = (id: string, changes: NodePropertyChanges) => {
@@ -199,6 +190,18 @@ const assignOperations = (nodeId: string, operationIds: string[]) => {
 	)
 }
 
+const assignOperationsToNodes = (nodeIds: string[], operationIds: string[]) => {
+	const targetIds = new Set(nodeIds)
+	if (targetIds.size === 0 || operationIds.length === 0) return
+	const idsToAssign = new Set(operationIds)
+	nodes.value = nodes.value.map((node) => {
+		if (!targetIds.has(node.id)) return node
+		const assignedIds = new Set(node.data.operationIds ?? [])
+		idsToAssign.forEach((id) => assignedIds.add(id))
+		return { ...node, data: { ...node.data, operationIds: [...assignedIds] } }
+	})
+}
+
 const unassignOperation = (nodeId: string, operationId: string) => {
 	nodes.value = nodes.value.map((node) =>
 		node.id === nodeId
@@ -216,10 +219,13 @@ const unassignOperation = (nodeId: string, operationId: string) => {
 	)
 }
 
-const createOperation = (nodeId: string | null, operation: Omit<OperationDefinition, 'id'>) => {
+const createOperationForNodes = (
+	nodeIds: string[],
+	operation: Omit<OperationDefinition, 'id'>
+) => {
 	const newOperation = { ...operation, id: `custom-operation-${nextOperationId++}` }
 	operations.value.push(newOperation)
-	if (nodeId) assignOperations(nodeId, [newOperation.id])
+	assignOperationsToNodes(nodeIds, [newOperation.id])
 }
 
 const deleteOperation = (operationId: string) => {
@@ -271,7 +277,6 @@ const addTransition = (sourceNodeId: string, targetNodeId: string, operationId: 
 
 const deleteTransition = (edgeId: string) => {
 	edges.value = edges.value.filter((edge) => edge.id !== edgeId)
-	if (selectedEdgeId.value === edgeId) selectedEdgeId.value = null
 }
 
 const addNode = () => {
@@ -290,9 +295,6 @@ const addNode = () => {
 const deleteNode = (nodeId: string) => {
 	nodes.value = nodes.value.filter((node) => node.id !== nodeId)
 	edges.value = edges.value.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
-	if (selectedNodeId.value === nodeId) selectedNodeId.value = null
-	if (selectedEdgeId.value && !edges.value.some((edge) => edge.id === selectedEdgeId.value))
-		selectedEdgeId.value = null
 }
 
 const requestConnection = (connection: Connection) => {
@@ -360,12 +362,12 @@ const transitionTargets = computed<StateTarget[]>(() =>
 
 	return {
 		isInteractive, selectedEdgeType, edgeTypeOptions,
-		nodes, edges, operations, selectedNode, selectedEdge, transitionTargets,
+		nodes, edges, operations, selectedNodes, selectedNode, selectedEdge, transitionTargets,
 		selectedConnectionOperationId, isConnectionDialogOpen,
 		pendingConnectionSource, pendingConnectionTarget, pendingConnectionOperationOptions,
 		selectNode, selectNodeById, selectEdge, selectEdgeById, clearSelection,
 		updateNodeProperties, setEdgeOperation, renameOperation, assignOperations,
-		unassignOperation, createOperation, deleteOperation, addTransition, deleteTransition,
+		unassignOperation, assignOperationsToNodes, createOperationForNodes, deleteOperation, addTransition, deleteTransition,
 		addNode, deleteNode, requestConnection, confirmConnection,
 	}
 }

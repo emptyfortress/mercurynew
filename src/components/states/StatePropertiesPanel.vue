@@ -18,10 +18,12 @@ type NodeData = {
 type StateNode = Pick<Node<NodeData>, 'id' | 'data'>
 type StateEdge = Pick<Edge<{ operationId: string }>, 'id' | 'label' | 'source' | 'target' | 'data'>
 type TransitionTarget = { id: string; label: string }
+type PanelNode = Pick<Node<NodeData>, 'id' | 'data'> & { selected?: boolean }
 
 const props = defineProps<{
 	node: StateNode | null
 	edge: StateEdge | null
+	selectedNodes: PanelNode[]
 	nodes: StateNode[]
 	edges: StateEdge[]
 	operations: OperationDefinition[]
@@ -33,7 +35,8 @@ const emit = defineEmits<{
 	(event: 'rename-operation', operationId: string, name: string): void
 	(event: 'assign-operation', id: string, operationIds: string[]): void
 	(event: 'unassign-operation', id: string, operationId: string): void
-	(event: 'create-operation', id: string | null, operation: Omit<OperationDefinition, 'id'>): void
+	(event: 'create-operation', nodeIds: string[], operation: Omit<OperationDefinition, 'id'>): void
+	(event: 'assign-operations', nodeIds: string[], operationIds: string[]): void
 	(event: 'delete-operation', operationId: string): void
 	(event: 'add-transition', sourceNodeId: string, targetNodeId: string, operationId: string): void
 	(event: 'delete-transition', edgeId: string): void
@@ -81,6 +84,39 @@ function updateTranslation(code: keyof NameTranslations, value: string | number 
 	updateNodeProperties({ nameTranslations: translations })
 }
 const assignedOperationIds = computed(() => props.node?.data?.operationIds ?? [])
+const selectedNodeIds = computed(() => props.selectedNodes.map((node) => node.id))
+const dialogAssignedOperationIds = computed(() => {
+	if (props.selectedNodes.length < 2) return assignedOperationIds.value
+	const [firstNode, ...otherNodes] = props.selectedNodes
+	return (firstNode?.data?.operationIds ?? []).filter((operationId) =>
+		otherNodes.every((node) => node.data?.operationIds?.includes(operationId))
+	)
+})
+const commonOperations = computed(() => {
+	if (props.selectedNodes.length < 2) return []
+	const [firstNode, ...otherNodes] = props.selectedNodes
+	const commonIds = new Set(
+		(firstNode?.data?.operationIds ?? []).filter((operationId) =>
+			otherNodes.every((node) => node.data?.operationIds?.includes(operationId))
+		)
+	)
+	return props.operations.filter((operation) => commonIds.has(operation.id))
+})
+const filteredCommonOperations = computed(() => {
+	const query = operationSearch.value.trim().toLocaleLowerCase()
+	return query
+		? commonOperations.value.filter((operation) =>
+				operation.name.toLocaleLowerCase().includes(query)
+			)
+		: commonOperations.value
+})
+const multiSelectionColumns = [
+	{ name: 'name', label: 'Общие операции', field: 'name', align: 'left' as const },
+]
+const operationTargetNodeIds = computed(() => {
+	if (props.selectedNodes.length > 1) return selectedNodeIds.value
+	return props.node ? [props.node.id] : []
+})
 const allowedOperations = computed(() =>
 	props.operations.filter((operation) => assignedOperationIds.value.includes(operation.id))
 )
@@ -177,7 +213,15 @@ const operationColumns = computed(() => [
 	},
 	{ name: 'actions', label: '', field: 'id', align: 'right' as const },
 ])
-const panelTitle = computed(() => (props.node ? 'Состояние' : props.edge ? 'Переход' : 'Свойства'))
+const panelTitle = computed(() =>
+	props.selectedNodes.length > 1
+		? `Выбрано состояний: ${props.selectedNodes.length}`
+		: props.node
+			? 'Состояние'
+			: props.edge
+				? 'Переход'
+				: 'Свойства'
+)
 const selectedEdgeOperation = computed(
 	() => props.operations.find((item) => item.id === props.edge?.data?.operationId) ?? null
 )
@@ -220,16 +264,17 @@ const unassignOperation = (id: string) => {
 }
 const selectEdge = (id: string) => emit('select-edge', id)
 const deleteTransition = (id: string) => emit('delete-transition', id)
-const assignOperations = (id: string, ids: string[]) => emit('assign-operation', id, ids)
-const createOperation = (id: string | null, operation: Omit<OperationDefinition, 'id'>) =>
-	emit('create-operation', id, operation)
+const assignOperations = (nodeIds: string[], operationIds: string[]) =>
+	emit('assign-operations', nodeIds, operationIds)
+const createOperation = (nodeIds: string[], operation: Omit<OperationDefinition, 'id'>) =>
+	emit('create-operation', nodeIds, operation)
 const openAddTransition = () => {
 	isTransitionDialogOpen.value = true
 }
 const confirmTransition = (sourceNodeId: string, targetNodeId: string, operationId: string) => {
 	emit('add-transition', sourceNodeId, targetNodeId, operationId)
 }
-watch([() => props.node?.id, () => props.edge?.id], () => {
+watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.join(',')], () => {
 	showNameTranslations.value = false
 	isOperationDialogOpen.value = false
 	isTransitionDialogOpen.value = false
@@ -240,7 +285,15 @@ watch([() => props.node?.id, () => props.edge?.id], () => {
 .properties-panel
 	.text-bold.text-center.q-mb-md.text-uppercase {{ panelTitle }}
 	q-scroll-area.panel-content
-		template(v-if="!node && !edge")
+		template(v-if="selectedNodes.length > 1")
+			.row.items-center.justify-between.q-mb-xs
+				.text-subtitle2 Операции для всех состояний
+				q-btn(flat round dense color="primary" icon="mdi-plus-circle" @click="isOperationDialogOpen = true")
+			q-input.q-mb-sm(v-model="operationSearch" filled dense clearable placeholder="Фильтр общих операций")
+				template(v-slot:prepend="")
+					q-icon(name="mdi-magnify" color="primary")
+			StateOperationsList(:rows="filteredCommonOperations" :columns="multiSelectionColumns" no-data-label="Нет общих операций")
+		template(v-else-if="!node && !edge")
 			q-tabs(v-model="blankTab" dense align="left" active-color="primary" indicator-color="primary")
 				q-tab(name="states" label="Состояния")
 				q-tab(name="operations" label="Операции")
@@ -305,15 +358,14 @@ watch([() => props.node?.id, () => props.edge?.id], () => {
 						template(v-slot:prepend="")
 							q-icon(name="mdi-magnify" color="primary")
 					StateTransitionsList(:rows="transitionRows" :columns="transitionColumns" :no-data-label="transitionSearch ? 'Нет переходов по запросу' : 'Переходов нет'" @select="selectEdge" @delete="deleteTransition")
-			StateOperationsDialog(v-model="isOperationDialogOpen" :node-id="node.id" :operations="operations" :assigned-operation-ids="assignedOperationIds" @assign-operations="assignOperations" @create-operation="createOperation")
 		template(v-else="")
 			.text-subtitle2.q-mb-sm Переход
 			.text-caption.q-mb-xs {{ edgeDescription }}
 			.operation-field-label Операция
 			q-select(v-model="edgeOperationId" :options="edgeOperationOptions" outlined dense emit-value map-options :disable="!edgeAllowedOperations.length" :placeholder="edgeAllowedOperations.length ? 'Выберите операцию' : 'Нет разрешенных операций'")
 			.text-caption.text-negative.q-mt-sm(v-if="!selectedEdgeOperation") У перехода не найдена операция.
-		StateOperationsDialog(v-if="!node" v-model="isOperationDialogOpen" :node-id="null" :operations="operations" :assigned-operation-ids="[]" @create-operation="createOperation")
 		StateTransitionsDialog(v-model="isTransitionDialogOpen" :source-node-id="node?.id ?? null" :sources="transitionSources" :operations="node ? allowedOperations : operations" :targets="transitionTargets" @confirm="confirmTransition")
+	StateOperationsDialog(v-model="isOperationDialogOpen" :node-ids="operationTargetNodeIds" :operations="operations" :assigned-operation-ids="dialogAssignedOperationIds" @assign-operations="assignOperations" @create-operation="createOperation")
 </template>
 
 <style scoped lang="scss">

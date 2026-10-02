@@ -23,6 +23,7 @@ const {
 	nodes,
 	edges,
 	operations,
+	selectedNodes,
 	selectedNode,
 	selectedEdge,
 	transitionTargets,
@@ -40,8 +41,9 @@ const {
 	setEdgeOperation,
 	renameOperation,
 	assignOperations,
+	assignOperationsToNodes,
 	unassignOperation,
-	createOperation,
+	createOperationForNodes,
 	deleteOperation,
 	addTransition,
 	deleteTransition,
@@ -84,6 +86,7 @@ q-page(padding)
 					StatePropertiesPanel(
 						:node="selectedNode"
 						:edge="selectedEdge"
+						:selected-nodes="selectedNodes"
 						:nodes="nodes"
 						:edges="edges"
 						:operations="operations"
@@ -93,7 +96,8 @@ q-page(padding)
 						@rename-operation="renameOperation"
 						@assign-operation="assignOperations"
 						@unassign-operation="unassignOperation"
-						@create-operation="createOperation"
+						@create-operation="createOperationForNodes"
+						@assign-operations="assignOperationsToNodes"
 						@delete-operation="deleteOperation"
 						@add-transition="addTransition"
 						@delete-transition="deleteTransition"

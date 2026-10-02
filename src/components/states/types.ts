@@ -12,9 +12,12 @@ export type StateNodeData = {
 	isInitial?: boolean
 }
 export type NodePropertyChanges = Partial<Pick<StateNodeData, 'label' | 'nameTranslations' | 'isInitial'>>
-export type StateNode = Omit<Node<StateNodeData>, 'data'> & { data: StateNodeData }
+export type StateNode = Omit<Node<StateNodeData>, 'data'> & {
+	data: StateNodeData
+	selected?: boolean
+}
 export type StateEdgeData = { operationId: string }
-export type StateEdge = Edge<StateEdgeData>
+export type StateEdge = Edge<StateEdgeData> & { selected?: boolean }
 export type StateTarget = { id: string; label: string }
 
 export type OperationDefinition = {
@@ -32,6 +35,7 @@ export type StateConstructorContext = {
 	nodes: Ref<StateNode[]>
 	edges: Ref<StateEdge[]>
 	operations: Ref<OperationDefinition[]>
+	selectedNodes: ComputedRef<StateNode[]>
 	selectedNode: ComputedRef<StateNode | null>
 	selectedEdge: ComputedRef<StateEdge | null>
 	transitionTargets: ComputedRef<StateTarget[]>
@@ -49,8 +53,9 @@ export type StateConstructorContext = {
 	setEdgeOperation(edgeId: string, operationId: string): void
 	renameOperation(operationId: string, name: string): void
 	assignOperations(nodeId: string, operationIds: string[]): void
+	assignOperationsToNodes(nodeIds: string[], operationIds: string[]): void
 	unassignOperation(nodeId: string, operationId: string): void
-	createOperation(nodeId: string | null, operation: Omit<OperationDefinition, 'id'>): void
+	createOperationForNodes(nodeIds: string[], operation: Omit<OperationDefinition, 'id'>): void
 	deleteOperation(operationId: string): void
 	addTransition(sourceNodeId: string, targetNodeId: string, operationId: string): void
 	deleteTransition(edgeId: string): void
