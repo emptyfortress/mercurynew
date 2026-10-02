@@ -44,6 +44,7 @@ const {
 	assignOperationsToNodes,
 	unassignOperation,
 	createOperationForNodes,
+	createOperationForConnection,
 	deleteOperation,
 	addTransition,
 	deleteTransition,
@@ -113,7 +114,11 @@ q-page(padding)
 		:target-label="pendingConnectionTarget?.data.label"
 		:options="pendingConnectionOperationOptions"
 		@confirm="confirmConnection"
+		@create-operation="createOperationForConnection"
 	)
+
+// TODO: Добавить раскраску в активные операции (с переходами)
+// TODO: Добавить пунктир на развилку
 </template>
 
 <style scoped lang="scss">

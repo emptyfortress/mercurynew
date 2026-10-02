@@ -120,6 +120,16 @@ const operationTargetNodeIds = computed(() => {
 const allowedOperations = computed(() =>
 	props.operations.filter((operation) => assignedOperationIds.value.includes(operation.id))
 )
+const allOperationsAllowed = computed(
+	() =>
+		props.operations.length > 0 &&
+		props.operations.every((operation) => assignedOperationIds.value.includes(operation.id))
+)
+const someOperationsAllowed = computed(
+	() =>
+		props.operations.some((operation) => assignedOperationIds.value.includes(operation.id)) &&
+		!allOperationsAllowed.value
+)
 const operationsWithUsage = computed(() =>
 	props.operations.map((operation) => ({
 		...operation,
@@ -206,7 +216,7 @@ const operationColumns = computed(() => [
 	},
 	{
 		name: 'allowed',
-		label: props.node ? 'Разрешена' : 'Кол-во',
+		label: props.node ? 'Разрешена' : 'Переходы',
 		field: 'assignedCount',
 		align: 'center' as const,
 		sortable: true,
@@ -248,6 +258,19 @@ const setOperationAllowed = (operation: OperationDefinition, allowed: boolean) =
 const setOperationAllowedById = (operationId: string, allowed: boolean) => {
 	const operation = props.operations.find((item) => item.id === operationId)
 	if (operation) setOperationAllowed(operation, allowed)
+}
+const setAllOperationsAllowed = (allowed: boolean) => {
+	if (!props.node) return
+	const nodeId = props.node.id
+	if (allowed) {
+		emit(
+			'assign-operations',
+			[nodeId],
+			props.operations.map((operation) => operation.id)
+		)
+		return
+	}
+	props.operations.forEach((operation) => emit('unassign-operation', nodeId, operation.id))
 }
 const transitionSources = computed(() =>
 	props.nodes.map((item) => ({
@@ -312,7 +335,7 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 						.text-subtitle2 Все операции
 						q-btn(flat round dense color="primary" icon="mdi-plus-circle" @click="isOperationDialogOpen = true")
 					q-input.q-mb-sm(v-model="operationSearch" filled dense clearable placeholder="Фильтр")
-						template(v-slot:prepend="")
+						template(v-slot:prepend)
 							q-icon(name="mdi-magnify" color="primary")
 					StateOperationsList(:rows="filteredGlobalOperations" :columns="operationColumns" no-data-label="Нет операций по этому названию" @delete="deleteOperation")
 
@@ -345,6 +368,8 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 					.row.q-gutter-xs.q-mb-sm
 						q-chip(:selected="operationFilter === 'assigned'" clickable size="sm" @click="operationFilter = 'assigned'") Разрешённые
 						q-chip(:selected="operationFilter === 'all'" clickable size="sm" @click="operationFilter = 'all'") Все
+					.row.justify-end(v-if="operationFilter === 'all'")
+						q-checkbox.q-mb-sm(:model-value="allOperationsAllowed ? true : someOperationsAllowed ? null : false" :disable="!operations.length" label="Выбрать все" dense @update:model-value="setAllOperationsAllowed(Boolean($event))")
 					StateOperationsList(:rows="filteredOperations" :columns="operationColumns" show-allowed no-data-label="Операций нет" @toggle-allowed="setOperationAllowedById" @delete="unassignOperation")
 				q-tab-panel(name="transitions" class="q-pa-sm")
 					.row.items-center.justify-between.q-mb-xs

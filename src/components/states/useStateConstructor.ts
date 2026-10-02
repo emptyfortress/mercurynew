@@ -222,10 +222,17 @@ const unassignOperation = (nodeId: string, operationId: string) => {
 const createOperationForNodes = (
 	nodeIds: string[],
 	operation: Omit<OperationDefinition, 'id'>
-) => {
+): string => {
 	const newOperation = { ...operation, id: `custom-operation-${nextOperationId++}` }
 	operations.value.push(newOperation)
 	assignOperationsToNodes(nodeIds, [newOperation.id])
+	return newOperation.id
+}
+
+const createOperationForConnection = (operation: Omit<OperationDefinition, 'id'>) => {
+	const sourceId = pendingConnection.value?.source
+	if (!sourceId) return
+	selectedConnectionOperationId.value = createOperationForNodes([sourceId], operation)
 }
 
 const deleteOperation = (operationId: string) => {
@@ -367,7 +374,7 @@ const transitionTargets = computed<StateTarget[]>(() =>
 		pendingConnectionSource, pendingConnectionTarget, pendingConnectionOperationOptions,
 		selectNode, selectNodeById, selectEdge, selectEdgeById, clearSelection,
 		updateNodeProperties, setEdgeOperation, renameOperation, assignOperations,
-		unassignOperation, assignOperationsToNodes, createOperationForNodes, deleteOperation, addTransition, deleteTransition,
+		unassignOperation, assignOperationsToNodes, createOperationForNodes, createOperationForConnection, deleteOperation, addTransition, deleteTransition,
 		addNode, deleteNode, requestConnection, confirmConnection,
 	}
 }

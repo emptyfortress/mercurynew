@@ -55,7 +55,8 @@ export type StateConstructorContext = {
 	assignOperations(nodeId: string, operationIds: string[]): void
 	assignOperationsToNodes(nodeIds: string[], operationIds: string[]): void
 	unassignOperation(nodeId: string, operationId: string): void
-	createOperationForNodes(nodeIds: string[], operation: Omit<OperationDefinition, 'id'>): void
+	createOperationForNodes(nodeIds: string[], operation: Omit<OperationDefinition, 'id'>): string
+	createOperationForConnection(operation: Omit<OperationDefinition, 'id'>): void
 	deleteOperation(operationId: string): void
 	addTransition(sourceNodeId: string, targetNodeId: string, operationId: string): void
 	deleteTransition(edgeId: string): void
