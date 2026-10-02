@@ -84,7 +84,7 @@ const createOperation = () => {
 <template lang="pug">
 q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 	q-card.operation-dialog(style="min-width: 400px;")
-		q-btn.close(round color="negative" icon="mdi-close" aria-label="Закрыть" v-close-popup)
+		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
 			.text-h6 {{ isCreatingOperation ? 'Новая операция' : 'Добавить операции' }}
 			.caption {{ isCreatingOperation ? 'Создайте операцию для текущего вида документа' : 'Выберите одну или несколько доступных операций для текущего вида документа' }}
@@ -116,7 +116,6 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 						outlined
 						dense
 						autofocus
-						aria-label="Название"
 						@keyup.enter="createOperation"
 					)
 						template(v-slot:append)
@@ -127,14 +126,12 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 								icon="mdi-translate"
 								color="secondary"
 								type="button"
-								aria-label="Переводы названия"
 								@click="showNewOperationNameTranslations = !showNewOperationNameTranslations"
 							)
 								q-tooltip Переводы названия
-				.q-pl-sm.q-mt-sm(v-if="showNewOperationNameTranslations")
-					.operation-field.q-mb-sm(v-for="locale in translationLocales" :key="`op-name-${locale.code}`")
-						.operation-field-label {{ locale.label }}
-						q-input(v-model="newOperationNameTranslations[locale.code]" outlined dense :aria-label="`Название, ${locale.label}`")
+				.q-pl-sm.q-mt-md(v-if="showNewOperationNameTranslations")
+					.text-caption.q-mb-xs Локализации названия
+					q-input.q-mb-sm(v-for="locale in translationLocales" :key="`op-name-${locale.code}`" v-model="newOperationNameTranslations[locale.code]" :label="locale.label" outlined dense)
 				.operation-field.q-mt-md
 					.operation-field-label Описание (необязательно)
 					q-input(
@@ -143,7 +140,6 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 						dense
 						type="textarea"
 						autogrow
-						aria-label="Описание (необязательно)"
 					)
 						template(v-slot:append)
 							q-btn(
@@ -153,14 +149,12 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 								icon="mdi-translate"
 								color="secondary"
 								 type="button"
-								aria-label="Переводы описания"
 								@click="showNewOperationDescriptionTranslations = !showNewOperationDescriptionTranslations"
 							)
 								q-tooltip Переводы описания
-					.q-pl-sm.q-mt-sm(v-if="showNewOperationDescriptionTranslations")
-						.operation-field.q-mb-sm(v-for="locale in translationLocales" :key="`op-description-${locale.code}`")
-							.operation-field-label {{ locale.label }}
-							q-input(v-model="newOperationDescriptionTranslations[locale.code]" outlined dense type="textarea" autogrow :aria-label="`Описание, ${locale.label}`")
+					.q-pl-sm.q-mt-md(v-if="showNewOperationDescriptionTranslations")
+						.text-caption.q-mb-xs Локализации описания
+						q-input.q-mb-sm(v-for="locale in translationLocales" :key="`op-description-${locale.code}`" v-model="newOperationDescriptionTranslations[locale.code]" :label="locale.label" outlined dense type="textarea" autogrow)
 
 			q-card-actions(align="right")
 				q-btn(v-if="nodeId" flat color="primary" label="Назад к списку" @click="isCreatingOperation = false")

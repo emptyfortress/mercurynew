@@ -37,14 +37,18 @@ const getSavedEdgeType = (): EdgeType => {
 	}
 }
 
-const splitterModel = ref(75)
+const splitterModel = ref(70)
 const isInteractive = ref(true)
 const selectedEdgeType = ref<EdgeType>(getSavedEdgeType())
 let nextOperationId = 1
 let nextNodeId = 1
 let nextEdgeId = 1
+let nextStateNameNumber = 1
 const selectedNodeId = ref<string | null>(null)
 const selectedEdgeId = ref<string | null>(null)
+const pendingConnection = ref<Connection | null>(null)
+const isConnectionDialogOpen = ref(false)
+const selectedConnectionOperationId = ref<string | null>(null)
 
 const operations = ref<OperationDefinition[]>([
 	{
@@ -96,7 +100,7 @@ const nodes = ref<StateNode[]>([
 		position: { x: 300, y: 180 },
 	},
 	{ id: 'end', type: 'output', data: { label: 'Завершено' }, position: { x: 540, y: 80 } },
-	{ id: 'arch', type: 'state', data: { label: 'Архив' }, position: { x: 540, y: 180 } },
+	{ id: 'arch', type: 'state', data: { label: 'Архив' }, position: { x: 300, y: 0 } },
 ])
 
 const defaultEdgeOptions = computed(() => ({
@@ -122,6 +126,23 @@ const edges = ref<Edge<StateEdgeData>[]>([
 	makeOperationEdge('start', 'state', operations.value[0]!),
 	makeOperationEdge('state', 'end', operations.value[1]!),
 ])
+
+const pendingConnectionSource = computed(
+	() => nodes.value.find((node) => node.id === pendingConnection.value?.source) ?? null
+)
+const pendingConnectionTarget = computed(
+	() => nodes.value.find((node) => node.id === pendingConnection.value?.target) ?? null
+)
+const pendingConnectionOperations = computed(() => {
+	const allowedIds = new Set(pendingConnectionSource.value?.data.operationIds ?? [])
+	return operations.value.filter((operation) => allowedIds.has(operation.id))
+})
+const pendingConnectionOperationOptions = computed(() =>
+	pendingConnectionOperations.value.map((operation) => ({
+		label: operation.name,
+		value: operation.id,
+	}))
+)
 
 const selectedNode = computed(
 	() => nodes.value.find((node) => node.id === selectedNodeId.value) ?? null
@@ -233,11 +254,28 @@ const renameOperation = (operationId: string, name: string) => {
 	)
 }
 
+const setEdgeOperation = (edgeId: string, operationId: string) => {
+	const edge = edges.value.find((item) => item.id === edgeId)
+	const source = edge ? nodes.value.find((node) => node.id === edge.source) : null
+	const operation = operations.value.find((item) => item.id === operationId)
+	if (!edge || !source?.data.operationIds?.includes(operationId) || !operation) return
+	edges.value = edges.value.map((item) =>
+		item.id === edgeId
+			? { ...item, label: operation.name, data: { ...item.data, operationId } }
+			: item
+	)
+}
+
 const addTransition = (sourceNodeId: string, targetNodeId: string, operationId: string) => {
 	const operation = operations.value.find((item) => item.id === operationId)
 	const source = nodes.value.find((node) => node.id === sourceNodeId)
 	if (!operation || !source?.data.operationIds?.includes(operationId)) return
-	const duplicate = edges.value.some((edge) => edge.source === sourceNodeId && edge.target === targetNodeId && edge.data?.operationId === operationId)
+	const duplicate = edges.value.some(
+		(edge) =>
+			edge.source === sourceNodeId &&
+			edge.target === targetNodeId &&
+			edge.data?.operationId === operationId
+	)
 	if (duplicate) return
 	edges.value.push(makeOperationEdge(sourceNodeId, targetNodeId, operation))
 }
@@ -252,7 +290,7 @@ const addNode = () => {
 	const id = `node-${nextNodeId++}`
 	nodes.value.push({
 		id,
-		data: { label: 'Новое состояние' },
+		data: { label: `Состояние ${nextStateNameNumber++}` },
 		position: {
 			x: 80 + (addedNodesCount % 3) * 220,
 			y: 320 + Math.floor(addedNodesCount / 3) * 140,
@@ -268,19 +306,55 @@ const deleteNode = (nodeId: string) => {
 		selectedEdgeId.value = null
 }
 
-const addConnection = (connection: Connection) => {
+const requestConnection = (connection: Connection) => {
 	if (!connection.source || !connection.target) return
-	const existing = edges.value.find((edge) => edge.source === connection.source && edge.target === connection.target)
+	const existing = edges.value.find(
+		(edge) => edge.source === connection.source && edge.target === connection.target
+	)
 	if (existing) return
-	const targetLabel = nodes.value.find((node) => node.id === connection.target)?.data.label
-	const operation = {
-		id: `custom-operation-${nextOperationId++}`,
-		name: targetLabel ? `Перейти: ${targetLabel}` : 'Новый переход',
+	const source = nodes.value.find((node) => node.id === connection.source)
+	const target = nodes.value.find((node) => node.id === connection.target)
+	if (!source || !target) return
+	const incomingTransition = edges.value.find((edge) => edge.target === target.id)
+	const incomingOperation = operations.value.find(
+		(operation) => operation.id === incomingTransition?.data?.operationId
+	)
+	if (incomingOperation) {
+		if (!source.data.operationIds?.includes(incomingOperation.id)) {
+			assignOperations(source.id, [incomingOperation.id])
+		}
+		edges.value.push(makeOperationEdge(source.id, target.id, incomingOperation))
+		return
 	}
-	operations.value.push(operation)
-	assignOperations(connection.source, [operation.id])
-	edges.value.push(makeOperationEdge(connection.source, connection.target, operation))
+
+	pendingConnection.value = connection
+	selectedConnectionOperationId.value = null
+	isConnectionDialogOpen.value = true
 }
+
+const confirmConnection = () => {
+	const connection = pendingConnection.value
+	const operationId = selectedConnectionOperationId.value
+	if (!connection?.source || !connection.target || !operationId || !isInteractive.value) return
+	const source = nodes.value.find((node) => node.id === connection.source)
+	const operation = operations.value.find((item) => item.id === operationId)
+	if (!source?.data.operationIds?.includes(operationId) || !operation) return
+	if (
+		edges.value.some(
+			(edge) => edge.source === connection.source && edge.target === connection.target
+		)
+	)
+		return
+	edges.value.push(makeOperationEdge(connection.source, connection.target, operation))
+	isConnectionDialogOpen.value = false
+}
+
+watch(isConnectionDialogOpen, (isOpen) => {
+	if (!isOpen) {
+		pendingConnection.value = null
+		selectedConnectionOperationId.value = null
+	}
+})
 
 watch(selectedEdgeType, (type) => {
 	edges.value = edges.value.map((edge) => ({ ...edge, type }))
@@ -315,21 +389,20 @@ q-page(padding)
 						@node-click="selectNode"
 						@pane-click="clearSelection"
 						@edge-click="selectEdge"
-						@connect="addConnection"
+						@connect="requestConnection"
 					)
 						Background(:gap="16" :size="1" pattern-color="#9aa9b5")
 						Controls(:position="PanelPosition.TopRight" :show-interactive="false")
 							template(v-slot:top)
 								ControlButton(
 									:title="isInteractive ? 'Отключить редактирование' : 'Включить редактирование'"
-									:aria-label="isInteractive ? 'Отключить редактирование' : 'Включить редактирование'"
 									@click="isInteractive = !isInteractive"
 								)
 									q-icon(:name="isInteractive ? 'lock_open' : 'lock'")
 						Panel(position="bottom-right")
-							q-btn(fab color="primary" icon="add" aria-label="Добавить состояние" title="Добавить состояние" :disable="!isInteractive" @click="addNode")
+							q-btn(fab color="primary" icon="add" title="Добавить состояние" :disable="!isInteractive" @click="addNode")
 						Panel(position="bottom-left")
-							q-btn(flat round color="primary" icon="mdi-cog" aria-label="Настройки типа связей" title="Настройки типа связей")
+							q-btn(flat round color="primary" icon="mdi-cog" title="Настройки типа связей")
 								q-menu(anchor="top left" self="bottom left")
 									.text-bold.text-center Тип связи
 									q-list(dense)
@@ -347,6 +420,7 @@ q-page(padding)
 						:operations="operations"
 						:transition-targets="transitionTargets"
 						@save:node-properties="saveNodeProperties"
+						@save:edge-operation="setEdgeOperation"
 						@rename-operation="renameOperation"
 						@assign-operation="assignOperations"
 						@unassign-operation="unassignOperation"
@@ -359,6 +433,18 @@ q-page(padding)
 						@select-node="selectNodeById"
 						@select-edge="selectEdgeById"
 					)
+	q-dialog(v-model="isConnectionDialogOpen" backdrop-filter="blur(4px) saturate(150%)")
+		q-card.connection-dialog
+			q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
+			q-card-section
+				.text-h6 Выберите операцию
+				.caption Связь {{ pendingConnectionSource?.data.label ?? 'исходного состояния' }} → {{ pendingConnectionTarget?.data.label ?? 'целевого состояния' }} будет создана после подтверждения.
+			q-card-section.q-pt-none
+				.operation-field-label Разрешенная операция
+				q-select(v-model="selectedConnectionOperationId" :options="pendingConnectionOperationOptions" outlined dense emit-value map-options :disable="!pendingConnectionOperations.length" :placeholder="pendingConnectionOperations.length ? 'Выберите операцию' : 'Нет разрешенных операций'")
+			q-card-actions(align="right")
+				q-btn(flat color="primary" label="Отмена" v-close-popup)
+				q-btn(color="primary" unelevated label="Создать связь" :disable="!selectedConnectionOperationId || !pendingConnectionOperations.some((operation) => operation.id === selectedConnectionOperationId)" @click="confirmConnection")
 </template>
 
 <style scoped lang="scss">
@@ -377,6 +463,13 @@ q-page(padding)
 	background: var(--bg-panel);
 	border: 1px solid var(--my-border-color);
 	padding: 0.5rem;
+}
+.connection-dialog {
+	width: 480px;
+	max-width: calc(100vw - 2rem);
+}
+.operation-field-label {
+	margin-bottom: 0.25rem;
 }
 :deep(.vue-flow__node.selected) {
 	outline: 2px solid var(--q-primary);
