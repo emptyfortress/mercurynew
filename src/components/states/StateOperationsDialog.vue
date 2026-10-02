@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { translationLocales, type NameTranslations } from '@/constants/locales'
-import type { OperationDefinition } from '@/components/decision/operationTypes'
+import type { OperationDefinition } from './types'
 
 const isOpen = defineModel<boolean>({ default: false })
 
@@ -107,7 +107,7 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 				q-space
 				q-btn(flat color="primary" label="Отмена" v-close-popup)
 				q-btn(color="primary" unelevated label="Добавить" :disable="!selectedOperationIds.length" @click="addSelectedOperations")
-		template(v-else)
+		template(v-else="")
 			q-card-section.operation-dialog-content.q-pt-none
 				.operation-field
 					.operation-field-label Название
@@ -118,7 +118,7 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 						autofocus
 						@keyup.enter="createOperation"
 					)
-						template(v-slot:append)
+							template(v-slot:append)
 							q-btn(
 								flat
 								round
@@ -141,7 +141,7 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 						type="textarea"
 						autogrow
 					)
-						template(v-slot:append)
+							template(v-slot:append)
 							q-btn(
 								flat
 								round

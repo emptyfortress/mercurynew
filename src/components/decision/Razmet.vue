@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import RolesConstructor from '@/components/decision/RolesConstructor.vue'
 import Matrix from '@/components/decision/Matrix.vue'
 import RazmetConstructor from '@/components/decision/RazmetConstructor.vue'
-import StateConstructor from '@/components/decision/StateConstructor.vue'
+import StateConstructor from '@/components/states/StateConstructor.vue'
 
 const props = defineProps({
 	razmet: {
