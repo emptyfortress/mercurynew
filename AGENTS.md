@@ -38,6 +38,8 @@ For modal windows and dialogs, follow `.codex/skills/modal-window.md`.
 
 ## Changes
 
+- Do not use `aria-label` attributes in component templates.
+
 Before a significant change:
 
 - inspect the existing implementation;
