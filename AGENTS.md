@@ -49,6 +49,8 @@ Before a significant change:
 Do not create git commits unless explicitly asked.
 Do not reset or discard uncommitted changes.
 
+For type-checking, do not run a full project check without a clear need. Prefer the normal incremental `npm run type-check` when type validation is necessary; never force a full rebuild just to verify a small change. For focused UI changes that do not affect TypeScript contracts, skip type-checking unless requested or needed to investigate a concrete issue.
+
 For significant UI changes, explain the proposed approach before
 changing code unless I explicitly ask you to implement immediately.
 
