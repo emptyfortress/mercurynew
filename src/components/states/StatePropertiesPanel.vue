@@ -9,6 +9,7 @@ import StateList from './StateList.vue'
 import StateOperationsList from './StateOperationsList.vue'
 import StateTransitionsList from './StateTransitionsList.vue'
 import StateOperationEditDialog from './StateOperationEditDialog.vue'
+import OperationColorPicker from './OperationColorPicker.vue'
 
 type NodeData = {
 	label?: string
@@ -33,6 +34,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(event: 'update:node-properties', id: string, changes: NodePropertyChanges): void
 	(event: 'update:edge-operation', edgeId: string, operationId: string): void
+	(event: 'update:operation-color', operationId: string, color?: string): void
 	(event: 'rename-operation', operationId: string, name: string, nameTranslations: NameTranslations): void
 	(event: 'assign-operation', id: string, operationIds: string[]): void
 	(event: 'unassign-operation', id: string, operationId: string): void
@@ -172,7 +174,6 @@ const visibleTransitions = computed(() =>
 	})
 )
 const transitionColumns = [
-	{ name: 'transition', label: 'Переход', field: 'transitionLabel', align: 'left' as const },
 	{
 		name: 'operation',
 		label: 'Операция',
@@ -180,6 +181,7 @@ const transitionColumns = [
 		align: 'left' as const,
 		sortable: true,
 	},
+	{ name: 'transition', label: 'Переход', field: 'transitionLabel', align: 'left' as const },
 	{
 		name: 'actions',
 		label: '',
@@ -200,6 +202,8 @@ const transitionRows = computed(() => {
 			operationName:
 				props.operations.find((operation) => operation.id === edge.data?.operationId)?.name ??
 				'Операция не найдена',
+			operationColor: props.operations.find((operation) => operation.id === edge.data?.operationId)
+				?.color,
 		}))
 		.filter(
 			(row) =>
@@ -285,6 +289,8 @@ const transitionSources = computed(() =>
 const selectNode = (id: string) => emit('select-node', id)
 const deleteNode = (id: string) => emit('delete-node', id)
 const deleteOperation = (id: string) => emit('delete-operation', id)
+const setOperationColor = (id: string, color?: string) =>
+	emit('update:operation-color', id, color)
 const editOperation = (id: string) => {
 	operationBeingEdited.value = props.operations.find((operation) => operation.id === id) ?? null
 	if (operationBeingEdited.value) isOperationEditDialogOpen.value = true
@@ -324,7 +330,7 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 			q-input.q-mb-sm(v-model="operationSearch" filled dense clearable placeholder="Фильтр общих операций")
 				template(v-slot:prepend="")
 					q-icon(name="mdi-magnify" color="primary")
-			StateOperationsList(:rows="filteredCommonOperations" :columns="multiSelectionColumns" no-data-label="Нет общих операций")
+			StateOperationsList(:rows="filteredCommonOperations" :columns="multiSelectionColumns" no-data-label="Нет общих операций" @edit="editOperation" @update:operation-color="setOperationColor")
 		template(v-else-if="!node && !edge")
 			q-tabs(v-model="blankTab" dense align="left" active-color="primary" indicator-color="primary")
 				q-tab(name="states" label="Состояния")
@@ -346,7 +352,7 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 					q-input.q-mb-sm(v-model="operationSearch" filled dense clearable placeholder="Фильтр")
 						template(v-slot:prepend)
 							q-icon(name="mdi-magnify" color="primary")
-					StateOperationsList(:rows="filteredGlobalOperations" :columns="operationColumns" no-data-label="Нет операций по этому названию" @edit="editOperation" @delete="deleteOperation")
+					StateOperationsList(:rows="filteredGlobalOperations" :columns="operationColumns" no-data-label="Нет операций по этому названию" @edit="editOperation" @update:operation-color="setOperationColor" @delete="deleteOperation")
 
 				q-tab-panel(name="transitions" class="q-pa-sm")
 					.row.items-center.justify-between.q-mb-xs
@@ -379,7 +385,7 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 						q-chip(:selected="operationFilter === 'all'" clickable size="sm" @click="operationFilter = 'all'") Все
 					.row.justify-end(v-if="operationFilter === 'all'")
 						q-checkbox.q-mb-sm(:model-value="allOperationsAllowed ? true : someOperationsAllowed ? null : false" :disable="!operations.length" label="Выбрать все" dense @update:model-value="setAllOperationsAllowed(Boolean($event))")
-					StateOperationsList(:rows="filteredOperations" :columns="operationColumns" show-allowed no-data-label="Операций нет" @toggle-allowed="setOperationAllowedById" @edit="editOperation" @delete="unassignOperation")
+					StateOperationsList(:rows="filteredOperations" :columns="operationColumns" show-allowed no-data-label="Операций нет" @toggle-allowed="setOperationAllowedById" @edit="editOperation" @update:operation-color="setOperationColor" @delete="unassignOperation")
 				q-tab-panel(name="transitions" class="q-pa-sm")
 					.row.items-center.justify-between.q-mb-xs
 						.text-subtitle2 Переходы состояния
@@ -398,6 +404,9 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 			.operation-field-label Операция
 			q-select(v-model="edgeOperationId" :options="edgeOperationOptions" outlined dense emit-value map-options :disable="!edgeAllowedOperations.length" :placeholder="edgeAllowedOperations.length ? 'Выберите операцию' : 'Нет разрешенных операций'")
 			.text-caption.text-negative.q-mt-sm(v-if="!selectedEdgeOperation") У перехода не найдена операция.
+			.row.items-center.justify-between.q-mt-md(v-if="selectedEdgeOperation")
+				.operation-field-label Цвет операции
+				OperationColorPicker(:model-value="selectedEdgeOperation.color" @update:model-value="setOperationColor(selectedEdgeOperation.id, $event)")
 		StateTransitionsDialog(v-model="isTransitionDialogOpen" :source-node-id="node?.id ?? null" :sources="transitionSources" :operations="node ? allowedOperations : operations" :targets="transitionTargets" @confirm="confirmTransition")
 	StateOperationsDialog(v-model="isOperationDialogOpen" :node-ids="operationTargetNodeIds" :operations="operations" :assigned-operation-ids="dialogAssignedOperationIds" @assign-operations="assignOperations" @create-operation="createOperation")
 	StateOperationEditDialog(v-model="isOperationEditDialogOpen" :operation="operationBeingEdited" @save="saveOperation")

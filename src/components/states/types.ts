@@ -23,6 +23,7 @@ export type StateTarget = { id: string; label: string }
 export type OperationDefinition = {
 	id: string
 	name: string
+	color?: string
 	description?: string
 	nameTranslations?: NameTranslations
 	descriptionTranslations?: NameTranslations
@@ -51,6 +52,7 @@ export type StateConstructorContext = {
 	clearSelection(): void
 	updateNodeProperties(id: string, changes: NodePropertyChanges): void
 	setEdgeOperation(edgeId: string, operationId: string): void
+	updateOperationColor(operationId: string, color?: string): void
 	renameOperation(operationId: string, name: string, nameTranslations?: NameTranslations): void
 	assignOperations(nodeId: string, operationIds: string[]): void
 	assignOperationsToNodes(nodeIds: string[], operationIds: string[]): void

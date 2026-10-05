@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { locales, type NameTranslations } from '@/constants/locales'
+import { translationLocales, type NameTranslations } from '@/constants/locales'
 import type { OperationDefinition } from './types'
 
 const isOpen = defineModel<boolean>({ default: false })
@@ -41,7 +41,7 @@ q-dialog(v-model="isOpen" backdrop-filter="blur(4px) saturate(150%)")
 			.caption {{ operation?.name }}
 		q-card-section.q-pt-none
 			q-input.q-mb-sm(v-model="name" label="Русский (ru)" outlined dense autofocus)
-			q-input.q-mb-sm(v-for="locale in locales.slice(1)" :key="locale.code" v-model="nameTranslations[locale.code]" :label="locale.label" outlined dense)
+			q-input.q-mb-sm(v-for="locale in translationLocales" :key="locale.code" v-model="nameTranslations[locale.code]" :label="locale.label" outlined dense)
 		q-card-actions(align="right")
 			q-btn(flat color="primary" label="Отмена" v-close-popup)
 			q-btn(color="primary" unelevated label="Сохранить" :disable="!name.trim()" @click="save")

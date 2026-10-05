@@ -119,8 +119,6 @@ q-page(padding)
 		@create-operation="createOperationForConnection"
 	)
 
-// TODO: Добавить раскраску в активные операции (с переходами)
-	
 // TODO: Добавить пунктир на развилку
 
 </template>
