@@ -1,17 +1,28 @@
 import { computed, ref, watch } from 'vue'
 import { MarkerType } from '@vue-flow/core'
 import type { NameTranslations } from '@/constants/locales'
-import type { Connection, Edge, EdgeMouseEvent, NodeMouseEvent } from '@vue-flow/core'
+import type { Connection, EdgeMouseEvent, NodeMouseEvent } from '@vue-flow/core'
 import type {
 	EdgeType,
+	DefaultTransitionOption,
 	NodePropertyChanges,
 	OperationDefinition,
 	StateConstructorContext,
 	StateEdge,
-	StateEdgeData,
 	StateNode,
 	StateTarget,
 } from './types'
+
+type PendingDefaultTransitionAction =
+	| { type: 'add'; sourceId: string; targetId: string; operationId: string }
+	| {
+			type: 'change-operation'
+			edgeId: string
+			sourceId: string
+			previousOperationId: string
+			operationId: string
+	  }
+const newTransitionOptionId = '__new-transition-candidate__'
 
 export function useStateConstructor(): StateConstructorContext {
 	const edgeTypeOptions = [
@@ -43,6 +54,10 @@ export function useStateConstructor(): StateConstructorContext {
 	const pendingConnection = ref<Connection | null>(null)
 	const isConnectionDialogOpen = ref(false)
 	const selectedConnectionOperationId = ref<string | null>(null)
+	const isDefaultTransitionDialogOpen = ref(false)
+	const defaultTransitionOptions = ref<DefaultTransitionOption[]>([])
+	const selectedDefaultTransitionId = ref<string | null>(null)
+	const pendingDefaultTransitionAction = ref<PendingDefaultTransitionAction | null>(null)
 
 	const operations = ref<OperationDefinition[]>([
 		{
@@ -111,12 +126,14 @@ export function useStateConstructor(): StateConstructorContext {
 	const makeOperationEdge = (
 		source: string,
 		target: string,
-		operation: OperationDefinition
-	): Edge<StateEdgeData> => ({
+		operation: OperationDefinition,
+		isDefault = true
+	): StateEdge => ({
 		...defaultEdgeOptions.value,
 		style: {
 			...defaultEdgeOptions.value.style,
 			...(operation.color ? { stroke: operation.color } : {}),
+			...(!isDefault ? { strokeDasharray: '6 4' } : {}),
 		},
 		markerEnd: operation.color
 			? { type: MarkerType.ArrowClosed, color: operation.color }
@@ -125,13 +142,78 @@ export function useStateConstructor(): StateConstructorContext {
 		source,
 		target,
 		label: operation.name,
-		data: { operationId: operation.id },
+		data: { operationId: operation.id, isDefault },
 	})
 
 	const edges = ref<StateEdge[]>([
 		makeOperationEdge('start', 'state', operations.value[0]!),
 		makeOperationEdge('state', 'end', operations.value[1]!),
 	])
+
+	const getOperationTransitionGroup = (
+		sourceId: string,
+		operationId: string,
+		excludeEdgeId?: string
+	) =>
+		edges.value.filter(
+			(edge) =>
+				edge.id !== excludeEdgeId &&
+				edge.source === sourceId &&
+				edge.data?.operationId === operationId
+		)
+
+	const setTransitionDefaultStyle = (edge: StateEdge, isDefault: boolean): StateEdge => {
+		const style = { ...(typeof edge.style === 'object' && edge.style ? edge.style : {}) }
+		if (isDefault) delete style.strokeDasharray
+		else style.strokeDasharray = '6 4'
+		return { ...edge, style, data: { ...edge.data, isDefault } }
+	}
+
+	const normalizeOperationTransitionGroup = (
+		sourceId: string,
+		operationId: string,
+		preferredDefaultEdgeId?: string
+	) => {
+		const group = getOperationTransitionGroup(sourceId, operationId)
+		if (!group.length) return
+		const defaultEdgeId = group.some((edge) => edge.id === preferredDefaultEdgeId)
+			? preferredDefaultEdgeId
+			: (group.find((edge) => edge.data?.isDefault)?.id ?? group[0]!.id)
+		const groupIds = new Set(group.map((edge) => edge.id))
+		edges.value = edges.value.map((edge) =>
+			groupIds.has(edge.id)
+				? setTransitionDefaultStyle(edge, edge.id === defaultEdgeId)
+				: edge
+		)
+	}
+
+	const nodeLabel = (nodeId: string) =>
+		nodes.value.find((node) => node.id === nodeId)?.data.label ?? nodeId
+
+	const openDefaultTransitionDialog = (
+		action: PendingDefaultTransitionAction,
+		sourceId: string,
+		operationId: string,
+		candidateId: string,
+		candidateTargetId: string,
+		excludeEdgeId?: string
+	) => {
+		const group = getOperationTransitionGroup(sourceId, operationId, excludeEdgeId)
+		defaultTransitionOptions.value = [
+			...group.map((edge, index) => ({
+				value: edge.id,
+				label: `${nodeLabel(sourceId)} → ${nodeLabel(edge.target)}${edge.data?.isDefault || (!group.some((item) => item.data?.isDefault) && index === 0) ? ' (сейчас по умолчанию)' : ''}`,
+			})),
+			{
+				value: candidateId,
+				label: `${nodeLabel(sourceId)} → ${nodeLabel(candidateTargetId)} (${action.type === 'add' ? 'новый переход' : 'изменяемый переход'})`,
+			},
+		]
+		selectedDefaultTransitionId.value =
+			group.find((edge) => edge.data?.isDefault)?.id ?? group[0]?.id ?? candidateId
+		pendingDefaultTransitionAction.value = action
+		isDefaultTransitionDialogOpen.value = true
+	}
 
 	const pendingConnectionSource = computed(
 		() => nodes.value.find((node) => node.id === pendingConnection.value?.source) ?? null
@@ -292,11 +374,7 @@ export function useStateConstructor(): StateConstructorContext {
 		})
 	}
 
-	const setEdgeOperation = (edgeId: string, operationId: string) => {
-		const edge = edges.value.find((item) => item.id === edgeId)
-		const source = edge ? nodes.value.find((node) => node.id === edge.source) : null
-		const operation = operations.value.find((item) => item.id === operationId)
-		if (!edge || !source?.data.operationIds?.includes(operationId) || !operation) return
+	const applyOperationToTransition = (edgeId: string, operation: OperationDefinition) => {
 		edges.value = edges.value.map((item) => {
 			if (item.id !== edgeId) return item
 			const style = { ...(typeof item.style === 'object' && item.style ? item.style : {}) }
@@ -309,9 +387,39 @@ export function useStateConstructor(): StateConstructorContext {
 				markerEnd: operation.color
 					? { type: MarkerType.ArrowClosed, color: operation.color }
 					: MarkerType.ArrowClosed,
-				data: { ...item.data, operationId },
+				data: { ...item.data, operationId: operation.id },
 			}
 		})
+	}
+
+	const setEdgeOperation = (edgeId: string, operationId: string) => {
+		const edge = edges.value.find((item) => item.id === edgeId)
+		const source = edge ? nodes.value.find((node) => node.id === edge.source) : null
+		const operation = operations.value.find((item) => item.id === operationId)
+		if (!edge || !source?.data.operationIds?.includes(operationId) || !operation) return
+		const previousOperationId = edge.data.operationId
+		if (previousOperationId === operationId) return
+		const conflictingTransitions = getOperationTransitionGroup(edge.source, operationId, edgeId)
+		if (conflictingTransitions.length) {
+			openDefaultTransitionDialog(
+				{
+					type: 'change-operation',
+					edgeId,
+					sourceId: edge.source,
+					previousOperationId,
+					operationId,
+				},
+				edge.source,
+				operationId,
+				edgeId,
+				edge.target,
+				edgeId
+			)
+			return
+		}
+		applyOperationToTransition(edgeId, operation)
+		normalizeOperationTransitionGroup(edge.source, previousOperationId)
+		normalizeOperationTransitionGroup(edge.source, operationId, edgeId)
 	}
 
 	const addTransition = (sourceNodeId: string, targetNodeId: string, operationId: string) => {
@@ -325,11 +433,84 @@ export function useStateConstructor(): StateConstructorContext {
 				edge.data?.operationId === operationId
 		)
 		if (duplicate) return
-		edges.value.push(makeOperationEdge(sourceNodeId, targetNodeId, operation))
+		const existingTransitions = getOperationTransitionGroup(sourceNodeId, operationId)
+		if (existingTransitions.length) {
+			openDefaultTransitionDialog(
+				{ type: 'add', sourceId: sourceNodeId, targetId: targetNodeId, operationId },
+				sourceNodeId,
+				operationId,
+				newTransitionOptionId,
+				targetNodeId
+			)
+			return
+		}
+		edges.value.push(makeOperationEdge(sourceNodeId, targetNodeId, operation, true))
+	}
+
+	const confirmDefaultTransition = () => {
+		const action = pendingDefaultTransitionAction.value
+		const defaultTransitionId = selectedDefaultTransitionId.value
+		if (!action || !defaultTransitionId) return
+
+		if (action.type === 'add') {
+			const source = nodes.value.find((node) => node.id === action.sourceId)
+			const operation = operations.value.find((item) => item.id === action.operationId)
+			const duplicate = edges.value.some(
+				(edge) =>
+					edge.source === action.sourceId &&
+					edge.target === action.targetId &&
+					edge.data?.operationId === action.operationId
+			)
+			if (source?.data.operationIds?.includes(action.operationId) && operation && !duplicate) {
+				const newEdge = makeOperationEdge(
+					action.sourceId,
+					action.targetId,
+					operation,
+					defaultTransitionId === newTransitionOptionId
+				)
+				edges.value.push(newEdge)
+				normalizeOperationTransitionGroup(
+					action.sourceId,
+					action.operationId,
+					defaultTransitionId === newTransitionOptionId ? newEdge.id : defaultTransitionId
+				)
+			}
+		} else {
+			const edge = edges.value.find((item) => item.id === action.edgeId)
+			const source = nodes.value.find((node) => node.id === action.sourceId)
+			const operation = operations.value.find((item) => item.id === action.operationId)
+			if (
+				edge?.source === action.sourceId &&
+				edge.data.operationId === action.previousOperationId &&
+				source?.data.operationIds?.includes(action.operationId) &&
+				operation
+			) {
+				applyOperationToTransition(action.edgeId, operation)
+				normalizeOperationTransitionGroup(action.sourceId, action.previousOperationId)
+				normalizeOperationTransitionGroup(
+					action.sourceId,
+					action.operationId,
+					defaultTransitionId
+				)
+			}
+		}
+
+		isDefaultTransitionDialogOpen.value = false
+		pendingDefaultTransitionAction.value = null
+		defaultTransitionOptions.value = []
+		selectedDefaultTransitionId.value = null
+	}
+
+	const setDefaultTransition = (edgeId: string) => {
+		const edge = edges.value.find((item) => item.id === edgeId)
+		if (!edge) return
+		normalizeOperationTransitionGroup(edge.source, edge.data.operationId, edgeId)
 	}
 
 	const deleteTransition = (edgeId: string) => {
+		const deleted = edges.value.find((edge) => edge.id === edgeId)
 		edges.value = edges.value.filter((edge) => edge.id !== edgeId)
+		if (deleted) normalizeOperationTransitionGroup(deleted.source, deleted.data.operationId)
 	}
 
 	const addNode = () => {
@@ -346,8 +527,21 @@ export function useStateConstructor(): StateConstructorContext {
 	}
 
 	const deleteNode = (nodeId: string) => {
+		const affectedGroups = new Map<string, { sourceId: string; operationId: string }>()
+		edges.value
+			.filter((edge) => edge.source !== nodeId && edge.target === nodeId)
+			.forEach((edge) => {
+				const operationId = edge.data.operationId
+				affectedGroups.set(`${edge.source}:${operationId}`, {
+					sourceId: edge.source,
+					operationId,
+				})
+			})
 		nodes.value = nodes.value.filter((node) => node.id !== nodeId)
 		edges.value = edges.value.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+		affectedGroups.forEach(({ sourceId, operationId }) =>
+			normalizeOperationTransitionGroup(sourceId, operationId)
+		)
 	}
 
 	const requestConnection = (connection: Connection) => {
@@ -367,7 +561,7 @@ export function useStateConstructor(): StateConstructorContext {
 			if (!source.data.operationIds?.includes(incomingOperation.id)) {
 				assignOperations(source.id, [incomingOperation.id])
 			}
-			edges.value.push(makeOperationEdge(source.id, target.id, incomingOperation))
+			addTransition(source.id, target.id, incomingOperation.id)
 			return
 		}
 
@@ -389,7 +583,7 @@ export function useStateConstructor(): StateConstructorContext {
 			)
 		)
 			return
-		edges.value.push(makeOperationEdge(connection.source, connection.target, operation))
+		addTransition(connection.source, connection.target, operationId)
 		isConnectionDialogOpen.value = false
 	}
 
@@ -397,6 +591,14 @@ export function useStateConstructor(): StateConstructorContext {
 		if (!isOpen) {
 			pendingConnection.value = null
 			selectedConnectionOperationId.value = null
+		}
+	})
+
+	watch(isDefaultTransitionDialogOpen, (isOpen) => {
+		if (!isOpen) {
+			pendingDefaultTransitionAction.value = null
+			defaultTransitionOptions.value = []
+			selectedDefaultTransitionId.value = null
 		}
 	})
 
@@ -426,6 +628,9 @@ export function useStateConstructor(): StateConstructorContext {
 		transitionTargets,
 		selectedConnectionOperationId,
 		isConnectionDialogOpen,
+		isDefaultTransitionDialogOpen,
+		defaultTransitionOptions,
+		selectedDefaultTransitionId,
 		pendingConnectionSource,
 		pendingConnectionTarget,
 		pendingConnectionOperationOptions,
@@ -436,6 +641,7 @@ export function useStateConstructor(): StateConstructorContext {
 		clearSelection,
 		updateNodeProperties,
 		setEdgeOperation,
+		setDefaultTransition,
 		updateOperationColor,
 		renameOperation,
 		assignOperations,
@@ -450,5 +656,6 @@ export function useStateConstructor(): StateConstructorContext {
 		deleteNode,
 		requestConnection,
 		confirmConnection,
+		confirmDefaultTransition,
 	}
 }

@@ -16,9 +16,13 @@ export type StateNode = Omit<Node<StateNodeData>, 'data'> & {
 	data: StateNodeData
 	selected?: boolean
 }
-export type StateEdgeData = { operationId: string }
-export type StateEdge = Edge<StateEdgeData> & { selected?: boolean }
+export type StateEdgeData = { operationId: string; isDefault?: boolean }
+export type StateEdge = Omit<Edge<StateEdgeData>, 'data'> & {
+	data: StateEdgeData
+	selected?: boolean
+}
 export type StateTarget = { id: string; label: string }
+export type DefaultTransitionOption = { label: string; value: string }
 
 export type OperationDefinition = {
 	id: string
@@ -42,6 +46,9 @@ export type StateConstructorContext = {
 	transitionTargets: ComputedRef<StateTarget[]>
 	selectedConnectionOperationId: Ref<string | null>
 	isConnectionDialogOpen: Ref<boolean>
+	isDefaultTransitionDialogOpen: Ref<boolean>
+	defaultTransitionOptions: Ref<DefaultTransitionOption[]>
+	selectedDefaultTransitionId: Ref<string | null>
 	pendingConnectionSource: ComputedRef<StateNode | null>
 	pendingConnectionTarget: ComputedRef<StateNode | null>
 	pendingConnectionOperationOptions: ComputedRef<Array<{ label: string; value: string }>>
@@ -52,6 +59,7 @@ export type StateConstructorContext = {
 	clearSelection(): void
 	updateNodeProperties(id: string, changes: NodePropertyChanges): void
 	setEdgeOperation(edgeId: string, operationId: string): void
+	setDefaultTransition(edgeId: string): void
 	updateOperationColor(operationId: string, color?: string): void
 	renameOperation(operationId: string, name: string, nameTranslations?: NameTranslations): void
 	assignOperations(nodeId: string, operationIds: string[]): void
@@ -66,4 +74,5 @@ export type StateConstructorContext = {
 	deleteNode(nodeId: string): void
 	requestConnection(connection: Connection): void
 	confirmConnection(): void
+	confirmDefaultTransition(): void
 }

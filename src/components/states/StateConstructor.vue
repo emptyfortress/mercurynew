@@ -5,6 +5,7 @@ import { useBreadcrumbLabel } from '@/composable/useBreadcrumbLabel'
 import StatePropertiesPanel from './StatePropertiesPanel.vue'
 import StateGraph from './StateGraph.vue'
 import StateConnectionDialog from './StateConnectionDialog.vue'
+import StateDefaultTransitionDialog from './StateDefaultTransitionDialog.vue'
 import { useStateConstructor } from './useStateConstructor'
 
 const route = useRoute()
@@ -29,6 +30,9 @@ const {
 	transitionTargets,
 	selectedConnectionOperationId,
 	isConnectionDialogOpen,
+	isDefaultTransitionDialogOpen,
+	defaultTransitionOptions,
+	selectedDefaultTransitionId,
 	pendingConnectionSource,
 	pendingConnectionTarget,
 	pendingConnectionOperationOptions,
@@ -39,6 +43,7 @@ const {
 	clearSelection,
 	updateNodeProperties,
 	setEdgeOperation,
+	setDefaultTransition,
 	updateOperationColor,
 	renameOperation,
 	assignOperations,
@@ -53,6 +58,7 @@ const {
 	deleteNode,
 	requestConnection,
 	confirmConnection,
+	confirmDefaultTransition,
 } = useStateConstructor()
 </script>
 
@@ -95,6 +101,7 @@ q-page(padding)
 						:transition-targets="transitionTargets"
 						@update:node-properties="updateNodeProperties"
 						@update:edge-operation="setEdgeOperation"
+						@set-default-transition="setDefaultTransition"
 						@update:operation-color="updateOperationColor"
 						@rename-operation="renameOperation"
 						@assign-operation="assignOperations"
@@ -118,8 +125,12 @@ q-page(padding)
 		@confirm="confirmConnection"
 		@create-operation="createOperationForConnection"
 	)
-
-// TODO: Добавить пунктир на развилку
+	StateDefaultTransitionDialog(
+		v-model="isDefaultTransitionDialogOpen"
+		v-model:selected-transition-id="selectedDefaultTransitionId"
+		:options="defaultTransitionOptions"
+		@confirm="confirmDefaultTransition"
+	)
 
 </template>
 

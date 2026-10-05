@@ -18,7 +18,10 @@ type NodeData = {
 	isInitial?: boolean
 }
 type StateNode = Pick<Node<NodeData>, 'id' | 'data'>
-type StateEdge = Pick<Edge<{ operationId: string }>, 'id' | 'label' | 'source' | 'target' | 'data'>
+type StateEdge = Pick<
+	Edge<{ operationId: string; isDefault?: boolean }>,
+	'id' | 'label' | 'source' | 'target' | 'data'
+>
 type TransitionTarget = { id: string; label: string }
 type PanelNode = Pick<Node<NodeData>, 'id' | 'data'> & { selected?: boolean }
 
@@ -35,6 +38,7 @@ const emit = defineEmits<{
 	(event: 'update:node-properties', id: string, changes: NodePropertyChanges): void
 	(event: 'update:edge-operation', edgeId: string, operationId: string): void
 	(event: 'update:operation-color', operationId: string, color?: string): void
+	(event: 'set-default-transition', edgeId: string): void
 	(event: 'rename-operation', operationId: string, name: string, nameTranslations: NameTranslations): void
 	(event: 'assign-operation', id: string, operationIds: string[]): void
 	(event: 'unassign-operation', id: string, operationId: string): void
@@ -242,6 +246,15 @@ const panelTitle = computed(() =>
 const selectedEdgeOperation = computed(
 	() => props.operations.find((item) => item.id === props.edge?.data?.operationId) ?? null
 )
+const selectedEdgeDefaultGroup = computed(() =>
+	props.edge
+		? props.edges.filter(
+				(edge) =>
+					edge.source === props.edge?.source &&
+					edge.data?.operationId === props.edge?.data?.operationId
+			)
+		: []
+)
 const edgeAllowedOperations = computed(() => {
 	const source = props.nodes.find((item) => item.id === props.edge?.source)
 	const allowedIds = new Set(source?.data?.operationIds ?? [])
@@ -301,6 +314,7 @@ const unassignOperation = (id: string) => {
 	if (props.node) emit('unassign-operation', props.node.id, id)
 }
 const selectEdge = (id: string) => emit('select-edge', id)
+const setDefaultTransition = (id: string) => emit('set-default-transition', id)
 const deleteTransition = (id: string) => emit('delete-transition', id)
 const assignOperations = (nodeIds: string[], operationIds: string[]) =>
 	emit('assign-operations', nodeIds, operationIds)
@@ -407,6 +421,9 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 			.row.items-center.justify-between.q-mt-md(v-if="selectedEdgeOperation")
 				.operation-field-label Цвет операции
 				OperationColorPicker(:model-value="selectedEdgeOperation.color" @update:model-value="setOperationColor(selectedEdgeOperation.id, $event)")
+			.row.items-center.justify-between.q-mt-sm(v-if="selectedEdgeDefaultGroup.length > 1")
+				q-chip(v-if="props.edge?.data?.isDefault" dense color="primary" text-color="white") Переход по умолчанию
+				q-btn(v-else flat dense color="primary" label="Сделать переходом по умолчанию" @click="props.edge && setDefaultTransition(props.edge.id)")
 		StateTransitionsDialog(v-model="isTransitionDialogOpen" :source-node-id="node?.id ?? null" :sources="transitionSources" :operations="node ? allowedOperations : operations" :targets="transitionTargets" @confirm="confirmTransition")
 	StateOperationsDialog(v-model="isOperationDialogOpen" :node-ids="operationTargetNodeIds" :operations="operations" :assigned-operation-ids="dialogAssignedOperationIds" @assign-operations="assignOperations" @create-operation="createOperation")
 	StateOperationEditDialog(v-model="isOperationEditDialogOpen" :operation="operationBeingEdited" @save="saveOperation")
