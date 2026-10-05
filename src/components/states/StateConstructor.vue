@@ -39,6 +39,7 @@ const {
 	clearSelection,
 	updateNodeProperties,
 	setEdgeOperation,
+	updateOperationColor,
 	renameOperation,
 	assignOperations,
 	assignOperationsToNodes,
@@ -94,6 +95,7 @@ q-page(padding)
 						:transition-targets="transitionTargets"
 						@update:node-properties="updateNodeProperties"
 						@update:edge-operation="setEdgeOperation"
+						@update:operation-color="updateOperationColor"
 						@rename-operation="renameOperation"
 						@assign-operation="assignOperations"
 						@unassign-operation="unassignOperation"
@@ -121,7 +123,6 @@ q-page(padding)
 	
 // TODO: Добавить пунктир на развилку
 
-// TODO: Добавить локализацию на редактирование операции
 </template>
 
 <style scoped lang="scss">
