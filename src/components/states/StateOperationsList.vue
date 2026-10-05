@@ -10,19 +10,22 @@ defineProps<{
 }>()
 const emit = defineEmits<{
 	(event: 'toggle-allowed', id: string, allowed: boolean): void
+	(event: 'edit', id: string): void
 	(event: 'delete', id: string): void
 }>()
+const openEditorForRow = (_event: Event, row: OperationDefinition & { assignedCount?: number }) =>
+	emit('edit', row.id)
 </script>
 
 <template lang="pug">
-q-table.operation-table.operations-table(:rows="rows" :columns="columns" row-key="id" flat dense bordered wrap-cells hide-bottom :pagination="{ rowsPerPage: 0 }" :no-data-label="noDataLabel")
+q-table.operation-table.operations-table(:rows="rows" :columns="columns" row-key="id" flat dense bordered wrap-cells hide-bottom :pagination="{ rowsPerPage: 0 }" :no-data-label="noDataLabel" @row-click="openEditorForRow")
 	template(v-slot:body-cell-allowed="slotProps" v-if="showAllowed")
 		q-td(:props="slotProps")
-			q-checkbox(:model-value="Boolean(slotProps.row.assignedCount)" dense @update:model-value="emit('toggle-allowed', slotProps.row.id, Boolean($event))")
+			q-checkbox(:model-value="Boolean(slotProps.row.assignedCount)" dense @click.stop @update:model-value="emit('toggle-allowed', slotProps.row.id, Boolean($event))")
 	template(v-slot:body-cell-actions="slotProps")
 
 		q-td.action(:props="slotProps")
-			q-btn.delete-action(flat round dense size="sm" color="secondary" icon="mdi-close" @click="emit('delete', slotProps.row.id)")
+			q-btn.delete-action(flat round dense size="sm" color="secondary" icon="mdi-close" @click.stop="emit('delete', slotProps.row.id)")
 </template>
 
 <style scoped lang="scss">
@@ -44,5 +47,8 @@ q-table.operation-table.operations-table(:rows="rows" :columns="columns" row-key
 }
 .operation-table :deep(.q-table td.action) {
 	padding-right: 0;
+}
+.operation-table :deep(.q-table tbody tr) {
+	cursor: pointer;
 }
 </style>

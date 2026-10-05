@@ -1,5 +1,6 @@
 import { computed, ref, watch } from 'vue'
 import { MarkerType } from '@vue-flow/core'
+import type { NameTranslations } from '@/constants/locales'
 import type { Connection, Edge, EdgeMouseEvent, NodeMouseEvent } from '@vue-flow/core'
 import type {
 	EdgeType,
@@ -247,10 +248,11 @@ const deleteOperation = (operationId: string) => {
 	edges.value = edges.value.filter((edge) => edge.data?.operationId !== operationId)
 }
 
-const renameOperation = (operationId: string, name: string) => {
+const renameOperation = (operationId: string, name: string, nameTranslations?: NameTranslations) => {
 	const operation = operations.value.find((item) => item.id === operationId)
 	if (!operation || !name.trim()) return
 	operation.name = name.trim()
+	if (nameTranslations) operation.nameTranslations = { ...nameTranslations }
 	edges.value = edges.value.map((edge) =>
 		edge.data?.operationId === operationId ? { ...edge, label: operation.name } : edge
 	)

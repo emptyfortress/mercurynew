@@ -8,6 +8,7 @@ import StateTransitionsDialog from './StateTransitionsDialog.vue'
 import StateList from './StateList.vue'
 import StateOperationsList from './StateOperationsList.vue'
 import StateTransitionsList from './StateTransitionsList.vue'
+import StateOperationEditDialog from './StateOperationEditDialog.vue'
 
 type NodeData = {
 	label?: string
@@ -32,7 +33,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(event: 'update:node-properties', id: string, changes: NodePropertyChanges): void
 	(event: 'update:edge-operation', edgeId: string, operationId: string): void
-	(event: 'rename-operation', operationId: string, name: string): void
+	(event: 'rename-operation', operationId: string, name: string, nameTranslations: NameTranslations): void
 	(event: 'assign-operation', id: string, operationIds: string[]): void
 	(event: 'unassign-operation', id: string, operationId: string): void
 	(event: 'create-operation', nodeIds: string[], operation: Omit<OperationDefinition, 'id'>): void
@@ -55,6 +56,8 @@ const stateSearch = ref('')
 const transitionSearch = ref('')
 const isOperationDialogOpen = ref(false)
 const isTransitionDialogOpen = ref(false)
+const isOperationEditDialogOpen = ref(false)
+const operationBeingEdited = ref<OperationDefinition | null>(null)
 const showNameTranslations = ref(false)
 const nodeLabel = computed({
 	get: () => props.node?.data?.label ?? '',
@@ -282,6 +285,12 @@ const transitionSources = computed(() =>
 const selectNode = (id: string) => emit('select-node', id)
 const deleteNode = (id: string) => emit('delete-node', id)
 const deleteOperation = (id: string) => emit('delete-operation', id)
+const editOperation = (id: string) => {
+	operationBeingEdited.value = props.operations.find((operation) => operation.id === id) ?? null
+	if (operationBeingEdited.value) isOperationEditDialogOpen.value = true
+}
+const saveOperation = (id: string, name: string, nameTranslations: NameTranslations) =>
+	emit('rename-operation', id, name, nameTranslations)
 const unassignOperation = (id: string) => {
 	if (props.node) emit('unassign-operation', props.node.id, id)
 }
@@ -337,7 +346,7 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 					q-input.q-mb-sm(v-model="operationSearch" filled dense clearable placeholder="Фильтр")
 						template(v-slot:prepend)
 							q-icon(name="mdi-magnify" color="primary")
-					StateOperationsList(:rows="filteredGlobalOperations" :columns="operationColumns" no-data-label="Нет операций по этому названию" @delete="deleteOperation")
+					StateOperationsList(:rows="filteredGlobalOperations" :columns="operationColumns" no-data-label="Нет операций по этому названию" @edit="editOperation" @delete="deleteOperation")
 
 				q-tab-panel(name="transitions" class="q-pa-sm")
 					.row.items-center.justify-between.q-mb-xs
@@ -370,7 +379,7 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 						q-chip(:selected="operationFilter === 'all'" clickable size="sm" @click="operationFilter = 'all'") Все
 					.row.justify-end(v-if="operationFilter === 'all'")
 						q-checkbox.q-mb-sm(:model-value="allOperationsAllowed ? true : someOperationsAllowed ? null : false" :disable="!operations.length" label="Выбрать все" dense @update:model-value="setAllOperationsAllowed(Boolean($event))")
-					StateOperationsList(:rows="filteredOperations" :columns="operationColumns" show-allowed no-data-label="Операций нет" @toggle-allowed="setOperationAllowedById" @delete="unassignOperation")
+					StateOperationsList(:rows="filteredOperations" :columns="operationColumns" show-allowed no-data-label="Операций нет" @toggle-allowed="setOperationAllowedById" @edit="editOperation" @delete="unassignOperation")
 				q-tab-panel(name="transitions" class="q-pa-sm")
 					.row.items-center.justify-between.q-mb-xs
 						.text-subtitle2 Переходы состояния
@@ -391,6 +400,7 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 			.text-caption.text-negative.q-mt-sm(v-if="!selectedEdgeOperation") У перехода не найдена операция.
 		StateTransitionsDialog(v-model="isTransitionDialogOpen" :source-node-id="node?.id ?? null" :sources="transitionSources" :operations="node ? allowedOperations : operations" :targets="transitionTargets" @confirm="confirmTransition")
 	StateOperationsDialog(v-model="isOperationDialogOpen" :node-ids="operationTargetNodeIds" :operations="operations" :assigned-operation-ids="dialogAssignedOperationIds" @assign-operations="assignOperations" @create-operation="createOperation")
+	StateOperationEditDialog(v-model="isOperationEditDialogOpen" :operation="operationBeingEdited" @save="saveOperation")
 </template>
 
 <style scoped lang="scss">

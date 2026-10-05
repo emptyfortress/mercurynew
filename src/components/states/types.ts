@@ -51,7 +51,7 @@ export type StateConstructorContext = {
 	clearSelection(): void
 	updateNodeProperties(id: string, changes: NodePropertyChanges): void
 	setEdgeOperation(edgeId: string, operationId: string): void
-	renameOperation(operationId: string, name: string): void
+	renameOperation(operationId: string, name: string, nameTranslations?: NameTranslations): void
 	assignOperations(nodeId: string, operationIds: string[]): void
 	assignOperationsToNodes(nodeIds: string[], operationIds: string[]): void
 	unassignOperation(nodeId: string, operationId: string): void
