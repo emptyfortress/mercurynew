@@ -39,7 +39,12 @@ const emit = defineEmits<{
 	(event: 'update:edge-operation', edgeId: string, operationId: string): void
 	(event: 'update:operation-color', operationId: string, color?: string): void
 	(event: 'set-default-transition', edgeId: string): void
-	(event: 'rename-operation', operationId: string, name: string, nameTranslations: NameTranslations): void
+	(
+		event: 'rename-operation',
+		operationId: string,
+		name: string,
+		nameTranslations: NameTranslations
+	): void
 	(event: 'assign-operation', id: string, operationIds: string[]): void
 	(event: 'unassign-operation', id: string, operationId: string): void
 	(event: 'create-operation', nodeIds: string[], operation: Omit<OperationDefinition, 'id'>): void
@@ -142,6 +147,7 @@ const someOperationsAllowed = computed(
 const operationsWithUsage = computed(() =>
 	props.operations.map((operation) => ({
 		...operation,
+		hasTransition: props.edges.some((edge) => edge.data?.operationId === operation.id),
 		assignedCount: props.nodes.filter((node) => node.data?.operationIds?.includes(operation.id))
 			.length,
 	}))
@@ -302,8 +308,7 @@ const transitionSources = computed(() =>
 const selectNode = (id: string) => emit('select-node', id)
 const deleteNode = (id: string) => emit('delete-node', id)
 const deleteOperation = (id: string) => emit('delete-operation', id)
-const setOperationColor = (id: string, color?: string) =>
-	emit('update:operation-color', id, color)
+const setOperationColor = (id: string, color?: string) => emit('update:operation-color', id, color)
 const editOperation = (id: string) => {
 	operationBeingEdited.value = props.operations.find((operation) => operation.id === id) ?? null
 	if (operationBeingEdited.value) isOperationEditDialogOpen.value = true
@@ -413,8 +418,7 @@ watch([() => props.node?.id, () => props.edge?.id, () => selectedNodeIds.value.j
 							q-icon(name="mdi-magnify" color="primary")
 					StateTransitionsList(:rows="transitionRows" :columns="transitionColumns" :no-data-label="transitionSearch ? 'Нет переходов по запросу' : 'Переходов нет'" @select="selectEdge" @delete="deleteTransition")
 		template(v-else="")
-			.text-subtitle2.q-mb-sm Переход
-			.text-caption.q-mb-xs {{ edgeDescription }}
+			.text-subtitle2.q-mb-sm {{ edgeDescription }}
 			.operation-field-label Операция
 			q-select(v-model="edgeOperationId" :options="edgeOperationOptions" outlined dense emit-value map-options :disable="!edgeAllowedOperations.length" :placeholder="edgeAllowedOperations.length ? 'Выберите операцию' : 'Нет разрешенных операций'")
 			.text-caption.text-negative.q-mt-sm(v-if="!selectedEdgeOperation") У перехода не найдена операция.

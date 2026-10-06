@@ -25,7 +25,7 @@ q-table.operation-table.operations-table(:rows="rows" :columns="columns" row-key
 		q-td.operation-name(:props="slotProps")
 			.row.items-center.no-wrap
 				.col-auto
-					OperationColorPicker(:model-value="slotProps.row.color" @update:model-value="emit('update:operation-color', slotProps.row.id, $event)")
+					OperationColorPicker(v-if="slotProps.row.hasTransition" :model-value="slotProps.row.color" @update:model-value="emit('update:operation-color', slotProps.row.id, $event)")
 				.col.operation-name-text {{ slotProps.row.name }}
 	template(v-slot:body-cell-allowed="slotProps" v-if="showAllowed")
 		q-td(:props="slotProps")

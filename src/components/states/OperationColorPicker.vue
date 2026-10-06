@@ -45,7 +45,7 @@ const updateColor = (value: string | null) => {
 
 <template lang="pug">
 q-btn.color-picker-trigger(flat round dense size="sm" :style="{ '--operation-color': modelValue || 'transparent' }" @click.stop="$event.stopPropagation()")
-	q-icon(:name="modelValue ? 'mdi-circle' : 'mdi-palette-outline'" :color="modelValue ? undefined : 'grey-7'")
+	q-icon(name="mdi-circle" :color="modelValue ? undefined : 'grey-5'")
 	q-tooltip {{ modelValue ? 'Изменить цвет операции' : 'Назначить цвет операции' }}
 	q-menu(anchor="bottom middle" self="top middle")
 		.text-subtitle2.q-px-md.q-py-sm.text-center Цвет операции
@@ -58,7 +58,4 @@ q-btn.color-picker-trigger(flat round dense size="sm" :style="{ '--operation-col
 .color-picker-trigger {
 	color: var(--operation-color);
 }
-// .color-picker-card {
-// 	width: 260px;
-// }
 </style>
