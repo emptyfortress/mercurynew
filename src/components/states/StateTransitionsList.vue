@@ -19,7 +19,7 @@ q-table.operation-table(:rows="rows" :columns="columns" row-key="id" flat dense 
 		q-td(:props="slotProps") {{ slotProps.row.transitionLabel }}
 	template(v-slot:body-cell-operation="slotProps")
 		q-td.operation-cell(:props="slotProps")
-			span.operation-color-dot(v-if="slotProps.row.operationColor" :style="{ backgroundColor: slotProps.row.operationColor }")
+			span.operation-color-dot(:style="{ backgroundColor: slotProps.row.operationColor || '#9e9e9e' }")
 			| {{ slotProps.row.operationName }}
 	template(v-slot:body-cell-actions="slotProps")
 		q-td.action(:props="slotProps")
