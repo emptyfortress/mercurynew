@@ -75,6 +75,18 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/dvmain/process/constructor',
+			name: 'processConstructor',
+			component: () => import('@/views/ProcessConstructorStub.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false },
+		},
+		{
+			path: '/dvmain/process/monitor',
+			name: 'processMonitor',
+			component: () => import('@/views/ProcessMonitorStub.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false },
+		},
+		{
 			path: '/dvmain/:constructorId',
 			component: Decisions,
 			name: 'cardConstructor',

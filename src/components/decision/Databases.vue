@@ -27,10 +27,13 @@ q-page(padding)
 		.it.constr(
 			v-for="item in sections",
 			:key='item.id',
-			:class="{dis : item.id > 5}"
+			:class="{dis : item.id > 6}"
 			@click='goto(item.to)'
 		)
 			div {{ item.label }}
+			.process-links(v-if="item.id === 6")
+				router-link(to="/dvmain/process/constructor") Конструктор
+				router-link(to="/dvmain/process/monitor") Мониторинг
 
 </template>
 
@@ -52,8 +55,17 @@ q-page(padding)
 	width: 100%;
 	height: 100px;
 	background: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 	&.dis {
 		opacity: 0.5;
 	}
+}
+.process-links {
+	display: flex;
+	gap: 1rem;
+	margin-top: 0.5rem;
 }
 </style>
