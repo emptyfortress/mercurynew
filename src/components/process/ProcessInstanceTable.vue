@@ -7,23 +7,36 @@ const emit = defineEmits<{ select: [id: string] }>()
 const selectedStatus = defineModel<string>('status', { required: true })
 const selectedTemplateId = ref('all')
 const searchText = ref<string | null>('')
-const statusFilters = ['Все экземпляры', 'Выполняются', 'Требуют внимания', 'Ошибки', 'Приостановлены', 'Завершены']
+const statusFilters = [
+	'Все экземпляры',
+	'Выполняются',
+	'Требуют внимания',
+	'Ошибки',
+	'Приостановлены',
+	'Завершены',
+]
 
 const filteredInstances = computed(() => {
 	const query = (searchText.value ?? '').trim().toLocaleLowerCase('ru')
 	return props.instances.filter((instance) => {
-		const statusMatch = selectedStatus.value === 'Все экземпляры'
-			|| (selectedStatus.value === 'Выполняются' && instance.status === 'Выполняется')
-			|| (selectedStatus.value === 'Требуют внимания' && ['Ожидает', 'Ошибка'].includes(instance.status))
-			|| (selectedStatus.value === 'Приостановлены' && instance.status === 'Приостановлен')
-			|| (selectedStatus.value === 'Ошибки' && instance.status === 'Ошибка')
-			|| (selectedStatus.value === 'Завершены' && ['Завершён', 'Остановлен'].includes(instance.status))
-		const templateMatch = selectedTemplateId.value === 'all' || instance.templateId === selectedTemplateId.value
-		const textMatch = !query || `${instance.id} ${instance.templateName} ${instance.card} ${instance.currentStep} ${instance.author}`.toLocaleLowerCase('ru').includes(query)
+		const statusMatch =
+			selectedStatus.value === 'Все экземпляры' ||
+			(selectedStatus.value === 'Выполняются' && instance.status === 'Выполняется') ||
+			(selectedStatus.value === 'Требуют внимания' &&
+				['Ожидает', 'Ошибка'].includes(instance.status)) ||
+			(selectedStatus.value === 'Приостановлены' && instance.status === 'Приостановлен') ||
+			(selectedStatus.value === 'Ошибки' && instance.status === 'Ошибка') ||
+			(selectedStatus.value === 'Завершены' && ['Завершён', 'Остановлен'].includes(instance.status))
+		const templateMatch =
+			selectedTemplateId.value === 'all' || instance.templateId === selectedTemplateId.value
+		const textMatch =
+			!query ||
+			`${instance.id} ${instance.templateName} ${instance.card} ${instance.currentStep} ${instance.author}`
+				.toLocaleLowerCase('ru')
+				.includes(query)
 		return statusMatch && templateMatch && textMatch
 	})
 })
-
 </script>
 
 <template lang="pug">
@@ -37,13 +50,5 @@ q-card.flat.bordered
 		.col-12.col-sm-4
 			q-select(v-model="selectedTemplateId" dense outlined emit-value map-options :options="[{ label: 'Все шаблоны', value: 'all' }, ...templates.map((template) => ({ label: template.name, value: template.id }))]" label="Шаблон")
 		.col-12.col-sm-3.text-right.text-caption.text-grey-7 {{ filteredInstances.length }} экземпляров
-	.row.q-col-gutter-md.q-px-sm.q-pb-md.monitor-layout
-		.col-12.col-lg-8
-			ProcessInstanceGrid(:rows="filteredInstances" :reset-key="`${selectedStatus}-${selectedTemplateId}-${searchText}`" :page-sizes="[20, 30, 60]" @select="emit('select', $event)")
-		.col-12.col-lg-4
-			slot
+ProcessInstanceGrid(:rows="filteredInstances" :reset-key="`${selectedStatus}-${selectedTemplateId}-${searchText}`" :page-sizes="[20, 30, 60]" @select="emit('select', $event)")
 </template>
-
-<style scoped>
-.monitor-layout { align-items: flex-start; }
-</style>
