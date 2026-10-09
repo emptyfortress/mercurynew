@@ -87,6 +87,12 @@ const router = createRouter({
 			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
 		},
 		{
+			path: '/dvmain/process/monitorsingle',
+			name: 'processMonitorSingle',
+			component: () => import('@/views/SingleMonitor.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
+		},
+		{
 			path: '/dvmain/:constructorId',
 			component: Decisions,
 			name: 'cardConstructor',

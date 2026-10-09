@@ -126,7 +126,7 @@ q-page(padding)
 				.text-h5 Конструктор процессов
 				.text-caption.text-grey-7 Шаблоны определяют маршрут будущих экземпляров
 			.row.items-center.q-gutter-sm
-				q-btn(flat color="primary" icon="mdi-glasses" label="Single monitor" to="/dvmain/process/monitorsingle")
+				q-btn(flat color="primary" icon="mdi-glasses" label="Монитор экземпляра" to="/dvmain/process/monitorsingle")
 				q-btn(flat color="primary" icon="monitor_heart" label="Мониторинг" to="/dvmain/process/monitor")
 				q-btn(unelevated color="primary" icon="add" label="Новый процесс" @click="chooseTemplate(createTemplate())")
 

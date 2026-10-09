@@ -136,10 +136,10 @@ const topLevelKey = (route: any) => route.matched[0]?.path || route.path
 
 const title = computed(() => {
 	if (route.path === '/dvmain/process/constructor') {
-		return 'Конструктор процессов'
+		return 'Процессы'
 	}
-	if (route.path === '/dvmain/process/monitor') {
-		return 'Мониторинг процессов'
+	if (route.path === '/dvmain/process/monitor' || route.path === '/dvmain/process/monitorsingle') {
+		return 'Процессы'
 	}
 
 	if (route.matched[0]?.path === '/:id?') {
