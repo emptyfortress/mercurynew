@@ -15,6 +15,7 @@ import ProcessConstructorToolbar from './ProcessConstructorToolbar.vue'
 import ProcessCanvas from './ProcessCanvas.vue'
 import ProcessPropertiesPanel from './ProcessPropertiesPanel.vue'
 import DeleteProcessDialog from './DeleteProcessDialog.vue'
+import { processHomePath } from '@/composables/useProcessExplorer'
 
 const route = useRoute()
 const router = useRouter()
@@ -138,10 +139,8 @@ function saveTemplate() {
 		linkedTemplateIds: [...draft.value.linkedTemplateIds],
 		nodes: templateNodes(nodes.value),
 		edges: templateEdges(edges.value),
-		version: selectedTemplate.value.version + 1,
 		updatedAt: 'Только что',
 	})
-	draft.value.version = selectedTemplate.value.version
 	draft.value.updatedAt = selectedTemplate.value.updatedAt
 }
 
@@ -156,7 +155,7 @@ function removeTemplate() {
 
 function runTemplate() {
 	if (!canRun.value || !selectedTemplate.value) return
-	if (startWorkflow(selectedTemplate.value)) void router.push('/dvmain/process/monitor')
+	if (startWorkflow(selectedTemplate.value)) void router.push({ path: '/dvmain/process/monitor', query: { from: processHomePath(route.query.from) } })
 }
 </script>
 
@@ -172,7 +171,7 @@ div
 			q-splitter.full-height(v-model="canvasSize" :limits="[45, 85]")
 				template(v-slot:before)
 					.editor-panel
-						ProcessConstructorToolbar(:name="draftName" :version="draft?.version ?? null" :dirty="isDirty" :can-save="canSave" :can-run="canRun" :can-add-step="!!draft" @save="saveTemplate" @run="runTemplate" @add-step="addStep")
+						ProcessConstructorToolbar(:name="draftName" :dirty="isDirty" :can-save="canSave" :can-run="canRun" :can-add-step="!!draft" @save="saveTemplate" @run="runTemplate" @add-step="addStep")
 						ProcessCanvas(v-if="draft" :key="selectedId" v-model:nodes="nodes" v-model:edges="edges" v-model:selected-node-id="selectedNodeId" @connect="connectNodes")
 						.empty-canvas(v-else)
 							.text-grey-7 Выберите шаблон слева или создайте новый процесс.

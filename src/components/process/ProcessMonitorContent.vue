@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { stopWorkflow, workflowPrototype } from '@/composables/useWorkflowPrototype'
+import { processHomePath } from '@/composables/useProcessExplorer'
 import ProcessMonitorSummary from './ProcessMonitorSummary.vue'
 import ProcessInstanceTable from './ProcessInstanceTable.vue'
 import ProcessInstanceDetails from './ProcessInstanceDetails.vue'
 const router = useRouter()
+const route = useRoute()
+const homePath = computed(() => processHomePath(route.query.from))
 const selectedStatus = ref('Все экземпляры')
 const selectedInstanceId = ref(workflowPrototype.instances[0]?.id ?? '')
 const selectedInstance = computed(() => workflowPrototype.instances.find((instance) => instance.id === selectedInstanceId.value) ?? null)
 function openTemplate() {
 	if (!selectedInstance.value) return
-	void router.push({ path: '/dvmain/process/constructor', query: { template: selectedInstance.value.templateId } })
+	void router.push({ path: '/dvmain/process/constructor', query: { template: selectedInstance.value.templateId, from: homePath.value } })
 }
 function stopSelectedInstance() {
 	if (!selectedInstance.value || ['Завершён', 'Остановлен'].includes(selectedInstance.value.status)) return
@@ -26,7 +29,8 @@ function stopSelectedInstance() {
 			.text-h5 Мониторинг процессов
 			.text-caption.text-grey-7 Состояние экземпляров и проблемные запуски
 		.row.items-center.q-gutter-sm
-			q-btn(flat color="primary" icon="account_tree" label="Конструктор" to="/dvmain/process/constructor")
+			q-btn(flat color="primary" icon="dashboard" label="Все процессы" :to="homePath")
+			q-btn(flat color="primary" icon="account_tree" label="Конструктор" :to="{ path: '/dvmain/process/constructor', query: { from: homePath } }")
 			q-btn(outline color="primary" icon="refresh" label="Обновить" @click="$q.notify({ message: 'Данные обновлены', color: 'positive', timeout: 1200 })")
 	ProcessMonitorSummary(:instances="workflowPrototype.instances" @filter="selectedStatus = $event")
 	ProcessInstanceTable(v-model:status="selectedStatus" :instances="workflowPrototype.instances" :templates="workflowPrototype.templates" @select="selectedInstanceId = $event")

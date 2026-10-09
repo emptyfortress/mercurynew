@@ -10,13 +10,17 @@ const sections = [
 	{ id: 3, label: 'Настройка представлений', to: 'views' },
 	{ id: 4, label: 'Рабочая область', to: 'webframe' },
 	{ id: 5, label: 'Конструктор согласований', to: 'approve' },
-	{ id: 6, label: 'Процессы', to: '' },
+	{ id: 6, label: 'Процессы', to: '/dvmain/process' },
 	{ id: 7, label: 'Справочники', to: '' },
 	{ id: 8, label: 'Нумераторы', to: '' },
 ]
 
 const goto = (e: string) => {
 	if (!e) return
+	if (e === '/dvmain/process') {
+		void router.push(e)
+		return
+	}
 	router.push({ name: 'Emp', params: { constructorId: e } })
 }
 </script>

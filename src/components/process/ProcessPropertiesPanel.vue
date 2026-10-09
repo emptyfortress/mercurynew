@@ -26,7 +26,7 @@ div(v-if="draft")
 	q-input(v-if="selectedNode" v-model="nodeLabel" label="Название шага" dense outlined)
 	.text-caption.text-grey-6(v-else) Выберите шаг на схеме, чтобы изменить его название.
 	q-btn.q-mt-sm(v-if="selectedNode && selectedNode.type !== 'input' && selectedNode.type !== 'output'" flat dense color="negative" icon="delete_outline" label="Удалить шаг" @click="emit('deleteStep')")
-	q-banner.bg-blue-1.text-blue-10.rounded-borders.q-mt-md(dense) Запуски используют сохранённую версию шаблона. Существующие экземпляры остаются на прежней версии.
+	q-banner.bg-blue-1.text-blue-10.rounded-borders.q-mt-md(dense) Запуски используют сохранённые настройки шаблона.
 	q-separator.q-my-md
 	q-btn(flat dense color="negative" icon="delete_outline" label="Удалить шаблон" :disable="!canDelete" @click="emit('deleteTemplate')")
 .text-caption.text-grey-7.text-center(v-else) Выберите шаблон слева, чтобы настроить его свойства.

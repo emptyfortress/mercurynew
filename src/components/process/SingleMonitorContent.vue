@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { processHomePath } from '@/composables/useProcessExplorer'
 import { workflowPrototype } from '@/composables/useWorkflowPrototype'
 import ProcessInstanceSteps from './ProcessInstanceSteps.vue'
 import ProcessInstanceDetails from './ProcessInstanceDetails.vue'
@@ -9,6 +10,7 @@ import ProcessStatusBadge from './ProcessStatusBadge.vue'
 
 const route = useRoute()
 const router = useRouter()
+const homePath = computed(() => processHomePath(route.query.from))
 const instanceId = computed(() =>
 	String(route.query.instance ?? workflowPrototype.instances[0]?.id ?? '')
 )
@@ -20,10 +22,10 @@ const template = computed(
 )
 
 function openTemplate() {
-	if (!instance.value) return
+	if (!instance.value || !template.value) return
 	void router.push({
 		path: '/dvmain/process/constructor',
-		query: { template: instance.value.templateId },
+		query: { template: instance.value.templateId, from: homePath.value },
 	})
 }
 </script>
@@ -35,15 +37,16 @@ function openTemplate() {
 			.text-h5 Монитор экземпляра
 			.text-caption.text-grey-7 Детали выполнения и история событий
 		.row.items-center.q-gutter-sm
-			q-btn(flat color="primary" icon="list" label="К мониторингу" to="/dvmain/process/monitor")
-			q-btn(flat color="primary" icon="account_tree" label="Открыть шаблон" :disable="!instance" @click="openTemplate")
+			q-btn(flat color="primary" icon="dashboard" label="Все процессы" :to="homePath")
+			q-btn(flat color="primary" icon="list" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
+			q-btn(flat color="primary" icon="account_tree" label="Открыть шаблон" :disable="!template" @click="openTemplate")
 
 	q-card.flat.bordered(v-if="instance")
 		q-card-section
 			.row.items-start.justify-between.q-gutter-md
 				div
 					.text-h6 {{ instance.templateName }}
-					.text-body2.text-grey-7 {{ instance.id }} · версия {{ instance.version }}
+					.text-body2.text-grey-7 {{ instance.id }}
 				ProcessStatusBadge.q-mt-xs(:status="instance.status")
 		q-separator
 		.row.q-col-gutter-md

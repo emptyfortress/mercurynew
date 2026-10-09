@@ -135,7 +135,7 @@ const user = [
 const topLevelKey = (route: any) => route.matched[0]?.path || route.path
 
 const title = computed(() => {
-	if (route.path === '/dvmain/process/constructor') {
+	if (route.path === '/dvmain/process' || route.path === '/dvmain/process/constructor') {
 		return 'Процессы'
 	}
 	if (route.path === '/dvmain/process/monitor' || route.path === '/dvmain/process/monitorsingle') {

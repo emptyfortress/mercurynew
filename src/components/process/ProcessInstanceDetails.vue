@@ -12,6 +12,10 @@ q-card-section(v-if="compact")
 	q-list(dense)
 		q-item
 			q-item-section
+				q-item-label(caption) Автор
+				q-item-label {{ instance.author }}
+		q-item
+			q-item-section
 				q-item-label(caption) Карточка
 				q-item-label {{ instance.card }}
 		q-item
@@ -35,8 +39,11 @@ q-card.flat.bordered.instance-detail(v-else)
 	q-separator
 	q-card-section
 		.row.justify-between.q-mb-sm
+			.text-caption.text-grey-7 Автор
+			.text-body2 {{ instance.author }}
+		.row.justify-between.q-mb-sm
 			.text-caption.text-grey-7 Шаблон
-			.text-body2.text-weight-medium {{ instance.templateName }} · v{{ instance.version }}
+			.text-body2.text-weight-medium {{ instance.templateName }}
 		.row.justify-between.q-mb-sm
 			.text-caption.text-grey-7 Текущий шаг
 			.text-body2.text-weight-medium {{ instance.currentStep }}

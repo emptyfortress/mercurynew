@@ -75,6 +75,12 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/dvmain/process',
+			name: 'processHome',
+			component: () => import('@/views/Process.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
+		},
+		{
 			path: '/dvmain/process/constructor',
 			name: 'processConstructor',
 			component: () => import('@/views/ProcessConstructor.vue'),
@@ -309,7 +315,7 @@ const router = createRouter({
 		{
 			path: '/process',
 			name: 'process',
-			component: () => import('@/views/Process.vue'),
+			component: () => import('@/views/AppProcess.vue'),
 			meta: {
 				toolbar: true,
 				back: true,
