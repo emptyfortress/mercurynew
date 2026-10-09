@@ -16,6 +16,7 @@ const sections = [
 ]
 
 const goto = (e: string) => {
+	if (!e) return
 	router.push({ name: 'Emp', params: { constructorId: e } })
 }
 </script>
@@ -32,8 +33,8 @@ q-page(padding)
 		)
 			div {{ item.label }}
 			.process-links(v-if="item.id === 6")
-				router-link(to="/dvmain/process/constructor") Конструктор
-				router-link(to="/dvmain/process/monitor") Мониторинг
+				router-link(to="/dvmain/process/constructor" @click.stop) Конструктор
+				router-link(to="/dvmain/process/monitor" @click.stop) Мониторинг
 
 </template>
 

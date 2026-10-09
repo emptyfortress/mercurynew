@@ -77,14 +77,14 @@ const router = createRouter({
 		{
 			path: '/dvmain/process/constructor',
 			name: 'processConstructor',
-			component: () => import('@/views/ProcessConstructorStub.vue'),
-			meta: { toolbar: false, back: false, count: 0, save: false },
+			component: () => import('@/views/ProcessConstructor.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
 		},
 		{
 			path: '/dvmain/process/monitor',
 			name: 'processMonitor',
-			component: () => import('@/views/ProcessMonitorStub.vue'),
-			meta: { toolbar: false, back: false, count: 0, save: false },
+			component: () => import('@/views/ProcessMonitor.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
 		},
 		{
 			path: '/dvmain/:constructorId',
