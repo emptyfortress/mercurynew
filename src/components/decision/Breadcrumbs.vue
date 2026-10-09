@@ -8,18 +8,21 @@ const { resolveLabel } = useBreadcrumbLabel()
 
 const breadcrumbs = computed(() => {
 	const segments = route.path.split('/').filter(Boolean)
-	const isWorkflowPage = ['processConstructor', 'processMonitor'].includes(String(route.name))
+	const workflowLabels: Record<string, string> = {
+		processConstructor: 'Конструктор процессов',
+		processMonitor: 'Мониторинг процессов',
+		processMonitorSingle: 'Монитор экземпляра',
+	}
+	const workflowLabel = workflowLabels[String(route.name)]
 
 	return segments
 		.map((segment, index) => ({ segment, index, path: '/' + segments.slice(0, index + 1).join('/') }))
-		.filter(({ segment }) => !isWorkflowPage || segment !== 'process')
+		.filter(({ segment }) => !workflowLabel || segment !== 'process')
 		.map(({ segment, index, path }) => ({
 			label:
-				index === segments.length - 1 && route.name === 'processConstructor'
-					? 'Конструктор процессов'
-					: index === segments.length - 1 && route.name === 'processMonitor'
-						? 'Мониторинг процессов'
-						: resolveLabel(segment),
+				index === segments.length - 1 && workflowLabel
+					? workflowLabel
+					: resolveLabel(segment),
 			path,
 		}))
 })
