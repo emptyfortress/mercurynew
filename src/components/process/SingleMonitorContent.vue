@@ -209,6 +209,7 @@ function openTemplate() {
 .editor-canvas {
 	flex: 1;
 	min-width: 0;
+	background: var(--bg-panel);
 }
 
 .editor-panel {
