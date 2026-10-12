@@ -1,11 +1,26 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { VueFlow } from '@vue-flow/core'
+import { computed, ref } from 'vue'
+import { MarkerType, Panel, VueFlow } from '@vue-flow/core'
 import type { Edge, Node } from '@vue-flow/core'
-import { Background, Controls } from '@vue-flow/additional-components'
+import { Background, Controls, PanelPosition } from '@vue-flow/additional-components'
 import type { WorkflowInstance, WorkflowTemplate } from '@/composables/useWorkflowPrototype'
+import type { EdgeType } from '../states/types'
 
 const props = defineProps<{ instance: WorkflowInstance; template: WorkflowTemplate }>()
+const emit = defineEmits<{ 'selection-change': [node: Node | null] }>()
+const edgeType = ref<EdgeType>('smoothstep')
+const edgeTypeOptions: ReadonlyArray<{ label: string; value: EdgeType }> = [
+	{ label: 'Кривая Безье', value: 'default' },
+	{ label: 'Простая кривая', value: 'simplebezier' },
+	{ label: 'Прямая', value: 'straight' },
+	{ label: 'Ступенчатая', value: 'step' },
+	{ label: 'Ступенчатая со скруглением', value: 'smoothstep' },
+]
+const defaultEdgeOptions = computed(() => ({
+	style: { strokeWidth: 2 },
+	markerEnd: MarkerType.ArrowClosed,
+	type: edgeType.value,
+}))
 
 const progress = computed(() => {
 	const currentNode = props.template.nodes.find(
@@ -45,7 +60,7 @@ const progress = computed(() => {
 <template lang="pug">
 .workflow-instance-canvas
 	.row.items-center.justify-between.q-px-md.q-py-sm
-		.text-subtitle2 Редактор экземпляра
+		.text-subtitle2 Редактор экземпляра {{ instance.id }}
 		.row.items-center.q-gutter-md.text-caption.text-grey-7
 			.row.items-center.q-gutter-xs
 				.legend-dot.completed
@@ -57,9 +72,18 @@ const progress = computed(() => {
 				.legend-dot.error
 				span Ошибка
 	.flow-map
-		VueFlow(:nodes="progress.nodes" :edges="progress.edges" fit-view-on-init :min-zoom="0.3" :max-zoom="1.5" :nodes-draggable="false" :nodes-connectable="false" :elements-selectable="false")
+		VueFlow(:nodes="progress.nodes" :edges="progress.edges" :default-edge-options="defaultEdgeOptions" fit-view-on-init :min-zoom="0.3" :max-zoom="1.5" :nodes-draggable="false" :nodes-connectable="false" :elements-selectable="true" @node-click="emit('selection-change', $event.node)" @pane-click="emit('selection-change', null)")
 			Background(:gap="20" :size="1" pattern-color="#cbd5e1")
-			Controls
+			Controls(:position="PanelPosition.TopRight")
+			Panel(position="bottom-left")
+				q-btn(flat round color="primary" icon="mdi-cog" title="Настройки типа связей")
+					q-menu(anchor="top left" self="bottom left")
+						.text-bold.text-center Тип связи
+						q-list(dense)
+							q-item(v-for="option in edgeTypeOptions" :key="option.value" clickable v-close-popup @click="edgeType = option.value")
+								q-item-section {{ option.label }}
+								q-item-section(side)
+									q-icon(v-if="edgeType === option.value" name="mdi-check" color="primary")
 </template>
 
 <style scoped>
@@ -73,6 +97,11 @@ const progress = computed(() => {
 	background: white;
 	color: #263746;
 	box-shadow: 0 3px 12px #1d354014;
+}
+.flow-map :deep(.vue-flow__node.selected) {
+	outline: 2px solid var(--q-primary);
+	outline-offset: 2px;
+	box-shadow: 0 4px 6px rgb(0 0 0 / 52%);
 }
 .flow-map :deep(.vue-flow__node-input) { border-color: #55a67a; }
 .flow-map :deep(.vue-flow__node-output) { border-color: #5185be; }

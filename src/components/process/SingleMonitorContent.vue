@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { Node } from '@vue-flow/core'
 import { processHomePath } from '@/composables/useProcessExplorer'
 import { workflowPrototype } from '@/composables/useWorkflowPrototype'
 import ProcessInstanceCanvas from './ProcessInstanceCanvas.vue'
+import ProcessLogDialog from './ProcessLogDialog.vue'
+import { processStatusColor } from './processStatusColor'
 
 const route = useRoute()
 const router = useRouter()
@@ -18,6 +21,11 @@ const instance = computed(
 const template = computed(
 	() => workflowPrototype.templates.find((item) => item.id === instance.value?.templateId) ?? null
 )
+const statusColor = computed(() =>
+	instance.value ? processStatusColor(instance.value.status) : 'blue-grey-5'
+)
+const selectedNode = ref<Node | null>(null)
+const isProcessLogOpen = ref(false)
 const editorToolGroups = [
 	[
 		{ label: 'Начальная функция', icon: 'mdi-play-circle-outline' },
@@ -46,18 +54,25 @@ function openTemplate() {
 
 <template lang="pug">
 .single-monitor
-	.row.items-center.justify-between.q-mb-md
+	.row.items-start.justify-between.q-mb-md
 		.single-monitor-heading
-			.myblock
+			.myblock(v-if="instance")
 				q-icon.fold(name="mdi-source-branch")
 				div
-					.text-overline Монитор экземпляра
+					.text-overline
+						|экземпляр
+						span.num {{ instance.id }}
 					.zg {{ instance?.templateName ?? 'Экземпляр процесса' }}
-					.text-caption.text-grey-7(v-if="instance") {{ instance.id }} · {{ instance.status }}
-		.single-monitor-toolbar
 			.single-monitor-actions
+				q-chip.q-mr-xl(v-if="instance" :color="statusColor" rounded textColor="white") {{ instance.status }}
+
+				q-btn(flat dense size="sm" color="primary" icon="mdi-play-pause" label="Play/pause")
+				q-btn(flat dense size="sm" color="primary" icon="mdi-text-box-search-outline" label="Журнал процесса" @click="isProcessLogOpen = true")
+				q-separator.action-divider(vertical)
 				q-btn(flat dense size="sm" color="primary" icon="list" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
 				q-btn(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" :disable="!template" @click="openTemplate")
+				q-btn(flat dense size="sm" color="primary" icon="mdi-card-account-details-outline" label="Открыть карточку")
+		.single-monitor-toolbar
 			.btngroup(v-if="template")
 				q-btn(unelevated color="primary" label="Сохранить" size="sm")
 				q-btn(outline color="primary" label="Отмена" size="sm")
@@ -77,13 +92,19 @@ function openTemplate() {
 					.editor-tool-group(v-for="(group, index) in editorToolGroups" :key="index")
 						q-btn(v-for="tool in group" :key="tool.label" flat round dense color="primary" size="md" :icon="tool.icon")
 							q-tooltip(anchor="center right" self="center left" :offset="[10, 0]") {{ tool.label }}
-						q-separator(v-if="index < editorToolGroups.length - 1" spaced)
+						q-separator.color(v-if="index < editorToolGroups.length - 1" spaced)
 				.editor-canvas
-					ProcessInstanceCanvas(v-if="instance && template" :instance="instance" :template="template")
+					ProcessInstanceCanvas(v-if="instance && template" :instance="instance" :template="template" @selection-change="selectedNode = $event")
 					q-card-section.text-center.text-grey-7(v-else) Шаблон процесса не найден.
 		template(v-slot:after)
 			q-card.properties-panel.flat.bordered
-				q-card-section.text-subtitle2 Свойства
+					q-card-section
+						.text-subtitle2 Свойства
+						.column.q-gutter-sm.q-mt-md(v-if="selectedNode")
+							div ID: {{ selectedNode.id }}
+							div Название: {{ selectedNode.data.label ?? 'Без названия' }}
+						.q-mt-md.text-grey-7(v-else) Выберите узел на схеме.
+		ProcessLogDialog(v-model="isProcessLogOpen")
 </template>
 
 <style scoped lang="scss">
@@ -117,11 +138,12 @@ function openTemplate() {
 	font-size: 1rem;
 	text-transform: uppercase;
 	font-weight: 600;
+	margin-top: 0.3rem;
 }
 
 .fold {
 	color: $secondary;
-	font-size: 2.1rem;
+	font-size: 2.3rem;
 }
 
 .single-monitor-toolbar {
@@ -143,8 +165,7 @@ function openTemplate() {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.125rem;
-	padding-right: 0.75rem;
-	border-right: 1px solid var(--my-border-color);
+	margin: 0.75rem 0 0 0;
 }
 
 .single-monitor-layout {
@@ -195,5 +216,19 @@ function openTemplate() {
 }
 .properties-panel {
 	margin-left: var(--panel-gap);
+}
+.num {
+	// color: black;
+	margin-left: 1rem;
+	background: var(--bgLight);
+	padding: 2px 0.5rem;
+	border-top: 1px solid var(--nodeborder);
+	border-bottom: 1px solid var(--nodeborder);
+	// font-size: 1rem;
+}
+.action-divider {
+	background: var(--my-border-color);
+	margin-left: 2rem;
+	margin-right: 2rem;
 }
 </style>
