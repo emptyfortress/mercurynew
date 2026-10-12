@@ -9,11 +9,12 @@ const selectedTemplateId = ref('all')
 const searchText = ref<string | null>('')
 const statusFilters = [
 	'Все экземпляры',
-	'Выполняются',
+	'Активны',
 	'Требуют внимания',
 	'Ошибки',
 	'Приостановлены',
 	'Завершены',
+	'Остановлены',
 ]
 
 const filteredInstances = computed(() => {
@@ -21,12 +22,13 @@ const filteredInstances = computed(() => {
 	return props.instances.filter((instance) => {
 		const statusMatch =
 			selectedStatus.value === 'Все экземпляры' ||
-			(selectedStatus.value === 'Выполняются' && instance.status === 'Выполняется') ||
+			(selectedStatus.value === 'Активны' && instance.status === 'Активен') ||
 			(selectedStatus.value === 'Требуют внимания' &&
-				['Ожидает', 'Ошибка'].includes(instance.status)) ||
+				['Приостановлен', 'Приостановлен из-за ошибки'].includes(instance.status)) ||
 			(selectedStatus.value === 'Приостановлены' && instance.status === 'Приостановлен') ||
-			(selectedStatus.value === 'Ошибки' && instance.status === 'Ошибка') ||
-			(selectedStatus.value === 'Завершены' && ['Завершён', 'Остановлен'].includes(instance.status))
+			(selectedStatus.value === 'Ошибки' && instance.status === 'Приостановлен из-за ошибки') ||
+			(selectedStatus.value === 'Завершены' && instance.status === 'Завершен успешно') ||
+			(selectedStatus.value === 'Остановлены' && instance.status === 'Остановлен')
 		const templateMatch =
 			selectedTemplateId.value === 'all' || instance.templateId === selectedTemplateId.value
 		const textMatch =

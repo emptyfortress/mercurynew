@@ -5,10 +5,10 @@ import type { WorkflowInstance } from '@/composables/useWorkflowPrototype'
 const props = defineProps<{ instances: WorkflowInstance[] }>()
 const emit = defineEmits<{ filter: [status: string] }>()
 const statusCounts = computed(() => ({
-	active: props.instances.filter((instance) => instance.status === 'Выполняется').length,
-	waiting: props.instances.filter((instance) => instance.status === 'Ожидает').length,
-	errors: props.instances.filter((instance) => instance.status === 'Ошибка').length,
-	finished: props.instances.filter((instance) => instance.status === 'Завершён').length,
+	active: props.instances.filter((instance) => instance.status === 'Активен').length,
+	waiting: props.instances.filter((instance) => instance.status === 'Приостановлен').length,
+	errors: props.instances.filter((instance) => instance.status === 'Приостановлен из-за ошибки').length,
+	finished: props.instances.filter((instance) => instance.status === 'Завершен успешно').length,
 }))
 const chartSeries = computed(() => [{ name: 'Запуски', data: [18, 24, 20, 31, 26, 38, 34] }])
 const chartOptions = {
@@ -29,7 +29,7 @@ const chartOptions = {
 		q-card.flat.bordered.metric-card
 			q-card-section
 				.row.items-center.justify-between
-					.text-caption.text-grey-7 Выполняются
+					.text-caption.text-grey-7 Активны
 					q-icon(name="autorenew" color="positive" size="20px")
 				.text-h4.q-mt-sm {{ statusCounts.active }}
 	.col-6.col-md-2

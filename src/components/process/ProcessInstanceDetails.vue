@@ -53,10 +53,10 @@ q-card.flat.bordered.instance-detail(v-else)
 		.row.justify-between
 			.text-caption.text-grey-7 Время в работе
 			.text-body2 {{ instance.elapsed }}
-		q-banner(v-if="instance.status === 'Ошибка'" class="bg-red-1 text-negative rounded-borders q-mt-md" dense)
+		q-banner(v-if="instance.status === 'Приостановлен из-за ошибки'" class="bg-red-1 text-negative rounded-borders q-mt-md" dense)
 			.text-weight-medium Не удалось продолжить процесс
 			| Не найден заказ для сверки. Проверьте связанную карточку и правило обработки.
-		q-banner(v-if="instance.status === 'Ожидает'" class="bg-amber-1 text-amber-10 rounded-borders q-mt-md" dense)
+		q-banner(v-if="instance.status === 'Приостановлен'" class="bg-amber-1 text-amber-10 rounded-borders q-mt-md" dense)
 			.text-weight-medium Дольше обычного
 			| Экземпляр ожидает решения на текущем шаге.
 	q-separator
@@ -66,7 +66,7 @@ q-card.flat.bordered.instance-detail(v-else)
 	q-card-actions
 		q-btn(flat color="primary" icon="account_tree" label="Открыть шаблон" @click="emit('openTemplate')")
 		q-space
-		q-btn(flat color="negative" icon="stop" label="Остановить" :disable="['Завершён', 'Остановлен'].includes(instance.status)" @click="emit('stop')")
+		q-btn(flat color="negative" icon="stop" label="Остановить" :disable="['Завершен успешно', 'Остановлен'].includes(instance.status)" @click="emit('stop')")
 </template>
 
 <style scoped>

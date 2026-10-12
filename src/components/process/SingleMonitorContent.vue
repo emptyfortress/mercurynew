@@ -78,12 +78,10 @@ function openTemplate() {
 
 	.single-monitor-actions
 		q-chip.q-mr-xl(v-if="instance" :color="statusColor" rounded textColor="white") {{ instance.status }}
-
-		q-btn(flat dense size="sm" color="primary" icon="mdi-play-pause" label="Play/pause")
 		q-btn(flat dense size="sm" color="primary" icon="mdi-text-box-search-outline" label="Журнал процесса" @click="isProcessLogOpen = true")
 		q-separator.action-divider(vertical)
 		q-btn(flat dense size="sm" color="primary" icon="list" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
-		q-btn(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" :disable="!template" @click="openTemplate")
+		q-btn.q-mx-md(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" :disable="!template" @click="openTemplate")
 		q-btn(flat dense size="sm" color="primary" icon="mdi-card-account-details-outline" label="Открыть карточку")
 
 	q-splitter.single-monitor-layout(v-model="splitter" :limits="[35, 85]")

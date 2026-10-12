@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import type { Edge, Node } from '@vue-flow/core'
 
-export type WorkflowStatus = 'Выполняется' | 'Ожидает' | 'Ошибка' | 'Завершён' | 'Остановлен' | 'Приостановлен'
+export type WorkflowStatus = 'Активен' | 'Приостановлен из-за ошибки' | 'Приостановлен' | 'Остановлен' | 'Завершен успешно'
 
 export interface WorkflowTemplate {
 	id: string
@@ -114,16 +114,16 @@ for (let index = templates.length; index < 60; index += 1) {
 const demoAuthors = ['Иванов И.И.', 'Петрова А.С.', 'Сидоров П.В.', 'Орлова Е.Н.', 'Кузнецов М.А.', 'Текущий пользователь']
 
 const sampleInstances: WorkflowInstance[] = [
-	{ id: 'WF-10482', author: 'Иванов И.И.', templateId: 'purchase', templateName: 'Согласование закупки', status: 'Выполняется', currentStep: 'Проверка руководителем', startedAt: 'Сегодня, 11:24', elapsed: '18 мин', card: 'Заявка ЗК-2481', events: ['Заявка создана', 'Назначен руководитель отдела', 'Ожидается решение руководителя'] },
-	{ id: 'WF-10481', author: 'Сидоров П.В.', templateId: 'invoice', templateName: 'Обработка счёта', status: 'Ошибка', currentStep: 'Сверка с заказом', startedAt: 'Сегодня, 10:56', elapsed: '46 мин', card: 'Счёт СЧ-1930', events: ['Счёт получен', 'Не найден связанный заказ', 'Автоматическая сверка завершилась ошибкой'] },
-	{ id: 'WF-10480', author: 'Петрова А.С.', templateId: 'purchase', templateName: 'Согласование закупки', status: 'Ожидает', currentStep: 'Согласование бюджета', startedAt: 'Сегодня, 09:12', elapsed: '2 ч 30 мин', card: 'Заявка ЗК-2479', events: ['Руководитель согласовал заявку', 'Назначен финансовый директор', 'Ожидание превышает обычное время'] },
-	{ id: 'WF-10479', author: 'Иванов И.И.', templateId: 'contract', templateName: 'Подготовка договора', status: 'Выполняется', currentStep: 'Подготовить проект', startedAt: 'Сегодня, 08:42', elapsed: '3 ч', card: 'Договор ДОГ-773', events: ['Шаблон договора выбран', 'Документ готовится'] },
-	{ id: 'WF-10478', author: 'Сидоров П.В.', templateId: 'purchase', templateName: 'Согласование закупки', status: 'Завершён', currentStep: 'Завершён', startedAt: 'Вчера, 17:03', elapsed: '1 д 2 ч', card: 'Заявка ЗК-2474', events: ['Заявка согласована', 'Закупка передана в работу'] },
+	{ id: 'WF-10482', author: 'Иванов И.И.', templateId: 'purchase', templateName: 'Согласование закупки', status: 'Активен', currentStep: 'Проверка руководителем', startedAt: 'Сегодня, 11:24', elapsed: '18 мин', card: 'Заявка ЗК-2481', events: ['Заявка создана', 'Назначен руководитель отдела', 'Ожидается решение руководителя'] },
+	{ id: 'WF-10481', author: 'Сидоров П.В.', templateId: 'invoice', templateName: 'Обработка счёта', status: 'Приостановлен из-за ошибки', currentStep: 'Сверка с заказом', startedAt: 'Сегодня, 10:56', elapsed: '46 мин', card: 'Счёт СЧ-1930', events: ['Счёт получен', 'Не найден связанный заказ', 'Автоматическая сверка завершилась ошибкой'] },
+	{ id: 'WF-10480', author: 'Петрова А.С.', templateId: 'purchase', templateName: 'Согласование закупки', status: 'Приостановлен', currentStep: 'Согласование бюджета', startedAt: 'Сегодня, 09:12', elapsed: '2 ч 30 мин', card: 'Заявка ЗК-2479', events: ['Руководитель согласовал заявку', 'Назначен финансовый директор', 'Ожидание превышает обычное время'] },
+	{ id: 'WF-10479', author: 'Иванов И.И.', templateId: 'contract', templateName: 'Подготовка договора', status: 'Активен', currentStep: 'Подготовить проект', startedAt: 'Сегодня, 08:42', elapsed: '3 ч', card: 'Договор ДОГ-773', events: ['Шаблон договора выбран', 'Документ готовится'] },
+	{ id: 'WF-10478', author: 'Сидоров П.В.', templateId: 'purchase', templateName: 'Согласование закупки', status: 'Завершен успешно', currentStep: 'Завершен', startedAt: 'Вчера, 17:03', elapsed: '1 д 2 ч', card: 'Заявка ЗК-2474', events: ['Заявка согласована', 'Закупка передана в работу'] },
 	{ id: 'WF-10477', author: 'Петрова А.С.', templateId: 'invoice', templateName: 'Обработка счёта', status: 'Остановлен', currentStep: 'Сверка с заказом', startedAt: 'Вчера, 15:30', elapsed: 'Остановлен', card: 'Счёт СЧ-1922', events: ['Счёт получен', 'Экземпляр остановлен оператором'] },
 ]
 
-export const workflowStatuses: WorkflowStatus[] = ['Выполняется', 'Ожидает', 'Ошибка', 'Приостановлен', 'Завершён', 'Остановлен']
-const demoStatuses: WorkflowStatus[] = ['Выполняется', 'Выполняется', 'Ожидает', 'Ошибка', 'Приостановлен', 'Завершён', 'Остановлен']
+export const workflowStatuses: WorkflowStatus[] = ['Активен', 'Приостановлен из-за ошибки', 'Приостановлен', 'Остановлен', 'Завершен успешно']
+const demoStatuses: WorkflowStatus[] = ['Активен', 'Приостановлен из-за ошибки', 'Приостановлен', 'Остановлен', 'Завершен успешно']
 const instances: WorkflowInstance[] = sampleInstances.concat(Array.from({ length: 800 - sampleInstances.length }, (_, index) => {
 	const template = templates[index % templates.length]!
 	const status = demoStatuses[index % demoStatuses.length]!
@@ -134,7 +134,7 @@ const instances: WorkflowInstance[] = sampleInstances.concat(Array.from({ length
 		templateId: template.id,
 		templateName: template.name,
 		status,
-		currentStep: String(template.nodes[(index % template.nodes.length)]?.data.label ?? 'Выполняется'),
+		currentStep: String(template.nodes[(index % template.nodes.length)]?.data.label ?? 'Старт'),
 		startedAt: `Сегодня, ${String(8 + (index % 10)).padStart(2, '0')}:${String((index * 7) % 60).padStart(2, '0')}`,
 		elapsed: status === 'Остановлен' ? 'Остановлен' : `${(index % 8) + 1} ч ${(index * 3) % 60} мин`,
 		card: `Карточка ${id}`,
@@ -180,7 +180,7 @@ export function startWorkflow(template: WorkflowTemplate) {
 		author: 'Текущий пользователь',
 		templateId: template.id,
 		templateName: template.name,
-		status: 'Выполняется',
+		status: 'Активен',
 		currentStep: String(template.nodes[0]?.data.label ?? 'Старт'),
 		startedAt: 'Только что',
 		elapsed: '0 мин',

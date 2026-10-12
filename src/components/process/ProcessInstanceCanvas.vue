@@ -21,6 +21,23 @@ const defaultEdgeOptions = computed(() => ({
 	markerEnd: MarkerType.ArrowClosed,
 	type: edgeType.value,
 }))
+const legendItems = [
+	{ color: 'not-started', description: 'Исполнение функции не началось.' },
+	{
+		color: 'executing',
+		description: 'Функция исполняется в момент просмотра карточки бизнес-процесса.',
+	},
+	{ color: 'completed', description: 'Функция успешно завершена.' },
+	{ color: 'passed', description: 'Функция успешно выполнена, но не завершена.' },
+	{ color: 'error', description: 'Функция остановлена по ошибке.' },
+	{
+		color: 'previous-error',
+		description: 'При выполнении функции в предыдущем проходе произошла ошибка.',
+	},
+	{ color: 'warning', description: 'При выполнении функции было получено предупреждение.' },
+	{ color: 'linked', description: 'Функция находится в состоянии «Завершена связанной функцией».' },
+	{ color: 'interrupted', description: 'Функция находится в состоянии «Прервана».' },
+]
 
 const progress = computed(() => {
 	const currentNode = props.template.nodes.find(
@@ -43,15 +60,21 @@ const progress = computed(() => {
 		}
 	}
 	const nodes: Node[] = props.template.nodes.map((node) => {
-		let state = ''
-		if (props.instance.status === 'Завершён') state = 'process-step-completed'
-		else if (props.instance.status === 'Ошибка' && node.id === currentNode?.id)
-			state = 'process-step-error'
-		else if (completedIds.has(node.id)) state = 'process-step-completed'
-		else if (node.id === currentNode?.id)
-			state =
-				props.instance.status === 'Остановлен' ? 'process-step-stopped' : 'process-step-current'
-		return { ...node, class: [node.class, state].filter(Boolean).join(' ') }
+		const states: string[] = []
+		if (props.instance.status === 'Завершен успешно') states.push('process-step-completed')
+		else if (props.instance.status === 'Приостановлен из-за ошибки' && node.id === currentNode?.id)
+			states.push('process-step-error')
+		else if (completedIds.has(node.id)) states.push('process-step-passed')
+		else if (node.id === currentNode?.id) {
+			if (props.instance.status === 'Активен') states.push('process-step-current')
+			else if (props.instance.status === 'Остановлен' || props.instance.status === 'Приостановлен')
+				states.push('process-step-interrupted')
+		}
+		if (node.data?.previousPassError === true) states.push('process-step-previous-error')
+		if (node.data?.warning === true) states.push('process-step-warning')
+		if (node.type === 'subprocess' || node.data?.linkedFunction === true)
+			states.push('process-step-linked')
+		return { ...node, class: [node.class, ...states].filter(Boolean).join(' ') }
 	})
 	const edges: Edge[] = props.template.edges.map((edge) => ({ ...edge }))
 	return { nodes, edges }
@@ -62,16 +85,21 @@ const progress = computed(() => {
 .workflow-instance-canvas
 	.row.items-center.justify-between.q-px-md.q-py-sm
 		.text-subtitle2 Редактор экземпляра {{ instance.id }}
+		.row.items-center.q-gutter-xs
+			q-btn(flat dense size="sm" color="positive" icon="mdi-play" label="Старт")
+			q-btn(flat dense size="sm" color="primary" icon="mdi-pause" label="Пауза")
+			q-btn(flat dense size="sm" color="negative" icon="mdi-stop" label="Стоп")
 		.row.items-center.q-gutter-md.text-caption.text-grey-7
-			.row.items-center.q-gutter-xs
-				.legend-dot.completed
-				span Завершён
-			.row.items-center.q-gutter-xs
-				.legend-dot.current
-				span Текущий шаг
-			.row.items-center.q-gutter-xs(v-if="instance.status === 'Ошибка'")
-				.legend-dot.error
-				span Ошибка
+			q-btn(flat dense color="primary" icon="mdi-shape-outline" label="Легенда" size='sm')
+				q-menu(anchor="bottom right" self="top right")
+					q-card.legend-menu
+						q-card-section.q-py-sm.text-subtitle2 Легенда
+						q-separator
+						q-list(dense)
+							q-item(v-for="item in legendItems" :key="item.color" dense)
+								q-item-section(side)
+									.legend-swatch(:class="`legend-swatch--${item.color}`")
+								q-item-section {{ item.description }}
 	.flow-map
 		VueFlow(:nodes="progress.nodes" :edges="progress.edges" :default-edge-options="defaultEdgeOptions" fit-view-on-init :min-zoom="0.3" :max-zoom="1.5" :nodes-draggable="false" :nodes-connectable="false" :elements-selectable="true" @node-click="emit('selection-change', $event.node)" @pane-click="emit('selection-change', null)")
 			Background(:gap="16" :size="1" pattern-color="#9aa9b5")
@@ -115,51 +143,82 @@ const progress = computed(() => {
 	outline-offset: 2px;
 	box-shadow: 0 4px 6px rgb(0 0 0 / 52%);
 }
-.flow-map :deep(.vue-flow__node-input) {
-	border-color: #55a67a;
-}
-.flow-map :deep(.vue-flow__node-output) {
-	border-color: #5185be;
-}
 .flow-map :deep(.vue-flow__node.process-step-completed) {
-	border-color: #218c62;
-	background: #e8f5ee;
-	color: #1d6247;
+	background: #555b63;
+	color: white;
+}
+.flow-map :deep(.vue-flow__node.process-step-passed) {
+	background: #e2e5e9;
+	color: #374151;
 }
 .flow-map :deep(.vue-flow__node.process-step-current) {
-	border: 2px solid #2879c7;
-	background: #eaf3ff;
-	color: #174e83;
-	box-shadow:
-		0 0 0 3px rgb(40 121 199 / 16%),
-		0 3px 12px #1d354014;
+	border-color: #d6aa00;
+	background: #ffe680;
+	color: #483b00;
 }
 .flow-map :deep(.vue-flow__node.process-step-error) {
-	border: 2px solid #c43c48;
-	background: #fdebed;
-	color: #8b2630;
-	box-shadow:
-		0 0 0 3px rgb(196 60 72 / 14%),
-		0 3px 12px #1d354014;
+	border-color: #840032;
+	background: #840032;
+	color: white;
 }
-.flow-map :deep(.vue-flow__node.process-step-stopped) {
-	border-color: #707981;
-	background: #f0f1f2;
-	color: #4b545b;
+.flow-map :deep(.vue-flow__node.process-step-previous-error) {
+	border: 2px solid #840032;
 }
-.legend-dot {
-	width: 0.65rem;
-	height: 0.65rem;
-	border-radius: 50%;
+.flow-map :deep(.vue-flow__node.process-step-warning) {
+	border: 2px solid #e0ae00;
 }
-.legend-dot.completed {
-	background: #218c62;
+.flow-map :deep(.vue-flow__node.process-step-linked) {
+	background: #8660a8;
+	color: white;
 }
-.legend-dot.current {
-	background: #2879c7;
+.flow-map :deep(.vue-flow__node.process-step-interrupted) {
+	background: #c9e3f8;
+	color: #274967;
 }
-.legend-dot.error {
-	background: #c43c48;
+.legend-menu {
+	/* width: min(460px, calc(100vw - 32px)); */
+	font-size: 0.7rem;
+}
+.legend-swatch {
+	width: 1rem;
+	height: 1rem;
+	border: 1px solid #aab2ba;
+	border-radius: 3px;
+}
+.legend-swatch--not-started {
+	background: white;
+}
+.legend-swatch--executing {
+	background: #ffe680;
+	border-color: #d6aa00;
+}
+.legend-swatch--completed {
+	background: #555b63;
+	border-color: #555b63;
+}
+.legend-swatch--passed {
+	background: #e2e5e9;
+	border-color: #c4c9cf;
+}
+.legend-swatch--error {
+	background: #840032;
+	border-color: #840032;
+}
+.legend-swatch--previous-error {
+	background: white;
+	border: 2px solid #840032;
+}
+.legend-swatch--warning {
+	background: white;
+	border: 2px solid #e0ae00;
+}
+.legend-swatch--linked {
+	background: #8660a8;
+	border-color: #8660a8;
+}
+.legend-swatch--interrupted {
+	background: #c9e3f8;
+	border-color: #9ac8eb;
 }
 .flow-map :deep(.vue-flow__controls) {
 	display: flex;
