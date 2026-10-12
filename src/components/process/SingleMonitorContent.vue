@@ -54,7 +54,7 @@ function openTemplate() {
 
 <template lang="pug">
 .single-monitor
-	.row.items-start.justify-between.q-mb-md
+	.row.items-start.justify-between
 		.single-monitor-heading
 			.myblock(v-if="instance")
 				q-icon.fold(name="mdi-source-branch")
@@ -63,15 +63,6 @@ function openTemplate() {
 						|экземпляр
 						span.num {{ instance.id }}
 					.zg {{ instance?.templateName ?? 'Экземпляр процесса' }}
-			.single-monitor-actions
-				q-chip.q-mr-xl(v-if="instance" :color="statusColor" rounded textColor="white") {{ instance.status }}
-
-				q-btn(flat dense size="sm" color="primary" icon="mdi-play-pause" label="Play/pause")
-				q-btn(flat dense size="sm" color="primary" icon="mdi-text-box-search-outline" label="Журнал процесса" @click="isProcessLogOpen = true")
-				q-separator.action-divider(vertical)
-				q-btn(flat dense size="sm" color="primary" icon="list" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
-				q-btn(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" :disable="!template" @click="openTemplate")
-				q-btn(flat dense size="sm" color="primary" icon="mdi-card-account-details-outline" label="Открыть карточку")
 		.single-monitor-toolbar
 			.btngroup(v-if="template")
 				q-btn(unelevated color="primary" label="Сохранить" size="sm")
@@ -84,6 +75,16 @@ function openTemplate() {
 						q-list
 							q-item.pink(clickable)
 								q-item-section Удалить
+
+	.single-monitor-actions
+		q-chip.q-mr-xl(v-if="instance" :color="statusColor" rounded textColor="white") {{ instance.status }}
+
+		q-btn(flat dense size="sm" color="primary" icon="mdi-play-pause" label="Play/pause")
+		q-btn(flat dense size="sm" color="primary" icon="mdi-text-box-search-outline" label="Журнал процесса" @click="isProcessLogOpen = true")
+		q-separator.action-divider(vertical)
+		q-btn(flat dense size="sm" color="primary" icon="list" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
+		q-btn(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" :disable="!template" @click="openTemplate")
+		q-btn(flat dense size="sm" color="primary" icon="mdi-card-account-details-outline" label="Открыть карточку")
 
 	q-splitter.single-monitor-layout(v-model="splitter" :limits="[35, 85]")
 		template(v-slot:before)
@@ -165,11 +166,11 @@ function openTemplate() {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.125rem;
-	margin: 0.75rem 0 0 0;
+	margin: 0.5rem 0 0 0;
 }
 
 .single-monitor-layout {
-	height: calc(100vh - 190px);
+	height: calc(100vh - 220px);
 	min-height: 360px;
 }
 :deep(.q-splitter__separator) {
@@ -209,7 +210,7 @@ function openTemplate() {
 .editor-canvas {
 	flex: 1;
 	min-width: 0;
-	background: var(--bg-panel);
+	// background: var(--bg-panel);
 }
 
 .editor-panel {
