@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 // import Component from '@/components/condition/StartCondition.vue'
-import { reactive } from 'vue'
+// import { reactive } from 'vue'
 import Component from '@/components/view/Data.vue'
 
-const draft = reactive({
+const draft = ref({
 	id: 'col-1787214856080-1',
 	type: '',
 	text: 'Колонка 1',
