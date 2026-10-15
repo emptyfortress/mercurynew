@@ -4,8 +4,10 @@ import { useRoute, useRouter } from 'vue-router'
 import type { Node } from '@vue-flow/core'
 import { processHomePath } from '@/composables/useProcessExplorer'
 import { workflowPrototype } from '@/composables/useWorkflowPrototype'
+import type { EdgeType } from '../states/types'
 import ProcessInstanceCanvas from './ProcessInstanceCanvas.vue'
 import ProcessLogDialog from './ProcessLogDialog.vue'
+import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
 import { processStatusColor } from './processStatusColor'
 
 const route = useRoute()
@@ -26,22 +28,37 @@ const statusColor = computed(() =>
 )
 const selectedNode = ref<Node | null>(null)
 const isProcessLogOpen = ref(false)
-const editorToolGroups = [
-	[
-		{ label: 'Начальная функция', icon: 'mdi-play-circle-outline' },
-		{ label: 'Конечная функция', icon: 'mdi-stop-circle-outline' },
-	],
-	[
-		{ label: 'Объединение И / ИЛИ', icon: 'mdi-call-merge' },
-		{ label: 'Разветвление', icon: 'mdi-call-split' },
-	],
-	[
-		{ label: 'Подпроцесс', icon: 'mdi-file-tree-outline' },
-		{ label: 'Условие', icon: 'mdi-help-rhombus-outline' },
-		{ label: 'Шлюзы', icon: 'mdi-gate' },
-		{ label: 'Преднастроенные функции', icon: 'mdi-function-variant' },
-	],
+const edgeType = ref<EdgeType>('smoothstep')
+const edgeTypeOptions: ReadonlyArray<{ label: string; value: EdgeType }> = [
+	{ label: 'Кривая Безье', value: 'default' },
+	{ label: 'Простая кривая', value: 'simplebezier' },
+	{ label: 'Прямая', value: 'straight' },
+	{ label: 'Ступенчатая', value: 'step' },
+	{ label: 'Ступенчатая со скруглением', value: 'smoothstep' },
 ]
+
+const editorToolGroups1 = [
+	{ label: 'Базовые функции', icon: 'workflow' },
+	{ label: 'Шлюз к DV', icon: 'DV' },
+	{ label: 'Шлюз к файловой системе', icon: 'mdi-folder-outline' },
+	{ label: 'Шлюз к почтовой системе', icon: 'mdi-email-outline' },
+]
+// const editorToolGroups = [
+// 	[
+// 		{ label: 'Начальная функция', icon: 'mdi-play-circle-outline' },
+// 		{ label: 'Конечная функция', icon: 'mdi-stop-circle-outline' },
+// 	],
+// 	[
+// 		{ label: 'Объединение И / ИЛИ', icon: 'mdi-call-merge' },
+// 		{ label: 'Разветвление', icon: 'mdi-call-split' },
+// 	],
+// 	[
+// 		{ label: 'Подпроцесс', icon: 'mdi-file-tree-outline' },
+// 		{ label: 'Условие', icon: 'mdi-help-rhombus-outline' },
+// 		{ label: 'Шлюзы', icon: 'mdi-gate' },
+// 		{ label: 'Преднастроенные функции', icon: 'mdi-function-variant' },
+// 	],
+// ]
 
 function openTemplate() {
 	if (!instance.value || !template.value) return
@@ -82,19 +99,35 @@ function openTemplate() {
 		q-separator.action-divider(vertical)
 		q-btn(flat dense size="sm" color="primary" icon="list" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
 		q-btn.q-mx-md(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" :disable="!template" @click="openTemplate")
-		q-btn(flat dense size="sm" color="primary" icon="mdi-card-account-details-outline" label="Открыть карточку")
+		q-btn(flat dense size="sm" color="primary" icon="mdi-card-account-details-outline" label="Открыть родительскую карточку")
 
 	q-splitter.single-monitor-layout(v-model="splitter" :limits="[35, 85]")
 		template(v-slot:before)
 			q-card.editor-panel.flat.bordered
 				.editor-toolbar
-					.editor-tool-group(v-for="(group, index) in editorToolGroups" :key="index")
-						q-btn(v-for="tool in group" :key="tool.label" flat round dense color="primary" size="md" :icon="tool.icon")
-							q-tooltip(anchor="center right" self="center left" :offset="[10, 0]") {{ tool.label }}
-						q-separator.color(v-if="index < editorToolGroups.length - 1" spaced)
+					q-btn(flat round dense color="primary" size="md" class="workflow-tool")
+						LucideWorkflow
+						q-tooltip(anchor="top middle" self="bottom middle" :offset="[0, 0]") Базовые функции
+					q-btn(flat round dense size="md" class="dv-tool")
+						span.dv-badge DV
+						q-tooltip(anchor="top middle" self="bottom middle" :offset="[0, 0]") Шлюз к DV
+					q-btn(v-for="tool in editorToolGroups1.slice(2)" :key="tool.label" flat round dense color="primary" size="md" :icon="tool.icon")
+						q-tooltip(anchor="top middle" self="bottom middle" :offset="[0, 0]") {{ tool.label }}
+					q-space
+					q-btn(flat round dense color="primary" icon="mdi-cog")
+						q-tooltip(anchor="bottom middle" self="top middle" :offset="[0, 0]") Настройки типа связей
+						q-menu(anchor="top left" self="bottom left")
+							.text-bold.text-center Тип связи
+							q-list(dense)
+								q-item(v-for="option in edgeTypeOptions" :key="option.value" clickable v-close-popup @click="edgeType = option.value")
+									q-item-section {{ option.label }}
+									q-item-section(side)
+										q-icon(v-if="edgeType === option.value" name="mdi-check" color="primary")
+
 				.editor-canvas
-					ProcessInstanceCanvas(v-if="instance && template" :instance="instance" :template="template" @selection-change="selectedNode = $event")
+					ProcessInstanceCanvas(v-if="instance && template" :instance="instance" :template="template" :edge-type="edgeType" @selection-change="selectedNode = $event")
 					q-card-section.text-center.text-grey-7(v-else) Шаблон процесса не найден.
+
 		template(v-slot:after)
 			q-card.properties-panel.flat.bordered
 					q-card-section
@@ -196,6 +229,7 @@ function openTemplate() {
 	padding: 0.5rem 0.25rem;
 	border-right: 1px solid var(--my-border-color);
 	background: rgba(25, 80, 130, 0.06);
+	padding-top: 50px;
 }
 .editor-tool-group {
 	display: flex;
@@ -205,10 +239,26 @@ function openTemplate() {
 .editor-toolbar :deep(.q-btn:hover) {
 	background: rgba(25, 80, 130, 0.12);
 }
+.workflow-tool :deep(svg) {
+	width: 20px;
+	height: 20px;
+}
+.dv-badge {
+	display: grid;
+	width: 22px;
+	height: 22px;
+	place-items: center;
+	border-radius: 50%;
+	border: 2px solid $primary;
+	background: transparent;
+	color: $primary;
+	font-size: 0.62rem;
+	line-height: 19px;
+	font-weight: 700;
+}
 .editor-canvas {
 	flex: 1;
 	min-width: 0;
-	// background: var(--bg-panel);
 }
 
 .editor-panel {

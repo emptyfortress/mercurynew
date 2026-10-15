@@ -1,25 +1,17 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { MarkerType, Panel, VueFlow } from '@vue-flow/core'
 import type { Edge, Node } from '@vue-flow/core'
 import { Background, Controls, PanelPosition } from '@vue-flow/additional-components'
 import type { WorkflowInstance, WorkflowTemplate } from '@/composables/useWorkflowPrototype'
 import type { EdgeType } from '../states/types'
 
-const props = defineProps<{ instance: WorkflowInstance; template: WorkflowTemplate }>()
+const props = defineProps<{ instance: WorkflowInstance; template: WorkflowTemplate; edgeType: EdgeType }>()
 const emit = defineEmits<{ 'selection-change': [node: Node | null] }>()
-const edgeType = ref<EdgeType>('smoothstep')
-const edgeTypeOptions: ReadonlyArray<{ label: string; value: EdgeType }> = [
-	{ label: 'Кривая Безье', value: 'default' },
-	{ label: 'Простая кривая', value: 'simplebezier' },
-	{ label: 'Прямая', value: 'straight' },
-	{ label: 'Ступенчатая', value: 'step' },
-	{ label: 'Ступенчатая со скруглением', value: 'smoothstep' },
-]
 const defaultEdgeOptions = computed(() => ({
 	style: { strokeWidth: 2 },
 	markerEnd: MarkerType.ArrowClosed,
-	type: edgeType.value,
+	type: props.edgeType,
 }))
 const legendItems = [
 	{ color: 'not-started', description: 'Исполнение функции не началось.' },
@@ -76,7 +68,7 @@ const progress = computed(() => {
 			states.push('process-step-linked')
 		return { ...node, class: [node.class, ...states].filter(Boolean).join(' ') }
 	})
-	const edges: Edge[] = props.template.edges.map((edge) => ({ ...edge }))
+	const edges: Edge[] = props.template.edges.map((edge) => ({ ...edge, type: props.edgeType }))
 	return { nodes, edges }
 })
 </script>
@@ -104,15 +96,6 @@ const progress = computed(() => {
 		VueFlow(:nodes="progress.nodes" :edges="progress.edges" :default-edge-options="defaultEdgeOptions" fit-view-on-init :min-zoom="0.3" :max-zoom="1.5" :nodes-draggable="false" :nodes-connectable="false" :elements-selectable="true" @node-click="emit('selection-change', $event.node)" @pane-click="emit('selection-change', null)")
 			Background(:gap="16" :size="1" pattern-color="#9aa9b5")
 			Controls(:position="PanelPosition.TopRight")
-			Panel(position="bottom-left")
-				q-btn(flat round color="primary" icon="mdi-cog" title="Настройки типа связей")
-					q-menu(anchor="top left" self="bottom left")
-						.text-bold.text-center Тип связи
-						q-list(dense)
-							q-item(v-for="option in edgeTypeOptions" :key="option.value" clickable v-close-popup @click="edgeType = option.value")
-								q-item-section {{ option.label }}
-								q-item-section(side)
-									q-icon(v-if="edgeType === option.value" name="mdi-check" color="primary")
 </template>
 
 <style scoped>

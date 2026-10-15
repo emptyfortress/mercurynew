@@ -3,6 +3,7 @@ import { ref, computed, watch, watchEffect, nextTick } from 'vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import DirMenuApprove from '@/components/decision/DirMenuApprove.vue'
+import CreateDialog2 from '@/components/decision/CreateDialog2.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useApproveStore } from '@/stores/approveStore'
 import { uid } from 'quasar'
@@ -21,6 +22,7 @@ const approveStore = useApproveStore()
 
 const tree = ref()
 const query = ref('')
+const createFolderDialog = ref(false)
 
 const treeData = computed({
 	get: () => approveStore.treeData,
@@ -324,11 +326,26 @@ div
 							@keyup.enter="setText(stat, $event)"
 						)
 
-	q-btn(flat icon="mdi-folder-multiple-plus-outline" color="primary" label="Подключить папки" size='sm' ) 
+	q-btn(flat icon="mdi-folder-multiple-plus-outline" color="primary" label="Подключить папки" size='sm' )
+
+	q-fab.fab(round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
+		q-fab-action(color="primary" icon="mdi-flag-triangle" external-label label="Этап" label-position="left")
+		q-fab-action(color="primary" external-label label="Маршрут" label-position="left")
+			MaterialSymbolsAltRoute.rou1
+		q-fab-action(color="primary" icon="mdi-message-check-outline" external-label label="Согласование" label-position="left")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="createFolderDialog = true")
+
+	CreateDialog2(v-model="createFolderDialog" mode="folder")
 
 </template>
 
 <style scoped lang="scss">
+.fab {
+	position: fixed;
+	bottom: 1rem;
+	right: 1rem;
+}
+
 .node {
 	padding: 4px 8px;
 	cursor: pointer;
@@ -384,11 +401,8 @@ div
 	margin-right: 4px;
 }
 .rou1 {
-	font-size: 1.15rem;
-	color: $primary;
-	margin-bottom: -6px;
-	margin-right: 4px;
-	margin-left: -4px;
+	font-size: 1.5rem;
+	color: white;
 }
 .q-chip {
 	background: #ccc;
