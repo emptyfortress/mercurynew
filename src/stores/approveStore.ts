@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { TreeElement } from '@/components/condition/conditionTypes'
 import { treeDataSource } from './approveTreeData_fixed'
+import type { NameTranslations } from '@/constants/locales'
 
 export const useApproveStore = defineStore('approveStore', () => {
 	const treeData = ref<TreeElement[]>(treeDataSource)
@@ -225,6 +226,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 	const selectedChips = computed(() => list.value.filter((item) => item.selected))
 
 	const tempName = ref<string | undefined>()
+	const tempNameTranslations = ref<NameTranslations | null>(null)
 
 	return {
 		treeData,
@@ -240,6 +242,7 @@ export const useApproveStore = defineStore('approveStore', () => {
 		flatNodes,
 		selectedChips,
 		tempName,
+		tempNameTranslations,
 		getNodeById,
 		getNameById,
 		getNameByFolderId,

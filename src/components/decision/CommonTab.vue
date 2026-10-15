@@ -173,10 +173,6 @@ const remove = (ids: string[]) => {
 		if (stat) tree.value.remove(stat)
 	}
 }
-const test = (stat: any, node: any) => {
-	console.log(stat)
-	// console.log(node)
-}
 </script>
 
 <template lang="pug">

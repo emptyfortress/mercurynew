@@ -16,13 +16,7 @@ const approveStore = useApproveStore()
 const selectedElement = ref(approveStore.selectedElement)
 
 const showGroup = computed(() => {
-	if (
-		!!selectedElement.value &&
-		selectedElement.value.filetype &&
-		selectedElement.value.filetype > 0
-	)
-		return true
-	return false
+	return !!selectedElement.value
 })
 
 const remove = () => {
@@ -35,6 +29,9 @@ const remove = () => {
 const save = () => {
 	if (approveStore.selectedElement && approveStore.tempName) {
 		approveStore.selectedElement.text = approveStore.tempName
+	}
+	if (approveStore.selectedElement?.filetype === 0 && approveStore.tempNameTranslations) {
+		approveStore.selectedElement.nameTranslations = { ...approveStore.tempNameTranslations }
 	}
 }
 </script>

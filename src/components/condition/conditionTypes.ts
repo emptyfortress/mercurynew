@@ -1,3 +1,5 @@
+import type { NameTranslations } from '@/constants/locales'
+
 export enum ConditionResult {
 	Positive = 'Положительная',
 	Negative = 'Отрицательная',
@@ -44,6 +46,7 @@ export interface TreeElement {
 	text: string
 	parentId?: string[]
 	text1?: string
+	nameTranslations?: NameTranslations
 	name?: string
 	selected?: boolean
 	hidden?: boolean

@@ -3,33 +3,32 @@ import { ref, watch } from 'vue'
 import { useApproveStore } from '@/stores/approveStore'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
 import CreateDialog2 from '@/components/decision/CreateDialog2.vue'
-import { useRouter } from 'vue-router'
+import type { NameTranslations } from '@/constants/locales'
+import { translationLocales } from '@/constants/locales'
 
-const router = useRouter()
 const approveStore = useApproveStore()
 const name = ref(approveStore.selectedElement?.text)
+const nameTranslations = ref<NameTranslations>({
+	...(approveStore.selectedElement?.nameTranslations ?? {}),
+})
+const showNameTranslations = ref(false)
 
-const changed = ref(false)
+const creationDate = '2024-01-15'
+const author = approveStore.selectedElement?.author || 'System'
 
 watch(name, (val) => {
 	if (val) {
-		changed.value = true
+		approveStore.tempName = val
 	}
 })
 
-const save = () => {
-	if (approveStore.selectedElement && name.value) {
-		approveStore.selectedElement.text = name.value
-		changed.value = false
-	}
-}
-
-const undo = () => {
-	if (approveStore.selectedElement && name.value) {
-		name.value = approveStore.selectedElement.text
-		changed.value = false
-	}
-}
+watch(
+	nameTranslations,
+	(val) => {
+		approveStore.tempNameTranslations = { ...val }
+	},
+	{ deep: true }
+)
 
 const dialog = ref(false)
 
@@ -40,61 +39,49 @@ const add = (n: number) => {
 	mode.value = modes[n]
 	dialog.value = !dialog.value
 }
-
-// const rem = ref(true)
-
-const remove = () => {
-	router.push('/dvmain/approve/')
-	setTimeout(() => {
-		approveStore.toggleDelete()
-	}, 200)
-}
-
-const showRemove = ref(false)
 </script>
 
 <template lang="pug">
 .q-ma-md
 	fieldset
 		legend Общие
-		.grid
-			q-input(v-model="name" label="Название" dense outlined )
-			q-btn(unelevated color="primary" label="Сохранить" :disable='!changed' @click="save") 
-			q-btn(flat color="primary" label="Отмена" :disable='!changed' @click="undo") 
+		.row.q-col-gutter-md
+			.col-6
+				q-input(v-model="name" label="Название" outlined dense)
+					template(v-slot:append)
+						q-btn(flat round dense icon="mdi-translate" color="secondary" type="button" @click="showNameTranslations = !showNameTranslations")
+							q-tooltip Переводы названия
+				.q-pl-sm.q-mt-md(v-if='showNameTranslations')
+					.text-caption.q-mb-xs Локализации
+					q-input(
+						v-for="locale in translationLocales"
+						:key="locale.code"
+						v-model="nameTranslations[locale.code]"
+						:label="locale.label"
+						outlined
+						dense
+						class="q-mb-sm"
+					)
+			.col-3
+				q-input(:model-value="creationDate" label="Дата создания" outlined dense readonly)
+			.col-3
+				q-input(:model-value="author" label="Автор" outlined dense readonly)
 
 	.grid2
 		fieldset
-			legend Создание в текущей папке
+			legend Создать в текущей папке
 			.q-gutter-x-sm
-				q-btn(unelevated color="primary" label="Папка" @click="add(0)" icon="mdi-folder-plus-outline") 
-				q-btn(unelevated color="primary" label="Согласование" @click="add(1)" icon="mdi-message-check-outline") 
-				q-btn(unelevated color="primary" @click="add(2)") 
+				q-btn(flat color="primary" label="Папка" @click="add(0)" icon="mdi-folder-plus-outline") 
+				q-btn(flat  color="primary" label="Согласование" @click="add(1)" icon="mdi-message-check-outline") 
+				q-btn(flat  color="primary" @click="add(2)") 
 					.row.items-center.q-gutter-x-sm
 						MaterialSymbolsAltRoute(style='font-size: 1.3rem')
 						label Маршрут
-				q-btn(unelevated color="primary" label="Этап" @click="add(3)" icon="mdi-flag-triangle") 
-
-		fieldset
-			legend Удаление
-			.row.items-center
-				q-btn(:disable='showRemove' unelevated color="primary" label="Удалить папку" @click="showRemove = true" icon="mdi-delete-outline") 
-				.q-ml-xl.row.q-gutter-x-sm.text-negative.text-bold.items-center(v-if='showRemove')
-					q-icon(name="mdi-alert-outline" color="negative" size="md")
-					div Содержимое папки будет удалено!
-					q-btn.q-ml-lg(flat color="primary" label="Отмена" @click="showRemove = false") 
-					q-btn(unelevated color="negative" label="Удалить!" @click="remove") 
-
+				q-btn(flat color="primary" label="Этап" @click="add(3)" icon="mdi-flag-triangle") 
 	CreateDialog2(v-model="dialog" :mode="mode")
 </template>
 
 <style scoped lang="scss">
-.grid {
-	display: grid;
-	grid-template-columns: 1fr auto auto;
-	align-items: center;
-	column-gap: 1rem;
-	row-gap: 0.5rem;
-}
 .tt {
 	float: left;
 }
