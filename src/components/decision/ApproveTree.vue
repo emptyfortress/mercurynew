@@ -11,6 +11,7 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 import WordHighlighter from 'vue-word-highlighter'
 import MaterialSymbolsAltRoute from '@/components/icons/MaterialSymbolsAltRoute.vue'
+import { FileType } from '@/components/condition/conditionTypes'
 
 const props = defineProps<{
 	mode?: string | undefined
@@ -22,7 +23,13 @@ const approveStore = useApproveStore()
 
 const tree = ref()
 const query = ref('')
-const createFolderDialog = ref(false)
+const createDialog = ref(false)
+const createDialogMode = ref<'folder' | 'approve' | 'route' | 'etap'>('folder')
+
+const openCreateDialog = (mode: typeof createDialogMode.value) => {
+	createDialogMode.value = mode
+	createDialog.value = true
+}
 
 const treeData = computed({
 	get: () => approveStore.treeData,
@@ -130,22 +137,37 @@ const setText = (e: any, ev: any) => {
 	e.data.edit = false
 }
 
+const getFolderParent = () => {
+	let parentStat = approveStore.selectedElement
+		? tree.value.getStat(approveStore.selectedElement)
+		: tree.value.rootChildren[0]
+
+	while (parentStat && parentStat.data.filetype !== 0) {
+		parentStat = parentStat.parent
+	}
+
+	return parentStat || tree.value.rootChildren[0]
+}
+
 const create = () => {
+	const parentStat = getFolderParent()
+	const filetype = approveStore.addTemp!.filetype
+	const parentId =
+		filetype === FileType.Route || filetype === FileType.Stage
+			? []
+			: parentStat
+				? [parentStat.data.id]
+				: []
 	const newItem = {
 		id: approveStore.addTemp!.id,
 		text: approveStore.addTemp?.text,
-		filetype: approveStore.addTemp?.filetype,
-		parentId: approveStore.addTemp?.parentId,
+		filetype,
+		parentId,
 		hidden: false,
 		selected: true,
 		children: [],
 	}
-	if (approveStore.selectedElement) {
-		const tmp = tree.value.getStat(approveStore.selectedElement)
-		tree.value.add(newItem, tmp)
-	} else {
-		tree.value.add(newItem, tree.value.rootChildren[0])
-	}
+	tree.value.add(newItem, parentStat)
 	nextTick()
 	const newStat = approveStore.getNodeById(newItem.id)
 	if (newStat) {
@@ -329,13 +351,13 @@ div
 	q-btn(flat icon="mdi-folder-multiple-plus-outline" color="primary" label="Подключить папки" size='sm' )
 
 	q-fab.fab(round icon="mdi-plus" color="primary" vertical-actions-align="right" direction="up" size='16px')
-		q-fab-action(color="primary" icon="mdi-flag-triangle" external-label label="Этап" label-position="left")
-		q-fab-action(color="primary" external-label label="Маршрут" label-position="left")
+		q-fab-action(color="primary" icon="mdi-flag-triangle" external-label label="Этап" label-position="left" @click="openCreateDialog('etap')")
+		q-fab-action(color="primary" external-label label="Маршрут" label-position="left" @click="openCreateDialog('route')")
 			MaterialSymbolsAltRoute.rou1
-		q-fab-action(color="primary" icon="mdi-message-check-outline" external-label label="Согласование" label-position="left")
-		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="createFolderDialog = true")
+		q-fab-action(color="primary" icon="mdi-message-check-outline" external-label label="Согласование" label-position="left" @click="openCreateDialog('approve')")
+		q-fab-action(color="primary" icon="mdi-folder-plus-outline" external-label label="Папка" label-position="left" @click="openCreateDialog('folder')")
 
-	CreateDialog2(v-model="createFolderDialog" mode="folder")
+	CreateDialog2(v-model="createDialog" :mode="createDialogMode")
 
 </template>
 
