@@ -4,6 +4,7 @@ import { DockviewVue, themeLight } from 'dockview-vue'
 import type { DockviewApi, DockviewReadyEvent } from 'dockview-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { processHomePath } from '@/composables/useProcessExplorer'
+import ProcessPanel from './ConstructorProcessPanel.vue'
 import LibraryPanel from './ConstructorLibraryPanel.vue'
 import EditorPanel from './ConstructorEditorPanel.vue'
 import EditorTab from './ConstructorEditorTab.vue'
@@ -28,6 +29,7 @@ watch(
 )
 
 const panelComponents = markRaw({
+	constructorProcess: ProcessPanel,
 	constructorLibrary: LibraryPanel,
 	constructorEditor: EditorPanel,
 	constructorProperties: PropertiesPanel,
@@ -42,11 +44,17 @@ function loadDefault(api: DockviewApi) {
 		title: 'Редактор',
 	})
 	api.addPanel({
+		id: 'process',
+		component: 'constructorProcess',
+		title: 'Процесс',
+		position: { referencePanel: 'editor', direction: 'left' },
+		initialWidth: 260,
+	})
+	api.addPanel({
 		id: 'library',
 		component: 'constructorLibrary',
 		title: 'Библиотека',
-		position: { referencePanel: 'editor', direction: 'left' },
-		initialWidth: 260,
+		position: { referencePanel: 'process', direction: 'below' },
 	})
 	api.addPanel({
 		id: 'properties',
