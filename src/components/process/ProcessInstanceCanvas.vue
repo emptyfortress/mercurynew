@@ -6,6 +6,7 @@ import { Background, Controls, PanelPosition } from '@vue-flow/additional-compon
 import type { WorkflowInstance, WorkflowTemplate } from '@/composables/useWorkflowPrototype'
 import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
 import WordHighlighter from 'vue-word-highlighter'
+import ProcessDiagramNode from './ProcessDiagramNode.vue'
 import type { EdgeType } from '../states/types'
 import { nodeSelectionRequest, selectedNode } from './singleMonitorLayoutState'
 
@@ -98,13 +99,18 @@ function onDrop(event: DragEvent) {
 		|| event.dataTransfer?.getData('text/plain')
 	if (!serializedNode) return
 
-	let label: unknown
+	let droppedNode: { id?: unknown; label?: unknown; shape?: unknown }
 	try {
-		label = (JSON.parse(serializedNode) as { label?: unknown }).label
+		droppedNode = JSON.parse(serializedNode) as { id?: unknown; label?: unknown; shape?: unknown }
 	} catch {
 		return
 	}
+	const label = droppedNode.label
 	if (typeof label !== 'string' || !label.trim()) return
+	const libraryType = typeof droppedNode.id === 'string' ? droppedNode.id : undefined
+	const shape = droppedNode.shape === 'gateway' || droppedNode.shape === 'exchange'
+		? droppedNode.shape
+		: 'standard'
 
 	let sequence = flowNodes.value.length + 1
 	while (flowNodes.value.some((node) => node.id === `library-node-${sequence}`)) sequence += 1
@@ -113,7 +119,7 @@ function onDrop(event: DragEvent) {
 		id: `library-node-${sequence}`,
 		type: 'default',
 		position: screenToFlowCoordinate({ x: event.clientX, y: event.clientY }),
-		data: { label },
+		data: { label, libraryType, shape },
 	}
 	flowNodes.value = [...flowNodes.value, node]
 	void nextTick(() => {
@@ -140,6 +146,12 @@ function onNodeDragStop({ node }: NodeDragEvent) {
 		: existing)
 }
 
+function onNodeResizeEnd(size: { id: string; x: number; y: number; width: number; height: number }) {
+	flowNodes.value = flowNodes.value.map((node) => node.id === size.id
+		? { ...node, position: { x: size.x, y: size.y }, width: size.width, height: size.height }
+		: node)
+}
+
 function onConnect(connection: Connection) {
 	if (!connection.source || !connection.target) return
 
@@ -160,6 +172,12 @@ function onConnect(connection: Connection) {
 .workflow-instance-canvas
 	.flow-map(@dragover.prevent @drop.prevent="onDrop")
 		VueFlow(:nodes="progress.nodes" :edges="progress.edges" :default-edge-options="defaultEdgeOptions" fit-view-on-init :min-zoom="0.3" :max-zoom="1.5" :nodes-draggable="true" :nodes-connectable="true" :elements-selectable="true" @node-click="emit('selection-change', $event.node)" @node-drag-stop="onNodeDragStop" @connect="onConnect" @pane-click="emit('selection-change', null)")
+			template(v-slot:node-default="{ id, data, type, selected }")
+				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" @resize-end="onNodeResizeEnd")
+			template(v-slot:node-input="{ id, data, type, selected }")
+				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" @resize-end="onNodeResizeEnd")
+			template(v-slot:node-output="{ id, data, type, selected }")
+				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" @resize-end="onNodeResizeEnd")
 			Background(:gap="16" :size="1" pattern-color="#9aa9b5")
 			Controls(:position="PanelPosition.BottomRight")
 				template(v-slot:top)
@@ -210,50 +228,51 @@ function onConnect(connection: Connection) {
 .node-search-menu__list :deep(.q-item.is-selected) { background: var(--selection); }
 .node-search-menu__icon { color: var(--q-primary); }
 .flow-map :deep(.vue-flow__node) {
-	min-width: 145px;
-	padding: 12px 16px;
-	border: 1px solid #93a4b5;
-	border-radius: 10px;
-	background: white;
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
 	color: #263746;
-	box-shadow: 0 3px 12px #1d354014;
-}
-.flow-map :deep(.vue-flow__node.selected) {
-	outline: 2px solid var(--q-primary);
-	outline-offset: 2px;
-	box-shadow: 0 4px 6px rgb(0 0 0 / 52%);
+	box-shadow: none;
+	--process-node-fill: #fff;
+	--process-node-color: #263746;
+	--process-node-border: #93a4b5;
+	--process-node-border-width: 1px;
 }
 .flow-map :deep(.vue-flow__node.process-step-completed) {
-	background: #555b63;
-	color: white;
+	--process-node-fill: #555b63;
+	--process-node-color: white;
 }
 .flow-map :deep(.vue-flow__node.process-step-passed) {
-	background: #e2e5e9;
-	color: #374151;
+	--process-node-fill: #e2e5e9;
+	--process-node-color: #374151;
 }
 .flow-map :deep(.vue-flow__node.process-step-current) {
-	border-color: #d6aa00;
-	background: #ffe680;
-	color: #483b00;
+	--process-node-border: #d6aa00;
+	--process-node-fill: #ffe680;
+	--process-node-color: #483b00;
 }
 .flow-map :deep(.vue-flow__node.process-step-error) {
-	border-color: #840032;
-	background: #840032;
-	color: white;
+	--process-node-border: #840032;
+	--process-node-fill: #840032;
+	--process-node-color: white;
 }
 .flow-map :deep(.vue-flow__node.process-step-previous-error) {
-	border: 2px solid #840032;
+	--process-node-border: #840032;
+	--process-node-border-width: 2px;
 }
 .flow-map :deep(.vue-flow__node.process-step-warning) {
-	border: 2px solid #e0ae00;
+	--process-node-border: #e0ae00;
+	--process-node-border-width: 2px;
 }
 .flow-map :deep(.vue-flow__node.process-step-linked) {
-	background: #8660a8;
-	color: white;
+	--process-node-fill: #8660a8;
+	--process-node-color: white;
 }
 .flow-map :deep(.vue-flow__node.process-step-interrupted) {
-	background: #c9e3f8;
-	color: #274967;
+	--process-node-fill: #c9e3f8;
+	--process-node-color: #274967;
 }
 .flow-map :deep(.vue-flow__controls) {
 	display: flex;

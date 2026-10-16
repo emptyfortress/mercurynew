@@ -27,6 +27,8 @@ const gateways = [
 	{ id: 'mail', label: 'Шлюз к почте' },
 	{ id: 'file-system', label: 'Шлюз к файловой системе' },
 ]
+const gatewayNodeIds = new Set(['and', 'or', 'branch'])
+const exchangeNodeIds = new Set(['exchange', 'universal-exchange', 'error-handler'])
 
 const groups = [
 	[
@@ -86,7 +88,8 @@ watch(normalizedSearch, (query) => {
 
 function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 	if (!event.dataTransfer) return
-	const payload = JSON.stringify({ id: item.id, label: item.label })
+	const shape = gatewayNodeIds.has(item.id) ? 'gateway' : exchangeNodeIds.has(item.id) ? 'exchange' : 'standard'
+	const payload = JSON.stringify({ id: item.id, label: item.label, shape })
 	event.dataTransfer.effectAllowed = 'copy'
 	event.dataTransfer.setData('application/x-mercury-process-node', payload)
 	event.dataTransfer.setData('text/plain', payload)
