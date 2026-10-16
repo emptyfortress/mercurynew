@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import WordHighlighter from 'vue-word-highlighter'
 import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
 import { filteredNodes, requestNodeSelection, search, selectedNode } from './singleMonitorLayoutState'
 </script>
@@ -12,7 +13,8 @@ import { filteredNodes, requestNodeSelection, search, selectedNode } from './sin
 		q-item.library-item(v-for="node in filteredNodes" :key="node.id" clickable :class="{ 'is-selected': selectedNode?.id === node.id }" @click="requestNodeSelection(node.id)")
 			q-item-section(side)
 				LucideWorkflow.library-item-icon
-			q-item-section {{ node.data.label ?? 'Без названия' }}
+			q-item-section
+				WordHighlighter(:query="search ?? ''") {{ node.data.label ?? 'Без названия' }}
 </template>
 
 <style scoped lang="scss">
@@ -23,6 +25,9 @@ import { filteredNodes, requestNodeSelection, search, selectedNode } from './sin
 	background: var(--bg-panel);
 	color: var(--q-dark);
 }
-.library-item-icon { color: var(--q-primary); }
+.library-item-icon {
+	color: var(--q-primary);
+	font-size: 1.1rem;
+}
 .library-item.is-selected { background: var(--selection); }
 </style>

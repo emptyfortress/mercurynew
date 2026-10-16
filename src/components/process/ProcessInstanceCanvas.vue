@@ -5,6 +5,7 @@ import type { Connection, Edge, Node, NodeDragEvent } from '@vue-flow/core'
 import { Background, Controls, PanelPosition } from '@vue-flow/additional-components'
 import type { WorkflowInstance, WorkflowTemplate } from '@/composables/useWorkflowPrototype'
 import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
+import WordHighlighter from 'vue-word-highlighter'
 import type { EdgeType } from '../states/types'
 import { nodeSelectionRequest, selectedNode } from './singleMonitorLayoutState'
 
@@ -171,7 +172,8 @@ function onConnect(connection: Connection) {
 									q-item(v-for="node in filteredNodes" :key="node.id" clickable :class="{ 'is-selected': selectedNode?.id === node.id }" v-close-popup @click="selectNodeFromSearch(node.id)")
 										q-item-section(side)
 											LucideWorkflow.node-search-menu__icon
-										q-item-section {{ node.data.label ?? 'Без названия' }}
+										q-item-section
+											WordHighlighter(:query="nodeSearch ?? ''") {{ node.data.label ?? 'Без названия' }}
 									.text-caption.text-grey-7.q-pa-sm(v-if="filteredNodes.length === 0") Ничего не найдено
 				template(v-slot:default)
 					q-btn.vue-flow__controls-button(flat dense color="primary" icon="mdi-cog")
