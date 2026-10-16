@@ -101,7 +101,7 @@ const router = createRouter({
 		{
 			path: '/dvmain/process/monitorsingle',
 			name: 'processMonitorSingle',
-			component: () => import('@/views/SingleMonitor.vue'),
+			component: () => import('@/views/ProcessConstructorLayout.vue'),
 			meta: {
 				toolbar: false,
 				back: false,
