@@ -1,11 +1,11 @@
 import type { RouteRecordRaw } from 'vue-router'
-import MyComponentDev from './pages/Column.dev.vue'
+import Test from './pages/Test.vue'
 
 const devRoutes: RouteRecordRaw[] = [
 	{
 		path: '/dev/test',
-		name: 'Column',
-		component: MyComponentDev,
+		name: 'devTest',
+		component: Test,
 	},
 ]
 

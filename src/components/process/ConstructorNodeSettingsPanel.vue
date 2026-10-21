@@ -3,7 +3,7 @@ import { selectedNode } from './singleMonitorLayoutState'
 </script>
 
 <template lang="pug">
-.properties-panel
+.node-settings-panel
 	.column.q-gutter-sm.q-mt-md(v-if="selectedNode")
 		div ID: {{ selectedNode.id }}
 		div Название: {{ selectedNode.data.label ?? 'Без названия' }}
@@ -11,7 +11,7 @@ import { selectedNode } from './singleMonitorLayoutState'
 </template>
 
 <style scoped lang="scss">
-.properties-panel {
+.node-settings-panel {
 	height: 100%;
 	overflow: auto;
 	padding: 1rem;

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, markRaw, ref, watch } from 'vue'
+import { computed, markRaw, onBeforeUnmount, ref, watch } from 'vue'
 import { DockviewVue, themeLight } from 'dockview-vue'
 import type { DockviewApi, DockviewReadyEvent } from 'dockview-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { processHomePath } from '@/composables/useProcessExplorer'
-import ProcessPanel from './ConstructorProcessPanel.vue'
+import ProcessSettingsPanel from './ConstructorProcessSettingsPanel.vue'
 import LibraryPanel from './ConstructorLibraryPanel.vue'
 import EditorPanel from './ConstructorEditorPanel.vue'
 import EditorTab from './ConstructorEditorTab.vue'
-import PropertiesPanel from './ConstructorPropertiesPanel.vue'
+import NodeSettingsPanel from './ConstructorNodeSettingsPanel.vue'
 import { instance, setActiveInstance } from './singleMonitorLayoutState'
 import ProcessLogDialog from './ProcessLogDialog.vue'
 import { processStatusColor } from './processStatusColor'
@@ -18,7 +18,16 @@ const router = useRouter()
 const homePath = computed(() => processHomePath(route.query.from))
 const statusColor = computed(() => processStatusColor(instance.value.status))
 const isProcessLogOpen = ref(false)
+const visiblePanelIds = ref<string[]>([])
+const LAYOUT_STORAGE_KEY = 'dv-layout-single-monitor-v2'
 let dockviewApi: DockviewApi | null = null
+let layoutSubscription: ReturnType<DockviewApi['onDidLayoutChange']> | null = null
+
+onBeforeUnmount(() => {
+	saveLayout()
+	layoutSubscription?.dispose()
+	dockviewApi = null
+})
 
 watch(
 	() => String(route.query.instance ?? ''),
@@ -29,51 +38,111 @@ watch(
 )
 
 const panelComponents = markRaw({
-	constructorProcess: ProcessPanel,
+	constructorProcessSettings: ProcessSettingsPanel,
 	constructorLibrary: LibraryPanel,
 	constructorEditor: EditorPanel,
-	constructorProperties: PropertiesPanel,
+	constructorNodeSettings: NodeSettingsPanel,
 }) as any
 const tabComponents = markRaw({ constructorEditorHeader: EditorTab }) as any
 
-function loadDefault(api: DockviewApi) {
-	api.addPanel({
+const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
+	{
 		id: 'editor',
 		component: 'constructorEditor',
 		tabComponent: 'constructorEditorHeader',
 		title: 'Редактор',
-	})
-	api.addPanel({
-		id: 'process',
-		component: 'constructorProcess',
-		title: 'Процесс',
-		position: { referencePanel: 'editor', direction: 'left' },
-		initialWidth: 260,
-	})
-	api.addPanel({
+	},
+	{
 		id: 'library',
 		component: 'constructorLibrary',
 		title: 'Библиотека',
-		position: { referencePanel: 'process', direction: 'below' },
-	})
-	api.addPanel({
-		id: 'properties',
-		component: 'constructorProperties',
-		title: 'Свойства',
+		position: { referencePanel: 'editor', direction: 'left' },
+		initialWidth: 260,
+	},
+	{
+		id: 'node',
+		component: 'constructorNodeSettings',
+		title: 'Узел',
 		position: { referencePanel: 'editor', direction: 'right' },
 		initialWidth: 280,
-	})
+	},
+	{
+		id: 'process',
+		component: 'constructorProcessSettings',
+		title: 'Процесс',
+		position: { referencePanel: 'node', direction: 'below' },
+	},
+]
+
+function loadDefault(api: DockviewApi) {
+	for (const panel of panelDefinitions) api.addPanel(panel)
+}
+
+function syncVisiblePanels() {
+	visiblePanelIds.value = dockviewApi?.panels.map((panel) => panel.id) ?? []
+}
+
+function togglePanel(id: string) {
+	if (!dockviewApi) return
+	const existingPanel = dockviewApi.getPanel(id)
+	if (existingPanel) {
+		dockviewApi.removePanel(existingPanel)
+	} else {
+		const definition = panelDefinitions.find((panel) => panel.id === id)
+		if (!definition) return
+		const position = definition.position
+		const referencePanel =
+			position && 'referencePanel' in position ? position.referencePanel : undefined
+		const fallbackPanel = dockviewApi.getPanel('editor') ?? dockviewApi.panels[0]
+		dockviewApi.addPanel({
+			...definition,
+			floating: false,
+			position:
+				typeof referencePanel === 'string' && dockviewApi.getPanel(referencePanel)
+					? position
+					: fallbackPanel
+						? { referencePanel: fallbackPanel.id, direction: id === 'editor' || id === 'library' ? 'left' : 'right' }
+						: undefined,
+		})
+	}
+	saveLayout()
 }
 
 function onReady(event: DockviewReadyEvent) {
 	dockviewApi = event.api
-	loadDefault(dockviewApi)
+	let restored = false
+	try {
+		const saved = localStorage.getItem(LAYOUT_STORAGE_KEY)
+		if (saved) {
+			dockviewApi.fromJSON(JSON.parse(saved))
+			restored = true
+		}
+	} catch (error) {
+		console.warn('Не удалось восстановить расположение панелей', error)
+	}
+	if (!restored) {
+		dockviewApi.clear()
+		loadDefault(dockviewApi)
+	}
+	layoutSubscription = dockviewApi.onDidLayoutChange(saveLayout)
+	saveLayout()
+}
+
+function saveLayout() {
+	if (!dockviewApi) return
+	syncVisiblePanels()
+	try {
+		localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(dockviewApi.toJSON()))
+	} catch (error) {
+		console.warn('Не удалось сохранить расположение панелей', error)
+	}
 }
 
 function restoreDefaultLayout() {
 	if (!dockviewApi) return
 	dockviewApi.clear()
 	loadDefault(dockviewApi)
+	saveLayout()
 }
 
 function openTemplate() {
@@ -97,7 +166,15 @@ function openTemplate() {
 					.zg {{ instance.templateName }}
 		.single-monitor-toolbar
 			.btngroup
-				q-btn(flat dense size="sm" color="primary" icon="mdi-view-dashboard-outline" label="Восстановить панели" @click="restoreDefaultLayout")
+				q-btn(flat dense size="sm" color="primary" icon="mdi-view-dashboard-outline" label="Панели")
+					q-menu(@before-show="syncVisiblePanels")
+						q-list
+							q-item(v-for="panel in panelDefinitions" :key="panel.id" tag="label" dense)
+								q-item-section
+									q-checkbox(:model-value="visiblePanelIds.includes(panel.id)" :label="panel.title" dense @update:model-value="togglePanel(panel.id)")
+							q-separator
+							q-item(clickable v-close-popup @click="restoreDefaultLayout")
+								q-item-section Восстановить панели по умолчанию
 				q-separator.action-divider(vertical)
 				q-btn(unelevated color="primary" label="Сохранить" size="sm")
 				q-btn(outline color="primary" label="Отмена" size="sm")

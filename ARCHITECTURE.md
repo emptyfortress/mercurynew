@@ -36,7 +36,7 @@ mercurynew/
 │  ├─ dev/
 │  │  ├─ routes.ts            # Development-only /dev/test route
 │  │  └─ pages/
-│  │     └─ Column.dev.vue    # Column component development page
+│  │     └─ Test.vue          # Component development preview page
 │  ├─ extensions/
 │  │  └─ my-extension.json    # BPMN moddle extension: custom finished attribute
 │  ├─ lib/                    # Selectable BPMN viewer and diagram highlighting helpers
@@ -93,7 +93,7 @@ mercurynew/
   nested root and user/application/database detail components. `views/Map.vue`
   and `VersionHistory.vue` provide publication mapping and version history screens.
 - **Development page:** `dev/routes.ts` is included only when `import.meta.env.DEV`
-  is true and exposes `dev/pages/Column.dev.vue` at `/dev/test`.
+  is true and exposes `dev/pages/Test.vue` at `/dev/test`.
 
 ### State and supporting code
 

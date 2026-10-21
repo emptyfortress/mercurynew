@@ -2,29 +2,29 @@
 import { ref } from 'vue'
 // import Component from '@/components/condition/StartCondition.vue'
 // import { reactive } from 'vue'
-import Component from '@/components/view/Data.vue'
+import Component from '@/components/process/ConstructorProcessSettingsPanel.vue'
 
-const draft = ref({
-	id: 'col-1787214856080-1',
-	type: '',
-	text: 'Колонка 1',
-	kind: null,
-	newkind: null,
-	children: [] as any,
-	sort: false,
-	order: 'up',
-	hide: false,
-	source: 'calc',
-})
+// const draft = ref({
+// 	id: 'col-1787214856080-1',
+// 	type: '',
+// 	text: 'Колонка 1',
+// 	kind: null,
+// 	newkind: null,
+// 	children: [] as any,
+// 	sort: false,
+// 	order: 'up',
+// 	hide: false,
+// 	source: 'calc',
+// })
 
-const visible = ref(true)
+// const visible = ref(true)
 </script>
 
 <template lang="pug">
 q-page(padding)
 	.cont
 		div
-			Component(v-model:draft="draft")
+			Component()
 </template>
 
 <style scoped lang="scss">
