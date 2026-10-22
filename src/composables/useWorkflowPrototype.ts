@@ -21,6 +21,7 @@ export interface WorkflowInstance {
 	templateName: string
 	description?: string
 	priority?: string
+	gatewayIds?: string[]
 	status: WorkflowStatus
 	currentStep: string
 	startedAt: string

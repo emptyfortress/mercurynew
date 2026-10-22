@@ -3,10 +3,18 @@ import type { Ref } from 'vue'
 import type { Node } from '@vue-flow/core'
 import { workflowPrototype } from '@/composables/useWorkflowPrototype'
 import type { EdgeType } from '../states/types'
+import { processGatewayCatalog } from './processGateways'
 
 const activeInstanceId = ref(workflowPrototype.instances[0]?.id ?? '')
 export const instance = computed(() => workflowPrototype.instances.find((item) => item.id === activeInstanceId.value) ?? workflowPrototype.instances[0]!)
 export const template = computed(() => workflowPrototype.templates.find((item) => item.id === instance.value.templateId) ?? workflowPrototype.templates[0]!)
+export const connectedGateways = computed(() => {
+	const ids = instance.value.gatewayIds ?? processGatewayCatalog.map((gateway) => gateway.id)
+	return ids.flatMap((id) => {
+		const gateway = processGatewayCatalog.find((item) => item.id === id)
+		return gateway ? [gateway] : []
+	})
+})
 export const selectedNode: Ref<Node | null> = ref(null)
 export const search = ref<string | null>('')
 export const nodeSelectionRequest = ref<{ id: string; sequence: number } | null>(null)
@@ -23,4 +31,18 @@ export function requestNodeSelection(id: string) {
 export function setActiveInstance(id: string) {
 	activeInstanceId.value = id
 	selectedNode.value = null
+}
+
+export function setProcessGateways(ids: string[]) {
+	instance.value.gatewayIds = [...new Set(ids)].filter((id) =>
+		processGatewayCatalog.some((gateway) => gateway.id === id)
+	)
+}
+
+export function addProcessGateways(ids: string[]) {
+	setProcessGateways([...connectedGateways.value.map((gateway) => gateway.id), ...ids])
+}
+
+export function removeProcessGateway(id: string) {
+	setProcessGateways(connectedGateways.value.filter((gateway) => gateway.id !== id).map((gateway) => gateway.id))
 }

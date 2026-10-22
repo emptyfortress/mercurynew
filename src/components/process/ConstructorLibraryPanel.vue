@@ -17,16 +17,12 @@ import LucideShieldAlert from '@/components/icons/LucideShieldAlert.vue'
 import LucideShuffle from '@/components/icons/LucideShuffle.vue'
 import LucideSplit from '@/components/icons/LucideSplit.vue'
 import LucideTrash2 from '@/components/icons/LucideTrash2.vue'
+import { connectedGateways } from './singleMonitorLayoutState'
+import ProcessGatewayIcon from './ProcessGatewayIcon.vue'
 
 const search = ref<string | null>('')
 const basicFunctionsExpanded = ref(false)
 const gatewayExpansion = reactive<Record<string, boolean>>({})
-const gateways = [
-	{ id: 'simple-types', label: 'Шлюз к простым типам' },
-	{ id: 'docsvision', label: 'Шлюз к Docsvision' },
-	{ id: 'mail', label: 'Шлюз к почте' },
-	{ id: 'file-system', label: 'Шлюз к файловой системе' },
-]
 const gatewayNodeIds = new Set(['and', 'or', 'branch'])
 const exchangeNodeIds = new Set(['exchange', 'universal-exchange', 'error-handler'])
 
@@ -71,17 +67,17 @@ const filteredGroups = computed(() => {
 })
 
 const filteredGateways = computed(() => {
-	if (!normalizedSearch.value) return gateways
-	return gateways.filter((gateway) =>
+	if (!normalizedSearch.value) return connectedGateways.value
+	return connectedGateways.value.filter((gateway) =>
 		gateway.label.toLocaleLowerCase().includes(normalizedSearch.value)
 	)
 })
 
-watch(normalizedSearch, (query) => {
+watch([normalizedSearch, connectedGateways], ([query]) => {
 	if (!query) return
 
 	basicFunctionsExpanded.value = filteredGroups.value.length > 0
-	for (const gateway of gateways) {
+	for (const gateway of connectedGateways.value) {
 		gatewayExpansion[gateway.id] = filteredGateways.value.some((item) => item.id === gateway.id)
 	}
 })
@@ -118,7 +114,14 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 			expand-separator
 			:label="gateway.label"
 		)
-			.gateway-content.text-grey-7 Здесь будут элементы шлюза.
+			template(v-slot:header)
+				q-item-section(avatar)
+					ProcessGatewayIcon(:gateway-id="gateway.id" :icon="gateway.icon")
+				q-item-section {{ gateway.label }}
+			q-list(dense)
+				q-item(v-for="variable in gateway.variables" :key="variable.id" dense)
+					q-item-section
+						q-item-label {{ variable.label }}
 		.text-caption.text-grey-7.q-mt-md(v-if="filteredGroups.length === 0 && filteredGateways.length === 0") Ничего не найдено
 </template>
 
@@ -149,8 +152,4 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 	font-size: 1.1rem;
 }
 
-.gateway-content {
-	padding: 0.75rem 1rem;
-	font-size: 0.875rem;
-}
 </style>

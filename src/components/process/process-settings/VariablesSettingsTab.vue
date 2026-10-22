@@ -10,7 +10,19 @@ type ProcessVariable = {
 	value: string
 	collectionValues: string[]
 	isCollection: boolean
+	isRequired: boolean
+	saveHistory: boolean
+	addedAtRuntime: boolean
+	copyOnCreate: boolean
+	hiddenFromParent: boolean
 	description: string
+}
+
+const defaultAdditionalSettings = {
+	saveHistory: false,
+	addedAtRuntime: false,
+	copyOnCreate: false,
+	hiddenFromParent: true,
 }
 
 let suppressRowClick = false
@@ -24,6 +36,8 @@ const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
 			value: 'http://dv-contracts',
 			collectionValues: [],
 			isCollection: false,
+			isRequired: false,
+			...defaultAdditionalSettings,
 			description: '',
 		},
 		{
@@ -33,6 +47,8 @@ const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
 			value: 'Договорной документ',
 			collectionValues: [],
 			isCollection: false,
+			isRequired: false,
+			...defaultAdditionalSettings,
 			description: '',
 		},
 	],
@@ -48,11 +64,14 @@ const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
 )
 
 const editorOpen = ref(false)
+const advancedExpanded = ref(false)
 const editingId = ref<string | null>(null)
 const draft = reactive({
 	name: '',
 	type: 'Строка',
 	isCollection: false,
+	isRequired: false,
+	...defaultAdditionalSettings,
 	value: '',
 	collectionValues: [] as { id: number; value: string }[],
 	description: '',
@@ -70,6 +89,7 @@ let nextCollectionValueId = 1
 
 function openEditor(variable?: ProcessVariable) {
 	editingId.value = variable?.id ?? null
+	advancedExpanded.value = false
 	Object.assign(draft, {
 		name: variable?.name ?? '',
 		type: variable?.type ?? 'Строка',
@@ -79,6 +99,11 @@ function openEditor(variable?: ProcessVariable) {
 			value,
 		})),
 		isCollection: variable?.isCollection ?? false,
+		isRequired: variable?.isRequired ?? false,
+		saveHistory: variable?.saveHistory ?? defaultAdditionalSettings.saveHistory,
+		addedAtRuntime: variable?.addedAtRuntime ?? defaultAdditionalSettings.addedAtRuntime,
+		copyOnCreate: variable?.copyOnCreate ?? defaultAdditionalSettings.copyOnCreate,
+		hiddenFromParent: variable?.hiddenFromParent ?? defaultAdditionalSettings.hiddenFromParent,
 		description: variable?.description ?? '',
 	})
 	editorOpen.value = true
@@ -154,6 +179,7 @@ function variableValue(variable: ProcessVariable) {
 					th.text-left Название
 					th.text-left Тип
 					th.text-center Коллекция
+					th.text-center Обяз.
 					th.text-left Значение
 					// th.text-left Описание
 					th.actions-cell
@@ -163,6 +189,8 @@ function variableValue(variable: ProcessVariable) {
 					td {{ variable.type }}
 					td.text-center
 						q-checkbox(:model-value="variable.isCollection" size="sm" dense disable)
+					td.text-center
+						q-checkbox(:model-value="variable.isRequired" size="sm" dense disable)
 					td.variable-value {{ variableValue(variable) }}
 					// td.variable-description {{ variable.description || '—' }}
 					td.actions-cell.text-right(@click.stop @pointerdown.stop)
@@ -197,7 +225,9 @@ function variableValue(variable: ProcessVariable) {
 					.column.q-gutter-md
 						q-input(v-model="draft.name" label="Название" dense outlined autofocus :rules="[validateName]" lazy-rules hide-bottom-space)
 						q-select(v-model="draft.type" :options="typeOptions" label="Тип" dense outlined options-dense)
-						q-checkbox.text-black(v-model="draft.isCollection" label="Коллекция значений" dense @update:model-value="onCollectionChange")
+						.row.justify-between
+							q-checkbox.text-black(v-model="draft.isRequired" label="Обязательная" dense)
+							q-checkbox.text-black(v-model="draft.isCollection" label="Коллекция значений" dense @update:model-value="onCollectionChange")
 						div(v-if="draft.isCollection")
 							.text-subtitle2.q-mb-sm Значения коллекции
 							q-list.collection-values(v-if="draft.collectionValues.length" bordered separator)
@@ -205,12 +235,20 @@ function variableValue(variable: ProcessVariable) {
 									q-item-section
 										q-input(v-model="item.value" :label="`Значение ${index + 1}`" dense outlined hide-bottom-space @keydown.enter.prevent="addCollectionValue()")
 									q-item-section(side)
-										q-btn(flat round dense size="sm" color="negative" icon="mdi-delete-outline" title="Удалить значение" @click="draft.collectionValues.splice(index, 1)")
+										q-btn(flat round dense size="sm" color="secondary" icon="mdi-close" title="Удалить значение" @click="draft.collectionValues.splice(index, 1)")
 											q-tooltip Удалить значение
 							.text-caption.text-grey-7(v-else) В коллекции пока нет значений.
 							q-btn.q-mt-sm(flat dense color="primary" icon="mdi-plus" label="Добавить значение" @click="addCollectionValue()")
 						q-input(v-else v-model="draft.value" label="Значение" dense outlined)
 						q-input(v-model="draft.description" label="Описание" type="textarea" rows="3" dense outlined)
+						q-expansion-item.variable-advanced(v-model="advancedExpanded" label="Дополнительно" dense expand-separator header-class="text-primary")
+							.column.q-gutter-sm.q-pa-sm
+								q-checkbox.text-black(v-model="draft.saveHistory" label="Сохранять историю значений при исполнении бизнес-процесса" dense)
+								q-checkbox.text-black(:model-value="draft.isRequired" label="Значение переменной должно быть задано при создании экземпляра бизнес-процесса" dense disable)
+								q-checkbox.text-black(v-model="draft.addedAtRuntime" label="Переменная была добавлена при выполнении бизнес-процесса" dense)
+								q-checkbox.text-black(:model-value="draft.isCollection" label="Коллекция значений" dense disable)
+								q-checkbox.text-black(v-model="draft.copyOnCreate" label="Создавать копию значения переменной при создании экземпляра бизнес-процесса" dense)
+								q-checkbox.text-black(v-model="draft.hiddenFromParent" label="Скрыта от родительского процесса" dense)
 				q-card-actions(align="right")
 					q-btn(flat color="primary" label="Отмена" v-close-popup)
 					q-btn(unelevated color="primary" :label="editingId ? 'Сохранить' : 'Добавить'" type="submit")
@@ -290,6 +328,13 @@ function variableValue(variable: ProcessVariable) {
 .variable-editor {
 	width: 440px;
 	max-width: calc(100vw - 32px);
+}
+
+.variable-advanced {
+	border: 1px solid var(--my-border-color);
+	border-radius: var(--rad);
+	font-size: 0.8rem;
+	line-height: 1.1;
 }
 
 .collection-values {
