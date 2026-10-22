@@ -25,7 +25,7 @@ const documentVariableOptions = ['Документ']
 const responsibleOptions = [
 	...new Set(workflowPrototype.instances.map((instance) => instance.author)),
 ]
-const executionModeOptions = ['Любой']
+const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить автоматически']
 </script>
 
 <template lang="pug">
