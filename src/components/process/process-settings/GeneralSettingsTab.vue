@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
+import { workflowStatuses, type WorkflowInstance } from '@/composables/useWorkflowPrototype'
 import ProcessLogDialog from '../ProcessLogDialog.vue'
 
+const props = defineProps<{ process: WorkflowInstance }>()
+const description = computed({
+	get: () => props.process.description ?? '',
+	set: (value: string) => { props.process.description = value },
+})
+const priority = computed({
+	get: () => props.process.priority ?? 'Обычный',
+	set: (value: string) => { props.process.priority = value },
+})
+
 const settings = reactive({
-	name: 'Уведомление о регистрации Договора',
-	description: '',
-	status: 'Завершен успешно',
-	priority: 'Обычный',
 	canUseAsSubprocess: false,
 	singleActiveInstance: false,
 	refreshPeriod: 3,
 	processingQuantum: 0,
 })
-const statusOptions = [
-	'Не запущен',
-	'Активен',
-	'Приостановлен',
-	'Приостановлен из-за ошибки',
-	'Завершен успешно',
-	'Остановлен',
-]
+const statusOptions = workflowStatuses
 const priorityOptions = ['Наивысший', 'Высокий', 'Обычный', 'Низкий', 'Самый низкий']
 const isProcessLogOpen = ref(false)
 
@@ -38,11 +38,11 @@ const processDetails = [
 	.text-caption.text-grey-9 Настройка общих параметров процесса.
 	section.settings-section
 		.text-subtitle2 Общая информация
-		q-input(v-model="settings.name" label="Название" dense outlined hide-bottom-space)
-		q-input(v-model="settings.description" label="Описание" type="textarea" rows="3" dense outlined hide-bottom-space)
+		q-input(v-model="process.templateName" label="Название" dense outlined hide-bottom-space)
+		q-input(v-model="description" label="Описание" type="textarea" rows="3" dense outlined hide-bottom-space)
 		.settings-grid
-			q-select(v-model="settings.status" :options="statusOptions" label="Состояние процесса" dense outlined hide-bottom-space options-dense)
-			q-select(v-model="settings.priority" :options="priorityOptions" label="Приоритет" dense outlined hide-bottom-space options-dense)
+			q-select(v-model="process.status" :options="statusOptions" label="Состояние процесса" dense outlined hide-bottom-space options-dense)
+			q-select(v-model="priority" :options="priorityOptions" label="Приоритет" dense outlined hide-bottom-space options-dense)
 		.column.q-gutter-sm
 			q-checkbox.text-black(v-model="settings.canUseAsSubprocess" label="Может использоваться как подпроцесс" dense)
 			q-checkbox.text-black(v-model="settings.singleActiveInstance" label="Разрешен один активный экземпляр процесса" dense disable)

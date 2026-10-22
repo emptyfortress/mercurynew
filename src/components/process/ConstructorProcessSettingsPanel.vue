@@ -4,6 +4,7 @@ import GeneralSettingsTab from './process-settings/GeneralSettingsTab.vue'
 import VariablesSettingsTab from './process-settings/VariablesSettingsTab.vue'
 import GatewaysSettingsTab from './process-settings/GatewaysSettingsTab.vue'
 import AdvancedSettingsTab from './process-settings/AdvancedSettingsTab.vue'
+import { instance } from './singleMonitorLayoutState'
 
 const activeTab = ref('general')
 </script>
@@ -16,9 +17,9 @@ const activeTab = ref('general')
 		q-tab(name="gateways" label="Шлюзы")
 		q-tab(name="advanced" label="Дополнительно")
 	q-separator
-	q-tab-panels.process-settings-content(v-model="activeTab" keep-alive)
+	q-tab-panels.process-settings-content(v-model="activeTab" keep-alive animated)
 		q-tab-panel(name="general")
-			GeneralSettingsTab
+			GeneralSettingsTab(:process="instance")
 		q-tab-panel(name="variables")
 			VariablesSettingsTab
 		q-tab-panel(name="gateways")

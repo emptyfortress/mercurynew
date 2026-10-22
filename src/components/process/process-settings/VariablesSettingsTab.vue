@@ -8,6 +8,7 @@ type ProcessVariable = {
 	name: string
 	type: string
 	value: string
+	collectionValues: string[]
 	isCollection: boolean
 	description: string
 }
@@ -21,6 +22,7 @@ const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
 			name: 'АдресСервера',
 			type: 'Строка',
 			value: 'http://dv-contracts',
+			collectionValues: [],
 			isCollection: false,
 			description: '',
 		},
@@ -29,6 +31,7 @@ const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
 			name: 'Документ',
 			type: 'Документ',
 			value: 'Договорной документ',
+			collectionValues: [],
 			isCollection: false,
 			description: '',
 		},
@@ -51,6 +54,7 @@ const draft = reactive({
 	type: 'Строка',
 	isCollection: false,
 	value: '',
+	collectionValues: [] as { id: number; value: string }[],
 	description: '',
 })
 const typeOptions = [
@@ -62,6 +66,7 @@ const typeOptions = [
 	'Документ',
 ]
 let nextId = 1
+let nextCollectionValueId = 1
 
 function openEditor(variable?: ProcessVariable) {
 	editingId.value = variable?.id ?? null
@@ -69,6 +74,10 @@ function openEditor(variable?: ProcessVariable) {
 		name: variable?.name ?? '',
 		type: variable?.type ?? 'Строка',
 		value: variable?.value ?? '',
+		collectionValues: (variable?.collectionValues ?? []).map((value) => ({
+			id: nextCollectionValueId++,
+			value,
+		})),
 		isCollection: variable?.isCollection ?? false,
 		description: variable?.description ?? '',
 	})
@@ -89,7 +98,11 @@ function validateName(value: string) {
 }
 
 function saveVariable() {
-	const values = { ...draft, name: draft.name.trim() }
+	const values = {
+		...draft,
+		name: draft.name.trim(),
+		collectionValues: draft.collectionValues.map((item) => item.value),
+	}
 	if (editingId.value) {
 		variables.value = variables.value.map((variable) =>
 			variable.id === editingId.value ? { ...variable, ...values } : variable
@@ -114,6 +127,21 @@ function copyVariable(variable: ProcessVariable) {
 function removeVariable(id: string) {
 	variables.value = variables.value.filter((variable) => variable.id !== id)
 }
+
+function addCollectionValue(value = '') {
+	draft.collectionValues.push({ id: nextCollectionValueId++, value })
+}
+
+function onCollectionChange(enabled: boolean) {
+	if (enabled && !draft.collectionValues.length && draft.value) {
+		addCollectionValue(draft.value)
+	}
+}
+
+function variableValue(variable: ProcessVariable) {
+	if (!variable.isCollection) return variable.value || '—'
+	return variable.collectionValues.map((value) => value || '—').join('; ') || '—'
+}
 </script>
 
 <template lang="pug">
@@ -127,7 +155,7 @@ function removeVariable(id: string) {
 					th.text-left Тип
 					th.text-center Коллекция
 					th.text-left Значение
-					th.text-left Описание
+					// th.text-left Описание
 					th.actions-cell
 			tbody(ref="variablesList")
 				tr.variable-row(v-for="variable in variables" :key="variable.id" tabindex="0" @pointerdown="suppressRowClick = false" @click="onRowClick(variable)" @keydown.enter.self.prevent="openEditor(variable)" @keydown.space.self.prevent="openEditor(variable)")
@@ -135,24 +163,24 @@ function removeVariable(id: string) {
 					td {{ variable.type }}
 					td.text-center
 						q-checkbox(:model-value="variable.isCollection" size="sm" dense disable)
-					td.variable-value {{ variable.value || '—' }}
-					td.variable-description {{ variable.description || '—' }}
+					td.variable-value {{ variableValue(variable) }}
+					// td.variable-description {{ variable.description || '—' }}
 					td.actions-cell.text-right(@click.stop @pointerdown.stop)
 						q-btn(flat round dense size="sm" color="primary" icon="mdi-dots-vertical" title="Действия с переменной" @click.stop)
 							q-menu(auto-close anchor="bottom right" self="top right")
 								q-list(dense)
 									q-item(clickable @click="openEditor(variable)")
 										q-item-section(side)
-											q-icon(name="mdi-pencil-outline" color="primary")
+											q-icon(name="mdi-pencil-outline" color="primary" size='16px')
 										q-item-section Редактировать
 									q-item(clickable @click="copyVariable(variable)")
 										q-item-section(side)
-											q-icon(name="mdi-content-copy" color="primary")
+											q-icon(name="mdi-content-copy" color="primary" size='16px')
 										q-item-section Копировать
 									q-separator
 									q-item.text-negative(clickable @click="removeVariable(variable.id)")
 										q-item-section(side)
-											q-icon(name="mdi-delete-outline" color="negative")
+											q-icon(name="mdi-delete-outline" color="negative"  size='16px')
 										q-item-section Удалить
 				tr(v-if="!variables.length")
 					td.text-center.text-grey-7.q-pa-lg(colspan="6") Переменных пока нет. Добавьте первую переменную.
@@ -169,8 +197,19 @@ function removeVariable(id: string) {
 					.column.q-gutter-md
 						q-input(v-model="draft.name" label="Название" dense outlined autofocus :rules="[validateName]" lazy-rules hide-bottom-space)
 						q-select(v-model="draft.type" :options="typeOptions" label="Тип" dense outlined options-dense)
-						q-checkbox.text-black(v-model="draft.isCollection" label="Коллекция значений" dense)
-						q-input(v-model="draft.value" label="Значение" dense outlined)
+						q-checkbox.text-black(v-model="draft.isCollection" label="Коллекция значений" dense @update:model-value="onCollectionChange")
+						div(v-if="draft.isCollection")
+							.text-subtitle2.q-mb-sm Значения коллекции
+							q-list.collection-values(v-if="draft.collectionValues.length" bordered separator)
+								q-item(v-for="(item, index) in draft.collectionValues" :key="item.id" dense)
+									q-item-section
+										q-input(v-model="item.value" :label="`Значение ${index + 1}`" dense outlined hide-bottom-space @keydown.enter.prevent="addCollectionValue()")
+									q-item-section(side)
+										q-btn(flat round dense size="sm" color="negative" icon="mdi-delete-outline" title="Удалить значение" @click="draft.collectionValues.splice(index, 1)")
+											q-tooltip Удалить значение
+							.text-caption.text-grey-7(v-else) В коллекции пока нет значений.
+							q-btn.q-mt-sm(flat dense color="primary" icon="mdi-plus" label="Добавить значение" @click="addCollectionValue()")
+						q-input(v-else v-model="draft.value" label="Значение" dense outlined)
 						q-input(v-model="draft.description" label="Описание" type="textarea" rows="3" dense outlined)
 				q-card-actions(align="right")
 					q-btn(flat color="primary" label="Отмена" v-close-popup)
@@ -251,6 +290,17 @@ function removeVariable(id: string) {
 .variable-editor {
 	width: 440px;
 	max-width: calc(100vw - 32px);
+}
+
+.collection-values {
+	max-height: 240px;
+	overflow-y: auto;
+	border-color: var(--my-border-color);
+	border-radius: var(--rad);
+
+	.q-item {
+		padding: 6px 8px;
+	}
 }
 .q-table--dense .q-table th:last-child,
 .q-table--dense .q-table td:last-child {

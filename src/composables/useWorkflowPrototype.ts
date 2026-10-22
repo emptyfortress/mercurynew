@@ -19,6 +19,8 @@ export interface WorkflowInstance {
 	id: string
 	templateId: string
 	templateName: string
+	description?: string
+	priority?: string
 	status: WorkflowStatus
 	currentStep: string
 	startedAt: string
