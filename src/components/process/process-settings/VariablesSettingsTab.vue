@@ -1,57 +1,14 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { animations } from '@formkit/drag-and-drop'
 import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-
-type ProcessVariable = {
-	id: string
-	name: string
-	type: string
-	value: string
-	collectionValues: string[]
-	isCollection: boolean
-	isRequired: boolean
-	saveHistory: boolean
-	addedAtRuntime: boolean
-	copyOnCreate: boolean
-	hiddenFromParent: boolean
-	description: string
-}
-
-const defaultAdditionalSettings = {
-	saveHistory: false,
-	addedAtRuntime: false,
-	copyOnCreate: false,
-	hiddenFromParent: true,
-}
+import { createProcessVariable, defaultAdditionalSettings, type ProcessVariable } from '../processVariables'
+import { instance, processVariables } from '../singleMonitorLayoutState'
 
 let suppressRowClick = false
 
 const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
-	[
-		{
-			id: 'server-address',
-			name: 'АдресСервера',
-			type: 'Строка',
-			value: 'http://dv-contracts',
-			collectionValues: [],
-			isCollection: false,
-			isRequired: false,
-			...defaultAdditionalSettings,
-			description: '',
-		},
-		{
-			id: 'document',
-			name: 'Документ',
-			type: 'Документ',
-			value: 'Договорной документ',
-			collectionValues: [],
-			isCollection: false,
-			isRequired: false,
-			...defaultAdditionalSettings,
-			description: '',
-		},
-	],
+	[...processVariables.value],
 	{
 		plugins: [animations()],
 		onDragstart: () => {
@@ -60,10 +17,13 @@ const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
 		draggable: (element) => element.classList.contains('variable-row'),
 		dragPlaceholderClass: 'ghost',
 		synthDragPlaceholderClass: 'ghost',
+		onSort: ({ values }) => { processVariables.value = [...values] },
 	}
 )
 
 const editorOpen = ref(false)
+watch(processVariables, (items) => { variables.value = [...items] })
+watch(() => instance.value.id, () => { editorOpen.value = false })
 const advancedExpanded = ref(false)
 const editingId = ref<string | null>(null)
 const draft = reactive({
@@ -83,8 +43,8 @@ const typeOptions = [
 	'Дата и время',
 	'Логический',
 	'Документ',
+	'Сотрудник DV',
 ]
-let nextId = 1
 let nextCollectionValueId = 1
 
 function openEditor(variable?: ProcessVariable) {
@@ -116,7 +76,7 @@ function onRowClick(variable: ProcessVariable) {
 function validateName(value: string) {
 	if (!value.trim()) return 'Введите название переменной'
 	return (
-		!variables.value.some(
+		!processVariables.value.some(
 			(variable) => variable.id !== editingId.value && variable.name === value.trim()
 		) || 'Переменная с таким названием уже существует'
 	)
@@ -129,11 +89,14 @@ function saveVariable() {
 		collectionValues: draft.collectionValues.map((item) => item.value),
 	}
 	if (editingId.value) {
-		variables.value = variables.value.map((variable) =>
+		processVariables.value = processVariables.value.map((variable) =>
 			variable.id === editingId.value ? { ...variable, ...values } : variable
 		)
 	} else {
-		variables.value = [...variables.value, { id: `variable-${nextId++}`, ...values }]
+		processVariables.value = [...processVariables.value, {
+			...createProcessVariable(values.name, values.type),
+			...values,
+		}]
 	}
 	editorOpen.value = false
 }
@@ -143,14 +106,14 @@ function copyVariable(variable: ProcessVariable) {
 	editingId.value = null
 	let name = `${variable.name}_копия`
 	let suffix = 2
-	while (variables.value.some((item) => item.name === name)) {
+	while (processVariables.value.some((item) => item.name === name)) {
 		name = `${variable.name}_копия${suffix++}`
 	}
 	draft.name = name
 }
 
 function removeVariable(id: string) {
-	variables.value = variables.value.filter((variable) => variable.id !== id)
+	processVariables.value = processVariables.value.filter((variable) => variable.id !== id)
 }
 
 function addCollectionValue(value = '') {

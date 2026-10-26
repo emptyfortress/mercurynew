@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const emit = defineEmits<{
 	select: [value: string]
+	'select-item': [value: { id: string; label: string }]
 }>()
 
 const modelValue = defineModel<boolean>()
-const search = ref('')
+const search = ref<string | null>('')
 
 const employees = [
 	{ id: '1', label: 'Иванов И. И.' },
@@ -16,13 +17,20 @@ const employees = [
 	{ id: '5', label: 'Смирнов А. Н.' },
 ]
 
+const filteredEmployees = computed(() => {
+	const query = (search.value ?? '').trim().toLocaleLowerCase('ru')
+	return employees.filter((employee) => employee.label.toLocaleLowerCase('ru').includes(query))
+})
+
 function selectEmployee(emp: { id: string; label: string }) {
 	emit('select', emp.label)
+	emit('select-item', { ...emp })
+	modelValue.value = false
 }
 </script>
 
 <template lang="pug">
-q-dialog(v-model="modelValue")
+q-dialog(v-model="modelValue" backdrop-filter="blur(4px) saturate(150%)" @before-show="search = ''")
 	q-card.employee-dialog
 		q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 		q-card-section
@@ -32,19 +40,22 @@ q-dialog(v-model="modelValue")
 		q-card-section
 			q-list(dense bordered separator)
 				q-item.employee-item(
-					v-for='emp in employees'
+					v-for='emp in filteredEmployees'
 					:key='emp.id'
 					clickable
 					@click='selectEmployee(emp)'
 				)
 					q-item-section {{ emp.label }}
+				q-item(v-if="!filteredEmployees.length")
+					q-item-section.text-grey-7 Сотрудники не найдены
 		q-card-actions(align='right')
 			q-btn(flat label='Отмена' v-close-popup color='grey-7')
 </template>
 
 <style scoped lang="scss">
 .employee-dialog {
-	min-width: 400px;
+	width: 440px;
+	max-width: calc(100vw - 32px);
 }
 .employee-item:hover {
 	background: $primary;

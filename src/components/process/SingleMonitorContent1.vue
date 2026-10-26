@@ -62,7 +62,7 @@ const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
 	{
 		id: 'node',
 		component: 'constructorNodeSettings',
-		title: 'Узел',
+		title: 'Свойства',
 		position: { referencePanel: 'editor', direction: 'right' },
 		initialWidth: 280,
 	},
@@ -75,7 +75,9 @@ const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
 ]
 
 function loadDefault(api: DockviewApi) {
-	for (const panel of panelDefinitions) api.addPanel(panel)
+	for (const panel of panelDefinitions) {
+		if (panel.id !== 'process') api.addPanel(panel)
+	}
 }
 
 function syncVisiblePanels() {
@@ -115,6 +117,7 @@ function onReady(event: DockviewReadyEvent) {
 		const saved = localStorage.getItem(LAYOUT_STORAGE_KEY)
 		if (saved) {
 			dockviewApi.fromJSON(JSON.parse(saved))
+			dockviewApi.getPanel('node')?.api.setTitle('Свойства')
 			restored = true
 		}
 	} catch (error) {

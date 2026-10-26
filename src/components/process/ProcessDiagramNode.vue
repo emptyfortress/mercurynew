@@ -7,21 +7,23 @@ import type { OnResizeEnd } from '@vue-flow/node-resizer'
 import '@vue-flow/node-resizer/dist/style.css'
 import LucideArrowLeftRight from '@/components/icons/LucideArrowLeftRight.vue'
 import LucideCalendarClock from '@/components/icons/LucideCalendarClock.vue'
-import LucideCirclePlay from '@/components/icons/LucideCirclePlay.vue'
-import LucideCircleStop from '@/components/icons/LucideCircleStop.vue'
+import ProcessStartIcon from '@/components/icons/ProcessStartIcon.vue'
+import ProcessEndIcon from '@/components/icons/ProcessEndIcon.vue'
 import LucideCodeXml from '@/components/icons/LucideCodeXml.vue'
 import LucideFileCode2 from '@/components/icons/LucideFileCode2.vue'
-import LucideGitFork from '@/components/icons/LucideGitFork.vue'
-import LucideGitMerge from '@/components/icons/LucideGitMerge.vue'
+import ProcessOrIcon from '@/components/icons/ProcessOrIcon.vue'
+import ProcessAndIcon from '@/components/icons/ProcessAndIcon.vue'
 import LucideLayers2 from '@/components/icons/LucideLayers2.vue'
-import LucideListFilter from '@/components/icons/LucideListFilter.vue'
+import ProcessConditionIcon from '@/components/icons/ProcessConditionIcon.vue'
 import LucideListOrdered from '@/components/icons/LucideListOrdered.vue'
 import LucideListTree from '@/components/icons/LucideListTree.vue'
 import LucideShieldAlert from '@/components/icons/LucideShieldAlert.vue'
 import LucideShuffle from '@/components/icons/LucideShuffle.vue'
-import LucideSplit from '@/components/icons/LucideSplit.vue'
+import ProcessBranchIcon from '@/components/icons/ProcessBranchIcon.vue'
 import LucideTrash2 from '@/components/icons/LucideTrash2.vue'
 import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
+import { getProcessGatewayNode } from './processGateways'
+import { circularProcessNodeTypes, diamondProcessNodeTypes } from './processNodeShapes'
 
 const props = defineProps<{
 	id?: string
@@ -39,15 +41,15 @@ const emit = defineEmits<{
 }>()
 
 const libraryIcons: Record<string, Component> = {
-	start: LucideCirclePlay,
-	end: LucideCircleStop,
+	start: ProcessStartIcon,
+	end: ProcessEndIcon,
 	function: LucideCodeXml,
 	scenario: LucideFileCode2,
-	and: LucideGitMerge,
-	or: LucideGitFork,
-	branch: LucideSplit,
+	and: ProcessAndIcon,
+	or: ProcessOrIcon,
+	branch: ProcessBranchIcon,
 	subprocess: LucideLayers2,
-	condition: LucideListFilter,
+	condition: ProcessConditionIcon,
 	counter: LucideListOrdered,
 	schedule: LucideCalendarClock,
 	collection: LucideListTree,
@@ -57,11 +59,22 @@ const libraryIcons: Record<string, Component> = {
 	'error-handler': LucideShieldAlert,
 }
 
-const shape = computed(() => props.data.shape === 'gateway' || props.data.shape === 'exchange'
-	? props.data.shape
-	: 'standard')
-const icon = computed(() => libraryIcons[props.data.libraryType ?? '']
-	?? (props.type === 'input' ? LucideCirclePlay : props.type === 'output' ? LucideCircleStop : LucideWorkflow))
+const gatewayNode = computed(() => getProcessGatewayNode(props.data.libraryType))
+const terminalKind = computed(() => {
+	if (props.data.libraryType === 'start' || props.data.libraryType === 'end') return props.data.libraryType
+	return props.type === 'input' ? 'start' : props.type === 'output' ? 'end' : undefined
+})
+const shape = computed(() => {
+	if (props.data.libraryType === 'subprocess' || props.type === 'subprocess') return 'stack'
+	if (diamondProcessNodeTypes.has(props.data.libraryType ?? '')) return 'diamond'
+	if (terminalKind.value || circularProcessNodeTypes.has(props.data.libraryType ?? '')) return 'gateway'
+	return gatewayNode.value?.shape ?? (['gateway', 'exchange', 'diamond'].includes(props.data.shape ?? '')
+		? props.data.shape
+		: 'standard')
+})
+const compact = computed(() => shape.value === 'gateway' || shape.value === 'diamond')
+const icon = computed(() => gatewayNode.value?.icon ?? libraryIcons[props.data.libraryType ?? '']
+	?? (props.type === 'input' ? ProcessStartIcon : props.type === 'output' ? ProcessEndIcon : props.type === 'subprocess' ? LucideLayers2 : LucideWorkflow))
 
 function onResizeEnd({ params }: OnResizeEnd) {
 	if (!props.id) return
@@ -70,13 +83,13 @@ function onResizeEnd({ params }: OnResizeEnd) {
 </script>
 
 <template lang="pug">
-.process-diagram-node(:class="[`process-diagram-node--${shape}`, { 'is-selected': selected }]")
-	NodeResizer(v-if="shape !== 'gateway'" :is-visible="selected" :min-height="50" :auto-scale="false" :handle-style="{ width: '8px', height: '8px' }" @resize-end="onResizeEnd")
+.process-diagram-node(:class="[`process-diagram-node--${shape}`, { 'is-selected': selected, 'process-diagram-node--start': terminalKind === 'start', 'process-diagram-node--end': terminalKind === 'end' }]")
+	NodeResizer(v-if="!compact" :is-visible="selected" :min-height="50" :auto-scale="false" :handle-style="{ width: '8px', height: '8px' }" @resize-end="onResizeEnd")
 	Handle(v-if="type !== 'input'" type="target" :position="Position.Left")
 	.process-diagram-node__surface
-		component.process-diagram-node__icon(:is="icon")
-		span.process-diagram-node__label(v-if="shape !== 'gateway'") {{ data.label ?? 'Без названия' }}
-		q-tooltip(v-if="shape === 'gateway'") {{ data.label ?? 'Без названия' }}
+		component.process-diagram-node__icon(v-if="!terminalKind" :is="icon" v-bind="shape === 'diamond' ? { framed: false } : {}")
+		span.process-diagram-node__label(v-if="!compact") {{ data.label ?? 'Без названия' }}
+		q-tooltip(v-if="compact") {{ data.label ?? 'Без названия' }}
 	Handle(v-if="type !== 'output'" type="source" :position="Position.Right")
 </template>
 
@@ -120,7 +133,37 @@ function onResizeEnd({ params }: OnResizeEnd) {
 	overflow-wrap: anywhere;
 }
 
-.process-diagram-node--gateway {
+.process-diagram-node--stack {
+	isolation: isolate;
+}
+
+.process-diagram-node--stack::before,
+.process-diagram-node--stack::after {
+	position: absolute;
+	inset: 0;
+	border: 1px solid var(--process-node-border, #93a4b5);
+	border-radius: 6px;
+	background: var(--process-node-fill, #fff);
+	pointer-events: none;
+	content: '';
+}
+
+.process-diagram-node--stack::before {
+	z-index: -2;
+	transform: translate(10px, -10px);
+}
+
+.process-diagram-node--stack::after {
+	z-index: -1;
+	transform: translate(5px, -5px);
+}
+
+.process-diagram-node--stack .process-diagram-node__surface {
+	border-radius: 6px;
+}
+
+.process-diagram-node--gateway,
+.process-diagram-node--diamond {
 	width: 48px;
 	height: 48px;
 	min-height: 48px;
@@ -141,6 +184,36 @@ function onResizeEnd({ params }: OnResizeEnd) {
 .process-diagram-node--gateway .process-diagram-node__icon {
 	width: 1.5rem;
 	height: 1.5rem;
+}
+
+.process-diagram-node--diamond .process-diagram-node__surface {
+	position: absolute;
+	top: 7px;
+	left: 7px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	min-height: 34px;
+	padding: 0;
+	border-radius: 0;
+	transform: rotate(45deg);
+}
+
+.process-diagram-node--diamond .process-diagram-node__icon {
+	width: 40px;
+	height: 40px;
+	flex-shrink: 0;
+	transform: rotate(-45deg);
+}
+
+.process-diagram-node--start .process-diagram-node__surface {
+	border-width: 1px;
+}
+
+.process-diagram-node--end .process-diagram-node__surface {
+	border-width: 4px;
 }
 
 .process-diagram-node--exchange {

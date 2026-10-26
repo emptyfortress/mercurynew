@@ -3,44 +3,44 @@ import { computed, reactive, ref, watch } from 'vue'
 import WordHighlighter from 'vue-word-highlighter'
 import LucideArrowLeftRight from '@/components/icons/LucideArrowLeftRight.vue'
 import LucideCalendarClock from '@/components/icons/LucideCalendarClock.vue'
-import LucideCirclePlay from '@/components/icons/LucideCirclePlay.vue'
-import LucideCircleStop from '@/components/icons/LucideCircleStop.vue'
+import ProcessStartIcon from '@/components/icons/ProcessStartIcon.vue'
+import ProcessEndIcon from '@/components/icons/ProcessEndIcon.vue'
 import LucideCodeXml from '@/components/icons/LucideCodeXml.vue'
 import LucideFileCode2 from '@/components/icons/LucideFileCode2.vue'
-import LucideGitFork from '@/components/icons/LucideGitFork.vue'
-import LucideGitMerge from '@/components/icons/LucideGitMerge.vue'
+import ProcessOrIcon from '@/components/icons/ProcessOrIcon.vue'
+import ProcessAndIcon from '@/components/icons/ProcessAndIcon.vue'
 import LucideLayers2 from '@/components/icons/LucideLayers2.vue'
-import LucideListFilter from '@/components/icons/LucideListFilter.vue'
+import ProcessConditionIcon from '@/components/icons/ProcessConditionIcon.vue'
 import LucideListOrdered from '@/components/icons/LucideListOrdered.vue'
 import LucideListTree from '@/components/icons/LucideListTree.vue'
 import LucideShieldAlert from '@/components/icons/LucideShieldAlert.vue'
 import LucideShuffle from '@/components/icons/LucideShuffle.vue'
-import LucideSplit from '@/components/icons/LucideSplit.vue'
+import ProcessBranchIcon from '@/components/icons/ProcessBranchIcon.vue'
 import LucideTrash2 from '@/components/icons/LucideTrash2.vue'
 import { connectedGateways } from './singleMonitorLayoutState'
 import ProcessGatewayIcon from './ProcessGatewayIcon.vue'
+import { getProcessGatewayNode } from './processGateways'
+import { circularProcessNodeTypes, diamondProcessNodeTypes } from './processNodeShapes'
 
 const search = ref<string | null>('')
 const basicFunctionsExpanded = ref(false)
 const gatewayExpansion = reactive<Record<string, boolean>>({})
-const gatewayNodeIds = new Set(['and', 'or', 'branch'])
-const exchangeNodeIds = new Set(['exchange', 'universal-exchange', 'error-handler'])
 
 const groups = [
 	[
-		{ id: 'start', label: 'Начальная функция', icon: LucideCirclePlay },
-		{ id: 'end', label: 'Конечная функция', icon: LucideCircleStop },
+		{ id: 'start', label: 'Начальная функция', icon: ProcessStartIcon },
+		{ id: 'end', label: 'Конечная функция', icon: ProcessEndIcon },
 		{ id: 'function', label: 'Универсальная функция', icon: LucideCodeXml },
 		{ id: 'scenario', label: 'Сценарий', icon: LucideFileCode2 },
 	],
 	[
-		{ id: 'and', label: "Объединение 'И'", icon: LucideGitMerge },
-		{ id: 'or', label: "Объединение 'Или'", icon: LucideGitFork },
-		{ id: 'branch', label: 'Разветвление', icon: LucideSplit },
+		{ id: 'and', label: "Объединение 'И'", icon: ProcessAndIcon },
+		{ id: 'or', label: "Объединение 'Или'", icon: ProcessOrIcon },
+		{ id: 'branch', label: 'Разветвление', icon: ProcessBranchIcon },
+		{ id: 'condition', label: 'Условие', icon: ProcessConditionIcon },
 	],
 	[
 		{ id: 'subprocess', label: 'Подпроцесс', icon: LucideLayers2 },
-		{ id: 'condition', label: 'Условие', icon: LucideListFilter },
 		{ id: 'counter', label: 'Счетчик', icon: LucideListOrdered },
 		{ id: 'schedule', label: 'Расписание', icon: LucideCalendarClock },
 	],
@@ -84,7 +84,8 @@ watch([normalizedSearch, connectedGateways], ([query]) => {
 
 function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 	if (!event.dataTransfer) return
-	const shape = gatewayNodeIds.has(item.id) ? 'gateway' : exchangeNodeIds.has(item.id) ? 'exchange' : 'standard'
+	const shape = getProcessGatewayNode(item.id)?.shape
+		?? (diamondProcessNodeTypes.has(item.id) ? 'diamond' : circularProcessNodeTypes.has(item.id) ? 'gateway' : 'standard')
 	const payload = JSON.stringify({ id: item.id, label: item.label, shape })
 	event.dataTransfer.effectAllowed = 'copy'
 	event.dataTransfer.setData('application/x-mercury-process-node', payload)
@@ -118,7 +119,13 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 				q-item-section(avatar)
 					ProcessGatewayIcon(:gateway-id="gateway.id" :icon="gateway.icon")
 				q-item-section {{ gateway.label }}
-			q-list(dense)
+			q-list(v-if="gateway.nodes" dense)
+				q-item.library-item(v-for="item in gateway.nodes" :key="item.id" clickable :draggable="true" @dragstart="startNodeDrag($event, item)")
+					q-item-section(side)
+						component.library-item-icon(:is="item.icon")
+					q-item-section
+						q-item-label {{ item.label }}
+			q-list(v-else dense)
 				q-item(v-for="variable in gateway.variables" :key="variable.id" dense)
 					q-item-section
 						q-item-label {{ variable.label }}

@@ -1,5 +1,6 @@
 import { reactive } from 'vue'
 import type { Edge, Node } from '@vue-flow/core'
+import type { ProcessVariable } from '@/components/process/processVariables'
 
 export type WorkflowStatus = 'Активен' | 'Приостановлен из-за ошибки' | 'Приостановлен' | 'Остановлен' | 'Завершен успешно'
 
@@ -22,6 +23,7 @@ export interface WorkflowInstance {
 	description?: string
 	priority?: string
 	gatewayIds?: string[]
+	variables?: ProcessVariable[]
 	status: WorkflowStatus
 	currentStep: string
 	startedAt: string

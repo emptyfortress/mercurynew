@@ -108,7 +108,7 @@ function onDrop(event: DragEvent) {
 	const label = droppedNode.label
 	if (typeof label !== 'string' || !label.trim()) return
 	const libraryType = typeof droppedNode.id === 'string' ? droppedNode.id : undefined
-	const shape = droppedNode.shape === 'gateway' || droppedNode.shape === 'exchange'
+	const shape = droppedNode.shape === 'gateway' || droppedNode.shape === 'exchange' || droppedNode.shape === 'diamond'
 		? droppedNode.shape
 		: 'standard'
 

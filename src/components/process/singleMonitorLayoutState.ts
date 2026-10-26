@@ -1,12 +1,21 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import type { Node } from '@vue-flow/core'
 import { workflowPrototype } from '@/composables/useWorkflowPrototype'
 import type { EdgeType } from '../states/types'
 import { processGatewayCatalog } from './processGateways'
+import { createDefaultProcessVariables } from './processVariables'
 
 const activeInstanceId = ref(workflowPrototype.instances[0]?.id ?? '')
 export const instance = computed(() => workflowPrototype.instances.find((item) => item.id === activeInstanceId.value) ?? workflowPrototype.instances[0]!)
+watch(instance, (process) => {
+	process.variables ??= createDefaultProcessVariables()
+}, { immediate: true, flush: 'sync' })
+
+export const processVariables = computed({
+	get: () => instance.value.variables!,
+	set: (variables) => { instance.value.variables = variables },
+})
 export const template = computed(() => workflowPrototype.templates.find((item) => item.id === instance.value.templateId) ?? workflowPrototype.templates[0]!)
 export const connectedGateways = computed(() => {
 	const ids = instance.value.gatewayIds ?? processGatewayCatalog.map((gateway) => gateway.id)
