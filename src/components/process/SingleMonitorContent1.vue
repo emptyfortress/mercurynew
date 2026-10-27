@@ -218,15 +218,15 @@ function openTemplate() {
 								q-item-section Удалить
 
 	.single-monitor-actions
-		q-chip.q-mr-xl(:color="statusColor" rounded text-color="white") {{ instance.status }}
-		q-btn(flat dense size="sm" color="primary" icon="mdi-text-box-search-outline" label="Журнал процесса" @click="isProcessLogOpen = true")
-		q-separator.action-divider(vertical)
-		q-btn(flat dense size="sm" color="primary" icon="list" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
-		q-btn.q-mx-md(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" @click="openTemplate")
+		q-chip(:color="statusColor" rounded text-color="white") {{ instance.status }}
+		q-btn(flat dense size="sm" color="primary" icon="mdi-arrow-left-top-bold" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
+		q-btn(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" @click="openTemplate")
 		q-btn(flat dense size="sm" color="primary" icon="mdi-card-account-details-outline" label="Открыть родительскую карточку")
-		q-btn.process-properties-button.q-ml-md(flat dense size="sm" color="primary" @click="openProcessProperties")
+		q-separator.action-divider(vertical)
+		q-btn.process-properties-button(flat dense size="sm" color="primary" @click="openProcessProperties")
 			CharmNut.process-properties-button__icon.q-mr-sm
 			span Свойства процесса
+		q-btn(flat dense size="sm" color="primary" icon="mdi-text-box-search-outline" label="Журнал процесса" @click="isProcessLogOpen = true")
 
 	.single-monitor-layout
 		DockviewVue.dockview-area(:components="panelComponents" :tab-components="tabComponents" :theme="themeLight" single-tab-mode="fullwidth" @ready="onReady")
@@ -285,8 +285,17 @@ function openTemplate() {
 .single-monitor-actions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.125rem;
+	align-items: center;
+	gap: 0.5rem 1rem;
 	margin: 0.5rem 0 0;
+
+	> .q-chip {
+		margin: 0;
+	}
+
+	> .action-divider {
+		margin: 0 0.5rem;
+	}
 }
 .single-monitor-layout {
 	display: flex;
