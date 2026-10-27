@@ -27,6 +27,7 @@ export const connectedGateways = computed(() => {
 export const selectedNode: Ref<Node | null> = ref(null)
 export const search = ref<string | null>('')
 export const nodeSelectionRequest = ref<{ id: string; sequence: number } | null>(null)
+export const diagramSaveRequest = ref(0)
 export const edgeType = ref<EdgeType>('smoothstep')
 let nodeSelectionSequence = 0
 export const filteredNodes = computed(() => template.value.nodes.filter((node) =>
@@ -35,6 +36,10 @@ export const filteredNodes = computed(() => template.value.nodes.filter((node) =
 
 export function requestNodeSelection(id: string) {
 	nodeSelectionRequest.value = { id, sequence: ++nodeSelectionSequence }
+}
+
+export function saveProcessDiagram() {
+	diagramSaveRequest.value += 1
 }
 
 export function setActiveInstance(id: string) {

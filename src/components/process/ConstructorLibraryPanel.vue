@@ -17,6 +17,7 @@ import LucideShieldAlert from '@/components/icons/LucideShieldAlert.vue'
 import LucideShuffle from '@/components/icons/LucideShuffle.vue'
 import ProcessBranchIcon from '@/components/icons/ProcessBranchIcon.vue'
 import LucideTrash2 from '@/components/icons/LucideTrash2.vue'
+import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
 import { connectedGateways } from './singleMonitorLayoutState'
 import ProcessGatewayIcon from './ProcessGatewayIcon.vue'
 import { getProcessGatewayNode } from './processGateways'
@@ -84,8 +85,13 @@ watch([normalizedSearch, connectedGateways], ([query]) => {
 
 function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 	if (!event.dataTransfer) return
-	const shape = getProcessGatewayNode(item.id)?.shape
-		?? (diamondProcessNodeTypes.has(item.id) ? 'diamond' : circularProcessNodeTypes.has(item.id) ? 'gateway' : 'standard')
+	const shape =
+		getProcessGatewayNode(item.id)?.shape ??
+		(diamondProcessNodeTypes.has(item.id)
+			? 'diamond'
+			: circularProcessNodeTypes.has(item.id)
+				? 'gateway'
+				: 'standard')
 	const payload = JSON.stringify({ id: item.id, label: item.label, shape })
 	event.dataTransfer.effectAllowed = 'copy'
 	event.dataTransfer.setData('application/x-mercury-process-node', payload)
@@ -100,6 +106,10 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 			q-icon(name="mdi-magnify" color="primary")
 	q-list(dense separator)
 		q-expansion-item.gateway-expansion.basic-functions-expansion(v-if="filteredGroups.length > 0" v-model="basicFunctionsExpanded" label="Базовые функции" expand-separator)
+			template(v-slot:header)
+				q-item-section(side)
+					LucideWorkflow.basic-functions-icon
+				q-item-section.text-bold Базовые функции
 			q-list(dense)
 				template(v-for="(group, groupIndex) in filteredGroups" :key="groupIndex")
 					q-separator.q-my-xs(v-if="groupIndex > 0")
@@ -108,6 +118,7 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 							component.library-item-icon(:is="item.icon")
 						q-item-section
 							WordHighlighter(:query="normalizedSearch") {{ item.label }}
+
 		q-expansion-item.gateway-expansion(
 			v-for="gateway in filteredGateways"
 			:key="gateway.id"
@@ -116,9 +127,9 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 			:label="gateway.label"
 		)
 			template(v-slot:header)
-				q-item-section(avatar)
+				q-item-section(side)
 					ProcessGatewayIcon(:gateway-id="gateway.id" :icon="gateway.icon")
-				q-item-section {{ gateway.label }}
+				q-item-section.text-bold {{ gateway.label }}
 			q-list(v-if="gateway.nodes" dense)
 				q-item.library-item(v-for="item in gateway.nodes" :key="item.id" clickable :draggable="true" @dragstart="startNodeDrag($event, item)")
 					q-item-section(side)
@@ -149,6 +160,12 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 	border-top-color: var(--my-border-color);
 }
 
+.basic-functions-icon {
+	width: 18px;
+	height: 18px;
+	color: var(--q-primary);
+}
+
 .library-item {
 	user-select: none;
 }
@@ -158,5 +175,4 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 	color: var(--q-primary);
 	font-size: 1.1rem;
 }
-
 </style>

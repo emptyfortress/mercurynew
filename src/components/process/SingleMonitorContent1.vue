@@ -9,9 +9,10 @@ import LibraryPanel from './ConstructorLibraryPanel.vue'
 import EditorPanel from './ConstructorEditorPanel.vue'
 import EditorTab from './ConstructorEditorTab.vue'
 import NodeSettingsPanel from './ConstructorNodeSettingsPanel.vue'
-import { instance, setActiveInstance } from './singleMonitorLayoutState'
+import { instance, saveProcessDiagram, setActiveInstance } from './singleMonitorLayoutState'
 import ProcessLogDialog from './ProcessLogDialog.vue'
 import { processStatusColor } from './processStatusColor'
+import CharmNut from '@/components/icons/CharmNut.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,8 +23,11 @@ const visiblePanelIds = ref<string[]>([])
 const LAYOUT_STORAGE_KEY = 'dv-layout-single-monitor-v2'
 let dockviewApi: DockviewApi | null = null
 let layoutSubscription: ReturnType<DockviewApi['onDidLayoutChange']> | null = null
+let highlightedProcessGroup: HTMLElement | null = null
+let processHighlightTimeout: ReturnType<typeof setTimeout> | undefined
 
 onBeforeUnmount(() => {
+	clearProcessPanelHighlight()
 	saveLayout()
 	layoutSubscription?.dispose()
 	dockviewApi = null
@@ -88,6 +92,7 @@ function togglePanel(id: string) {
 	if (!dockviewApi) return
 	const existingPanel = dockviewApi.getPanel(id)
 	if (existingPanel) {
+		if (id === 'process') clearProcessPanelHighlight()
 		dockviewApi.removePanel(existingPanel)
 	} else {
 		const definition = panelDefinitions.find((panel) => panel.id === id)
@@ -108,6 +113,27 @@ function togglePanel(id: string) {
 		})
 	}
 	saveLayout()
+}
+
+function clearProcessPanelHighlight() {
+	clearTimeout(processHighlightTimeout)
+	processHighlightTimeout = undefined
+	highlightedProcessGroup?.classList.remove('process-properties-highlight')
+	highlightedProcessGroup = null
+}
+
+function openProcessProperties() {
+	if (!dockviewApi) return
+	if (!dockviewApi.getPanel('process')) togglePanel('process')
+	const panel = dockviewApi.getPanel('process')
+	if (!panel) return
+	panel.api.setActive()
+	clearProcessPanelHighlight()
+	highlightedProcessGroup = panel.group.element
+	// Повторное нажатие запускает подсветку заново.
+	void highlightedProcessGroup.offsetWidth
+	highlightedProcessGroup.classList.add('process-properties-highlight')
+	processHighlightTimeout = setTimeout(clearProcessPanelHighlight, 1500)
 }
 
 function onReady(event: DockviewReadyEvent) {
@@ -143,6 +169,7 @@ function saveLayout() {
 
 function restoreDefaultLayout() {
 	if (!dockviewApi) return
+	clearProcessPanelHighlight()
 	dockviewApi.clear()
 	loadDefault(dockviewApi)
 	saveLayout()
@@ -179,7 +206,7 @@ function openTemplate() {
 							q-item(clickable v-close-popup @click="restoreDefaultLayout")
 								q-item-section Восстановить панели по умолчанию
 				q-separator.action-divider(vertical)
-				q-btn(unelevated color="primary" label="Сохранить" size="sm")
+				q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="saveProcessDiagram")
 				q-btn(outline color="primary" label="Отмена" size="sm")
 				q-btn(round flat color="primary" icon="mdi-sync" size="sm")
 				q-chip(size="sm" color="amber") Есть изменения
@@ -197,6 +224,9 @@ function openTemplate() {
 		q-btn(flat dense size="sm" color="primary" icon="list" label="К мониторингу" :to="{ path: '/dvmain/process/monitor', query: { from: homePath } }")
 		q-btn.q-mx-md(flat dense size="sm" color="primary" icon="account_tree" label="Открыть шаблон" @click="openTemplate")
 		q-btn(flat dense size="sm" color="primary" icon="mdi-card-account-details-outline" label="Открыть родительскую карточку")
+		q-btn.process-properties-button.q-ml-md(flat dense size="sm" color="primary" @click="openProcessProperties")
+			CharmNut.process-properties-button__icon.q-mr-sm
+			span Свойства процесса
 
 	.single-monitor-layout
 		DockviewVue.dockview-area(:components="panelComponents" :tab-components="tabComponents" :theme="themeLight" single-tab-mode="fullwidth" @ready="onReady")
@@ -268,6 +298,34 @@ function openTemplate() {
 .dockview-area {
 	flex: 1;
 	min-height: 0;
+}
+.process-properties-button__icon {
+	width: 18px;
+	height: 18px;
+}
+
+.dv-groupview.process-properties-highlight {
+	position: relative;
+}
+
+.dv-groupview.process-properties-highlight::after {
+	position: absolute;
+	inset: 0;
+	z-index: 1000;
+	box-sizing: border-box;
+	border: 2px solid var(--q-primary);
+	pointer-events: none;
+	content: '';
+	animation: process-properties-highlight 1.5s ease-out;
+}
+
+@keyframes process-properties-highlight {
+	0%, 65% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
 }
 .dockview-area .dv-tabs-and-actions-container .dv-tabs-container .dv-tab {
 	padding-right: 0.5rem;

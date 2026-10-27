@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { Component } from 'vue'
+import { useResizeObserver } from '@vueuse/core'
 import { Handle, Position } from '@vue-flow/core'
 import { NodeResizer } from '@vue-flow/node-resizer'
 import type { OnResizeEnd } from '@vue-flow/node-resizer'
@@ -25,17 +26,18 @@ import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
 import { getProcessGatewayNode } from './processGateways'
 import { circularProcessNodeTypes, diamondProcessNodeTypes } from './processNodeShapes'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	id?: string
 	type?: string
 	selected?: boolean
+	executing?: boolean
 	data: {
 		label?: string
 		libraryType?: string
 		shape?: string
 		[key: string]: unknown
 	}
-}>()
+}>(), { executing: false })
 const emit = defineEmits<{
 	'resize-end': [size: { id: string; x: number; y: number; width: number; height: number }]
 }>()
@@ -76,6 +78,29 @@ const compact = computed(() => shape.value === 'gateway' || shape.value === 'dia
 const icon = computed(() => gatewayNode.value?.icon ?? libraryIcons[props.data.libraryType ?? '']
 	?? (props.type === 'input' ? ProcessStartIcon : props.type === 'output' ? ProcessEndIcon : props.type === 'subprocess' ? LucideLayers2 : LucideWorkflow))
 
+const executionOutline = ref<SVGSVGElement | null>(null)
+const outlineSize = ref({ width: 0, height: 0 })
+useResizeObserver(executionOutline, (entries) => {
+	const entry = entries[0]
+	if (entry) outlineSize.value = { width: entry.contentRect.width, height: entry.contentRect.height }
+})
+const outlineRadius = computed(() => shape.value === 'gateway'
+	? Math.max(0, (outlineSize.value.width - 6) / 2)
+	: shape.value === 'diamond' ? 0 : shape.value === 'stack' ? 3 : 7)
+const exchangeOutlinePoints = computed(() => {
+	const { width, height } = outlineSize.value
+	if (!height) return ''
+	// Offset the sloping sides inward by the same 3px as the horizontal sides.
+	const slope = width * 0.12 / height
+	const offset = 3 * Math.hypot(1, slope)
+	return [
+		`${width * 0.12 + offset - slope * 3},3`,
+		`${width - offset - slope * 3},3`,
+		`${width * 0.88 - offset + slope * 3},${height - 3}`,
+		`${offset + slope * 3},${height - 3}`,
+	].join(' ')
+})
+
 function onResizeEnd({ params }: OnResizeEnd) {
 	if (!props.id) return
 	emit('resize-end', { id: props.id, ...params })
@@ -88,8 +113,12 @@ function onResizeEnd({ params }: OnResizeEnd) {
 	Handle(v-if="type !== 'input'" type="target" :position="Position.Left")
 	.process-diagram-node__surface
 		component.process-diagram-node__icon(v-if="!terminalKind" :is="icon" v-bind="shape === 'diamond' ? { framed: false } : {}")
+		span.process-diagram-node__terminal-label(v-if="terminalKind") {{ terminalKind === 'start' ? 'Старт' : 'Стоп' }}
 		span.process-diagram-node__label(v-if="!compact") {{ data.label ?? 'Без названия' }}
 		q-tooltip(v-if="compact") {{ data.label ?? 'Без названия' }}
+		svg.process-diagram-node__execution-outline(v-if="executing" ref="executionOutline" aria-hidden="true")
+			polygon(v-if="shape === 'exchange'" :points="exchangeOutlinePoints")
+			rect(v-else="" x="3" y="3" :width="Math.max(0, outlineSize.width - 6)" :height="Math.max(0, outlineSize.height - 6)" :rx="outlineRadius")
 	Handle(v-if="type !== 'output'" type="source" :position="Position.Right")
 </template>
 
@@ -103,6 +132,7 @@ function onResizeEnd({ params }: OnResizeEnd) {
 }
 
 .process-diagram-node__surface {
+	position: relative;
 	display: grid;
 	width: 100%;
 	height: 100%;
@@ -119,10 +149,41 @@ function onResizeEnd({ params }: OnResizeEnd) {
 	box-shadow: 0 3px 12px #1d354014;
 }
 
+.process-diagram-node__execution-outline {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	pointer-events: none;
+	fill: none;
+	stroke: #a07800;
+	stroke-width: 1.5px;
+	stroke-dasharray: 5 4;
+	animation: process-node-executing 1s linear infinite;
+}
+
+@keyframes process-node-executing {
+	to { stroke-dashoffset: -9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.process-diagram-node__execution-outline {
+		animation: none;
+	}
+}
+
 .process-diagram-node__icon {
 	width: 2rem;
 	height: 2rem;
 	color: var(--q-primary);
+}
+
+.process-diagram-node__terminal-label {
+	font-size: 10px;
+	line-height: 1;
+	text-align: center;
 }
 
 .process-diagram-node__label {

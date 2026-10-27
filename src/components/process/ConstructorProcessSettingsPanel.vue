@@ -38,6 +38,10 @@ const activeTab = ref('general')
 	background: var(--bg-panel);
 }
 
+.q-separator--horizontal {
+	background: var(--my-border-color);
+}
+
 .process-settings-content {
 	flex: 1;
 	min-height: 0;

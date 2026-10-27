@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { MarkerType, VueFlow, useVueFlow } from '@vue-flow/core'
-import type { Connection, Edge, Node, NodeDragEvent } from '@vue-flow/core'
+import type { Connection, Edge, EdgeChange, Node, NodeChange, NodeDragEvent } from '@vue-flow/core'
 import { Background, Controls, PanelPosition } from '@vue-flow/additional-components'
 import type { WorkflowInstance, WorkflowTemplate } from '@/composables/useWorkflowPrototype'
 import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
 import WordHighlighter from 'vue-word-highlighter'
 import ProcessDiagramNode from './ProcessDiagramNode.vue'
 import type { EdgeType } from '../states/types'
-import { nodeSelectionRequest, selectedNode } from './singleMonitorLayoutState'
+import { diagramSaveRequest, nodeSelectionRequest, selectedNode } from './singleMonitorLayoutState'
+import { getNodeExecutionOverride, processNodeExecutionStates } from './processNodeExecutionState'
 
 const props = defineProps<{
 	instance: WorkflowInstance
@@ -36,6 +37,11 @@ watch(
 watch(nodeSelectionRequest, (request) => {
 	if (request) selectNode(request.id)
 })
+
+watch(diagramSaveRequest, () => {
+	props.template.nodes = JSON.parse(JSON.stringify(flowNodes.value)) as Node[]
+	props.template.edges = JSON.parse(JSON.stringify(flowEdges.value)) as Edge[]
+}, { flush: 'sync' })
 
 const edgeTypeOptions: ReadonlyArray<{ label: string; value: EdgeType }> = [
 	{ label: 'Кривая Безье', value: 'default' },
@@ -75,6 +81,12 @@ const progress = computed(() => {
 	}
 	const nodes: Node[] = flowNodes.value.map((node) => {
 		const states: string[] = []
+		const override = getNodeExecutionOverride(node)
+		if (override) {
+			const className = processNodeExecutionStates[override].className
+			const customClasses = String(node.class ?? '').split(/\s+/).filter((name) => !name.startsWith('process-step-'))
+			return { ...node, class: [...customClasses, className].filter(Boolean).join(' ') }
+		}
 		if (props.instance.status === 'Завершен успешно') states.push('process-step-completed')
 		else if (props.instance.status === 'Приостановлен из-за ошибки' && node.id === currentNode?.id)
 			states.push('process-step-error')
@@ -93,6 +105,9 @@ const progress = computed(() => {
 	const edges: Edge[] = flowEdges.value.map((edge) => ({ ...edge, type: props.edgeType }))
 	return { nodes, edges }
 })
+const executingNodeIds = computed(() => new Set(progress.value.nodes
+	.filter((node) => String(node.class ?? '').split(/\s+/).includes('process-step-current'))
+	.map((node) => node.id)))
 
 function onDrop(event: DragEvent) {
 	const serializedNode = event.dataTransfer?.getData('application/x-mercury-process-node')
@@ -140,6 +155,22 @@ function selectNodeFromSearch(id: string) {
 	nodeSearch.value = ''
 }
 
+function onNodesChange(changes: NodeChange[]) {
+	const removedIds = new Set(changes.filter((change) => change.type === 'remove').map((change) => change.id))
+	if (!removedIds.size) return
+	flowNodes.value = flowNodes.value.filter((node) => !removedIds.has(node.id))
+	flowEdges.value = flowEdges.value.filter((edge) => !removedIds.has(edge.source) && !removedIds.has(edge.target))
+	if (selectedNode.value && removedIds.has(selectedNode.value.id)) {
+		emit('selection-change', null)
+	}
+}
+
+function onEdgesChange(changes: EdgeChange[]) {
+	const removedIds = new Set(changes.filter((change) => change.type === 'remove').map((change) => change.id))
+	if (!removedIds.size) return
+	flowEdges.value = flowEdges.value.filter((edge) => !removedIds.has(edge.id))
+}
+
 function onNodeDragStop({ node }: NodeDragEvent) {
 	flowNodes.value = flowNodes.value.map((existing) => existing.id === node.id
 		? { ...existing, position: { ...node.position } }
@@ -171,13 +202,13 @@ function onConnect(connection: Connection) {
 <template lang="pug">
 .workflow-instance-canvas
 	.flow-map(@dragover.prevent @drop.prevent="onDrop")
-		VueFlow(:nodes="progress.nodes" :edges="progress.edges" :default-edge-options="defaultEdgeOptions" fit-view-on-init :min-zoom="0.3" :max-zoom="1.5" :nodes-draggable="true" :nodes-connectable="true" :elements-selectable="true" @node-click="emit('selection-change', $event.node)" @node-drag-stop="onNodeDragStop" @connect="onConnect" @pane-click="emit('selection-change', null)")
+		VueFlow(:nodes="progress.nodes" :edges="progress.edges" :default-edge-options="defaultEdgeOptions" fit-view-on-init :min-zoom="0.3" :max-zoom="1.5" :nodes-draggable="true" :nodes-connectable="true" :elements-selectable="true" @nodes-change="onNodesChange" @edges-change="onEdgesChange" @node-click="emit('selection-change', $event.node)" @node-drag-stop="onNodeDragStop" @connect="onConnect" @pane-click="emit('selection-change', null)")
 			template(v-slot:node-default="{ id, data, type, selected }")
-				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" @resize-end="onNodeResizeEnd")
+				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" :executing="executingNodeIds.has(id)" @resize-end="onNodeResizeEnd")
 			template(v-slot:node-input="{ id, data, type, selected }")
-				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" @resize-end="onNodeResizeEnd")
+				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" :executing="executingNodeIds.has(id)" @resize-end="onNodeResizeEnd")
 			template(v-slot:node-output="{ id, data, type, selected }")
-				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" @resize-end="onNodeResizeEnd")
+				ProcessDiagramNode(:id="id" :data="data" :type="type" :selected="selected" :executing="executingNodeIds.has(id)" @resize-end="onNodeResizeEnd")
 			Background(:gap="16" :size="1" pattern-color="#9aa9b5")
 			Controls(:position="PanelPosition.BottomRight")
 				template(v-slot:top)
