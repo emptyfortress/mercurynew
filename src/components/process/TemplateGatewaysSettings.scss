@@ -1,0 +1,42 @@
+.gateways-settings-tab {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	min-width: 0;
+	padding-bottom: 1rem;
+	color: var(--q-primary);
+}
+
+.gateways-table {
+	background: #fff;
+}
+.gateways-table th,
+.gateways-table td {
+	padding-left: 6px;
+	padding-right: 6px;
+}
+.gateways-table th {
+	background: var(--bgLight);
+}
+.gateways-table .gateway-actions {
+	width: 36px;
+	padding: 0 4px;
+}
+
+.gateway-row {
+	cursor: grab;
+	user-select: none;
+}
+.gateway-row:active {
+	cursor: grabbing;
+}
+
+.gateway-row.ghost > td {
+	display: table-cell;
+	background: inherit;
+	color: transparent;
+}
+.gateway-row.ghost > td::before,
+.gateway-row.ghost > td::after {
+	display: none;
+}

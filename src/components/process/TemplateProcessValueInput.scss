@@ -1,0 +1,22 @@
+.process-value-input {
+	min-width: 0;
+}
+
+.selected-value {
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	max-width: 100%;
+	overflow-wrap: anywhere;
+}
+
+.source-label {
+	color: var(--q-primary);
+	font-size: 0.75rem;
+}
+
+.date-editor {
+	width: 320px;
+	max-width: calc(100vw - 32px);
+}

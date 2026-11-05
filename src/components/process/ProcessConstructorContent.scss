@@ -1,0 +1,153 @@
+.template-constructor {
+	--panel-gap: 0.25rem;
+}
+
+.template-constructor .template-constructor-heading {
+	min-width: 0;
+	margin-right: 1rem;
+}
+
+.template-constructor .myblock {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	justify-items: start;
+	align-items: stretch;
+	column-gap: 0.7rem;
+}
+.template-constructor .myblock .text-overline {
+	color: #78909c;
+	line-height: 1;
+}
+.template-constructor .myblock svg {
+	width: 35px;
+	height: 35px;
+	color: var(--q-secondary);
+}
+
+.template-constructor .zg {
+	margin-top: 0.3rem;
+	font-size: 1rem;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.template-constructor .fold {
+	color: var(--q-secondary);
+	font-size: 2.3rem;
+}
+
+.template-constructor .template-constructor-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.5rem;
+}
+
+.template-constructor .btngroup {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.template-constructor .btngroup > * {
+	margin-right: 0.25rem;
+}
+
+.template-constructor .template-constructor-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 1rem;
+	margin: 0.5rem 0 0;
+}
+.template-constructor .template-constructor-actions > .q-chip {
+	margin: 0;
+}
+.template-constructor .template-constructor-actions > .action-divider {
+	margin: 0 0.5rem;
+}
+
+.template-constructor .template-constructor-layout {
+	display: flex;
+	flex-direction: column;
+	height: calc(100vh - 220px);
+	min-height: 360px;
+	border: 1px solid var(--my-border-color);
+}
+
+.template-constructor .dockview-area {
+	--process-panel-header-background: #c1d0e7;
+	flex: 1;
+	min-height: 0;
+}
+
+.template-constructor .dockview-area .dockview-theme-light {
+	--dv-tabs-and-actions-container-background-color: var(--process-panel-header-background);
+	--dv-activegroup-visiblepanel-tab-background-color: var(--process-panel-header-background);
+	--dv-activegroup-hiddenpanel-tab-background-color: var(--process-panel-header-background);
+	--dv-inactivegroup-visiblepanel-tab-background-color: var(--process-panel-header-background);
+	--dv-inactivegroup-hiddenpanel-tab-background-color: var(--process-panel-header-background);
+}
+
+.template-constructor .process-properties-button__icon {
+	width: 18px;
+	height: 18px;
+}
+
+.template-constructor .dv-groupview.process-properties-highlight {
+	position: relative;
+}
+
+.template-constructor .dv-groupview.process-properties-highlight::after {
+	position: absolute;
+	inset: 0;
+	z-index: 1000;
+	box-sizing: border-box;
+	border: 2px solid var(--q-primary);
+	pointer-events: none;
+	content: '';
+	animation: process-properties-highlight 1.5s ease-out;
+}
+
+@keyframes process-properties-highlight {
+	0%,
+	65% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+.template-constructor .dockview-area .dv-tabs-and-actions-container .dv-tabs-container .dv-tab {
+	padding-right: 0.5rem;
+	padding-left: 0.5rem;
+}
+
+.template-constructor .num {
+	margin-left: 1rem;
+	padding: 2px 0.5rem;
+	background: var(--bgLight);
+	border-top: 1px solid var(--nodeborder);
+	border-bottom: 1px solid var(--nodeborder);
+}
+
+.template-constructor .action-divider {
+	margin-right: 2rem;
+	margin-left: 2rem;
+	background: var(--my-border-color);
+}
+
+.template-constructor .dv-tab .dv-default-tab {
+	padding: 0 0.5rem;
+	background: var(--process-panel-header-background);
+	border-bottom: 1px solid var(--my-border-color);
+}
+
+.template-constructor .dv-default-tab-content {
+	font-weight: 600;
+}
+
+.template-constructor .dv-vue-part {
+	background: var(--process-panel-header-background);
+}

@@ -10,7 +10,7 @@ const breadcrumbs = computed(() => {
 	const segments = route.path.split('/').filter(Boolean)
 	const workflowLabels: Record<string, string> = {
 		processHome: 'Процессы',
-		processConstructor: 'Конструктор процессов',
+		processConstructor: 'Конструктор шаблонов',
 		processMonitor: 'Мониторинг процессов',
 		processMonitorSingle: 'Монитор экземпляра',
 	}

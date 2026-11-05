@@ -1,0 +1,20 @@
+.node-general-settings {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding-bottom: 1rem;
+	min-width: 0;
+	color: var(--q-primary);
+	container-type: inline-size;
+}
+
+.settings-section {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.numeric-setting {
+	width: 100%;
+	max-width: 160px;
+}

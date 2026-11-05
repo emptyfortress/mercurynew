@@ -1,0 +1,102 @@
+.workflow-instance-canvas {
+	display: flex;
+	height: 100%;
+	min-height: 0;
+	flex-direction: column;
+}
+.flow-map {
+	flex: 1;
+	min-height: 0;
+	background: var(--bg-panel);
+	border-top: 1px solid var(--my-border-color);
+	border-left: 1px solid var(--my-border-color);
+}
+.node-search-menu {
+	width: 17rem;
+	max-width: calc(100vw - 2rem);
+	padding: 0.5rem;
+}
+.node-search-menu__list {
+	max-height: 16rem;
+	overflow-y: auto;
+}
+.node-search-menu__list :deep(.q-item.is-selected) {
+	background: var(--selection);
+}
+.node-search-menu__icon {
+	color: var(--q-primary);
+}
+.flow-map :deep(.vue-flow__node) {
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	color: #263746;
+	box-shadow: none;
+	--process-node-fill: #fff;
+	--process-node-color: #263746;
+	--process-node-border: #93a4b5;
+	--process-node-border-width: 1px;
+}
+.flow-map :deep(.vue-flow__node.process-step-completed) {
+	--process-node-fill: #555b63;
+	--process-node-color: white;
+}
+.flow-map :deep(.vue-flow__node.process-step-passed) {
+	--process-node-fill: #e2e5e9;
+	--process-node-color: #374151;
+}
+.flow-map :deep(.vue-flow__node.process-step-current) {
+	--process-node-border: #d6aa00;
+	--process-node-fill: #ffe680;
+	--process-node-color: #483b00;
+}
+.flow-map :deep(.vue-flow__node.process-step-error) {
+	--process-node-border: #840032;
+	--process-node-fill: #840032;
+	--process-node-color: white;
+}
+.flow-map :deep(.vue-flow__node.process-step-previous-error) {
+	--process-node-border: #840032;
+	--process-node-border-width: 2px;
+}
+.flow-map :deep(.vue-flow__node.process-step-warning) {
+	--process-node-border: #e0ae00;
+	--process-node-border-width: 2px;
+}
+.flow-map :deep(.vue-flow__node.process-step-linked) {
+	--process-node-fill: #8660a8;
+	--process-node-color: white;
+}
+.flow-map :deep(.vue-flow__node.process-step-interrupted) {
+	--process-node-fill: #c9e3f8;
+	--process-node-color: #274967;
+}
+.flow-map :deep(.vue-flow__controls) {
+	display: flex;
+	gap: 0.25rem;
+	padding: 0.25rem;
+	border: 1px solid var(--my-border-color);
+	border-radius: 0.4rem;
+	background: var(--bg-panel);
+}
+.flow-map :deep(.vue-flow__controls-button) {
+	display: grid;
+	width: 2rem;
+	height: 2rem;
+	place-items: center;
+	border: 0;
+	border-radius: 0.25rem;
+	background: transparent;
+	color: var(--q-primary);
+	cursor: pointer;
+}
+:global(.no-touch) .flow-map :deep(.vue-flow__controls-button:hover) {
+	background: rgb(0 0 0 / 6%);
+}
+.flow-map :deep(.vue-flow__controls-button svg) {
+	width: 1rem;
+	height: 1rem;
+	fill: currentColor;
+}

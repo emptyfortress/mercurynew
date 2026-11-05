@@ -1,0 +1,31 @@
+.library-panel {
+	height: 100%;
+	overflow: auto;
+	padding: 1rem 0;
+	background: var(--bg-panel);
+	color: var(--q-dark);
+}
+
+.library-panel :deep(.q-separator) {
+	background: var(--my-border-color);
+}
+
+.library-panel :deep(.q-list--separator > .q-item-type + .q-item-type) {
+	border-top-color: var(--my-border-color);
+}
+
+.basic-functions-icon {
+	width: 18px;
+	height: 18px;
+	color: var(--q-primary);
+}
+
+.library-item {
+	user-select: none;
+}
+
+.library-item-icon {
+	flex: 0 0 auto;
+	color: var(--q-primary);
+	font-size: 1.1rem;
+}

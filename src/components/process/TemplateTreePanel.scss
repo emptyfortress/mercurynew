@@ -1,0 +1,65 @@
+.template-tree {
+	position: relative;
+	height: 100%;
+	min-height: 0;
+	background: var(--bg-panel);
+}
+
+.template-tree__scroll {
+	height: 100%;
+	overflow: auto;
+	padding: 1rem 0 5rem;
+}
+
+.template-tree__fab {
+	position: absolute;
+	bottom: 1rem;
+	right: 1rem;
+}
+
+.template-tree__node {
+	display: flex;
+	align-items: center;
+	padding: 4px 8px;
+	cursor: pointer;
+	min-height: 30px;
+}
+
+.no-touch .template-tree__node:hover {
+	background: var(--bgLight, #edf0f8);
+}
+
+.template-tree__node_selected,
+.no-touch .template-tree__node_selected:hover {
+	background: var(--dvviolet);
+	color: var(--dark2);
+}
+
+.template-tree__icon,
+.template-tree__toggle {
+	flex: 0 0 auto;
+	font-size: 1.3rem;
+	margin-right: 0.5rem;
+}
+
+.template-tree__toggle {
+	transition: transform 0.2s ease;
+}
+
+.template-tree__toggle_closed {
+	transform: rotate(-90deg);
+}
+
+.template-tree__name {
+	flex: 1;
+	overflow-wrap: anywhere;
+	min-width: 0;
+}
+
+.template-tree__dialog {
+	min-width: min(400px, calc(100vw - 32px));
+}
+
+.template-tree__context-menu {
+	min-width: 180px;
+}

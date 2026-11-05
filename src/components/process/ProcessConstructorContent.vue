@@ -1,205 +1,356 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { MarkerType, addEdge } from '@vue-flow/core'
-import type { Connection, Edge, Node } from '@vue-flow/core'
+import { markRaw, onBeforeUnmount, ref, watch } from 'vue'
 import {
-	createTemplate,
-	makeEdgeId,
-	startWorkflow,
-	workflowPrototype,
-	type WorkflowTemplate,
-} from '@/composables/useWorkflowPrototype'
-import ProcessTemplateList from './ProcessTemplateList.vue'
-import ProcessConstructorToolbar from './ProcessConstructorToolbar.vue'
-import ProcessCanvas from './ProcessCanvas.vue'
-import ProcessPropertiesPanel from './ProcessPropertiesPanel.vue'
-import DeleteProcessDialog from './DeleteProcessDialog.vue'
-import { processHomePath } from '@/composables/useProcessExplorer'
+	DockviewVue,
+	themeLight,
+	type DockviewApi,
+	type DockviewReadyEvent,
+	type VueComponent,
+} from 'dockview-vue'
+import { useRoute } from 'vue-router'
+import ProcessSettingsPanel from './TemplateProcessSettingsPanel.vue'
+import LibraryPanel from './TemplateLibraryPanel.vue'
+import EditorPanel from './TemplateEditorPanel.vue'
+import EditorTab from './TemplateEditorTab.vue'
+import NodeSettingsPanel from './TemplateNodeSettingsPanel.vue'
+import { openTemplate, template, templateOpenRequest } from './templateConstructorState'
+import TemplatesPanel from './TemplateTreePanel.vue'
+import CharmNut from '@/components/icons/CharmNut.vue'
 
 const route = useRoute()
-const router = useRouter()
-const listSize = ref(15)
-const canvasSize = ref(80)
-const selectedId = computed(() => typeof route.query.template === 'string'
-	? route.query.template
-	: workflowPrototype.templates[0]?.id ?? '')
-const selectedTemplate = computed(() => workflowPrototype.templates.find((template) => template.id === selectedId.value))
-const draft = ref<WorkflowTemplate | null>(null)
-const nodes = ref<Node[]>([])
-const edges = ref<Edge[]>([])
-const selectedNodeId = ref<string | null>(null)
-const selectedNode = computed(() => nodes.value.find((node) => node.id === selectedNodeId.value))
-const confirmDelete = ref(false)
-const cloneData = <T,>(value: T): T => JSON.parse(JSON.stringify(value)) as T
+const visiblePanelIds = ref<string[]>([])
+const LAYOUT_STORAGE_KEY = 'dv-layout-template-constructor-v1'
+let dockviewApi: DockviewApi | null = null
+let layoutSubscription: ReturnType<DockviewApi['onDidLayoutChange']> | null = null
+let highlightedProcessGroup: HTMLElement | null = null
+let processHighlightTimeout: ReturnType<typeof setTimeout> | undefined
 
-// VueFlow adds selection and measured geometry to graph objects. Only editor data is saved and compared.
-function templateNodes(items: Node[]): Node[] {
-	return items.map((node) => ({
-		id: node.id,
-		type: node.type ?? 'default',
-		position: { x: node.position.x, y: node.position.y },
-		data: cloneData(node.data),
-	}))
-}
-
-function templateEdges(items: Edge[]): Edge[] {
-	return items.map((edge) => ({
-		id: edge.id,
-		source: edge.source,
-		target: edge.target,
-		sourceHandle: edge.sourceHandle ?? null,
-		targetHandle: edge.targetHandle ?? null,
-		type: edge.type ?? 'default',
-		label: edge.label ?? '',
-		animated: edge.animated ?? false,
-		markerEnd: edge.markerEnd,
-	}))
-}
-
-function snapshot(template: WorkflowTemplate, graphNodes: Node[], graphEdges: Edge[]) {
-	return JSON.stringify({
-		name: template.name,
-		category: template.category,
-		enabled: template.enabled,
-		linkedTemplateIds: template.linkedTemplateIds,
-		nodes: templateNodes(graphNodes),
-		edges: templateEdges(graphEdges),
-	})
-}
-
-const isDirty = computed(() => Boolean(draft.value && selectedTemplate.value
-	&& snapshot(draft.value, nodes.value, edges.value) !== snapshot(selectedTemplate.value, selectedTemplate.value.nodes, selectedTemplate.value.edges)))
-const canSave = computed(() => Boolean(selectedTemplate.value && draft.value && isDirty.value))
-const canRun = computed(() => Boolean(selectedTemplate.value?.enabled && draft.value && !isDirty.value))
-const canDelete = computed(() => Boolean(selectedTemplate.value && workflowPrototype.templates.length > 1))
-const linkedTemplateOptions = computed(() => workflowPrototype.templates
-	.filter((template) => template.id !== selectedId.value)
-	.map((template) => ({ label: template.name, value: template.id })))
-
-const draftName = computed({
-	get: () => draft.value?.name ?? '',
-	set: (value: string) => { if (draft.value) draft.value.name = value },
-})
-const draftCategory = computed({
-	get: () => draft.value?.category ?? '',
-	set: (value: string) => { if (draft.value) draft.value.category = value },
-})
-const draftEnabled = computed({
-	get: () => draft.value?.enabled ?? false,
-	set: (value: boolean) => { if (draft.value) draft.value.enabled = value },
-})
-const draftLinkedTemplateIds = computed({
-	get: () => draft.value?.linkedTemplateIds ?? [],
-	set: (value: string[]) => { if (draft.value) draft.value.linkedTemplateIds = value },
-})
-const nodeLabel = computed({
-	get: () => String(selectedNode.value?.data.label ?? ''),
-	set: (value: string) => { if (selectedNode.value) selectedNode.value.data.label = value },
+onBeforeUnmount(() => {
+	clearProcessPanelHighlight()
+	saveLayout()
+	layoutSubscription?.dispose()
+	dockviewApi = null
 })
 
-watch(selectedTemplate, (template) => {
-	draft.value = template ? cloneData(template) : null
-	nodes.value = template ? templateNodes(template.nodes) : []
-	edges.value = template ? templateEdges(template.edges) : []
-	selectedNodeId.value = null
-	confirmDelete.value = false
-}, { immediate: true })
+watch(
+	() => route.query.template,
+	(id) => {
+		openTemplate(typeof id === 'string' ? id : '')
+	},
+	{ immediate: true }
+)
 
-function chooseTemplate(id: string) {
-	void router.replace({ query: { ...route.query, template: id } })
+watch(templateOpenRequest, openEditor)
+
+// Dockview uses a broader component constructor type than Vue SFC inference.
+const panelComponents = markRaw({
+	constructorProcessSettings: ProcessSettingsPanel,
+	constructorTemplates: TemplatesPanel,
+	constructorLibrary: LibraryPanel,
+	constructorEditor: EditorPanel,
+	constructorNodeSettings: NodeSettingsPanel,
+}) as unknown as Record<string, VueComponent>
+const tabComponents = markRaw({ constructorEditorHeader: EditorTab }) as unknown as Record<
+	string,
+	VueComponent
+>
+
+const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
+	{
+		id: 'editor',
+		component: 'constructorEditor',
+		tabComponent: 'constructorEditorHeader',
+		title: 'Редактор',
+	},
+	{
+		id: 'library',
+		component: 'constructorLibrary',
+		title: 'Библиотека',
+		position: { referencePanel: 'editor', direction: 'left' },
+		initialWidth: 260,
+	},
+	{
+		id: 'templates',
+		component: 'constructorTemplates',
+		title: 'Шаблоны',
+		position: { referencePanel: 'library', direction: 'above' },
+		initialHeight: 320,
+	},
+	{
+		id: 'node',
+		component: 'constructorNodeSettings',
+		title: 'Свойства',
+		position: { referencePanel: 'editor', direction: 'right' },
+		initialWidth: 280,
+	},
+	{
+		id: 'process',
+		component: 'constructorProcessSettings',
+		title: 'Процесс',
+		position: { referencePanel: 'node', direction: 'below' },
+	},
+]
+
+function loadDefault(api: DockviewApi) {
+	for (const panel of panelDefinitions) {
+		if (panel.id !== 'process') api.addPanel(panel)
+	}
 }
 
-function addStep() {
-	if (!draft.value) return
-	const id = `step-${Date.now()}`
-	nodes.value.push({ id, position: { x: 300, y: 300 }, data: { label: 'Новый шаг' } })
-	selectedNodeId.value = id
+function syncVisiblePanels() {
+	visiblePanelIds.value = dockviewApi?.panels.map((panel) => panel.id) ?? []
 }
 
-function deleteStep() {
-	if (!selectedNode.value || ['input', 'output'].includes(selectedNode.value.type ?? '')) return
-	const id = selectedNode.value.id
-	nodes.value = nodes.value.filter((node) => node.id !== id)
-	edges.value = edges.value.filter((edge) => edge.source !== id && edge.target !== id)
-	selectedNodeId.value = null
+function togglePanel(id: string) {
+	if (!dockviewApi) return
+	const existingPanel = dockviewApi.getPanel(id)
+	if (existingPanel) {
+		if (id === 'process') clearProcessPanelHighlight()
+		dockviewApi.removePanel(existingPanel)
+	} else {
+		const definition = panelDefinitions.find((panel) => panel.id === id)
+		if (!definition) return
+		const position = definition.position
+		const referencePanel =
+			position && 'referencePanel' in position ? position.referencePanel : undefined
+		const fallbackPanel = dockviewApi.getPanel('editor') ?? dockviewApi.panels[0]
+		dockviewApi.addPanel({
+			...definition,
+			floating: false,
+			position:
+				typeof referencePanel === 'string' && dockviewApi.getPanel(referencePanel)
+					? position
+					: fallbackPanel
+						? {
+								referencePanel: fallbackPanel.id,
+								direction:
+									id === 'editor' || id === 'library' || id === 'templates' ? 'left' : 'right',
+							}
+						: undefined,
+		})
+	}
+	saveLayout()
 }
 
-function connectNodes(connection: Connection) {
-	if (!draft.value || !connection.source || !connection.target) return
-	edges.value = addEdge({ ...connection, id: makeEdgeId(), markerEnd: MarkerType.ArrowClosed }, edges.value) as Edge[]
+function openEditor() {
+	if (!dockviewApi || !template.value) return
+	if (!dockviewApi.getPanel('editor')) togglePanel('editor')
+	dockviewApi.getPanel('editor')?.api.setActive()
 }
 
-function saveTemplate() {
-	if (!canSave.value || !selectedTemplate.value || !draft.value) return
-	Object.assign(selectedTemplate.value, {
-		name: draft.value.name,
-		category: draft.value.category,
-		enabled: draft.value.enabled,
-		linkedTemplateIds: [...draft.value.linkedTemplateIds],
-		nodes: templateNodes(nodes.value),
-		edges: templateEdges(edges.value),
-		updatedAt: 'Только что',
-	})
-	draft.value.updatedAt = selectedTemplate.value.updatedAt
+function clearProcessPanelHighlight() {
+	clearTimeout(processHighlightTimeout)
+	processHighlightTimeout = undefined
+	highlightedProcessGroup?.classList.remove('process-properties-highlight')
+	highlightedProcessGroup = null
 }
 
-function removeTemplate() {
-	if (!canDelete.value) return
-	const index = workflowPrototype.templates.findIndex((template) => template.id === selectedId.value)
-	if (index < 0) return
-	workflowPrototype.templates.splice(index, 1)
-	chooseTemplate(workflowPrototype.templates[Math.max(0, index - 1)]?.id ?? '')
-	confirmDelete.value = false
+function openProcessProperties() {
+	if (!dockviewApi) return
+	if (!dockviewApi.getPanel('process')) togglePanel('process')
+	const panel = dockviewApi.getPanel('process')
+	if (!panel) return
+	panel.api.setActive()
+	clearProcessPanelHighlight()
+	highlightedProcessGroup = panel.group.element
+	// Повторное нажатие запускает подсветку заново.
+	void highlightedProcessGroup.offsetWidth
+	highlightedProcessGroup.classList.add('process-properties-highlight')
+	processHighlightTimeout = setTimeout(clearProcessPanelHighlight, 1500)
 }
 
-function runTemplate() {
-	if (!canRun.value || !selectedTemplate.value) return
-	if (startWorkflow(selectedTemplate.value)) void router.push({ path: '/dvmain/process/monitor', query: { from: processHomePath(route.query.from) } })
+function onReady(event: DockviewReadyEvent) {
+	dockviewApi = event.api
+	let restored = false
+	try {
+		const saved = localStorage.getItem(LAYOUT_STORAGE_KEY)
+		if (saved) {
+			dockviewApi.fromJSON(JSON.parse(saved))
+			dockviewApi.getPanel('node')?.api.setTitle('Свойства')
+			restored = true
+		}
+	} catch (error) {
+		console.warn('Не удалось восстановить расположение панелей', error)
+	}
+	if (!restored) {
+		dockviewApi.clear()
+		loadDefault(dockviewApi)
+	}
+	if (!dockviewApi.getPanel('templates')) togglePanel('templates')
+	dockviewApi.getPanel('templates')?.api.setActive()
+	openEditor()
+	layoutSubscription = dockviewApi.onDidLayoutChange(saveLayout)
+	saveLayout()
+}
+
+function saveLayout() {
+	if (!dockviewApi) return
+	syncVisiblePanels()
+	try {
+		localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(dockviewApi.toJSON()))
+	} catch (error) {
+		console.warn('Не удалось сохранить расположение панелей', error)
+	}
+}
+
+function restoreDefaultLayout() {
+	if (!dockviewApi) return
+	clearProcessPanelHighlight()
+	dockviewApi.clear()
+	loadDefault(dockviewApi)
+	saveLayout()
 }
 </script>
 
 <template lang="pug">
-div
-	.text-h6.text-center Конструктор процессов
-	q-splitter.constructor-layout(v-model="listSize" :limits="[10, 35]")
-		template(v-slot:before)
-			.template-list
-				q-scroll-area.full-height
-					ProcessTemplateList(:templates="workflowPrototype.templates" :selected-id="selectedId" @select="chooseTemplate" @create="chooseTemplate(createTemplate())")
-		template(v-slot:after)
-			q-splitter.full-height(v-model="canvasSize" :limits="[45, 85]")
-				template(v-slot:before)
-					.editor-panel
-						ProcessConstructorToolbar(:name="draftName" :dirty="isDirty" :can-save="canSave" :can-run="canRun" :can-add-step="!!draft" @save="saveTemplate" @run="runTemplate" @add-step="addStep")
-						ProcessCanvas(v-if="draft" :key="selectedId" v-model:nodes="nodes" v-model:edges="edges" v-model:selected-node-id="selectedNodeId" @connect="connectNodes")
-						.empty-canvas(v-else)
-							.text-grey-7 Выберите шаблон слева или создайте новый процесс.
-				template(v-slot:after)
-					q-scroll-area.properties-panel
-						ProcessPropertiesPanel(v-model:name="draftName" v-model:category="draftCategory" v-model:enabled="draftEnabled" v-model:linked-template-ids="draftLinkedTemplateIds" v-model:node-label="nodeLabel" :draft="draft" :selected-node="selectedNode" :linked-template-options="linkedTemplateOptions" :can-delete="canDelete" @delete-step="deleteStep" @delete-template="confirmDelete = true")
-	DeleteProcessDialog(v-model="confirmDelete" :can-delete="canDelete" @confirm="removeTemplate")
+.template-constructor
+	.row.items-start.justify-between
+		.template-constructor-heading
+			.myblock
+				q-icon.fold(name="mdi-source-branch")
+				div
+					.zg {{ template?.name ?? 'Конструктор шаблонов' }}
+		.template-constructor-toolbar
+			.btngroup
+				q-btn(
+					flat
+					dense
+					size="sm"
+					color="primary"
+					icon="mdi-view-dashboard-outline"
+					label="Панели"
+				)
+					q-menu(@before-show="syncVisiblePanels")
+						q-list
+							q-item(
+								v-for="panel in panelDefinitions"
+								:key="panel.id"
+								tag="label"
+								dense
+							)
+								q-item-section
+									q-checkbox(
+										:model-value="visiblePanelIds.includes(panel.id)"
+										:label="panel.title"
+										dense
+										@update:model-value="togglePanel(panel.id)"
+									)
+							q-separator
+							q-item(
+								clickable
+								v-close-popup
+								@click="restoreDefaultLayout"
+							)
+								q-item-section Восстановить панели по умолчанию
+				q-separator.action-divider(vertical)
+				q-btn(
+					unelevated
+					color="primary"
+					label="Сохранить"
+					size="sm"
+				)
+				q-btn(
+					outline
+					color="primary"
+					label="Отмена"
+					size="sm"
+				)
+				q-btn(
+					round
+					flat
+					color="primary"
+					icon="mdi-sync"
+					size="sm"
+				)
+				q-chip(
+					size="sm"
+					color="amber"
+				) Есть изменения
+				q-chip(
+					size="sm"
+					color="blue-grey-3"
+					icon="mdi-lock"
+				) Заблокировано вами
+				q-btn(
+					flat
+					round
+					color="negative"
+					icon="mdi-delete-outline"
+					size="sm"
+				)
+					q-menu
+						q-list
+							q-item.pink(clickable)
+								q-item-section Удалить
+
+	.template-constructor-actions
+		q-chip(
+			color="blue-grey"
+			rounded
+			text-color="white"
+		) Шаблон
+
+		// q-btn(
+			flat
+			dense
+			size="sm"
+			color="primary"
+			icon="mdi-arrow-left-top-bold"
+			label="К мониторингу"
+			)
+
+		// q-btn(
+			flat
+			dense
+			size="sm"
+			color="primary"
+			icon="account_tree"
+			label="Открыть шаблон"
+			)
+		// q-btn(
+			flat
+			dense
+			size="sm"
+			color="primary"
+			icon="mdi-card-account-details-outline"
+			label="Открыть родительскую карточку"
+			)
+		// q-separator.action-divider(vertical)
+		q-btn.process-properties-button(
+			flat
+			dense
+			size="sm"
+			color="primary"
+			@click="openProcessProperties"
+		)
+			CharmNut.process-properties-button__icon.q-mr-sm
+			span Свойства процесса
+		q-btn(
+			flat
+			dense
+			size="sm"
+			color="primary"
+			icon="mdi-text-box-search-outline"
+			label="Журнал процесса"
+		)
+		q-separator.action-divider(vertical)
+		q-btn(
+			unelevated
+			dense
+			size="sm"
+			color="positive"
+			icon="mdi-play"
+			label="Запустить экземпляр"
+		)
+
+	.template-constructor-layout
+		DockviewVue.dockview-area(
+			:components="panelComponents"
+			:tab-components="tabComponents"
+			:theme="themeLight"
+			single-tab-mode="fullwidth"
+			@ready="onReady"
+		)
 </template>
 
-<style scoped>
-.constructor-layout { height: calc(100vh - 180px); }
-:deep(.q-splitter__separator) { background-color: transparent; }
-.template-list { height: 100%; margin-right: 0.5rem; }
-.editor-panel {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	min-width: 0;
-	margin: 0 0.5rem;
-	padding: 1rem;
-	border: 1px solid var(--my-border-color);
-	background: var(--bg-panel);
-}
-.properties-panel {
-	height: 100%;
-	padding: 0.5rem;
-	border: 1px solid var(--my-border-color);
-	background: var(--bg-panel);
-}
-.empty-canvas { display: grid; flex: 1; place-items: center; text-align: center; }
-</style>
+<style src="./ProcessConstructorContent.scss" lang="scss"></style>
