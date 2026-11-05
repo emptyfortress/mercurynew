@@ -341,6 +341,7 @@ function restoreDefaultLayout() {
 			color="positive"
 			icon="mdi-play"
 			label="Запустить экземпляр"
+			to="/dvmain/process/monitor?from=/dvmain/process"
 		)
 
 	.template-constructor-layout
