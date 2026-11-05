@@ -62,3 +62,76 @@ changing code unless I explicitly ask you to implement immediately.
 - Check important empty, loading, error and disabled states.
 
 Do not modify code during a review unless explicitly asked.
+
+## Development Conventions
+
+### Code Style
+
+- **Indentation**: 1 tab (configured in `.prettierrc.cjs`)
+- **Quotes**: Single quotes `'`
+- **Semicolons**: Omitted
+- **Trailing commas**: ES5 (objects/arrays, not function parameters)
+- **Line length**: 100 characters
+- **Vue attributes**: One attribute per line
+
+### TypeScript
+
+- Strict mode enabled
+- Path alias: `@/` maps to `./src/`
+- Vue plugin: `@vue/language-plugin-pug` for Pug template support
+- Configuration extends `@vue/tsconfig/tsconfig.dom.json`
+
+### Vue Components
+
+- Use Composition API with `<script setup>`
+- Pug templates supported
+- SCSS for styling
+- Quasar components and utilities
+
+### State Management (Pinia)
+
+The application uses extensive Pinia stores for different features:
+
+- `apps`, `forms`, `items`, `tree` - Core data
+- `selection`, `selectedTreeElement` - Selection state
+- `panels`, `controls`, `menu` - UI state
+- `diagram`, `flip`, `events` - BPMN and animation state
+- `decisionTree`, `conditions`, `options` - Decision logic
+- `onboarding`, `tour` - User guidance
+
+### Routing
+
+- Routes defined in `src/router/index.ts`
+- Route meta includes: `toolbar`, `back`, `count`, `save`, `footer`, `breadcrumbs`, `hideScroll`
+- Nested routes for details views (settings, publications)
+
+### Styling
+
+- Global styles in `src/assets/style/main.scss`
+- Quasar theming via `src/quasar-variables.scss`
+- CSS custom properties for consistent theming:
+  - `--rad`: Border radius
+  - `--shad0`, `--shad`: Shadow definitions
+  - `--dark2`, `--green`, `--dvviolet`: Color variables
+- Reduced motion support via `.reduce-motion` class
+
+### Key Features
+
+1. **Flip Navigation**: GSAP Flip plugin for smooth transitions
+2. **BPMN Integration**: bpmn-js for process diagram rendering
+3. **Drag-and-Drop**: Multiple DnD libraries for different use cases
+4. **Tree Navigation**: Hierarchical data with he-tree-vue
+5. **Onboarding**: Driver.js integration for user tours
+6. **Responsive Design**: Quasar grid and layout components
+
+## Testing
+
+No test framework currently configured. Test files would go in `src/**/__tests__/` (excluded from TypeScript build).
+
+## Deployment
+
+Configured for **Vercel** deployment (see `vercel.json`).
+
+## Additional Scripts
+
+- `rename-icon-names.ts` / `rename-icon-names.cjs` - Utility for batch renaming icon files
