@@ -33,7 +33,7 @@ q-page(padding)
 			v-for="item in sections",
 			:key='item.id',
 			:class="{dis : item.id > 6}"
-			@click='goto(item.to)'
+			v-on="item.id === 6 ? {} : { click: () => goto(item.to) }"
 		)
 			div {{ item.label }}
 			.process-links(v-if="item.id === 6")

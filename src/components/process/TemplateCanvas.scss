@@ -92,7 +92,7 @@
 	color: var(--q-primary);
 	cursor: pointer;
 }
-:global(.no-touch) .flow-map :deep(.vue-flow__controls-button:hover) {
+.no-touch .flow-map :deep(.vue-flow__controls-button:hover) {
 	background: rgb(0 0 0 / 6%);
 }
 .flow-map :deep(.vue-flow__controls-button svg) {

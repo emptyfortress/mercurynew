@@ -84,7 +84,7 @@ const router = createRouter({
 			path: '/dvmain/process/constructor',
 			name: 'processConstructor',
 			component: () => import('@/views/ProcessConstructor.vue'),
-			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
+			meta: { toolbar: false, back: false, back1: true, count: 0, save: false, breadcrumbs: true },
 		},
 		{
 			path: '/dvmain/process/constructor-layout',
