@@ -12,14 +12,18 @@ import {
 import GatewaySelectionDialog from './GatewaySelectionDialog.vue'
 import ProcessGatewayIcon from '../ProcessGatewayIcon.vue'
 
+const props = defineProps<{ readonly?: boolean }>()
+
 const selectionOpen = ref(false)
 const connectedIds = computed(() => connectedGateways.value.map((gateway) => gateway.id))
 const [gatewayList, gateways] = useDragAndDrop<ProcessGateway>([...connectedGateways.value], {
 	plugins: [animations()],
-	draggable: (element) => element.classList.contains('gateway-row'),
+	draggable: (element) => !props.readonly && element.classList.contains('gateway-row'),
 	dragPlaceholderClass: 'ghost',
 	synthDragPlaceholderClass: 'ghost',
-	onSort: ({ values }) => setProcessGateways(values.map((gateway) => gateway.id)),
+	onSort: ({ values }) => {
+		if (!props.readonly) setProcessGateways(values.map((gateway) => gateway.id))
+	},
 })
 
 watch(connectedGateways, (items) => {
@@ -48,12 +52,30 @@ watch(
 						ProcessGatewayIcon(:gateway-id="gateway.id" :icon="gateway.icon")
 						span {{ gateway.label }}
 				td.gateway-actions.text-right(@pointerdown.stop)
-					q-btn(flat round dense size="sm" color="secondary" icon="mdi-close" title="Удалить шлюз" @click.stop="removeProcessGateway(gateway.id)")
+					q-btn(
+						:disable="readonly"
+						flat
+						round
+						dense
+						size="sm"
+						color="secondary"
+						icon="mdi-close"
+						title="Удалить шлюз"
+						@click.stop="removeProcessGateway(gateway.id)"
+					)
 						q-tooltip Удалить шлюз
 			tr(v-if="!gateways.length")
 				td.text-center.text-grey-7.q-pa-lg(colspan="2") Шлюзы не подключены. Добавьте шлюз из списка доступных.
 	.row.justify-center
-		q-btn(flat dense color="primary" icon="mdi-plus" label="Добавить шлюз" @click="selectionOpen = true")
+		q-btn(
+			:disable="readonly"
+			flat
+			dense
+			color="primary"
+			icon="mdi-plus"
+			label="Добавить шлюз"
+			@click="selectionOpen = true"
+		)
 	GatewaySelectionDialog(v-model="selectionOpen" :connected-ids="connectedIds" @apply="setProcessGateways")
 </template>
 

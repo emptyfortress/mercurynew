@@ -5,6 +5,8 @@ import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
 import { createProcessVariable, defaultAdditionalSettings, type ProcessVariable } from '../processVariables'
 import { instance, processVariables } from '../singleMonitorLayoutState'
 
+const props = defineProps<{ readonly?: boolean }>()
+
 let suppressRowClick = false
 
 const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
@@ -14,10 +16,12 @@ const [variablesList, variables] = useDragAndDrop<ProcessVariable>(
 		onDragstart: () => {
 			suppressRowClick = true
 		},
-		draggable: (element) => element.classList.contains('variable-row'),
+		draggable: (element) => !props.readonly && element.classList.contains('variable-row'),
 		dragPlaceholderClass: 'ghost',
 		synthDragPlaceholderClass: 'ghost',
-		onSort: ({ values }) => { processVariables.value = [...values] },
+		onSort: ({ values }) => {
+			if (!props.readonly) processVariables.value = [...values]
+		},
 	}
 )
 
@@ -48,6 +52,7 @@ const typeOptions = [
 let nextCollectionValueId = 1
 
 function openEditor(variable?: ProcessVariable) {
+	if (props.readonly) return
 	editingId.value = variable?.id ?? null
 	advancedExpanded.value = false
 	Object.assign(draft, {
@@ -83,6 +88,7 @@ function validateName(value: string) {
 }
 
 function saveVariable() {
+	if (props.readonly) return
 	const values = {
 		...draft,
 		name: draft.name.trim(),
@@ -102,6 +108,7 @@ function saveVariable() {
 }
 
 function copyVariable(variable: ProcessVariable) {
+	if (props.readonly) return
 	openEditor(variable)
 	editingId.value = null
 	let name = `${variable.name}_копия`
@@ -113,6 +120,7 @@ function copyVariable(variable: ProcessVariable) {
 }
 
 function removeVariable(id: string) {
+	if (props.readonly) return
 	processVariables.value = processVariables.value.filter((variable) => variable.id !== id)
 }
 
@@ -157,26 +165,56 @@ function variableValue(variable: ProcessVariable) {
 					td.variable-value {{ variableValue(variable) }}
 					// td.variable-description {{ variable.description || '—' }}
 					td.actions-cell.text-right(@click.stop @pointerdown.stop)
-						q-btn(flat round dense size="sm" color="primary" icon="mdi-dots-vertical" title="Действия с переменной" @click.stop)
+						q-btn(
+							:disable="readonly"
+							flat
+							round
+							dense
+							size="sm"
+							color="primary"
+							icon="mdi-dots-vertical"
+							title="Действия с переменной"
+							@click.stop
+						)
 							q-menu(auto-close anchor="bottom right" self="top right")
 								q-list(dense)
-									q-item(clickable @click="openEditor(variable)")
+									q-item(
+										:disable="readonly"
+										clickable
+										@click="openEditor(variable)"
+									)
 										q-item-section(side)
 											q-icon(name="mdi-pencil-outline" color="primary" size='16px')
 										q-item-section Редактировать
-									q-item(clickable @click="copyVariable(variable)")
+									q-item(
+										:disable="readonly"
+										clickable
+										@click="copyVariable(variable)"
+									)
 										q-item-section(side)
 											q-icon(name="mdi-content-copy" color="primary" size='16px')
 										q-item-section Копировать
 									q-separator
-									q-item.text-negative(clickable @click="removeVariable(variable.id)")
+									q-item.text-negative(
+										:disable="readonly"
+										clickable
+										@click="removeVariable(variable.id)"
+									)
 										q-item-section(side)
 											q-icon(name="mdi-delete-outline" color="negative"  size='16px')
 										q-item-section Удалить
 				tr(v-if="!variables.length")
 					td.text-center.text-grey-7.q-pa-lg(colspan="6") Переменных пока нет. Добавьте первую переменную.
 	.row.justify-center
-		q-btn(flat dense color="primary" icon="mdi-plus" label="Добавить переменную" @click="openEditor()")
+		q-btn(
+			:disable="readonly"
+			flat
+			dense
+			color="primary"
+			icon="mdi-plus"
+			label="Добавить переменную"
+			@click="openEditor()"
+		)
 
 	q-dialog(v-model="editorOpen" backdrop-filter="blur(4px) saturate(150%)")
 		q-card.variable-editor
@@ -186,35 +224,131 @@ function variableValue(variable: ProcessVariable) {
 					.text-h6 {{ editingId ? 'Редактирование переменной' : 'Новая переменная' }}
 				q-card-section.q-pt-none
 					.column.q-gutter-md
-						q-input(v-model="draft.name" label="Название" dense outlined autofocus :rules="[validateName]" lazy-rules hide-bottom-space)
-						q-select(v-model="draft.type" :options="typeOptions" label="Тип" dense outlined options-dense)
+						q-input(
+							:readonly="readonly"
+							v-model="draft.name"
+							label="Название"
+							dense
+							outlined
+							autofocus
+							:rules="[validateName]"
+							lazy-rules
+							hide-bottom-space
+						)
+						q-select(
+							:readonly="readonly"
+							v-model="draft.type"
+							:options="typeOptions"
+							label="Тип"
+							dense
+							outlined
+							options-dense
+						)
 						.row.justify-between
-							q-checkbox.text-black(v-model="draft.isRequired" label="Обязательная" dense)
-							q-checkbox.text-black(v-model="draft.isCollection" label="Коллекция значений" dense @update:model-value="onCollectionChange")
+							q-checkbox.text-black(
+								:disable="readonly"
+								v-model="draft.isRequired"
+								label="Обязательная"
+								dense
+							)
+							q-checkbox.text-black(
+								:disable="readonly"
+								v-model="draft.isCollection"
+								label="Коллекция значений"
+								dense
+								@update:model-value="onCollectionChange"
+							)
 						div(v-if="draft.isCollection")
 							.text-subtitle2.q-mb-sm Значения коллекции
 							q-list.collection-values(v-if="draft.collectionValues.length" bordered separator)
 								q-item(v-for="(item, index) in draft.collectionValues" :key="item.id" dense)
 									q-item-section
-										q-input(v-model="item.value" :label="`Значение ${index + 1}`" dense outlined hide-bottom-space @keydown.enter.prevent="addCollectionValue()")
+										q-input(
+											:readonly="readonly"
+											v-model="item.value"
+											:label="`Значение ${index + 1}`"
+											dense
+											outlined
+											hide-bottom-space
+											@keydown.enter.prevent="addCollectionValue()"
+										)
 									q-item-section(side)
-										q-btn(flat round dense size="sm" color="secondary" icon="mdi-close" title="Удалить значение" @click="draft.collectionValues.splice(index, 1)")
+										q-btn(
+											:disable="readonly"
+											flat
+											round
+											dense
+											size="sm"
+											color="secondary"
+											icon="mdi-close"
+											title="Удалить значение"
+											@click="draft.collectionValues.splice(index, 1)"
+										)
 											q-tooltip Удалить значение
 							.text-caption.text-grey-7(v-else) В коллекции пока нет значений.
-							q-btn.q-mt-sm(flat dense color="primary" icon="mdi-plus" label="Добавить значение" @click="addCollectionValue()")
-						q-input(v-else v-model="draft.value" label="Значение" dense outlined)
-						q-input(v-model="draft.description" label="Описание" type="textarea" rows="3" dense outlined)
+							q-btn.q-mt-sm(
+								:disable="readonly"
+								flat
+								dense
+								color="primary"
+								icon="mdi-plus"
+								label="Добавить значение"
+								@click="addCollectionValue()"
+							)
+						q-input(
+							:readonly="readonly"
+							v-else
+							v-model="draft.value"
+							label="Значение"
+							dense
+							outlined
+						)
+						q-input(
+							:readonly="readonly"
+							v-model="draft.description"
+							label="Описание"
+							type="textarea"
+							rows="3"
+							dense
+							outlined
+						)
 						q-expansion-item.variable-advanced(v-model="advancedExpanded" label="Дополнительно" dense expand-separator header-class="text-primary")
 							.column.q-gutter-sm.q-pa-sm
-								q-checkbox.text-black(v-model="draft.saveHistory" label="Сохранять историю значений при исполнении бизнес-процесса" dense)
+								q-checkbox.text-black(
+									:disable="readonly"
+									v-model="draft.saveHistory"
+									label="Сохранять историю значений при исполнении бизнес-процесса"
+									dense
+								)
 								q-checkbox.text-black(:model-value="draft.isRequired" label="Значение переменной должно быть задано при создании экземпляра бизнес-процесса" dense disable)
-								q-checkbox.text-black(v-model="draft.addedAtRuntime" label="Переменная была добавлена при выполнении бизнес-процесса" dense)
+								q-checkbox.text-black(
+									:disable="readonly"
+									v-model="draft.addedAtRuntime"
+									label="Переменная была добавлена при выполнении бизнес-процесса"
+									dense
+								)
 								q-checkbox.text-black(:model-value="draft.isCollection" label="Коллекция значений" dense disable)
-								q-checkbox.text-black(v-model="draft.copyOnCreate" label="Создавать копию значения переменной при создании экземпляра бизнес-процесса" dense)
-								q-checkbox.text-black(v-model="draft.hiddenFromParent" label="Скрыта от родительского процесса" dense)
+								q-checkbox.text-black(
+									:disable="readonly"
+									v-model="draft.copyOnCreate"
+									label="Создавать копию значения переменной при создании экземпляра бизнес-процесса"
+									dense
+								)
+								q-checkbox.text-black(
+									:disable="readonly"
+									v-model="draft.hiddenFromParent"
+									label="Скрыта от родительского процесса"
+									dense
+								)
 				q-card-actions(align="right")
 					q-btn(flat color="primary" label="Отмена" v-close-popup)
-					q-btn(unelevated color="primary" :label="editingId ? 'Сохранить' : 'Добавить'" type="submit")
+					q-btn(
+						:disable="readonly"
+						unelevated
+						color="primary"
+						:label="editingId ? 'Сохранить' : 'Добавить'"
+						type="submit"
+					)
 </template>
 
 <style scoped lang="scss">

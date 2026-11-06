@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { instance } from './singleMonitorLayoutState'
+import { instance, isInstanceEditing, pauseInstance } from './singleMonitorLayoutState'
 
 const props = defineProps<{ params: { api: { close: () => void } } }>()
 
@@ -21,7 +21,16 @@ const legendItems = [
 	.text-subtitle2.editor-tab-title Редактор экземпляра {{ instance.id }}
 	.row.items-center.q-gutter-xs.editor-tab-actions
 		q-btn(flat dense size="sm" color="positive" icon="mdi-play" label="Старт")
-		q-btn(flat dense size="sm" color="primary" icon="mdi-pause" label="Пауза")
+		q-btn(
+			flat
+			dense
+			size="sm"
+			color="primary"
+			icon="mdi-pause"
+			label="Пауза"
+			:disable="isInstanceEditing"
+			@click="pauseInstance"
+		)
 		q-btn(flat dense size="sm" color="negative" icon="mdi-stop" label="Стоп")
 	.row.items-center.q-gutter-xs.editor-tab-end
 		q-btn(flat dense size="sm" color="primary" icon="mdi-shape-outline" label="Легенда")

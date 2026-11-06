@@ -25,6 +25,8 @@ export interface WorkflowInstance {
 	priority?: string
 	gatewayIds?: string[]
 	variables?: ProcessVariable[]
+	nodes?: Node[]
+	edges?: Edge[]
 	status: WorkflowStatus
 	currentStep: string
 	startedAt: string

@@ -1,7 +1,7 @@
 import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import type { Node } from '@vue-flow/core'
-import { workflowPrototype } from '@/composables/useWorkflowPrototype'
+import { workflowPrototype, type WorkflowInstance } from '@/composables/useWorkflowPrototype'
 import type { EdgeType } from '../states/types'
 import { processGatewayCatalog } from './processGateways'
 import { createDefaultProcessVariables } from './processVariables'
@@ -28,6 +28,9 @@ export const selectedNode: Ref<Node | null> = ref(null)
 export const search = ref<string | null>('')
 export const nodeSelectionRequest = ref<{ id: string; sequence: number } | null>(null)
 export const diagramSaveRequest = ref(0)
+export const diagramReloadRequest = ref(0)
+export const isInstanceEditing = ref(false)
+let instanceSnapshot: WorkflowInstance | null = null
 export const edgeType = ref<EdgeType>('smoothstep')
 let nodeSelectionSequence = 0
 export const filteredNodes = computed(() => template.value.nodes.filter((node) =>
@@ -39,10 +42,34 @@ export function requestNodeSelection(id: string) {
 }
 
 export function saveProcessDiagram() {
+	if (!isInstanceEditing.value) return
 	diagramSaveRequest.value += 1
+	instanceSnapshot = null
+	isInstanceEditing.value = false
+}
+
+export function pauseInstance() {
+	if (isInstanceEditing.value) return
+	instance.value.status = 'Приостановлен'
+	instanceSnapshot = JSON.parse(JSON.stringify(instance.value)) as WorkflowInstance
+	isInstanceEditing.value = true
+}
+
+export function cancelInstanceEditing() {
+	if (instanceSnapshot) {
+		for (const key of Object.keys(instance.value)) {
+			if (!(key in instanceSnapshot)) Reflect.deleteProperty(instance.value, key)
+		}
+		Object.assign(instance.value, instanceSnapshot)
+	}
+	instanceSnapshot = null
+	isInstanceEditing.value = false
+	selectedNode.value = null
+	diagramReloadRequest.value += 1
 }
 
 export function setActiveInstance(id: string) {
+	cancelInstanceEditing()
 	activeInstanceId.value = id
 	selectedNode.value = null
 }

@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import type { Node } from '@vue-flow/core'
 import { getNodeExecutionState, processNodeExecutionStateOptions, type ProcessNodeExecutionState } from '../processNodeExecutionState'
 
-const props = defineProps<{ node: Node }>()
+const props = defineProps<{ node: Node; readonly?: boolean }>()
 const currentState = computed({
 	get: () => getNodeExecutionState(props.node),
 	set: (value: ProcessNodeExecutionState) => { props.node.data.executionState = value },
@@ -20,7 +20,18 @@ const processingStats = [
 <template lang="pug">
 .node-instances-settings
 	.text-caption.text-grey-9 Просмотр состояния функции.
-	q-select(v-model="currentState" :options="processNodeExecutionStateOptions" label="Текущее состояние" emit-value map-options dense outlined options-dense hide-bottom-space)
+	q-select(
+		:readonly="readonly"
+		v-model="currentState"
+		:options="processNodeExecutionStateOptions"
+		label="Текущее состояние"
+		emit-value
+		map-options
+		dense
+		outlined
+		options-dense
+		hide-bottom-space
+	)
 	q-separator
 	section.settings-section
 		.text-subtitle2 Время обработки

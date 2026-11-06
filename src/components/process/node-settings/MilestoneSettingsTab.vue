@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import ProcessValueInput from '../ProcessValueInput.vue'
 import type { ProcessValue } from '../processValue'
 
+const props = defineProps<{ readonly?: boolean }>()
+
 const isMilestone = ref(false)
 const timingMode = ref('absolute')
 const absoluteDate = ref<ProcessValue>(null)
@@ -17,17 +19,53 @@ const timeUnitOptions = [
 <template lang="pug">
 .node-milestone-settings
 	.text-caption.text-grey-9 Настройка вехи процесса, связанной с функцией.
-	q-checkbox.text-black(v-model="isMilestone" label="Функция является вехой" dense)
+	q-checkbox.text-black(
+		:disable="readonly"
+		v-model="isMilestone"
+		label="Функция является вехой"
+		dense
+	)
 	.milestone-timing
 		.timing-mode
-			q-radio(v-model="timingMode" val="absolute" label="По абсолютной дате" :disable="!isMilestone" dense)
+			q-radio(
+				v-model="timingMode"
+				val="absolute"
+				label="По абсолютной дате"
+				:disable="readonly || (!isMilestone)"
+				dense
+			)
 			.timing-value
-				ProcessValueInput(v-model="absoluteDate" type="Дата и время" label="Дата вехи" :disable="!isMilestone || timingMode !== 'absolute'")
+				ProcessValueInput(
+					:readonly="readonly"
+					v-model="absoluteDate"
+					type="Дата и время"
+					label="Дата вехи"
+					:disable="!isMilestone || timingMode !== 'absolute'"
+				)
 		.timing-mode
-			q-radio(v-model="timingMode" val="relative" label="Относительно времени запуска процесса / последнего завершения функции" :disable="!isMilestone" dense)
+			q-radio(
+				v-model="timingMode"
+				val="relative"
+				label="Относительно времени запуска процесса / последнего завершения функции"
+				:disable="readonly || (!isMilestone)"
+				dense
+			)
 			.timing-value
-				ProcessValueInput(v-model="relativeInterval" type="Целое число" label="Интервал" :disable="!isMilestone || timingMode !== 'relative'")
-				q-option-group(v-model="timeUnit" :options="timeUnitOptions" type="radio" inline dense :disable="!isMilestone || timingMode !== 'relative'")
+				ProcessValueInput(
+					:readonly="readonly"
+					v-model="relativeInterval"
+					type="Целое число"
+					label="Интервал"
+					:disable="!isMilestone || timingMode !== 'relative'"
+				)
+				q-option-group(
+					v-model="timeUnit"
+					:options="timeUnitOptions"
+					type="radio"
+					inline
+					dense
+					:disable="readonly || (!isMilestone || timingMode !== 'relative')"
+				)
 </template>
 
 <style scoped lang="scss">

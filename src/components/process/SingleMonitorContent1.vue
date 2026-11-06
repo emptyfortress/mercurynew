@@ -9,8 +9,14 @@ import LibraryPanel from './ConstructorLibraryPanel.vue'
 import EditorPanel from './ConstructorEditorPanel.vue'
 import EditorTab from './ConstructorEditorTab.vue'
 import NodeSettingsPanel from './ConstructorNodeSettingsPanel.vue'
-import { instance, saveProcessDiagram, setActiveInstance } from './singleMonitorLayoutState'
-import ProcessLogDialog from './ProcessLogDialog.vue'
+import {
+	cancelInstanceEditing,
+	instance,
+	isInstanceEditing,
+	saveProcessDiagram,
+	setActiveInstance,
+} from './singleMonitorLayoutState'
+import ProcessLogPanel from './ProcessLogPanel.vue'
 import { processStatusColor } from './processStatusColor'
 import CharmNut from '@/components/icons/CharmNut.vue'
 
@@ -18,15 +24,16 @@ const route = useRoute()
 const router = useRouter()
 const homePath = computed(() => processHomePath(route.query.from))
 const statusColor = computed(() => processStatusColor(instance.value.status))
-const isProcessLogOpen = ref(false)
 const visiblePanelIds = ref<string[]>([])
-const LAYOUT_STORAGE_KEY = 'dv-layout-single-monitor-v2'
+const LAYOUT_STORAGE_KEY = 'dv-layout-single-monitor-v3'
+const LEGACY_LAYOUT_STORAGE_KEY = 'dv-layout-single-monitor-v2'
 let dockviewApi: DockviewApi | null = null
 let layoutSubscription: ReturnType<DockviewApi['onDidLayoutChange']> | null = null
 let highlightedProcessGroup: HTMLElement | null = null
 let processHighlightTimeout: ReturnType<typeof setTimeout> | undefined
 
 onBeforeUnmount(() => {
+	cancelInstanceEditing()
 	clearProcessPanelHighlight()
 	saveLayout()
 	layoutSubscription?.dispose()
@@ -36,7 +43,7 @@ onBeforeUnmount(() => {
 watch(
 	() => String(route.query.instance ?? ''),
 	(instanceId) => {
-		if (instanceId) setActiveInstance(instanceId)
+		setActiveInstance(instanceId || instance.value.id)
 	},
 	{ immediate: true }
 )
@@ -46,6 +53,7 @@ const panelComponents = markRaw({
 	constructorLibrary: LibraryPanel,
 	constructorEditor: EditorPanel,
 	constructorNodeSettings: NodeSettingsPanel,
+	processLog: ProcessLogPanel,
 }) as any
 const tabComponents = markRaw({ constructorEditorHeader: EditorTab }) as any
 
@@ -74,13 +82,21 @@ const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
 		id: 'process',
 		component: 'constructorProcessSettings',
 		title: 'Процесс',
-		position: { referencePanel: 'node', direction: 'below' },
+		position: { referencePanel: 'editor', direction: 'right' },
+		initialWidth: 280,
+	},
+	{
+		id: 'log',
+		component: 'processLog',
+		title: 'Журнал процесса',
+		position: { referencePanel: 'editor', direction: 'below' },
+		initialHeight: 260,
 	},
 ]
 
 function loadDefault(api: DockviewApi) {
 	for (const panel of panelDefinitions) {
-		if (panel.id !== 'process') api.addPanel(panel)
+		if (panel.id === 'editor' || panel.id === 'process' || panel.id === 'log') api.addPanel(panel)
 	}
 }
 
@@ -140,10 +156,12 @@ function onReady(event: DockviewReadyEvent) {
 	dockviewApi = event.api
 	let restored = false
 	try {
-		const saved = localStorage.getItem(LAYOUT_STORAGE_KEY)
+		const currentLayout = localStorage.getItem(LAYOUT_STORAGE_KEY)
+		const saved = currentLayout ?? localStorage.getItem(LEGACY_LAYOUT_STORAGE_KEY)
 		if (saved) {
 			dockviewApi.fromJSON(JSON.parse(saved))
 			dockviewApi.getPanel('node')?.api.setTitle('Свойства')
+			if (!currentLayout && !dockviewApi.getPanel('log')) togglePanel('log')
 			restored = true
 		}
 	} catch (error) {
@@ -205,17 +223,18 @@ function openTemplate() {
 							q-separator
 							q-item(clickable v-close-popup @click="restoreDefaultLayout")
 								q-item-section Восстановить панели по умолчанию
-				q-separator.action-divider(vertical)
-				q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="saveProcessDiagram")
-				q-btn(outline color="primary" label="Отмена" size="sm")
-				q-btn(round flat color="primary" icon="mdi-sync" size="sm")
-				q-chip(size="sm" color="amber") Есть изменения
-				q-chip(size="sm" color="blue-grey-3" icon="mdi-lock") Заблокировано вами
-				q-btn(flat round color="negative" icon="mdi-delete-outline" size="sm")
-					q-menu
-						q-list
-							q-item.pink(clickable)
-								q-item-section Удалить
+				template(v-if="isInstanceEditing")
+					q-separator.action-divider(vertical)
+					q-btn(unelevated color="primary" label="Сохранить" size="sm" @click="saveProcessDiagram")
+					q-btn(outline color="primary" label="Отмена" size="sm" @click="cancelInstanceEditing")
+					q-btn(round flat color="primary" icon="mdi-sync" size="sm")
+					q-chip(size="sm" color="amber") Есть изменения
+					q-chip(size="sm" color="blue-grey-3" icon="mdi-lock") Заблокировано вами
+					q-btn(flat round color="negative" icon="mdi-delete-outline" size="sm")
+						q-menu
+							q-list
+								q-item.pink(clickable)
+									q-item-section Удалить
 
 	.single-monitor-actions
 		q-chip(:color="statusColor" rounded text-color="white") {{ instance.status }}
@@ -226,11 +245,9 @@ function openTemplate() {
 		q-btn.process-properties-button(flat dense size="sm" color="primary" @click="openProcessProperties")
 			CharmNut.process-properties-button__icon.q-mr-sm
 			span Свойства процесса
-		q-btn(flat dense size="sm" color="primary" icon="mdi-text-box-search-outline" label="Журнал процесса" @click="isProcessLogOpen = true")
 
 	.single-monitor-layout
 		DockviewVue.dockview-area(:components="panelComponents" :tab-components="tabComponents" :theme="themeLight" single-tab-mode="fullwidth" @ready="onReady")
-	ProcessLogDialog(v-model="isProcessLogOpen")
 </template>
 
 <style lang="scss">

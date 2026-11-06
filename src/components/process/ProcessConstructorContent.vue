@@ -325,14 +325,6 @@ function restoreDefaultLayout() {
 		)
 			CharmNut.process-properties-button__icon.q-mr-sm
 			span Свойства процесса
-		q-btn(
-			flat
-			dense
-			size="sm"
-			color="primary"
-			icon="mdi-text-box-search-outline"
-			label="Журнал процесса"
-		)
 		q-separator.action-divider(vertical)
 		q-btn(
 			unelevated

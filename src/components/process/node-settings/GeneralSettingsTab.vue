@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import type { Node } from '@vue-flow/core'
 import { processVariables } from '../singleMonitorLayoutState'
 
-const props = defineProps<{ node: Node }>()
+const props = defineProps<{ node: Node; readonly?: boolean }>()
 const name = computed({
 	get: () => String(props.node.data.label ?? ''),
 	set: (value: string | number | null) => { props.node.data.label = String(value ?? '') },
@@ -33,15 +33,64 @@ const codeVariableOptions = computed(() => variableOptions('Целое числ�
 	.text-caption.text-grey-9 Настройка поведения функции в процессе.
 	section.settings-section
 		.text-subtitle2 Общая информация
-		q-input(v-model="name" label="Название" dense outlined hide-bottom-space)
-		q-input(v-model="description" label="Описание" type="textarea" rows="3" dense outlined hide-bottom-space)
+		q-input(
+			:readonly="readonly"
+			v-model="name"
+			label="Название"
+			dense
+			outlined
+			hide-bottom-space
+		)
+		q-input(
+			:readonly="readonly"
+			v-model="description"
+			label="Описание"
+			type="textarea"
+			rows="3"
+			dense
+			outlined
+			hide-bottom-space
+		)
 	q-separator
-	q-input.numeric-setting(v-model.number="pollingPeriod" label="Период опроса" type="number" min="0" step="1" suffix="мин" dense outlined hide-bottom-space)
+	q-input.numeric-setting(
+		:readonly="readonly"
+		v-model.number="pollingPeriod"
+		label="Период опроса"
+		type="number"
+		min="0"
+		step="1"
+		suffix="мин"
+		dense
+		outlined
+		hide-bottom-space
+	)
 	q-separator
 	section.settings-section
 		.text-subtitle2 Обработка ошибок
-		q-select(v-model="errorDescriptionVariable" label="Переменная для описания ошибки" :options="descriptionVariableOptions" emit-value map-options dense outlined options-dense hide-bottom-space)
-		q-select(v-model="errorCodeVariable" label="Переменная для кода ошибки" :options="codeVariableOptions" emit-value map-options dense outlined options-dense hide-bottom-space)
+		q-select(
+			:readonly="readonly"
+			v-model="errorDescriptionVariable"
+			label="Переменная для описания ошибки"
+			:options="descriptionVariableOptions"
+			emit-value
+			map-options
+			dense
+			outlined
+			options-dense
+			hide-bottom-space
+		)
+		q-select(
+			:readonly="readonly"
+			v-model="errorCodeVariable"
+			label="Переменная для кода ошибки"
+			:options="codeVariableOptions"
+			emit-value
+			map-options
+			dense
+			outlined
+			options-dense
+			hide-bottom-space
+		)
 </template>
 
 <style scoped lang="scss">

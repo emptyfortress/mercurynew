@@ -18,7 +18,7 @@ import LucideShuffle from '@/components/icons/LucideShuffle.vue'
 import ProcessBranchIcon from '@/components/icons/ProcessBranchIcon.vue'
 import LucideTrash2 from '@/components/icons/LucideTrash2.vue'
 import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
-import { connectedGateways } from './singleMonitorLayoutState'
+import { connectedGateways, isInstanceEditing } from './singleMonitorLayoutState'
 import ProcessGatewayIcon from './ProcessGatewayIcon.vue'
 import { getProcessGatewayNode } from './processGateways'
 import { circularProcessNodeTypes, diamondProcessNodeTypes } from './processNodeShapes'
@@ -84,6 +84,7 @@ watch([normalizedSearch, connectedGateways], ([query]) => {
 })
 
 function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
+	if (!isInstanceEditing.value) return
 	if (!event.dataTransfer) return
 	const shape =
 		getProcessGatewayNode(item.id)?.shape ??
@@ -113,7 +114,7 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 			q-list(dense)
 				template(v-for="(group, groupIndex) in filteredGroups" :key="groupIndex")
 					q-separator.q-my-xs(v-if="groupIndex > 0")
-					q-item.library-item(v-for="item in group" :key="item.id" clickable :draggable="true" @dragstart="startNodeDrag($event, item)")
+					q-item.library-item(v-for="item in group" :key="item.id" clickable :draggable="isInstanceEditing" @dragstart="startNodeDrag($event, item)")
 						q-item-section(side)
 							component.library-item-icon(:is="item.icon")
 						q-item-section
@@ -131,7 +132,7 @@ function startNodeDrag(event: DragEvent, item: { id: string; label: string }) {
 					ProcessGatewayIcon(:gateway-id="gateway.id" :icon="gateway.icon")
 				q-item-section.text-bold {{ gateway.label }}
 			q-list(v-if="gateway.nodes" dense)
-				q-item.library-item(v-for="item in gateway.nodes" :key="item.id" clickable :draggable="true" @dragstart="startNodeDrag($event, item)")
+				q-item.library-item(v-for="item in gateway.nodes" :key="item.id" clickable :draggable="isInstanceEditing" @dragstart="startNodeDrag($event, item)")
 					q-item-section(side)
 						component.library-item-icon(:is="item.icon")
 					q-item-section

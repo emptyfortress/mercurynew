@@ -3,7 +3,7 @@ import { computed, reactive, ref } from 'vue'
 import { workflowStatuses, type WorkflowInstance } from '@/composables/useWorkflowPrototype'
 import ProcessLogDialog from '../ProcessLogDialog.vue'
 
-const props = defineProps<{ process: WorkflowInstance }>()
+const props = defineProps<{ process: WorkflowInstance; readonly?: boolean }>()
 const description = computed({
 	get: () => props.process.description ?? '',
 	set: (value: string) => { props.process.description = value },
@@ -38,13 +38,52 @@ const processDetails = [
 	.text-caption.text-grey-9 Настройка общих параметров процесса.
 	section.settings-section
 		.text-subtitle2 Общая информация
-		q-input(v-model="process.templateName" label="Название" dense outlined hide-bottom-space)
-		q-input(v-model="description" label="Описание" type="textarea" rows="3" dense outlined hide-bottom-space)
+		q-input(
+			:readonly="readonly"
+			v-model="process.templateName"
+			label="Название"
+			dense
+			outlined
+			hide-bottom-space
+		)
+		q-input(
+			:readonly="readonly"
+			v-model="description"
+			label="Описание"
+			type="textarea"
+			rows="3"
+			dense
+			outlined
+			hide-bottom-space
+		)
 		.settings-grid
-			q-select(v-model="process.status" :options="statusOptions" label="Состояние процесса" dense outlined hide-bottom-space options-dense)
-			q-select(v-model="priority" :options="priorityOptions" label="Приоритет" dense outlined hide-bottom-space options-dense)
+			q-select(
+				readonly
+				v-model="process.status"
+				:options="statusOptions"
+				label="Состояние процесса"
+				dense
+				outlined
+				hide-bottom-space
+				options-dense
+			)
+			q-select(
+				:readonly="readonly"
+				v-model="priority"
+				:options="priorityOptions"
+				label="Приоритет"
+				dense
+				outlined
+				hide-bottom-space
+				options-dense
+			)
 		.column.q-gutter-sm
-			q-checkbox.text-black(v-model="settings.canUseAsSubprocess" label="Может использоваться как подпроцесс" dense)
+			q-checkbox.text-black(
+				:disable="readonly"
+				v-model="settings.canUseAsSubprocess"
+				label="Может использоваться как подпроцесс"
+				dense
+			)
 			q-checkbox.text-black(v-model="settings.singleActiveInstance" label="Разрешен один активный экземпляр процесса" dense disable)
 	q-separator
 	dl.process-details
@@ -53,8 +92,29 @@ const processDetails = [
 			dd {{ detail.value }}
 	q-separator
 	.numeric-settings
-		q-input.numeric-setting(v-model.number="settings.refreshPeriod" label="Период обновления" type="number" min="0" step="1" dense outlined hide-bottom-space)
-		q-input.numeric-setting(v-model.number="settings.processingQuantum" label="Квант обработки" type="number" min="0" step="1" suffix="сек" dense outlined hide-bottom-space)
+		q-input.numeric-setting(
+			:readonly="readonly"
+			v-model.number="settings.refreshPeriod"
+			label="Период обновления"
+			type="number"
+			min="0"
+			step="1"
+			dense
+			outlined
+			hide-bottom-space
+		)
+		q-input.numeric-setting(
+			:readonly="readonly"
+			v-model.number="settings.processingQuantum"
+			label="Квант обработки"
+			type="number"
+			min="0"
+			step="1"
+			suffix="сек"
+			dense
+			outlined
+			hide-bottom-space
+		)
 	.row.justify-center
 		q-btn(flat dense color="primary" icon="mdi-text-box-search-outline" label="Журнал" @click="isProcessLogOpen = true")
 	ProcessLogDialog(v-model="isProcessLogOpen")

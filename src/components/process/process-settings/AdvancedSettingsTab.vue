@@ -2,6 +2,8 @@
 import { reactive } from 'vue'
 import { workflowPrototype } from '@/composables/useWorkflowPrototype'
 
+const props = defineProps<{ readonly?: boolean }>()
+
 const settings = reactive({
 	initiatingDocumentTypes: [] as string[],
 	businessCalendar: null as string | null,
@@ -55,12 +57,63 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 		q-list.document-types(bordered dense)
 			q-item(v-for="documentType in documentTypes" :key="documentType" tag="label" dense)
 				q-item-section
-					q-checkbox.text-black(v-model="settings.initiatingDocumentTypes" :val="documentType" :label="documentType" dense size="sm")
-	q-select(v-model="settings.businessCalendar" :options="calendarOptions" label="Бизнес-календарь" dense outlined options-dense clearable hide-bottom-space)
-	q-select(v-model="settings.documentVariable" :options="documentVariableOptions" label="Сохранять инициирующий документ в переменную" dense outlined options-dense clearable hide-bottom-space)
-	q-select(v-model="settings.responsible" :options="responsibleOptions" label="Ответственный за бизнес-процесс" dense outlined options-dense clearable hide-bottom-space)
-	q-select(v-model="settings.executionMode" :options="executionModeOptions" label="Режим исполнения" dense outlined options-dense hide-bottom-space)
-	q-checkbox.text-black(v-model="settings.protectScript" label="Защитить сценарий процесса" dense)
+					q-checkbox.text-black(
+						:disable="readonly"
+						v-model="settings.initiatingDocumentTypes"
+						:val="documentType"
+						:label="documentType"
+						dense
+						size="sm"
+					)
+	q-select(
+		:readonly="readonly"
+		v-model="settings.businessCalendar"
+		:options="calendarOptions"
+		label="Бизнес-календарь"
+		dense
+		outlined
+		options-dense
+		clearable
+		hide-bottom-space
+	)
+	q-select(
+		:readonly="readonly"
+		v-model="settings.documentVariable"
+		:options="documentVariableOptions"
+		label="Сохранять инициирующий документ в переменную"
+		dense
+		outlined
+		options-dense
+		clearable
+		hide-bottom-space
+	)
+	q-select(
+		:readonly="readonly"
+		v-model="settings.responsible"
+		:options="responsibleOptions"
+		label="Ответственный за бизнес-процесс"
+		dense
+		outlined
+		options-dense
+		clearable
+		hide-bottom-space
+	)
+	q-select(
+		:readonly="readonly"
+		v-model="settings.executionMode"
+		:options="executionModeOptions"
+		label="Режим исполнения"
+		dense
+		outlined
+		options-dense
+		hide-bottom-space
+	)
+	q-checkbox.text-black(
+		:disable="readonly"
+		v-model="settings.protectScript"
+		label="Защитить сценарий процесса"
+		dense
+	)
 	q-list.rounded-borders(
 		bordered
 		separator
@@ -73,6 +126,7 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 		)
 			.logging-settings.q-pa-md
 				q-select(
+					:readonly="readonly"
 					v-model="loggingSettings.level"
 					:options="loggingLevelOptions"
 					label="Уровень журналирования"
@@ -84,6 +138,7 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 				fieldset.logging-settings__cleanup
 					legend.logging-settings__legend Стратегия очистки журнала
 					q-radio.text-black(
+						:disable="readonly"
 						v-model="loggingSettings.cleanupStrategy"
 						val="none"
 						label="Не очищать"
@@ -91,6 +146,7 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 					)
 					.logging-settings__strategy
 						q-radio.text-black(
+							:disable="readonly"
 							v-model="loggingSettings.cleanupStrategy"
 							val="count"
 							label="Оставлять не более чем"
@@ -98,6 +154,7 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 						)
 						.logging-settings__limit
 							q-input.logging-settings__number(
+								:readonly="readonly"
 								v-model.number="loggingSettings.maxMessages"
 								type="number"
 								min="0"
@@ -111,6 +168,7 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 							span сообщений
 					.logging-settings__strategy
 						q-radio.text-black(
+							:disable="readonly"
 							v-model="loggingSettings.cleanupStrategy"
 							val="age"
 							label="Удалять сообщения старше чем"
@@ -118,6 +176,7 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 						)
 						.logging-settings__limit
 							q-input.logging-settings__number(
+								:readonly="readonly"
 								v-model.number="loggingSettings.maxAgeDays"
 								type="number"
 								min="0"
@@ -137,12 +196,14 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 		)
 			.completion-settings.q-pa-md
 				q-radio.text-black(
+					:disable="readonly"
 					v-model="completionSettings.action"
 					val="none"
 					label="Ничего не делать"
 					dense
 				)
 				q-radio.text-black(
+					:disable="readonly"
 					v-model="completionSettings.action"
 					val="delete"
 					label="Удалить процесс"
@@ -152,10 +213,11 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 					q-checkbox.text-black(
 						v-model="completionSettings.permanentDeletion"
 						label="Окончательное удаление"
-						:disable="completionSettings.action !== 'delete'"
+						:disable="readonly || (completionSettings.action !== 'delete')"
 						dense
 					)
 				q-radio.text-black(
+					:disable="readonly"
 					v-model="completionSettings.action"
 					val="archive"
 					label="Архивировать процесс"
@@ -165,7 +227,7 @@ const executionModeOptions = ['x86', 'x64', 'Любой', 'Определить 
 					q-checkbox.text-black(
 						v-model="completionSettings.delayedArchiving"
 						label="Отложенное архивирование"
-						:disable="completionSettings.action !== 'archive'"
+						:disable="readonly || (completionSettings.action !== 'archive')"
 						dense
 					)
 </template>

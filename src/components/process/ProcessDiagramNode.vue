@@ -30,6 +30,7 @@ const props = withDefaults(defineProps<{
 	id?: string
 	type?: string
 	selected?: boolean
+	readonly?: boolean
 	executing?: boolean
 	data: {
 		label?: string
@@ -109,7 +110,7 @@ function onResizeEnd({ params }: OnResizeEnd) {
 
 <template lang="pug">
 .process-diagram-node(:class="[`process-diagram-node--${shape}`, { 'is-selected': selected, 'process-diagram-node--start': terminalKind === 'start', 'process-diagram-node--end': terminalKind === 'end' }]")
-	NodeResizer(v-if="!compact" :is-visible="selected" :min-height="50" :auto-scale="false" :handle-style="{ width: '8px', height: '8px' }" @resize-end="onResizeEnd")
+	NodeResizer(v-if="!compact && !readonly" :is-visible="selected" :min-height="50" :auto-scale="false" :handle-style="{ width: '8px', height: '8px' }" @resize-end="onResizeEnd")
 	Handle(v-if="type !== 'input'" type="target" :position="Position.Left")
 	.process-diagram-node__surface
 		component.process-diagram-node__icon(v-if="!terminalKind" :is="icon" v-bind="shape === 'diamond' ? { framed: false } : {}")

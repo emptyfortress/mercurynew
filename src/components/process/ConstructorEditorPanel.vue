@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import ProcessInstanceCanvas from './ProcessInstanceCanvas.vue'
-import { edgeType, instance, selectedNode, template } from './singleMonitorLayoutState'
+import { edgeType, instance, isInstanceEditing, selectedNode, template } from './singleMonitorLayoutState'
 
 </script>
 
 <template lang="pug">
 .constructor-editor
-	ProcessInstanceCanvas(:instance="instance" :template="template" :edge-type="edgeType" @selection-change="selectedNode = $event" @edge-type-change="edgeType = $event")
+	ProcessInstanceCanvas(
+		:readonly="!isInstanceEditing"
+		:instance="instance"
+		:template="template"
+		:edge-type="edgeType"
+		@selection-change="selectedNode = $event"
+		@edge-type-change="edgeType = $event"
+	)
 </template>
 
 <style scoped lang="scss">

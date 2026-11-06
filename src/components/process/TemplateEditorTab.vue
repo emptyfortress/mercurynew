@@ -23,31 +23,6 @@ const legendItems = [
 <template lang="pug">
 .editor-tab-header
 	.text-subtitle2.editor-tab-title Редактор шаблона
-	.row.items-center.q-gutter-xs.editor-tab-actions
-		q-btn(
-			flat
-			dense
-			size="sm"
-			color="positive"
-			icon="mdi-play"
-			label="Старт"
-		)
-		q-btn(
-			flat
-			dense
-			size="sm"
-			color="primary"
-			icon="mdi-pause"
-			label="Пауза"
-		)
-		q-btn(
-			flat
-			dense
-			size="sm"
-			color="negative"
-			icon="mdi-stop"
-			label="Стоп"
-		)
 	.row.items-center.q-gutter-xs.editor-tab-end
 		q-btn(
 			flat
