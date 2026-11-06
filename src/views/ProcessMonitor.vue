@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import ProcessMonitorContent from '@/components/process/ProcessMonitorContent.vue'
+import ProcessMonitorContentNew from '@/components/process/ProcessMonitorContentNew.vue'
 </script>
 
 <template lang="pug">
 q-page(padding)
-	ProcessMonitorContent
+	ProcessMonitorContentNew
 </template>
