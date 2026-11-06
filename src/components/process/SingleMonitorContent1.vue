@@ -17,6 +17,7 @@ import {
 	setActiveInstance,
 } from './singleMonitorLayoutState'
 import ProcessLogPanel from './ProcessLogPanel.vue'
+import ProcessLogTab from './ProcessLogTab.vue'
 import { processStatusColor } from './processStatusColor'
 import CharmNut from '@/components/icons/CharmNut.vue'
 
@@ -55,7 +56,10 @@ const panelComponents = markRaw({
 	constructorNodeSettings: NodeSettingsPanel,
 	processLog: ProcessLogPanel,
 }) as any
-const tabComponents = markRaw({ constructorEditorHeader: EditorTab }) as any
+const tabComponents = markRaw({
+	constructorEditorHeader: EditorTab,
+	processLogHeader: ProcessLogTab,
+}) as any
 
 const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
 	{
@@ -88,6 +92,7 @@ const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
 	{
 		id: 'log',
 		component: 'processLog',
+		tabComponent: 'processLogHeader',
 		title: 'Журнал процесса',
 		position: { referencePanel: 'editor', direction: 'below' },
 		initialHeight: 260,
@@ -159,7 +164,9 @@ function onReady(event: DockviewReadyEvent) {
 		const currentLayout = localStorage.getItem(LAYOUT_STORAGE_KEY)
 		const saved = currentLayout ?? localStorage.getItem(LEGACY_LAYOUT_STORAGE_KEY)
 		if (saved) {
-			dockviewApi.fromJSON(JSON.parse(saved))
+			const layout = JSON.parse(saved) as ReturnType<DockviewApi['toJSON']>
+			if (layout.panels.log) layout.panels.log.tabComponent = 'processLogHeader'
+			dockviewApi.fromJSON(layout)
 			dockviewApi.getPanel('node')?.api.setTitle('Свойства')
 			if (!currentLayout && !dockviewApi.getPanel('log')) togglePanel('log')
 			restored = true

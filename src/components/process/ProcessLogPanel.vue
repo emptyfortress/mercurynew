@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+
+const props = defineProps<{ params?: { params?: { reloadRequest?: number } } }>()
 
 const selectedRows = ref<ProcessLogRow[]>([])
+const isMessageDetailsOpen = ref(false)
 
 type ProcessLogRow = {
 	id: number
@@ -164,13 +167,6 @@ const demoRows: ProcessLogRow[] = [
 ]
 const rows = ref<ProcessLogRow[]>(demoRows.map((row) => ({ ...row })))
 
-function toggleRowSelection(_event: Event, row: ProcessLogRow) {
-	const selected = selectedRows.value.some((item) => item.id === row.id)
-	selectedRows.value = selected
-		? selectedRows.value.filter((item) => item.id !== row.id)
-		: [...selectedRows.value, row]
-}
-
 function removeSelectedRows() {
 	const selectedIds = new Set(selectedRows.value.map((row) => row.id))
 	rows.value = rows.value.filter((row) => !selectedIds.has(row.id))
@@ -186,6 +182,12 @@ function reloadRows() {
 	rows.value = demoRows.map((row) => ({ ...row }))
 	selectedRows.value = []
 }
+
+watch(() => props.params?.params?.reloadRequest, reloadRows)
+
+function selectedRowsLabel(count: number) {
+	return `Выбрано строк: ${count}`
+}
 </script>
 
 <template lang="pug">
@@ -198,9 +200,10 @@ function reloadRows() {
 		:columns="columns"
 		row-key="id"
 		selection="multiple"
+		:selected-rows-label="selectedRowsLabel"
 		color="primary"
 		v-model:selected="selectedRows"
-		@row-click="toggleRowSelection"
+		@row-click="isMessageDetailsOpen = true"
 		no-data-label="Данные отсутствуют"
 		hide-pagination
 		:rows-per-page-options="[0]"
@@ -225,42 +228,36 @@ function reloadRows() {
 					color="primary"
 					size="18px"
 				)
-	.row.items-center.process-log-panel__actions
-		q-btn(
-			flat
-			dense
-			color="negative"
-			icon="mdi-delete-outline"
-			label="Удалить"
-			:disable="!selectedRows.length"
-			@click="removeSelectedRows"
-		)
-		q-btn(
-			flat
-			dense
-			color="primary"
-			icon="mdi-delete-sweep-outline"
-			label="Очистить"
-			:disable="!rows.length"
-			@click="clearRows"
-		)
-		q-btn(
-			flat
-			dense
-			color="primary"
-			icon="mdi-export-variant"
-			label="Экспорт…"
-		)
-		q-btn(
-			flat
-			dense
-			color="primary"
-			icon="mdi-text-box-search-outline"
-			label="Подробнее"
-			:disable="!selectedRows.length"
-		)
+	.row.items-center.process-log-panel__actions(v-if="selectedRows.length > 0 || !params")
+		template(v-if="selectedRows.length > 0")
+			q-btn(
+				flat
+				dense
+				color="negative"
+				icon="mdi-delete-outline"
+				label="Удалить"
+				:disable="!selectedRows.length"
+				@click="removeSelectedRows"
+			)
+			q-btn(
+				flat
+				dense
+				color="primary"
+				icon="mdi-delete-sweep-outline"
+				label="Очистить"
+				:disable="!rows.length"
+				@click="clearRows"
+			)
+			q-btn(
+				flat
+				dense
+				color="primary"
+				icon="mdi-export-variant"
+				label="Экспорт…"
+			)
 		q-space
 		q-btn(
+			v-if="!params"
 			flat
 			dense
 			color="primary"
@@ -269,6 +266,27 @@ function reloadRows() {
 			@click="reloadRows"
 		)
 		slot(name="actions")
+	q-dialog.process-log-details(
+		v-model="isMessageDetailsOpen"
+	)
+		q-card(style="width: 480px; max-width: calc(100vw - 32px)")
+			q-btn.close(
+				round
+				color="negative"
+				icon="mdi-close"
+				v-close-popup
+			)
+			q-card-section
+				.text-h6 Подробное сообщение
+			q-card-section.q-pt-none
+				.text-grey-7 Подробное сообщение будет отображаться здесь.
+			q-card-actions(align="right")
+				q-btn(
+					flat
+					color="primary"
+					label="Закрыть"
+					v-close-popup
+				)
 </template>
 
 <style scoped lang="scss">
@@ -304,5 +322,9 @@ function reloadRows() {
 	flex-wrap: wrap;
 	gap: 0.35rem;
 	padding-top: 0.5rem;
+}
+
+.process-log-details :deep(.q-dialog__backdrop) {
+	background: transparent;
 }
 </style>
