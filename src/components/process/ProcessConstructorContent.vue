@@ -290,32 +290,6 @@ function restoreDefaultLayout() {
 			text-color="white"
 		) Шаблон
 
-		// q-btn(
-			flat
-			dense
-			size="sm"
-			color="primary"
-			icon="mdi-arrow-left-top-bold"
-			label="К мониторингу"
-			)
-
-		// q-btn(
-			flat
-			dense
-			size="sm"
-			color="primary"
-			icon="account_tree"
-			label="Открыть шаблон"
-			)
-		// q-btn(
-			flat
-			dense
-			size="sm"
-			color="primary"
-			icon="mdi-card-account-details-outline"
-			label="Открыть родительскую карточку"
-			)
-		// q-separator.action-divider(vertical)
 		q-btn.process-properties-button(
 			flat
 			dense
