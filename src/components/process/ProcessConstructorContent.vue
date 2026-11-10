@@ -15,18 +15,18 @@ import EditorTab from './TemplateEditorTab.vue'
 import NodeSettingsPanel from './TemplateNodeSettingsPanel.vue'
 import { openTemplate, template, templateOpenRequest } from './templateConstructorState'
 import TemplatesPanel from './TemplateTreePanel.vue'
-import CharmNut from '@/components/icons/CharmNut.vue'
+import DockviewPanelControls from '@/components/common/DockviewPanelControls.vue'
 
 const route = useRoute()
 const visiblePanelIds = ref<string[]>([])
+const isDockviewReady = ref(false)
+const treeWidth = ref(20)
+const expandedTreeWidth = ref(20)
 const LAYOUT_STORAGE_KEY = 'dv-layout-template-constructor-v1'
 let dockviewApi: DockviewApi | null = null
 let layoutSubscription: ReturnType<DockviewApi['onDidLayoutChange']> | null = null
-let highlightedProcessGroup: HTMLElement | null = null
-let processHighlightTimeout: ReturnType<typeof setTimeout> | undefined
 
 onBeforeUnmount(() => {
-	clearProcessPanelHighlight()
 	saveLayout()
 	layoutSubscription?.dispose()
 	dockviewApi = null
@@ -45,6 +45,7 @@ watch(templateOpenRequest, openEditor)
 // Dockview uses a broader component constructor type than Vue SFC inference.
 const panelComponents = markRaw({
 	constructorProcessSettings: ProcessSettingsPanel,
+	// Keep the component available while restoring layouts saved before the tree was moved.
 	constructorTemplates: TemplatesPanel,
 	constructorLibrary: LibraryPanel,
 	constructorEditor: EditorPanel,
@@ -70,13 +71,6 @@ const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
 		initialWidth: 260,
 	},
 	{
-		id: 'templates',
-		component: 'constructorTemplates',
-		title: 'Шаблоны',
-		position: { referencePanel: 'library', direction: 'above' },
-		initialHeight: 320,
-	},
-	{
 		id: 'node',
 		component: 'constructorNodeSettings',
 		title: 'Свойства',
@@ -90,6 +84,11 @@ const panelDefinitions: Parameters<DockviewApi['addPanel']>[0][] = [
 		position: { referencePanel: 'node', direction: 'below' },
 	},
 ]
+
+const panelOptions = panelDefinitions.map((panel) => ({
+	id: panel.id,
+	title: panel.title ?? panel.id,
+}))
 
 function loadDefault(api: DockviewApi) {
 	for (const panel of panelDefinitions) {
@@ -105,7 +104,6 @@ function togglePanel(id: string) {
 	if (!dockviewApi) return
 	const existingPanel = dockviewApi.getPanel(id)
 	if (existingPanel) {
-		if (id === 'process') clearProcessPanelHighlight()
 		dockviewApi.removePanel(existingPanel)
 	} else {
 		const definition = panelDefinitions.find((panel) => panel.id === id)
@@ -123,8 +121,7 @@ function togglePanel(id: string) {
 					: fallbackPanel
 						? {
 								referencePanel: fallbackPanel.id,
-								direction:
-									id === 'editor' || id === 'library' || id === 'templates' ? 'left' : 'right',
+								direction: id === 'editor' || id === 'library' ? 'left' : 'right',
 							}
 						: undefined,
 		})
@@ -132,31 +129,19 @@ function togglePanel(id: string) {
 	saveLayout()
 }
 
+function toggleTemplateTree() {
+	if (treeWidth.value > 0) {
+		expandedTreeWidth.value = treeWidth.value
+		treeWidth.value = 0
+	} else {
+		treeWidth.value = expandedTreeWidth.value
+	}
+}
+
 function openEditor() {
 	if (!dockviewApi || !template.value) return
 	if (!dockviewApi.getPanel('editor')) togglePanel('editor')
 	dockviewApi.getPanel('editor')?.api.setActive()
-}
-
-function clearProcessPanelHighlight() {
-	clearTimeout(processHighlightTimeout)
-	processHighlightTimeout = undefined
-	highlightedProcessGroup?.classList.remove('process-properties-highlight')
-	highlightedProcessGroup = null
-}
-
-function openProcessProperties() {
-	if (!dockviewApi) return
-	if (!dockviewApi.getPanel('process')) togglePanel('process')
-	const panel = dockviewApi.getPanel('process')
-	if (!panel) return
-	panel.api.setActive()
-	clearProcessPanelHighlight()
-	highlightedProcessGroup = panel.group.element
-	// Повторное нажатие запускает подсветку заново.
-	void highlightedProcessGroup.offsetWidth
-	highlightedProcessGroup.classList.add('process-properties-highlight')
-	processHighlightTimeout = setTimeout(clearProcessPanelHighlight, 1500)
 }
 
 function onReady(event: DockviewReadyEvent) {
@@ -166,6 +151,8 @@ function onReady(event: DockviewReadyEvent) {
 		const saved = localStorage.getItem(LAYOUT_STORAGE_KEY)
 		if (saved) {
 			dockviewApi.fromJSON(JSON.parse(saved))
+			const templatesPanel = dockviewApi.getPanel('templates')
+			if (templatesPanel) dockviewApi.removePanel(templatesPanel)
 			dockviewApi.getPanel('node')?.api.setTitle('Свойства')
 			restored = true
 		}
@@ -176,11 +163,10 @@ function onReady(event: DockviewReadyEvent) {
 		dockviewApi.clear()
 		loadDefault(dockviewApi)
 	}
-	if (!dockviewApi.getPanel('templates')) togglePanel('templates')
-	dockviewApi.getPanel('templates')?.api.setActive()
 	openEditor()
 	layoutSubscription = dockviewApi.onDidLayoutChange(saveLayout)
 	saveLayout()
+	isDockviewReady.value = true
 }
 
 function saveLayout() {
@@ -195,7 +181,6 @@ function saveLayout() {
 
 function restoreDefaultLayout() {
 	if (!dockviewApi) return
-	clearProcessPanelHighlight()
 	dockviewApi.clear()
 	loadDefault(dockviewApi)
 	saveLayout()
@@ -204,120 +189,114 @@ function restoreDefaultLayout() {
 
 <template lang="pug">
 .template-constructor
-	.row.items-start.justify-between
-		.template-constructor-heading
-			.myblock
-				q-icon.fold(name="mdi-source-branch")
-				div
-					.zg {{ template?.name ?? 'Конструктор шаблонов' }}
-		.template-constructor-toolbar
-			.btngroup
-				q-btn(
-					flat
-					dense
-					size="sm"
-					color="primary"
-					icon="mdi-view-dashboard-outline"
-					label="Панели"
-				)
-					q-menu(@before-show="syncVisiblePanels")
-						q-list
-							q-item(
-								v-for="panel in panelDefinitions"
-								:key="panel.id"
-								tag="label"
-								dense
+	q-splitter.template-constructor__splitter(
+		v-model="treeWidth"
+		:limits="[0, 50]"
+		separator-class="template-constructor__separator bg-transparent"
+		:separator-style="treeWidth === 0 ? { borderLeft: 'none' } : undefined"
+		after-class="template-constructor__editor-pane"
+	)
+		template(v-slot:before)
+			.template-constructor__navigation(v-show="treeWidth > 0")
+				TemplatesPanel
+		template(v-slot:after)
+			.template-constructor__editor
+				.row.items-start.justify-between
+					.template-constructor-heading.row.items-center
+						q-btn(
+							flat
+							round
+							dense
+							color="primary"
+							@click="toggleTemplateTree"
+						)
+							q-icon(
+								v-if="treeWidth === 0"
+								name="mdi-forwardburger"
 							)
-								q-item-section
-									q-checkbox(
-										:model-value="visiblePanelIds.includes(panel.id)"
-										:label="panel.title"
-										dense
-										@update:model-value="togglePanel(panel.id)"
-									)
-							q-separator
-							q-item(
-								clickable
-								v-close-popup
-								@click="restoreDefaultLayout"
+							q-icon(
+								v-else
+								name="mdi-backburger"
 							)
-								q-item-section Восстановить панели по умолчанию
-				q-separator.action-divider(vertical)
-				q-btn(
-					unelevated
-					color="primary"
-					label="Сохранить"
-					size="sm"
-				)
-				q-btn(
-					outline
-					color="primary"
-					label="Отмена"
-					size="sm"
-				)
-				q-btn(
-					round
-					flat
-					color="primary"
-					icon="mdi-sync"
-					size="sm"
-				)
-				q-chip(
-					size="sm"
-					color="amber"
-				) Есть изменения
-				q-chip(
-					size="sm"
-					color="blue-grey-3"
-					icon="mdi-lock"
-				) Заблокировано вами
-				q-btn(
-					flat
-					round
-					color="negative"
-					icon="mdi-delete-outline"
-					size="sm"
-				)
-					q-menu
-						q-list
-							q-item.pink(clickable)
-								q-item-section Удалить
+						.myblock
+							q-icon.fold(name="mdi-source-branch")
+							div
+								.zg {{ template?.name ?? 'Конструктор шаблонов' }}
+					.template-constructor-toolbar
+						.btngroup
+							q-btn(
+								unelevated
+								color="primary"
+								label="Сохранить"
+								size="sm"
+							)
+							q-btn(
+								outline
+								color="primary"
+								label="Отмена"
+								size="sm"
+							)
+							q-btn(
+								round
+								flat
+								color="primary"
+								icon="mdi-sync"
+								size="sm"
+							)
+							q-chip(
+								size="sm"
+								color="amber"
+							) Есть изменения
+							q-chip(
+								size="sm"
+								color="blue-grey-3"
+								icon="mdi-lock"
+							) Заблокировано вами
+							q-btn(
+								flat
+								round
+								color="negative"
+								icon="mdi-delete-outline"
+								size="sm"
+							)
+								q-menu
+									q-list
+										q-item.pink(clickable)
+											q-item-section Удалить
 
-	.template-constructor-actions
-		q-chip(
-			color="blue-grey"
-			rounded
-			text-color="white"
-		) Шаблон
+				.template-constructor-actions
+					q-chip(
+						color="blue-grey"
+						rounded
+						text-color="white"
+					) Шаблон
 
-		q-btn.process-properties-button(
-			flat
-			dense
-			size="sm"
-			color="primary"
-			@click="openProcessProperties"
-		)
-			CharmNut.process-properties-button__icon.q-mr-sm
-			span Свойства процесса
-		q-separator.action-divider(vertical)
-		q-btn(
-			unelevated
-			dense
-			size="sm"
-			color="positive"
-			icon="mdi-play"
-			label="Запустить экземпляр"
-			to="/dvmain/process/monitor?from=/dvmain/process"
-		)
+					q-btn(
+						unelevated
+						dense
+						size="sm"
+						color="positive"
+						icon="mdi-play"
+						label="Запустить экземпляр"
+						to="/dvmain/process/monitor?from=/dvmain/process"
+					)
 
-	.template-constructor-layout
-		DockviewVue.dockview-area(
-			:components="panelComponents"
-			:tab-components="tabComponents"
-			:theme="themeLight"
-			single-tab-mode="fullwidth"
-			@ready="onReady"
-		)
+					DockviewPanelControls(
+						:panels="panelOptions"
+						:visible-panel-ids="visiblePanelIds"
+						:disabled="!isDockviewReady"
+						@toggle="togglePanel"
+						@reset="restoreDefaultLayout"
+					)
+
+				.template-constructor-layout
+					DockviewVue.dockview-area(
+						:components="panelComponents"
+						:tab-components="tabComponents"
+						:theme="themeLight"
+						single-tab-mode="fullwidth"
+						@ready="onReady"
+					)
 </template>
 
 <style src="./ProcessConstructorContent.scss" lang="scss"></style>

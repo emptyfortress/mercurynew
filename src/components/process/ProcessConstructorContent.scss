@@ -2,6 +2,45 @@
 	--panel-gap: 0.25rem;
 }
 
+.template-constructor__splitter {
+	height: calc(100vh - 130px);
+	min-height: 450px;
+}
+
+.template-constructor__splitter > .template-constructor__separator {
+	border-left: 2px dotted var(--q-primary);
+}
+
+.template-constructor__navigation {
+	height: 100%;
+	margin-right: 0.5rem;
+}
+
+.template-constructor__navigation .template-tree {
+	background: transparent;
+}
+
+.template-constructor__editor-pane {
+	overflow: hidden;
+}
+
+.template-constructor__editor {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-width: 0;
+	margin-left: 0.5rem;
+	padding: 1rem;
+	// border: 1px solid var(--my-border-color);
+	// background: var(--bg-panel);
+}
+
+.template-constructor__editor .template-constructor-layout {
+	flex: 1;
+	height: auto;
+	min-height: 0;
+}
+
 .template-constructor .template-constructor-heading {
 	min-width: 0;
 	margin-right: 1rem;
@@ -90,35 +129,6 @@
 	--dv-inactivegroup-hiddenpanel-tab-background-color: var(--process-panel-header-background);
 }
 
-.template-constructor .process-properties-button__icon {
-	width: 18px;
-	height: 18px;
-}
-
-.template-constructor .dv-groupview.process-properties-highlight {
-	position: relative;
-}
-
-.template-constructor .dv-groupview.process-properties-highlight::after {
-	position: absolute;
-	inset: 0;
-	z-index: 1000;
-	box-sizing: border-box;
-	border: 2px solid var(--q-primary);
-	pointer-events: none;
-	content: '';
-	animation: process-properties-highlight 1.5s ease-out;
-}
-
-@keyframes process-properties-highlight {
-	0%,
-	65% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-}
 .template-constructor .dockview-area .dv-tabs-and-actions-container .dv-tabs-container .dv-tab {
 	padding-right: 0.5rem;
 	padding-left: 0.5rem;

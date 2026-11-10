@@ -12,12 +12,12 @@ const sections = [
 	{ id: 5, label: 'Конструктор согласований', to: 'approve' },
 	{ id: 6, label: 'Процессы', to: '/dvmain/process' },
 	{ id: 7, label: 'Справочники', to: '' },
-	{ id: 8, label: 'Нумераторы', to: '' },
+	{ id: 8, label: 'Нумераторы', to: '/dvmain/numerators' },
 ]
 
 const goto = (e: string) => {
 	if (!e) return
-	if (e === '/dvmain/process') {
+	if (e === '/dvmain/process' || e === '/dvmain/numerators') {
 		void router.push(e)
 		return
 	}
@@ -32,7 +32,7 @@ q-page(padding)
 		.it.constr(
 			v-for="item in sections",
 			:key='item.id',
-			:class="{dis : item.id > 6}"
+			:class="{dis : item.id === 7}"
 			v-on="item.id === 6 ? {} : { click: () => goto(item.to) }"
 		)
 			div {{ item.label }}

@@ -13,5 +13,5 @@ TemplateCanvas(
 	@edge-type-change="edgeType = $event"
 )
 .column.flex-center.full-height.q-pa-lg.text-grey-7.text-center(v-else)
-	| Выберите шаблон в панели „Шаблоны“ или создайте новый
+	| Выберите шаблон в дереве слева или создайте новый
 </template>

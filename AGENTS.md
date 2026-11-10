@@ -84,6 +84,7 @@ Do not modify code during a review unless explicitly asked.
 ### Vue Components
 
 - Use Composition API with `<script setup>`
+- Keep new Vue components in a single `.vue` file with `<script>`, `<template>`, and `<style lang="scss">` blocks. Use SCSS, not plain CSS. Do not extract component styles into separate files unless explicitly requested.
 - Pug templates supported
 - SCSS for styling
 - Quasar components and utilities
