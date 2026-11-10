@@ -193,6 +193,7 @@ function restoreDefaultLayout() {
 		v-model="treeWidth"
 		:limits="[0, 50]"
 		separator-class="template-constructor__separator bg-transparent"
+		:separator-style="treeWidth === 0 ? { borderLeft: 'none' } : undefined"
 		after-class="template-constructor__editor-pane"
 	)
 		template(v-slot:before)
