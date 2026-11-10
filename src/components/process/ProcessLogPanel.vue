@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import type { QTable } from 'quasar'
 
 const props = defineProps<{ params?: { params?: { reloadRequest?: number } } }>()
 
 const selectedRows = ref<ProcessLogRow[]>([])
 const isMessageDetailsOpen = ref(false)
+const logTable = ref<QTable>()
+const activeMessage = ref<ProcessLogRow | null>(null)
+const showMessageDetails = ref(true)
+const messageTypeLabels = {
+	info: 'Информация',
+	warning: 'Предупреждение',
+	error: 'Ошибка',
+}
 
 type ProcessLogRow = {
 	id: number
@@ -14,6 +23,10 @@ type ProcessLogRow = {
 	message: string
 	functionName: string
 	functionState: string
+	priority?: number
+	details?: string
+	inputData?: string
+	outputData?: string
 }
 
 function parseLogDate(value: string) {
@@ -24,7 +37,14 @@ function parseLogDate(value: string) {
 }
 
 const columns = [
-	{ name: 'type', label: 'Тип', field: 'type', align: 'left' as const, sortable: true, style: 'width: 42px' },
+	{
+		name: 'type',
+		label: 'Тип',
+		field: 'type',
+		align: 'left' as const,
+		sortable: true,
+		style: 'width: 42px',
+	},
 	{
 		name: 'date',
 		label: 'Дата',
@@ -44,7 +64,13 @@ const columns = [
 		style: 'width: 110px',
 	},
 	{ name: 'message', label: 'Сообщение', field: 'message', align: 'left' as const, sortable: true },
-	{ name: 'functionName', label: 'Имя функции', field: 'functionName', align: 'left' as const, sortable: true },
+	{
+		name: 'functionName',
+		label: 'Имя функции',
+		field: 'functionName',
+		align: 'left' as const,
+		sortable: true,
+	},
 	{
 		name: 'functionState',
 		label: 'Состояние функции',
@@ -166,6 +192,29 @@ const demoRows: ProcessLogRow[] = [
 	},
 ]
 const rows = ref<ProcessLogRow[]>(demoRows.map((row) => ({ ...row })))
+const orderedRows = computed<readonly ProcessLogRow[]>(
+	() => logTable.value?.filteredSortedRows ?? rows.value
+)
+const activeMessageIndex = computed(() =>
+	orderedRows.value.findIndex((row) => row.id === activeMessage.value?.id)
+)
+const canShowPrevious = computed(() => activeMessageIndex.value > 0)
+const canShowNext = computed(
+	() => activeMessageIndex.value >= 0 && activeMessageIndex.value < orderedRows.value.length - 1
+)
+
+function openMessageDetails(_event: Event, row: ProcessLogRow) {
+	activeMessage.value = row
+	showMessageDetails.value = true
+	isMessageDetailsOpen.value = true
+}
+
+function navigateMessage(offset: number) {
+	if (activeMessageIndex.value < 0) return
+	const row = orderedRows.value[activeMessageIndex.value + offset]
+	if (row) activeMessage.value = row
+}
+
 
 function removeSelectedRows() {
 	const selectedIds = new Set(selectedRows.value.map((row) => row.id))
@@ -193,6 +242,7 @@ function selectedRowsLabel(count: number) {
 <template lang="pug">
 .process-log-panel
 	q-table.process-log-panel__table(
+		ref="logTable"
 		flat
 		bordered
 		dense
@@ -203,7 +253,7 @@ function selectedRowsLabel(count: number) {
 		:selected-rows-label="selectedRowsLabel"
 		color="primary"
 		v-model:selected="selectedRows"
-		@row-click="isMessageDetailsOpen = true"
+		@row-click="openMessageDetails"
 		no-data-label="Данные отсутствуют"
 		hide-pagination
 		:rows-per-page-options="[0]"
@@ -266,10 +316,11 @@ function selectedRowsLabel(count: number) {
 			@click="reloadRows"
 		)
 		slot(name="actions")
+
 	q-dialog.process-log-details(
 		v-model="isMessageDetailsOpen"
 	)
-		q-card(style="width: 480px; max-width: calc(100vw - 32px)")
+		q-card.process-log-details__card(v-if="activeMessage")
 			q-btn.close(
 				round
 				color="negative"
@@ -277,10 +328,104 @@ function selectedRowsLabel(count: number) {
 				v-close-popup
 			)
 			q-card-section
-				.text-h6 Подробное сообщение
+				.text-h6 Данные сообщения
 			q-card-section.q-pt-none
-				.text-grey-7 Подробное сообщение будет отображаться здесь.
-			q-card-actions(align="right")
+				.process-log-details__metadata
+					q-input(
+						:model-value="activeMessage.date"
+						label="Дата"
+						outlined
+						dense
+						readonly
+					)
+					q-input(
+						:model-value="messageTypeLabels[activeMessage.type]"
+						label="Тип"
+						outlined
+						dense
+						readonly
+					)
+					q-input(
+						:model-value="activeMessage.functionName"
+						label="Функция"
+						outlined
+						dense
+						readonly
+					)
+					q-input(
+						:model-value="activeMessage.priority ?? ''"
+						label="Приоритет"
+						outlined
+						dense
+						readonly
+					)
+					q-input.process-log-details__state(
+						:model-value="activeMessage.functionState"
+						label="Состояние функции"
+						outlined
+						dense
+						readonly
+					)
+				q-input.q-mt-md(
+					:model-value="activeMessage.message"
+					label="Сообщение"
+					type="textarea"
+					rows="3"
+					outlined
+					readonly
+				)
+				.row.justify-end.q-mt-xs
+					q-btn(
+						flat
+						dense
+						no-caps
+						color="primary"
+						:icon="showMessageDetails ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+						:label="showMessageDetails ? 'Меньше' : 'Подробнее'"
+						:aria-expanded="showMessageDetails"
+						@click="showMessageDetails = !showMessageDetails"
+					)
+				.process-log-details__extra(v-show="showMessageDetails")
+					q-input(
+						:model-value="activeMessage.details ?? ''"
+						label="Детали сообщения"
+						type="textarea"
+						rows="3"
+						outlined
+						readonly
+					)
+					q-input(
+						:model-value="activeMessage.inputData ?? ''"
+						label="Входящие данные"
+						type="textarea"
+						rows="3"
+						outlined
+						readonly
+					)
+					q-input(
+						:model-value="activeMessage.outputData ?? ''"
+						label="Исходящие данные"
+						type="textarea"
+						rows="3"
+						outlined
+						readonly
+					)
+			q-card-actions.process-log-details__actions
+				q-btn(
+					flat
+					color="primary"
+					label="Предыдущее"
+					:disable="!canShowPrevious"
+					@click="navigateMessage(-1)"
+				)
+				q-btn(
+					flat
+					color="primary"
+					label="Следующее"
+					:disable="!canShowNext"
+					@click="navigateMessage(1)"
+				)
+				q-space
 				q-btn(
 					flat
 					color="primary"
@@ -322,6 +467,36 @@ function selectedRowsLabel(count: number) {
 	flex-wrap: wrap;
 	gap: 0.35rem;
 	padding-top: 0.5rem;
+}
+
+.process-log-details__card {
+	width: 640px;
+	max-width: calc(100vw - 32px);
+}
+
+.process-log-details__metadata {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.process-log-details__state {
+	grid-column: 1 / -1;
+}
+
+.process-log-details__extra {
+	display: grid;
+	gap: 1rem;
+}
+
+.process-log-details__actions {
+	flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+	.process-log-details__metadata {
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 
 .process-log-details :deep(.q-dialog__backdrop) {
