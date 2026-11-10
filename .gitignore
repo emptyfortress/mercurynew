@@ -36,3 +36,4 @@ coverage
 .claude/conversations/
 .claude/checkpoints/
 .playwright-mcp
+/numerators.mp4
