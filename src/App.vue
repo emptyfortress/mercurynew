@@ -135,6 +135,10 @@ const user = [
 const topLevelKey = (route: any) => route.matched[0]?.path || route.path
 
 const title = computed(() => {
+	if (route.name === 'numerators') {
+		return 'Конструктор правил нумерации'
+	}
+
 	if (route.path === '/dvmain/process' || route.path === '/dvmain/process/constructor') {
 		return 'Процессы'
 	}

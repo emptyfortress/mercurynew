@@ -75,6 +75,12 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/dvmain/numerators',
+			name: 'numerators',
+			component: () => import('@/views/Numerators.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
+		},
+		{
 			path: '/dvmain/process',
 			name: 'processHome',
 			component: () => import('@/views/Process.vue'),

@@ -1,5 +1,6 @@
 export const BREADCRUMB_OVERRIDES: Record<string, string> = {
 	dvmain: 'База решений',
+	numerators: 'Нумераторы',
 	cards: 'Конструктор карточек',
 	folders: 'Каталог папок',
 	webframe: 'Рабочая область',
