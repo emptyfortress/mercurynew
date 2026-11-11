@@ -72,7 +72,7 @@ Do not modify code during a review unless explicitly asked.
 - **Semicolons**: Omitted
 - **Trailing commas**: ES5 (objects/arrays, not function parameters)
 - **Line length**: 100 characters
-- **Vue attributes**: One attribute per line
+- **Vue attributes**: One attribute per line if line length > 100 characters, separated by comma
 
 ### TypeScript
 

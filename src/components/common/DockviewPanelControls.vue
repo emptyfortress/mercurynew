@@ -50,14 +50,11 @@ const expanded = ref(true)
 		)
 		template(v-if="props.showReset")
 			q-separator(vertical)
-			q-btn(
-				flat
-				round
-				dense
-				size="sm"
-				color="primary"
-				icon="mdi-restore"
-				:disable="props.disabled"
+			q-btn( flat, round, dense,
+				size="sm",
+				color="primary",
+				icon="mdi-restore",
+				:disable="props.disabled",
 				@click="emit('reset')"
 			)
 				q-tooltip Сброс

@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import type { INumeratorRule } from './types'
+import { computed } from 'vue'
+import type { INumerationListItem } from './types'
 
-defineProps<{
-	rules: INumeratorRule[]
+const props = defineProps<{
+	items: INumerationListItem[]
+	kind: 'rules' | 'numerators'
 }>()
 
 const selectedId = defineModel<string>()
+const query = defineModel<string | null>('query', { default: '' })
+const filteredItems = computed(() => {
+	const text = (query.value ?? '').trim().toLocaleLowerCase('ru')
+	return props.items.filter((item) => item.name.toLocaleLowerCase('ru').includes(text))
+})
 const emit = defineEmits<{
 	create: []
 }>()
@@ -13,25 +20,51 @@ const emit = defineEmits<{
 
 <template lang="pug">
 .numerators-list
-	.numerators-list__header.row.items-center.justify-between.no-wrap
-		.text-subtitle1 Нумераторы
+	q-input.q-mb-sm(
+		v-model="query"
+		filled
+		dense
+		clearable
+		:placeholder="kind === 'rules' ? 'Найти правило' : 'Найти нумератор'"
+	)
+		template(v-slot:prepend)
+			q-icon(
+				name="mdi-magnify"
+				color="primary"
+			)
 	q-list.numerators-list__items
 		q-item.numerators-list__item(
-			v-for="rule in rules"
-			:key="rule.id"
+			v-for="item in filteredItems"
+			:key="item.id"
 			clickable
-			:active="selectedId === rule.id"
+			:active="selectedId === item.id"
 			active-class="numerators-list__item_selected"
-			@click="selectedId = rule.id"
+			@click="selectedId = item.id"
 		)
-			q-item-section.numerators-list__name {{ rule.name }}
+			q-item-section.numerators-list__name
+				q-item-label {{ item.name }}
+				q-item-label(
+					v-if="item.caption"
+					caption
+				) {{ item.caption }}
+			q-item-section(
+				v-if="item.changed"
+				side
+			)
+				q-icon(
+					name="mdi-circle-small"
+					color="primary"
+					title="Есть несохранённые изменения"
+				)
+	.q-pa-sm.text-grey-7(v-if="!filteredItems.length")
+		| {{ items.length ? 'Ничего не найдено' : 'Список пуст' }}
 	q-btn.numerators-list__add(
 		fab
 		round
 		color="primary"
 		icon="mdi-plus"
 		size="16px"
-		title="Создать правило"
+		:title="kind === 'rules' ? 'Создать правило' : 'Создать нумератор'"
 		@click="emit('create')"
 	)
 </template>
@@ -44,11 +77,6 @@ const emit = defineEmits<{
 	height: 100%;
 	min-width: 0;
 	padding: 1rem 0 5rem;
-}
-
-.numerators-list__header {
-	gap: 0.5rem;
-	padding: 0 0.5rem 0.5rem;
 }
 
 .numerators-list__items {
@@ -69,6 +97,10 @@ const emit = defineEmits<{
 
 .no-touch .numerators-list__item:hover {
 	background: var(--bgLight, #edf0f8);
+}
+
+.no-touch .numerators-list__item:hover:not(:focus-visible) > :deep(.q-focus-helper) {
+	opacity: 0;
 }
 
 .numerators-list__item_selected,

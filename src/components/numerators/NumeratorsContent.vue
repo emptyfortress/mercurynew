@@ -3,26 +3,97 @@ import { computed, ref } from 'vue'
 import MdiCounter from '@/components/icons/MdiCounter.vue'
 import NumeratorsList from './NumeratorsList.vue'
 import CreateNumeratorRuleDialog from './CreateNumeratorRuleDialog.vue'
-import type { INumeratorRule, INumeratorRuleDraft } from './types'
+import CreateNumeratorDialog from './CreateNumeratorDialog.vue'
+import NumeratorRuleEditor from './NumeratorRuleEditor.vue'
+import NumeratorEditor from './NumeratorEditor.vue'
+import { useNumerationState } from './useNumerationState'
+import type { INumeratorDraft, INumeratorRuleDraft, INumeratorUsage } from './types'
 
-const rules = ref<INumeratorRule[]>(
-	['Акт', 'Договор', 'Дополнительное соглашение'].map((name, index) => ({
-		id: `demo-${index}`,
-		name,
-		cardType: null,
-		showLeadingZeros: false,
-	}))
-)
-const selectedId = ref('demo-0')
-const selectedRule = computed(() => rules.value.find((rule) => rule.id === selectedId.value))
+const {
+	section,
+	ruleCatalog,
+	numerators,
+	catalog,
+	selectedRuleId,
+	selectedNumeratorId,
+	selectedVariantIds,
+	selectedVariantSections,
+	selectVariant,
+	selectedRule,
+	selectedNumerator,
+	returnTarget,
+	isRuleChanged,
+	isNumeratorChanged,
+	getUsages,
+	openRule,
+	createRule,
+	saveRule,
+	cancelRule,
+	openNumerator,
+	createNumerator,
+	canSaveNumerator,
+	saveNumerator,
+	cancelNumerator,
+	backToRule,
+} = useNumerationState()
 const createDialog = ref(false)
+const createNumeratorDialog = ref(false)
+const numeratorCreationTarget = ref<INumeratorUsage | null>(null)
+const ruleQuery = ref<string | null>('')
+const numeratorQuery = ref<string | null>('')
 const listWidth = ref(20)
 const expandedListWidth = ref(20)
+const ruleItems = computed(() =>
+	ruleCatalog.value.map((rule) => ({
+		id: rule.id,
+		name: rule.name || 'Новое правило',
+		changed: isRuleChanged(rule.id),
+	}))
+)
+const numeratorItems = computed(() =>
+	catalog.value.map((numerator) => ({
+		id: numerator.id,
+		name: numerator.name || 'Новый нумератор',
+		changed: isNumeratorChanged(numerator.id),
+		caption: `Правил: ${new Set(getUsages(numerator.id).map((usage) => usage.ruleId)).size}`,
+	}))
+)
+const headingName = computed(() =>
+	section.value === 'rules'
+		? selectedRule.value?.name || 'Новое правило'
+		: selectedNumerator.value?.name || 'Новый нумератор'
+)
 
-function createRule(draft: INumeratorRuleDraft) {
-	const rule = { ...draft, id: crypto.randomUUID() }
-	rules.value.push(rule)
-	selectedId.value = rule.id
+function addRule(draft: INumeratorRuleDraft) {
+	ruleQuery.value = ''
+	createRule(draft)
+}
+
+function addNumerator(target?: INumeratorUsage) {
+	numeratorCreationTarget.value = target ?? null
+	createNumeratorDialog.value = true
+}
+
+function addCreatedNumerator(draft: INumeratorDraft) {
+	const target = numeratorCreationTarget.value
+	createNumerator(draft, target ?? undefined)
+	numeratorQuery.value = ''
+	if (target) ruleQuery.value = ''
+}
+
+function showRule(id: string, variantId?: string) {
+	ruleQuery.value = ''
+	openRule(id, variantId)
+}
+
+function showNumerator(id: string, target?: INumeratorUsage) {
+	numeratorQuery.value = ''
+	openNumerator(id, target)
+}
+
+function returnToRule() {
+	ruleQuery.value = ''
+	backToRule()
 }
 
 function toggleList() {
@@ -46,32 +117,84 @@ function toggleList() {
 	)
 		template(v-slot:before)
 			.numerators__navigation(v-show="listWidth > 0")
+				q-tabs(
+					v-model="section"
+					dense
+					no-caps
+					active-color="primary"
+					indicator-color="primary"
+					align="justify"
+				)
+					q-tab( name="rules" label="Правила")
+					q-tab( name="numerators" label="Нумераторы")
 				NumeratorsList(
-					v-model="selectedId"
-					:rules="rules"
+					v-show="section === 'rules'"
+					:model-value="selectedRuleId"
+					v-model:query="ruleQuery"
+					:items="ruleItems"
+					kind="rules"
+					@update:model-value="$event && openRule($event)"
 					@create="createDialog = true"
+				)
+				NumeratorsList(
+					v-show="section === 'numerators'"
+					:model-value="selectedNumeratorId"
+					v-model:query="numeratorQuery"
+					:items="numeratorItems"
+					kind="numerators"
+					@update:model-value="$event && openNumerator($event)"
+					@create="addNumerator()"
 				)
 		template(v-slot:after)
 			.numerators__editor
 				.row.items-center.no-wrap
-					q-btn(
-						flat
-						round
-						dense
+					q-btn( flat round dense
 						color="primary"
 						:icon="listWidth === 0 ? 'mdi-forwardburger' : 'mdi-backburger'"
-						:title="listWidth === 0 ? 'Показать список нумераторов' : 'Скрыть список нумераторов'"
+						:title="listWidth === 0 ? 'Показать список' : 'Скрыть список'"
 						@click="toggleList"
 					)
 					.numerators__heading
 						MdiCounter.numerators__heading-icon
 						.numerators__heading-text
-							.numerators__overline.text-overline нумератор
-							.numerators__name {{ selectedRule?.name }}
+							.numerators__overline.text-overline
+								| {{ section === 'rules' ? 'правило нумерации' : 'нумератор' }}
+							.numerators__name {{ headingName }}
 				.numerators__constructor
+					NumeratorRuleEditor(
+						v-if="section === 'rules' && selectedRule"
+						:key="selectedRule.id"
+						:rule="selectedRule"
+						:numerators="numerators"
+						:changed="isRuleChanged(selectedRule.id)"
+						:selected-variant-id="selectedVariantIds[selectedRule.id]"
+						:selected-variant-section="selectedVariantSections[selectedRule.id] ?? 'conditions'"
+						@select-variant="(id, cell) => selectVariant(selectedRule.id, id, cell)"
+						@save="saveRule(selectedRule.id)"
+						@cancel="cancelRule(selectedRule.id)"
+						@open-numerator="showNumerator"
+						@create-numerator="addNumerator"
+					)
+					NumeratorEditor(
+						v-else-if="section === 'numerators' && selectedNumerator"
+						:key="selectedNumerator.id"
+						:numerator="selectedNumerator"
+						:usages="getUsages(selectedNumerator.id)"
+						:changed="isNumeratorChanged(selectedNumerator.id)"
+						:can-save="canSaveNumerator(selectedNumerator.id)"
+						:can-return="!!returnTarget"
+						@save="saveNumerator(selectedNumerator.id)"
+						@cancel="cancelNumerator(selectedNumerator.id)"
+						@back="returnToRule"
+						@open-rule="showRule"
+					)
 	CreateNumeratorRuleDialog(
 		v-model="createDialog"
-		@create="createRule"
+		@create="addRule"
+	)
+	CreateNumeratorDialog(
+		v-model="createNumeratorDialog"
+		@create="addCreatedNumerator"
 	)
 </template>
 
@@ -86,8 +209,16 @@ function toggleList() {
 }
 
 .numerators__navigation {
+	display: flex;
+	flex-direction: column;
 	height: 100%;
 	margin-right: 0.5rem;
+}
+
+.numerators__navigation > .numerators-list {
+	flex: 1;
+	min-height: 0;
+	height: auto;
 }
 
 .numerators__splitter > :deep(.numerators__editor-pane) {
@@ -138,5 +269,6 @@ function toggleList() {
 	flex: 1;
 	min-height: 0;
 	margin-top: 0.5rem;
+	overflow-y: auto;
 }
 </style>
