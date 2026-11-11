@@ -4,26 +4,27 @@ import type { INumeratorAffix } from './types'
 defineProps<{ label: string }>()
 const affix = defineModel<INumeratorAffix>({ required: true })
 const modes = [
-	{ label: 'Текст', value: 'text' },
-	{ label: 'Код XSLT', value: 'xslt' },
+	{ label: 'Текст', value: 'text' as const },
+	{ label: 'Код XSLT', value: 'xslt' as const },
 ]
 </script>
 
 <template lang="pug">
 .affix-editor
 	.row.items-center.justify-between.q-mb-sm.q-gutter-sm
-		.text-subtitle2 {{ label }}
-		q-btn-toggle(
-			v-model="affix.mode", :options="modes", no-caps, unelevated,
-			toggle-color="primary", size="sm"
-		)
+		.text-caption.text-grey-7 {{ label }}
+		.row.items-center.q-gutter-sm
+			q-radio(
+				v-for="mode in modes", :key="mode.value", v-model="affix.mode",
+				:val="mode.value", :label="mode.label", dense, size="xs", color="primary"
+			)
 	q-input(
 		v-if="affix.mode === 'text'", v-model="affix.text", outlined, dense,
-		:label="label", hint="Необязательно"
+		hint="Необязательно"
 	)
 	q-input.affix-editor__code(
 		v-else, v-model="affix.xslt", outlined, type="textarea", autogrow,
-		:label="label + ' — XSLT'", :spellcheck="false",
+		:spellcheck="false",
 		:rules="[value => !!value?.trim() || 'Введите код преобразования']"
 	)
 </template>

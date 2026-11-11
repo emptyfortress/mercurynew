@@ -107,6 +107,13 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 .variant-editor
 	template(v-if="section === 'conditions'")
 		.text-caption.text-grey-7.q-mb-md Выполнены все условия (И)
+		.variant-editor__condition-labels.text-caption.text-grey-7(
+			v-if="variant.conditions.length"
+		)
+			span Поле
+			span Операция
+			span Значение / подразделение
+			span
 		.variant-editor__conditions
 			.variant-editor__condition(
 				v-for="(condition, index) in variant.conditions", :key="condition.id"
@@ -121,19 +128,18 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 					) Поле недоступно для этого типа карточки
 				q-select(
 					:model-value="condition.operator", :options="getConditionOperators(condition.field?.type)",
-					emit-value, map-options, outlined, dense, label="Операция", :disable="!condition.field",
+					emit-value, map-options, outlined, dense, :disable="!condition.field",
 					@update:model-value="setOperator(condition, $event)"
 				)
 				q-select(
 					v-if="condition.field?.type === 'boolean'", v-model="condition.value",
 					:options="[{label: 'Да', value: true}, {label: 'Нет', value: false}]",
-					emit-value, map-options, outlined, dense, label="Значение"
+					emit-value, map-options, outlined, dense
 				)
 				q-select(
 					v-else-if="['employee', 'organization', 'status'].includes(condition.field?.type ?? '')",
 					v-model="condition.value", :options="getValueOptions(condition)",
 					use-input, :input-debounce="0", outlined, dense,
-					:label="isDepartment(condition.operator) ? 'Подразделение' : 'Значение'",
 					@filter="(value, update) => filterValues(condition.id, value, update)",
 					@popup-hide="valueQueries[condition.id] = ''"
 				)
@@ -143,14 +149,13 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 				q-input(
 					v-else-if="condition.field?.type === 'number'",
 					:model-value="typeof condition.value === 'number' ? condition.value : null",
-					type="number", outlined, dense, label="Значение",
+					type="number", outlined, dense,
 					@update:model-value="condition.value = $event === '' || $event === null ? null : Number($event)"
 				)
 				q-input(
 					v-else, :model-value="typeof condition.value === 'string' ? condition.value : ''",
 					outlined, dense,
 					:type="condition.field?.type === 'date' ? 'date' : 'text'",
-					:label="condition.field?.type === 'date' ? undefined : 'Значение'",
 					:disable="!condition.field",
 					@update:model-value="condition.value = $event === null ? null : String($event)"
 				)
@@ -171,12 +176,12 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 		.variant-editor__affixes
 			NumeratorAffixEditor(v-model="variant.prefix", label="Префикс")
 			NumeratorAffixEditor(v-model="variant.suffix", label="Суффикс")
-		.variant-editor__sample.q-mt-md
-			.text-caption.text-grey-7 Образец номера
-			.variant-editor__sample-value {{ numberSample }}
-			.text-caption.text-grey-7(
-				v-if="variant.prefix.mode === 'xslt' || variant.suffix.mode === 'xslt'"
-			) Части XSLT обозначены условно; результат зависит от данных карточки.
+			.variant-editor__sample
+				.text-caption.text-grey-7.q-mb-sm Образец номера
+				.variant-editor__sample-value {{ numberSample }}
+				.text-caption.text-grey-7(
+					v-if="variant.prefix.mode === 'xslt' || variant.suffix.mode === 'xslt'"
+				) Части XSLT обозначены условно; результат зависит от данных карточки.
 	template(v-else)
 		.variant-editor__numerator
 			q-select(
@@ -213,6 +218,13 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 	gap: 1rem;
 }
 
+.variant-editor__condition-labels {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+	gap: 0.5rem;
+	padding: 0 2.5rem 0 0;
+}
+
 .variant-editor__condition {
 	display: grid;
 	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) auto;
@@ -222,8 +234,8 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 
 .variant-editor__affixes {
 	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 1rem;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 2rem;
 }
 
 .variant-editor__sample {
@@ -243,6 +255,15 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 }
 
 @media (max-width: 1000px) {
+	.variant-editor__condition-labels {
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+
+	.variant-editor__condition-labels > :first-child,
+	.variant-editor__condition-labels > :nth-child(2) {
+		grid-column: 1 / -1;
+	}
+
 	.variant-editor__condition {
 		grid-template-columns: minmax(0, 1fr) auto;
 	}

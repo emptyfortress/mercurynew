@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { QTree } from 'quasar'
+import WordHighlighter from 'vue-word-highlighter'
 import { findNumerationField } from './numerationFields'
 import type { INumerationField, INumerationFieldNode } from './types'
 
@@ -24,27 +25,38 @@ function selectField(id: string | null) {
 </script>
 
 <template lang="pug">
-q-btn.field-select(
-	outline, no-caps, align="left", color="primary",
-	:label="modelValue?.label ?? 'Выберите поле'",
-	icon-right="mdi-menu-down", :disable="!nodes.length"
-)
-	q-menu(v-model="menuOpen", @before-show="query = ''")
+
+.field-select(@click="nodes.length && (menuOpen = true)")
+	q-input(
+		:model-value="modelValue?.label ?? 'Выберите поле'", outlined, dense, readonly,
+		:disable="!nodes.length"
+	)
+		template(v-slot:append)
+			q-icon.field-select__clear(
+				v-if="modelValue", name="mdi-close-circle", color="grey-6", size="18px",
+				clickable, @click.stop="modelValue = null"
+			)
+			q-icon(name="mdi-dots-horizontal", color="primary")
+	q-menu(v-model="menuOpen", no-parent-event, @before-show="query = ''")
 		.field-select__menu.q-pa-sm
 			q-input(
 				v-model="query", filled, dense, clearable,
 				placeholder="Найти поле", autofocus
 			)
+				template(v-slot:prepend)
+					q-icon(name="mdi-magnify")
 			q-tree.q-mt-sm(
 				ref="tree", :nodes="nodes", node-key="id", dense,
 				:selected="modelValue?.id ?? null", :filter="query ?? ''",
 				default-expand-all, no-selection-unset, selected-color="primary",
 				@update:selected="selectField"
 			)
+				template(v-slot:default-header="slot")
+					WordHighlighter(:query="query ?? ''") {{ slot.node.label }}
 </template>
 
 <style scoped lang="scss">
-.field-select {
+.field-select :deep(.q-field) {
 	width: 100%;
 	min-height: 40px;
 }
@@ -54,5 +66,9 @@ q-btn.field-select(
 	max-width: calc(100vw - 32px);
 	max-height: 420px;
 	overflow: auto;
+}
+
+.field-select__clear {
+	margin-right: 0.25rem;
 }
 </style>

@@ -54,14 +54,6 @@ export function isValidVariant(variant: INumeratorRuleVariant, cardType: string 
 		[variant.prefix, variant.suffix].every((affix) => affix.mode === 'text' || !!affix.xslt.trim())
 }
 
-export function moveVariant(variants: INumeratorRuleVariant[], id: string, direction: -1 | 1) {
-	const index = variants.findIndex((variant) => variant.id === id)
-	const nextIndex = index + direction
-	if (index < 0 || nextIndex < 0 || nextIndex >= variants.length) return
-	const [variant] = variants.splice(index, 1)
-	variants.splice(nextIndex, 0, variant)
-}
-
 export function getAffixSchema(affix: INumeratorAffix, label: string) {
 	return affix.mode === 'xslt' ? `⟨${label} XSLT⟩` : affix.text
 }
@@ -74,12 +66,23 @@ export function getNumberSchema(variant: INumeratorRuleVariant) {
 export function getConditionsSummary(conditions: INumeratorCondition[]) {
 	if (!conditions.length) return 'Без условий'
 	return conditions.map((condition) => {
-		const field = condition.field?.label ?? 'Выберите поле'
-		const operation = getConditionOperators(condition.field?.type)
+		if (!condition.field) return 'Поле не выбрано'
+		const field = condition.field.label
+		const operation = getConditionOperators(condition.field.type)
 			.find((option) => option.value === condition.operator)?.label ?? ''
 		const value = condition.value === null ? '…'
 			: typeof condition.value === 'boolean' ? (condition.value ? 'Да' : 'Нет')
 				: String(condition.value)
 		return `${field} ${operation.toLocaleLowerCase('ru')} ${value}`
 	}).join(' И ')
+}
+
+export function getConditionParts(condition: INumeratorCondition) {
+	const field = condition.field?.label ?? 'Поле не выбрано'
+	const operation = getConditionOperators(condition.field?.type)
+		.find((option) => option.value === condition.operator)?.label?.toLocaleLowerCase('ru') ?? ''
+	const value = condition.value === null ? '…'
+		: typeof condition.value === 'boolean' ? (condition.value ? 'Да' : 'Нет')
+			: String(condition.value)
+	return { field, operation, value }
 }

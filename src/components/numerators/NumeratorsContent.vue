@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import MdiCounter from '@/components/icons/MdiCounter.vue'
+import TablerNumber from '@/components/icons/TablerNumber.vue'
 import NumeratorsList from './NumeratorsList.vue'
 import CreateNumeratorRuleDialog from './CreateNumeratorRuleDialog.vue'
 import CreateNumeratorDialog from './CreateNumeratorDialog.vue'
 import NumeratorRuleEditor from './NumeratorRuleEditor.vue'
 import NumeratorEditor from './NumeratorEditor.vue'
+import { isValidVariant } from './ruleVariants'
 import { useNumerationState } from './useNumerationState'
 import type { INumeratorDraft, INumeratorRuleDraft, INumeratorUsage } from './types'
 
@@ -63,6 +65,14 @@ const headingName = computed(() =>
 		? selectedRule.value?.name || 'Новое правило'
 		: selectedNumerator.value?.name || 'Новый нумератор'
 )
+const canSaveRule = computed(() => {
+	const rule = selectedRule.value
+	if (!rule?.name.trim()) return false
+	return rule.variants.every((variant) =>
+		numerators.value.some((numerator) => numerator.id === variant.numeratorId) &&
+		isValidVariant(variant, rule.cardType)
+	)
+})
 
 function addRule(draft: INumeratorRuleDraft) {
 	ruleQuery.value = ''
@@ -147,7 +157,7 @@ function toggleList() {
 				)
 		template(v-slot:after)
 			.numerators__editor
-				.row.items-center.no-wrap
+				.row.items-center.no-wrap.numerators__editor-header
 					q-btn( flat round dense
 						color="primary"
 						:icon="listWidth === 0 ? 'mdi-forwardburger' : 'mdi-backburger'"
@@ -155,23 +165,42 @@ function toggleList() {
 						@click="toggleList"
 					)
 					.numerators__heading
-						MdiCounter.numerators__heading-icon
+						MdiCounter.numerators__heading-icon(v-if="section === 'rules'")
+						TablerNumber.numerators__heading-icon(v-else)
 						.numerators__heading-text
 							.numerators__overline.text-overline
 								| {{ section === 'rules' ? 'правило нумерации' : 'нумератор' }}
 							.numerators__name {{ headingName }}
+					.btngroup(v-if="section === 'rules' && selectedRule")
+						q-btn(
+							unelevated, color="primary", label="Сохранить", size="sm",
+							:disable="!isRuleChanged(selectedRule.id) || !canSaveRule",
+							@click="saveRule(selectedRule.id)"
+						)
+						q-btn(
+							outline, color="primary", label="Отмена", size="sm",
+							:disable="!isRuleChanged(selectedRule.id)",
+							@click="cancelRule(selectedRule.id)"
+						)
+						q-btn(round, flat, color="primary", icon="mdi-sync", size="sm")
+						q-chip(v-if="isRuleChanged(selectedRule.id)", size="sm", color="amber")
+							| Есть изменения
+						q-chip(size="sm", color="blue-grey-3", icon="mdi-lock")
+							| Заблокировано вами
+						q-btn(flat, round, color="negative", icon="mdi-delete-outline", size="sm")
+							q-menu
+								q-list
+									q-item.pink(clickable)
+										q-item-section Удалить
 				.numerators__constructor
 					NumeratorRuleEditor(
 						v-if="section === 'rules' && selectedRule"
 						:key="selectedRule.id"
 						:rule="selectedRule"
 						:numerators="numerators"
-						:changed="isRuleChanged(selectedRule.id)"
 						:selected-variant-id="selectedVariantIds[selectedRule.id]"
 						:selected-variant-section="selectedVariantSections[selectedRule.id] ?? 'conditions'"
 						@select-variant="(id, cell) => selectVariant(selectedRule.id, id, cell)"
-						@save="saveRule(selectedRule.id)"
-						@cancel="cancelRule(selectedRule.id)"
 						@open-numerator="showNumerator"
 						@create-numerator="addNumerator"
 					)
@@ -241,6 +270,24 @@ function toggleList() {
 	min-width: 0;
 	margin-left: 0.7rem;
 	overflow-wrap: anywhere;
+}
+
+.numerators__editor-header {
+	gap: 0.5rem;
+}
+
+.numerators__editor-header > .btngroup {
+	margin-left: auto;
+}
+
+.btngroup {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.btngroup > * {
+	margin-right: 0.25rem;
 }
 
 .numerators__heading-text {
