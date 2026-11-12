@@ -78,7 +78,7 @@ export interface INumerationListItem {
 	id: string
 	name: string
 	changed: boolean
-	caption?: string
+	usageCount?: number
 }
 
 export type NumerationSection = 'rules' | 'numerators'

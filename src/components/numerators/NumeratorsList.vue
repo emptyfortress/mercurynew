@@ -25,7 +25,7 @@ const emit = defineEmits<{
 		filled
 		dense
 		clearable
-		:placeholder="kind === 'rules' ? 'Найти правило' : 'Найти нумератор'"
+		placeholder="фильтр"
 	)
 		template(v-slot:prepend)
 			q-icon(
@@ -43,19 +43,22 @@ const emit = defineEmits<{
 		)
 			q-item-section.numerators-list__name
 				q-item-label {{ item.name }}
-				q-item-label(
-					v-if="item.caption"
-					caption
-				) {{ item.caption }}
 			q-item-section(
-				v-if="item.changed"
+				v-if="item.changed || item.usageCount !== undefined"
 				side
 			)
-				q-icon(
-					name="mdi-circle-small"
-					color="primary"
-					title="Есть несохранённые изменения"
-				)
+				.row.no-wrap.items-center.q-gutter-sm
+					q-icon(
+						v-if="item.changed"
+						name="mdi-circle-small"
+						color="primary"
+						title="Есть несохранённые изменения"
+					)
+					q-badge(
+						v-if="item.usageCount !== undefined", color="white",
+						text-color="dark", rounded
+					) {{ item.usageCount }}
+						q-tooltip Количество правил, использующих этот нумератор
 	.q-pa-sm.text-grey-7(v-if="!filteredItems.length")
 		| {{ items.length ? 'Ничего не найдено' : 'Список пуст' }}
 	q-btn.numerators-list__add(
@@ -112,5 +115,9 @@ const emit = defineEmits<{
 .numerators-list__name {
 	min-width: 0;
 	overflow-wrap: anywhere;
+}
+
+.numerators-list__name + .q-item__section--side {
+	color: inherit;
 }
 </style>

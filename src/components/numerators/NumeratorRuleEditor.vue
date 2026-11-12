@@ -169,14 +169,14 @@ function getNumeratorName(id: string | null) {
 									:title="getConditionsSummary([condition])"
 								)
 									q-chip.rule-editor__condition-chip(
-										color="light-blue-1", text-color="dark", dense,
+										color="blue-2", text-color="dark", dense,
 										:class="{ 'rule-editor__condition-part_incomplete': !condition.field }"
 									) {{ getConditionParts(condition).field }}
 									q-chip.rule-editor__condition-chip(
-										color="light-blue-1", text-color="dark", dense
+										color="blue-2", text-color="dark", dense
 									) {{ getConditionParts(condition).operation }}
 									q-chip.rule-editor__condition-chip(
-										color="light-blue-1", text-color="dark", dense
+										color="blue-2", text-color="dark", dense
 									) {{ getConditionParts(condition).value }}
 							q-icon.rule-editor__edit-icon(name="mdi-pencil-outline", size="14px")
 							.text-caption.text-negative(

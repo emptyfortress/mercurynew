@@ -35,13 +35,17 @@ const emit = defineEmits<{
 const numeratorQuery = ref('')
 const valueQueries = ref<Record<string, string>>({})
 const numerator = computed(() => props.numerators.find((n) => n.id === props.variant.numeratorId))
-const numeratorOptions = computed(() => props.numerators
-	.filter((item) => item.name.toLocaleLowerCase('ru')
-		.includes(numeratorQuery.value.trim().toLocaleLowerCase('ru')))
-	.map((item) => ({ label: item.name, value: item.id }))
+const numeratorOptions = computed(() =>
+	props.numerators
+		.filter((item) =>
+			item.name
+				.toLocaleLowerCase('ru')
+				.includes(numeratorQuery.value.trim().toLocaleLowerCase('ru'))
+		)
+		.map((item) => ({ label: item.name, value: item.id }))
 )
-const invalidConditions = computed(() => props.variant.conditions
-	.some((condition) => !isValidCondition(condition, props.cardType))
+const invalidConditions = computed(() =>
+	props.variant.conditions.some((condition) => !isValidCondition(condition, props.cardType))
 )
 const numberSample = computed(() => {
 	const lower = numerator.value?.lowerBound
@@ -49,10 +53,14 @@ const numberSample = computed(() => {
 	let number = '[номер]'
 	if (lower !== null && lower !== undefined && upper !== null && upper !== undefined) {
 		number = props.showLeadingZeros
-			? String(lower).padStart(String(upper).length, '0') : String(lower)
+			? String(lower).padStart(String(upper).length, '0')
+			: String(lower)
 	}
-	return getAffixSchema(props.variant.prefix, 'префикс') + number +
+	return (
+		getAffixSchema(props.variant.prefix, 'префикс') +
+		number +
 		getAffixSchema(props.variant.suffix, 'суффикс')
+	)
 })
 
 function setField(condition: INumeratorCondition, field: INumerationField | null) {
@@ -167,7 +175,7 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 		.text-negative.text-caption.q-mt-sm(v-if="invalidConditions")
 			| Заполните поле и значение каждого условия.
 		q-btn.q-mt-sm(
-			flat, color="primary", icon="mdi-plus", label="Добавить условие",
+			flat, color="primary", icon="mdi-filter-plus", label="Добавить условие",
 			:disable="!fieldNodes.length", @click="variant.conditions.push(createCondition())"
 		)
 		.text-caption.text-grey-7(v-if="!fieldNodes.length")
@@ -184,27 +192,30 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 				) Части XSLT обозначены условно; результат зависит от данных карточки.
 	template(v-else)
 		.variant-editor__numerator
-			q-select(
-				v-model="variant.numeratorId", :options="numeratorOptions", use-input,
-				:input-debounce="0", emit-value, map-options, outlined, dense, label="Нумератор",
-				:rules="[value => !!value || 'Выберите нумератор']",
-				@filter="filterNumerators", @popup-hide="numeratorQuery = ''"
-			)
-				template(v-slot:no-option)
-					q-item
-						q-item-section.text-grey-7 Ничего не найдено
-			.text-caption.text-grey-7(v-if="numerator")
-				| Границы: {{ numerator.lowerBound }}–{{ numerator.upperBound }}
-			.row.q-gutter-xs
-				q-btn(
-					flat, color="primary", label="Открыть нумератор", size="sm",
-					:disable="!variant.numeratorId",
-					@click="variant.numeratorId && emit('openNumerator', variant.numeratorId)"
-				)
-				q-btn(
-					flat, color="primary", label="Создать нумератор", size="sm",
-					@click="emit('createNumerator')"
-				)
+			.text-caption.text-grey-7.q-mb-xs Нумератор
+			.variant-editor__numerator-row
+				.variant-editor__numerator-field
+					q-select(
+						v-model="variant.numeratorId", :options="numeratorOptions", use-input,
+						:input-debounce="0", emit-value, map-options, outlined, dense,
+						:rules="[value => !!value || 'Выберите нумератор']",
+						@filter="filterNumerators", @popup-hide="numeratorQuery = ''"
+					)
+						template(v-slot:no-option)
+							q-item
+								q-item-section.text-grey-7 Ничего не найдено
+					.text-caption.text-grey-7(v-if="numerator")
+						| Границы: {{ numerator.lowerBound }}–{{ numerator.upperBound }}
+				.row.q-gutter-xs.q-mt-xs
+					q-btn(
+						flat, color="primary", label="Открыть нумератор", size="sm",
+						:disable="!variant.numeratorId",
+						@click="variant.numeratorId && emit('openNumerator', variant.numeratorId)"
+					)
+					q-btn(
+						flat, color="primary", label="Создать нумератор", size="sm",
+						@click="emit('createNumerator')"
+					)
 </template>
 
 <style scoped lang="scss">
@@ -251,7 +262,22 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 }
 
 .variant-editor__numerator {
-	max-width: 600px;
+	max-width: 900px;
+}
+
+.variant-editor__numerator-row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: start;
+	gap: 0.5rem;
+}
+
+.variant-editor__numerator-field {
+	min-width: 0;
+}
+
+.variant-editor__numerator-field :deep(.q-field) {
+	width: 100%;
 }
 
 @media (max-width: 1000px) {
@@ -274,6 +300,10 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 	}
 
 	.variant-editor__affixes {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.variant-editor__numerator-row {
 		grid-template-columns: minmax(0, 1fr);
 	}
 }

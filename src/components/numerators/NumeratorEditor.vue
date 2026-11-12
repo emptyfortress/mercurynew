@@ -1,20 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { INumerator, INumeratorUsage } from './types'
 
 const props = defineProps<{
 	numerator: INumerator
 	usages: INumeratorUsage[]
-	changed: boolean
-	canSave: boolean
 	canReturn: boolean
 }>()
 const emit = defineEmits<{
-	save: []
-	cancel: []
 	back: []
 	openRule: [id: string, variantId: string]
 }>()
+const activeTab = ref('ranges')
 const ruleCount = computed(() => new Set(props.usages.map((usage) => usage.ruleId)).size)
 const boundsError = computed(() => {
 	const { lowerBound, upperBound } = props.numerator
@@ -29,87 +26,122 @@ const boundsError = computed(() => {
 </script>
 
 <template lang="pug">
-q-form.numerator-editor(@submit.prevent="canSave && emit('save')")
-	.row.items-center.justify-between.q-mb-md.q-gutter-sm
-		q-btn(
-			v-if="canReturn"
-			flat
-			color="primary"
-			icon="mdi-arrow-left"
-			label="Вернуться к правилу"
-			@click="emit('back')"
-		)
-		q-space(v-else)
-		.row.q-gutter-xs
-			q-btn(
-				unelevated
-				color="primary"
-				label="Сохранить"
-				size="sm"
-				type="submit"
-				:disable="!changed || !canSave"
-			)
-			q-btn(
-				outline
-				color="primary"
-				label="Отмена"
-				size="sm"
-				:disable="!changed"
-				@click="emit('cancel')"
-			)
-	q-expansion-item(
-		:label="`Используется в правилах: ${ruleCount}`"
-		header-class="bg-blue-grey-1"
+
+.numerator-editor
+	q-btn.q-mb-md(
+		v-if="canReturn"
+		flat
+		color="primary"
+		icon="mdi-arrow-left"
+		label="Вернуться к правилу"
+		@click="emit('back')"
 	)
-		q-list(v-if="usages.length")
-			q-item(
-				v-for="usage in usages"
-				:key="usage.ruleId + usage.variantId"
-				clickable
-				@click="emit('openRule', usage.ruleId, usage.variantId)"
+	.numerator-editor__properties
+		div
+			.text-caption.text-grey-7.q-mb-xs Имя нумератора
+			q-input(
+				v-model="numerator.name", outlined, dense, autofocus,
+				:rules="[value => !!value?.trim() || 'Введите имя нумератора']"
 			)
-				q-item-section
-					q-item-label {{ usage.ruleName }}
-					q-item-label(caption) Вариант {{ usage.variantNumber }}
-		.q-pa-md.text-grey-7(v-else) Нумератор пока не используется в сохранённых правилах.
-	.q-my-md.text-grey-7(v-if="ruleCount")
-		| Изменения применятся ко всем использующим его правилам.
-	.numerator-editor__properties.q-mt-lg
-		q-input(
-			v-model="numerator.name"
-			outlined
-			dense
-			autofocus
-			label="Имя нумератора"
-			:rules="[value => !!value?.trim() || 'Введите имя нумератора']"
+		div
+			.text-caption.text-grey-7.q-mb-xs Границы номеров
+			.numerator-editor__bounds
+				q-input(
+					v-model.number="numerator.lowerBound", type="number", step="1",
+					outlined, dense
+				)
+				span.numerator-editor__bounds-separator —
+				q-input(
+					v-model.number="numerator.upperBound", type="number", step="1",
+					outlined, dense
+				)
+			.text-negative.text-caption(v-if="boundsError") {{ boundsError }}
+		q-btn.numerator-editor__usage-link(
+			flat, dense, no-caps, color="primary"
 		)
-		.text-subtitle2 Границы номеров
-		.row.q-col-gutter-md
-			.col-12.col-sm-6
-				q-input(
-					v-model.number="numerator.lowerBound"
-					type="number"
-					step="1"
-					outlined
-					dense
-					label="От"
-				)
-			.col-12.col-sm-6
-				q-input(
-					v-model.number="numerator.upperBound"
-					type="number"
-					step="1"
-					outlined
-					dense
-					label="До"
-				)
-		.text-negative(v-if="boundsError") {{ boundsError }}
+			span Используется в правилах
+			q-badge.q-ml-sm(color="white", text-color="dark", rounded) {{ ruleCount }}
+			q-menu(max-height="360px")
+				q-list.numerator-editor__usages(dense)
+					q-item(
+						v-for="usage in usages", :key="usage.ruleId + usage.variantId",
+						clickable, v-close-popup,
+						@click="emit('openRule', usage.ruleId, usage.variantId)"
+					)
+						q-item-section
+							q-item-label {{ usage.ruleName }}
+					.q-pa-md.text-grey-7(v-if="!usages.length")
+						| Нумератор пока не используется в сохранённых правилах.
+					q-separator(v-if="ruleCount")
+					.q-pa-sm.text-caption.text-grey-7(v-if="ruleCount")
+						| Изменения применятся ко всем использующим его правилам.
+	.numerator-editor__tabs-row
+		q-tabs(
+			v-model="activeTab", align="left", no-caps, dense,
+			active-color="primary", indicator-color="primary"
+		)
+			q-tab(name="ranges", label="Диапазоны")
+			q-tab(name="statuses", label="Статус номеров")
+	q-tab-panels.numerator-editor__panels(v-model="activeTab")
+		q-tab-panel(name="ranges")
+		q-tab-panel(name="statuses")
 </template>
 
 <style scoped lang="scss">
+.q-tabs {
+	border-bottom: 1px solid var(--my-border-color);
+}
 .numerator-editor__properties {
 	display: grid;
+	grid-template-columns: minmax(0, 300px) minmax(0, 340px) max-content;
+	align-items: start;
 	gap: 1rem;
-	max-width: 600px;
+}
+
+.numerator-editor__bounds {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.numerator-editor__usage-link {
+	margin-top: 1.5rem;
+}
+
+.numerator-editor__panels {
+	background: transparent;
+}
+
+.numerator-editor__tabs-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+
+.numerator-editor__usages {
+	width: 320px;
+	max-width: calc(100vw - 48px);
+}
+
+@media (max-width: 1000px) {
+	.numerator-editor__properties {
+		grid-template-columns: minmax(0, 300px) minmax(0, 340px);
+	}
+
+	.numerator-editor__usage-link {
+		grid-column: 1 / -1;
+		justify-self: start;
+		margin-top: 0;
+	}
+}
+
+@media (max-width: 640px) {
+	.numerator-editor__properties {
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 </style>

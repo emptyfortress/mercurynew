@@ -57,7 +57,7 @@ const numeratorItems = computed(() =>
 		id: numerator.id,
 		name: numerator.name || 'Новый нумератор',
 		changed: isNumeratorChanged(numerator.id),
-		caption: `Правил: ${new Set(getUsages(numerator.id).map((usage) => usage.ruleId)).size}`,
+		usageCount: new Set(getUsages(numerator.id).map((usage) => usage.ruleId)).size,
 	}))
 )
 const headingName = computed(() =>
@@ -68,9 +68,10 @@ const headingName = computed(() =>
 const canSaveRule = computed(() => {
 	const rule = selectedRule.value
 	if (!rule?.name.trim()) return false
-	return rule.variants.every((variant) =>
-		numerators.value.some((numerator) => numerator.id === variant.numeratorId) &&
-		isValidVariant(variant, rule.cardType)
+	return rule.variants.every(
+		(variant) =>
+			numerators.value.some((numerator) => numerator.id === variant.numeratorId) &&
+			isValidVariant(variant, rule.cardType)
 	)
 })
 
@@ -192,6 +193,27 @@ function toggleList() {
 								q-list
 									q-item.pink(clickable)
 										q-item-section Удалить
+					.btngroup(v-else-if="section === 'numerators' && selectedNumerator")
+						q-btn(
+							unelevated, color="primary", label="Сохранить", size="sm",
+							:disable="!isNumeratorChanged(selectedNumerator.id) || !canSaveNumerator(selectedNumerator.id)",
+							@click="saveNumerator(selectedNumerator.id)"
+						)
+						q-btn(
+							outline, color="primary", label="Отмена", size="sm",
+							:disable="!isNumeratorChanged(selectedNumerator.id)",
+							@click="cancelNumerator(selectedNumerator.id)"
+						)
+						q-btn(round, flat, color="primary", icon="mdi-sync", size="sm")
+						q-chip(v-if="isNumeratorChanged(selectedNumerator.id)", size="sm", color="amber")
+							| Есть изменения
+						q-chip(size="sm", color="blue-grey-3", icon="mdi-lock")
+							| Заблокировано вами
+						q-btn(flat, round, color="negative", icon="mdi-delete-outline", size="sm")
+							q-menu
+								q-list
+									q-item.pink(clickable)
+										q-item-section Удалить
 				.numerators__constructor
 					NumeratorRuleEditor(
 						v-if="section === 'rules' && selectedRule"
@@ -209,11 +231,7 @@ function toggleList() {
 						:key="selectedNumerator.id"
 						:numerator="selectedNumerator"
 						:usages="getUsages(selectedNumerator.id)"
-						:changed="isNumeratorChanged(selectedNumerator.id)"
-						:can-save="canSaveNumerator(selectedNumerator.id)"
 						:can-return="!!returnTarget"
-						@save="saveNumerator(selectedNumerator.id)"
-						@cancel="cancelNumerator(selectedNumerator.id)"
 						@back="returnToRule"
 						@open-rule="showRule"
 					)
@@ -300,7 +318,6 @@ function toggleList() {
 }
 
 .numerators__name {
-	margin-top: 0.3rem;
 	font-size: 1rem;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -315,7 +332,10 @@ function toggleList() {
 .numerators__constructor {
 	flex: 1;
 	min-height: 0;
-	margin-top: 0.5rem;
+	margin-top: 1.5rem;
 	overflow-y: auto;
+}
+.q-tabs {
+	border-bottom: 1px solid var(--my-border-color);
 }
 </style>
