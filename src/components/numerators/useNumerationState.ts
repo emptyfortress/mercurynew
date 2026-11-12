@@ -2,12 +2,16 @@ import { computed, ref } from 'vue'
 import { createRuleVariant, isValidVariant } from './ruleVariants'
 import { getNumeratorRangeError } from './numeratorRanges'
 import { createZoneSettings, getZoneSettingsError } from './numeratorZones'
+import { applyNumberOperation } from './numeratorStatuses'
 import type {
 	INumerator,
 	INumeratorDraft,
 	INumeratorRule,
 	INumeratorRuleDraft,
 	INumeratorUsage,
+	INumeratorNumberTarget,
+	NumeratorNumberOperation,
+	NumeratorOccupancy,
 	NumerationSection,
 	NumeratorVariantSection,
 } from './types'
@@ -35,6 +39,13 @@ export function isValidNumerator(
 }
 
 export function useNumerationState() {
+	const numberOccupancy = ref<Record<string, NumeratorOccupancy>>({
+		common: {
+			'common-2024': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 22, 35, 48],
+			'common-2025': [1, 2, 3, 4, 5, 6, 7, 24, 32, 45, 63],
+			'common-2026': [1, 2, 4, 8, 15, 62],
+		},
+	})
 	const section = ref<NumerationSection>('rules')
 	const ruleNames = ['Акт', 'Договор', 'Дополнительное соглашение']
 	const rules = ref<INumeratorRule[]>(
@@ -47,8 +58,18 @@ export function useNumerationState() {
 		}))
 	)
 	const numerators = ref<INumerator[]>([
-		{ id: 'common', name: 'Общий', lowerBound: 1, upperBound: 1000,
-			ranges: [], zoneSettings: createZoneSettings(), zones: [] },
+		{
+			id: 'common', name: 'Общий', lowerBound: 1, upperBound: 1000,
+			ranges: [
+				{ id: 'common-ivanov', owner: 'Иванов И.К.', lowerBound: 21, upperBound: 30 },
+				{ id: 'common-petrov', owner: 'Петров З.А.', lowerBound: 61, upperBound: 70 },
+			],
+			zoneSettings: { ...createZoneSettings(), period: 'year', firstZoneDate: '2024-01-01' },
+			zones: [2024, 2025, 2026].map((year) => ({
+				id: `common-${year}`, name: `Y${year}`, kind: 'automatic',
+				periodStart: `${year}-01-01`, periodEnd: `${year}-12-31`,
+			})),
+		},
 		{ id: 'contracts', name: 'Договоры', lowerBound: 1, upperBound: 10000,
 			ranges: [], zoneSettings: createZoneSettings(), zones: [] },
 	])
@@ -195,8 +216,18 @@ export function useNumerationState() {
 		if (target) openRule(target.ruleId, target.variantId)
 	}
 
+	function operateNumbers(id: string, operation: NumeratorNumberOperation, targets: INumeratorNumberTarget[]) {
+		const numerator = numerators.value.find((item) => item.id === id)
+		if (!numerator) return
+		numberOccupancy.value[id] = applyNumberOperation(
+			numerator, numberOccupancy.value[id] ?? {}, operation, targets
+		)
+	}
+
 	return {
 		section,
+		numberOccupancy,
+		operateNumbers,
 		rules,
 		ruleCatalog,
 		numerators,

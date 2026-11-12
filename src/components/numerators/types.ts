@@ -96,6 +96,28 @@ export interface INumeratorRange {
 	upperBound: number | null
 }
 
+export type NumeratorNumberStatus = 'free' | 'occupied' | 'reserved' | 'nonexistent'
+export type NumeratorNumberOperation = 'occupy' | 'release'
+export type NumeratorOccupancy = Record<string, number[]>
+
+export interface INumeratorNumberTarget {
+	zoneId: string
+	number: number
+}
+
+export interface INumeratorNumberRow extends INumeratorNumberTarget {
+	key: string
+	zoneName: string
+	status: NumeratorNumberStatus
+}
+
+export interface INumeratorStatusQuery {
+	zoneId: string | null
+	lowerBound: number | null
+	upperBound: number | null
+	statuses: NumeratorNumberStatus[]
+}
+
 export interface INumeratorUsage {
 	ruleId: string
 	ruleName: string

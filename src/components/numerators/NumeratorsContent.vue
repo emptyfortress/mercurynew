@@ -37,7 +37,12 @@ const {
 	saveNumerator,
 	cancelNumerator,
 	backToRule,
+	numberOccupancy,
+	operateNumbers,
 } = useNumerationState()
+const savedSelectedNumerator = computed(() =>
+	numerators.value.find((item) => item.id === selectedNumeratorId.value)
+)
 const createDialog = ref(false)
 const createNumeratorDialog = ref(false)
 const numeratorCreationTarget = ref<INumeratorUsage | null>(null)
@@ -227,13 +232,17 @@ function toggleList() {
 						@create-numerator="addNumerator"
 					)
 					NumeratorEditor(
-						v-else-if="section === 'numerators' && selectedNumerator"
+						v-else-if="section === 'numerators' && selectedNumerator && savedSelectedNumerator"
 						:key="selectedNumerator.id"
 						:numerator="selectedNumerator"
+						:saved-numerator="savedSelectedNumerator"
+						:occupancy="numberOccupancy[selectedNumerator.id] ?? {}"
+						:settings-changed="isNumeratorChanged(selectedNumerator.id)"
 						:usages="getUsages(selectedNumerator.id)"
 						:can-return="!!returnTarget"
 						@back="returnToRule"
 						@open-rule="showRule"
+						@operate="(operation, targets) => operateNumbers(selectedNumerator.id, operation, targets)"
 					)
 	CreateNumeratorRuleDialog(
 		v-model="createDialog"

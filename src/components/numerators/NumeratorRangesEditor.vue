@@ -61,7 +61,8 @@ function filterOwners(value: string, update: (callback: () => void) => void) {
 				q-td.numerator-ranges__owner(key="owner", :props="slot")
 					q-select(
 						v-model="slot.row.owner", :options="ownerOptions", outlined, dense,
-						use-input, clearable, :input-debounce="0", placeholder="Выберите сотрудника",
+						use-input, clearable, :input-debounce="0",
+						:placeholder="slot.row.owner ? undefined : 'Выберите сотрудника'",
 						@filter="filterOwners", @popup-hide="ownerQuery = ''"
 					)
 						template(v-slot:no-option)

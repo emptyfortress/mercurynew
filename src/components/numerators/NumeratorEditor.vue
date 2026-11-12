@@ -2,23 +2,27 @@
 import { computed, ref, watch } from 'vue'
 import NumeratorRangesEditor from './NumeratorRangesEditor.vue'
 import NumeratorZonesEditor from './NumeratorZonesEditor.vue'
-import type { INumerator, INumeratorUsage } from './types'
+import NumeratorStatusesEditor from './NumeratorStatusesEditor.vue'
+import type {
+	INumerator, INumeratorUsage, INumeratorNumberTarget,
+	NumeratorNumberOperation, NumeratorOccupancy,
+} from './types'
 
 const props = defineProps<{
 	numerator: INumerator
+	savedNumerator: INumerator
+	occupancy: NumeratorOccupancy
+	settingsChanged: boolean
 	usages: INumeratorUsage[]
 	canReturn: boolean
 }>()
 const emit = defineEmits<{
 	back: []
 	openRule: [id: string, variantId: string]
+	operate: [operation: NumeratorNumberOperation, targets: INumeratorNumberTarget[]]
 }>()
 const activeTab = ref('ranges')
 const statusZoneId = ref<string | null>(null)
-const zoneOptions = computed(() => [
-	{ label: 'Все зоны', value: null },
-	...props.numerator.zones.map((zone) => ({ label: zone.name || 'Новая зона', value: zone.id })),
-])
 watch(() => props.numerator.zones.map((zone) => zone.id), (ids) => {
 	if (statusZoneId.value && !ids.includes(statusZoneId.value)) statusZoneId.value = null
 })
@@ -97,16 +101,16 @@ const boundsError = computed(() => {
 		)
 			q-tab(name="ranges", label="Диапазоны")
 			q-tab(name="statuses", label="Статус номеров")
-	q-tab-panels.numerator-editor__panels(v-model="activeTab")
+	q-tab-panels.numerator-editor__panels(v-model="activeTab", keep-alive)
 		q-tab-panel(name="ranges")
 			NumeratorRangesEditor(:numerator="numerator")
 			NumeratorZonesEditor(:numerator="numerator", @view-numbers="viewZoneNumbers")
 		q-tab-panel(name="statuses")
-			.numerator-editor__status-zone
-				.text-caption.text-grey-7.q-mb-xs Зона
-				q-select(
-					v-model="statusZoneId", :options="zoneOptions", emit-value, map-options, outlined, dense
-				)
+			NumeratorStatusesEditor(
+				v-model:zone-id="statusZoneId", :numerator="savedNumerator",
+				:occupancy="occupancy", :settings-changed="settingsChanged",
+				@operate="(operation, targets) => emit('operate', operation, targets)"
+			)
 </template>
 
 <style scoped lang="scss">
@@ -138,10 +142,6 @@ const boundsError = computed(() => {
 
 .numerator-editor__panels {
 	background: transparent;
-}
-
-.numerator-editor__status-zone {
-	max-width: 300px;
 }
 
 .numerator-editor__tabs-row {
