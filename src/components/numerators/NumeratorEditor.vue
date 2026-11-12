@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import NumeratorRangesEditor from './NumeratorRangesEditor.vue'
+import NumeratorZonesEditor from './NumeratorZonesEditor.vue'
 import type { INumerator, INumeratorUsage } from './types'
 
 const props = defineProps<{
@@ -12,6 +14,19 @@ const emit = defineEmits<{
 	openRule: [id: string, variantId: string]
 }>()
 const activeTab = ref('ranges')
+const statusZoneId = ref<string | null>(null)
+const zoneOptions = computed(() => [
+	{ label: 'Все зоны', value: null },
+	...props.numerator.zones.map((zone) => ({ label: zone.name || 'Новая зона', value: zone.id })),
+])
+watch(() => props.numerator.zones.map((zone) => zone.id), (ids) => {
+	if (statusZoneId.value && !ids.includes(statusZoneId.value)) statusZoneId.value = null
+})
+
+function viewZoneNumbers(zoneId: string) {
+	statusZoneId.value = zoneId
+	activeTab.value = 'statuses'
+}
 const ruleCount = computed(() => new Set(props.usages.map((usage) => usage.ruleId)).size)
 const boundsError = computed(() => {
 	const { lowerBound, upperBound } = props.numerator
@@ -84,12 +99,24 @@ const boundsError = computed(() => {
 			q-tab(name="statuses", label="Статус номеров")
 	q-tab-panels.numerator-editor__panels(v-model="activeTab")
 		q-tab-panel(name="ranges")
+			NumeratorRangesEditor(:numerator="numerator")
+			NumeratorZonesEditor(:numerator="numerator", @view-numbers="viewZoneNumbers")
 		q-tab-panel(name="statuses")
+			.numerator-editor__status-zone
+				.text-caption.text-grey-7.q-mb-xs Зона
+				q-select(
+					v-model="statusZoneId", :options="zoneOptions", emit-value, map-options, outlined, dense
+				)
 </template>
 
 <style scoped lang="scss">
 .q-tabs {
 	border-bottom: 1px solid var(--my-border-color);
+	width: 100%;
+}
+.q-tab-panel {
+	padding-left: 0;
+	padding-right: 0;
 }
 .numerator-editor__properties {
 	display: grid;
@@ -111,6 +138,10 @@ const boundsError = computed(() => {
 
 .numerator-editor__panels {
 	background: transparent;
+}
+
+.numerator-editor__status-zone {
+	max-width: 300px;
 }
 
 .numerator-editor__tabs-row {

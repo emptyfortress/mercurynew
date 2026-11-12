@@ -1,5 +1,7 @@
 import { computed, ref } from 'vue'
 import { createRuleVariant, isValidVariant } from './ruleVariants'
+import { getNumeratorRangeError } from './numeratorRanges'
+import { createZoneSettings, getZoneSettingsError } from './numeratorZones'
 import type {
 	INumerator,
 	INumeratorDraft,
@@ -14,14 +16,21 @@ function copy<T>(value: T): T {
 	return JSON.parse(JSON.stringify(value)) as T
 }
 
-export function isValidNumerator(draft: INumeratorDraft | undefined) {
+export function isValidNumerator(
+	draft: (INumeratorDraft & Partial<Pick<INumerator, 'ranges' | 'zoneSettings' | 'zones'>>) | undefined
+) {
 	return Boolean(
 		draft?.name.trim() &&
 		Number.isSafeInteger(draft.lowerBound) &&
 		Number.isSafeInteger(draft.upperBound) &&
 		draft.lowerBound !== null &&
 		draft.upperBound !== null &&
-		draft.lowerBound <= draft.upperBound
+		draft.lowerBound <= draft.upperBound &&
+		(draft.ranges ?? []).every((range) =>
+			!getNumeratorRangeError(range, draft.ranges ?? [], draft)
+		) &&
+		(!draft.zoneSettings || !getZoneSettingsError(draft.zoneSettings)) &&
+		(draft.zones ?? []).every((zone) => Boolean(zone.name.trim()))
 	)
 }
 
@@ -38,8 +47,10 @@ export function useNumerationState() {
 		}))
 	)
 	const numerators = ref<INumerator[]>([
-		{ id: 'common', name: 'Общий', lowerBound: 1, upperBound: 1000 },
-		{ id: 'contracts', name: 'Договоры', lowerBound: 1, upperBound: 10000 },
+		{ id: 'common', name: 'Общий', lowerBound: 1, upperBound: 1000,
+			ranges: [], zoneSettings: createZoneSettings(), zones: [] },
+		{ id: 'contracts', name: 'Договоры', lowerBound: 1, upperBound: 10000,
+			ranges: [], zoneSettings: createZoneSettings(), zones: [] },
 	])
 	const ruleDrafts = ref<Record<string, INumeratorRule>>(
 		Object.fromEntries(rules.value.map((rule) => [rule.id, copy(rule)]))
@@ -142,6 +153,9 @@ export function useNumerationState() {
 		if (!isValidNumerator(draft)) return false
 		const numerator: INumerator = {
 			...draft,
+			ranges: [],
+			zoneSettings: createZoneSettings(),
+			zones: [],
 			id: crypto.randomUUID(),
 			name: draft.name.trim(),
 		}
