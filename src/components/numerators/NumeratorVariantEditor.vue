@@ -135,7 +135,7 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 						@update:model-value="setOperator(condition, $event)"
 					)
 				div
-					.text-caption.text-black.q-mb-xs(v-if="index === 0") Значение / подразделение
+					.text-caption.text-black.q-mb-xs(v-if="index === 0") Значение
 					q-select(
 						v-if="condition.field?.type === 'boolean'", v-model="condition.value",
 						:options="[{label: 'Да', value: true}, {label: 'Нет', value: false}]",

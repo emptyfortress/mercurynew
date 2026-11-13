@@ -27,10 +27,18 @@ function selectField(id: string | null) {
 <template lang="pug">
 
 .field-select(@click="nodes.length && (menuOpen = true)")
-	q-input(
-		:model-value="modelValue?.label ?? 'Выберите поле'", outlined, dense, readonly,
+	q-field(
+		:model-value="modelValue?.label", outlined, dense,
 		:disable="!nodes.length"
 	)
+		template(v-slot:control)
+			.field-select__value.ellipsis(
+				:tabindex="nodes.length ? 0 : -1",
+				@keydown.enter.prevent="nodes.length && (menuOpen = true)",
+				@keydown.space.prevent="nodes.length && (menuOpen = true)"
+			)
+				| {{ modelValue?.label ?? 'Выберите поле' }}
+				q-tooltip(v-if="modelValue && !menuOpen", :delay="300") {{ modelValue.label }}
 		template(v-slot:append)
 			q-icon.field-select__clear(
 				v-if="modelValue", name="mdi-close-circle", color="grey-6", size="18px",
@@ -59,6 +67,12 @@ function selectField(id: string | null) {
 .field-select :deep(.q-field) {
 	width: 100%;
 	min-height: 40px;
+}
+
+.field-select__value {
+	align-self: center;
+	width: 100%;
+	cursor: pointer;
 }
 
 .field-select__menu {
