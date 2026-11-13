@@ -115,18 +115,12 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 .variant-editor
 	template(v-if="section === 'conditions'")
 		.text-caption.text-grey-7.q-mb-md Выполнены все условия (И)
-		.variant-editor__condition-labels.text-caption.text-grey-7(
-			v-if="variant.conditions.length"
-		)
-			span Поле
-			span Операция
-			span Значение / подразделение
-			span
 		.variant-editor__conditions
 			.variant-editor__condition(
 				v-for="(condition, index) in variant.conditions", :key="condition.id"
 			)
 				div
+					.text-caption.text-grey-7.q-mb-xs Поле
 					NumerationFieldSelect(
 						:model-value="condition.field", :nodes="fieldNodes",
 						@update:model-value="setField(condition, $event)"
@@ -134,40 +128,44 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 					.text-negative.text-caption.q-mt-xs(
 						v-if="condition.field && !findNumerationField(fieldNodes, condition.field.id)"
 					) Поле недоступно для этого типа карточки
-				q-select(
-					:model-value="condition.operator", :options="getConditionOperators(condition.field?.type)",
-					emit-value, map-options, outlined, dense, :disable="!condition.field",
-					@update:model-value="setOperator(condition, $event)"
-				)
-				q-select(
-					v-if="condition.field?.type === 'boolean'", v-model="condition.value",
-					:options="[{label: 'Да', value: true}, {label: 'Нет', value: false}]",
-					emit-value, map-options, outlined, dense
-				)
-				q-select(
-					v-else-if="['employee', 'organization', 'status'].includes(condition.field?.type ?? '')",
-					v-model="condition.value", :options="getValueOptions(condition)",
-					use-input, :input-debounce="0", outlined, dense,
-					@filter="(value, update) => filterValues(condition.id, value, update)",
-					@popup-hide="valueQueries[condition.id] = ''"
-				)
-					template(v-slot:no-option)
-						q-item
-							q-item-section.text-grey-7 Ничего не найдено
-				q-input(
-					v-else-if="condition.field?.type === 'number'",
-					:model-value="typeof condition.value === 'number' ? condition.value : null",
-					type="number", outlined, dense,
-					@update:model-value="condition.value = $event === '' || $event === null ? null : Number($event)"
-				)
-				q-input(
-					v-else, :model-value="typeof condition.value === 'string' ? condition.value : ''",
-					outlined, dense,
-					:type="condition.field?.type === 'date' ? 'date' : 'text'",
-					:disable="!condition.field",
-					@update:model-value="condition.value = $event === null ? null : String($event)"
-				)
-				q-btn(
+				div
+					.text-caption.text-grey-7.q-mb-xs Операция
+					q-select(
+						:model-value="condition.operator", :options="getConditionOperators(condition.field?.type)",
+						emit-value, map-options, outlined, dense, :disable="!condition.field",
+						@update:model-value="setOperator(condition, $event)"
+					)
+				div
+					.text-caption.text-grey-7.q-mb-xs Значение / подразделение
+					q-select(
+						v-if="condition.field?.type === 'boolean'", v-model="condition.value",
+						:options="[{label: 'Да', value: true}, {label: 'Нет', value: false}]",
+						emit-value, map-options, outlined, dense
+					)
+					q-select(
+						v-else-if="['employee', 'organization', 'status'].includes(condition.field?.type ?? '')",
+						v-model="condition.value", :options="getValueOptions(condition)",
+						use-input, :input-debounce="0", outlined, dense,
+						@filter="(value, update) => filterValues(condition.id, value, update)",
+						@popup-hide="valueQueries[condition.id] = ''"
+					)
+						template(v-slot:no-option)
+							q-item
+								q-item-section.text-grey-7 Ничего не найдено
+					q-input(
+						v-else-if="condition.field?.type === 'number'",
+						:model-value="typeof condition.value === 'number' ? condition.value : null",
+						type="number", outlined, dense,
+						@update:model-value="condition.value = $event === '' || $event === null ? null : Number($event)"
+					)
+					q-input(
+						v-else, :model-value="typeof condition.value === 'string' ? condition.value : ''",
+						outlined, dense,
+						:type="condition.field?.type === 'date' ? 'date' : 'text'",
+						:disable="!condition.field",
+						@update:model-value="condition.value = $event === null ? null : String($event)"
+					)
+				q-btn.variant-editor__remove-condition(
 					flat, round, dense, icon="mdi-delete-outline", color="negative",
 					title="Удалить условие", @click="variant.conditions.splice(index, 1)"
 				)
@@ -220,7 +218,6 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 
 <style scoped lang="scss">
 .variant-editor {
-	padding: 1rem;
 	white-space: normal;
 }
 
@@ -229,24 +226,28 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 	gap: 1rem;
 }
 
-.variant-editor__condition-labels {
-	display: grid;
-	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) auto;
-	gap: 0.5rem;
-	padding: 0 2.5rem 0 0;
-}
-
 .variant-editor__condition {
 	display: grid;
-	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+	grid-template-columns: minmax(0, 1fr) auto;
 	align-items: start;
 	gap: 0.5rem;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid var(--my-border-color);
+}
+
+.variant-editor__condition > :first-child,
+.variant-editor__condition > :nth-child(2) {
+	grid-column: 1 / -1;
+}
+
+.variant-editor__remove-condition {
+	margin-top: 1.5rem;
 }
 
 .variant-editor__affixes {
 	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 2rem;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 1rem;
 }
 
 .variant-editor__sample {
@@ -267,7 +268,7 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 
 .variant-editor__numerator-row {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-columns: minmax(0, 1fr);
 	align-items: start;
 	gap: 0.5rem;
 }
@@ -278,33 +279,5 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 
 .variant-editor__numerator-field :deep(.q-field) {
 	width: 100%;
-}
-
-@media (max-width: 1000px) {
-	.variant-editor__condition-labels {
-		grid-template-columns: minmax(0, 1fr) auto;
-	}
-
-	.variant-editor__condition-labels > :first-child,
-	.variant-editor__condition-labels > :nth-child(2) {
-		grid-column: 1 / -1;
-	}
-
-	.variant-editor__condition {
-		grid-template-columns: minmax(0, 1fr) auto;
-	}
-
-	.variant-editor__condition > :first-child,
-	.variant-editor__condition > :nth-child(2) {
-		grid-column: 1 / -1;
-	}
-
-	.variant-editor__affixes {
-		grid-template-columns: minmax(0, 1fr);
-	}
-
-	.variant-editor__numerator-row {
-		grid-template-columns: minmax(0, 1fr);
-	}
 }
 </style>

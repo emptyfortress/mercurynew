@@ -21,6 +21,9 @@ const {
 	selectedVariantIds,
 	selectedVariantSections,
 	selectVariant,
+	variantDrafts,
+	addVariant,
+	saveVariant,
 	selectedRule,
 	selectedNumerator,
 	returnTarget,
@@ -224,10 +227,13 @@ function toggleList() {
 						v-if="section === 'rules' && selectedRule"
 						:key="selectedRule.id"
 						:rule="selectedRule"
+						:variant-draft="variantDrafts[selectedRule.id]"
 						:numerators="numerators"
 						:selected-variant-id="selectedVariantIds[selectedRule.id]"
 						:selected-variant-section="selectedVariantSections[selectedRule.id] ?? 'conditions'"
 						@select-variant="(id, cell) => selectVariant(selectedRule.id, id, cell)"
+						@add-variant="addVariant(selectedRule.id)"
+						@save-variant="saveVariant(selectedRule.id)"
 						@open-numerator="showNumerator"
 						@create-numerator="addNumerator"
 					)

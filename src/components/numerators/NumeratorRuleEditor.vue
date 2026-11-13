@@ -6,7 +6,6 @@ import { useSimpleStore } from '@/stores/simpleStore'
 import NumeratorVariantEditor from './NumeratorVariantEditor.vue'
 import { getNumerationFieldTree } from './numerationFields'
 import {
-	createRuleVariant,
 	getConditionParts,
 	getConditionsSummary,
 	getNumberSchema,
@@ -23,11 +22,14 @@ import type {
 const props = defineProps<{
 	rule: INumeratorRule
 	numerators: INumerator[]
+	variantDraft?: INumeratorRuleVariant
 	selectedVariantId?: string
 	selectedVariantSection: NumeratorVariantSection
 }>()
 const emit = defineEmits<{
 	selectVariant: [id: string, section: NumeratorVariantSection]
+	addVariant: []
+	saveVariant: []
 	openNumerator: [id: string, target: INumeratorUsage]
 	createNumerator: [target: INumeratorUsage]
 }>()
@@ -63,7 +65,27 @@ const fieldNodes = computed(() =>
 		cardTypes.value.find((card) => card.value === props.rule.cardType)?.label
 	)
 )
-const expandedRows = computed(() => (props.selectedVariantId ? [props.selectedVariantId] : []))
+const expanded = ref(false)
+const drawerVisible = computed({
+	get: () => Boolean(props.variantDraft),
+	set: (visible) => {
+		if (!visible) emit('selectVariant', '', props.selectedVariantSection)
+	},
+})
+const variantNumber = computed(() => {
+	const index = props.rule.variants.findIndex((item) => item.id === props.variantDraft?.id)
+	return index < 0 ? props.rule.variants.length + 1 : index + 1
+})
+const canSaveVariant = computed(() =>
+	Boolean(
+		props.variantDraft &&
+		isValidVariant(props.variantDraft, props.rule.cardType) &&
+		props.numerators.some((item) => item.id === props.variantDraft?.numeratorId)
+	)
+)
+watch(drawerVisible, (visible) => {
+	if (!visible) expanded.value = false
+})
 const unconditionalBeforeLast = computed(() =>
 	props.rule.variants.slice(0, -1).some((variant) => variant.conditions.length === 0)
 )
@@ -80,9 +102,8 @@ const sectionLabels: Record<NumeratorVariantSection, string> = {
 	numerator: 'Нумератор',
 }
 
-function toggleVariantCell(id: string, section: NumeratorVariantSection) {
-	const isActive = props.selectedVariantId === id && props.selectedVariantSection === section
-	emit('selectVariant', isActive ? '' : id, section)
+function openVariant(id: string) {
+	emit('selectVariant', id, 'conditions')
 }
 
 function getTarget(variantId: string): INumeratorUsage {
@@ -91,14 +112,8 @@ function getTarget(variantId: string): INumeratorUsage {
 		ruleId: props.rule.id,
 		ruleName: props.rule.name,
 		variantId,
-		variantNumber: index + 1,
+		variantNumber: index < 0 ? props.rule.variants.length + 1 : index + 1,
 	}
-}
-
-function addVariant() {
-	const variant = createRuleVariant()
-	props.rule.variants.push(variant)
-	emit('selectVariant', variant.id, 'conditions')
 }
 
 function removeVariant(id: string) {
@@ -142,25 +157,22 @@ function getNumeratorName(id: string | null) {
 			|  Переместите его в конец, чтобы следующие варианты могли применяться.
 		q-table.rule-editor__table(
 			ref="variantTable", :rows="variantRows", :columns="columns", row-key="id", flat, bordered,
-			:expanded="expandedRows", hide-bottom, :pagination="{ rowsPerPage: 0 }"
+			hide-bottom, :pagination="{ rowsPerPage: 0 }"
 		)
 			template(v-slot:body="slot")
 				q-tr.rule-editor__variant-row(
-					:key="slot.row.id", :props="slot", no-hover,
-					:class="{ 'rule-editor__variant-row_open': slot.expand }"
+					:key="slot.row.id", :props="slot", tabindex="0",
+					:class="{ 'rule-editor__variant-row_open': selectedVariantId === slot.row.id }",
+					@click="openVariant(slot.row.id)",
+					@keydown.enter.self.prevent="openVariant(slot.row.id)",
+					@keydown.space.self.prevent="openVariant(slot.row.id)"
 				)
-					q-td.rule-editor__handle-cell(key="handle", :props="slot", auto-width)
+					q-td.rule-editor__handle-cell(key="handle", :props="slot", auto-width, @click.stop="")
 						q-icon.rule-editor__drag-handle(
 							name="mdi-drag", size="22px", color="primary",
 							title="Перетащите, чтобы изменить порядок"
 						)
-					q-td.rule-editor__cell(
-						key="conditions", :props="slot", tabindex="0",
-						:class="{ 'rule-editor__cell_active': slot.expand && selectedVariantSection === 'conditions' }",
-						@click="toggleVariantCell(slot.row.id, 'conditions')",
-						@keydown.enter.prevent="toggleVariantCell(slot.row.id, 'conditions')",
-						@keydown.space.prevent="toggleVariantCell(slot.row.id, 'conditions')"
-					)
+					q-td.rule-editor__cell(key="conditions", :props="slot")
 						.row.no-wrap.items-center.q-gutter-x-sm
 							.rule-editor__conditions-summary
 								.rule-editor__summary-text(v-if="!slot.row.conditions.length") Без условий
@@ -178,60 +190,64 @@ function getNumeratorName(id: string | null) {
 									q-chip.rule-editor__condition-chip(
 										color="blue-2", text-color="dark", dense
 									) {{ getConditionParts(condition).value }}
-							q-icon.rule-editor__edit-icon(name="mdi-pencil-outline", size="14px")
 							.text-caption.text-negative(
 								v-if="!isValidVariant(slot.row, rule.cardType) || !slot.row.numeratorId"
 							) Вариант не заполнен
-					q-td.rule-editor__cell(
-						key="format", :props="slot", tabindex="0",
-						:class="{ 'rule-editor__cell_active': slot.expand && selectedVariantSection === 'format' }",
-						@click="toggleVariantCell(slot.row.id, 'format')",
-						@keydown.enter.prevent="toggleVariantCell(slot.row.id, 'format')",
-						@keydown.space.prevent="toggleVariantCell(slot.row.id, 'format')"
-					)
+					q-td.rule-editor__cell(key="format", :props="slot")
 						.row.no-wrap.items-center.q-gutter-x-sm
 							.rule-editor__summary-text(:title="getNumberSchema(slot.row)")
 								| {{ getNumberSchema(slot.row) }}
-							q-icon.rule-editor__edit-icon(name="mdi-pencil-outline", size="14px")
-					q-td.rule-editor__cell(
-						key="numerator", :props="slot", tabindex="0",
-						:class="{ 'rule-editor__cell_active': slot.expand && selectedVariantSection === 'numerator' }",
-						@click="toggleVariantCell(slot.row.id, 'numerator')",
-						@keydown.enter.prevent="toggleVariantCell(slot.row.id, 'numerator')",
-						@keydown.space.prevent="toggleVariantCell(slot.row.id, 'numerator')"
-					)
+					q-td.rule-editor__cell(key="numerator", :props="slot")
 						.row.no-wrap.items-center.q-gutter-x-sm
 							.rule-editor__summary-text(:title="getNumeratorName(slot.row.numeratorId)")
 								| {{ getNumeratorName(slot.row.numeratorId) }}
-							q-icon.rule-editor__edit-icon(name="mdi-pencil-outline", size="14px")
 					q-td.rule-editor__actions-cell(key="actions", :props="slot", auto-width)
 						.row.no-wrap.justify-end
 							q-btn(
 								flat, round, dense, color="negative", icon="mdi-delete-outline",
 								title="Удалить вариант", @click.stop="removeVariant(slot.row.id)"
 							)
-				q-tr(v-if="slot.expand", :key="slot.row.id + '-editor'", :props="slot", no-hover)
-					q-td.rule-editor__expanded(colspan="100%")
-						.rule-editor__expanded-heading.row.items-center.justify-between
-							.text-subtitle2
-								| {{ sectionLabels[selectedVariantSection] }} · Вариант {{ slot.rowIndex + 1 }}
-							q-btn(
-								flat, round, dense, color="primary", icon="mdi-close",
-								title="Закрыть настройки",
-								@click="emit('selectVariant', '', selectedVariantSection)"
-							)
-						NumeratorVariantEditor(
-							:variant="slot.row", :field-nodes="fieldNodes", :card-type="rule.cardType",
-							:section="selectedVariantSection",
-							:numerators="numerators", :show-leading-zeros="rule.showLeadingZeros",
-							@open-numerator="emit('openNumerator', $event, getTarget(slot.row.id))",
-							@create-numerator="emit('createNumerator', getTarget(slot.row.id))"
-						)
 			template(v-slot:no-data)
 				.q-pa-md.text-grey-7 Добавьте вариант и выберите нумератор.
 		q-btn.q-mt-sm(
-			flat, color="primary", icon="mdi-plus", label="Добавить вариант", @click="addVariant"
+			flat, color="primary", icon="mdi-plus", label="Добавить вариант", @click="emit('addVariant')"
 		)
+	Teleport(to="body")
+		q-drawer(
+			v-model="drawerVisible", side="right",
+			:width="Math.min(expanded ? 760 : 480, $q.screen.width * 0.9)",
+			overlay, persistent, bordered, behavior="desktop", no-swipe-open, no-swipe-close
+		)
+			.rule-editor__drawer(v-if="variantDraft")
+				.rule-editor__drawer-header
+					.rule-editor__drawer-title Вариант {{ variantNumber }}
+					q-btn(
+						flat, round, dense, color="primary",
+						:icon="expanded ? 'mdi-arrow-collapse-horizontal' : 'mdi-arrow-expand-horizontal'",
+						:title="expanded ? 'Свернуть панель' : 'Расширить панель'",
+						@click="expanded = !expanded"
+					)
+					q-btn(
+						flat, round, dense, color="primary", icon="mdi-close",
+						title="Закрыть настройки", @click="drawerVisible = false"
+					)
+				q-scroll-area.rule-editor__drawer-scroll
+					.rule-editor__drawer-section(v-for="(label, section) in sectionLabels", :key="section")
+						.rule-editor__section-title {{ label }}
+						NumeratorVariantEditor(
+							:key="variantDraft.id + section",
+							:variant="variantDraft", :field-nodes="fieldNodes", :card-type="rule.cardType",
+							:section="section", :numerators="numerators",
+							:show-leading-zeros="rule.showLeadingZeros",
+							@open-numerator="emit('openNumerator', $event, getTarget(variantDraft.id))",
+							@create-numerator="emit('createNumerator', getTarget(variantDraft.id))"
+						)
+				.rule-editor__drawer-actions
+					q-btn(flat, color="primary", label="Отмена", @click="drawerVisible = false")
+					q-btn(
+						unelevated, color="primary", label="Сохранить", :disable="!canSaveVariant",
+						@click="emit('saveVariant')"
+					)
 </template>
 
 <style scoped lang="scss">
@@ -311,39 +327,18 @@ function getNumeratorName(id: string | null) {
 	cursor: grabbing;
 }
 
-.no-touch .rule-editor__cell:hover {
-	background: var(--bgLight);
-}
-
-.no-touch .rule-editor__cell_active:hover {
-	background: inherit;
+.rule-editor__variant-row {
+	cursor: pointer;
 }
 
 .rule-editor__table :deep(.rule-editor__variant-row_open > td) {
-	border-bottom: 3px solid var(--dvviolet);
+	background: var(--bgLight);
+	box-shadow: inset 0 -2px var(--q-primary);
 }
 
-.rule-editor__table :deep(.rule-editor__variant-row_open > .rule-editor__cell_active) {
-	border-bottom-color: transparent;
-	box-shadow:
-		inset 3px 0 var(--dvviolet),
-		inset -3px 0 var(--dvviolet),
-		inset 0 3px var(--dvviolet);
-}
-
-.rule-editor__cell:focus-visible {
+.rule-editor__variant-row:focus-visible {
 	outline: 2px solid var(--q-primary);
 	outline-offset: -2px;
-}
-
-.rule-editor__edit-icon {
-	flex-shrink: 0;
-	opacity: 0.6;
-}
-
-.rule-editor__expanded-heading {
-	padding: 0.5rem 1rem;
-	background: var(--bgLight);
 }
 
 .rule-editor__summary-text {
@@ -389,9 +384,52 @@ function getNumeratorName(id: string | null) {
 	overflow-wrap: anywhere;
 }
 
-.rule-editor__table :deep(.rule-editor__expanded) {
-	padding: 0;
-	border: 3px solid var(--dvviolet);
-	border-top: 0;
+.rule-editor__drawer {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.rule-editor__drawer-header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
+	border-bottom: 1px solid var(--my-border-color);
+	font-size: 1.05rem;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.rule-editor__drawer-title {
+	flex: 1;
+}
+
+.rule-editor__drawer-scroll {
+	flex: 1;
+	min-height: 0;
+}
+
+.rule-editor__drawer-section {
+	padding: 1rem;
+	border-bottom: 1px solid var(--my-border-color);
+}
+
+.rule-editor__section-title {
+	margin-bottom: 0.75rem;
+	font-size: 1.1rem;
+	font-weight: 600;
+}
+
+.rule-editor__drawer-actions {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
+	background: white;
+	box-shadow: 0 -2px 7px rgb(0 0 0 / 20%);
+	flex: none;
 }
 </style>

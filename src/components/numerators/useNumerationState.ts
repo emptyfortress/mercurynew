@@ -8,6 +8,7 @@ import type {
 	INumeratorDraft,
 	INumeratorRule,
 	INumeratorRuleDraft,
+	INumeratorRuleVariant,
 	INumeratorUsage,
 	INumeratorNumberTarget,
 	NumeratorNumberOperation,
@@ -83,6 +84,7 @@ export function useNumerationState() {
 	const selectedNumeratorId = ref('common')
 	const selectedVariantIds = ref<Record<string, string>>({})
 	const selectedVariantSections = ref<Record<string, NumeratorVariantSection>>({})
+	const variantDrafts = ref<Record<string, INumeratorRuleVariant | undefined>>({})
 	const returnTarget = ref<INumeratorUsage | null>(null)
 	const selectedRule = computed(() => ruleDrafts.value[selectedRuleId.value])
 	const selectedNumerator = computed(() => numeratorDrafts.value[selectedNumeratorId.value])
@@ -117,9 +119,34 @@ export function useNumerationState() {
 	}
 
 	function selectVariant(ruleId: string, variantId: string, cell: NumeratorVariantSection) {
-		if (variantId && !ruleDrafts.value[ruleId]?.variants.some((v) => v.id === variantId)) return
+		if (!variantId) {
+			delete variantDrafts.value[ruleId]
+		} else if (variantDrafts.value[ruleId]?.id !== variantId) {
+			const variant = ruleDrafts.value[ruleId]?.variants.find((item) => item.id === variantId)
+			if (!variant) return
+			variantDrafts.value[ruleId] = copy(variant)
+		}
 		selectedVariantIds.value[ruleId] = variantId
 		selectedVariantSections.value[ruleId] = cell
+	}
+
+	function addVariant(ruleId: string) {
+		const variant = createRuleVariant()
+		variantDrafts.value[ruleId] = variant
+		selectedVariantIds.value[ruleId] = variant.id
+		selectedVariantSections.value[ruleId] = 'conditions'
+	}
+
+	function saveVariant(ruleId: string) {
+		const rule = ruleDrafts.value[ruleId]
+		const variant = variantDrafts.value[ruleId]
+		if (!rule || !variant || !isValidVariant(variant, rule.cardType)) return false
+		if (!numerators.value.some((item) => item.id === variant.numeratorId)) return false
+		const index = rule.variants.findIndex((item) => item.id === variant.id)
+		if (index < 0) rule.variants.push(copy(variant))
+		else rule.variants.splice(index, 1, copy(variant))
+		selectVariant(ruleId, '', 'conditions')
+		return true
 	}
 
 	function openRule(id: string, variantId?: string) {
@@ -158,9 +185,7 @@ export function useNumerationState() {
 		const saved = rules.value.find((rule) => rule.id === id)
 		if (!saved) return
 		ruleDrafts.value[id] = copy(saved)
-		if (!saved.variants.some((variant) => variant.id === selectedVariantIds.value[id])) {
-			selectedVariantIds.value[id] = ''
-		}
+		selectVariant(id, '', 'conditions')
 	}
 
 	function openNumerator(id: string, target?: INumeratorUsage) {
@@ -183,7 +208,10 @@ export function useNumerationState() {
 		numerators.value.push(copy(numerator))
 		numeratorDrafts.value[numerator.id] = copy(numerator)
 		if (target) {
-			const variant = ruleDrafts.value[target.ruleId]?.variants.find((v) => v.id === target.variantId)
+			const draft = variantDrafts.value[target.ruleId]
+			const variant = draft?.id === target.variantId
+				? draft
+				: ruleDrafts.value[target.ruleId]?.variants.find((v) => v.id === target.variantId)
 			if (variant) variant.numeratorId = numerator.id
 			openRule(target.ruleId, target.variantId)
 		} else {
@@ -237,6 +265,9 @@ export function useNumerationState() {
 		selectedVariantIds,
 		selectedVariantSections,
 		selectVariant,
+		variantDrafts,
+		addVariant,
+		saveVariant,
 		selectedRule,
 		selectedNumerator,
 		returnTarget,
