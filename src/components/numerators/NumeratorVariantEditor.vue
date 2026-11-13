@@ -119,7 +119,7 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 				v-for="(condition, index) in variant.conditions", :key="condition.id"
 			)
 				div
-					.text-caption.text-black.q-mb-xs Поле
+					.text-caption.text-black.q-mb-xs(v-if="index === 0") Поле
 					NumerationFieldSelect(
 						:model-value="condition.field", :nodes="fieldNodes",
 						@update:model-value="setField(condition, $event)"
@@ -128,14 +128,14 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 						v-if="condition.field && !findNumerationField(fieldNodes, condition.field.id)"
 					) Поле недоступно для этого типа карточки
 				div
-					.text-caption.text-black.q-mb-xs Операция
+					.text-caption.text-black.q-mb-xs(v-if="index === 0") Операция
 					q-select(
 						:model-value="condition.operator", :options="getConditionOperators(condition.field?.type)",
 						emit-value, map-options, outlined, dense, :disable="!condition.field",
 						@update:model-value="setOperator(condition, $event)"
 					)
 				div
-					.text-caption.text-black.q-mb-xs Значение / подразделение
+					.text-caption.text-black.q-mb-xs(v-if="index === 0") Значение / подразделение
 					q-select(
 						v-if="condition.field?.type === 'boolean'", v-model="condition.value",
 						:options="[{label: 'Да', value: true}, {label: 'Нет', value: false}]",
@@ -168,7 +168,7 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 					flat, round, dense, icon="mdi-delete-outline", color="negative",
 					title="Удалить условие", @click="variant.conditions.splice(index, 1)"
 				)
-		.text-grey-7(v-if="!variant.conditions.length") Применяется без проверки условий.
+		.text-grey-7(v-if="!variant.conditions.length") Вариант применяется без проверки условий.
 		.text-negative.text-caption.q-mt-sm(v-if="invalidConditions")
 			| Заполните поле и значение каждого условия.
 		q-btn.q-mt-sm(
@@ -181,12 +181,13 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 		.variant-editor__affixes
 			NumeratorAffixEditor(v-model="variant.prefix", label="Префикс")
 			NumeratorAffixEditor(v-model="variant.suffix", label="Суффикс")
-			.variant-editor__sample
-				.text-caption.text-grey-7.q-mb-sm Образец номера
-				.variant-editor__sample-value {{ numberSample }}
-				.text-caption.text-grey-7(
-					v-if="variant.prefix.mode === 'xslt' || variant.suffix.mode === 'xslt'"
-				) Части XSLT обозначены условно; результат зависит от данных карточки.
+			div
+				.text-caption.text-black.q-mb-xs Образец номера
+				.variant-editor__sample
+					.variant-editor__sample-value {{ numberSample }}
+					.text-caption.text-grey-7(
+						v-if="variant.prefix.mode === 'xslt' || variant.suffix.mode === 'xslt'"
+					) Части XSLT обозначены условно; результат зависит от данных карточки.
 	template(v-else)
 		.variant-editor__numerator
 			.text-caption.text-black.q-mb-xs Нумератор
@@ -201,9 +202,9 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 						template(v-slot:no-option)
 							q-item
 								q-item-section.text-grey-7 Ничего не найдено
-					.text-caption.text-grey-7(v-if="numerator")
-						| Границы: {{ numerator.lowerBound }}–{{ numerator.upperBound }}
-				.row.q-gutter-xs.q-mt-xs
+				.variant-editor__numerator-bounds.text-caption.text-grey-7(v-if="numerator")
+					| Границы: {{ numerator.lowerBound }}–{{ numerator.upperBound }}
+				.variant-editor__numerator-actions.row.no-wrap.items-center.q-gutter-x-xs
 					q-btn(
 						flat, color="primary", label="Открыть нумератор", size="sm",
 						:disable="!variant.numeratorId",
@@ -217,30 +218,49 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 
 <style scoped lang="scss">
 .variant-editor {
+	container-type: inline-size;
 	white-space: normal;
 }
 
 .variant-editor__conditions {
 	display: grid;
-	gap: 1rem;
+	gap: 0.5rem;
 }
 
 .variant-editor__condition {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) auto;
 	align-items: start;
 	gap: 0.5rem;
-	padding-bottom: 1rem;
-	border-bottom: 1px solid var(--my-border-color);
+	font-size: 0.8rem;
 }
 
-.variant-editor__condition > :first-child,
-.variant-editor__condition > :nth-child(2) {
-	grid-column: 1 / -1;
-}
-
-.variant-editor__remove-condition {
+.variant-editor__condition:first-child > .variant-editor__remove-condition {
 	margin-top: 1.5rem;
+}
+
+.variant-editor__condition :deep(.q-field) {
+	font-size: 0.8rem;
+}
+
+@container (max-width: 560px) {
+	.variant-editor__conditions {
+		gap: 1rem;
+	}
+
+	.variant-editor__condition {
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+
+	.variant-editor__condition > :first-child,
+	.variant-editor__condition > :nth-child(2) {
+		grid-column: 1 / -1;
+	}
+
+	.variant-editor__condition:not(:last-child) {
+		padding-bottom: 1rem;
+		border-bottom: 1px solid var(--my-border-color);
+	}
 }
 
 .variant-editor__affixes {
@@ -267,9 +287,19 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 
 .variant-editor__numerator-row {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr);
+	grid-template-columns: minmax(0, 1fr) auto auto;
 	align-items: start;
 	gap: 0.5rem;
+}
+
+.variant-editor__numerator-bounds {
+	display: flex;
+	align-items: center;
+	min-height: 40px;
+}
+
+.variant-editor__numerator-actions {
+	min-height: 40px;
 }
 
 .variant-editor__numerator-field {

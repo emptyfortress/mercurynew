@@ -242,7 +242,7 @@ export function useNumerationState() {
 				? draft
 				: ruleDrafts.value[target.ruleId]?.variants.find((v) => v.id === target.variantId)
 			if (variant) variant.numeratorId = numerator.id
-			openRule(target.ruleId, target.variantId)
+			openNumerator(numerator.id, target)
 		} else {
 			openNumerator(numerator.id)
 		}

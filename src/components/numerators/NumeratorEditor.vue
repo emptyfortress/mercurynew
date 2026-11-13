@@ -49,7 +49,7 @@ const boundsError = computed(() => {
 .numerator-editor
 	q-btn.q-mb-md(
 		v-if="canReturn"
-		flat
+		unelevated
 		color="primary"
 		icon="mdi-arrow-left"
 		label="Вернуться к правилу"

@@ -65,7 +65,6 @@ const fieldNodes = computed(() =>
 		cardTypes.value.find((card) => card.value === props.rule.cardType)?.label
 	)
 )
-const expanded = ref(false)
 const drawerVisible = computed({
 	get: () => Boolean(props.variantDraft),
 	set: (visible) => {
@@ -83,14 +82,12 @@ const canSaveVariant = computed(() =>
 		props.numerators.some((item) => item.id === props.variantDraft?.numeratorId)
 	)
 )
-watch(drawerVisible, (visible) => {
-	if (!visible) expanded.value = false
-})
 const unconditionalBeforeLast = computed(() =>
 	props.rule.variants.slice(0, -1).some((variant) => variant.conditions.length === 0)
 )
 const columns: QTableColumn[] = [
 	{ name: 'handle', label: '', field: 'id', align: 'left' },
+	{ name: 'variant', label: 'Вариант', field: 'id', align: 'left' },
 	{ name: 'conditions', label: 'Условия', field: 'conditions', align: 'left' },
 	{ name: 'format', label: 'Формат номера', field: 'prefix', align: 'left' },
 	{ name: 'numerator', label: 'Нумератор', field: 'numeratorId', align: 'left' },
@@ -103,7 +100,7 @@ const sectionLabels: Record<NumeratorVariantSection, string> = {
 }
 
 function openVariant(id: string) {
-	emit('selectVariant', id, 'conditions')
+	emit('selectVariant', props.variantDraft?.id === id ? '' : id, 'conditions')
 }
 
 function getTarget(variantId: string): INumeratorUsage {
@@ -152,9 +149,6 @@ function getNumeratorName(id: string | null) {
 		.text-subtitle1.q-mb-sm Варианты нумерации
 		.text-caption.text-grey-7.q-mb-md
 			| Проверяются сверху вниз. Применяется первый подходящий вариант.
-		q-banner.q-mb-md.bg-orange-1(v-if="unconditionalBeforeLast", dense, rounded)
-			| Вариант без условий подходит всем карточкам.
-			|  Переместите его в конец, чтобы следующие варианты могли применяться.
 		q-table.rule-editor__table(
 			ref="variantTable", :rows="variantRows", :columns="columns", row-key="id", flat, bordered,
 			hide-bottom, :pagination="{ rowsPerPage: 0 }"
@@ -172,6 +166,7 @@ function getNumeratorName(id: string | null) {
 							name="mdi-drag", size="22px", color="primary",
 							title="Перетащите, чтобы изменить порядок"
 						)
+					q-td(key="variant", :props="slot", auto-width) {{ slot.rowIndex + 1 }}
 					q-td.rule-editor__cell(key="conditions", :props="slot")
 						.row.no-wrap.items-center.q-gutter-x-sm
 							.rule-editor__conditions-summary
@@ -213,34 +208,33 @@ function getNumeratorName(id: string | null) {
 							)
 			template(v-slot:no-data)
 				.q-pa-md.text-grey-7 Добавьте вариант и выберите нумератор.
+		q-banner.q-mt-md.bg-orange-1(v-if="unconditionalBeforeLast", dense, rounded)
+			| Вариант без условий подходит всем карточкам.
+			|  Переместите его в конец, чтобы следующие варианты могли применяться.
 		q-btn.q-mt-sm(
 			flat, color="primary", icon="mdi-plus", label="Добавить вариант", @click="emit('addVariant')"
 		)
 	Teleport(to="body")
 		q-drawer(
 			v-model="drawerVisible", side="right",
-			:width="Math.min(expanded ? 760 : 480, $q.screen.width * 0.9)",
+			:width="Math.min(760, $q.screen.width * 0.9)",
 			overlay, persistent, bordered, behavior="desktop", no-swipe-open, no-swipe-close
 		)
 			.rule-editor__drawer(v-if="variantDraft")
 				.rule-editor__drawer-header
 					.rule-editor__drawer-title Вариант {{ variantNumber }}
 					q-btn(
-						flat, round, dense, color="primary",
-						:icon="expanded ? 'mdi-arrow-collapse-horizontal' : 'mdi-arrow-expand-horizontal'",
-						:title="expanded ? 'Свернуть панель' : 'Расширить панель'",
-						@click="expanded = !expanded"
-					)
-					q-btn(
 						flat, round, dense, color="primary", icon="mdi-close",
 						title="Закрыть настройки", @click="drawerVisible = false"
 					)
 				q-scroll-area.rule-editor__drawer-scroll
 					.rule-editor__drawer-section(v-for="(label, section) in sectionLabels", :key="section")
-						.rule-editor__section-title.row.items-center.justify-between.q-gutter-x-sm
+						.rule-editor__section-title.row.items-end.q-gutter-x-xl
 							span {{ label }}
-							span.text-caption.text-grey-7.text-weight-regular(v-if="section === 'conditions'")
-								| (Должны выполняться все условия)
+							span.text-caption.text-grey-7.text-weight-regular(
+								v-if="section === 'conditions' && variantDraft.conditions.length > 1"
+							)
+								| Должны выполняться все условия (И)
 						NumeratorVariantEditor(
 							:key="variantDraft.id + section",
 							:variant="variantDraft", :field-nodes="fieldNodes", :card-type="rule.cardType",
