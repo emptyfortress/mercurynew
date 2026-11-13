@@ -9,7 +9,13 @@ import NumeratorRuleEditor from './NumeratorRuleEditor.vue'
 import NumeratorEditor from './NumeratorEditor.vue'
 import { isValidVariant } from './ruleVariants'
 import { useNumerationState } from './useNumerationState'
-import type { INumeratorDraft, INumeratorRuleDraft, INumeratorUsage } from './types'
+import type {
+	INumeratorDraft,
+	INumeratorRuleDraft,
+	INumeratorUsage,
+	INumeratorNumberTarget,
+	NumeratorNumberOperation,
+} from './types'
 
 const {
 	section,
@@ -113,6 +119,14 @@ function showNumerator(id: string, target?: INumeratorUsage) {
 function returnToRule() {
 	ruleQuery.value = ''
 	backToRule()
+}
+
+function operateSelectedNumerator(
+	operation: NumeratorNumberOperation,
+	targets: INumeratorNumberTarget[]
+) {
+	if (!selectedNumerator.value) return
+	operateNumbers(selectedNumerator.value.id, operation, targets)
 }
 
 function toggleList() {
@@ -248,7 +262,7 @@ function toggleList() {
 						:can-return="!!returnTarget"
 						@back="returnToRule"
 						@open-rule="showRule"
-						@operate="(operation, targets) => operateNumbers(selectedNumerator.id, operation, targets)"
+						@operate="operateSelectedNumerator"
 					)
 	CreateNumeratorRuleDialog(
 		v-model="createDialog"
