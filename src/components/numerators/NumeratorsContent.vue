@@ -84,8 +84,12 @@ const numeratorItems = computed(() =>
 )
 const headingName = computed(() =>
 	section.value === 'rules'
-		? selectedRule.value ? selectedRule.value.name || 'Новое правило' : 'Правила нумерации'
-		: selectedNumerator.value ? selectedNumerator.value.name || 'Новый нумератор' : 'Нумераторы'
+		? selectedRule.value
+			? selectedRule.value.name || 'Новое правило'
+			: 'Правила нумерации'
+		: selectedNumerator.value
+			? selectedNumerator.value.name || 'Новый нумератор'
+			: 'Нумераторы'
 )
 const canSaveRule = computed(() => {
 	const rule = selectedRule.value
@@ -206,7 +210,7 @@ function toggleList() {
 							.numerators__overline.text-overline
 								| {{ section === 'rules' ? 'правило нумерации' : 'нумератор' }}
 							.numerators__name {{ headingName }}
-					.btngroup(v-if="section === 'rules' && selectedRule")
+					.btngroup(v-if="section === 'rules' && selectedRule && isRuleChanged(selectedRule.id)")
 						q-btn(
 							unelevated, color="primary", label="Сохранить", size="sm",
 							:disable="!isRuleChanged(selectedRule.id) || !canSaveRule",
@@ -227,7 +231,10 @@ function toggleList() {
 								q-list
 									q-item.pink(clickable)
 										q-item-section Удалить
-					.btngroup(v-else-if="section === 'numerators' && selectedNumerator")
+
+					.btngroup(
+						v-else-if="section === 'numerators' && selectedNumerator && isNumeratorChanged(selectedNumerator.id)"
+					)
 						q-btn(
 							unelevated, color="primary", label="Сохранить", size="sm",
 							:disable="!isNumeratorChanged(selectedNumerator.id) || !canSaveNumerator(selectedNumerator.id)",

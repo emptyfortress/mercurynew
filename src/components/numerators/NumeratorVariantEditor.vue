@@ -114,13 +114,12 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 <template lang="pug">
 .variant-editor
 	template(v-if="section === 'conditions'")
-		.text-caption.text-grey-7.q-mb-md Выполнены все условия (И)
 		.variant-editor__conditions
 			.variant-editor__condition(
 				v-for="(condition, index) in variant.conditions", :key="condition.id"
 			)
 				div
-					.text-caption.text-grey-7.q-mb-xs Поле
+					.text-caption.text-black.q-mb-xs Поле
 					NumerationFieldSelect(
 						:model-value="condition.field", :nodes="fieldNodes",
 						@update:model-value="setField(condition, $event)"
@@ -129,14 +128,14 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 						v-if="condition.field && !findNumerationField(fieldNodes, condition.field.id)"
 					) Поле недоступно для этого типа карточки
 				div
-					.text-caption.text-grey-7.q-mb-xs Операция
+					.text-caption.text-black.q-mb-xs Операция
 					q-select(
 						:model-value="condition.operator", :options="getConditionOperators(condition.field?.type)",
 						emit-value, map-options, outlined, dense, :disable="!condition.field",
 						@update:model-value="setOperator(condition, $event)"
 					)
 				div
-					.text-caption.text-grey-7.q-mb-xs Значение / подразделение
+					.text-caption.text-black.q-mb-xs Значение / подразделение
 					q-select(
 						v-if="condition.field?.type === 'boolean'", v-model="condition.value",
 						:options="[{label: 'Да', value: true}, {label: 'Нет', value: false}]",
@@ -173,7 +172,7 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 		.text-negative.text-caption.q-mt-sm(v-if="invalidConditions")
 			| Заполните поле и значение каждого условия.
 		q-btn.q-mt-sm(
-			flat, color="primary", icon="mdi-filter-plus", label="Добавить условие",
+			flat, color="primary", icon="mdi-plus", label="Добавить условие",
 			:disable="!fieldNodes.length", @click="variant.conditions.push(createCondition())"
 		)
 		.text-caption.text-grey-7(v-if="!fieldNodes.length")
@@ -190,7 +189,7 @@ function filterNumerators(value: string, update: (callback: () => void) => void)
 				) Части XSLT обозначены условно; результат зависит от данных карточки.
 	template(v-else)
 		.variant-editor__numerator
-			.text-caption.text-grey-7.q-mb-xs Нумератор
+			.text-caption.text-black.q-mb-xs Нумератор
 			.variant-editor__numerator-row
 				.variant-editor__numerator-field
 					q-select(

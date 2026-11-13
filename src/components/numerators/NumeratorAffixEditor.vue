@@ -12,7 +12,7 @@ const modes = [
 <template lang="pug">
 .affix-editor
 	.row.items-center.justify-between.q-mb-sm.q-gutter-sm
-		.text-caption.text-grey-7 {{ label }}
+		.text-caption.text-black {{ label }}
 		.row.items-center.q-gutter-sm
 			q-radio(
 				v-for="mode in modes", :key="mode.value", v-model="affix.mode",

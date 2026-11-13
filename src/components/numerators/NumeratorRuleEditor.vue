@@ -204,6 +204,10 @@ function getNumeratorName(id: string | null) {
 					q-td.rule-editor__actions-cell(key="actions", :props="slot", auto-width)
 						.row.no-wrap.justify-end
 							q-btn(
+								flat, round, dense, color="primary", icon="mdi-pencil-outline",
+								title="Настроить вариант", @click.stop="openVariant(slot.row.id)"
+							)
+							q-btn(
 								flat, round, dense, color="negative", icon="mdi-delete-outline",
 								title="Удалить вариант", @click.stop="removeVariant(slot.row.id)"
 							)
@@ -233,7 +237,10 @@ function getNumeratorName(id: string | null) {
 					)
 				q-scroll-area.rule-editor__drawer-scroll
 					.rule-editor__drawer-section(v-for="(label, section) in sectionLabels", :key="section")
-						.rule-editor__section-title {{ label }}
+						.rule-editor__section-title.row.items-center.justify-between.q-gutter-x-sm
+							span {{ label }}
+							span.text-caption.text-grey-7.text-weight-regular(v-if="section === 'conditions'")
+								| (Должны выполняться все условия)
 						NumeratorVariantEditor(
 							:key="variantDraft.id + section",
 							:variant="variantDraft", :field-nodes="fieldNodes", :card-type="rule.cardType",
