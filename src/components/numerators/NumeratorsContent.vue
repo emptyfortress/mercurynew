@@ -38,10 +38,15 @@ const {
 	getUsages,
 	openRule,
 	createRule,
+	duplicateRule,
+	removeRule,
 	saveRule,
 	cancelRule,
 	openNumerator,
 	createNumerator,
+	duplicateNumerator,
+	canRemoveNumerator,
+	removeNumerator,
 	canSaveNumerator,
 	saveNumerator,
 	cancelNumerator,
@@ -72,12 +77,15 @@ const numeratorItems = computed(() =>
 		name: numerator.name || 'Новый нумератор',
 		changed: isNumeratorChanged(numerator.id),
 		usageCount: new Set(getUsages(numerator.id).map((usage) => usage.ruleId)).size,
+		deleteDisabledReason: canRemoveNumerator(numerator.id)
+			? undefined
+			: 'Нумератор используется в правилах. Сначала удалите ссылки на него.',
 	}))
 )
 const headingName = computed(() =>
 	section.value === 'rules'
-		? selectedRule.value?.name || 'Новое правило'
-		: selectedNumerator.value?.name || 'Новый нумератор'
+		? selectedRule.value ? selectedRule.value.name || 'Новое правило' : 'Правила нумерации'
+		: selectedNumerator.value ? selectedNumerator.value.name || 'Новый нумератор' : 'Нумераторы'
 )
 const canSaveRule = computed(() => {
 	const rule = selectedRule.value
@@ -168,6 +176,8 @@ function toggleList() {
 					kind="rules"
 					@update:model-value="$event && openRule($event)"
 					@create="createDialog = true"
+					@duplicate="ruleQuery = ''; duplicateRule($event)"
+					@remove="removeRule"
 				)
 				NumeratorsList(
 					v-show="section === 'numerators'"
@@ -177,6 +187,8 @@ function toggleList() {
 					kind="numerators"
 					@update:model-value="$event && openNumerator($event)"
 					@create="addNumerator()"
+					@duplicate="numeratorQuery = ''; duplicateNumerator($event)"
+					@remove="removeNumerator"
 				)
 		template(v-slot:after)
 			.numerators__editor
@@ -237,6 +249,10 @@ function toggleList() {
 									q-item.pink(clickable)
 										q-item-section Удалить
 				.numerators__constructor
+					.q-pa-md.text-grey-7(
+						v-if="section === 'rules' ? !selectedRule : !selectedNumerator"
+					)
+						| {{ section === 'rules' ? 'Создайте правило кнопкой + в списке слева.' : 'Создайте нумератор кнопкой + в списке слева.' }}
 					NumeratorRuleEditor(
 						v-if="section === 'rules' && selectedRule"
 						:key="selectedRule.id"

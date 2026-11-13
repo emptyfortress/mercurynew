@@ -181,6 +181,35 @@ export function useNumerationState() {
 		return true
 	}
 
+	function duplicateRule(id: string) {
+		const source = ruleDrafts.value[id]
+		if (!source) return
+		const rule = copy(source)
+		rule.id = crypto.randomUUID()
+		rule.name = `${source.name} (копия)`
+		rule.variants.forEach((variant) => {
+			variant.id = crypto.randomUUID()
+			variant.conditions.forEach((condition) => { condition.id = crypto.randomUUID() })
+		})
+		rules.value.push(copy(rule))
+		ruleDrafts.value[rule.id] = rule
+		openRule(rule.id)
+	}
+
+	function removeRule(id: string) {
+		const index = rules.value.findIndex((rule) => rule.id === id)
+		if (index < 0) return
+		rules.value.splice(index, 1)
+		delete ruleDrafts.value[id]
+		delete variantDrafts.value[id]
+		delete selectedVariantIds.value[id]
+		delete selectedVariantSections.value[id]
+		if (returnTarget.value?.ruleId === id) returnTarget.value = null
+		if (selectedRuleId.value === id) {
+			selectedRuleId.value = rules.value[Math.min(index, rules.value.length - 1)]?.id ?? ''
+		}
+	}
+
 	function cancelRule(id: string) {
 		const saved = rules.value.find((rule) => rule.id === id)
 		if (!saved) return
@@ -222,6 +251,40 @@ export function useNumerationState() {
 
 	function canSaveNumerator(id: string) {
 		return isValidNumerator(numeratorDrafts.value[id])
+	}
+
+	function duplicateNumerator(id: string) {
+		const source = numeratorDrafts.value[id]
+		if (!source) return
+		const numerator = copy(source)
+		numerator.id = crypto.randomUUID()
+		numerator.name = `${source.name} (копия)`
+		numerator.ranges.forEach((range) => { range.id = crypto.randomUUID() })
+		numerator.zones.forEach((zone) => { zone.id = crypto.randomUUID() })
+		numerators.value.push(copy(numerator))
+		numeratorDrafts.value[numerator.id] = numerator
+		openNumerator(numerator.id)
+	}
+
+	function canRemoveNumerator(id: string) {
+		return ![
+			...rules.value,
+			...Object.values(ruleDrafts.value),
+		].some((rule) => rule.variants.some((variant) => variant.numeratorId === id)) &&
+			!Object.values(variantDrafts.value).some((variant) => variant?.numeratorId === id)
+	}
+
+	function removeNumerator(id: string) {
+		if (!canRemoveNumerator(id)) return
+		const index = numerators.value.findIndex((numerator) => numerator.id === id)
+		if (index < 0) return
+		numerators.value.splice(index, 1)
+		delete numeratorDrafts.value[id]
+		delete numberOccupancy.value[id]
+		if (selectedNumeratorId.value === id) {
+			selectedNumeratorId.value = numerators.value[Math.min(index, numerators.value.length - 1)]?.id ?? ''
+			returnTarget.value = null
+		}
 	}
 
 	function saveNumerator(id: string) {
@@ -276,10 +339,15 @@ export function useNumerationState() {
 		getUsages,
 		openRule,
 		createRule,
+		duplicateRule,
+		removeRule,
 		saveRule,
 		cancelRule,
 		openNumerator,
 		createNumerator,
+		duplicateNumerator,
+		canRemoveNumerator,
+		removeNumerator,
 		canSaveNumerator,
 		saveNumerator,
 		cancelNumerator,

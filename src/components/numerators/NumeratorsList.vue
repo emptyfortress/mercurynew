@@ -15,6 +15,8 @@ const filteredItems = computed(() => {
 })
 const emit = defineEmits<{
 	create: []
+	duplicate: [id: string]
+	remove: [id: string]
 }>()
 </script>
 
@@ -59,6 +61,20 @@ const emit = defineEmits<{
 						text-color="dark", rounded
 					) {{ item.usageCount }}
 						q-tooltip Количество правил, использующих этот нумератор
+			q-menu(context-menu)
+				q-list
+					q-item(clickable, v-close-popup, @click="emit('duplicate', item.id)")
+						q-item-section.numerators-list__menu-icon(avatar)
+							q-icon(name="mdi-plus-circle-multiple-outline")
+						q-item-section Дублировать
+					q-item.numerators-list__delete(
+						clickable, v-close-popup, :disable="!!item.deleteDisabledReason",
+						@click="emit('remove', item.id)"
+					)
+						q-item-section.numerators-list__menu-icon(avatar)
+							q-icon(name="mdi-trash-can-outline")
+						q-item-section Удалить
+						q-tooltip(v-if="item.deleteDisabledReason") {{ item.deleteDisabledReason }}
 	.q-pa-sm.text-grey-7(v-if="!filteredItems.length")
 		| {{ items.length ? 'Ничего не найдено' : 'Список пуст' }}
 	q-btn.numerators-list__add(
@@ -119,5 +135,14 @@ const emit = defineEmits<{
 
 .numerators-list__name + .q-item__section--side {
 	color: inherit;
+}
+
+.numerators-list__menu-icon {
+	min-width: 0;
+}
+
+.numerators-list__delete {
+	border-top: 1px solid #ccc;
+	color: darkred;
 }
 </style>

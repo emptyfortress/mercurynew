@@ -130,6 +130,7 @@ export interface INumerationListItem {
 	name: string
 	changed: boolean
 	usageCount?: number
+	deleteDisabledReason?: string
 }
 
 export type NumerationSection = 'rules' | 'numerators'
