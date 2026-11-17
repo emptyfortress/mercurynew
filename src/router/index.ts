@@ -75,6 +75,12 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/dvmain/folder-types',
+			name: 'folderTypes',
+			component: () => import('@/views/FolderTypes.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
+		},
+		{
 			path: '/dvmain/numerators',
 			name: 'numerators',
 			component: () => import('@/views/Numerators.vue'),

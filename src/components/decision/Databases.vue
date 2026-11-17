@@ -13,11 +13,12 @@ const sections = [
 	{ id: 6, label: 'Процессы', to: '/dvmain/process' },
 	{ id: 7, label: 'Справочники', to: '' },
 	{ id: 8, label: 'Нумераторы', to: '/dvmain/numerators' },
+	{ id: 9, label: 'Типы папок', to: '/dvmain/folder-types' },
 ]
 
 const goto = (e: string) => {
 	if (!e) return
-	if (e === '/dvmain/process' || e === '/dvmain/numerators') {
+	if (e.startsWith('/dvmain/')) {
 		void router.push(e)
 		return
 	}
