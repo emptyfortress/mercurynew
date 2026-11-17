@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import IxShapesFilled from '@/components/icons/IxShapesFilled.vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
-import { useFolderTypesStore, type IFolderType } from '@/stores/folderTypes'
+import { createFolderType, useFolderTypesStore, type IFolderType } from '@/stores/folderTypes'
 
 const store = useFolderTypesStore()
 const splitter = ref(25)
@@ -15,6 +15,27 @@ watch(query, () => {
 			stat.open = true
 		})
 })
+const createDialog = ref(false)
+const newTypeName = ref('')
+function openCreateDialog() {
+	newTypeName.value = ''
+	createDialog.value = true
+}
+async function createType() {
+	const tree = treeControl.value
+	const root = tree?.rootChildren[0]
+	if (!newTypeName.value.trim() || !tree || !root) return
+	const parent = store.selected ? tree.getStat(store.selected) : root
+	const node = createFolderType(newTypeName.value.trim())
+	tree.add(node, parent)
+	tree.openNodeAndParents(tree.getStat(node))
+	query.value = ''
+	await nextTick()
+	store.selectedId = node.id
+	tab.value = 'general'
+	createDialog.value = false
+}
+
 const tab = ref('general')
 const deleting = ref<IFolderType | null>(null)
 const attempted = ref(false)
@@ -122,7 +143,7 @@ q-page(padding)
 					round,
 					color="primary",
 					icon="mdi-plus",
-					@click="store.add()"
+					@click="openCreateDialog"
 				)
 					q-tooltip
 						| Создать тип
@@ -311,6 +332,25 @@ q-page(padding)
 									)
 			div(v-else, class="text-grey text-center q-pa-xl")
 				| Выберите тип папки в дереве
+	q-dialog(v-model="createDialog" backdrop-filter="blur(4px) saturate(150%)")
+		q-card(style="min-width: 400px")
+			q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
+			q-card-section
+				.text-h6 Создать тип папки
+			q-form(@submit="createType")
+				q-card-section
+					q-input(
+						v-model="newTypeName"
+						label="Название"
+						autofocus
+						outlined
+						dense
+						:rules="[value => !!value.trim() || 'Введите название типа']"
+					)
+				q-card-actions(align="right")
+					q-btn(flat color="primary" label="Отмена" v-close-popup)
+					q-btn(unelevated color="primary" label="Создать" type="submit")
+
 	q-dialog(
 		:model-value="!!deleting",
 		backdrop-filter="blur(4px) saturate(150%)",

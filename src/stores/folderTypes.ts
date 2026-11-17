@@ -64,11 +64,6 @@ export const useFolderTypesStore = defineStore('folderTypes', () => {
 		return true
 	}
 	function cancel() { tree.value = clone(saved.value); if (!selected.value) selectedId.value = null }
-	function add(parent?: IFolderType) {
-		const node = createFolderType('Новый тип')
-		;(parent ? parent.children : tree.value[0].children).push(node)
-		selectedId.value = node.id
-	}
 	function remove(node: IFolderType) {
 		if (node.id === 'standard' || node.id === 'folder-types-root') return
 		const removed = new Set(flatten([node]).map(item => item.id))
@@ -80,5 +75,5 @@ export const useFolderTypesStore = defineStore('folderTypes', () => {
 		tree.value = prune(tree.value)
 		if (selectedId.value && removed.has(selectedId.value)) selectedId.value = null
 	}
-	return { tree, nodes, selectedId, selected, dirty, invalid, save, cancel, add, remove }
+	return { tree, nodes, selectedId, selected, dirty, invalid, save, cancel, remove }
 })
