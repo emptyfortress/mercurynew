@@ -10,17 +10,20 @@ const splitter = ref(25)
 const query = ref('')
 const treeControl = ref<InstanceType<typeof Draggable>>()
 watch(query, () => {
-	if (query.value)
+	if (query.value) {
 		treeControl.value?.statsFlat.forEach((stat) => {
 			stat.open = true
 		})
+	}
 })
 const createDialog = ref(false)
 const newTypeName = ref('')
+
 function openCreateDialog() {
 	newTypeName.value = ''
 	createDialog.value = true
 }
+
 async function createType() {
 	const tree = treeControl.value
 	const root = tree?.rootChildren[0]
@@ -88,48 +91,42 @@ const sections = [
 ]
 const matches = (node: IFolderType): boolean =>
 	node.text.toLowerCase().includes(query.value.toLowerCase()) || node.children.some(matches)
+
 const positive = (value: unknown) =>
 	(Number.isInteger(Number(value)) && Number(value) > 0) || 'Введите положительное целое число'
+
 function save() {
 	attempted.value = !store.save()
 }
+
 function options(key: string) {
 	return key === 'folders'
 		? folderOptions.value
 		: (key === 'views' ? views : templates).map((label) => ({ label, value: label }))
 }
+
 function all(key: 'folders' | 'cards' | 'views' | 'templates', clear = false) {
-	if (current.value)
+	if (current.value) {
 		current.value[key] = clear
 			? []
 			: key === 'cards'
 				? cards.flatMap((group) => group.children.map((item) => item.id))
 				: options(key).map((item) => item.value)
+	}
 }
 </script>
 
 <template lang="pug">
 q-page(padding)
-	.folder-types-toolbar.q-mb-md
-		.btngroup
-			q-btn(unelevated color="primary" label="Сохранить" size="sm" :disable="!store.dirty" @click="save")
-			q-btn(outline color="primary" label="Отмена" size="sm" :disable="!store.dirty" @click="store.cancel(); attempted = false")
-			q-btn(round flat color="primary" icon="mdi-sync" size="sm")
-			q-chip(v-if="store.dirty" size="sm" color="amber") Есть изменения
-			q-chip(size="sm" color="blue-grey-3" icon="mdi-lock") Заблокировано вами
-			q-btn(flat round color="negative" icon="mdi-delete-outline" size="sm" :disable="!current || current.id === 'standard'")
-				q-menu
-					q-list
-						q-item.pink(clickable @click="deleting = current || null")
-							q-item-section Удалить
 	q-banner(v-if="attempted && store.invalid", class="bg-red-1 q-mb-md")
 		| Проверьте название и числовые поля типа «{{ store.invalid.text }}».
 	q-splitter(v-model="splitter", :limits="[18, 45]")
 		template(#before)
-			div(class="folder-types__sidebar q-pr-md")
-				q-form(class="folder-types__filter", @submit.prevent)
-					q-input(
+			.folder-types__sidebar.q-pr-md
+				q-form.quick(@submit.prevent)
+					q-input.query(
 						v-model="query",
+						autofocus,
 						dense,
 						filled,
 						clearable,
@@ -178,14 +175,46 @@ q-page(padding)
 				div(v-if="!store.nodes.some(matches)", class="text-grey q-pa-md")
 					| Ничего не найдено
 		template(#after)
-			div(v-if="current", class="q-pl-lg")
-				div(class="row items-center q-gutter-sm")
-					IxShapesFilled(class="text-secondary", style="font-size: 32px")
+			.q-pl-lg
+				.folder-types__header
+					IxShapesFilled.text-secondary(v-if="current" style="font-size: 32px")
 					div
-						.text-overline.folder-types__caption тип папки
-						div(class="text-h6")
-							| {{ current.text }}
+						.text-overline.folder-types__caption(v-if="current") тип папки
+						.text-h6
+							| {{ current?.text || 'Типы папок' }}
+					.folder-types-toolbar(v-if="store.dirty")
+						.btngroup
+							q-btn(
+								unelevated,
+								color="primary",
+								label="Сохранить",
+								size="sm",
+								@click="save"
+							)
+							q-btn(
+								outline,
+								color="primary",
+								label="Отмена",
+								size="sm",
+								@click="store.cancel(); attempted = false"
+							)
+							q-btn(round flat color="primary" icon="mdi-sync" size="sm")
+							q-chip(size="sm" color="amber") Есть изменения
+							q-chip(size="sm" color="blue-grey-3" icon="mdi-lock") Заблокировано вами
+							q-btn(
+								flat,
+								round,
+								color="negative",
+								icon="mdi-delete-outline",
+								size="sm",
+								:disable="!current || current.id === 'standard'"
+							)
+								q-menu
+									q-list
+										q-item.pink(clickable @click="deleting = current || null")
+											q-item-section Удалить
 				q-tabs(
+					v-if="current",
 					v-model="tab",
 					align="left",
 					dense,
@@ -198,9 +227,9 @@ q-page(padding)
 						:name="section.key",
 						:label="section.label"
 					)
-				q-tab-panels(v-model="tab", class="folder-types__panels")
+				q-tab-panels(v-if="current", v-model="tab", class="folder-types__panels")
 					q-tab-panel(name="general")
-						div(class="folder-types__form")
+						.folder-types__form
 							.folder-types__field-row
 								label.folder-types__field-label(for="folder-type-text") Название
 								q-input(
@@ -233,7 +262,11 @@ q-page(padding)
 								)
 							.folder-types__field-row
 								.folder-types__checkbox
-									q-checkbox(dense, v-model="current.digest", label="Разрешить использование дайджеста")
+									q-checkbox(
+										dense,
+										v-model="current.digest",
+										label="Разрешить использование дайджеста"
+									)
 							.folder-types__field-row
 								label.folder-types__field-label(for="folder-type-refresh") Автообновление
 								q-select(
@@ -259,7 +292,11 @@ q-page(padding)
 								)
 							.folder-types__field-row
 								.folder-types__checkbox
-									q-checkbox(dense, v-model="current.limited", label="Ограничить количество записей")
+									q-checkbox(
+										dense,
+										v-model="current.limited",
+										label="Ограничить количество записей"
+									)
 							.folder-types__field-row
 								label.folder-types__field-label(for="folder-type-limit") Количество записей
 								q-input(
@@ -274,7 +311,11 @@ q-page(padding)
 								)
 							.folder-types__field-row
 								.folder-types__checkbox
-									q-checkbox(dense, v-model="current.unread", label="Подсвечивать непрочитанные карточки")
+									q-checkbox(
+										dense,
+										v-model="current.unread",
+										label="Подсвечивать непрочитанные карточки"
+									)
 					q-tab-panel(v-for="section in sections", :key="section.key", :name="section.key")
 						q-checkbox(dense
 							v-if="section.key === 'folders'",
@@ -330,8 +371,9 @@ q-page(padding)
 										type="checkbox",
 										:options="options(section.key)"
 									)
-			div(v-else, class="text-grey text-center q-pa-xl")
-				| Выберите тип папки в дереве
+			.q-px-xl.text-secondary(v-if="!current")
+				IxShapesFilled(style='font-size: 3rem;')
+				.text-black Выберите тип папки в дереве или создайте новый.
 	q-dialog(v-model="createDialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-card(style="min-width: 400px")
 			q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
@@ -371,7 +413,7 @@ q-page(padding)
 			q-card-actions(align="right")
 				q-btn(flat, label="Отмена", v-close-popup)
 				q-btn(
-					color="negative",
+					color="primary",
 					label="Удалить",
 					@click="deleting && store.remove(deleting); deleting = null"
 				)
@@ -416,13 +458,12 @@ q-page(padding)
 	bottom: 0;
 	right: 1rem;
 }
-.folder-types__filter {
+.quick {
 	margin-bottom: 0.5rem;
 }
-.folder-types__filter :deep(.q-field__control),
-.folder-types__filter :deep(.q-field__marginal) {
-	height: 28px;
-	min-height: 28px;
+.quick .q-field--dense .q-field__control,
+.q-field--dense .q-field__marginal {
+	height: 28px !important;
 }
 .no-touch .folder-types__node:hover {
 	background: #edf0f8;
@@ -489,5 +530,14 @@ q-page(padding)
 .folder-types__tree-card {
 	background: var(--bg-panel);
 	border: 1px solid var(--my-border-color);
+}
+.folder-types__header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	min-height: 48px;
+}
+.folder-types__header > .folder-types-toolbar {
+	margin-left: auto;
 }
 </style>
