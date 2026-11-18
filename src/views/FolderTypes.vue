@@ -18,7 +18,7 @@ interface IViewTreeNode {
 }
 const viewIds = computed(() => {
 	const collect = (nodes: IViewTreeNode[]): string[] =>
-		nodes.flatMap(node => node.children?.length ? collect(node.children) : [node.id])
+		nodes.flatMap((node) => (node.children?.length ? collect(node.children) : [node.id]))
 	return collect(viewTreeNodes.value)
 })
 const splitter = ref(25)
@@ -165,7 +165,7 @@ function all(key: 'folders' | 'cards' | 'views' | 'templates', clear = false) {
 </script>
 
 <template lang="pug">
-q-page(padding)
+q-page(padding :style-fn="() => ({ minHeight: '0px' })")
 	q-banner(v-if="attempted && store.invalid", class="bg-red-1 q-mb-md")
 		| Проверьте название и числовые поля типа «{{ store.invalid.text }}».
 	q-splitter.folder-types__splitter(v-model="splitter", :limits="[18, 45]")
@@ -534,7 +534,8 @@ q-page(padding)
 	margin-top: 16px;
 }
 .folder-types__choices:disabled {
-	opacity: 0.5;
+	// Quasar also dims [disabled]; leave dimming to the disabled controls.
+	opacity: 1 !important;
 	pointer-events: none;
 }
 .folder-types__splitter,
@@ -553,9 +554,10 @@ q-page(padding)
 .quick {
 	margin-bottom: 0.5rem;
 }
-.quick .q-field--dense .q-field__control,
-.q-field--dense .q-field__marginal {
-	height: 28px !important;
+.quick :deep(.q-field--dense .q-field__control),
+.quick :deep(.q-field--dense .q-field__marginal) {
+	height: 28px;
+	min-height: 28px;
 }
 .no-touch .folder-types__node:hover {
 	background: #edf0f8;
@@ -640,6 +642,7 @@ q-page(padding)
 	min-width: 0;
 }
 .folder-types__field-row_centered {
+	min-height: 40px;
 	align-items: center;
 }
 .folder-types__field-row_centered > .folder-types__field-label {
