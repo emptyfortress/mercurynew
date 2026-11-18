@@ -1,12 +1,26 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { uid } from 'quasar'
+import { useSimpleStore } from '@/stores/simpleStore'
 import LucideShapes from '@/components/icons/LucideShapes.vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import { createFolderType, useFolderTypesStore, type IFolderType } from '@/stores/folderTypes'
 
 const store = useFolderTypesStore()
+const simpleStore = useSimpleStore()
+const viewQuery = ref('')
+const expandedViews = ref<string[]>(['1', '1-1'])
+const viewTreeNodes = computed(() => simpleStore.viewData)
+interface IViewTreeNode {
+	id: string
+	children?: IViewTreeNode[]
+}
+const viewIds = computed(() => {
+	const collect = (nodes: IViewTreeNode[]): string[] =>
+		nodes.flatMap(node => node.children?.length ? collect(node.children) : [node.id])
+	return collect(viewTreeNodes.value)
+})
 const splitter = ref(25)
 const query = ref('')
 const treeControl = ref<InstanceType<typeof Draggable>>()
@@ -138,7 +152,9 @@ function all(key: 'folders' | 'cards' | 'views' | 'templates', clear = false) {
 			? []
 			: key === 'cards'
 				? cards.flatMap((group) => group.children.map((item) => item.id))
-				: options(key).map((item) => item.value)
+				: key === 'views'
+					? viewIds.value
+					: options(key).map((item) => item.value)
 	}
 }
 </script>
@@ -304,16 +320,15 @@ q-page(padding)
 										v-model="current.digest",
 										label="Разрешить использование дайджеста"
 									)
-							.folder-types__field-row
-								label.folder-types__field-label(for="folder-type-refresh") Автообновление
-								q-select(
-									for="folder-type-refresh",
+							.folder-types__field-row.folder-types__field-row_centered
+								.folder-types__field-label Автообновление
+								q-option-group(
 									v-model="current.refresh",
-									outlined,
+									type="radio",
+									inline,
 									dense,
-									emit-value,
-									map-options,
-									:options="[{label: 'Выключено', value: 'off'}, {label: 'Стандартное', value: 'standard'}, {label: 'Специальное', value: 'special'}]"
+									color="primary",
+									:options="[{ label: 'Выключено', value: 'off' }, { label: 'Стандартное', value: 'standard' }, { label: 'Специальное', value: 'special' }]"
 								)
 							.folder-types__field-row
 								label.folder-types__field-label(for="folder-type-period") Период, секунд
@@ -353,6 +368,16 @@ q-page(padding)
 										v-model="current.unread",
 										label="Подсвечивать непрочитанные карточки"
 									)
+							.folder-types__field-row.folder-types__field-row_centered
+								.folder-types__field-label Проверка прав доступа
+								q-option-group(
+									v-model="current.accessCheck",
+									type="radio",
+									inline,
+									dense,
+									color="primary",
+									:options="[{ label: 'Все карточки', value: 'all' }, { label: 'Постранично', value: 'page' }, { label: 'Отключить', value: 'off' }]"
+								)
 					q-tab-panel(v-for="section in sections", :key="section.key", :name="section.key")
 						q-checkbox(dense
 							v-if="section.key === 'folders'",
@@ -379,7 +404,7 @@ q-page(padding)
 								q-btn(flat, label="Снять все отметки", @click="all(section.key, true)")
 							q-card.folder-types__tree-card(v-if="section.key === 'folders'" flat)
 								q-card-section
-									q-tree(
+									q-tree.folder-types__settings-tree(
 										icon="mdi-chevron-right",
 										:disable="!current.foldersOnly || current.foldersForbidden",
 										v-model:ticked="current.folders",
@@ -391,7 +416,7 @@ q-page(padding)
 									)
 							q-card.folder-types__tree-card(v-else-if="section.key === 'cards'" flat)
 								q-card-section
-									q-tree(
+									q-tree.folder-types__settings-tree(
 										icon="mdi-chevron-right",
 										:disable="!current.cardsOnly || current.cardsForbidden",
 										v-model:ticked="current.cards",
@@ -400,6 +425,24 @@ q-page(padding)
 										tick-strategy="leaf",
 										default-expand-all
 									)
+							q-card.folder-types__tree-card(v-else-if="section.key === 'views'" flat)
+								q-card-section
+									q-form.quick(@submit.prevent)
+										q-input.query(v-model="viewQuery" dense filled clearable placeholder="фильтр" @clear="viewQuery = ''")
+											template(#prepend)
+												q-icon(name="mdi-magnify")
+									q-scroll-area.folder-types__views-scroll
+										q-tree.folder-types__settings-tree(
+											v-model:ticked="current.views",
+											v-model:expanded="expandedViews",
+											:nodes="viewTreeNodes",
+											:filter="viewQuery",
+											:disable="!current.viewsOnly",
+											node-key="id",
+											label-key="text",
+											icon="mdi-chevron-right",
+											tick-strategy="leaf"
+										)
 							q-card.folder-types__tree-card(v-else flat)
 								q-card-section
 									q-option-group(
@@ -586,5 +629,19 @@ q-page(padding)
 }
 :deep(.q-item__section--avatar) {
 	min-width: 0;
+}
+.folder-types__field-row_centered {
+	align-items: center;
+}
+.folder-types__field-row_centered > .folder-types__field-label {
+	padding-top: 0;
+}
+.folder-types__settings-tree :deep(.q-tree__arrow) {
+	font-size: 1.3rem;
+	color: #000;
+	transition: 0.2s ease all;
+}
+.folder-types__views-scroll {
+	height: clamp(200px, calc(100dvh - 400px), 480px);
 }
 </style>

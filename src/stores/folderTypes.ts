@@ -19,6 +19,7 @@ export interface IFolderType {
 	period: number
 	limited: boolean
 	limit: number
+	accessCheck: 'all' | 'page' | 'off'
 	unread: boolean
 	locked: boolean
 	unsorted: boolean
@@ -51,6 +52,7 @@ export const createFolderType = (text: string, id = uid()): IFolderType => ({
 	period: 300,
 	limited: true,
 	limit: 40,
+	accessCheck: 'all',
 	unread: true,
 	locked: false,
 	unsorted: false,
