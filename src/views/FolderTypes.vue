@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
-import IxShapesFilled from '@/components/icons/IxShapesFilled.vue'
+import { uid } from 'quasar'
+import LucideShapes from '@/components/icons/LucideShapes.vue'
 import { Draggable } from '@he-tree/vue'
 import '@he-tree/vue/style/default.css'
 import { createFolderType, useFolderTypesStore, type IFolderType } from '@/stores/folderTypes'
@@ -37,6 +38,32 @@ async function createType() {
 	store.selectedId = node.id
 	tab.value = 'general'
 	createDialog.value = false
+}
+
+async function duplicateType(source: IFolderType) {
+	const tree = treeControl.value
+	if (!tree || source.id === 'folder-types-root') return
+	const sourceStat = tree.getStat(source)
+	const copy = JSON.parse(JSON.stringify(source)) as IFolderType
+	const ids = new Map<string, string>()
+	const assignIds = (node: IFolderType) => {
+		const id = uid()
+		ids.set(node.id, id)
+		node.id = id
+		node.children.forEach(assignIds)
+	}
+	const updateReferences = (node: IFolderType) => {
+		node.folders = node.folders.map((id) => ids.get(id) ?? id)
+		node.children.forEach(updateReferences)
+	}
+	assignIds(copy)
+	updateReferences(copy)
+	copy.text = `${source.text} — копия`
+	tree.add(copy, sourceStat.parent, tree.getSiblings(sourceStat).indexOf(sourceStat) + 1)
+	tree.openNodeAndParents(tree.getStat(copy))
+	query.value = ''
+	await nextTick()
+	store.selectedId = copy.id
 }
 
 const tab = ref('general')
@@ -120,7 +147,7 @@ function all(key: 'folders' | 'cards' | 'views' | 'templates', clear = false) {
 q-page(padding)
 	q-banner(v-if="attempted && store.invalid", class="bg-red-1 q-mb-md")
 		| Проверьте название и числовые поля типа «{{ store.invalid.text }}».
-	q-splitter(v-model="splitter", :limits="[18, 45]")
+	q-splitter.folder-types__splitter(v-model="splitter", :limits="[18, 45]")
 		template(#before)
 			.folder-types__sidebar.q-pr-md
 				q-form.quick(@submit.prevent)
@@ -172,12 +199,22 @@ q-page(padding)
 							)
 							span(:class="{ 'folder-types__root-label': node.id === 'folder-types-root' }")
 								| {{ node.text }}
+							q-menu(v-if="node.id !== 'folder-types-root'" context-menu)
+								q-list
+									q-item(clickable v-close-popup @click="duplicateType(node)")
+										q-item-section(avatar)
+											q-icon(name="mdi-plus-circle-multiple-outline")
+										q-item-section Дублировать
+									q-item.folder-types__delete-action(clickable v-close-popup :disable="node.id === 'standard'" @click="deleting = node")
+										q-item-section(avatar)
+											q-icon(name="mdi-trash-can-outline")
+										q-item-section Удалить
 				div(v-if="!store.nodes.some(matches)", class="text-grey q-pa-md")
 					| Ничего не найдено
 		template(#after)
 			.q-pl-lg
 				.folder-types__header
-					IxShapesFilled.text-secondary(v-if="current" style="font-size: 32px")
+					LucideShapes.text-secondary(v-if="current" style="font-size: 32px")
 					div
 						.text-overline.folder-types__caption(v-if="current") тип папки
 						.text-h6
@@ -372,7 +409,7 @@ q-page(padding)
 										:options="options(section.key)"
 									)
 			.q-px-xl.text-secondary(v-if="!current")
-				IxShapesFilled(style='font-size: 3rem;')
+				LucideShapes(style='font-size: 3rem;')
 				.text-black Выберите тип папки в дереве или создайте новый.
 	q-dialog(v-model="createDialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-card(style="min-width: 400px")
@@ -448,9 +485,12 @@ q-page(padding)
 	opacity: 0.5;
 	pointer-events: none;
 }
+.folder-types__splitter,
+.folder-types__sidebar {
+	min-height: calc(100dvh - 150px);
+}
 .folder-types__sidebar {
 	position: relative;
-	min-height: calc(100vh - 230px);
 	padding-bottom: 64px;
 }
 .folder-types__add {
@@ -539,5 +579,12 @@ q-page(padding)
 }
 .folder-types__header > .folder-types-toolbar {
 	margin-left: auto;
+}
+.folder-types__delete-action {
+	border-top: 1px solid #ccc;
+	color: darkred;
+}
+:deep(.q-item__section--avatar) {
+	min-width: 0;
 }
 </style>
