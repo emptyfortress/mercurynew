@@ -133,14 +133,14 @@ function removeProject() {
 			)
 		template(#after)
 			.projects__editor
-				.projects__header
+				.projects__header(v-if="selectedId || listWidth === 0")
 					q-btn(
 						flat round dense color="primary"
 						:icon="listWidth === 0 ? 'mdi-forwardburger' : 'mdi-backburger'"
 						:title="listWidth === 0 ? 'Показать список проектов' : 'Скрыть список проектов'"
 						@click="toggleList"
 					)
-					.projects__heading
+					.projects__heading(v-if="selectedId")
 						q-avatar.projects__icon(v-if="project?.icon" size="32px" rounded)
 							img(:src="project.icon" alt="")
 						q-icon.projects__icon(v-else color="secondary" size="32px")
@@ -197,16 +197,17 @@ function removeProject() {
 							ProjectLayouts(
 								:project="project" :catalog="store.catalog" :owners="store.owners" :readonly="readonly"
 							)
-				.projects__empty(v-else)
-					q-icon(color="primary" size="42px")
+				.projects__empty(v-else :class="{ 'projects__empty_idle': !selectedId }")
+					q-icon(v-if="!selectedId" name="mdi-tools" color="secondary" size="xl")
+					q-icon(v-else color="primary" size="42px")
 						MaterialSymbolsListAltCheckOutline
-					.text-subtitle1 {{ selectedId ? 'Такого проекта нет в текущем сеансе' : 'Выберите или создайте проект' }}
-					.text-grey-7(v-if="!selectedId") Проект объединяет разметки для переноса между системами.
+					div(:class="selectedId ? 'text-subtitle1' : 'q-mt-md'")
+						| {{ selectedId ? 'Такого проекта нет в текущем сеансе' : 'Выберите или создайте проект' }}
+					.text-grey-7.q-mt-sm(v-if="!selectedId") Проект объединяет разметки для переноса между системами.
 					q-btn(
 						v-if="selectedId" flat color="primary" label="К списку проектов"
 						:to="{ name: 'projects', params: { projectId: '' } }"
 					)
-					q-btn(v-else unelevated color="primary" label="Создать проект" @click="createDialog = true")
 	CreateProjectDialog(v-model="createDialog" @create="createProject")
 	q-dialog(v-model="duplicateDialog" backdrop-filter="blur(4px) saturate(150%)")
 		q-card.projects__dialog
@@ -372,6 +373,11 @@ function removeProject() {
 	align-items: flex-start;
 	gap: 1rem;
 	padding: 2rem 0.5rem;
+}
+
+.projects__empty_idle {
+	display: block;
+	padding: 0;
 }
 
 .projects__dialog {
