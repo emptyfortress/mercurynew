@@ -31,6 +31,11 @@ watch(query, () => {
 		})
 	}
 })
+function activateTreeNode(event: KeyboardEvent) {
+	if (event.target !== event.currentTarget) return
+	if (event.currentTarget instanceof HTMLElement) event.currentTarget.click()
+}
+
 const createDialog = ref(false)
 const newTypeName = ref('')
 
@@ -203,6 +208,10 @@ q-page(padding)
 						div(
 							v-show="matches(node)",
 							class="folder-types__node",
+							role="button",
+							tabindex="0",
+							@keydown.enter.prevent="activateTreeNode",
+							@keydown.space.prevent="activateTreeNode",
 							:class="{ 'folder-types__node_selected': store.selectedId === node.id }",
 							@click="node.id === 'folder-types-root' ? stat.open = !stat.open : store.selectedId = node.id"
 						)
@@ -231,9 +240,9 @@ q-page(padding)
 			.q-pl-lg
 				.folder-types__header
 					LucideShapes.text-secondary(v-if="current" style="font-size: 32px")
-					div
+					.folder-types__heading
 						.text-overline.folder-types__caption(v-if="current") тип папки
-						.text-h6
+						.text-h6.ellipsis(:title="current?.text")
 							| {{ current?.text || 'Типы папок' }}
 					.folder-types-toolbar(v-if="store.dirty")
 						.btngroup
@@ -455,7 +464,7 @@ q-page(padding)
 				LucideShapes(style='font-size: 3rem;')
 				.text-black Выберите тип папки в дереве или создайте новый.
 	q-dialog(v-model="createDialog" backdrop-filter="blur(4px) saturate(150%)")
-		q-card(style="min-width: 400px")
+		q-card.folder-types__dialog
 			q-btn.close(round color="negative" icon="mdi-close" v-close-popup)
 			q-card-section
 				.text-h6 Создать тип папки
@@ -478,7 +487,7 @@ q-page(padding)
 		backdrop-filter="blur(4px) saturate(150%)",
 		@update:model-value="deleting = null"
 	)
-		q-card(style="min-width: 400px")
+		q-card.folder-types__dialog
 			q-btn(
 				class="close",
 				round,
@@ -557,7 +566,7 @@ q-page(padding)
 .folder-types__expand {
 	font-size: 1.3rem;
 	margin-right: 0.5rem;
-	transition: 0.2s ease all;
+	transition: transform 0.2s ease;
 }
 .folder-types__expand_closed {
 	transform: rotate(-90deg);
@@ -607,8 +616,8 @@ q-page(padding)
 	line-height: 1;
 	color: $blue-grey-6;
 }
-.text-h6 {
-	line-height: 1rem;
+.folder-types__heading .text-h6 {
+	line-height: 1.4;
 }
 .folder-types__tree-card {
 	background: var(--bg-panel);
@@ -639,9 +648,43 @@ q-page(padding)
 .folder-types__settings-tree :deep(.q-tree__arrow) {
 	font-size: 1.3rem;
 	color: #000;
-	transition: 0.2s ease all;
+	transition: transform 0.2s ease;
 }
 .folder-types__views-scroll {
 	height: clamp(200px, calc(100dvh - 400px), 480px);
+}
+.folder-types__heading {
+	flex: 1;
+	min-width: 0;
+}
+.folder-types__header > svg {
+	flex-shrink: 0;
+}
+.folder-types__node > span {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.folder-types__node:focus-visible {
+	outline: 2px solid var(--q-primary);
+	outline-offset: -2px;
+}
+.folder-types__dialog {
+	width: 400px;
+	max-width: calc(100vw - 32px);
+}
+.folder-types__panels {
+	container-type: inline-size;
+}
+@container (max-width: 560px) {
+	.folder-types__field-row {
+		grid-template-columns: minmax(0, 1fr);
+		row-gap: 0.5rem;
+	}
+	.folder-types__field-label {
+		padding-top: 0;
+	}
+	.folder-types__checkbox {
+		grid-column: 1;
+	}
 }
 </style>
