@@ -2,6 +2,7 @@ export const BREADCRUMB_OVERRIDES: Record<string, string> = {
 	'folder-types': 'Типы папок',
 	dvmain: 'База решений',
 	numerators: 'Нумераторы',
+	projects: 'Проекты',
 	cards: 'Конструктор карточек',
 	folders: 'Каталог папок',
 	webframe: 'Рабочая область',

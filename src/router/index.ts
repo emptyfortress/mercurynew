@@ -75,6 +75,12 @@ const router = createRouter({
 			},
 		},
 		{
+			path: '/dvmain/projects/:projectId?',
+			name: 'projects',
+			component: () => import('@/views/Projects.vue'),
+			meta: { toolbar: false, back: false, count: 0, save: false, breadcrumbs: true },
+		},
+		{
 			path: '/dvmain/folder-types',
 			name: 'folderTypes',
 			component: () => import('@/views/FolderTypes.vue'),

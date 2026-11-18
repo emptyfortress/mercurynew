@@ -135,6 +135,10 @@ const user = [
 const topLevelKey = (route: any) => route.matched[0]?.path || route.path
 
 const title = computed(() => {
+	if (route.name === 'projects') {
+		return 'Проекты'
+	}
+
 	if (route.name === 'folderTypes') {
 		return 'Настройка типов папок'
 	}

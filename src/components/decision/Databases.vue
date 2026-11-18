@@ -14,6 +14,7 @@ const sections = [
 	{ id: 7, label: 'Справочники', to: '' },
 	{ id: 8, label: 'Нумераторы', to: '/dvmain/numerators' },
 	{ id: 9, label: 'Типы папок', to: '/dvmain/folder-types' },
+	{ id: 10, label: 'Проекты', to: '/dvmain/projects' },
 ]
 
 const goto = (e: string) => {
