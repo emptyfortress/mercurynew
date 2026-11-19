@@ -104,15 +104,16 @@ function updateSelection(ids: readonly unknown[]) {
 
 .project-layouts__filters {
 	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 1rem;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.75rem;
 	margin: 0.5rem 0;
 }
 
 .project-layouts__filters > .q-field {
-	flex: 1;
-	min-width: 180px;
+	width: 360px;
+	max-width: 100%;
+	min-width: 0;
 }
 
 .project-layouts__node {
