@@ -163,14 +163,14 @@ function removeProject() {
 							title="Удалить проект" @click="requestDelete(project.id)"
 						)
 				.projects__body(v-if="project && savedProject")
-					q-banner.projects__readonly(v-if="readonly" dense rounded)
+					q-banner.bg-orange-2.text-caption(v-if="readonly" dense rounded)
 						template(#avatar)
 							q-icon(name="mdi-lock-outline" color="primary")
 						| Проект в режиме «Заказчик». Свойства и состав доступны только для просмотра.
 					q-banner.bg-red-1.text-negative(v-if="store.errors[project.id]" rounded)
 						| {{ store.errors[project.id] }}
 					q-tabs.projects__tabs(
-						v-model="activeTab" align="left" no-caps dense
+						v-model="activeTab" align="left" dense
 						active-color="primary" indicator-color="primary"
 					)
 						q-tab(name="properties" label="Свойства")
@@ -350,10 +350,6 @@ function removeProject() {
 
 .projects__panel {
 	padding: 0.5rem 0 1rem;
-}
-
-.projects__readonly {
-	background: var(--dvviolet);
 }
 
 .projects__exports > span {

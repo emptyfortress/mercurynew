@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import WordHighlighter from 'vue-word-highlighter'
 import { collectLayoutIds, filterCatalog, mergeVisibleSelection } from './ProjectRules'
 import type { ICatalogNode, IProject } from './Types'
 
@@ -9,11 +10,24 @@ const props = defineProps<{
 	owners: Record<string, IProject>
 	readonly: boolean
 }>()
+const NO_TICK_NODE_IDS = new Set(['cards', 'base', 'office', 'directories', 'workspace'])
 const query = ref('')
 const selectedOnly = ref(false)
 const expanded = ref<string[]>(['cards', 'base', 'document', 'directories', 'workspace'])
+function filterAvailableNodes(nodes: ICatalogNode[]): ICatalogNode[] {
+	return nodes.flatMap((node) => {
+		const owner = props.owners[node.id]
+		if (node.kind === 'layout' && owner && owner.id !== props.project.id) return []
+		return [{
+			...node,
+			children: node.children ? filterAvailableNodes(node.children) : undefined,
+		}]
+	})
+}
+
+const availableCatalog = computed(() => filterAvailableNodes(props.catalog))
 const catalog = computed(() => filterCatalog(
-	props.catalog, query.value, selectedOnly.value, props.project.layoutIds
+	availableCatalog.value, query.value, selectedOnly.value, props.project.layoutIds
 ))
 const visibleIds = computed(() => collectLayoutIds(catalog.value))
 const editableIds = computed(() => collectLayoutIds(props.catalog).filter((id) =>
@@ -22,14 +36,11 @@ const editableIds = computed(() => collectLayoutIds(props.catalog).filter((id) =
 
 function decorateNodes(nodes: ICatalogNode[]): object[] {
 	return nodes.map((node) => {
-		const owner = props.owners[node.id]
-		const occupied = node.kind === 'layout' && owner && owner.id !== props.project.id
 		return {
 			...node,
-			ownerName: occupied ? owner.name : '',
 			icon: node.kind === 'layout' ? 'mdi-file-document-outline' : 'mdi-folder-outline',
-			noTick: node.kind !== 'layout' && !node.children?.length,
-			tickable: !props.readonly && !occupied,
+			noTick: NO_TICK_NODE_IDS.has(node.id) || (node.kind !== 'layout' && !node.children?.length),
+			tickable: !props.readonly,
 			children: node.children ? decorateNodes(node.children) : undefined,
 		}
 	})
@@ -72,15 +83,15 @@ function updateSelection(ids: readonly unknown[]) {
 		q-checkbox(v-model="selectedOnly" dense label="Только выбранные")
 	q-tree(
 		dense
+		icon="mdi-chevron-right"
 		v-if="treeNodes.length" :nodes="treeNodes" node-key="id" tick-strategy="leaf"
 		:ticked="project.layoutIds" v-model:expanded="expanded" color="primary"
 		@update:ticked="updateSelection"
 	)
 		template(#default-header="{ node }")
 			.project-layouts__node
-				span.project-layouts__label {{ node.label }}
-				span.project-layouts__note(v-if="node.ownerName") В проекте «{{ node.ownerName }}»
-				span.project-layouts__note(v-else-if="node.kind !== 'layout' && !node.children?.length")
+				WordHighlighter.project-layouts__label(:query="query.trim()") {{ node.label }}
+				span.project-layouts__note(v-if="node.kind !== 'layout' && !node.children?.length")
 					| Нет разметок
 	.project-layouts__empty(v-else)
 		.text-subtitle2 {{ selectedOnly ? 'Нет выбранных разметок по заданному фильтру' : 'Разметки не найдены' }}

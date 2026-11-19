@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import WordHighlighter from 'vue-word-highlighter'
 import MaterialSymbolsListAltCheckOutline from '@/components/icons/MaterialSymbolsListAltCheckOutline.vue'
 import type { IProject } from './Types'
 
@@ -41,7 +42,8 @@ const filtered = computed(() => props.projects.filter((project) =>
 					q-icon(v-else color="primary" size="20px")
 						MaterialSymbolsListAltCheckOutline
 			q-item-section
-				q-item-label.projects-list__name.ellipsis(:title="project.name") {{ project.name }}
+				q-item-label.projects-list__name.ellipsis(:title="project.name")
+					WordHighlighter(:query="query.trim()") {{ project.name }}
 			q-item-section.projects-list__meta.projects-list__version(side)
 				q-item-label(caption) {{ project.version }}
 			q-item-section.projects-list__meta.projects-list__mode(side)
