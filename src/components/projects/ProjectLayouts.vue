@@ -98,9 +98,8 @@ function updateSelection(ids: readonly unknown[]) {
 .project-layouts__heading {
 	display: flex;
 	align-items: baseline;
-	justify-content: space-between;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: 0.5rem 0.75rem;
 }
 
 .project-layouts__filters {
