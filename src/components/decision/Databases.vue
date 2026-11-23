@@ -173,6 +173,7 @@ q-page(padding)
 	display: flex;
 	flex-wrap: wrap;
 	column-gap: 1rem;
+	font-size: 0.8rem;
 }
 
 .database-structure__list_two-columns {
@@ -183,7 +184,7 @@ q-page(padding)
 	position: relative;
 	padding: 0.75rem;
 	padding-inline-end: 2.25rem;
-	background: #fff;
+	// background: #fff;
 	border: 1px solid transparent;
 }
 
@@ -198,6 +199,7 @@ q-page(padding)
 .no-touch .database-structure__item:hover {
 	cursor: pointer;
 	border-color: #ccc;
+	background: #fff;
 }
 
 .no-touch .database-structure__group_cards:hover {
