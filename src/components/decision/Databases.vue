@@ -49,7 +49,7 @@ q-page(padding)
 			size="sm"
 		)
 	section.database-structure
-		section.database-structure__item.q-mb-md
+		section.database-structure__group.database-structure__group_cards.q-mb-md
 			h2.text-h6.q-ma-none Конструктор карточек
 			ul.database-structure__list.database-structure__list_inline
 				li Виды и поля
@@ -156,6 +156,11 @@ q-page(padding)
 	background: var(--bg-panel);
 }
 
+.database-structure__group_cards {
+	position: relative;
+	padding-inline-end: 2.25rem;
+}
+
 .database-structure__list {
 	display: grid;
 	gap: 0.5rem;
@@ -193,10 +198,19 @@ q-page(padding)
 .no-touch .database-structure__item:hover {
 	cursor: pointer;
 	border-color: #ccc;
+}
+
+.no-touch .database-structure__group_cards:hover {
+	background: #fff;
+}
+
+.no-touch .database-structure__item:hover,
+.no-touch .database-structure__group_cards:hover {
 	box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.no-touch .database-structure__item:hover > .database-structure__chevron {
+.no-touch .database-structure__item:hover > .database-structure__chevron,
+.no-touch .database-structure__group_cards:hover > .database-structure__chevron {
 	visibility: visible;
 }
 
