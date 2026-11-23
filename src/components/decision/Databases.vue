@@ -28,8 +28,73 @@ const goto = (e: string) => {
 </script>
 
 <template lang="pug">
+mixin structure-tile(label)
+	li.database-structure__item
+		= label
+		q-icon.database-structure__chevron(name='mdi-chevron-right' size='1.25rem')
+
 q-page(padding)
-	.hd Конструкторы сервера DV-Main
+	.box.row.items-center
+		h1.text-h5.text-weight-medium.q-ma-none
+			q-icon.q-mr-md(name="mdi-database-outline" color="primary")
+			|База данных DV-Main
+		q-btn.system-settings.q-ml-auto(
+			label='Системные настройки'
+			icon='mdi-cog-outline'
+			icon-right='mdi-chevron-right'
+			text-color='primary'
+			padding='12px 16px'
+			unelevated
+			no-caps
+			size="sm"
+		)
+	section.database-structure
+		section.database-structure__item.q-mb-md
+			h2.text-h6.q-ma-none Конструктор карточек
+			ul.database-structure__list.database-structure__list_inline
+				li Виды и поля
+				li Роли и права
+				li Состояния и переходы
+				li Разметки
+			q-icon.database-structure__chevron(name='mdi-chevron-right' size='1.25rem')
+
+		.database-structure__columns
+			section.database-structure__group
+				h2.text-h6.q-ma-none Рабочее место
+				ul.database-structure__list.database-structure__list_two-columns
+					+structure-tile('Каталог папок')
+					+structure-tile('Рабочая область')
+					+structure-tile('Конструктор поисковых запросов')
+					+structure-tile('Управление локациями')
+					+structure-tile('Конструктор представлений')
+					+structure-tile('Типы папок')
+
+			.database-structure__stack
+				section.database-structure__group
+					h2.text-h6.q-ma-none Справочники
+					ul.database-structure__list
+						+structure-tile('Разметки справочников')
+						+structure-tile('Справочник ссылок')
+				section.database-structure__group
+					h2.text-h6.q-ma-none Ресурсы разметок
+					ul.database-structure__list
+						+structure-tile('Управление решениями')
+						+structure-tile('Локализации разметок')
+
+			section.database-structure__group
+				h2.text-h6.q-ma-none Согласования и процессы
+				h3.text-subtitle2.q-mt-sm.q-mb-none Согласования
+				ul.database-structure__list
+					+structure-tile('Конструктор согласований')
+					+structure-tile('Мониторинг согласований')
+				q-separator(spaced='md')
+				h3.text-subtitle2.q-ma-none Процессы WF
+				ul.database-structure__list
+					+structure-tile('Настройка шаблонов процессов')
+					+structure-tile('Мониторинг процессов')
+
+		q-separator(spaced='lg')
+
 	.container
 		.it.constr(
 			v-for="item in sections",
@@ -45,13 +110,109 @@ q-page(padding)
 </template>
 
 <style scoped lang="scss">
-.hd {
-	text-align: center;
-	font-size: 1.3rem;
-	margin-bottom: 1rem;
-}
+.box,
+.database-structure,
 .container {
-	max-width: 1100px;
+	max-width: 1200px;
+}
+
+.box {
+	margin: 0 auto 1rem;
+	gap: 8px;
+}
+.system-settings {
+	border-radius: 0.5rem;
+	background: hsl(210 51% 84% / 1);
+	border: 1px solid hsl(210 51% 84% / 1);
+	&:hover {
+		border: 1px solid #fff;
+	}
+	// box-shadow: var(--shad0);
+}
+.database-structure {
+	margin: 0 auto;
+}
+
+.database-structure__columns {
+	display: grid;
+	grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1.1fr);
+	align-items: start;
+	gap: 1rem;
+}
+
+.database-structure__stack {
+	display: grid;
+	gap: 1rem;
+}
+
+.database-structure__group,
+.database-structure__item {
+	border-radius: var(--rad);
+}
+
+.database-structure__group {
+	border: 1px solid var(--my-border-color);
+	padding: 1rem;
+	background: var(--bg-panel);
+}
+
+.database-structure__list {
+	display: grid;
+	gap: 0.5rem;
+	margin: 0.5rem 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.database-structure__list_inline {
+	display: flex;
+	flex-wrap: wrap;
+	column-gap: 1rem;
+}
+
+.database-structure__list_two-columns {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.database-structure__item {
+	position: relative;
+	padding: 0.75rem;
+	padding-inline-end: 2.25rem;
+	background: #fff;
+	border: 1px solid transparent;
+}
+
+.database-structure__chevron {
+	position: absolute;
+	top: 50%;
+	inset-inline-end: 0.75rem;
+	transform: translateY(-50%);
+	visibility: hidden;
+}
+
+.no-touch .database-structure__item:hover {
+	cursor: pointer;
+	border-color: #ccc;
+	box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.no-touch .database-structure__item:hover > .database-structure__chevron {
+	visibility: visible;
+}
+
+@media (max-width: 50rem) {
+	.database-structure__columns {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 26rem) {
+	.database-structure__list_two-columns {
+		grid-template-columns: 1fr;
+	}
+}
+
+.container {
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);

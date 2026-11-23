@@ -10,6 +10,8 @@ import CifGb from '@/components/icons/CifGb.vue'
 import StreamlineEmergencyExitSolid from '@/components/icons/StreamlineEmergencyExitSolid.vue'
 import OcticonTools from '@/components/icons/OcticonTools.vue'
 import MdiCloudUploadOutline from '@/components/icons/MdiCloudUploadOutline.vue'
+import EosIconsProducts from '@/components/icons/EosIconsProducts.vue'
+import TdesignApp from '@/components/icons/TdesignApp.vue'
 import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
 import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
@@ -279,6 +281,7 @@ q-layout(view='hHh LpR fFf')
 			q-btn(dense flat round @click='nav' data-tour='home')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
+			q-toolbar-title(v-if='showTab' shrink) Центр настройки
 			q-toolbar-title
 				q-tabs.q-ml-md(v-if='showTab'
 					:key="section"
@@ -286,9 +289,12 @@ q-layout(view='hHh LpR fFf')
 					inline-label
 					align="left"
 				)
-					q-tab(label="Приложения" name='apps' @click="goApps")
-					q-tab(label="DV-main" icon='mdi-server-network-outline' name='decisions' @click="goDecisions")
-					q-btn.q-ml-lg(flat round icon="mdi-plus-circle-outline")
+					q-tab(name='apps' @click='goApps')
+						TdesignApp.q-tab__icon(aria-hidden='true')
+						span.q-tab__label Приложения
+					q-tab(name='decisions' @click='goDecisions')
+						EosIconsProducts.q-tab__icon(aria-hidden='true')
+						span.q-tab__label Конструкторы и справочники
 				span(v-else) {{ title }}
 			q-btn.reset(v-if="route.path === '/dvmain/webframe/menu'" color="white" text-color="negative" @click="resetLayout" label="Restore default layout" size="md")
 			q-space
@@ -338,8 +344,24 @@ q-layout(view='hHh LpR fFf')
 	BotDrawer
 
 	q-page-container
-		.bread(v-if='route.meta.breadcrumbs')
-			Breadcrumbs
+		.bread.row.items-center(v-if='route.meta.breadcrumbs')
+			Breadcrumbs.col
+			q-btn-dropdown.col-auto.q-ml-sm(
+				v-if="route.name === 'decisions'"
+				dropdown-icon='mdi-chevron-down'
+				color='primary'
+				size='0.75rem'
+				flat
+				dense
+				no-caps
+			)
+				template(#label)
+					span База данных:
+					q-icon.q-mx-xs(name='mdi-database-outline' size='1rem')
+					span DV-main
+				q-list.database-menu.text-primary
+					q-item(clickable v-close-popup)
+						q-item-section Сменить базу данных
 		#cont
 			router-view(v-slot="{ Component, route }")
 				transition(
@@ -431,6 +453,12 @@ nav a:first-of-type {
 	font-size: 0.8rem;
 	padding: 4px 15px;
 }
+
+.database-menu {
+	min-width: 208px;
+	font-size: 0.75rem;
+}
+
 .bot svg {
 	width: 1.7rem;
 	height: 1.7rem;
