@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import CarbonConstruction from '@/components/icons/CarbonConstruction.vue'
+import KeylineIconsDesk from '@/components/icons/KeylineIconsDesk.vue'
 import LucideBookOpen from '@/components/icons/LucideBookOpen.vue'
-import LucideFolderOpen from '@/components/icons/LucideFolderOpen.vue'
 import LucideLayers2 from '@/components/icons/LucideLayers2.vue'
 import LucideLayoutTemplate from '@/components/icons/LucideLayoutTemplate.vue'
 import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
@@ -33,10 +34,23 @@ const goto = (e: string) => {
 </script>
 
 <template lang="pug">
-mixin structure-tile(label)
+mixin structure-tile(label, to, secondLine)
 	li.database-structure__item
-		span.database-structure__item-label.text-primary= label
+		#{to ? 'router-link' : 'span'}.database-structure__item-label.text-primary(
+			class=to ? 'database-structure__link' : null
+			to=to
+		)
+			= label
+			if secondLine
+				br
+				= secondLine
+		block
 		q-icon.database-structure__chevron(name='mdi-chevron-right' size='1.25rem')
+
+mixin in-development
+	q-icon.q-ml-md(color='negative' size='1.2rem')
+		CarbonConstruction
+		q-tooltip В разработке
 
 q-page(padding)
 	.box.row.items-center
@@ -57,7 +71,7 @@ q-page(padding)
 		section.database-structure__group.database-structure__group_cards.q-mb-md
 			h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 				LucideLayoutTemplate.database-structure__title-icon(aria-hidden='true')
-				|Конструктор карточек
+				router-link.database-structure__link(to='/dvmain/cards') Конструктор карточек
 			ul.database-structure__list.database-structure__list_inline
 				li Виды и поля
 				li Роли и права
@@ -68,15 +82,16 @@ q-page(padding)
 		.database-structure__columns
 			section.database-structure__group.database-structure__group_workspace
 				h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
-					LucideFolderOpen.database-structure__title-icon(aria-hidden='true')
+					KeylineIconsDesk.database-structure__title-icon(aria-hidden='true')
 					|Рабочее место
 				ul.database-structure__list.database-structure__list_two-columns
-					+structure-tile('Каталог папок')
-					+structure-tile('Рабочая область')
-					+structure-tile('Конструктор поисковых запросов')
-					+structure-tile('Управление локациями')
-					+structure-tile('Конструктор представлений')
-					+structure-tile('Типы папок')
+					+structure-tile('Каталог папок', '/dvmain/folders')
+					+structure-tile('Рабочая область', '/dvmain/webframe')
+					+structure-tile('Конструктор поисковых запросов', '/dvmain/search')
+					+structure-tile('Управление', null, 'локациями')
+						+in-development
+					+structure-tile('Конструктор представлений', '/dvmain/views')
+					+structure-tile('Типы', '/dvmain/folder-types', 'папок')
 
 			.database-structure__stack
 				section.database-structure__group.database-structure__group_directories
@@ -85,14 +100,18 @@ q-page(padding)
 						|Справочники
 					ul.database-structure__list
 						+structure-tile('Разметки справочников')
+							+in-development
 						+structure-tile('Справочник ссылок')
+							+in-development
+						+structure-tile('Нумераторы', '/dvmain/numerators')
 				section.database-structure__group.database-structure__group_resources
 					h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 						LucideLayers2.database-structure__title-icon(aria-hidden='true')
 						|Ресурсы разметок
 					ul.database-structure__list
-						+structure-tile('Управление решениями')
+						+structure-tile('Управление решениями', '/dvmain/projects')
 						+structure-tile('Локализации разметок')
+							+in-development
 
 			section.database-structure__group.database-structure__group_workflows
 				h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
@@ -100,13 +119,14 @@ q-page(padding)
 					|Согласования и процессы
 				// h3.text-subtitle2.q-mt-sm.q-mb-none Согласования
 				ul.database-structure__list
-					+structure-tile('Конструктор согласований')
+					+structure-tile('Конструктор согласований', '/dvmain/approve')
 					+structure-tile('Мониторинг согласований')
+						+in-development
 				q-separator(spaced='md')
 				// h3.text-subtitle2.q-ma-none Процессы WF
 				ul.database-structure__list
-					+structure-tile('Настройка шаблонов процессов')
-					+structure-tile('Мониторинг процессов')
+					+structure-tile('Настройка шаблонов процессов', '/dvmain/process/constructor')
+					+structure-tile('Мониторинг процессов', '/dvmain/process/monitor')
 
 		q-separator(spaced='lg')
 
@@ -137,12 +157,7 @@ q-page(padding)
 }
 .system-settings {
 	border-radius: 0.5rem;
-	background: hsl(210 51% 84% / 1);
-	border: 1px solid hsl(210 51% 84% / 1);
-	&:hover {
-		border: 1px solid #fff;
-	}
-	// box-shadow: var(--shad0);
+	border: 1px solid transparent;
 }
 .database-structure {
 	margin: 0 auto;
@@ -195,12 +210,13 @@ q-page(padding)
 	background-position: right bottom;
 	background-size: contain;
 	background-repeat: no-repeat;
+	opacity: 0.8;
 	pointer-events: none;
 	content: '';
 }
 
 .database-structure__group_cards {
-	--illustration: url('@/assets/img/bg/01_card_constructor-1.png');
+	--illustration: url('@/assets/img/bg/01_card_constructor-4.png');
 
 	min-height: 102px;
 }
@@ -210,38 +226,70 @@ q-page(padding)
 	width: auto;
 	height: auto;
 	background-position: right center;
-	background-size: min(800px, 100%) auto;
+	background-size: min(680px, 100%) auto;
 }
 
 .database-structure__group_workspace {
-	--illustration: url('@/assets/img/bg/02_workspace.png');
+	--illustration: url('@/assets/img/bg/02_workspace-1.png');
+	--illustration-width: 300px;
+}
+
+.database-structure__group_workspace::before {
+	bottom: 30px;
+	width: min(calc(var(--illustration-width) * 1.44), calc(100% - 2rem));
+	height: auto;
+	// Исключаем прозрачное поле внизу PNG.
+	aspect-ratio: 2048 / 570;
+	background-position: right top;
+	background-size: 100% auto;
 }
 
 .database-structure__group_directories {
-	--illustration: url('@/assets/img/bg/03_directories.png');
+	--illustration: url('@/assets/img/bg/03_directories-1.png');
+	--illustration-width: 288px;
 }
 
 .database-structure__group_resources {
-	--illustration: url('@/assets/img/bg/04_layout_resources.png');
+	--illustration: url('@/assets/img/bg/04_layout_resources-1.png');
 }
 
-.database-structure__group_directories::before,
-.database-structure__group_resources::before {
+.database-structure__group_directories::before {
 	right: calc(1rem - 15px);
+	height: 97px;
+	background-position: right -21px bottom -6px;
+}
+
+.database-structure__group_resources::before {
+	right: calc(1rem - 30px);
+	width: min(calc(var(--illustration-width) * 1.521), calc((100% - 2rem) * 0.9));
+	height: calc(var(--illustration-height) * 1.521);
+	background-position: right -30px bottom;
+	clip-path: inset(0 max(0px, 30px - 1rem) 0 0);
 }
 
 .database-structure__group_workflows {
-	--illustration: url('@/assets/img/bg/05_workflows.png');
+	--illustration: url('@/assets/img/bg/05_workflows-1.png');
+	--illustration-width: 340px;
+}
+
+.database-structure__group_workflows::before {
+	background-position: center;
+	background-size: 140% auto;
 }
 
 .database-structure__group_workspace,
 .database-structure__group_workflows {
-	--illustration-width: 300px;
 	--illustration-height: 126px;
 }
 
 .database-structure__title {
 	gap: 0.5rem;
+}
+
+.database-structure__title > .database-structure__link {
+	color: inherit;
+	font-weight: inherit;
+	text-decoration: none;
 }
 
 .database-structure__title-icon {
@@ -273,6 +321,10 @@ q-page(padding)
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.database-structure__group_workspace .database-structure__list_two-columns {
+	column-gap: 2.5rem;
+}
+
 .database-structure__item {
 	position: relative;
 	padding: 0.75rem;
@@ -285,6 +337,13 @@ q-page(padding)
 	text-decoration: underline;
 }
 
+.database-structure__item > .database-structure__link::after {
+	position: absolute;
+	z-index: 1;
+	inset: 0;
+	content: '';
+}
+
 .database-structure__chevron {
 	position: absolute;
 	top: 50%;
@@ -293,11 +352,16 @@ q-page(padding)
 	visibility: hidden;
 }
 
-.no-touch .database-structure__item:hover {
+.no-touch .database-structure__item:hover,
+.no-touch .system-settings:hover {
 	cursor: pointer;
 	border-color: #ccc;
 	background: #fff;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}
+
+.no-touch .system-settings:hover:not(:focus-visible) > :deep(.q-focus-helper) {
+	opacity: 0;
 }
 
 .no-touch .database-structure__group_cards:hover {
