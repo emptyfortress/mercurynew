@@ -245,8 +245,7 @@ q-page(padding)
 }
 
 .database-structure__group_directories {
-	--illustration: url('@/assets/img/bg/03_directories-1.png');
-	--illustration-width: 288px;
+	--illustration: url('@/assets/img/bg/database.png');
 }
 
 .database-structure__group_resources {
@@ -254,9 +253,12 @@ q-page(padding)
 }
 
 .database-structure__group_directories::before {
-	right: calc(1rem - 15px);
-	height: 97px;
-	background-position: right -21px bottom -6px;
+	inset: 0;
+	width: auto;
+	height: auto;
+	border-radius: inherit;
+	background-position: center bottom;
+	background-size: 100% auto;
 }
 
 .database-structure__group_resources::before {
