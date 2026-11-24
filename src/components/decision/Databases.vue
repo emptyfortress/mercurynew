@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import LucideBookOpen from '@/components/icons/LucideBookOpen.vue'
+import LucideFolderOpen from '@/components/icons/LucideFolderOpen.vue'
+import LucideLayers2 from '@/components/icons/LucideLayers2.vue'
+import LucideLayoutTemplate from '@/components/icons/LucideLayoutTemplate.vue'
+import LucideWorkflow from '@/components/icons/LucideWorkflow.vue'
 
 const router = useRouter()
 
@@ -30,7 +35,7 @@ const goto = (e: string) => {
 <template lang="pug">
 mixin structure-tile(label)
 	li.database-structure__item
-		= label
+		span.database-structure__item-label.text-primary= label
 		q-icon.database-structure__chevron(name='mdi-chevron-right' size='1.25rem')
 
 q-page(padding)
@@ -50,7 +55,9 @@ q-page(padding)
 		)
 	section.database-structure
 		section.database-structure__group.database-structure__group_cards.q-mb-md
-			h2.text-h6.q-ma-none Конструктор карточек
+			h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
+				LucideLayoutTemplate.database-structure__title-icon(aria-hidden='true')
+				|Конструктор карточек
 			ul.database-structure__list.database-structure__list_inline
 				li Виды и поля
 				li Роли и права
@@ -59,8 +66,10 @@ q-page(padding)
 			q-icon.database-structure__chevron(name='mdi-chevron-right' size='1.25rem')
 
 		.database-structure__columns
-			section.database-structure__group
-				h2.text-h6.q-ma-none Рабочее место
+			section.database-structure__group.database-structure__group_workspace
+				h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
+					LucideFolderOpen.database-structure__title-icon(aria-hidden='true')
+					|Рабочее место
 				ul.database-structure__list.database-structure__list_two-columns
 					+structure-tile('Каталог папок')
 					+structure-tile('Рабочая область')
@@ -70,25 +79,31 @@ q-page(padding)
 					+structure-tile('Типы папок')
 
 			.database-structure__stack
-				section.database-structure__group
-					h2.text-h6.q-ma-none Справочники
+				section.database-structure__group.database-structure__group_directories
+					h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
+						LucideBookOpen.database-structure__title-icon(aria-hidden='true')
+						|Справочники
 					ul.database-structure__list
 						+structure-tile('Разметки справочников')
 						+structure-tile('Справочник ссылок')
-				section.database-structure__group
-					h2.text-h6.q-ma-none Ресурсы разметок
+				section.database-structure__group.database-structure__group_resources
+					h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
+						LucideLayers2.database-structure__title-icon(aria-hidden='true')
+						|Ресурсы разметок
 					ul.database-structure__list
 						+structure-tile('Управление решениями')
 						+structure-tile('Локализации разметок')
 
-			section.database-structure__group
-				h2.text-h6.q-ma-none Согласования и процессы
-				h3.text-subtitle2.q-mt-sm.q-mb-none Согласования
+			section.database-structure__group.database-structure__group_workflows
+				h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
+					LucideWorkflow.database-structure__title-icon(aria-hidden='true')
+					|Согласования и процессы
+				// h3.text-subtitle2.q-mt-sm.q-mb-none Согласования
 				ul.database-structure__list
 					+structure-tile('Конструктор согласований')
 					+structure-tile('Мониторинг согласований')
 				q-separator(spaced='md')
-				h3.text-subtitle2.q-ma-none Процессы WF
+				// h3.text-subtitle2.q-ma-none Процессы WF
 				ul.database-structure__list
 					+structure-tile('Настройка шаблонов процессов')
 					+structure-tile('Мониторинг процессов')
@@ -134,14 +149,16 @@ q-page(padding)
 }
 
 .database-structure__columns {
+	--illustration-overlap: 12.5px;
+
 	display: grid;
 	grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1.1fr);
-	align-items: start;
 	gap: 1rem;
 }
 
 .database-structure__stack {
 	display: grid;
+	grid-auto-rows: 1fr;
 	gap: 1rem;
 }
 
@@ -151,14 +168,86 @@ q-page(padding)
 }
 
 .database-structure__group {
+	--illustration-width: 200px;
+	--illustration-height: 84px;
+	--illustration-bottom: 4px;
+
+	position: relative;
+	isolation: isolate;
 	border: 1px solid var(--my-border-color);
 	padding: 1rem;
 	background: var(--bg-panel);
 }
 
+.database-structure__columns .database-structure__group {
+	padding-bottom: calc(
+		var(--illustration-height) + var(--illustration-bottom) - var(--illustration-overlap)
+	);
+}
+
+.database-structure__group::before {
+	position: absolute;
+	z-index: -1;
+	inset: auto 1rem var(--illustration-bottom) auto;
+	width: min(var(--illustration-width), calc(100% - 2rem));
+	height: var(--illustration-height);
+	background-image: var(--illustration);
+	background-position: right bottom;
+	background-size: contain;
+	background-repeat: no-repeat;
+	pointer-events: none;
+	content: '';
+}
+
 .database-structure__group_cards {
-	position: relative;
-	padding-inline-end: 2.25rem;
+	--illustration: url('@/assets/img/bg/01_card_constructor-1.png');
+
+	min-height: 102px;
+}
+
+.database-structure__group_cards::before {
+	inset: 0 72px 0 0;
+	width: auto;
+	height: auto;
+	background-position: right center;
+	background-size: min(800px, 100%) auto;
+}
+
+.database-structure__group_workspace {
+	--illustration: url('@/assets/img/bg/02_workspace.png');
+}
+
+.database-structure__group_directories {
+	--illustration: url('@/assets/img/bg/03_directories.png');
+}
+
+.database-structure__group_resources {
+	--illustration: url('@/assets/img/bg/04_layout_resources.png');
+}
+
+.database-structure__group_directories::before,
+.database-structure__group_resources::before {
+	right: calc(1rem - 15px);
+}
+
+.database-structure__group_workflows {
+	--illustration: url('@/assets/img/bg/05_workflows.png');
+}
+
+.database-structure__group_workspace,
+.database-structure__group_workflows {
+	--illustration-width: 300px;
+	--illustration-height: 126px;
+}
+
+.database-structure__title {
+	gap: 0.5rem;
+}
+
+.database-structure__title-icon {
+	flex: none;
+	font-size: 1.25rem;
+	color: var(--icon);
 }
 
 .database-structure__list {
@@ -167,6 +256,10 @@ q-page(padding)
 	margin: 0.5rem 0 0;
 	padding: 0;
 	list-style: none;
+}
+
+.database-structure__columns .database-structure__list {
+	gap: 0;
 }
 
 .database-structure__list_inline {
@@ -188,6 +281,10 @@ q-page(padding)
 	border: 1px solid transparent;
 }
 
+.database-structure__item-label {
+	text-decoration: underline;
+}
+
 .database-structure__chevron {
 	position: absolute;
 	top: 50%;
@@ -200,20 +297,27 @@ q-page(padding)
 	cursor: pointer;
 	border-color: #ccc;
 	background: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
 }
 
 .no-touch .database-structure__group_cards:hover {
 	background: #fff;
-}
-
-.no-touch .database-structure__item:hover,
-.no-touch .database-structure__group_cards:hover {
 	box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .no-touch .database-structure__item:hover > .database-structure__chevron,
 .no-touch .database-structure__group_cards:hover > .database-structure__chevron {
 	visibility: visible;
+}
+
+@media (width > 50rem) {
+	.database-structure__columns > .database-structure__group {
+		--illustration-overlap: 50px;
+	}
+
+	.database-structure__stack {
+		--illustration-overlap: 25px;
+	}
 }
 
 @media (max-width: 50rem) {
