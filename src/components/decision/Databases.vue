@@ -120,7 +120,7 @@ q-page(padding)
 
 		q-separator(spaced='lg')
 
-	.container
+	// .container
 		.it.constr(
 			v-for="item in sections",
 			:key='item.id',
