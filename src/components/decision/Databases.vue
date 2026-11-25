@@ -221,13 +221,14 @@ q-page(padding)
 	&::before {
 		position: absolute;
 		z-index: -1;
-		inset: auto 1rem 30px auto;
-		width: min(432px, calc(100% - 2rem));
+		// inset: auto 1rem 30px auto;
+		inset: 0 0.5rem 0.5rem 0;
+		// width: min(432px, calc(100% - 2rem));
 		// Исключаем прозрачное поле внизу PNG.
-		aspect-ratio: 2048 / 750;
+		// aspect-ratio: 2048 / 750;
 		background-image: url('@/assets/img/bg/desktop.png');
-		background-position: right top;
-		background-size: 70% auto;
+		background-position: right bottom;
+		background-size: 72% auto;
 		background-repeat: no-repeat;
 		opacity: 0.5;
 		pointer-events: none;
