@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import CarbonConstruction from '@/components/icons/CarbonConstruction.vue'
 import KeylineIconsDesk from '@/components/icons/KeylineIconsDesk.vue'
 import LucideBookOpen from '@/components/icons/LucideBookOpen.vue'
 import LucideLayers2 from '@/components/icons/LucideLayers2.vue'
@@ -44,13 +43,7 @@ mixin structure-tile(label, to, secondLine)
 			if secondLine
 				br
 				= secondLine
-		block
 		q-icon.database-structure__chevron(name='mdi-chevron-right' size='1.25rem')
-
-mixin in-development
-	q-icon.q-ml-md(color='negative' size='1.2rem')
-		CarbonConstruction
-		q-tooltip В разработке
 
 q-page(padding)
 	.box.row.items-center
@@ -68,10 +61,12 @@ q-page(padding)
 			size="sm"
 		)
 	section.database-structure
-		section.database-structure__group.database-structure__group_cards.q-mb-md
+		section.database-structure__group_cards.q-mb-md
 			h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 				LucideLayoutTemplate.database-structure__title-icon(aria-hidden='true')
-				router-link.database-structure__link(to='/dvmain/cards') Конструктор карточек
+				router-link.database-structure__link(
+					:to="{ name: 'Emp', params: { constructorId: 'cards' } }"
+				) Конструктор карточек
 			ul.database-structure__list.database-structure__list_inline
 				li Виды и поля
 				li Роли и права
@@ -80,7 +75,7 @@ q-page(padding)
 			q-icon.database-structure__chevron(name='mdi-chevron-right' size='1.25rem')
 
 		.database-structure__columns
-			section.database-structure__group.database-structure__group_workspace
+			section.database-structure__group_workspace
 				h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 					KeylineIconsDesk.database-structure__title-icon(aria-hidden='true')
 					|Рабочее место
@@ -89,31 +84,27 @@ q-page(padding)
 					+structure-tile('Рабочая область', '/dvmain/webframe')
 					+structure-tile('Конструктор поисковых запросов', '/dvmain/search')
 					+structure-tile('Управление', null, 'локациями')
-						+in-development
 					+structure-tile('Конструктор представлений', '/dvmain/views')
-					+structure-tile('Типы', '/dvmain/folder-types', 'папок')
+					+structure-tile('Типы\u00a0папок', '/dvmain/folder-types')
 
 			.database-structure__stack
-				section.database-structure__group.database-structure__group_directories
+				section.database-structure__group_directories
 					h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 						LucideBookOpen.database-structure__title-icon(aria-hidden='true')
 						|Справочники
 					ul.database-structure__list
 						+structure-tile('Разметки справочников')
-							+in-development
 						+structure-tile('Справочник ссылок')
-							+in-development
 						+structure-tile('Нумераторы', '/dvmain/numerators')
-				section.database-structure__group.database-structure__group_resources
+				section.database-structure__group_resources
 					h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 						LucideLayers2.database-structure__title-icon(aria-hidden='true')
 						|Ресурсы разметок
 					ul.database-structure__list
-						+structure-tile('Управление решениями', '/dvmain/projects')
+						+structure-tile('Проекты', '/dvmain/projects')
 						+structure-tile('Локализации разметок')
-							+in-development
 
-			section.database-structure__group.database-structure__group_workflows
+			section.database-structure__group_workflows
 				h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 					LucideWorkflow.database-structure__title-icon(aria-hidden='true')
 					|Согласования и процессы
@@ -121,7 +112,6 @@ q-page(padding)
 				ul.database-structure__list
 					+structure-tile('Конструктор согласований', '/dvmain/approve')
 					+structure-tile('Мониторинг согласований')
-						+in-development
 				q-separator(spaced='md')
 				// h3.text-subtitle2.q-ma-none Процессы WF
 				ul.database-structure__list
@@ -164,8 +154,6 @@ q-page(padding)
 }
 
 .database-structure__columns {
-	--illustration-overlap: 12.5px;
-
 	display: grid;
 	grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1.1fr);
 	gap: 1rem;
@@ -177,111 +165,165 @@ q-page(padding)
 	gap: 1rem;
 }
 
-.database-structure__group,
-.database-structure__item {
-	border-radius: var(--rad);
-}
-
-.database-structure__group {
-	--illustration-width: 200px;
-	--illustration-height: 84px;
-	--illustration-bottom: 4px;
-
+.database-structure__group_cards {
 	position: relative;
 	isolation: isolate;
 	border: 1px solid var(--my-border-color);
+	border-radius: var(--rad);
 	padding: 1rem;
 	background: var(--bg-panel);
-}
-
-.database-structure__columns .database-structure__group {
-	padding-bottom: calc(
-		var(--illustration-height) + var(--illustration-bottom) - var(--illustration-overlap)
-	);
-}
-
-.database-structure__group::before {
-	position: absolute;
-	z-index: -1;
-	inset: auto 1rem var(--illustration-bottom) auto;
-	width: min(var(--illustration-width), calc(100% - 2rem));
-	height: var(--illustration-height);
-	background-image: var(--illustration);
-	background-position: right bottom;
-	background-size: contain;
-	background-repeat: no-repeat;
-	opacity: 0.8;
-	pointer-events: none;
-	content: '';
-}
-
-.database-structure__group_cards {
-	--illustration: url('@/assets/img/bg/01_card_constructor-4.png');
-
 	min-height: 102px;
-}
 
-.database-structure__group_cards::before {
-	inset: 0 72px 0 0;
-	width: auto;
-	height: auto;
-	background-position: right center;
-	background-size: min(680px, 100%) auto;
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: 0 76px 0 0;
+		background-image: url('@/assets/img/bg/cards_bg.png');
+		background-position: right center;
+		background-size: 400px auto;
+		background-repeat: no-repeat;
+		opacity: 0.5;
+		pointer-events: none;
+		content: '';
+	}
+
+	.no-touch &:hover {
+		cursor: pointer;
+		background: #fff;
+		box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+	}
+
+	.no-touch &:hover > .database-structure__chevron {
+		visibility: visible;
+	}
+
+	.database-structure__link::after {
+		position: absolute;
+		z-index: 1;
+		inset: 0;
+		content: '';
+	}
 }
 
 .database-structure__group_workspace {
-	--illustration: url('@/assets/img/bg/02_workspace-1.png');
-	--illustration-width: 300px;
-}
+	position: relative;
+	isolation: isolate;
+	border: 1px solid var(--my-border-color);
+	border-radius: var(--rad);
+	padding: 1rem;
+	padding-bottom: 117.5px;
+	background: var(--bg-panel);
 
-.database-structure__group_workspace::before {
-	bottom: 30px;
-	width: min(calc(var(--illustration-width) * 1.44), calc(100% - 2rem));
-	height: auto;
-	// Исключаем прозрачное поле внизу PNG.
-	aspect-ratio: 2048 / 570;
-	background-position: right top;
-	background-size: 100% auto;
+	@media (width > 50rem) {
+		padding-bottom: 80px;
+	}
+
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: auto 1rem 30px auto;
+		width: min(432px, calc(100% - 2rem));
+		// Исключаем прозрачное поле внизу PNG.
+		aspect-ratio: 2048 / 750;
+		background-image: url('@/assets/img/bg/desktop.png');
+		background-position: right top;
+		background-size: 70% auto;
+		background-repeat: no-repeat;
+		opacity: 0.5;
+		pointer-events: none;
+		content: '';
+	}
+
+	.database-structure__list_two-columns {
+		column-gap: 2.5rem;
+	}
 }
 
 .database-structure__group_directories {
-	--illustration: url('@/assets/img/bg/database.png');
+	position: relative;
+	isolation: isolate;
+	border: 1px solid var(--my-border-color);
+	border-radius: var(--rad);
+	padding: 1rem;
+	padding-bottom: 75.5px;
+	background: var(--bg-panel);
+
+	@media (width > 50rem) {
+		padding-bottom: 63px;
+	}
+
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		border-radius: inherit;
+		background-image: url('@/assets/img/bg/database.png');
+		background-position: right bottom;
+		background-size: 70% auto;
+		background-repeat: no-repeat;
+		opacity: 0.6;
+		pointer-events: none;
+		content: '';
+	}
 }
 
 .database-structure__group_resources {
-	--illustration: url('@/assets/img/bg/04_layout_resources-1.png');
-}
+	position: relative;
+	isolation: isolate;
+	border: 1px solid var(--my-border-color);
+	border-radius: var(--rad);
+	padding: 1rem;
+	padding-bottom: 75.5px;
+	background: var(--bg-panel);
 
-.database-structure__group_directories::before {
-	inset: 0;
-	width: auto;
-	height: auto;
-	border-radius: inherit;
-	background-position: center bottom;
-	background-size: 100% auto;
-}
+	@media (width > 50rem) {
+		padding-bottom: 63px;
+	}
 
-.database-structure__group_resources::before {
-	right: calc(1rem - 30px);
-	width: min(calc(var(--illustration-width) * 1.521), calc((100% - 2rem) * 0.9));
-	height: calc(var(--illustration-height) * 1.521);
-	background-position: right -30px bottom;
-	clip-path: inset(0 max(0px, 30px - 1rem) 0 0);
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: auto calc(1rem - 10px) 4px auto;
+		width: min(304.2px, calc((100% - 2rem) * 0.9));
+		height: 147px;
+		background-image: url('@/assets/img/bg/html.png');
+		background-position: right bottom;
+		background-size: contain;
+		background-repeat: no-repeat;
+		opacity: 0.5;
+		// clip-path: inset(0 max(0px, 30px - 1rem) 0 0);
+		pointer-events: none;
+		content: '';
+	}
 }
 
 .database-structure__group_workflows {
-	--illustration: url('@/assets/img/bg/05_workflows-1.png');
-	--illustration-width: 340px;
-}
+	position: relative;
+	isolation: isolate;
+	border: 1px solid var(--my-border-color);
+	border-radius: var(--rad);
+	padding: 1rem;
+	padding-bottom: 117.5px;
+	background: var(--bg-panel);
 
-.database-structure__group_workflows::before {
-	background-position: center;
-	background-size: 140% auto;
-}
+	@media (width > 50rem) {
+		padding-bottom: 80px;
+	}
 
-.database-structure__group_workspace,
-.database-structure__group_workflows {
-	--illustration-height: 126px;
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: auto 1rem 4px auto;
+		width: 300px;
+		height: 126px;
+		background-image: url('@/assets/img/bg/workflow.png');
+		background-position: right bottom;
+		background-size: 100% auto;
+		background-repeat: no-repeat;
+		opacity: 0.5;
+		pointer-events: none;
+		content: '';
+	}
 }
 
 .database-structure__title {
@@ -323,12 +365,9 @@ q-page(padding)
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.database-structure__group_workspace .database-structure__list_two-columns {
-	column-gap: 2.5rem;
-}
-
 .database-structure__item {
 	position: relative;
+	border-radius: var(--rad);
 	padding: 0.75rem;
 	padding-inline-end: 2.25rem;
 	// background: #fff;
@@ -366,24 +405,8 @@ q-page(padding)
 	opacity: 0;
 }
 
-.no-touch .database-structure__group_cards:hover {
-	background: #fff;
-	box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.no-touch .database-structure__item:hover > .database-structure__chevron,
-.no-touch .database-structure__group_cards:hover > .database-structure__chevron {
+.no-touch .database-structure__item:hover > .database-structure__chevron {
 	visibility: visible;
-}
-
-@media (width > 50rem) {
-	.database-structure__columns > .database-structure__group {
-		--illustration-overlap: 50px;
-	}
-
-	.database-structure__stack {
-		--illustration-overlap: 25px;
-	}
 }
 
 @media (max-width: 50rem) {

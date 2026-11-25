@@ -1,8 +1,8 @@
 {
 	"prompt": {
-		"task": "Transform the uploaded photograph into a standalone, premium-quality 3:2 HORIZONTAL design poster. The entire canvas must be a single, unified abstract graphic composition. Do NOT include any photorealistic sections or the original photo. Do NOT divide the canvas into sections.",
+		"task": "Generate a standalone, premium-quality 3:2 HORIZONTAL design poster. The entire canvas must be a single, unified abstract graphic composition. Do NOT include any photorealistic sections or the original photo. Do NOT divide the canvas into sections.",
 
-		"subject_extraction": "Extract the photograph's essential visual identity: the subject's silhouette, structure, posture, and narrative relationships. Do not reproduce the entire object literally. Instead, distill these characteristics into a recognizable abstract visual symbol.",
+		"subject": "This is technical illustration of Directories page. It contains composition of a database and open book",
 
 		"visual_direction": {
 			"styles": [
@@ -20,7 +20,7 @@
 
 		"typography": "Typography should function only as a supporting system component, never as a dominant headline. Use small index numbers, minimal alphabetic codes, short descriptive phrases, and subtle annotations. Use refined, understated typography inspired by archival systems and technical documentation.",
 
-		"color_system": "Extract the photograph's signature colors and reinterpret them as a cohesive brand color palette. Introduce a limited number of high-recognition accent colors (e.g., Teal, Blue, Magenta, Orange). Balance these with off-white, warm white, and neutral gray backgrounds. Avoid chaotic palettes and generic gradients.",
+		"color_system": "Transparent background, dull, bluish total tint, some orange details. Avoid chaotic palettes and generic gradients.",
 
 		"textures": "Integrate subtle physical imperfections and analog printing characteristics: Xerox texture, Risograph grain, print registration errors, scanner noise, subtle paper texture, delicate print misalignment, and imperfect edges to give the digital symbols a tactile quality.",
 
