@@ -16,6 +16,7 @@ import Fab from '@/components/Fab.vue'
 import Footer from '@/components/Footer.vue'
 import HealthiconsGuideDogfrom from '@/components/icons/HealthiconsGuideDog.vue'
 import HelpModal from '@/components/HelpModal.vue'
+import SettingsSearchDialog from '@/components/SettingsSearchDialog.vue'
 import { useAppTour } from '@/tour'
 import Breadcrumbs from '@/components/decision/Breadcrumbs.vue'
 import HugeiconsChatBot from '@/components/icons/HugeiconsChatBot.vue'
@@ -234,6 +235,14 @@ const title = computed(() => {
 // --- Help modal state ---
 const showHelpModal = ref(false)
 const helpLabel = ref('Помощь')
+const showSettingsSearch = ref(false)
+
+function openSettingsSearch(event: Event) {
+	if (event.currentTarget instanceof HTMLElement) {
+		event.currentTarget.focus()
+	}
+	showSettingsSearch.value = true
+}
 
 const handleOk = () => {
 	startTour(route)
@@ -315,6 +324,15 @@ q-layout(view='hHh LpR fFf')
 				span(v-else) {{ title }}
 			q-btn.reset(v-if="route.path === '/dvmain/webframe/menu'" color="white" text-color="negative" @click="resetLayout" label="Restore default layout" size="md")
 			q-space
+			q-btn.settings-search-trigger(
+				dense
+				flat
+				no-caps
+				icon='mdi-magnify'
+				label='Поиск по настройкам'
+				aria-haspopup='dialog'
+				@click='openSettingsSearch'
+			)
 			.lang
 				component(:is='currentLang.icon')
 				q-menu(transition-show="jump-down" transition-hide="jump-up")
@@ -393,6 +411,7 @@ q-layout(view='hHh LpR fFf')
 
 	// Help modal component
 	HelpModal(v-model="showHelpModal" :menu-label="helpLabel" @ok="handleOk" @cancel="handleCancel")
+	SettingsSearchDialog(v-model='showSettingsSearch')
 </template>
 
 <style scoped lang="scss">
@@ -448,6 +467,27 @@ nav a:first-of-type {
 #cont {
 	position: relative;
 }
+
+.settings-search-trigger {
+	flex-shrink: 0;
+	padding-inline: 10px;
+	background: rgb(255 255 255 / 0.12);
+
+	@media (max-width: 720px) {
+		:deep(.block) {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+		}
+
+		:deep(.q-icon) {
+			margin-inline-end: 0;
+		}
+	}
+}
+
 .lang {
 	margin: 0 1rem;
 	margin-top: 5px;

@@ -104,7 +104,7 @@ q-page.databases-variant(padding)
 				section.database-structure__group_workflows
 					h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 						LucideWorkflow.database-structure__title-icon(aria-hidden='true')
-						|Согласования и процессы
+						|Согласования | процессы
 					// h3.text-subtitle2.q-mt-sm.q-mb-none Согласования
 					ul.database-structure__list
 						+structure-tile('Конструктор согласований', '/dvmain/approve')
@@ -143,15 +143,12 @@ q-page.databases-variant(padding)
 		position: absolute;
 		inset-block: 0;
 		width: calc((100% - var(--variant-background-gap)) / 2);
-		// width: 100%;
-		// background-image: url('@/assets/img/bg/main_bg2.png');
 		background-image: url('@/assets/img/bg/main_bg9.png');
 		background-size: 150% auto;
-		// background-size: cover;
 		background-repeat: no-repeat;
 		mix-blend-mode: multiply;
 		pointer-events: none;
-		opacity: 0.4;
+		opacity: 0.35;
 		content: '';
 	}
 
@@ -167,7 +164,7 @@ q-page.databases-variant(padding)
 }
 
 .databases-variant__content {
-	--variant-content-width: 1024px;
+	--variant-content-width: 1068px;
 
 	position: relative;
 	z-index: 1;
