@@ -177,12 +177,12 @@ q-page(padding)
 	&::before {
 		position: absolute;
 		z-index: -1;
-		inset: 0 76px 0 0;
+		inset: 8px 76px 8px 0;
 		background-image: url('@/assets/img/bg/cards_bg.png');
 		background-position: right center;
-		background-size: 400px auto;
+		background-size: 520px auto;
 		background-repeat: no-repeat;
-		opacity: 0.5;
+		opacity: 0.4;
 		pointer-events: none;
 		content: '';
 	}
