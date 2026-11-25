@@ -58,7 +58,6 @@ q-page(padding)
 			padding='12px 16px'
 			unelevated
 			no-caps
-			size="sm"
 		)
 	section.database-structure
 		section.database-structure__group_cards.q-mb-md
@@ -99,9 +98,9 @@ q-page(padding)
 				section.database-structure__group_resources
 					h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 						LucideLayers2.database-structure__title-icon(aria-hidden='true')
-						|Ресурсы разметок
+						|Дополнительно
 					ul.database-structure__list
-						+structure-tile('Проекты', '/dvmain/projects')
+						+structure-tile('Проекты переноса разметок', '/dvmain/projects')
 						+structure-tile('Локализации разметок')
 
 			section.database-structure__group_workflows
