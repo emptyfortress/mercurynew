@@ -250,10 +250,20 @@ const goDecisions = () => {
 	router.push('/dvmain')
 }
 
-type Section = 'apps' | 'decisions'
+const goVariant = () => {
+	router.push({ name: 'decisions.variant' })
+}
+
+type Section = 'apps' | 'decisions' | 'variant'
+
+const isDecisionsOverview = computed(
+	() => route.name === 'decisions' || route.name === 'decisions.variant'
+)
 
 const section = computed<Section>(() => {
 	const name = route.name
+
+	if (name === 'decisions.variant') return 'variant'
 
 	if (typeof name === 'string') {
 		if (name.startsWith('decisions')) return 'decisions'
@@ -295,6 +305,13 @@ q-layout(view='hHh LpR fFf')
 					q-tab(name='decisions' @click='goDecisions')
 						EosIconsProducts.q-tab__icon(aria-hidden='true')
 						span.q-tab__label Конструкторы и справочники
+					q-tab(
+						v-if='isDecisionsOverview'
+						name='variant'
+						label='Вариант'
+						no-caps
+						@click='goVariant'
+					)
 				span(v-else) {{ title }}
 			q-btn.reset(v-if="route.path === '/dvmain/webframe/menu'" color="white" text-color="negative" @click="resetLayout" label="Restore default layout" size="md")
 			q-space
@@ -347,7 +364,7 @@ q-layout(view='hHh LpR fFf')
 		.bread.row.items-center(v-if='route.meta.breadcrumbs')
 			Breadcrumbs.col
 			q-btn-dropdown.col-auto.q-ml-sm(
-				v-if="route.name === 'decisions'"
+				v-if='isDecisionsOverview'
 				dropdown-icon='mdi-chevron-down'
 				color='primary'
 				size='0.75rem'

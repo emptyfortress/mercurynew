@@ -9,7 +9,8 @@ const { resolveLabel } = useBreadcrumbLabel()
 const projectsStore = useProjectsStore()
 
 const breadcrumbs = computed(() => {
-	const segments = route.path.split('/').filter(Boolean)
+	const breadcrumbPath = route.name === 'decisions.variant' ? '/dvmain' : route.path
+	const segments = breadcrumbPath.split('/').filter(Boolean)
 	const workflowLabels: Record<string, string> = {
 		processHome: 'Процессы',
 		processConstructor: 'Конструктор шаблонов',
