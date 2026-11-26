@@ -259,20 +259,12 @@ const goDecisions = () => {
 	router.push('/dvmain')
 }
 
-const goVariant = () => {
-	router.push({ name: 'decisions.variant' })
-}
+type Section = 'apps' | 'decisions'
 
-type Section = 'apps' | 'decisions' | 'variant'
-
-const isDecisionsOverview = computed(
-	() => route.name === 'decisions' || route.name === 'decisions.variant'
-)
+const isDecisionsOverview = computed(() => route.name === 'decisions')
 
 const section = computed<Section>(() => {
 	const name = route.name
-
-	if (name === 'decisions.variant') return 'variant'
 
 	if (typeof name === 'string') {
 		if (name.startsWith('decisions')) return 'decisions'
@@ -301,7 +293,7 @@ q-layout(view='hHh LpR fFf')
 				img(src='@/assets/img/kp_logo.svg')
 				q-tooltip Домой
 			q-toolbar-title(v-if='showTab' shrink) Центр настройки
-			q-toolbar-title
+			q-toolbar-title(:class="{ 'toolbar-tabs': showTab }")
 				q-tabs.q-ml-md(v-if='showTab'
 					:key="section"
 					:model-value="section"
@@ -314,25 +306,19 @@ q-layout(view='hHh LpR fFf')
 					q-tab(name='decisions' @click='goDecisions')
 						EosIconsProducts.q-tab__icon(aria-hidden='true')
 						span.q-tab__label Конструкторы и справочники
-					q-tab(
-						v-if='isDecisionsOverview'
-						name='variant'
-						label='Вариант'
-						no-caps
-						@click='goVariant'
-					)
 				span(v-else) {{ title }}
-			q-btn.reset(v-if="route.path === '/dvmain/webframe/menu'" color="white" text-color="negative" @click="resetLayout" label="Restore default layout" size="md")
-			q-space
 			q-btn.settings-search-trigger(
 				dense
 				flat
 				no-caps
+				align='left'
 				icon='mdi-magnify'
 				label='Поиск по настройкам'
 				aria-haspopup='dialog'
 				@click='openSettingsSearch'
 			)
+			q-btn.reset(v-if="route.path === '/dvmain/webframe/menu'" color="white" text-color="negative" @click="resetLayout" label="Restore default layout" size="md")
+			q-space
 			.lang
 				component(:is='currentLang.icon')
 				q-menu(transition-show="jump-down" transition-hide="jump-up")
@@ -468,12 +454,23 @@ nav a:first-of-type {
 	position: relative;
 }
 
+.toolbar-tabs {
+	flex: 0 1 auto;
+}
+
 .settings-search-trigger {
-	flex-shrink: 0;
+	width: 370px;
+	min-width: max-content;
+	margin-left: 80px;
 	padding-inline: 10px;
+	color: var(--dvblue);
 	background: rgb(255 255 255 / 0.12);
 
 	@media (max-width: 720px) {
+		width: auto;
+		flex-shrink: 0;
+		margin-left: 0;
+
 		:deep(.block) {
 			position: absolute;
 			width: 1px;

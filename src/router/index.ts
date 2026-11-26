@@ -60,16 +60,7 @@ const router = createRouter({
 		},
 		{
 			path: '/dvmain/variant',
-			component: () => import('@/components/decision/DatabasesVariant.vue'),
-			name: 'decisions.variant',
-			props: true,
-			meta: {
-				toolbar: false,
-				back: false,
-				count: 0,
-				save: false,
-				breadcrumbs: true,
-			},
+			redirect: { name: 'decisions' },
 		},
 
 		{
