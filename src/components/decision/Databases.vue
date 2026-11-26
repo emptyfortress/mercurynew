@@ -50,7 +50,7 @@ const goto = (e: string) => {
 
 <template lang="pug">
 mixin structure-tile(label, to)
-	li.database-structure__item
+	li.database-structure__item&attributes(attributes)
 		#{to ? 'router-link' : 'span'}.database-structure__item-label.text-primary(
 			class=to ? 'database-structure__link' : null
 			to=to
@@ -61,12 +61,12 @@ mixin structure-tile(label, to)
 q-page.databases(padding :style='backgroundStyle')
 	.databases__content
 		.box.row.items-center
-			h1.text-h5.text-weight-medium.q-ma-none
-				q-icon.q-mr-md(name="mdi-database-outline" color="primary")
+			h1.databases__title.text-h5.text-weight-medium.q-ma-none
+				q-icon.q-mr-md(name='mdi-database-outline' color='primary' size='1.5rem')
 				|База данных DV-Main
 			.databases__background-controls.row.no-wrap.items-center.q-ml-auto
 				.databases__opacity-control
-					span#databases-opacity-label.text-caption Непрозрачность
+					span#databases-opacity-label.databases__opacity-label.text-caption Непрозрачность
 					q-slider(
 						v-model='backgroundOpacity'
 						aria-labelledby='databases-opacity-label'
@@ -101,7 +101,7 @@ q-page.databases(padding :style='backgroundStyle')
 					router-link.database-structure__link(
 						:to="{ name: 'Emp', params: { constructorId: 'cards' } }"
 					) Конструктор карточек
-				ul.database-structure__list.database-structure__list_inline
+				ul.database-structure__list.database-structure__list_inline.text-secondary
 					li Виды и поля
 					li Роли и права
 					li Состояния и переходы
@@ -115,10 +115,16 @@ q-page.databases(padding :style='backgroundStyle')
 						|Рабочее место
 					ul.database-structure__list
 						+structure-tile('Каталог папок', '/dvmain/folders')
-						+structure-tile('Рабочая область', '/dvmain/webframe')
-						+structure-tile('Конструктор поисковых запросов', '/dvmain/search')
-						+structure-tile('Конструктор представлений', '/dvmain/views')
-						+structure-tile('Типы\u00a0папок', '/dvmain/folder-types')
+						+structure-tile('Конструктор поисковых запросов', '/dvmain/search')(
+							class='database-structure__item_indented'
+						)
+						+structure-tile('Конструктор представлений', '/dvmain/views')(
+							class='database-structure__item_indented'
+						)
+						+structure-tile('Справочник типов папок', '/dvmain/folder-types')(
+							class='database-structure__item_indented'
+						)
+						+structure-tile('Рабочая область', '/dvmain/webframe')(class='q-mt-lg')
 
 				.database-structure__stack
 					section.database-structure__group_directories
@@ -140,11 +146,11 @@ q-page.databases(padding :style='backgroundStyle')
 				section.database-structure__group_workflows
 					h2.database-structure__title.row.no-wrap.items-center.text-h6.q-ma-none
 						LucideWorkflow.database-structure__title-icon(aria-hidden='true')
-						|Согласования | процессы
+						|Согласования и процессы
 					// h3.text-subtitle2.q-mt-sm.q-mb-none Согласования
 					ul.database-structure__list
 						+structure-tile('Конструктор согласований', '/dvmain/approve')
-						+structure-tile('Мониторинг согласований')
+						// +structure-tile('Мониторинг согласований')
 					q-separator(spaced='md')
 					// h3.text-subtitle2.q-ma-none Процессы WF
 					ul.database-structure__list
@@ -170,8 +176,10 @@ q-page.databases(padding :style='backgroundStyle')
 <style scoped lang="scss">
 .databases {
 	--variant-panel-bg: color-mix(in srgb, var(--bg-panel) 72%, transparent);
+	--databases-font-scale: 1.15;
 
 	position: relative;
+	font-size: calc(100% * var(--databases-font-scale));
 }
 
 .databases::before {
@@ -201,17 +209,32 @@ q-page.databases(padding :style='backgroundStyle')
 	gap: 8px;
 }
 
+.databases__title.text-h5 {
+	font-size: calc(1.5rem * var(--databases-font-scale));
+	line-height: calc(2rem * var(--databases-font-scale));
+}
+
 .databases__background-controls {
 	gap: 12px;
 }
 
 .databases__opacity-control {
 	width: 108px;
+	min-width: max-content;
+}
+
+.databases__opacity-label.text-caption {
+	font-size: calc(0.75rem * var(--databases-font-scale));
+}
+
+.databases__opacity-control :deep(.q-slider__text) {
+	font-size: calc(12px * var(--databases-font-scale));
 }
 
 .system-settings {
 	border-radius: 0.5rem;
 	border: 1px solid transparent;
+	font-size: calc(14px * var(--databases-font-scale));
 }
 .database-structure {
 	margin: 0 auto;
@@ -314,6 +337,8 @@ q-page.databases(padding :style='backgroundStyle')
 
 .database-structure__title {
 	gap: 0.5rem;
+	font-size: calc(1.25rem * var(--databases-font-scale));
+	line-height: calc(1.1rem * var(--databases-font-scale));
 }
 
 .database-structure__title > .database-structure__link {
@@ -343,8 +368,13 @@ q-page.databases(padding :style='backgroundStyle')
 .database-structure__list_inline {
 	display: flex;
 	flex-wrap: wrap;
-	column-gap: 1rem;
-	font-size: 0.8rem;
+	column-gap: 0.5rem;
+	font-size: calc(0.8rem * var(--databases-font-scale));
+}
+
+.database-structure__list_inline > * + * {
+	border-inline-start: 1px solid var(--my-border-color);
+	padding-inline-start: 0.5rem;
 }
 
 .database-structure__item {
@@ -354,6 +384,10 @@ q-page.databases(padding :style='backgroundStyle')
 	padding-inline-end: 2.25rem;
 	// background: #fff;
 	border: 1px solid transparent;
+}
+
+.database-structure__item_indented {
+	margin-inline-start: 30px;
 }
 
 .database-structure__item-label {
