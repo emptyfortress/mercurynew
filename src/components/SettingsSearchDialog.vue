@@ -21,6 +21,12 @@ const history = [
 	{ label: 'колонки' },
 ]
 
+const layoutTransferProjects: SearchResult = {
+	label: 'Проекты переноса разметок',
+	section: 'Дополнительно',
+	to: '/dvmain/projects',
+}
+
 const demoResults: { terms: string[]; results: SearchResult[] }[] = [
 	{
 		terms: ['роль', 'роли'],
@@ -32,11 +38,7 @@ const demoResults: { terms: string[]; results: SearchResult[] }[] = [
 		terms: ['разметки'],
 		results: [
 			{ label: 'Разметки карточек', section: 'Конструктор карточек', to: '/dvmain/cards' },
-			{
-				label: 'Проекты переноса разметок',
-				section: 'Дополнительно',
-				to: '/dvmain/projects',
-			},
+			layoutTransferProjects,
 		],
 	},
 	{
@@ -59,16 +61,35 @@ const demoResults: { terms: string[]; results: SearchResult[] }[] = [
 			},
 		],
 	},
+	{
+		terms: ['представление'],
+		results: [
+			{ label: 'Конструктор представлений', section: 'Рабочее место', to: '/dvmain/views' },
+		],
+	},
+	{
+		terms: ['дашборд'],
+		results: [
+			{
+				label: 'Дашборд',
+				section: 'Рабочая область',
+				to: '/dvmain/webframe?section=dashboard',
+			},
+		],
+	},
+	{
+		terms: ['проект', 'перенос'],
+		results: [layoutTransferProjects],
+	},
 ]
 
 const normalizedQuery = computed(() => query.value?.trim().toLowerCase() ?? '')
 const rows = computed(() => {
 	if (!normalizedQuery.value) return history
 
-	const match = demoResults.find(({ terms }) =>
-		terms.some((term) => term.startsWith(normalizedQuery.value))
-	)
-	return match?.results ?? []
+	return demoResults
+		.filter(({ terms }) => terms.some((term) => term.startsWith(normalizedQuery.value)))
+		.flatMap(({ results }) => results)
 })
 
 watch(query, () => {

@@ -12,17 +12,24 @@ const layoutStore = useLayoutStore()
 const router = useRouter()
 const route = useRoute()
 
-const list = ref([
-	{ id: 1, label: 'Верхняя панель' },
-	{ id: 0, label: 'Главное меню' },
-	{ id: 2, label: 'Дашборд' },
-	{ id: 3, label: 'Фон приложения' },
-])
+const list = [
+	{ id: 1, section: 'topbar', label: 'Верхняя панель' },
+	{ id: 0, section: 'menu', label: 'Главное меню' },
+	{ id: 2, section: 'dashboard', label: 'Дашборд' },
+	{ id: 3, section: 'background', label: 'Фон приложения' },
+]
 
-const selectedListItem = ref<null | number>(0)
+const selectedListItem = computed(
+	() => list.find((item) => item.section === route.query.section)?.id ?? 0
+)
 
-const select = (n: number) => {
-	selectedListItem.value = n
+const select = (item: (typeof list)[number]) => {
+	void router.replace({
+		query: {
+			...route.query,
+			section: item.id === 0 ? undefined : item.section,
+		},
+	})
 }
 
 const header = computed(() => {
@@ -102,7 +109,7 @@ const mainMenu = (row: any) => {
 					v-for="item in list",
 					:key="item.id",
 					:class="{ selected: item.id == selectedListItem }",
-					@click="select(item.id)"
+					@click="select(item)"
 				)
 					q-item-section(side)
 						IconParkSolidPageTemplate(v-if="item.id == 0")
