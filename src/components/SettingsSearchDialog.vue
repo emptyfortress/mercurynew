@@ -102,7 +102,7 @@ function resetSearch() {
 }
 
 function selectRow(row: (typeof rows.value)[number]) {
-	if ('to' in row) {
+	if ('to' in row && typeof row.to === 'string') {
 		visible.value = false
 		void router.push(row.to)
 		return
