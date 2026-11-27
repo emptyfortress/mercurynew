@@ -158,7 +158,7 @@ const title = computed(() => {
 	}
 
 	if (route.matched[0]?.path === '/:id?') {
-		return 'Конструктор приложений'
+		return 'Центр настройки ДВ'
 	}
 
 	const cardsId = String(route.params.razmet ?? '')
